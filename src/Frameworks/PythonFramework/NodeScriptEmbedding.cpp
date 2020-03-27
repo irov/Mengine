@@ -140,1686 +140,1744 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class NodeScriptMethod
-        : public Factorable
+    namespace
     {
-    public:
-        NodeScriptMethod()
-        {
-        }
-
-        ~NodeScriptMethod() override
-        {
-        }
-
-    public:
-        bool initialize()
-        {
-            m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 16>( MENGINE_DOCUMENT_FACTORABLE );
-            m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
-            m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 16>( MENGINE_DOCUMENT_FACTORABLE );
-            m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
-            m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
-
-            m_factoryAffectorVelocity2 = Helper::makeFactorableUnique<FactoryAffectorVelocity2>( MENGINE_DOCUMENT_FACTORABLE );
-            m_factoryAffectorVelocity2->initialize();
-
-            m_nodeAffectorCreatorInterpolateParabolic = Helper::makeFactorableUnique<FactoryAffectorInterpolateParabolic>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateParabolic->initialize();
-
-            m_nodeAffectorCreatorFollowTo = Helper::makeFactorableUnique<FactoryAffectorFollowTo>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorFollowTo->initialize();
-
-            m_nodeAffectorCreatorFollowToW = Helper::makeFactorableUnique<FactoryAffectorFollowToW>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorFollowToW->initialize();
-
-            m_nodeAffectorCreatorInterpolateLinearFloat = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateLinearFloat->initialize();
-
-            m_nodeAffectorCreatorInterpolateLinear = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateLinear->initialize();
-
-            m_nodeAffectorCreatorInterpolateLinearVec4 = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateLinearVec4->initialize();
-
-            m_nodeAffectorCreatorAccumulateLinear = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorAccumulateLinear->initialize();
-
-            m_nodeAffectorCreatorInterpolateQuadraticBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateQuadraticBezier->initialize();
-
-            m_nodeAffectorCreatorInterpolateQuadratic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateQuadratic->initialize();
-
-            m_nodeAffectorCreatorInterpolateCubicBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateCubicBezier->initialize();
-
-            m_nodeAffectorCreatorInterpolateQuarticBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateQuarticBezier->initialize();
-
-            m_nodeAffectorCreatorInterpolateQuadraticFloat = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateQuadraticFloat->initialize();
-
-            m_nodeAffectorCreatorInterpolateLinearColor = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_nodeAffectorCreatorInterpolateLinearColor->initialize();
-
-            return true;
-        }
-
-        void finalize()
-        {
-            m_factoryAffectorVelocity2->finalize();
-            m_factoryAffectorVelocity2 = nullptr;
-
-            m_nodeAffectorCreatorInterpolateParabolic->finalize();
-            m_nodeAffectorCreatorInterpolateParabolic = nullptr;
-
-            m_nodeAffectorCreatorFollowTo->finalize();
-            m_nodeAffectorCreatorFollowTo = nullptr;
-
-            m_nodeAffectorCreatorFollowToW->finalize();
-            m_nodeAffectorCreatorFollowToW = nullptr;
-
-            m_nodeAffectorCreatorInterpolateLinearFloat->finalize();
-            m_nodeAffectorCreatorInterpolateLinearFloat = nullptr;
-
-            m_nodeAffectorCreatorInterpolateLinear->finalize();
-            m_nodeAffectorCreatorInterpolateLinear = nullptr;
-
-            m_nodeAffectorCreatorInterpolateLinearVec4->finalize();
-            m_nodeAffectorCreatorInterpolateLinearVec4 = nullptr;
-
-            m_nodeAffectorCreatorAccumulateLinear->finalize();
-            m_nodeAffectorCreatorAccumulateLinear = nullptr;
-
-            m_nodeAffectorCreatorInterpolateQuadraticBezier->finalize();
-            m_nodeAffectorCreatorInterpolateQuadraticBezier = nullptr;
-
-            m_nodeAffectorCreatorInterpolateQuadratic->finalize();
-            m_nodeAffectorCreatorInterpolateQuadratic = nullptr;
-
-            m_nodeAffectorCreatorInterpolateCubicBezier->finalize();
-            m_nodeAffectorCreatorInterpolateCubicBezier = nullptr;
-
-            m_nodeAffectorCreatorInterpolateQuarticBezier->finalize();
-            m_nodeAffectorCreatorInterpolateQuarticBezier = nullptr;
-
-            m_nodeAffectorCreatorInterpolateQuadraticFloat->finalize();
-            m_nodeAffectorCreatorInterpolateQuadraticFloat = nullptr;
-
-            m_nodeAffectorCreatorInterpolateLinearColor->finalize();
-            m_nodeAffectorCreatorInterpolateLinearColor = nullptr;
-
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryNodeAffectorCallback );
-
-            m_factoryPythonScheduleEvent = nullptr;
-            m_factoryDelaySchedulePipe = nullptr;
-            m_factoryPythonScheduleTiming = nullptr;
-            m_factoryPythonSchedulePipe = nullptr;
-            m_factoryNodeAffectorCallback = nullptr;
-        }
-
-    public:
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
-        {
-            MENGINE_UNUSED( _kwds );
-
-            size_t args_count = _kernel->tuple_size( _args );
-
-            VectorString cs_args;
-            cs_args.reserve( args_count );
-
-            for( uint32_t it = 0; it != args_count; ++it )
-            {
-                PyObject * py_string = _kernel->tuple_getitem( _args, it );
-
-                if( _kernel->string_check( py_string ) == true )
-                {
-                    String key;
-                    if( pybind::extract_value( _kernel, py_string, key, false ) == false )
-                    {
-                        LOGGER_ERROR( "'%s' invalid get str '%s'"
-                            , _kernel->object_repr( py_string )
-                        );
-
-                        return _kernel->ret_false();
-                    }
-
-                    cs_args.emplace_back( key );
-                }
-                else if( _kernel->unicode_check( py_string ) == true )
-                {
-                    WString key;
-                    if( pybind::extract_value( _kernel, py_string, key, false ) == false )
-                    {
-                        LOGGER_ERROR( "'%s' invalid get unicode '%s'"
-                            , _kernel->object_repr( py_string )
-                        );
-
-                        return _kernel->ret_false();
-                    }
-
-                    String utf8_arg;
-                    Helper::unicodeToUtf8( key, utf8_arg );
-
-                    cs_args.emplace_back( utf8_arg );
-                }
-                else
-                {
-                    const char * value = _kernel->object_str( py_string );
-
-                    if( value == nullptr )
-                    {
-                        LOGGER_ERROR( "'%s' not suport arg '%s'"
-                            , _kernel->object_repr( py_string )
-                        );
-
-                        return _kernel->ret_false();
-                    }
-
-                    cs_args.emplace_back( String( value ) );
-                }
-            }
-
-            _textField->setTextFormatArgs( cs_args );
-
-            return _kernel->ret_true();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        VectorWString s_TextField_getTextFormatArgs( TextField * _textField )
-        {
-            VectorWString ws_args;
-
-            const VectorString & str_args = _textField->getTextFormatArgs();
-
-            size_t args_count = str_args.size();
-            ws_args.reserve( args_count );
-
-            for( const String & str_arg : str_args )
-            {
-                WString unicode;
-                Helper::utf8ToUnicode( str_arg, unicode );
-
-                ws_args.emplace_back( unicode );
-            }
-
-            return ws_args;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::box2f s_BoundingBox_getBoundingBox( BoundingBox * _boundingBox )
-        {
-            const mt::box2f * bb = _boundingBox->getBoundingBox();
-
-            if( bb == nullptr )
-            {
-                mt::box2f infinity_bb;
-                mt::infinity_box( infinity_bb );
-
-                return infinity_bb;
-            }
-
-            return *bb;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Transformation_setAngleDeg( Transformation * _transformation, float _angle )
-        {
-            float rad = _angle * mt::constant::deg2rad;
-
-            _transformation->setLocalOrientationX( rad );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Transformation_removeRelationTransformation( Transformation * _transformation )
-        {
-            _transformation->removeRelationTransformation();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void Transformation_coordinate( Transformation * _transformation, const mt::vec3f & _coordinate )
-        {
-            const mt::vec3f & origin = _transformation->getLocalOrigin();
-            _transformation->setLocalOrigin( origin + _coordinate );
-            _transformation->translate( _coordinate );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_HotSpotPolygon_getLocalPolygonCenter( HotSpotPolygon * _hs )
-        {
-            const Polygon & polygon = _hs->getPolygon();
-
-            mt::box2f bb;
-            polygon.to_box2f( bb );
-
-            mt::vec2f c;
-            mt::get_center_box( bb, c );
-
-            return c;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_HotSpotPolygon_getWorldPolygonCenter( HotSpotPolygon * _hs )
-        {
-            const Polygon & polygon = _hs->getPolygon();
-
-            mt::box2f bb;
-            mt::insideout_box( bb );
-
-            const mt::mat4f & wm = _hs->getWorldMatrix();
-
-            for( const mt::vec2f & v : polygon )
-            {
-                mt::vec2f v_wm;
-                mt::mul_v2_v2_m4( v_wm, v, wm );
-
-                mt::add_internal_point( bb, v_wm );
-            }
-
-            mt::vec2f c;
-            mt::get_center_box( bb, c );
-
-            return c;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_HotSpotPolygon_getScreenPolygonCenter( HotSpotPolygon * _hs )
-        {
-            const Resolution & contentResolution = APPLICATION_SERVICE()
-                ->getContentResolution();
-
-            const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _hs );
-            const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _hs );
-
-            mt::box2f b1;
-            _hs->getScreenPolygon( camera, viewport, contentResolution, &b1, nullptr );
-
-            mt::vec2f c;
-            mt::get_center_box( b1, c );
-
-            return c;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        Polygon s_HotSpotPolygon_getWorldPolygon( HotSpotPolygon * _hs )
-        {
-            const Polygon & polygon = _hs->getPolygon();
-
-            const mt::mat4f & wm = _hs->getWorldMatrix();
-
-            Polygon pwm;
-            polygon.mul_wm( pwm, wm );
-
-            return pwm;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const mt::vec2f & s_Shape_getSurfaceSize( Shape * _shape )
-        {
-            const SurfacePtr & surface = _shape->getSurface();
-
-            MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
-                , _shape->getName().c_str()
-            );
-
-            const mt::vec2f & size = surface->getSize();
-
-            return size;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_Shape_getLocalImageCenter( Shape * _shape )
-        {
-            const SurfacePtr & surface = _shape->getSurface();
-
-            MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
-                , _shape->getName().c_str()
-            );
-
-            const mt::vec2f & offset = surface->getOffset();
-            const mt::vec2f & size = surface->getSize();
-
-            mt::vec2f center = offset + size * 0.5f;
-
-            return center;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_Shape_getWorldImageCenter( Shape * _shape )
-        {
-            mt::vec2f imageCenter = s_Shape_getLocalImageCenter( _shape );
-
-            const mt::mat4f & wm = _shape->getWorldMatrix();
-
-            mt::vec2f imageCenter_wm;
-            mt::mul_v2_v2_m4( imageCenter_wm, imageCenter, wm );
-
-            return imageCenter_wm;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>> m_nodeAffectorCreatorInterpolateLinearVec4;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryNodeAffectorCallback;
-        //////////////////////////////////////////////////////////////////////////
-        ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
-        {
-            ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-
-            callback->initialize( ScriptablePtr( _scriptable ), _cb, _args );
-
-            return callback;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _shape->isActivate() == false )
-            {
-                return 0;
-            }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
-
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4->create( ETA_VISIBILITY
-                , easing
-                , callback
-                , [_shape]( const mt::vec4f & _v ) { _shape->setPercentVisibility( _v ); }
-                , _shape->getPercentVisibility(), _percent, _time
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            _shape->stopAffectors( ETA_VISIBILITY );
-
-            if( _shape->isActivate() == false )
-            {
-                return 0;
-            }
-
-            AFFECTOR_ID id = _shape->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
-        {
-            _shape->stopAffectors( ETA_VISIBILITY );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPythonScheduleEvent;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
-        {
-            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-
-            sl->initialize( _script, _args );
-
-            uint32_t id = _scheduleManager->event( _timing, sl );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryDelaySchedulePipe;
-        FactoryPtr m_factoryPythonScheduleTiming;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
-        {
-            DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
-            pipe->initialize( _delay );
-
-            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
-            py_timing->initialize( _timing, _args );
-
-            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-            py_event->initialize( _event, _args );
-
-            uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPythonSchedulePipe;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
-        {
-            PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
-            py_pipe->initialize( _pipe, _args );
-
-            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
-            py_timing->initialize( _timing, _args );
-
-            PythonScheduleEventPtr py_event;
-            
-            if( _event.is_none() == false )
-            {
-                py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-                py_event->initialize( _event, _args );
-            }
-
-            uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonSceneChangeCallback
-            : public SceneChangeCallbackInterface
+        class NodeScriptMethod
+            : public Factorable
         {
         public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
+            NodeScriptMethod()
             {
-                m_cb = _cb;
-                m_args = _args;
+            }
+
+            ~NodeScriptMethod() override
+            {
             }
 
         public:
-            void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
+            bool initialize()
             {
-                MENGINE_UNUSED( _error );
+                m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 16>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 16>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
-                if( _remove == false )
+                m_factoryAffectorVelocity2 = Helper::makeFactorableUnique<FactoryAffectorVelocity2>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryAffectorVelocity2->initialize();
+
+                m_nodeAffectorCreatorInterpolateParabolic = Helper::makeFactorableUnique<FactoryAffectorInterpolateParabolic>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateParabolic->initialize();
+
+                m_nodeAffectorCreatorFollowTo = Helper::makeFactorableUnique<FactoryAffectorFollowTo>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorFollowTo->initialize();
+
+                m_nodeAffectorCreatorFollowToW = Helper::makeFactorableUnique<FactoryAffectorFollowToW>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorFollowToW->initialize();
+
+                m_nodeAffectorCreatorInterpolateLinearFloat = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateLinearFloat->initialize();
+
+                m_nodeAffectorCreatorInterpolateLinear = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateLinear->initialize();
+
+                m_nodeAffectorCreatorInterpolateLinearVec4 = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateLinearVec4->initialize();
+
+                m_nodeAffectorCreatorAccumulateLinear = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorAccumulateLinear->initialize();
+
+                m_nodeAffectorCreatorInterpolateQuadraticBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateQuadraticBezier->initialize();
+
+                m_nodeAffectorCreatorInterpolateQuadratic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateQuadratic->initialize();
+
+                m_nodeAffectorCreatorInterpolateCubicBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateCubicBezier->initialize();
+
+                m_nodeAffectorCreatorInterpolateQuarticBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateQuarticBezier->initialize();
+
+                m_nodeAffectorCreatorInterpolateQuadraticFloat = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateQuadraticFloat->initialize();
+
+                m_nodeAffectorCreatorInterpolateLinearColor = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_nodeAffectorCreatorInterpolateLinearColor->initialize();
+
+                return true;
+            }
+
+            void finalize()
+            {
+                m_factoryAffectorVelocity2->finalize();
+                m_factoryAffectorVelocity2 = nullptr;
+
+                m_nodeAffectorCreatorInterpolateParabolic->finalize();
+                m_nodeAffectorCreatorInterpolateParabolic = nullptr;
+
+                m_nodeAffectorCreatorFollowTo->finalize();
+                m_nodeAffectorCreatorFollowTo = nullptr;
+
+                m_nodeAffectorCreatorFollowToW->finalize();
+                m_nodeAffectorCreatorFollowToW = nullptr;
+
+                m_nodeAffectorCreatorInterpolateLinearFloat->finalize();
+                m_nodeAffectorCreatorInterpolateLinearFloat = nullptr;
+
+                m_nodeAffectorCreatorInterpolateLinear->finalize();
+                m_nodeAffectorCreatorInterpolateLinear = nullptr;
+
+                m_nodeAffectorCreatorInterpolateLinearVec4->finalize();
+                m_nodeAffectorCreatorInterpolateLinearVec4 = nullptr;
+
+                m_nodeAffectorCreatorAccumulateLinear->finalize();
+                m_nodeAffectorCreatorAccumulateLinear = nullptr;
+
+                m_nodeAffectorCreatorInterpolateQuadraticBezier->finalize();
+                m_nodeAffectorCreatorInterpolateQuadraticBezier = nullptr;
+
+                m_nodeAffectorCreatorInterpolateQuadratic->finalize();
+                m_nodeAffectorCreatorInterpolateQuadratic = nullptr;
+
+                m_nodeAffectorCreatorInterpolateCubicBezier->finalize();
+                m_nodeAffectorCreatorInterpolateCubicBezier = nullptr;
+
+                m_nodeAffectorCreatorInterpolateQuarticBezier->finalize();
+                m_nodeAffectorCreatorInterpolateQuarticBezier = nullptr;
+
+                m_nodeAffectorCreatorInterpolateQuadraticFloat->finalize();
+                m_nodeAffectorCreatorInterpolateQuadraticFloat = nullptr;
+
+                m_nodeAffectorCreatorInterpolateLinearColor->finalize();
+                m_nodeAffectorCreatorInterpolateLinearColor = nullptr;
+
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryNodeAffectorCallback );
+
+                m_factoryPythonScheduleEvent = nullptr;
+                m_factoryDelaySchedulePipe = nullptr;
+                m_factoryPythonScheduleTiming = nullptr;
+                m_factoryPythonSchedulePipe = nullptr;
+                m_factoryNodeAffectorCallback = nullptr;
+            }
+
+        public:
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
+            {
+                MENGINE_UNUSED( _kwds );
+
+                size_t args_count = _kernel->tuple_size( _args );
+
+                VectorString cs_args;
+                cs_args.reserve( args_count );
+
+                for( uint32_t it = 0; it != args_count; ++it )
                 {
-                    if( _scene == nullptr )
+                    PyObject * py_string = _kernel->tuple_getitem( _args, it );
+
+                    if( _kernel->string_check( py_string ) == true )
                     {
-                        m_cb.call_args( nullptr, _enable, m_args );
+                        String key;
+                        if( pybind::extract_value( _kernel, py_string, key, false ) == false )
+                        {
+                            LOGGER_ERROR( "'%s' invalid get str '%s'"
+                                , _kernel->object_repr( py_string )
+                                );
+
+                            return _kernel->ret_false();
+                        }
+
+                        cs_args.emplace_back( key );
+                    }
+                    else if( _kernel->unicode_check( py_string ) == true )
+                    {
+                        WString key;
+                        if( pybind::extract_value( _kernel, py_string, key, false ) == false )
+                        {
+                            LOGGER_ERROR( "'%s' invalid get unicode '%s'"
+                                , _kernel->object_repr( py_string )
+                                );
+
+                            return _kernel->ret_false();
+                        }
+
+                        String utf8_arg;
+                        Helper::unicodeToUtf8( key, utf8_arg );
+
+                        cs_args.emplace_back( utf8_arg );
                     }
                     else
                     {
-                        const PythonEntityBehaviorPtr & behavior = _scene->getBehavior();
-                        const pybind::object & py_scene = behavior->getScriptObject();
+                        const char * value = _kernel->object_str( py_string );
 
-                        m_cb.call_args( py_scene, _enable, m_args );
+                        if( value == nullptr )
+                        {
+                            LOGGER_ERROR( "'%s' not suport arg '%s'"
+                                , _kernel->object_repr( py_string )
+                                );
+
+                            return _kernel->ret_false();
+                        }
+
+                        cs_args.emplace_back( String( value ) );
                     }
                 }
-                else
+
+                _textField->setTextFormatArgs( cs_args );
+
+                return _kernel->ret_true();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            VectorWString s_TextField_getTextFormatArgs( TextField * _textField )
+            {
+                VectorWString ws_args;
+
+                const VectorString & str_args = _textField->getTextFormatArgs();
+
+                size_t args_count = str_args.size();
+                ws_args.reserve( args_count );
+
+                for( const String & str_arg : str_args )
                 {
-                    m_cb.call_args( m_args );
-                }
-            }
+                    WString unicode;
+                    Helper::utf8ToUnicode( str_arg, unicode );
 
-        public:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPythonSceneChangeCallback;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Animation_play( AnimationInterface * _animation )
-        {
-            float time = TIMELINE_SERVICE()
-                ->getTotalTime();
-
-            uint32_t id = _animation->play( time );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Animation_resume( AnimationInterface * _animation )
-        {
-            float time = TIMELINE_SERVICE()
-                ->getTotalTime();
-
-            _animation->resume( time );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
-        {
-            MENGINE_UNUSED( _args );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
-
-            return _kernel->ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
-        {
-            MENGINE_UNUSED( _args );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
-
-            return _kernel->ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonMeshEventReceiver
-            : public PythonEventReceiver
-            , public MeshgetEventReceiverInterface
-            , public Factorable
-        {
-        public:
-            void onMeshgetUpdate( const UpdateContext * _context ) override
-            {
-                m_cb.call( _context->revision, _context->current, _context->time );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_Meshget_setEventListener( pybind::kernel_interface * _kernel, Meshget * _node, PyObject * _args, PyObject * _kwds )
-        {
-            MENGINE_UNUSED( _args );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
-
-            return _kernel->ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonScriptHolderEventReceiver
-            : public PythonEventReceiver
-            , public ScriptHolderEventReceiverInterface
-            , public Factorable
-        {
-        public:
-            pybind::object onScriptHolderKeepScript() override
-            {
-                return m_cb.call();
-            }
-
-            void onScriptHolderReleaseScript( const pybind::object & _script ) override
-            {
-                m_cb.call( _script );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
-        {
-            MENGINE_UNUSED( _args );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
-
-            return _kernel->ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
-        {
-            MENGINE_UNUSED( _args );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
-
-            pybind::dict py_kwds( _kernel, _kwds );
-
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleKeyEvent", EVENT_HOTSPOT_KEY, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEvent", EVENT_HOTSPOT_MOUSE_BUTTON, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_HOTSPOT_MOUSE_BUTTON_END, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseMove", EVENT_HOTSPOT_MOUSE_MOVE, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseWheel", EVENT_HOTSPOT_MOUSE_WHEEL, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_HOTSPOT_MOUSE_ENTER, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_HOTSPOT_MOUSE_LEAVE, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_HOTSPOT_MOUSE_OVER_DESTROY, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleActivate", EVENT_HOTSPOT_ACTIVATE, MENGINE_DOCUMENT_PYBIND );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleDeactivate", EVENT_HOTSPOT_DEACTIVATE, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
-
-            return _kernel->ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_HotSpot_removeEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
-        {
-            MENGINE_UNUSED( _args );
-            MENGINE_UNUSED( _kwds );
-
-            _node->removeEvents();
-
-            return _kernel->ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_Node_removeChild( Node * _node, const NodePtr & _child )
-        {
-            if( _node->removeChild( _child ) == false )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Node_removeAllChild( Node * _node )
-        {
-            _node->removeChildren( []( const NodePtr & _child )
-            {
-                MENGINE_UNUSED( _child );
-            } );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_Node_removeFromParent( Node * _node )
-        {
-            if( _node->removeFromParent() == false )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Node_destroyAllChild( Node * _node )
-        {
-            _node->destroyChildren( []( const NodePtr & _child )
-            {
-                MENGINE_UNUSED( _child );
-            } );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_Node_isHomeless( Node * _node )
-        {
-            return _node->hasParent() == false;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec3f s_Node_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
-        {
-            const mt::vec3f & wp = _node->getWorldPosition();
-
-            mt::vec3f offset = _position - wp;
-
-            return offset;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float s_Node_getLengthTo( Node * _node, const mt::vec3f & _position )
-        {
-            const mt::vec3f & wp = _node->getWorldPosition();
-
-            float length = mt::length_v3_v3( wp, _position );
-
-            return length;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        std::string s_Node_getDebugId( Node * _node )
-        {
-            char debugId[256];
-            sprintf( debugId, "%p", _node );
-
-            return std::string( debugId );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
-        {
-            NodePtr node = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
-
-            node->disable();
-
-            _node->addChild( node );
-
-            return node;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list s_Node_getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
-        {
-            IntrusiveSlugListNodeChild & children = _node->getChildren();
-
-            IntrusiveSlugListNodeChild::size_type size = children.size();
-
-            pybind::list py_children( _kernel, size );
-
-            uint32_t index = 0;
-
-            for( IntrusiveSlugChild it( children ); it.eof() == false; )
-            {
-                NodePtr child( *it );
-
-                it.next_shuffle();
-
-                py_children[index++] = child;
-            }
-
-            return py_children;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Node_moveStop( Node * _node )
-        {
-            _node->stopAffectors( ETA_POSITION );
-            _node->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            if( _node->isAfterActive() == false )
-            {
-                return 0;
-            }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear->create( ETA_POSITION
-                , easing
-                , callback
-                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-                , _node->getLocalPosition(), _dir, _speed
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_moveStop( _node );
-
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            mt::vec3f linearSpeed = _dir * _speed;
-            _node->setLinearSpeed( linearSpeed );
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class AffectorVelocity2
-            : public BaseAffector
-        {
-        public:
-            AffectorVelocity2()
-                : m_node( nullptr )
-                , m_velocity( 0.f, 0.f, 0.f )
-                , m_time( 0.f )
-            {
-            }
-
-        public:
-            void setNode( const NodePtr & _node )
-            {
-                m_node = _node;
-            }
-
-        public:
-            void initialize( const mt::vec3f & _velocity, float _time )
-            {
-                m_velocity = _velocity;
-                m_time = _time;
-            }
-
-        protected:
-            bool _affect( const UpdateContext * _context, float * _used ) override
-            {
-                if( m_time - _context->time < 0.f )
-                {
-                    m_node->translate( m_velocity * _context->time );
-
-                    m_time -= _context->time;
-
-                    *_used = _context->time;
-
-                    return false;
+                    ws_args.emplace_back( unicode );
                 }
 
-                m_node->translate( m_velocity * m_time );
-
-                *_used = m_time;
-
-                return true;
+                return ws_args;
             }
-
-        protected:
-            NodePtr m_node;
-
-            mt::vec3f m_velocity;
-            float m_time;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<AffectorVelocity2> AffectorVelocity2Ptr;
-        //////////////////////////////////////////////////////////////////////////
-        class FactoryAffectorVelocity2
-            : public Factorable
-        {
-        public:
-            FactoryAffectorVelocity2()
+            //////////////////////////////////////////////////////////////////////////
+            mt::box2f s_BoundingBox_getBoundingBox( BoundingBox * _boundingBox )
             {
-            }
+                const mt::box2f * bb = _boundingBox->getBoundingBox();
 
-            ~FactoryAffectorVelocity2()
+                if( bb == nullptr )
+                {
+                    mt::box2f infinity_bb;
+                    mt::infinity_box( infinity_bb );
+
+                    return infinity_bb;
+                }
+
+                return *bb;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Transformation_setAngleDeg( Transformation * _transformation, float _angle )
             {
-            }
+                float rad = _angle * mt::constant::deg2rad;
 
-        public:
-            bool initialize()
+                _transformation->setLocalOrientationX( rad );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Transformation_removeRelationTransformation( Transformation * _transformation )
             {
-                m_factory = Helper::makeFactoryPool<AffectorVelocity2, 4>( MENGINE_DOCUMENT_FACTORABLE );
-
-                return true;
+                _transformation->removeRelationTransformation();
             }
-
-            void finalize()
+            //////////////////////////////////////////////////////////////////////////
+            void Transformation_coordinate( Transformation * _transformation, const mt::vec3f & _coordinate )
             {
-                m_factory = nullptr;
+                const mt::vec3f & origin = _transformation->getLocalOrigin();
+                _transformation->setLocalOrigin( origin + _coordinate );
+                _transformation->translate( _coordinate );
             }
-
-        public:
-            AffectorPtr create( EAffectorType _type
-                , const EasingInterfacePtr & _easing
-                , const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const DocumentPtr & _doc )
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_HotSpotPolygon_getLocalPolygonCenter( HotSpotPolygon * _hs )
             {
-                AffectorVelocity2Ptr affector = m_factory->createObject( _doc );
+                const Polygon & polygon = _hs->getPolygon();
 
-                affector->setAffectorType( _type );
-                affector->setEasing( _easing );
-                affector->setCallback( _cb );
-                affector->setNode( _node );
+                mt::box2f bb;
+                polygon.to_box2f( bb );
 
-                affector->initialize( _velocity, _time );
+                mt::vec2f c;
+                mt::get_center_box( bb, c );
 
-                return affector;
+                return c;
             }
-
-        protected:
-            FactoryPtr m_factory;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<FactoryAffectorVelocity2> FactoryAffectorVelocity2Ptr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorVelocity2Ptr m_factoryAffectorVelocity2;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_HotSpotPolygon_getWorldPolygonCenter( HotSpotPolygon * _hs )
             {
-                return 0;
-            }
+                const Polygon & polygon = _hs->getPolygon();
 
-            if( _node->isAfterActive() == false )
+                mt::box2f bb;
+                mt::insideout_box( bb );
+
+                const mt::mat4f & wm = _hs->getWorldMatrix();
+
+                for( const mt::vec2f & v : polygon )
+                {
+                    mt::vec2f v_wm;
+                    mt::mul_v2_v2_m4( v_wm, v, wm );
+
+                    mt::add_internal_point( bb, v_wm );
+                }
+
+                mt::vec2f c;
+                mt::get_center_box( bb, c );
+
+                return c;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_HotSpotPolygon_getScreenPolygonCenter( HotSpotPolygon * _hs )
             {
-                return 0;
+                const Resolution & contentResolution = APPLICATION_SERVICE()
+                    ->getContentResolution();
+
+                const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _hs );
+                const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _hs );
+
+                mt::box2f b1;
+                _hs->getScreenPolygon( camera, viewport, contentResolution, &b1, nullptr );
+
+                mt::vec2f c;
+                mt::get_center_box( b1, c );
+
+                return c;
             }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector = m_factoryAffectorVelocity2->create( ETA_POSITION
-                , easing
-                , callback
-                , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
-            );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_moveStop( _node );
-
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            Polygon s_HotSpotPolygon_getWorldPolygon( HotSpotPolygon * _hs )
             {
-                return 0;
+                const Polygon & polygon = _hs->getPolygon();
+
+                const mt::mat4f & wm = _hs->getWorldMatrix();
+
+                Polygon pwm;
+                polygon.mul_wm( pwm, wm );
+
+                return pwm;
             }
-
-            _node->setLinearSpeed( _velocity );
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>> m_nodeAffectorCreatorInterpolateLinear;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            const mt::vec2f & s_Shape_getSurfaceSize( Shape * _shape )
             {
-                return 0;
-            }
+                const SurfacePtr & surface = _shape->getSurface();
 
-            if( _node->isAfterActive() == false )
+                MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
+                    , _shape->getName().c_str()
+                    );
+
+                const mt::vec2f & size = surface->getSize();
+
+                return size;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_Shape_getLocalImageCenter( Shape * _shape )
             {
-                return 0;
+                const SurfacePtr & surface = _shape->getSurface();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
+                    , _shape->getName().c_str()
+                    );
+
+                const mt::vec2f & offset = surface->getOffset();
+                const mt::vec2f & size = surface->getSize();
+
+                mt::vec2f center = offset + size * 0.5f;
+
+                return center;
             }
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_Shape_getWorldImageCenter( Shape * _shape )
+            {
+                mt::vec2f imageCenter = s_Shape_getLocalImageCenter( _shape );
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                const mt::mat4f & wm = _shape->getWorldMatrix();
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+                mt::vec2f imageCenter_wm;
+                mt::mul_v2_v2_m4( imageCenter_wm, imageCenter, wm );
 
-            AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinear->create( ETA_POSITION
+                return imageCenter_wm;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>> m_nodeAffectorCreatorInterpolateLinearVec4;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factoryNodeAffectorCallback;
+            //////////////////////////////////////////////////////////////////////////
+            ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
+            {
+                ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+
+                callback->initialize( ScriptablePtr( _scriptable ), _cb, _args );
+
+                return callback;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f & _percent, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( _shape->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4->create( ETA_VISIBILITY
                     , easing
                     , callback
-                    , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-                    , _node->getLocalPosition(), _point, _time
+                    , [_shape]( const mt::vec4f & _v )
+                {
+                    _shape->setPercentVisibility( _v );
+                }
+                    , _shape->getPercentVisibility(), _percent, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
-            s_Node_moveStop( _node );
+                _shape->stopAffectors( ETA_VISIBILITY );
 
-            if( _node->isActivate() == false )
-            {
-                return 0;
+                if( _shape->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _shape->addAffector( affector );
+
+                return id;
             }
-
-            float invTime = 1.f / _time;
-            const mt::vec3f & pos = _node->getLocalPosition();
-            mt::vec3f linearSpeed = (_point - pos) * invTime;
-
-            _node->setLinearSpeed( linearSpeed );
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>> m_nodeAffectorCreatorInterpolateQuadratic;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            void s_ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
             {
-                return 0;
+                _shape->stopAffectors( ETA_VISIBILITY );
             }
-
-            if( _node->isAfterActive() == false )
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factoryPythonScheduleEvent;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
             {
-                return 0;
+                PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+
+                sl->initialize( _script, _args );
+
+                uint32_t id = _scheduleManager->event( _timing, sl );
+
+                return id;
             }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            const mt::vec3f & linearSpeed = _node->getLinearSpeed();
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic->create( ETA_POSITION
-                , easing
-                , callback
-                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-                , _node->getLocalPosition(), _point, linearSpeed, _time
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_moveStop( _node );
-
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factoryDelaySchedulePipe;
+            FactoryPtr m_factoryPythonScheduleTiming;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
-                return 0;
+                DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
+                pipe->initialize( _delay );
+
+                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_timing->initialize( _timing, _args );
+
+                PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_event->initialize( _event, _args );
+
+                uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event );
+
+                return id;
             }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_bezier2To( Node * _node
-            , float _time
-            , const mt::vec3f& _to
-            , const mt::vec3f& _v0
-            , const ConstString & _easingType
-            , const pybind::object & _cb
-            , const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factoryPythonSchedulePipe;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
-                return 0;
+                PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_pipe->initialize( _pipe, _args );
+
+                PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_timing->initialize( _timing, _args );
+
+                PythonScheduleEventPtr py_event;
+
+                if( _event.is_none() == false )
+                {
+                    py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                    py_event->initialize( _event, _args );
+                }
+
+                uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event );
+
+                return id;
             }
-
-            if( _node->isAfterActive() == false )
+            //////////////////////////////////////////////////////////////////////////
+            class PythonSceneChangeCallback
+                : public SceneChangeCallbackInterface
             {
-                return 0;
+            public:
+                void initialize( const pybind::object & _cb, const pybind::args & _args )
+                {
+                    m_cb = _cb;
+                    m_args = _args;
+                }
+
+            public:
+                void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
+                {
+                    MENGINE_UNUSED( _error );
+
+                    if( _remove == false )
+                    {
+                        if( _scene == nullptr )
+                        {
+                            m_cb.call_args( nullptr, _enable, m_args );
+                        }
+                        else
+                        {
+                            const PythonEntityBehaviorPtr & behavior = _scene->getBehavior();
+                            const pybind::object & py_scene = behavior->getScriptObject();
+
+                            m_cb.call_args( py_scene, _enable, m_args );
+                        }
+                    }
+                    else
+                    {
+                        m_cb.call_args( m_args );
+                    }
+                }
+
+            public:
+                pybind::object m_cb;
+                pybind::args m_args;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factoryPythonSceneChangeCallback;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Animation_play( AnimationInterface * _animation )
+            {
+                float time = TIMELINE_SERVICE()
+                    ->getTotalTime();
+
+                uint32_t id = _animation->play( time );
+
+                return id;
             }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            const mt::vec3f & from = _node->getLocalPosition();
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
-                , easing
-                , callback
-                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-            , [from]() { return from; }
-            , [_to]() { return _to; }
-            , [_v0]( mt::vec3f * _v ) { _v[0] = _v0; }
-                , _time
-                , MENGINE_DOCUMENT_PYBIND
-                );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_moveStop( _node );
-
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            void s_Animation_resume( AnimationInterface * _animation )
             {
-                return 0;
+                float time = TIMELINE_SERVICE()
+                    ->getTotalTime();
+
+                _animation->resume( time );
             }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_bezier2Follower( Node * _node
-            , float _time
-            , const NodePtr & _follow
-            , const mt::vec3f & _offset
-            , const ConstString & _easingType
-            , const pybind::object & _cb
-            , const pybind::args & _args )
-        {
-            MENGINE_ASSERTION_MEMORY_PANIC( _follow, 0, "invalid create follower" );
-
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
             {
-                return 0;
+                MENGINE_UNUSED( _args );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+
+                pybind::dict py_kwds( _kernel, _kwds );
+                Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
+
+                return _kernel->ret_none();
             }
-
-            if( _node->isAfterActive() == false )
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
             {
-                return 0;
+                MENGINE_UNUSED( _args );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+
+                pybind::dict py_kwds( _kernel, _kwds );
+                Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
+
+                return _kernel->ret_none();
             }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            const mt::vec3f & node_pos = _node->getWorldPosition();
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
-                , easing
-                , callback
-                , [_node]( const mt::vec3f & _v ) { _node->setWorldPosition( _v ); }
-            , [node_pos]() { return node_pos; }
-            , [_follow, _offset]() { return _follow->getWorldPosition() + _offset; }
-                , [node_pos, _follow, _offset]( mt::vec3f * _v )
+            //////////////////////////////////////////////////////////////////////////
+            class PythonMeshEventReceiver
+                : public PythonEventReceiver
+                , public MeshgetEventReceiverInterface
+                , public Factorable
             {
-                float x = _follow->getWorldPosition().x + _offset.x;
+            public:
+                void onMeshgetUpdate( const UpdateContext * _context ) override
+                {
+                    m_cb.call( _context->revision, _context->current, _context->time );
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_Meshget_setEventListener( pybind::kernel_interface * _kernel, Meshget * _node, PyObject * _args, PyObject * _kwds )
+            {
+                MENGINE_UNUSED( _args );
 
-                _v[0] = mt::vec3f( x, node_pos.y, 0.f );
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+
+                pybind::dict py_kwds( _kernel, _kwds );
+                Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
+
+                return _kernel->ret_none();
             }
-                , _time
-                , MENGINE_DOCUMENT_PYBIND
-                );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_moveStop( _node );
-
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            class PythonScriptHolderEventReceiver
+                : public PythonEventReceiver
+                , public ScriptHolderEventReceiverInterface
+                , public Factorable
             {
-                return 0;
+            public:
+                pybind::object onScriptHolderKeepScript() override
+                {
+                    return m_cb.call();
+                }
+
+                void onScriptHolderReleaseScript( const pybind::object & _script ) override
+                {
+                    m_cb.call( _script );
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
+            {
+                MENGINE_UNUSED( _args );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+
+                pybind::dict py_kwds( _kernel, _kwds );
+                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
+
+                return _kernel->ret_none();
             }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>> m_nodeAffectorCreatorInterpolateCubicBezier;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_bezier3To( Node * _node
-            , float _time
-            , const mt::vec3f& _to
-            , const mt::vec3f& _v0
-            , const mt::vec3f& _v1
-            , const ConstString & _easingType
-            , const pybind::object & _cb
-            , const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
             {
-                return 0;
+                MENGINE_UNUSED( _args );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+
+                pybind::dict py_kwds( _kernel, _kwds );
+
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleKeyEvent", EVENT_HOTSPOT_KEY, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEvent", EVENT_HOTSPOT_MOUSE_BUTTON, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_HOTSPOT_MOUSE_BUTTON_END, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseMove", EVENT_HOTSPOT_MOUSE_MOVE, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseWheel", EVENT_HOTSPOT_MOUSE_WHEEL, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_HOTSPOT_MOUSE_ENTER, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_HOTSPOT_MOUSE_LEAVE, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_HOTSPOT_MOUSE_OVER_DESTROY, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleActivate", EVENT_HOTSPOT_ACTIVATE, MENGINE_DOCUMENT_PYBIND );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleDeactivate", EVENT_HOTSPOT_DEACTIVATE, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
+
+                return _kernel->ret_none();
             }
-
-            if( _node->isAfterActive() == false )
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_HotSpot_removeEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
             {
-                return 0;
+                MENGINE_UNUSED( _args );
+                MENGINE_UNUSED( _kwds );
+
+                _node->removeEvents();
+
+                return _kernel->ret_none();
             }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateCubicBezier->create( ETA_POSITION
-                    , easing
-                    , callback
-                    , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-            , [_node]() {return _node->getLocalPosition(); }
-            , [_to]() {return _to; }
-            , [_v0, _v1]( mt::vec3f * _v ) {_v[0] = _v0; _v[1] = _v1; }
-                , _time
-                , MENGINE_DOCUMENT_PYBIND
-                );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_moveStop( _node );
-
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            bool s_Node_removeChild( Node * _node, const NodePtr & _child )
             {
-                return 0;
-            }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>> m_nodeAffectorCreatorInterpolateQuarticBezier;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_bezier4To( Node * _node
-            , float _time
-            , const mt::vec3f& _to
-            , const mt::vec3f& _v0
-            , const mt::vec3f& _v1
-            , const mt::vec3f& _v2
-            , const ConstString & _easingType
-            , const pybind::object & _cb
-            , const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            if( _node->isAfterActive() == false )
-            {
-                return 0;
-            }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateQuarticBezier->create( ETA_POSITION
-                    , easing
-                    , callback
-                    , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-            , [_node]() { return _node->getLocalPosition(); }
-            , [_to]() { return _to; }
-            , [_v0, _v1, _v2]( mt::vec3f * _v ) {_v[0] = _v0; _v[1] = _v1; _v[2] = _v2; }
-                , _time
-                , MENGINE_DOCUMENT_PYBIND
-                );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_moveStop( _node );
-
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class AffectorCreatorInterpolateParabolic
-            : public BaseAffector
-        {
-        public:
-            AffectorCreatorInterpolateParabolic()
-                : m_speed( 5.f )
-            {
-            }
-
-        public:
-            void setNode( const NodePtr & _node )
-            {
-                m_node = _node;
-            }
-
-        public:
-            void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
-            {
-                const mt::vec3f & start_position = m_node->getLocalPosition();
-
-                m_interpolator.start( start_position, _end, _v0, _time );
-
-                mt::vec3f next_position;
-                m_interpolator.step( 100.f, &next_position );
-
-                mt::vec3f dir;
-                mt::dir_v3_v3( dir, start_position, next_position );
-
-                m_prevDir = dir;
-                m_currentDir = dir;
-                m_targetDir = dir;
-
-                m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
-            }
-
-        protected:
-            bool _affect( const UpdateContext * _context, float * _used ) override
-            {
-                const EasingInterfacePtr & easing = this->getEasing();
-
-                mt::vec3f position;
-                bool finish = m_interpolator.update( easing, _context, &position, _used );
-
-                this->updateDirection_( _context, position );
-                this->updatePosition_( position );
-
-                if( finish == false )
+                if( _node->removeChild( _child ) == false )
                 {
                     return false;
                 }
 
                 return true;
             }
-
-            void _stop() override
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_removeAllChild( Node * _node )
             {
-                m_interpolator.stop();
-            }
-
-        protected:
-            void updateDirection_( const UpdateContext * _context, const mt::vec3f & _position )
-            {
-                const mt::vec3f & prev_position = m_node->getLocalPosition();
-
-                if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::constant::eps )
+                _node->removeChildren( []( const NodePtr & _child )
                 {
-                    mt::dir_v3_v3( m_targetDir, prev_position, _position );
-                }
-
-                float length = mt::length_v3_v3( m_targetDir, m_currentDir );
-
-                if( length < mt::constant::eps )
-                {
-                    return;
-                }
-
-                float t = length / _context->time * m_speed;
-
-                if( t > 1.f )
-                {
-                    m_currentDir = m_targetDir;
-
-                    m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
-                }
-                else
-                {
-                    m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
-
-                    m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
-                }
+                    MENGINE_UNUSED( _child );
+                } );
             }
-
-            void updatePosition_( const mt::vec3f & _position )
+            //////////////////////////////////////////////////////////////////////////
+            bool s_Node_removeFromParent( Node * _node )
             {
-                const mt::vec3f & prev_position = m_node->getLocalPosition();
-
-                if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::constant::eps )
+                if( _node->removeFromParent() == false )
                 {
-                    return;
+                    return false;
                 }
-
-                m_node->setLocalPosition( _position );
-            }
-
-        protected:
-            NodePtr m_node;
-
-            mt::vec3f m_prevDir;
-            mt::vec3f m_currentDir;
-            mt::vec3f m_targetDir;
-            float m_speed;
-
-            ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<AffectorCreatorInterpolateParabolic> AffectorCreatorInterpolateParabolicPtr;
-        //////////////////////////////////////////////////////////////////////////
-        class FactoryAffectorInterpolateParabolic
-            : public Factorable
-        {
-        public:
-            FactoryAffectorInterpolateParabolic()
-            {
-            }
-
-            ~FactoryAffectorInterpolateParabolic()
-            {
-            }
-
-        public:
-            bool initialize()
-            {
-                m_factory = Helper::makeFactoryPool<AffectorCreatorInterpolateParabolic, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                 return true;
             }
-
-            void finalize()
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_destroyAllChild( Node * _node )
             {
-                m_factory = nullptr;
+                _node->destroyChildren( []( const NodePtr & _child )
+                {
+                    MENGINE_UNUSED( _child );
+                } );
             }
-
-        public:
-            AffectorPtr create( EAffectorType _type
-                , const EasingInterfacePtr & _easing
-                , const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const DocumentPtr & _doc )
+            //////////////////////////////////////////////////////////////////////////
+            bool s_Node_isHomeless( Node * _node )
             {
-                AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
-
-                affector->setAffectorType( _type );
-                affector->setEasing( _easing );
-                affector->setCallback( _cb );
-                affector->setNode( _node );
-
-                affector->initialize( _end, _v0, _time );
-
-                return affector;
+                return _node->hasParent() == false;
             }
-
-        protected:
-            FactoryPtr m_factory;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<FactoryAffectorInterpolateParabolic> FactoryAffectorInterpolateParabolicPtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorInterpolateParabolicPtr m_nodeAffectorCreatorInterpolateParabolic;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_parabolaTo( Node * _node
-            , float _time
-            , const mt::vec3f& _end
-            , const mt::vec3f& _v0
-            , const ConstString & _easingType
-            , const pybind::object & _cb
-            , const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec3f s_Node_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
             {
-                return 0;
-            }
+                const mt::vec3f & wp = _node->getWorldPosition();
 
-            if( _node->isAfterActive() == false )
+                mt::vec3f offset = _position - wp;
+
+                return offset;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float s_Node_getLengthTo( Node * _node, const mt::vec3f & _position )
             {
-                return 0;
+                const mt::vec3f & wp = _node->getWorldPosition();
+
+                float length = mt::length_v3_v3( wp, _position );
+
+                return length;
             }
+            //////////////////////////////////////////////////////////////////////////
+            std::string s_Node_getDebugId( Node * _node )
+            {
+                char debugId[256];
+                sprintf( debugId, "%p", _node );
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                return std::string( debugId );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
+            {
+                NodePtr node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateParabolic->create( ETA_POSITION
+                node->disable();
+
+                _node->addChild( node );
+
+                return node;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::list s_Node_getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
+            {
+                IntrusiveSlugListNodeChild & children = _node->getChildren();
+
+                IntrusiveSlugListNodeChild::size_type size = children.size();
+
+                pybind::list py_children( _kernel, size );
+
+                uint32_t index = 0;
+
+                for( IntrusiveSlugChild it( children ); it.eof() == false; )
+                {
+                    NodePtr child( *it );
+
+                    it.next_shuffle();
+
+                    py_children[index++] = child;
+                }
+
+                return py_children;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_moveStop( Node * _node )
+            {
+                _node->stopAffectors( ETA_POSITION );
+                _node->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f & _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear->create( ETA_POSITION
+                    , easing
+                    , callback
+                    , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setLocalPosition( _v );
+                }
+                    , _node->getLocalPosition(), _dir, _speed
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                mt::vec3f linearSpeed = _dir * _speed;
+                _node->setLinearSpeed( linearSpeed );
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class AffectorVelocity2
+                : public BaseAffector
+            {
+            public:
+                AffectorVelocity2()
+                    : m_node( nullptr )
+                    , m_velocity( 0.f, 0.f, 0.f )
+                    , m_time( 0.f )
+                {
+                }
+
+            public:
+                void setNode( const NodePtr & _node )
+                {
+                    m_node = _node;
+                }
+
+            public:
+                void initialize( const mt::vec3f & _velocity, float _time )
+                {
+                    m_velocity = _velocity;
+                    m_time = _time;
+                }
+
+            protected:
+                bool _affect( const UpdateContext * _context, float * _used ) override
+                {
+                    if( m_time - _context->time < 0.f )
+                    {
+                        m_node->translate( m_velocity * _context->time );
+
+                        m_time -= _context->time;
+
+                        *_used = _context->time;
+
+                        return false;
+                    }
+
+                    m_node->translate( m_velocity * m_time );
+
+                    *_used = m_time;
+
+                    return true;
+                }
+
+            protected:
+                NodePtr m_node;
+
+                mt::vec3f m_velocity;
+                float m_time;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<AffectorVelocity2> AffectorVelocity2Ptr;
+            //////////////////////////////////////////////////////////////////////////
+            class FactoryAffectorVelocity2
+                : public Factorable
+            {
+            public:
+                FactoryAffectorVelocity2()
+                {
+                }
+
+                ~FactoryAffectorVelocity2()
+                {
+                }
+
+            public:
+                bool initialize()
+                {
+                    m_factory = Helper::makeFactoryPool<AffectorVelocity2, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                    return true;
+                }
+
+                void finalize()
+                {
+                    m_factory = nullptr;
+                }
+
+            public:
+                AffectorPtr create( EAffectorType _type
+                    , const EasingInterfacePtr & _easing
+                    , const AffectorCallbackInterfacePtr & _cb
+                    , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const DocumentPtr & _doc )
+                {
+                    AffectorVelocity2Ptr affector = m_factory->createObject( _doc );
+
+                    affector->setAffectorType( _type );
+                    affector->setEasing( _easing );
+                    affector->setCallback( _cb );
+                    affector->setNode( _node );
+
+                    affector->initialize( _velocity, _time );
+
+                    return affector;
+                }
+
+            protected:
+                FactoryPtr m_factory;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<FactoryAffectorVelocity2> FactoryAffectorVelocity2Ptr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryAffectorVelocity2Ptr m_factoryAffectorVelocity2;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_factoryAffectorVelocity2->create( ETA_POSITION
+                    , easing
+                    , callback
+                    , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                _node->setLinearSpeed( _velocity );
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>> m_nodeAffectorCreatorInterpolateLinear;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector =
+                    m_nodeAffectorCreatorInterpolateLinear->create( ETA_POSITION
+                        , easing
+                        , callback
+                        , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setLocalPosition( _v );
+                }
+                        , _node->getLocalPosition(), _point, _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                float invTime = 1.f / _time;
+                const mt::vec3f & pos = _node->getLocalPosition();
+                mt::vec3f linearSpeed = (_point - pos) * invTime;
+
+                _node->setLinearSpeed( linearSpeed );
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>> m_nodeAffectorCreatorInterpolateQuadratic;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f & _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                const mt::vec3f & linearSpeed = _node->getLinearSpeed();
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic->create( ETA_POSITION
+                    , easing
+                    , callback
+                    , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setLocalPosition( _v );
+                }
+                    , _node->getLocalPosition(), _point, linearSpeed, _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_bezier2To( Node * _node
+                , float _time
+                , const mt::vec3f & _to
+                , const mt::vec3f & _v0
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                const mt::vec3f & from = _node->getLocalPosition();
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
+                    , easing
+                    , callback
+                    , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setLocalPosition( _v );
+                }
+                    , [from]()
+                {
+                    return from;
+                }
+                    , [_to]()
+                {
+                    return _to;
+                }
+                    , [_v0]( mt::vec3f * _v )
+                {
+                    _v[0] = _v0;
+                }
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_bezier2Follower( Node * _node
+                , float _time
+                , const NodePtr & _follow
+                , const mt::vec3f & _offset
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
+            {
+                MENGINE_ASSERTION_MEMORY_PANIC( _follow, 0, "invalid create follower" );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                const mt::vec3f & node_pos = _node->getWorldPosition();
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
+                    , easing
+                    , callback
+                    , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setWorldPosition( _v );
+                }
+                    , [node_pos]()
+                {
+                    return node_pos;
+                }
+                    , [_follow, _offset]()
+                {
+                    return _follow->getWorldPosition() + _offset;
+                }
+                    , [node_pos, _follow, _offset]( mt::vec3f * _v )
+                {
+                    float x = _follow->getWorldPosition().x + _offset.x;
+
+                    _v[0] = mt::vec3f( x, node_pos.y, 0.f );
+                }
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>> m_nodeAffectorCreatorInterpolateCubicBezier;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_bezier3To( Node * _node
+                , float _time
+                , const mt::vec3f & _to
+                , const mt::vec3f & _v0
+                , const mt::vec3f & _v1
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector =
+                    m_nodeAffectorCreatorInterpolateCubicBezier->create( ETA_POSITION
+                        , easing
+                        , callback
+                        , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setLocalPosition( _v );
+                }
+                        , [_node]()
+                {
+                    return _node->getLocalPosition();
+                }
+                    , [_to]()
+                {
+                    return _to;
+                }
+                    , [_v0, _v1]( mt::vec3f * _v )
+                {
+                    _v[0] = _v0; _v[1] = _v1;
+                }
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>> m_nodeAffectorCreatorInterpolateQuarticBezier;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_bezier4To( Node * _node
+                , float _time
+                , const mt::vec3f & _to
+                , const mt::vec3f & _v0
+                , const mt::vec3f & _v1
+                , const mt::vec3f & _v2
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector =
+                    m_nodeAffectorCreatorInterpolateQuarticBezier->create( ETA_POSITION
+                        , easing
+                        , callback
+                        , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setLocalPosition( _v );
+                }
+                        , [_node]()
+                {
+                    return _node->getLocalPosition();
+                }
+                    , [_to]()
+                {
+                    return _to;
+                }
+                    , [_v0, _v1, _v2]( mt::vec3f * _v )
+                {
+                    _v[0] = _v0; _v[1] = _v1; _v[2] = _v2;
+                }
+                    , _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_moveStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class AffectorCreatorInterpolateParabolic
+                : public BaseAffector
+            {
+            public:
+                AffectorCreatorInterpolateParabolic()
+                    : m_speed( 5.f )
+                {
+                }
+
+            public:
+                void setNode( const NodePtr & _node )
+                {
+                    m_node = _node;
+                }
+
+            public:
+                void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
+                {
+                    const mt::vec3f & start_position = m_node->getLocalPosition();
+
+                    m_interpolator.start( start_position, _end, _v0, _time );
+
+                    mt::vec3f next_position;
+                    m_interpolator.step( 100.f, &next_position );
+
+                    mt::vec3f dir;
+                    mt::dir_v3_v3( dir, start_position, next_position );
+
+                    m_prevDir = dir;
+                    m_currentDir = dir;
+                    m_targetDir = dir;
+
+                    m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                }
+
+            protected:
+                bool _affect( const UpdateContext * _context, float * _used ) override
+                {
+                    const EasingInterfacePtr & easing = this->getEasing();
+
+                    mt::vec3f position;
+                    bool finish = m_interpolator.update( easing, _context, &position, _used );
+
+                    this->updateDirection_( _context, position );
+                    this->updatePosition_( position );
+
+                    if( finish == false )
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                void _stop() override
+                {
+                    m_interpolator.stop();
+                }
+
+            protected:
+                void updateDirection_( const UpdateContext * _context, const mt::vec3f & _position )
+                {
+                    const mt::vec3f & prev_position = m_node->getLocalPosition();
+
+                    if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::constant::eps )
+                    {
+                        mt::dir_v3_v3( m_targetDir, prev_position, _position );
+                    }
+
+                    float length = mt::length_v3_v3( m_targetDir, m_currentDir );
+
+                    if( length < mt::constant::eps )
+                    {
+                        return;
+                    }
+
+                    float t = length / _context->time * m_speed;
+
+                    if( t > 1.f )
+                    {
+                        m_currentDir = m_targetDir;
+
+                        m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                    }
+                    else
+                    {
+                        m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
+
+                        m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                    }
+                }
+
+                void updatePosition_( const mt::vec3f & _position )
+                {
+                    const mt::vec3f & prev_position = m_node->getLocalPosition();
+
+                    if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::constant::eps )
+                    {
+                        return;
+                    }
+
+                    m_node->setLocalPosition( _position );
+                }
+
+            protected:
+                NodePtr m_node;
+
+                mt::vec3f m_prevDir;
+                mt::vec3f m_currentDir;
+                mt::vec3f m_targetDir;
+                float m_speed;
+
+                ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<AffectorCreatorInterpolateParabolic> AffectorCreatorInterpolateParabolicPtr;
+            //////////////////////////////////////////////////////////////////////////
+            class FactoryAffectorInterpolateParabolic
+                : public Factorable
+            {
+            public:
+                FactoryAffectorInterpolateParabolic()
+                {
+                }
+
+                ~FactoryAffectorInterpolateParabolic()
+                {
+                }
+
+            public:
+                bool initialize()
+                {
+                    m_factory = Helper::makeFactoryPool<AffectorCreatorInterpolateParabolic, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                    return true;
+                }
+
+                void finalize()
+                {
+                    m_factory = nullptr;
+                }
+
+            public:
+                AffectorPtr create( EAffectorType _type
+                    , const EasingInterfacePtr & _easing
+                    , const AffectorCallbackInterfacePtr & _cb
+                    , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const DocumentPtr & _doc )
+                {
+                    AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
+
+                    affector->setAffectorType( _type );
+                    affector->setEasing( _easing );
+                    affector->setCallback( _cb );
+                    affector->setNode( _node );
+
+                    affector->initialize( _end, _v0, _time );
+
+                    return affector;
+                }
+
+            protected:
+                FactoryPtr m_factory;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<FactoryAffectorInterpolateParabolic> FactoryAffectorInterpolateParabolicPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryAffectorInterpolateParabolicPtr m_nodeAffectorCreatorInterpolateParabolic;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_parabolaTo( Node * _node
+                , float _time
+                , const mt::vec3f & _end
+                , const mt::vec3f & _v0
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
+            {
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateParabolic->create( ETA_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _end, _v0, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
-            s_Node_moveStop( _node );
+                s_Node_moveStop( _node );
 
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class AffectorCreatorFollowTo
-            : public BaseAffector
-        {
-        public:
-            AffectorCreatorFollowTo()
-                : m_offset( 0.f, 0.f, 0.f )
-                , m_distance( 0.f )
-                , m_moveSpeed( 0.f )
-                , m_moveAcceleration( 0.f )
-                , m_moveLimit( 0.f )
-                , m_rotate( false )
-                , m_rotationSpeed( 0.f )
-                , m_rotationAcceleration( 0.f )
-                , m_rotationLimit( 0.f )
-            {
-            }
-
-        public:
-            bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
-            {
-                MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
-                MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
-
-                m_node = _node;
-                m_target = _target;
-                m_offset = _offset;
-                m_distance = _distance;
-                m_moveSpeed = _moveSpeed;
-                m_moveAcceleration = _moveAcceleration;
-                m_moveLimit = _moveLimit;
-                m_rotate = _rotate;
-                m_rotationSpeed = _rotationSpeed;
-                m_rotationAcceleration = _rotationAcceleration;
-                m_rotationLimit = _rotationLimit;
-
-                return true;
-            }
-
-        protected:
-            bool _affect( const UpdateContext * _context, float * _used ) override
-            {
-                *_used = _context->time;
-
-                mt::vec3f node_position = m_node->getLocalPosition();
-                mt::vec3f follow_position = m_target->getLocalPosition();
-
-                mt::vec3f current_direction;
-
-                if( m_rotate == true )
+                if( _node->isActivate() == false )
                 {
-                    mt::vec3f direction = follow_position - node_position;
+                    return 0;
+                }
 
-                    mt::mat4f mr;
-                    mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
+                AFFECTOR_ID id = _node->addAffector( affector );
 
-                    mt::vec3f target_orientation;
-                    mt::make_euler_angles( target_orientation, mr );
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class AffectorCreatorFollowTo
+                : public BaseAffector
+            {
+            public:
+                AffectorCreatorFollowTo()
+                    : m_offset( 0.f, 0.f, 0.f )
+                    , m_distance( 0.f )
+                    , m_moveSpeed( 0.f )
+                    , m_moveAcceleration( 0.f )
+                    , m_moveLimit( 0.f )
+                    , m_rotate( false )
+                    , m_rotationSpeed( 0.f )
+                    , m_rotationAcceleration( 0.f )
+                    , m_rotationLimit( 0.f )
+                {
+                }
 
-                    const mt::vec3f & node_orientation = m_node->getLocalOrientation();
+            public:
+                bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
+                {
+                    MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
 
-                    mt::vec3f correct_rotate_from;
-                    mt::vec3f correct_rotate_to;
-                    mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
-                    mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
-                    mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
+                    m_node = _node;
+                    m_target = _target;
+                    m_offset = _offset;
+                    m_distance = _distance;
+                    m_moveSpeed = _moveSpeed;
+                    m_moveAcceleration = _moveAcceleration;
+                    m_moveLimit = _moveLimit;
+                    m_rotate = _rotate;
+                    m_rotationSpeed = _rotationSpeed;
+                    m_rotationAcceleration = _rotationAcceleration;
+                    m_rotationLimit = _rotationLimit;
 
-                    float roatationSpeedStep = m_rotationAcceleration * _context->time;
+                    return true;
+                }
 
-                    if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
+            protected:
+                bool _affect( const UpdateContext * _context, float * _used ) override
+                {
+                    *_used = _context->time;
+
+                    mt::vec3f node_position = m_node->getLocalPosition();
+                    mt::vec3f follow_position = m_target->getLocalPosition();
+
+                    mt::vec3f current_direction;
+
+                    if( m_rotate == true )
                     {
-                        m_rotationSpeed = m_rotationLimit;
+                        mt::vec3f direction = follow_position - node_position;
+
+                        mt::mat4f mr;
+                        mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
+
+                        mt::vec3f target_orientation;
+                        mt::make_euler_angles( target_orientation, mr );
+
+                        const mt::vec3f & node_orientation = m_node->getLocalOrientation();
+
+                        mt::vec3f correct_rotate_from;
+                        mt::vec3f correct_rotate_to;
+                        mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
+                        mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
+                        mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
+
+                        float roatationSpeedStep = m_rotationAcceleration * _context->time;
+
+                        if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
+                        {
+                            m_rotationSpeed = m_rotationLimit;
+                        }
+                        else
+                        {
+                            m_rotationSpeed += m_rotationAcceleration * _context->time;
+                        }
+
+                        mt::vec3f new_orientation;
+                        mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _context->time );
+
+                        m_node->setLocalOrientation( new_orientation );
+
+                        current_direction = m_node->getAxisDirection();
                     }
                     else
                     {
-                        m_rotationSpeed += m_rotationAcceleration * _context->time;
+                        mt::dir_v3_v3( current_direction, node_position, follow_position );
                     }
 
-                    mt::vec3f new_orientation;
-                    mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _context->time );
+                    float directionSpeedStep = m_moveAcceleration * _context->time;
 
-                    m_node->setLocalOrientation( new_orientation );
-
-                    current_direction = m_node->getAxisDirection();
-                }
-                else
-                {
-                    mt::dir_v3_v3( current_direction, node_position, follow_position );
-                }
-
-                float directionSpeedStep = m_moveAcceleration * _context->time;
-
-                if( m_moveSpeed + directionSpeedStep > m_moveLimit )
-                {
-                    m_moveSpeed = m_moveLimit;
-                }
-                else
-                {
-                    m_moveSpeed += m_moveAcceleration * _context->time;
-                }
-
-                float step = m_moveSpeed * _context->time;
-
-                float length = mt::length_v3_v3( node_position, follow_position );
-
-                if( m_distance > 0.0 )
-                {
-                    if( length - step < m_distance )
+                    if( m_moveSpeed + directionSpeedStep > m_moveLimit )
                     {
-                        mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
-
-                        m_node->setLocalPosition( distance_position );
-
-                        return true;
+                        m_moveSpeed = m_moveLimit;
                     }
-                }
-                else
-                {
-                    if( length - step < 0.f )
+                    else
                     {
-                        m_node->setLocalPosition( follow_position );
-
-                        return false;
+                        m_moveSpeed += m_moveAcceleration * _context->time;
                     }
+
+                    float step = m_moveSpeed * _context->time;
+
+                    float length = mt::length_v3_v3( node_position, follow_position );
+
+                    if( m_distance > 0.0 )
+                    {
+                        if( length - step < m_distance )
+                        {
+                            mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+
+                            m_node->setLocalPosition( distance_position );
+
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if( length - step < 0.f )
+                        {
+                            m_node->setLocalPosition( follow_position );
+
+                            return false;
+                        }
+                    }
+
+                    mt::vec3f new_position = node_position + current_direction * step;
+
+                    m_node->setLocalPosition( new_position );
+
+                    return false;
                 }
 
-                mt::vec3f new_position = node_position + current_direction * step;
+            protected:
+                NodePtr m_node;
+                NodePtr m_target;
 
-                m_node->setLocalPosition( new_position );
-
-                return false;
-            }
-
-        protected:
-            NodePtr m_node;
-            NodePtr m_target;
-
-            mt::vec3f m_offset;
-            float m_distance;
-            float m_moveSpeed;
-            float m_moveAcceleration;
-            float m_moveLimit;
-            bool m_rotate;
-            float m_rotationSpeed;
-            float m_rotationAcceleration;
-            float m_rotationLimit;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<AffectorCreatorFollowTo> AffectorCreatorFollowToPtr;
-        //////////////////////////////////////////////////////////////////////////
-        class FactoryAffectorFollowTo
-            : public Factorable
-        {
-        public:
-            FactoryAffectorFollowTo()
+                mt::vec3f m_offset;
+                float m_distance;
+                float m_moveSpeed;
+                float m_moveAcceleration;
+                float m_moveLimit;
+                bool m_rotate;
+                float m_rotationSpeed;
+                float m_rotationAcceleration;
+                float m_rotationLimit;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<AffectorCreatorFollowTo> AffectorCreatorFollowToPtr;
+            //////////////////////////////////////////////////////////////////////////
+            class FactoryAffectorFollowTo
+                : public Factorable
             {
-            }
+            public:
+                FactoryAffectorFollowTo()
+                {
+                }
 
-            ~FactoryAffectorFollowTo()
-            {
-            }
+                ~FactoryAffectorFollowTo()
+                {
+                }
 
-        public:
-            bool initialize()
-            {
-                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowTo, 4>( MENGINE_DOCUMENT_FACTORABLE );
+            public:
+                bool initialize()
+                {
+                    m_factory = Helper::makeFactoryPool<AffectorCreatorFollowTo, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
-                return true;
-            }
+                    return true;
+                }
 
-            void finalize()
-            {
-                m_factory = nullptr;
-            }
+                void finalize()
+                {
+                    m_factory = nullptr;
+                }
 
-        public:
-            AffectorPtr create( EAffectorType _type
-                , const EasingInterfacePtr & _easing
-                , const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
+            public:
+                AffectorPtr create( EAffectorType _type
+                    , const EasingInterfacePtr & _easing
+                    , const AffectorCallbackInterfacePtr & _cb
+                    , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
+                    , bool _rotate
+                    , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const DocumentPtr & _doc )
+                {
+                    AffectorCreatorFollowToPtr affector = m_factory->createObject( _doc );
+
+                    affector->setAffectorType( _type );
+                    affector->setEasing( _easing );
+                    affector->setCallback( _cb );
+
+                    if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotate, _rotationSpeed, _rotationAcceleration, _rotationLimit ) == false )
+                    {
+                        return nullptr;
+                    }
+
+                    return affector;
+                }
+
+            protected:
+                FactoryPtr m_factory;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<FactoryAffectorFollowTo> FactoryAffectorFollowToPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryAffectorFollowToPtr m_nodeAffectorCreatorFollowTo;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_followTo( Node * _node
+                , const NodePtr & _target
+                , const mt::vec3f & _offset
+                , float _distance
+                , float _moveSpeed
+                , float _moveAcceleration
+                , float _moveLimit
                 , bool _rotate
-                , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const DocumentPtr & _doc )
+                , float _rotationSpeed
+                , float _rotationAcceleration
+                , float _rotationLimit
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
             {
-                AffectorCreatorFollowToPtr affector = m_factory->createObject( _doc );
-
-                affector->setAffectorType( _type );
-                affector->setEasing( _easing );
-                affector->setCallback( _cb );
-
-                if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotate, _rotationSpeed, _rotationAcceleration, _rotationLimit ) == false )
+                if( _node->isActivate() == false )
                 {
-                    return nullptr;
+                    return 0;
                 }
 
-                return affector;
-            }
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
 
-        protected:
-            FactoryPtr m_factory;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<FactoryAffectorFollowTo> FactoryAffectorFollowToPtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorFollowToPtr m_nodeAffectorCreatorFollowTo;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_followTo( Node * _node
-            , const NodePtr & _target
-            , const mt::vec3f & _offset
-            , float _distance
-            , float _moveSpeed
-            , float _moveAcceleration
-            , float _moveLimit
-            , bool _rotate
-            , float _rotationSpeed
-            , float _rotationAcceleration
-            , float _rotationLimit
-            , const ConstString & _easingType
-            , const pybind::object & _cb
-            , const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            if( _node->isAfterActive() == false )
-            {
-                return 0;
-            }
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector = m_nodeAffectorCreatorFollowTo->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorFollowTo->create( ETA_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _target, _offset, _distance
@@ -1827,531 +1885,547 @@ namespace Mengine
                     , _rotate
                     , _rotationSpeed, _rotationAcceleration, _rotationLimit
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
 
-            s_Node_moveStop( _node );
+                s_Node_moveStop( _node );
 
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class AffectorCreatorFollowToW
-            : public BaseAffector
-        {
-        public:
-            AffectorCreatorFollowToW()
-                : m_offset( 0.f, 0.f, 0.f )
-                , m_distance( 0.f )
-                , m_moveSpeed( 0.f )
-                , m_moveAcceleration( 0.f )
-                , m_moveLimit( 0.f )
-            {
-            }
-
-        public:
-            bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
-            {
-                MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
-                MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
-
-                m_node = _node;
-                m_target = _target;
-                m_offset = _offset;
-                m_distance = _distance;
-                m_moveSpeed = _moveSpeed;
-                m_moveAcceleration = _moveAcceleration;
-                m_moveLimit = _moveLimit;
-
-                return true;
-            }
-
-        protected:
-            bool _affect( const UpdateContext * _context, float * _used ) override
-            {
-                *_used = _context->time;
-
-                mt::vec3f node_position = m_node->getWorldPosition();
-                mt::vec3f follow_position = m_target->getWorldPosition();
-
-                mt::vec3f current_direction;
-
-                mt::dir_v3_v3( current_direction, node_position, follow_position );
-
-                float directionSpeedStep = m_moveAcceleration * _context->time;
-
-                if( m_moveSpeed + directionSpeedStep > m_moveLimit )
+                if( _node->isActivate() == false )
                 {
-                    m_moveSpeed = m_moveLimit;
-                }
-                else
-                {
-                    m_moveSpeed += m_moveAcceleration * _context->time;
+                    return 0;
                 }
 
-                float step = m_moveSpeed * _context->time;
+                AFFECTOR_ID id = _node->addAffector( affector );
 
-                float length = mt::length_v3_v3( node_position, follow_position );
-
-                if( m_distance > 0.0 )
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class AffectorCreatorFollowToW
+                : public BaseAffector
+            {
+            public:
+                AffectorCreatorFollowToW()
+                    : m_offset( 0.f, 0.f, 0.f )
+                    , m_distance( 0.f )
+                    , m_moveSpeed( 0.f )
+                    , m_moveAcceleration( 0.f )
+                    , m_moveLimit( 0.f )
                 {
-                    if( length - step < m_distance )
+                }
+
+            public:
+                bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+                {
+                    MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
+
+                    m_node = _node;
+                    m_target = _target;
+                    m_offset = _offset;
+                    m_distance = _distance;
+                    m_moveSpeed = _moveSpeed;
+                    m_moveAcceleration = _moveAcceleration;
+                    m_moveLimit = _moveLimit;
+
+                    return true;
+                }
+
+            protected:
+                bool _affect( const UpdateContext * _context, float * _used ) override
+                {
+                    *_used = _context->time;
+
+                    mt::vec3f node_position = m_node->getWorldPosition();
+                    mt::vec3f follow_position = m_target->getWorldPosition();
+
+                    mt::vec3f current_direction;
+
+                    mt::dir_v3_v3( current_direction, node_position, follow_position );
+
+                    float directionSpeedStep = m_moveAcceleration * _context->time;
+
+                    if( m_moveSpeed + directionSpeedStep > m_moveLimit )
                     {
-                        mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
-
-                        m_node->setWorldPosition( distance_position );
-
-                        return true;
+                        m_moveSpeed = m_moveLimit;
                     }
-                }
-                else
-                {
-                    if( length - step < 0.f )
+                    else
                     {
-                        m_node->setWorldPosition( follow_position );
-
-                        return false;
+                        m_moveSpeed += m_moveAcceleration * _context->time;
                     }
+
+                    float step = m_moveSpeed * _context->time;
+
+                    float length = mt::length_v3_v3( node_position, follow_position );
+
+                    if( m_distance > 0.0 )
+                    {
+                        if( length - step < m_distance )
+                        {
+                            mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+
+                            m_node->setWorldPosition( distance_position );
+
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if( length - step < 0.f )
+                        {
+                            m_node->setWorldPosition( follow_position );
+
+                            return false;
+                        }
+                    }
+
+                    mt::vec3f new_position = node_position + current_direction * step;
+
+                    m_node->setWorldPosition( new_position );
+
+                    return false;
                 }
 
-                mt::vec3f new_position = node_position + current_direction * step;
+            protected:
+                NodePtr m_node;
+                NodePtr m_target;
 
-                m_node->setWorldPosition( new_position );
-
-                return false;
-            }
-
-        protected:
-            NodePtr m_node;
-            NodePtr m_target;
-
-            mt::vec3f m_offset;
-            float m_distance;
-            float m_moveSpeed;
-            float m_moveAcceleration;
-            float m_moveLimit;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<AffectorCreatorFollowToW> AffectorCreatorFollowToWPtr;
-        //////////////////////////////////////////////////////////////////////////
-        class FactoryAffectorFollowToW
-            : public Factorable
-        {
-        public:
-            FactoryAffectorFollowToW()
+                mt::vec3f m_offset;
+                float m_distance;
+                float m_moveSpeed;
+                float m_moveAcceleration;
+                float m_moveLimit;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<AffectorCreatorFollowToW> AffectorCreatorFollowToWPtr;
+            //////////////////////////////////////////////////////////////////////////
+            class FactoryAffectorFollowToW
+                : public Factorable
             {
-            }
-
-            ~FactoryAffectorFollowToW()
-            {
-            }
-
-        public:
-            bool initialize()
-            {
-                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowToW, 4>( MENGINE_DOCUMENT_FACTORABLE );
-
-                return true;
-            }
-
-            void finalize()
-            {
-                MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
-                m_factory = nullptr;
-            }
-
-        public:
-            AffectorPtr create( EAffectorType _type
-                , const EasingInterfacePtr & _easing
-                , const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset
-                , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const DocumentPtr & _doc )
-            {
-                AffectorCreatorFollowToWPtr affector = m_factory->createObject( _doc );
-
-                affector->setAffectorType( _type );
-                affector->setEasing( _easing );
-                affector->setCallback( _cb );
-
-                if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit ) == false )
+            public:
+                FactoryAffectorFollowToW()
                 {
-                    return nullptr;
                 }
 
-                return affector;
-            }
+                ~FactoryAffectorFollowToW()
+                {
+                }
 
-        protected:
-            FactoryPtr m_factory;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<FactoryAffectorFollowToW> FactoryAffectorFollowToWPtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorFollowToWPtr m_nodeAffectorCreatorFollowToW;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_followToW( Node * _node
-            , const NodePtr & _target
-            , const mt::vec3f & _offset
-            , float _distance
-            , float _moveSpeed
-            , float _moveAcceleration
-            , float _moveLimit
-            , const ConstString & _easingType
-            , const pybind::object & _cb
-            , const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            public:
+                bool initialize()
+                {
+                    m_factory = Helper::makeFactoryPool<AffectorCreatorFollowToW, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                    return true;
+                }
+
+                void finalize()
+                {
+                    MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+                    m_factory = nullptr;
+                }
+
+            public:
+                AffectorPtr create( EAffectorType _type
+                    , const EasingInterfacePtr & _easing
+                    , const AffectorCallbackInterfacePtr & _cb
+                    , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset
+                    , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const DocumentPtr & _doc )
+                {
+                    AffectorCreatorFollowToWPtr affector = m_factory->createObject( _doc );
+
+                    affector->setAffectorType( _type );
+                    affector->setEasing( _easing );
+                    affector->setCallback( _cb );
+
+                    if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit ) == false )
+                    {
+                        return nullptr;
+                    }
+
+                    return affector;
+                }
+
+            protected:
+                FactoryPtr m_factory;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<FactoryAffectorFollowToW> FactoryAffectorFollowToWPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryAffectorFollowToWPtr m_nodeAffectorCreatorFollowToW;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_followToW( Node * _node
+                , const NodePtr & _target
+                , const mt::vec3f & _offset
+                , float _distance
+                , float _moveSpeed
+                , float _moveAcceleration
+                , float _moveLimit
+                , const ConstString & _easingType
+                , const pybind::object & _cb
+                , const pybind::args & _args )
             {
-                return 0;
-            }
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
 
-            if( _node->isAfterActive() == false )
-            {
-                return 0;
-            }
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorFollowToW->create( ETA_POSITION
+                AffectorPtr affector = m_nodeAffectorCreatorFollowToW->create( ETA_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
 
-            s_Node_moveStop( _node );
+                s_Node_moveStop( _node );
 
-            if( _node->isActivate() == false )
-            {
-                return 0;
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
             }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Node_angleStop( Node * _node )
-        {
-            _node->stopAffectors( ETA_ANGLE );
-            _node->setAngularSpeed( 0.f );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_angleStop( Node * _node )
             {
-                return 0;
+                _node->stopAffectors( ETA_ANGLE );
+                _node->setAngularSpeed( 0.f );
             }
-
-            if( _node->isAfterActive() == false )
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                return 0;
-            }
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
 
-            float angle = _node->getLocalOrientationX();
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
 
-            float correct_angle_from = angle;
-            float correct_angle_to = _angle;
+                float angle = _node->getLocalOrientationX();
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                float correct_angle_from = angle;
+                float correct_angle_to = _angle;
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_ANGLE
-                , easing
-                , callback
-                , [_node]( float _v ) {_node->setLocalOrientationX( _v ); }
-                , correct_angle_from, correct_angle_to, _time
-                , MENGINE_DOCUMENT_PYBIND
-            );
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_angleStop( _node );
-
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            float invTime = 1.f / _time;
-            float angularSpeed = fabsf( correct_angle_from - correct_angle_to ) * invTime;
-
-            _node->setAngularSpeed( angularSpeed );
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>> m_nodeAffectorCreatorInterpolateQuadraticFloat;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
-            {
-                return 0;
-            }
-
-            if( _node->isAfterActive() == false )
-            {
-                return 0;
-            }
-
-            float angularSpeed = _node->getAngularSpeed();
-
-            float angle = _node->getLocalOrientationX();
-
-            float correct_angle_from = angle;
-            float correct_angle_to = _angle;
-            //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateQuadraticFloat->create( ETA_ANGLE
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_ANGLE
                     , easing
                     , callback
-                    , [_node]( float _v ) {_node->setLocalOrientationX( _v ); }
-                    , correct_angle_from, correct_angle_to, angularSpeed, _time
+                    , [_node]( float _v )
+                {
+                    _node->setLocalOrientationX( _v );
+                }
+                    , correct_angle_from, correct_angle_to, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
-            s_Node_angleStop( _node );
+                s_Node_angleStop( _node );
 
-            if( _node->isActivate() == false )
-            {
-                return 0;
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                float invTime = 1.f / _time;
+                float angularSpeed = fabsf( correct_angle_from - correct_angle_to ) * invTime;
+
+                _node->setAngularSpeed( angularSpeed );
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
             }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Node_scaleStop( Node * _node )
-        {
-            _node->stopAffectors( ETA_SCALE );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>> m_nodeAffectorCreatorInterpolateQuadraticFloat;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                return 0;
-            }
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
 
-            if( _node->isAfterActive() == false )
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
+
+                float angularSpeed = _node->getAngularSpeed();
+
+                float angle = _node->getLocalOrientationX();
+
+                float correct_angle_from = angle;
+                float correct_angle_to = _angle;
+                //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector =
+                    m_nodeAffectorCreatorInterpolateQuadraticFloat->create( ETA_ANGLE
+                        , easing
+                        , callback
+                        , [_node]( float _v )
+                {
+                    _node->setLocalOrientationX( _v );
+                }
+                        , correct_angle_from, correct_angle_to, angularSpeed, _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+
+                s_Node_angleStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_scaleStop( Node * _node )
             {
-                return 0;
+                _node->stopAffectors( ETA_SCALE );
             }
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( ETA_SCALE
-                , easing
-                , callback
-                , [_node]( const mt::vec3f & _v ) { _node->setLocalScale( _v ); }
-                , _node->getLocalScale(), _scale, _time
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
-
-            s_Node_scaleStop( _node );
-
-            if( _node->isActivate() == false )
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_scaleTo( Node * _node, float _time, const mt::vec3f & _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                return 0;
-            }
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
 
-            AFFECTOR_ID id = _node->addAffector( affector );
+                if( _node->isAfterActive() == false )
+                {
+                    return 0;
+                }
 
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Node_colorStop( Node * _node )
-        {
-            _node->stopAffectors( ETA_COLOR );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>> m_nodeAffectorCreatorInterpolateLinearColor;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_colorTo( Node * _node, float _time, const Color& _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            if( _node->isActivate() == false )
-            {
-                LOGGER_ERROR( "node '%s' is not activate"
-                    , _node->getName().c_str()
-                );
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-                return 0;
-            }
-
-            if( _node->isAfterActive() == false )
-            {
-                LOGGER_ERROR( "node '%s' is not after activate"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
-
-            RenderInterface * render = _node->getRender();
-
-            MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' is not renderable"
-                , _node->getName().c_str()
-            );
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' not found easing '%s'"
-                , _node->getName().c_str()
-                , _easingType.c_str()
-            );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinearColor->create( ETA_COLOR
+                AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( ETA_SCALE
                     , easing
                     , callback
-                    , [render]( const Color & _v ) { render->setLocalColor( _v ); }
-                    , render->getLocalColor(), _color, _time
+                    , [_node]( const mt::vec3f & _v )
+                {
+                    _node->setLocalScale( _v );
+                }
+                    , _node->getLocalScale(), _scale, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
-                , _node->getName().c_str()
-            );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
-            s_Node_colorStop( _node );
+                s_Node_scaleStop( _node );
 
-            if( _node->isActivate() == false )
-            {
-                LOGGER_ERROR( "node '%s' after color stop is inactivate"
-                    , _node->getName().c_str()
-                );
+                if( _node->isActivate() == false )
+                {
+                    return 0;
+                }
 
-                return 0;
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                return id;
             }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            if( id == 0 )
+            //////////////////////////////////////////////////////////////////////////
+            void s_Node_colorStop( Node * _node )
             {
-                LOGGER_ERROR( "node '%s' invalid add affector"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
+                _node->stopAffectors( ETA_COLOR );
             }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>> m_nodeAffectorCreatorInterpolateLinearColor;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_colorTo( Node * _node, float _time, const Color & _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
 
-            return id;
-        }
+                if( _node->isActivate() == false )
+                {
+                    LOGGER_ERROR( "node '%s' is not activate"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    LOGGER_ERROR( "node '%s' is not after activate"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                RenderInterface * render = _node->getRender();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' is not renderable"
+                    , _node->getName().c_str()
+                    );
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' not found easing '%s'"
+                    , _node->getName().c_str()
+                    , _easingType.c_str()
+                    );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector =
+                    m_nodeAffectorCreatorInterpolateLinearColor->create( ETA_COLOR
+                        , easing
+                        , callback
+                        , [render]( const Color & _v )
+                {
+                    render->setLocalColor( _v );
+                }
+                        , render->getLocalColor(), _color, _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
+                    , _node->getName().c_str()
+                    );
+
+                s_Node_colorStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    LOGGER_ERROR( "node '%s' after color stop is inactivate"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                if( id == 0 )
+                {
+                    LOGGER_ERROR( "node '%s' invalid add affector"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
+
+                if( _node->isActivate() == false )
+                {
+                    LOGGER_ERROR( "node '%s' is not activate"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                if( _node->isAfterActive() == false )
+                {
+                    LOGGER_ERROR( "node '%s' is not after activate"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                RenderInterface * render = _node->getRender();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' type '%s' is not renderable"
+                    , _node->getName().c_str()
+                    , _node->getType().c_str()
+                    );
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' type '%s' not found easing '%s'"
+                    , _node->getName().c_str()
+                    , _node->getType().c_str()
+                    , _easingType.c_str()
+                    );
+
+                ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+                AffectorPtr affector =
+                    m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_COLOR
+                        , easing
+                        , callback
+                        , [render]( float _v )
+                {
+                    render->setLocalAlpha( _v );
+                }
+                        , render->getLocalAlpha(), _alpha, _time
+                    , MENGINE_DOCUMENT_PYBIND
+                    );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
+                    , _node->getName().c_str()
+                    );
+
+                s_Node_colorStop( _node );
+
+                if( _node->isActivate() == false )
+                {
+                    LOGGER_ERROR( "node '%s' after color stop is inactivate"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                AFFECTOR_ID id = _node->addAffector( affector );
+
+                if( id == 0 )
+                {
+                    LOGGER_ERROR( "node '%s' invalid add affector"
+                        , _node->getName().c_str()
+                        );
+
+                    return 0;
+                }
+
+                return id;
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
-
-            if( _node->isActivate() == false )
-            {
-                LOGGER_ERROR( "node '%s' is not activate"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
-
-            if( _node->isAfterActive() == false )
-            {
-                LOGGER_ERROR( "node '%s' is not after activate"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
-
-            RenderInterface * render = _node->getRender();
-
-            MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' type '%s' is not renderable"
-                , _node->getName().c_str()
-                , _node->getType().c_str()
-            );
-
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' type '%s' not found easing '%s'"
-                , _node->getName().c_str()
-                , _node->getType().c_str()
-                , _easingType.c_str()
-            );
-
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
-
-            AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_COLOR
-                    , easing
-                    , callback
-                    , [render]( float _v ) { render->setLocalAlpha( _v ); }
-                    , render->getLocalAlpha(), _alpha, _time
-                    , MENGINE_DOCUMENT_PYBIND
-                );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
-                , _node->getName().c_str()
-            );
-
-            s_Node_colorStop( _node );
-
-            if( _node->isActivate() == false )
-            {
-                LOGGER_ERROR( "node '%s' after color stop is inactivate"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
-
-            AFFECTOR_ID id = _node->addAffector( affector );
-
-            if( id == 0 )
-            {
-                LOGGER_ERROR( "node '%s' invalid add affector"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
-
-            return id;
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<NodeScriptMethod> NodeScriptMethodPtr;
-    //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<NodeScriptMethod> NodeScriptMethodPtr;
+        //////////////////////////////////////////////////////////////////////////
+    }
     NodeScriptEmbedding::NodeScriptEmbedding()
     {
     }
@@ -2614,7 +2688,7 @@ namespace Mengine
 
         pybind::interface_<RenderInterface, pybind::bases<Colorable, BoundingBox>>( _kernel, "RenderInterface" )
             .def_deprecated( "setRelationRender", &RenderInterface::setRelationRender, "use setRelationRenderBack" )
-            .def( "setRelationRenderBack", &RenderInterface::setRelationRender )            
+            .def( "setRelationRenderBack", &RenderInterface::setRelationRender )
             .def( "removeRelationRender", &RenderInterface::removeRelationRender )
             .def( "getRelationRender", &RenderInterface::getRelationRender )
             .def( "setHide", &RenderInterface::setHide )
@@ -3046,7 +3120,7 @@ namespace Mengine
                 ;
 
             pybind::interface_<HotSpotGlobal, pybind::bases<HotSpot>>( _kernel, "HotSpotGlobal", false )
-                ;            
+                ;
 
             pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot>>( _kernel, "HotSpotPolygon", false )
                 .def( "setPolygon", &HotSpotPolygon::setPolygon )

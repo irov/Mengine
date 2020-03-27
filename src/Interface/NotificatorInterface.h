@@ -25,10 +25,10 @@ namespace Mengine
     struct Notificator;
 
 #define MENGINE_DECLARE_BEGIN()\
-    static const uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
+    static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
 
 #define MENGINE_DECLARE_NOTIFICATOR(NAME, ...)\
-    static const uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
+    static constexpr uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
     template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; }
 
     MENGINE_DECLARE_BEGIN();

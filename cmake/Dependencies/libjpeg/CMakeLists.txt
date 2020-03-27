@@ -1,6 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
-                                             
+
 project(jpeg)
+
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/libjpeg)
 
 IF(MENGINE_RENDER_DIRECTX)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
@@ -13,8 +15,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemname.c ${SOURCE_DIR}/jmemname.c C
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemsys.h ${SOURCE_DIR}/jmemsys.h COPYONLY)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
-
-SET(SOURCE_DIR ${THIRDPARTY_DIR}/libjpeg)
 
 # OUR SOURCES
 set(jpeg_sources

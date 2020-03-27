@@ -23,7 +23,7 @@ namespace Mengine
     struct AccountUID
     {
         typedef Char value_type;
-        static const size_t size_data = 20;
+        static constexpr size_t size_data = 20;
         Char data[size_data];
     };
     //////////////////////////////////////////////////////////////////////////

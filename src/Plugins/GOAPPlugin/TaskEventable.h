@@ -20,6 +20,29 @@ namespace Mengine
         typedef C class_type;
     };
 
+    template<class R, class C, class ... Args>
+    struct ClassOf<R( C:: * )(Args ...) const>
+    {
+        typedef R result_type;
+        typedef C class_type;
+    };
+
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__ANDROID__) || defined(__ANDROID__) || defined(__APPLE__) || defined(__linux__)
+    template<class R, class C, class ... Args>
+    struct ClassOf<R( C:: * )(Args ...) noexcept>
+    {
+        typedef R result_type;
+        typedef C class_type;
+    };
+
+    template<class R, class C, class ... Args>
+    struct ClassOf<R( C:: * )(Args ...) const noexcept>
+    {
+        typedef R result_type;
+        typedef C class_type;
+    };
+#endif
+
     class TaskEventable
         : public GOAP::Task
     {

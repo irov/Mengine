@@ -252,7 +252,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void trim( String & str, bool left/* = true*/, bool right/* = true */ )
         {
-            static const String delims = " \t\r";
+            static const Char * delims = " \t\r";
 
             if( right )
             {

@@ -31,21 +31,21 @@ namespace Mengine
     //static const uint32_t ozz_tangents_size = sizeof( float ) * 4;
     //static const uint32_t ozz_colors_size = sizeof( uint8_t ) * 4;
     //static const uint32_t ozz_uvs_size = sizeof( float ) * 2;
-    static const uint32_t ozz_positions_size = sizeof( float ) * 3;
-    static const uint32_t ozz_colors_size = sizeof( uint8_t ) * 4;
-    static const uint32_t ozz_uvs_size = sizeof( float ) * 2;
+    static constexpr uint32_t ozz_positions_size = sizeof( float ) * 3;
+    static constexpr uint32_t ozz_colors_size = sizeof( uint8_t ) * 4;
+    static constexpr uint32_t ozz_uvs_size = sizeof( float ) * 2;
     //////////////////////////////////////////////////////////////////////////
     //static const uint32_t ozz_vertex_stride = ozz_positions_size + ozz_normals_size + ozz_tangents_size + ozz_colors_size + ozz_uvs_size;
-    static const uint32_t ozz_vertex_stride = ozz_positions_size + ozz_colors_size + ozz_uvs_size;
+    static constexpr uint32_t ozz_vertex_stride = ozz_positions_size + ozz_colors_size + ozz_uvs_size;
     //////////////////////////////////////////////////////////////////////////
     //static const uint32_t ozz_positions_offset = 0;
     //static const uint32_t ozz_normals_offset = ozz_positions_offset + ozz_positions_size;
     //static const uint32_t ozz_tangents_offset = ozz_normals_offset + ozz_normals_size;
     //static const uint32_t ozz_colors_offset = ozz_tangents_offset + ozz_tangents_size;
     //static const uint32_t ozz_uvs_offset = ozz_colors_offset + ozz_colors_size;
-    static const uint32_t ozz_positions_offset = 0;
-    static const uint32_t ozz_colors_offset = ozz_positions_offset + ozz_positions_size;
-    static const uint32_t ozz_uvs_offset = ozz_colors_offset + ozz_colors_size;
+    static constexpr uint32_t ozz_positions_offset = 0;
+    static constexpr uint32_t ozz_colors_offset = ozz_positions_offset + ozz_positions_size;
+    static constexpr uint32_t ozz_uvs_offset = ozz_colors_offset + ozz_colors_size;
     //////////////////////////////////////////////////////////////////////////
     NodeOzzAnimation::NodeOzzAnimation()
         : m_upperBodyRoot( 0 )

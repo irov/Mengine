@@ -30,929 +30,950 @@
 
 namespace Mengine
 {
-    class SoundScriptMethod
-        : public Factorable
+    namespace
     {
-    public:
-        SoundScriptMethod()
-            : m_affectorMusicID( 0 )
-        {
-        }
-
-        ~SoundScriptMethod() override
-        {
-        }
-
-    public:
-        bool initialize()
-        {
-            m_factorySoundAffectorCallback = Helper::makeFactoryPool<SoundAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
-            m_factoryMusicAffectorCallback = Helper::makeFactoryPool<MusicAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
-
-            m_affectorCreatorSound = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_affectorCreatorSound->initialize();
-
-            m_affectorCreatorMusic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
-            m_affectorCreatorMusic->initialize();
-
-            return true;
-        }
-
-        void finalize()
-        {
-            m_affectorCreatorSound->finalize();
-            m_affectorCreatorSound = nullptr;
-
-            m_affectorCreatorMusic->finalize();
-            m_affectorCreatorMusic = nullptr;
-
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundAffectorCallback );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMusicAffectorCallback );
-
-            m_factorySoundAffectorCallback = nullptr;
-            m_factoryMusicAffectorCallback = nullptr;
-        }
-
-    public:
-        //////////////////////////////////////////////////////////////////////////
-        class MySoundNodeListener
+        class SoundScriptMethod
             : public Factorable
-            , public SoundListenerInterface
         {
         public:
-            MySoundNodeListener( const ResourceSoundPtr & _resource, const pybind::object & _cb, const pybind::args & _args )
-                : m_resource( _resource )
-                , m_cb( _cb )
-                , m_args( _args )
+            SoundScriptMethod()
+                : m_affectorMusicID( 0 )
             {
             }
 
-            ~MySoundNodeListener() override
+            ~SoundScriptMethod() override
             {
-                if( m_resource != nullptr )
+            }
+
+        public:
+            bool initialize()
+            {
+                m_factorySoundAffectorCallback = Helper::makeFactoryPool<SoundAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryMusicAffectorCallback = Helper::makeFactoryPool<MusicAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                m_affectorCreatorSound = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_affectorCreatorSound->initialize();
+
+                m_affectorCreatorMusic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
+                m_affectorCreatorMusic->initialize();
+
+                return true;
+            }
+
+            void finalize()
+            {
+                m_affectorCreatorSound->finalize();
+                m_affectorCreatorSound = nullptr;
+
+                m_affectorCreatorMusic->finalize();
+                m_affectorCreatorMusic = nullptr;
+
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundAffectorCallback );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMusicAffectorCallback );
+
+                m_factorySoundAffectorCallback = nullptr;
+                m_factoryMusicAffectorCallback = nullptr;
+            }
+
+        public:
+            //////////////////////////////////////////////////////////////////////////
+            class MySoundNodeListener
+                : public Factorable
+                , public SoundListenerInterface
+            {
+            public:
+                MySoundNodeListener( const ResourceSoundPtr & _resource, const pybind::object & _cb, const pybind::args & _args )
+                    : m_resource( _resource )
+                    , m_cb( _cb )
+                    , m_args( _args )
                 {
+                }
+
+                ~MySoundNodeListener() override
+                {
+                    if( m_resource != nullptr )
+                    {
+                        m_resource->release();
+                        m_resource = nullptr;
+                    }
+                }
+
+            protected:
+                void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
+                {
+                    MENGINE_UNUSED( _emitter );
+
+                    //Empty
+                }
+
+                void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
+                {
+                    MENGINE_UNUSED( _emitter );
+
+                    //Empty
+                }
+
+                void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
+                {
+                    if( SOUND_SERVICE()
+                        ->releaseSoundSource( _emitter ) == false )
+                    {
+                        uint32_t id = _emitter->getId();
+
+                        LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
+                            , m_resource->getName().c_str()
+                            , id
+                            );
+                    }
+
+                    if( m_cb.is_callable() == true )
+                    {
+                        m_cb.call_args( _emitter, 0, m_args );
+                    }
+
                     m_resource->release();
                     m_resource = nullptr;
                 }
-            }
 
-        protected:
-            void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
-            {
-                MENGINE_UNUSED( _emitter );
-
-                //Empty
-            }
-
-            void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
-            {
-                MENGINE_UNUSED( _emitter );
-
-                //Empty
-            }
-
-            void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
-            {
-                if( SOUND_SERVICE()
-                    ->releaseSoundSource( _emitter ) == false )
+                void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
                 {
-                    uint32_t id = _emitter->getId();
+                    if( SOUND_SERVICE()
+                        ->releaseSoundSource( _emitter ) == false )
+                    {
+                        uint32_t id = _emitter->getId();
 
-                    LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
-                        , m_resource->getName().c_str()
-                        , id
+                        LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
+                            , m_resource->getName().c_str()
+                            , id
+                            );
+                    }
+
+                    if( m_cb.is_callable() == true )
+                    {
+                        m_cb.call_args( _emitter, 1, m_args );
+                    }
+
+                    m_resource->release();
+                    m_resource = nullptr;
+                }
+
+            protected:
+                ResourceSoundPtr m_resource;
+                pybind::object m_cb;
+                pybind::args m_args;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<MySoundNodeListener> MySoundNodeListenerPtr;
+            //////////////////////////////////////////////////////////////////////////
+            bool hasSound( const ConstString & _resourceName )
+            {
+                if( RESOURCE_SERVICE()
+                    ->hasResourceWithType( _resourceName, STRINGIZE_STRING_LOCAL( "ResourceSound" ), nullptr ) == false )
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factorySoundNodeListener;
+            //////////////////////////////////////////////////////////////////////////
+            SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args, const DocumentPtr & _doc )
+            {
+                MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceSoundPtr, nullptr, "resource '%s' type does not match 'ResourceSound'"
+                    , _resourceName.c_str()
                     );
-                }
 
-                if( m_cb.is_callable() == true )
+                const ResourceSoundPtr & resource = RESOURCE_SERVICE()
+                    ->getResource( _resourceName );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
+
+                SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer( _doc );
+
+                if( soundBuffer == nullptr )
                 {
-                    m_cb.call_args( _emitter, 0, m_args );
+                    resource->release();
+
+                    return nullptr;
                 }
 
-                m_resource->release();
-                m_resource = nullptr;
-            }
+                bool streamable = resource->isStreamable();
 
-            void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
-            {
+                SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
+                    ->createSoundIdentity( true, soundBuffer, _category, streamable
+                        , _doc
+                        );
+
+                if( soundIdentity == nullptr )
+                {
+                    LOGGER_ERROR( "sound '%s' invalid create identity"
+                        , _resourceName.c_str()
+                        );
+
+                    if( _cb.is_callable() == true )
+                    {
+                        _cb.call_args( nullptr, 2, _args );
+                    }
+
+                    resource->release();
+
+                    return nullptr;
+                }
+
+                SOUND_SERVICE()
+                    ->setLoop( soundIdentity, _loop );
+
+                float volume = resource->getDefaultVolume();
+
                 if( SOUND_SERVICE()
-                    ->releaseSoundSource( _emitter ) == false )
+                    ->setSourceVolume( soundIdentity, volume, volume, true ) == false )
                 {
-                    uint32_t id = _emitter->getId();
+                    LOGGER_ERROR( "sound '%s' invalid set volume %f"
+                        , _resourceName.c_str()
+                        , volume
+                        );
 
-                    LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
-                        , m_resource->getName().c_str()
-                        , id
+                    if( _cb.is_callable() == true )
+                    {
+                        _cb.call_args( nullptr, 2, _args );
+                    }
+
+                    resource->release();
+
+                    return nullptr;
+                }
+
+                MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( _doc, resource, _cb, _args );
+
+                soundIdentity->setSoundListener( snlistener );
+
+                return soundIdentity;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+            {
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
+                    , _resourceName.c_str()
                     );
-                }
 
-                if( m_cb.is_callable() == true )
+                if( SOUND_SERVICE()
+                    ->playEmitter( soundIdentity ) == false )
                 {
-                    m_cb.call_args( _emitter, 1, m_args );
+                    LOGGER_ERROR( "invalid play '%s'"
+                        , _resourceName.c_str()
+                        );
+
+                    return nullptr;
                 }
 
-                m_resource->release();
-                m_resource = nullptr;
+                return soundIdentity;
             }
-
-        protected:
-            ResourceSoundPtr m_resource;
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<MySoundNodeListener> MySoundNodeListenerPtr;
-        //////////////////////////////////////////////////////////////////////////
-        bool hasSound( const ConstString & _resourceName )
-        {
-            if( RESOURCE_SERVICE()
-                ->hasResourceWithType( _resourceName, STRINGIZE_STRING_LOCAL( "ResourceSound" ), nullptr ) == false )
+            //////////////////////////////////////////////////////////////////////////
+            SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
             {
-                return false;
-            }
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factorySoundNodeListener;
-        //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args, const DocumentPtr & _doc )
-        {
-            MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceSoundPtr, nullptr, "resource '%s' type does not match 'ResourceSound'"
-                , _resourceName.c_str()
-            );
-
-            const ResourceSoundPtr & resource = RESOURCE_SERVICE()
-                ->getResource( _resourceName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
-
-            SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer( _doc );
-
-            if( soundBuffer == nullptr )
-            {
-                resource->release();
-
-                return nullptr;
-            }
-
-            bool streamable = resource->isStreamable();
-
-            SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
-                ->createSoundIdentity( true, soundBuffer, _category, streamable
-                    , _doc
-                );
-
-            if( soundIdentity == nullptr )
-            {
-                LOGGER_ERROR( "sound '%s' invalid create identity"
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                     , _resourceName.c_str()
-                );
+                    );
 
-                if( _cb.is_callable() == true )
+                if( SOUND_SERVICE()
+                    ->playEmitter( soundIdentity ) == false )
                 {
-                    _cb.call_args( nullptr, 2, _args );
+                    LOGGER_ERROR( "invalid play '%s'"
+                        , _resourceName.c_str()
+                        );
+
+                    return nullptr;
                 }
 
-                resource->release();
-
-                return nullptr;
+                return soundIdentity;
             }
-
-            SOUND_SERVICE()
-                ->setLoop( soundIdentity, _loop );
-
-            float volume = resource->getDefaultVolume();
-
-            if( SOUND_SERVICE()
-                ->setSourceVolume( soundIdentity, volume, volume, true ) == false )
+            //////////////////////////////////////////////////////////////////////////
+            bool voicePause( const SoundIdentityInterfacePtr & _emitter )
             {
-                LOGGER_ERROR( "sound '%s' invalid set volume %f"
-                    , _resourceName.c_str()
-                    , volume
-                );
+                bool successful = SOUND_SERVICE()
+                    ->pauseEmitter( _emitter );
 
-                if( _cb.is_callable() == true )
+                return successful;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool voiceResume( const SoundIdentityInterfacePtr & _emitter )
+            {
+                bool successful = SOUND_SERVICE()
+                    ->resumeEmitter( _emitter );
+
+                return successful;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            SoundIdentityInterfacePtr soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+            {
+                SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+                    , _resourceName.c_str()
+                    );
+
+                if( SOUND_SERVICE()
+                    ->setPosMs( sourceEmitter, _position ) == false )
                 {
-                    _cb.call_args( nullptr, 2, _args );
+                    LOGGER_ERROR( "set pos '%s' '%f'"
+                        , _resourceName.c_str()
+                        , _position
+                        );
+
+                    return nullptr;
                 }
 
-                resource->release();
-
-                return nullptr;
-            }
-
-            MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( _doc, resource, _cb, _args );
-
-            soundIdentity->setSoundListener( snlistener );
-
-            return soundIdentity;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
-                , _resourceName.c_str()
-            );
-
-            if( SOUND_SERVICE()
-                ->playEmitter( soundIdentity ) == false )
-            {
-                LOGGER_ERROR( "invalid play '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return nullptr;
-            }
-
-            return soundIdentity;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
-                , _resourceName.c_str()
-            );
-
-            if( SOUND_SERVICE()
-                ->playEmitter( soundIdentity ) == false )
-            {
-                LOGGER_ERROR( "invalid play '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return nullptr;
-            }
-
-            return soundIdentity;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool voicePause( const SoundIdentityInterfacePtr & _emitter )
-        {
-            bool successful = SOUND_SERVICE()
-                ->pauseEmitter( _emitter );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool voiceResume( const SoundIdentityInterfacePtr & _emitter )
-        {
-            bool successful = SOUND_SERVICE()
-                ->resumeEmitter( _emitter );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
-                , _resourceName.c_str()
-            );
-
-            if( SOUND_SERVICE()
-                ->setPosMs( sourceEmitter, _position ) == false )
-            {
-                LOGGER_ERROR( "set pos '%s' '%f'"
-                    , _resourceName.c_str()
-                    , _position
-                );
-
-                return nullptr;
-            }
-
-            if( SOUND_SERVICE()
-                ->playEmitter( sourceEmitter ) == false )
-            {
-                LOGGER_ERROR( "play '%s' '%f'"
-                    , _resourceName.c_str()
-                    , _position
-                );
-
-                return nullptr;
-            }
-
-            return sourceEmitter;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float soundGetPosMs( const SoundIdentityInterfacePtr & _emitter )
-        {
-            float pos = SOUND_SERVICE()
-                ->getPosMs( _emitter );
-
-            return pos;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void soundSetPosMs( const SoundIdentityInterfacePtr & _emitter, float _pos )
-        {
-            SOUND_SERVICE()
-                ->setPosMs( _emitter, _pos );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class SoundAffectorCallback
-            : public AffectorCallbackInterface
-        {
-        public:
-            SoundAffectorCallback()
-            {
-            }
-
-            ~SoundAffectorCallback() override
-            {
-            }
-
-        public:
-            void initialize( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_soundIdentity = _emitter;
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            void onAffectorEnd( uint32_t _id, bool _isEnd ) override
-            {
-                if( _isEnd == true )
+                if( SOUND_SERVICE()
+                    ->playEmitter( sourceEmitter ) == false )
                 {
-                    SOUND_SERVICE()
-                        ->stopEmitter( m_soundIdentity );
+                    LOGGER_ERROR( "play '%s' '%f'"
+                        , _resourceName.c_str()
+                        , _position
+                        );
+
+                    return nullptr;
                 }
 
-                if( m_cb.is_invalid() == true )
-                {
-                    return;
-                }
-
-                if( m_cb.is_none() == true )
-                {
-                    return;
-                }
-
-                m_cb.call_args( _id, _isEnd, m_args );
+                return sourceEmitter;
             }
+            //////////////////////////////////////////////////////////////////////////
+            float soundGetPosMs( const SoundIdentityInterfacePtr & _emitter )
+            {
+                float pos = SOUND_SERVICE()
+                    ->getPosMs( _emitter );
 
-        protected:
-            SoundIdentityInterfacePtr m_soundIdentity;
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<SoundAffectorCallback> SoundAffectorCallbackPtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factorySoundAffectorCallback;
-        //////////////////////////////////////////////////////////////////////////
-        SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-            callback->initialize( _emitter, _cb, _args );
+                return pos;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void soundSetPosMs( const SoundIdentityInterfacePtr & _emitter, float _pos )
+            {
+                SOUND_SERVICE()
+                    ->setPosMs( _emitter, _pos );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class SoundAffectorCallback
+                : public AffectorCallbackInterface
+            {
+            public:
+                SoundAffectorCallback()
+                {
+                }
 
-            return callback;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void ___soundFade( const SoundIdentityInterfacePtr & _emitter, float _volume )
-        {
-            SOUND_SERVICE()
-                ->setSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorSound;
-        //////////////////////////////////////////////////////////////////////////
-        void soundFadeIn( const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
+                ~SoundAffectorCallback() override
+                {
+                }
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+            public:
+                void initialize( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
+                {
+                    m_soundIdentity = _emitter;
+                    m_cb = _cb;
+                    m_args = _args;
+                }
 
-            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+            protected:
+                void onAffectorEnd( uint32_t _id, bool _isEnd ) override
+                {
+                    if( _isEnd == true )
+                    {
+                        SOUND_SERVICE()
+                            ->stopEmitter( m_soundIdentity );
+                    }
+
+                    if( m_cb.is_invalid() == true )
+                    {
+                        return;
+                    }
+
+                    if( m_cb.is_none() == true )
+                    {
+                        return;
+                    }
+
+                    m_cb.call_args( _id, _isEnd, m_args );
+                }
+
+            protected:
+                SoundIdentityInterfacePtr m_soundIdentity;
+                pybind::object m_cb;
+                pybind::args m_args;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<SoundAffectorCallback> SoundAffectorCallbackPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factorySoundAffectorCallback;
+            //////////////////////////////////////////////////////////////////////////
+            SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
+            {
+                SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                callback->initialize( _emitter, _cb, _args );
+
+                return callback;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void ___soundFade( const SoundIdentityInterfacePtr & _emitter, float _volume )
+            {
+                SOUND_SERVICE()
+                    ->setSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorSound;
+            //////////////////////////////////////////////////////////////////////////
+            void soundFadeIn( const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
-                    , callback, [this, _emitter]( float _volume ){ this->___soundFade( _emitter, _volume ); }
+                    , callback, [this, _emitter]( float _volume )
+                {
+                    this->___soundFade( _emitter, _volume );
+                }
                     , 1.f, 0.f, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getGlobalAffectorable();
+                const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                    ->getGlobalAffectorable();
 
-            affectorable->addAffector( affector );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
-                , _resourceName.c_str()
-            );
-
-            if( SOUND_SERVICE()
-                ->playEmitter( soundIdentity ) == false )
-            {
-                LOGGER_ERROR( "invalid play '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return nullptr;
+                affectorable->addAffector( affector );
             }
+            //////////////////////////////////////////////////////////////////////////
+            SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
+                    , _resourceName.c_str()
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
-                , _easingType.c_str()
-            );
+                if( SOUND_SERVICE()
+                    ->playEmitter( soundIdentity ) == false )
+                {
+                    LOGGER_ERROR( "invalid play '%s'"
+                        , _resourceName.c_str()
+                        );
 
-            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+                    return nullptr;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
+                    , _easingType.c_str()
+                    );
+
+                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
-                    , nullptr, [this, soundIdentity]( float _value ){ this->___soundFade( soundIdentity, _value ); }
+                    , nullptr, [this, soundIdentity]( float _value )
+                {
+                    this->___soundFade( soundIdentity, _value );
+                }
                     , 0.f, 1.f, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
 
-            const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getGlobalAffectorable();
+                const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                    ->getGlobalAffectorable();
 
-            affectorable->addAffector( affector );
+                affectorable->addAffector( affector );
 
-            return soundIdentity;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void soundFadeInTo( const SoundIdentityInterfacePtr & _emitter, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
+                return soundIdentity;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void soundFadeInTo( const SoundIdentityInterfacePtr & _emitter, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            float volume = SOUND_SERVICE()
-                ->getSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
+                float volume = SOUND_SERVICE()
+                    ->getSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
-            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
-                    , callback, [this, _emitter]( float _volume ) { this->___soundFade( _emitter, _volume ); }
+                    , callback, [this, _emitter]( float _volume )
+                {
+                    this->___soundFade( _emitter, _volume );
+                }
                     , volume, _to, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getGlobalAffectorable();
+                const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                    ->getGlobalAffectorable();
 
-            affectorable->addAffector( affector );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
-                , _resourceName.c_str()
-            );
-
-            if( SOUND_SERVICE()
-                ->playEmitter( soundIdentity ) == false )
+                affectorable->addAffector( affector );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                LOGGER_ERROR( "invalid play '%s'"
+                SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                     , _resourceName.c_str()
-                );
+                    );
 
-                return nullptr;
-            }
+                if( SOUND_SERVICE()
+                    ->playEmitter( soundIdentity ) == false )
+                {
+                    LOGGER_ERROR( "invalid play '%s'"
+                        , _resourceName.c_str()
+                        );
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                    return nullptr;
+                }
 
-            MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
-                , _easingType.c_str()
-            );
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            float volume = SOUND_SERVICE()
-                ->getSourceMixerVolume( soundIdentity, STRINGIZE_STRING_LOCAL( "Fade" ) );
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
+                    , _easingType.c_str()
+                    );
 
-            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
+                float volume = SOUND_SERVICE()
+                    ->getSourceMixerVolume( soundIdentity, STRINGIZE_STRING_LOCAL( "Fade" ) );
+
+                AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
-                    , nullptr, [this, soundIdentity]( float _value ) { this->___soundFade( soundIdentity, _value ); }
+                    , nullptr, [this, soundIdentity]( float _value )
+                {
+                    this->___soundFade( soundIdentity, _value );
+                }
                     , volume, _to, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
 
-            const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getGlobalAffectorable();
+                const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                    ->getGlobalAffectorable();
 
-            affectorable->addAffector( affector );
+                affectorable->addAffector( affector );
 
-            return soundIdentity;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void soundStop( const SoundIdentityInterfacePtr & _emitter )
-        {
-            SOUND_SERVICE()
-                ->stopEmitter( _emitter );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void soundPause( const SoundIdentityInterfacePtr & _emitter )
-        {
-            SOUND_SERVICE()
-                ->pauseEmitter( _emitter );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void soundResume( const SoundIdentityInterfacePtr & _emitter )
-        {
-            SOUND_SERVICE()
-                ->resumeEmitter( _emitter );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool isSoundStop( const SoundIdentityInterfacePtr & _emitter )
-        {
-            return SOUND_SERVICE()
-                ->isEmitterStop( _emitter );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool isSoundPlay( const SoundIdentityInterfacePtr & _emitter )
-        {
-            return SOUND_SERVICE()
-                ->isEmitterPlay( _emitter );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool isSoundPause( const SoundIdentityInterfacePtr & _emitter )
-        {
-            return SOUND_SERVICE()
-                ->isEmitterPause( _emitter );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void voiceStop( const SoundIdentityInterfacePtr & _emitter )
-        {
-            SOUND_SERVICE()
-                ->stopEmitter( _emitter );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void soundSourceSetVolume( const SoundIdentityInterfacePtr & _emitter, float _volume )
-        {
-            if( SOUND_SERVICE()
-                ->setSourceVolume( _emitter, _volume, _volume, true ) == false )
-            {
-                LOGGER_ERROR( "invalid source volume %d"
-                    , _emitter->getId()
-                );
+                return soundIdentity;
             }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float soundSourceGetVolume( const SoundIdentityInterfacePtr & _emitter )
-        {
-            float volume = SOUND_SERVICE()
-                ->getSourceVolume( _emitter );
-
-            return volume;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void soundSetVolume( float _volume )
-        {
-            SOUND_SERVICE()
-                ->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, 0.f );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float soundGetVolume()
-        {
-            float volume = SOUND_SERVICE()
-                ->getSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
-
-            return volume;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void commonSetVolume( float _volume )
-        {
-            SOUND_SERVICE()
-                ->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float commonGetVolume()
-        {
-            return SOUND_SERVICE()
-                ->getCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonAmplifierMusicCallback
-            : public AmplifierMusicCallbackInterface
-            , public Factorable
-        {
-        public:
-            PythonAmplifierMusicCallback( const pybind::object & _cb, const pybind::args & _args )
-                : m_cb( _cb )
-                , m_args( _args )
+            //////////////////////////////////////////////////////////////////////////
+            void soundStop( const SoundIdentityInterfacePtr & _emitter )
             {
+                SOUND_SERVICE()
+                    ->stopEmitter( _emitter );
             }
-
-            ~PythonAmplifierMusicCallback() override
+            //////////////////////////////////////////////////////////////////////////
+            void soundPause( const SoundIdentityInterfacePtr & _emitter )
             {
+                SOUND_SERVICE()
+                    ->pauseEmitter( _emitter );
             }
-
-        protected:
-            void onMusicPause() override
+            //////////////////////////////////////////////////////////////////////////
+            void soundResume( const SoundIdentityInterfacePtr & _emitter )
             {
-                m_cb.call_args( 0, m_args );
+                SOUND_SERVICE()
+                    ->resumeEmitter( _emitter );
             }
-
-            void onMusicResume() override
+            //////////////////////////////////////////////////////////////////////////
+            bool isSoundStop( const SoundIdentityInterfacePtr & _emitter )
             {
-                m_cb.call_args( 1, m_args );
+                return SOUND_SERVICE()
+                    ->isEmitterStop( _emitter );
             }
-
-            void onMusicStop() override
+            //////////////////////////////////////////////////////////////////////////
+            bool isSoundPlay( const SoundIdentityInterfacePtr & _emitter )
             {
-                m_cb.call_args( 2, m_args );
+                return SOUND_SERVICE()
+                    ->isEmitterPlay( _emitter );
             }
-
-            void onMusicEnd() override
+            //////////////////////////////////////////////////////////////////////////
+            bool isSoundPause( const SoundIdentityInterfacePtr & _emitter )
             {
-                m_cb.call_args( 3, m_args );
+                return SOUND_SERVICE()
+                    ->isEmitterPause( _emitter );
             }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( SERVICE_EXIST( AmplifierInterface ) == false )
+            //////////////////////////////////////////////////////////////////////////
+            void voiceStop( const SoundIdentityInterfacePtr & _emitter )
             {
-                return;
+                SOUND_SERVICE()
+                    ->stopEmitter( _emitter );
             }
-
-            AmplifierMusicCallbackInterfacePtr cb = nullptr;
-
-            if( _cb.is_callable() == true )
+            //////////////////////////////////////////////////////////////////////////
+            void soundSourceSetVolume( const SoundIdentityInterfacePtr & _emitter, float _volume )
             {
-                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+                if( SOUND_SERVICE()
+                    ->setSourceVolume( _emitter, _volume, _volume, true ) == false )
+                {
+                    LOGGER_ERROR( "invalid source volume %d"
+                        , _emitter->getId()
+                        );
+                }
             }
-
-            AMPLIFIER_SERVICE()
-                ->playMusic( _resourceMusic, _pos, _isLooped, cb );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void musicSetVolume( float _volume )
-        {
-            SOUND_SERVICE()
-                ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float musicGetVolume()
-        {
-            return SOUND_SERVICE()
-                ->getMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void musicSetVolumeTag( const ConstString & _tag, float _volume, float _default )
-        {
-            SOUND_SERVICE()
-                ->setMusicVolume( _tag, _volume, _default );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float musicGetVolumeTag( const ConstString & _tag )
-        {
-            return SOUND_SERVICE()
-                ->getMusicVolume( _tag );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void voiceSetVolume( float _volume )
-        {
-            SOUND_SERVICE()
-                ->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float voiceGetVolume()
-        {
-            return SOUND_SERVICE()
-                ->getVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void musicStop()
-        {
-            AMPLIFIER_SERVICE()
-                ->stopMusic();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool musicPause()
-        {
-            bool successful = AMPLIFIER_SERVICE()
-                ->pauseMusic();
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool musicResume()
-        {
-            bool successful = AMPLIFIER_SERVICE()
-                ->resumeMusic();
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float musicGetDuration()
-        {
-            float posMs = AMPLIFIER_SERVICE()
-                ->getDuration();
-
-            return posMs;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float musicGetPosMs()
-        {
-            float posMs = AMPLIFIER_SERVICE()
-                ->getPosMs();
-
-            return posMs;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void musicSetPosMs( float _posMs )
-        {
-            AMPLIFIER_SERVICE()
-                ->setPosMs( _posMs );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void ___musicFade( float _volume )
-        {
-            SOUND_SERVICE()
-                ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class MusicAffectorCallback
-            : public AffectorCallbackInterface
-        {
-        public:
-            MusicAffectorCallback()
+            //////////////////////////////////////////////////////////////////////////
+            float soundSourceGetVolume( const SoundIdentityInterfacePtr & _emitter )
             {
+                float volume = SOUND_SERVICE()
+                    ->getSourceVolume( _emitter );
+
+                return volume;
             }
-
-            ~MusicAffectorCallback() override
+            //////////////////////////////////////////////////////////////////////////
+            void soundSetVolume( float _volume )
             {
+                SOUND_SERVICE()
+                    ->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, 0.f );
             }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
+            //////////////////////////////////////////////////////////////////////////
+            float soundGetVolume()
             {
-                m_cb = _cb;
-                m_args = _args;
+                float volume = SOUND_SERVICE()
+                    ->getSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
+
+                return volume;
             }
-
-        protected:
-            void onAffectorEnd( uint32_t _id, bool _isEnd ) override
+            //////////////////////////////////////////////////////////////////////////
+            void commonSetVolume( float _volume )
             {
-                if( m_cb.is_invalid() == true )
+                SOUND_SERVICE()
+                    ->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float commonGetVolume()
+            {
+                return SOUND_SERVICE()
+                    ->getCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class PythonAmplifierMusicCallback
+                : public AmplifierMusicCallbackInterface
+                , public Factorable
+            {
+            public:
+                PythonAmplifierMusicCallback( const pybind::object & _cb, const pybind::args & _args )
+                    : m_cb( _cb )
+                    , m_args( _args )
+                {
+                }
+
+                ~PythonAmplifierMusicCallback() override
+                {
+                }
+
+            protected:
+                void onMusicPause() override
+                {
+                    m_cb.call_args( 0, m_args );
+                }
+
+                void onMusicResume() override
+                {
+                    m_cb.call_args( 1, m_args );
+                }
+
+                void onMusicStop() override
+                {
+                    m_cb.call_args( 2, m_args );
+                }
+
+                void onMusicEnd() override
+                {
+                    m_cb.call_args( 3, m_args );
+                }
+
+            protected:
+                pybind::object m_cb;
+                pybind::args m_args;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( SERVICE_EXIST( AmplifierInterface ) == false )
                 {
                     return;
                 }
 
-                if( m_cb.is_none() == true )
+                AmplifierMusicCallbackInterfacePtr cb = nullptr;
+
+                if( _cb.is_callable() == true )
                 {
-                    return;
+                    cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
                 }
 
                 AMPLIFIER_SERVICE()
-                    ->stopMusic();
-
-                m_cb.call_args( _id, _isEnd, m_args );
+                    ->playMusic( _resourceMusic, _pos, _isLooped, cb );
             }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<MusicAffectorCallback> MusicAffectorCallbackPtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryMusicAffectorCallback;
-        //////////////////////////////////////////////////////////////////////////
-        MusicAffectorCallbackPtr createMusicAffectorCallback( const pybind::object & _cb, const pybind::args & _args )
-        {
-            MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-            callback->initialize( _cb, _args );
-
-            return callback;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        AFFECTOR_ID m_affectorMusicID;
-        //////////////////////////////////////////////////////////////////////////
-        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorMusic;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( SERVICE_EXIST( AmplifierInterface ) == false )
+            //////////////////////////////////////////////////////////////////////////
+            void musicSetVolume( float _volume )
             {
-                return 0;
+                SOUND_SERVICE()
+                    ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
             }
+            //////////////////////////////////////////////////////////////////////////
+            float musicGetVolume()
+            {
+                return SOUND_SERVICE()
+                    ->getMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void musicSetVolumeTag( const ConstString & _tag, float _volume, float _default )
+            {
+                SOUND_SERVICE()
+                    ->setMusicVolume( _tag, _volume, _default );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float musicGetVolumeTag( const ConstString & _tag )
+            {
+                return SOUND_SERVICE()
+                    ->getMusicVolume( _tag );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void voiceSetVolume( float _volume )
+            {
+                SOUND_SERVICE()
+                    ->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float voiceGetVolume()
+            {
+                return SOUND_SERVICE()
+                    ->getVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void musicStop()
+            {
+                AMPLIFIER_SERVICE()
+                    ->stopMusic();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool musicPause()
+            {
+                bool successful = AMPLIFIER_SERVICE()
+                    ->pauseMusic();
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                return successful;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool musicResume()
+            {
+                bool successful = AMPLIFIER_SERVICE()
+                    ->resumeMusic();
 
-            MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _cb, _args );
+                return successful;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float musicGetDuration()
+            {
+                float posMs = AMPLIFIER_SERVICE()
+                    ->getDuration();
 
-            AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
+                return posMs;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            float musicGetPosMs()
+            {
+                float posMs = AMPLIFIER_SERVICE()
+                    ->getPosMs();
+
+                return posMs;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void musicSetPosMs( float _posMs )
+            {
+                AMPLIFIER_SERVICE()
+                    ->setPosMs( _posMs );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void ___musicFade( float _volume )
+            {
+                SOUND_SERVICE()
+                    ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            class MusicAffectorCallback
+                : public AffectorCallbackInterface
+            {
+            public:
+                MusicAffectorCallback()
+                {
+                }
+
+                ~MusicAffectorCallback() override
+                {
+                }
+
+            public:
+                void initialize( const pybind::object & _cb, const pybind::args & _args )
+                {
+                    m_cb = _cb;
+                    m_args = _args;
+                }
+
+            protected:
+                void onAffectorEnd( uint32_t _id, bool _isEnd ) override
+                {
+                    if( m_cb.is_invalid() == true )
+                    {
+                        return;
+                    }
+
+                    if( m_cb.is_none() == true )
+                    {
+                        return;
+                    }
+
+                    AMPLIFIER_SERVICE()
+                        ->stopMusic();
+
+                    m_cb.call_args( _id, _isEnd, m_args );
+                }
+
+            protected:
+                pybind::object m_cb;
+                pybind::args m_args;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<MusicAffectorCallback> MusicAffectorCallbackPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryPtr m_factoryMusicAffectorCallback;
+            //////////////////////////////////////////////////////////////////////////
+            MusicAffectorCallbackPtr createMusicAffectorCallback( const pybind::object & _cb, const pybind::args & _args )
+            {
+                MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                callback->initialize( _cb, _args );
+
+                return callback;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            AFFECTOR_ID m_affectorMusicID;
+            //////////////////////////////////////////////////////////////////////////
+            IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorMusic;
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            {
+                if( SERVICE_EXIST( AmplifierInterface ) == false )
+                {
+                    return 0;
+                }
+
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+                MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _cb, _args );
+
+                AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
                     , easing
                     , callback
-                    , [this]( float _value ) { this->___musicFade( _value ); }
+                    , [this]( float _value )
+                {
+                    this->___musicFade( _value );
+                }
                     , 1.f, 0.f, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getGlobalAffectorable();
+                const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                    ->getGlobalAffectorable();
 
-            if( m_affectorMusicID != 0 )
-            {
-                if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                if( m_affectorMusicID != 0 )
                 {
-                    affectorable->stopAffector( m_affectorMusicID );
+                    if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                    {
+                        affectorable->stopAffector( m_affectorMusicID );
+                    }
                 }
+
+                AFFECTOR_ID id = affectorable->addAffector( affector );
+
+                m_affectorMusicID = id;
+
+                return id;
             }
-
-            AFFECTOR_ID id = affectorable->addAffector( affector );
-
-            m_affectorMusicID = id;
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
-        {
-            if( SERVICE_EXIST( AmplifierInterface ) == false )
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                return 0;
-            }
+                if( SERVICE_EXIST( AmplifierInterface ) == false )
+                {
+                    return 0;
+                }
 
-            AmplifierMusicCallbackInterfacePtr cb = nullptr;
+                AmplifierMusicCallbackInterfacePtr cb = nullptr;
 
-            if( _cb.is_callable() == true )
-            {
-                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
-            }
+                if( _cb.is_callable() == true )
+                {
+                    cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+                }
 
-            if( AMPLIFIER_SERVICE()
-                ->playMusic( _resourceMusic, _pos, _isLooped, cb ) == false )
-            {
-                LOGGER_ERROR( "invalid play music '%s' "
-                    , _resourceMusic.c_str()
-                );
+                if( AMPLIFIER_SERVICE()
+                    ->playMusic( _resourceMusic, _pos, _isLooped, cb ) == false )
+                {
+                    LOGGER_ERROR( "invalid play music '%s' "
+                        , _resourceMusic.c_str()
+                        );
 
-                return 0;
-            }
+                    return 0;
+                }
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+                EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
+                AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
                     , easing
                     , nullptr
-                    , [this]( float _value ) { this->___musicFade( _value ); }
+                    , [this]( float _value )
+                {
+                    this->___musicFade( _value );
+                }
                     , 0.f, 1.f, _time
                     , MENGINE_DOCUMENT_PYBIND
-                );
+                    );
 
-            const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getGlobalAffectorable();
+                const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                    ->getGlobalAffectorable();
 
-            if( m_affectorMusicID != 0 )
-            {
-                if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                if( m_affectorMusicID != 0 )
                 {
-                    affectorable->stopAffector( m_affectorMusicID );
+                    if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                    {
+                        affectorable->stopAffector( m_affectorMusicID );
+                    }
                 }
+
+                AFFECTOR_ID id = affectorable->addAffector( affector );
+
+                m_affectorMusicID = id;
+
+                return id;
             }
+            //////////////////////////////////////////////////////////////////////////
+            void soundMute( bool _mute )
+            {
+                SOUND_SERVICE()
+                    ->mute( _mute );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool isMute()
+            {
+                bool mute = SOUND_SERVICE()
+                    ->isMute();
 
-            AFFECTOR_ID id = affectorable->addAffector( affector );
+                return mute;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool isSilent()
+            {
+                bool silent = SOUND_SYSTEM()
+                    ->isSilent();
 
-            m_affectorMusicID = id;
-
-            return id;
-        }
+                return silent;
+            }
+        };
         //////////////////////////////////////////////////////////////////////////
-        void soundMute( bool _mute )
-        {
-            SOUND_SERVICE()
-                ->mute( _mute );
-        }
+        typedef IntrusivePtr< SoundScriptMethod> SoundScriptMethodPtr;
         //////////////////////////////////////////////////////////////////////////
-        bool isMute()
-        {
-            bool mute = SOUND_SERVICE()
-                ->isMute();
-
-            return mute;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool isSilent()
-        {
-            bool silent = SOUND_SYSTEM()
-                ->isSilent();
-
-            return silent;
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr< SoundScriptMethod> SoundScriptMethodPtr;
-    //////////////////////////////////////////////////////////////////////////
+    }
     SoundScriptEmbedding::SoundScriptEmbedding()
     {
     }

@@ -19,7 +19,7 @@ namespace Mengine
 {
     typedef uint32_t CacheBufferID;
 
-    static const CacheBufferID INVALID_CACHE_BUFFER_ID = 0;
+    static constexpr CacheBufferID INVALID_CACHE_BUFFER_ID = 0;
 
     class MemoryService
         : public ServiceBase<MemoryServiceInterface>

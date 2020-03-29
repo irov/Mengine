@@ -4,6 +4,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
@@ -297,7 +298,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     D3DFORMAT DX9RenderSystem::findMatchingZFormat_( D3DFORMAT _backBufferFormat )
     {
-        const D3DFORMAT DepthFormats[] = { D3DFMT_D32
+        const D3DFORMAT DepthFormats[] = {D3DFMT_D32
             , D3DFMT_D24S8
             , D3DFMT_D24X4S4
             , D3DFMT_D24X8
@@ -362,8 +363,10 @@ namespace Mengine
 
         m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-        HWND windowHandle = PLATFORM_SERVICE()
-            ->getWindowHandle();
+        Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getPlatformExtention();
+
+        HWND windowHandle = extension->getWindowHandle();
 
         m_d3dppW.hDeviceWindow = windowHandle;
 
@@ -392,7 +395,7 @@ namespace Mengine
         m_d3dppFS.BackBufferHeight = m_windowResolution.getHeight();
         m_d3dppFS.BackBufferCount = 1;
 
-        m_d3dppFS.hDeviceWindow = (HWND)windowHandle;
+        m_d3dppFS.hDeviceWindow = windowHandle;
 
         if( multiSampleType == D3DMULTISAMPLE_NONE )
         {
@@ -458,13 +461,13 @@ namespace Mengine
             LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
             );
 
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
                 D3DCREATE_SOFTWARE_VERTEXPROCESSING,
                 m_d3dpp, &m_pD3DDevice );
         }
         else
         {
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
                 D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
                 m_d3dpp, &m_pD3DDevice );
 
@@ -475,7 +478,7 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
                     D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
                     m_d3dpp, &m_pD3DDevice );
             }
@@ -487,7 +490,7 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
                     D3DCREATE_HARDWARE_VERTEXPROCESSING,
                     m_d3dpp, &m_pD3DDevice );
             }
@@ -499,7 +502,7 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
                     D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
                     m_d3dpp, &m_pD3DDevice );
             }
@@ -511,7 +514,7 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
                     D3DCREATE_MIXED_VERTEXPROCESSING,
                     m_d3dpp, &m_pD3DDevice );
             }
@@ -523,7 +526,7 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
                     D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
                     m_d3dpp, &m_pD3DDevice );
             }
@@ -535,7 +538,7 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, (HWND)windowHandle,
+                hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, windowHandle,
                     D3DCREATE_SOFTWARE_VERTEXPROCESSING,
                     m_d3dpp, &m_pD3DDevice );
             }
@@ -545,7 +548,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%u) BackBuffer Size %d:%d Format %d"
                 , hr
-                , (HWND)windowHandle
+                , windowHandle
                 , m_d3dpp->BackBufferWidth
                 , m_d3dpp->BackBufferHeight
                 , m_d3dpp->BackBufferFormat
@@ -611,10 +614,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
-        //float offset_x = -0.5f / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        //float offset_y = 0.5f / (m_windowViewport.end.y - m_windowViewport.begin.y);
-        float offset_x = 0.f;
-        float offset_y = 0.f;
+        float DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetX", -0.5f );
+        float DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetY", -0.5f );
+
+        float offset_x = DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        float offset_y = DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
         mt::mat4f vmperfect;
         mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
@@ -993,6 +997,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
     {
+        if( m_windowResolution == _resolution && m_fullscreen == _fullscreen )
+        {
+            return;
+        }
+
         m_fullscreen = _fullscreen;
 
         m_windowResolution = _resolution;
@@ -1293,10 +1302,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
     {
-        m_vertexBufferEnable = false;
-
         if( _vertexBuffer == nullptr )
         {
+            if( m_vertexBufferEnable == false )
+            {
+                return true;
+            }
+
+            m_vertexBufferEnable = false;
+
             IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
             {
                 return false;
@@ -1332,10 +1346,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )
     {
-        m_indexBufferEnable = false;
-
         if( _indexBuffer == nullptr )
         {
+            if( m_indexBufferEnable == false )
+            {
+                return true;
+            }
+
+            m_indexBufferEnable = false;
+
             IF_DXCALL( m_pD3DDevice, SetIndices, (nullptr) )
             {
                 return false;
@@ -1749,6 +1768,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
+        if( m_waitForVSync == _vSync )
+        {
+            return;
+        }
+
         m_waitForVSync = _vSync;
 
         this->updateVSyncDPP_();
@@ -1781,7 +1805,7 @@ namespace Mengine
 
         if( logcreateimage == true )
         {
-            LOGGER_STATISTIC( "create texture size %d:%d channels %d format %d (doc %s)"                
+            LOGGER_STATISTIC( "create texture size %d:%d channels %d format %d (doc %s)"
                 , _hwWidth
                 , _hwHeight
                 , _hwChannels

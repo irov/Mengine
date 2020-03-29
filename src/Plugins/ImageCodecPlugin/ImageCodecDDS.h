@@ -3,42 +3,42 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t DDS_MAGIC = 0x20534444;
+    static constexpr uint32_t DDS_MAGIC = 0x20534444;
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t DDSD_CAPS = 0x00000001;
-    static const uint32_t DDSD_HEIGHT = 0x00000002;
-    static const uint32_t DDSD_WIDTH = 0x00000004;
-    static const uint32_t DDSD_PITCH = 0x00000008;
-    static const uint32_t DDSD_PIXELFORMAT = 0x00001000;
-    static const uint32_t DDSD_MIPMAPCOUNT = 0x00020000;
-    static const uint32_t DDSD_LINEARSIZE = 0x00080000;
-    static const uint32_t DDSD_DEPTH = 0x00800000;
+    static constexpr uint32_t DDSD_CAPS = 0x00000001;
+    static constexpr uint32_t DDSD_HEIGHT = 0x00000002;
+    static constexpr uint32_t DDSD_WIDTH = 0x00000004;
+    static constexpr uint32_t DDSD_PITCH = 0x00000008;
+    static constexpr uint32_t DDSD_PIXELFORMAT = 0x00001000;
+    static constexpr uint32_t DDSD_MIPMAPCOUNT = 0x00020000;
+    static constexpr uint32_t DDSD_LINEARSIZE = 0x00080000;
+    static constexpr uint32_t DDSD_DEPTH = 0x00800000;
     //////////////////////////////////////////////////////////////////////////
     //
     // DDPIXELFORMAT flags
     //
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t DDPF_ALPHAPIXELS = 0x00000001l;
-    static const uint32_t DDPF_FOURCC = 0x00000004l;        // Compressed formats
-    static const uint32_t DDPF_RGB = 0x00000040l;        // Uncompressed formats
-    static const uint32_t DDPF_ALPHA = 0x00000002l;
-    static const uint32_t DDPF_COMPRESSED = 0x00000080l;
-    static const uint32_t DDPF_LUMINANCE = 0x00020000l;
-    static const uint32_t DDPF_BUMPLUMINANCE = 0x00040000l;        // L,U,V
-    static const uint32_t DDPF_BUMPDUDV = 0x00080000l;        // U,V
+    static constexpr uint32_t DDPF_ALPHAPIXELS = 0x00000001l;
+    static constexpr uint32_t DDPF_FOURCC = 0x00000004l;        // Compressed formats
+    static constexpr uint32_t DDPF_RGB = 0x00000040l;        // Uncompressed formats
+    static constexpr uint32_t DDPF_ALPHA = 0x00000002l;
+    static constexpr uint32_t DDPF_COMPRESSED = 0x00000080l;
+    static constexpr uint32_t DDPF_LUMINANCE = 0x00020000l;
+    static constexpr uint32_t DDPF_BUMPLUMINANCE = 0x00040000l;        // L,U,V
+    static constexpr uint32_t DDPF_BUMPDUDV = 0x00080000l;        // U,V
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t DDSF_COMPLEX = 0x00000008;
-    static const uint32_t DDSF_TEXTURE = 0x00001000;
-    static const uint32_t DDSF_MIPMAP = 0x00400000;
+    static constexpr uint32_t DDSF_COMPLEX = 0x00000008;
+    static constexpr uint32_t DDSF_TEXTURE = 0x00001000;
+    static constexpr uint32_t DDSF_MIPMAP = 0x00400000;
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t DDCF_CUBEMAP = 0x00000200;
-    static const uint32_t DDCF_CUBEMAP_POSITIVEX = 0x00000400;
-    static const uint32_t DDCF_CUBEMAP_NEGATIVEX = 0x00000800;
-    static const uint32_t DDCF_CUBEMAP_POSITIVEY = 0x00001000;
-    static const uint32_t DDCF_CUBEMAP_NEGATIVEY = 0x00002000;
-    static const uint32_t DDCF_CUBEMAP_POSITIVEZ = 0x00004000;
-    static const uint32_t DDCF_CUBEMAP_NEGATIVEZ = 0x00008000;
-    static const uint32_t DDCF_VOLUME = 0x00200000;
+    static constexpr uint32_t DDCF_CUBEMAP = 0x00000200;
+    static constexpr uint32_t DDCF_CUBEMAP_POSITIVEX = 0x00000400;
+    static constexpr uint32_t DDCF_CUBEMAP_NEGATIVEX = 0x00000800;
+    static constexpr uint32_t DDCF_CUBEMAP_POSITIVEY = 0x00001000;
+    static constexpr uint32_t DDCF_CUBEMAP_NEGATIVEY = 0x00002000;
+    static constexpr uint32_t DDCF_CUBEMAP_POSITIVEZ = 0x00004000;
+    static constexpr uint32_t DDCF_CUBEMAP_NEGATIVEZ = 0x00008000;
+    static constexpr uint32_t DDCF_VOLUME = 0x00200000;
     //////////////////////////////////////////////////////////////////////////
 #pragma pack( push, 1 )
     struct DDS_PIXELFORMAT

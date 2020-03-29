@@ -187,7 +187,7 @@ namespace Mengine
                 {
                     ThreadMutexScope mutexLock( m_dataMutex );
 
-                    static const size_t BUFFER_SIZE = 4096;
+                    static constexpr size_t BUFFER_SIZE = 4096;
                     uint8_t buffer[BUFFER_SIZE];
 
                     int32_t bytesReceived = 0;

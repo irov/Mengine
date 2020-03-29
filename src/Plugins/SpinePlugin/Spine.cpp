@@ -413,9 +413,7 @@ namespace Mengine
 
         spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
 
-        //spSkeleton_update( skeleton, 0.f );
-
-        //spSkeleton_updateWorldTransform( skeleton );
+        spSkeleton_update( skeleton, 0.f );
 
         m_skeleton = skeleton;
         m_animationStateData = animationStateData;
@@ -442,7 +440,10 @@ namespace Mengine
             float spTiming = desc.time * 0.001f;
 
             spAnimationState_update( animationState, spTiming );
+            spAnimationState_apply( animationState, m_skeleton );
         }
+
+        spSkeleton_updateWorldTransform( skeleton );
 
         int slotCount = m_skeleton->slotsCount;
 
@@ -901,10 +902,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _enumerator, _time );
-
-        //bool loop = this->getLoop();
-
-        //spAnimationState_setAnimation( m_animationState, 0, m_currentAnimation, loop ? 1 : 0 );
 
         return true;
     }

@@ -13,6 +13,7 @@ namespace Mengine
         : public Node
         , public BaseRender
         , public RenderExternalInterface
+        , public ImGUIRenderProviderInterface
         , public UnknownImGUIRender
     {
         DECLARE_VISITABLE( Node );
@@ -36,6 +37,9 @@ namespace Mengine
 
     protected:
         void onRenderExternal() const override;
+
+    protected:
+        ImTextureID getImTexture( const RenderTextureInterfacePtr & _texture ) const override;
 
     protected:
         LambdaImGUIProvider m_provider;

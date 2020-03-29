@@ -10,6 +10,7 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
@@ -685,15 +686,17 @@ namespace Mengine
             return false;
         }
 
-        m_glContext = SDL_GL_CreateContext( m_window );
+        SDL_GLContext glContext = SDL_GL_CreateContext( m_window );
 
-        if( m_glContext == nullptr )
+        if( glContext == nullptr )
         {
             SDL_DestroyWindow( m_window );
             m_window = nullptr;
 
             return false;
         }
+
+        m_glContext = glContext;
 
         int dw;
         int dh;
@@ -715,11 +718,6 @@ namespace Mengine
 #endif
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Pointer SDLPlatform::getWindowHandle() const
-    {
-        return m_window;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasPlatformTag( const ConstString & _tag ) const
@@ -1481,9 +1479,45 @@ namespace Mengine
         ::abort();
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer SDLPlatform::getPlatformExternal()
+    UnknownPointer SDLPlatform::getPlatformExtention()
     {
         return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SDL_Window * SDLPlatform::getWindow() const
+    {
+        return m_window;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SDL_GLContext SDLPlatform::getGLContext() const
+    {
+        return m_glContext;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SDLPlatform::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
+    {
+        uint32_t id = GENERATE_UNIQUE_IDENTITY();
+
+        SDLEventHandlerDesc desc;
+        
+        desc.id = id;
+        desc.handler = _handler;
+
+        m_sdlEventHandlers.emplace_back( desc );
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::removeSDLEventHandler( uint32_t _handlerId )
+    {
+        VectorSDLEventHandlers::iterator it_found = std::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
+        {
+            return _desc.id == _handlerId;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_sdlEventHandlers.end() );
+
+        m_sdlEventHandlers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
@@ -1621,6 +1655,11 @@ namespace Mengine
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 && !quitRequest )
         {
+            for( const SDLEventHandlerDesc & desc : m_sdlEventHandlers )
+            {
+                desc.handler( &sdlEvent );
+            }
+
             m_sdlInput->handleEvent( sdlEvent );
 
             switch( sdlEvent.type )

@@ -22,8 +22,6 @@ namespace Mengine
         void tick( const UpdateContext * _context ) override;
 
     protected:
-        uint32_t m_enumerator;
-
         struct TimepipeDesc
         {
             uint32_t id;

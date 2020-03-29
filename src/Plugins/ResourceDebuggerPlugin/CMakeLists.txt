@@ -9,4 +9,4 @@ src
     ResourceUselessCompileChecker.cpp
 )
 
-ADD_MENGINE_LIBRARY(Plugins)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_RESOURCEDEBUGGER)

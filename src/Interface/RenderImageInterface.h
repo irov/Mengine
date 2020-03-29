@@ -1,50 +1,16 @@
 #pragma once
 
 #include "Interface/RenderEnumInterface.h"
+#include "Interface/RenderImageProviderInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 #include "Kernel/Rect.h"
 #include "Kernel/PixelFormat.h"
-
-#include "Config/Typedef.h"
+#include "Kernel/UnknownPointer.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct RenderImageDesc
-    {
-        uint32_t mipmaps;
-        uint32_t width;
-        uint32_t height;
-        uint32_t channels;
-        uint32_t depth;
-        EPixelFormat format;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class RenderImageLoaderInterface
-        : public Mixin
-    {
-    public:
-        virtual void getImageDesc( RenderImageDesc * _desc ) const = 0;
-
-    public:
-        virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class RenderImageProviderInterface
-        : public Mixin
-    {
-    public:
-        virtual RenderImageLoaderInterfacePtr getLoader() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class RenderImageInterface
         : public Mixin
     {
@@ -74,6 +40,9 @@ namespace Mengine
     public:
         virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
         virtual bool unlock( uint32_t _level, bool _successful ) = 0;
+
+    public:
+        virtual UnknownPointer getRenderImageExtention() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;

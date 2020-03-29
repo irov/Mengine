@@ -18,7 +18,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        class MyAllocator
+        class MyPythonAllocator
             : public pybind::allocator_interface
         {
         protected:
@@ -71,7 +71,7 @@ namespace Mengine
         int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
 #endif
 
-        pybind::allocator_interface * allocator = Helper::newT<Detail::MyAllocator>();
+        pybind::allocator_interface * allocator = Helper::newT<Detail::MyPythonAllocator>();
 
         pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, MENGINE_DEBUG_ATTRIBUTE( true, false ), false, true );
 

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/OpenGLRenderImageExtensionInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "OpenGLRenderExtension.h"
+#include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
 #include "Kernel/ServantBase.h"
 
@@ -11,6 +12,7 @@ namespace Mengine
 {
     class OpenGLRenderImage
         : public RenderImageInterface
+        , public OpenGLRenderImageExtensionInterface
         , public Factorable
     {
     public:
@@ -52,11 +54,15 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
+        UnknownPointer getRenderImageExtention() override;
+
+    public:
         void _destroy() override;
 
     public:
-        GLuint getUId() const;
+        GLuint getUID() const override;
 
+    public:
         void setMinFilter( GLenum _minFilter );
         GLenum getMinFilter() const;
 

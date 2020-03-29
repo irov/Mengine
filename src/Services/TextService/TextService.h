@@ -20,6 +20,8 @@
 #include "Kernel/Map.h"
 #include "Config/Typedef.h"
 
+#include "stdex/intrusive_list.h"
+
 namespace Mengine
 {
     class TextService
@@ -136,6 +138,9 @@ namespace Mengine
 
         typedef stdex::template_pool<ConstStringHolderLocalString, 1024> PoolConstStringHolderLocalString;
         PoolConstStringHolderLocalString m_poolLocalString;
+
+        typedef stdex::intrusive_list<ConstStringHolderLocalString> IntrusiveListConstStringHolderLocalString;
+        IntrusiveListConstStringHolderLocalString m_holdersLocalString;
 
     protected:
         class TextManagerLoadSaxCallback;

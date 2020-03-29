@@ -19,7 +19,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/SDLPlatformInterface.h"
+#include "Interface/SDLPlatformExtensionInterface.h"
 
 #include "Kernel/FileLogger.h"
 #include "Kernel/Factory.h"
@@ -33,7 +33,7 @@ namespace Mengine
 {
     class SDLPlatform
         : public ServiceBase<PlatformInterface>
-        , public SDLPlatformInterface
+        , public SDLPlatformExtensionInterface
     {
     public:
         SDLPlatform();
@@ -65,7 +65,6 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-        Pointer getWindowHandle() const override;
 
     public:
         bool hasPlatformTag( const ConstString & _tag ) const override;
@@ -152,7 +151,15 @@ namespace Mengine
         void abort() override;
 
     public:
-        UnknownPointer getPlatformExternal() override;
+        UnknownPointer getPlatformExtention() override;
+
+    public:
+        SDL_Window * getWindow() const override;
+        SDL_GLContext getGLContext() const override;
+
+    public:
+        uint32_t addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;
+        void removeSDLEventHandler( uint32_t _handlerId ) override;
 
     protected:
         void changeWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -171,6 +178,15 @@ namespace Mengine
         SDL_Window * m_window;
 
         SDL_Joystick * m_accelerometer;
+
+        struct SDLEventHandlerDesc
+        {
+            uint32_t id;
+            LambdaSDLEventHandler handler;
+        };
+
+        typedef Vector<SDLEventHandlerDesc> VectorSDLEventHandlers;
+        VectorSDLEventHandlers m_sdlEventHandlers;
 
         struct TimerDesc
         {

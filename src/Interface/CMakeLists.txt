@@ -30,8 +30,8 @@ src
     MemoryInterface.h
     MemoryServiceInterface.h
     PlatformInterface.h
-    Win32PlatformInterface.h
-    SDLPlatformInterface.h
+    Win32PlatformExtensionInterface.h
+    SDLPlatformExtensionInterface
     ImageCodecInterface.h
     PickCodecInterface.h
     SoundCodecInterface.h
@@ -101,8 +101,6 @@ src
     EventReceiverInterface.h
     UnknownInterface.h
     UnknownNodeInterface.h
-    RenderProgramVariableInterface.h
-    RenderServiceInterface.h
     HierarchyInterface.h
     RenderInterface.h
     UpdateServiceInterface.h
@@ -159,8 +157,14 @@ ADD_FILTER(
 Render     
     MaterialEnumInterface.h
     RenderEnumInterface.h
+    RenderServiceInterface.h
     RenderSystemInterface.h
+    RenderProgramVariableInterface.h
     RenderImageInterface.h
+    RenderImageLoaderInterface.h
+    RenderImageProviderInterface.h
+    DX9RenderImageExtensionInterface.h
+    OpenGLRenderImageExtensionInterface.h
     RenderTextureInterface.h
     RenderViewportInterface.h
     RenderCameraInterface.h
@@ -177,7 +181,7 @@ Render
     RenderVertexAttributeInterface.h
     RenderMaterialInterface.h
     RenderBatchInterface.h
-    RenderPipelineInterface.h    
+    RenderPipelineInterface.h
 )
 
 ADD_FILTER(

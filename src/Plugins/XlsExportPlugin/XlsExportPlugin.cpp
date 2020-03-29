@@ -26,7 +26,7 @@ namespace Mengine
 {
     namespace Detail
     {
-        class MyAllocator
+        class MyXlsAllocator
             : public pybind::allocator_interface
         {
         protected:
@@ -102,7 +102,8 @@ namespace Mengine
             return false;
         }
 
-        pybind::allocator_interface * allocator = Helper::newT<Detail::MyAllocator>();
+        Detail::MyXlsAllocator * allocator = Helper::newT<Detail::MyXlsAllocator>();
+
 
         pybind::kernel_interface * kernel = pybind::initialize( allocator, shortpath_exportPath, false, false, true );
 

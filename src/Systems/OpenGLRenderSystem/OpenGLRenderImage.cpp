@@ -2,6 +2,7 @@
 
 #include "Interface/MemoryServiceInterface.h"
 
+#include "OpenGLRenderExtension.h"
 #include "OpenGLRenderError.h"
 
 #include "Kernel/Logger.h"
@@ -145,6 +146,11 @@ namespace Mengine
     float OpenGLRenderImage::getHWHeightInv() const
     {
         return m_hwHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UnknownPointer OpenGLRenderImage::getRenderImageExtention()
+    {
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::bind( uint32_t _stage )
@@ -399,7 +405,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    GLuint OpenGLRenderImage::getUId() const
+    GLuint OpenGLRenderImage::getUID() const
     {
         return m_uid;
     }

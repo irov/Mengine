@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t INVALID_UPDATABLE_ID = ~0U;
+    static constexpr uint32_t INVALID_UPDATABLE_ID = ~0U;
     //////////////////////////////////////////////////////////////////////////        
     class UpdateServiceInterface
         : public ServiceInterface

@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const uint64_t EVENTATION_RECEIVER_MASK_FULL = ~0ULL;
+    static constexpr uint64_t EVENTATION_RECEIVER_MASK_FULL = ~0ULL;
     //////////////////////////////////////////////////////////////////////////
     class EventationInterface
         : public Interface

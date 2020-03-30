@@ -63,7 +63,7 @@ namespace Mengine
         float getStateAnimationDuration( const ConstString & _state ) const override;
 
     public:
-        float getAnimationDuration( const ConstString & _name ) override;
+        float getAnimationDuration( const ConstString & _name ) const override;
 
     protected:
         bool _compile() override;

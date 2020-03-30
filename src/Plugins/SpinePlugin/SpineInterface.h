@@ -76,6 +76,6 @@ namespace Mengine
         virtual float getStateAnimationDuration( const ConstString & _state ) const = 0;
 
     public:
-        virtual float getAnimationDuration( const ConstString & _name ) = 0;
+        virtual float getAnimationDuration( const ConstString & _name ) const = 0;
     };
 }

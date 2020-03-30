@@ -368,7 +368,7 @@ namespace Mengine
         return desc.duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Spine::getAnimationDuration( const ConstString & _name )
+    float Spine::getAnimationDuration( const ConstString & _name ) const
     {
         if( this->isCompile() == false )
         {

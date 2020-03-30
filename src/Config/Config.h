@@ -117,3 +117,8 @@
 #ifndef MENGINE_MASTER_RELEASE
 #define MENGINE_MASTER_DEVELOPMENT
 #endif
+
+#if defined(__APPLE__)
+#   define off64_t off_t
+#   define fopen64 fopen
+#endif

@@ -11,7 +11,7 @@ ELSE()
 ENDIF()
 
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemname.c ${SOURCE_DIR}/jmemname.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemansi.c ${SOURCE_DIR}/jmemansi.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemsys.h ${SOURCE_DIR}/jmemsys.h COPYONLY)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
@@ -63,7 +63,7 @@ ${SOURCE_DIR}/jquant1.c
 ${SOURCE_DIR}/jquant2.c
 ${SOURCE_DIR}/jutils.c
 ${SOURCE_DIR}/jmemmgr.c
-${SOURCE_DIR}/jmemname.c
+${SOURCE_DIR}/jmemansi.c
 )
 
 include_directories(${SOURCE_DIR})

@@ -84,11 +84,11 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void s_spAnimationStateListener( spAnimationState * state, spEventType type, spTrackEntry * entry, spEvent * event )
+        static void s_spAnimationStateListener( spAnimationState * _state, spEventType _type, spTrackEntry * _entry, spEvent * _event )
         {
-            Spine * spine = static_cast<Spine *>(state->rendererObject);
+            Spine * spine = static_cast<Spine *>(_state->rendererObject);
 
-            spine->addAnimationEvent_( state, type, entry, event );
+            spine->addAnimationEvent_( _state, _type, _entry, _event );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -368,7 +368,7 @@ namespace Mengine
         return desc.duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Spine::getAnimationDuration( const ConstString & _name )
+    float Spine::getAnimationDuration( const ConstString & _name ) const
     {
         if( this->isCompile() == false )
         {
@@ -411,9 +411,9 @@ namespace Mengine
 
         spSkeleton * skeleton = spSkeleton_create( skeletonData );
 
-        spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
+        spSkeleton_setToSetupPose( skeleton );
 
-        spSkeleton_update( skeleton, 0.f );
+        spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
 
         m_skeleton = skeleton;
         m_animationStateData = animationStateData;
@@ -443,6 +443,7 @@ namespace Mengine
             spAnimationState_apply( animationState, m_skeleton );
         }
 
+        spSkeleton_updateCache( skeleton );
         spSkeleton_updateWorldTransform( skeleton );
 
         int slotCount = m_skeleton->slotsCount;
@@ -453,7 +454,7 @@ namespace Mengine
 
             uint32_t slotIndex = (uint32_t)slot->data->index;
 
-            VectorAttachmentMesh::iterator it_found = std::find_if( m_attachmentMeshes.begin(), m_attachmentMeshes.end(), [slotIndex]( const AttachmentMeshDesc & _desc )
+            VectorAttachmentMesh::const_iterator it_found = std::find_if( m_attachmentMeshes.begin(), m_attachmentMeshes.end(), [slotIndex]( const AttachmentMeshDesc & _desc )
             {
                 return _desc.index == slotIndex;
             } );

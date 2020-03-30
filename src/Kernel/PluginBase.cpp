@@ -144,7 +144,9 @@ namespace Mengine
         this->_destroyPlugin();
         this->_destroy();
 
+#if defined(MENGINE_WINDOWS_DEBUG)
         bool dynamicLoad = m_dynamicLoad;
+#endif
 
         Helper::deleteT( this );
 

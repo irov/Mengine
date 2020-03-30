@@ -572,6 +572,7 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     message("================openal-soft================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/bsinc_inc.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/alstring.h ${THIRDPARTY_DIR}/openal-soft/common/alstring.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/win_main_utf8.h ${THIRDPARTY_DIR}/openal-soft/common/win_main_utf8.h COPYONLY)
     
     if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)

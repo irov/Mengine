@@ -1,13 +1,13 @@
 /*
- * jmemname.c
+ * jmemansi.c
  *
- * Copyright (C) 1992-1997, Thomas G. Lane.
+ * Copyright (C) 1992-1996, Thomas G. Lane.
  * This file is part of the Independent JPEG Group's software.
  * For conditions of distribution and use, see the accompanying README file.
  *
- * This file provides a generic implementation of the system-dependent
- * portion of the JPEG memory manager.  This implementation assumes that
- * you must explicitly construct a name for each temp file.
+ * This file provides a simple generic implementation of the system-
+ * dependent portion of the JPEG memory manager.  This implementation
+ * assumes that you have the ANSI-standard library routine tmpfile().
  * Also, the problem of determining the amount of memory available
  * is shoved onto the user.
  */
@@ -26,112 +26,7 @@ extern void free JPP((void *ptr));
 #define SEEK_SET  0		/* if not, assume 0 is correct */
 #endif
 
-#ifdef DONT_USE_B_MODE		/* define mode parameters for fopen() */
-#define READ_BINARY	"r"
-#define RW_BINARY	"w+"
-#else
-#ifdef VMS			/* VMS is very nonstandard */
-#define READ_BINARY	"rb", "ctx=stm"
-#define RW_BINARY	"w+b", "ctx=stm"
-#else				/* standard ANSI-compliant case */
-#define READ_BINARY	"rb"
-#define RW_BINARY	"w+b"
-#endif
-#endif
 
-
-/*
- * Selection of a file name for a temporary file.
- * This is system-dependent!
- *
- * The code as given is suitable for most Unix systems, and it is easily
- * modified for most non-Unix systems.  Some notes:
- *  1.  The temp file is created in the directory named by TEMP_DIRECTORY.
- *      The default value is /usr/tmp, which is the conventional place for
- *      creating large temp files on Unix.  On other systems you'll probably
- *      want to change the file location.  You can do this by editing the
- *      #define, or (preferred) by defining TEMP_DIRECTORY in jconfig.h.
- *
- *  2.  If you need to change the file name as well as its location,
- *      you can override the TEMP_FILE_NAME macro.  (Note that this is
- *      actually a printf format string; it must contain %s and %d.)
- *      Few people should need to do this.
- *
- *  3.  mktemp() is used to ensure that multiple processes running
- *      simultaneously won't select the same file names.  If your system
- *      doesn't have mktemp(), define NO_MKTEMP to do it the hard way.
- *      (If you don't have <errno.h>, also define NO_ERRNO_H.)
- *
- *  4.  You probably want to define NEED_SIGNAL_CATCHER so that cjpeg.c/djpeg.c
- *      will cause the temp files to be removed if you stop the program early.
- */
-
-#ifndef TEMP_DIRECTORY		/* can override from jconfig.h or Makefile */
-#define TEMP_DIRECTORY  "/usr/tmp/" /* recommended setting for Unix */
-#endif
-
-static int next_file_num;	/* to distinguish among several temp files */
-
-#ifdef NO_MKTEMP
-
-#ifndef TEMP_FILE_NAME		/* can override from jconfig.h or Makefile */
-#define TEMP_FILE_NAME  "%sJPG%03d.TMP"
-#endif
-
-#ifndef NO_ERRNO_H
-#include <errno.h>		/* to define ENOENT */
-#endif
-
-/* ANSI C specifies that errno is a macro, but on older systems it's more
- * likely to be a plain int variable.  And not all versions of errno.h
- * bother to declare it, so we have to in order to be most portable.  Thus:
- */
-#ifndef errno
-extern int errno;
-#endif
-
-
-LOCAL(void)
-select_file_name (char * fname)
-{
-  FILE * tfile;
-
-  /* Keep generating file names till we find one that's not in use */
-  for (;;) {
-    next_file_num++;		/* advance counter */
-    sprintf(fname, TEMP_FILE_NAME, TEMP_DIRECTORY, next_file_num);
-    if ((tfile = fopen(fname, READ_BINARY)) == NULL) {
-      /* fopen could have failed for a reason other than the file not
-       * being there; for example, file there but unreadable.
-       * If <errno.h> isn't available, then we cannot test the cause.
-       */
-#ifdef ENOENT
-      if (errno != ENOENT)
-	continue;
-#endif
-      break;
-    }
-    fclose(tfile);		/* oops, it's there; close tfile & try again */
-  }
-}
-
-#else /* ! NO_MKTEMP */
-
-/* Note that mktemp() requires the initial filename to end in six X's */
-#ifndef TEMP_FILE_NAME		/* can override from jconfig.h or Makefile */
-#define TEMP_FILE_NAME  "%sJPG%dXXXXXX"
-#endif
-
-LOCAL(void)
-select_file_name (char * fname)
-{
-  next_file_num++;		/* advance counter */
-  sprintf(fname, TEMP_FILE_NAME, TEMP_DIRECTORY, next_file_num);
-  mktemp(fname);		/* make sure file name is unique */
-  /* mktemp replaces the trailing XXXXXX with a unique string of characters */
-}
-
-#endif /* NO_MKTEMP */
 
 //////////////////////////////////////////////////////////////////////////    
 static jpeg_malloc_t s_jpeg_malloc;
@@ -241,31 +136,30 @@ write_backing_store (j_common_ptr cinfo, backing_store_ptr info,
 METHODDEF(void)
 close_backing_store (j_common_ptr cinfo, backing_store_ptr info)
 {
-  fclose(info->temp_file);	/* close the file */
-  unlink(info->temp_name);	/* delete the file */
-/* If your system doesn't have unlink(), use remove() instead.
- * remove() is the ANSI-standard name for this function, but if
- * your system was ANSI you'd be using jmemansi.c, right?
- */
-  TRACEMSS(cinfo, 1, JTRC_TFILE_CLOSE, info->temp_name);
+  fclose(info->temp_file);
+  /* Since this implementation uses tmpfile() to create the file,
+   * no explicit file deletion is needed.
+   */
 }
 
 
 /*
  * Initial opening of a backing-store object.
+ *
+ * This version uses tmpfile(), which constructs a suitable file name
+ * behind the scenes.  We don't have to use info->temp_name[] at all;
+ * indeed, we can't even find out the actual name of the temp file.
  */
 
 GLOBAL(void)
 jpeg_open_backing_store (j_common_ptr cinfo, backing_store_ptr info,
 			 long total_bytes_needed)
 {
-  select_file_name(info->temp_name);
-  if ((info->temp_file = fopen(info->temp_name, RW_BINARY)) == NULL)
-    ERREXITS(cinfo, JERR_TFILE_CREATE, info->temp_name);
+  if ((info->temp_file = tmpfile()) == NULL)
+    ERREXITS(cinfo, JERR_TFILE_CREATE, "");
   info->read_backing_store = read_backing_store;
   info->write_backing_store = write_backing_store;
   info->close_backing_store = close_backing_store;
-  TRACEMSS(cinfo, 1, JTRC_TFILE_OPEN, info->temp_name);
 }
 
 
@@ -277,7 +171,6 @@ jpeg_open_backing_store (j_common_ptr cinfo, backing_store_ptr info,
 GLOBAL(long)
 jpeg_mem_init (j_common_ptr cinfo)
 {
-  next_file_num = 0;		/* initialize temp file name generator */
   return DEFAULT_MAX_MEM;	/* default for max_memory_to_use */
 }
 

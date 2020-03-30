@@ -676,15 +676,12 @@ SDL_strstr(const char *haystack, const char *needle)
 #endif /* HAVE_STRSTR */
 }
 
-#if !defined(HAVE__LTOA) || !defined(HAVE__I64TOA) || \
-    !defined(HAVE__ULTOA) || !defined(HAVE__UI64TOA)
 static const char ntoa_table[] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
     'U', 'V', 'W', 'X', 'Y', 'Z'
 };
-#endif /* ntoa() conversion table */
 
 char *
 SDL_itoa(int value, char *string, int radix)

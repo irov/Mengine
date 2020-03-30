@@ -9,7 +9,7 @@ SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(../download_template.cmake)
 
-DOWNLOAD_URL_HASH(boost https://netix.dl.sourceforge.net/project/boost/boost/1.72.0/boost_1_72_0.7z MD5 cbf2f2abf8cecf69210b60478bc51109)
+DOWNLOAD_URL_HASH(boost https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.7z SHA256 247a91dd7e4d9dd3c4b954b532fbc167ba62dc15ab834e5ad893d7c3f9eb5f0f)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
 DOWNLOAD_URL_HASH(openssl https://www.npcglib.org/~stathis/downloads/openssl-1.1.0f-vs2017.7z MD5 b6f8903afb8c61d3c4b93d439142e3b1)
 DOWNLOAD_URL(openssl_android https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.1a/only_android_openssl-1.1.1a.zip)

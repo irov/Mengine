@@ -159,7 +159,7 @@ namespace Mengine
         , m_fixedContentResolution( false )
         , m_fixedDisplayResolution( false )
         , m_createRenderWindow( false )
-        , m_debugMask( 0 )        
+        , m_debugMask( 0 )
         , m_maxFrameTime( 100.f )
         , m_projectVersion( 0 )
         , m_invalidateVsync( true )
@@ -248,7 +248,7 @@ namespace Mengine
 
         LOGGER_MESSAGE( "setup locale '%s'"
             , m_locale.c_str()
-        );
+            );
 
 #if defined(MENGINE_PLATFORM_IOS)
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -308,7 +308,7 @@ namespace Mengine
             , m_projectName
             , m_projectVersion
             , m_locale.c_str()
-        );
+            );
 
         bool logopenfiles = HAS_OPTION( "logopenfiles" );
 
@@ -344,7 +344,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "render pipeline '%s' invalid initialize"
                 , EngineRenderPipeline.c_str()
-            );
+                );
 
             return false;
         }
@@ -686,7 +686,7 @@ namespace Mengine
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
-        );
+            );
 
         this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 
@@ -695,7 +695,7 @@ namespace Mengine
             , m_renderViewport.begin.y
             , m_renderViewport.getWidth()
             , m_renderViewport.getHeight()
-        );
+            );
 
         m_createRenderWindow = RENDER_SERVICE()
             ->createRenderWindow( m_currentResolution
@@ -705,12 +705,12 @@ namespace Mengine
                 , fullscreen
                 , m_FSAAType
                 , m_FSAAQuality
-            );
+                );
 
         if( m_createRenderWindow == false )
         {
             LOGGER_ERROR( "failed to create render window"
-            );
+                );
 
             return false;
         }
@@ -748,7 +748,7 @@ namespace Mengine
             {
                 LOGGER_CRITICAL( "invalid load package '%s'"
                     , packagePath.c_str()
-                );
+                    );
 
                 return false;
             }
@@ -759,7 +759,7 @@ namespace Mengine
 
         LOGGER_INFO( "load game resource tags '%s'"
             , Helper::tagsToString( platformTags ).c_str()
-        );
+            );
 
         if( PACKAGE_SERVICE()
             ->enablePackages( m_locale, platformTags ) == false )
@@ -767,7 +767,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid enable for locale '%s' platform '%s'!"
                 , m_locale.c_str()
                 , Helper::tagsToString( platformTags ).c_str()
-            );
+                );
 
             return false;
         }
@@ -779,7 +779,7 @@ namespace Mengine
             {
                 LOGGER_CRITICAL( "invalid load setting '%s'"
                     , settingPath.c_str()
-                );
+                    );
 
                 return false;
             }
@@ -795,7 +795,7 @@ namespace Mengine
                 ->validate() == false )
             {
                 LOGGER_ERROR( "invalid validate!"
-                );
+                    );
             }
         }
 #endif
@@ -827,7 +827,7 @@ namespace Mengine
         {
             if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
             {
-                Char userPath[MENGINE_MAX_PATH] = { 0 };
+                Char userPath[MENGINE_MAX_PATH] = {0};
                 PLATFORM_SERVICE()
                     ->getUserPath( userPath );
 
@@ -956,6 +956,45 @@ namespace Mengine
                 }
 
                 m_debugPause = true;
+            }
+
+            if( _event.code == KC_OEM_6 && _event.isDown == true )
+            {
+                float timeFactor = GAME_SERVICE()
+                    ->getTimeFactor();
+
+                float TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
+
+                timeFactor += TimeFactorStep;
+
+                GAME_SERVICE()
+                    ->setTimeFactor( timeFactor );
+
+                LOGGER_MESSAGE( "time factor: %f"
+                    , timeFactor 
+                    );
+            }
+
+            if( _event.code == KC_OEM_4 && _event.isDown == true )
+            {
+                float timeFactor = GAME_SERVICE()
+                    ->getTimeFactor();
+
+                float TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
+
+                timeFactor -= TimeFactorStep;
+
+                if( timeFactor < 0.f )
+                {
+                    timeFactor = 0.f;
+                }
+
+                GAME_SERVICE()
+                    ->setTimeFactor( timeFactor );
+
+                LOGGER_MESSAGE( "time factor: %f"
+                    , timeFactor 
+                    );
             }
 
             //if( _event.code == KC_F12 && _event.isDown == true )
@@ -1328,7 +1367,7 @@ namespace Mengine
         LOGGER_INFO( "focus %d (freeze %d)"
             , m_focus
             , m_freeze
-        );
+            );
 
         if( m_freeze == true )
         {
@@ -1354,7 +1393,7 @@ namespace Mengine
         LOGGER_INFO( "freeze %d (focus %d)"
             , m_freeze
             , m_focus
-        );
+            );
 
         if( m_focus == false )
         {
@@ -1457,7 +1496,7 @@ namespace Mengine
         applicationContext.revision = m_updateRevision;
         applicationContext.current = current;
         applicationContext.time = time;
-        
+
         TIMELINE_SERVICE()
             ->begin( &applicationContext );
 
@@ -1572,12 +1611,12 @@ namespace Mengine
         LOGGER_MESSAGE( "Max Client Resolution %u %u"
             , dres.getWidth()
             , dres.getHeight()
-        );
+            );
 
         LOGGER_MESSAGE( "Window Resolution %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
-        );
+            );
 
         float aspect = m_windowResolution.getAspectRatio();
 
@@ -1630,7 +1669,7 @@ namespace Mengine
     {
         LOGGER_INFO( "find aspect %f"
             , _aspect
-        );
+            );
 
         if( m_aspectRatioViewports.empty() == true )
         {
@@ -1664,7 +1703,7 @@ namespace Mengine
             , _viewport.begin.y
             , _viewport.end.x
             , _viewport.end.y
-        );
+            );
 
         return true;
     }
@@ -1674,7 +1713,7 @@ namespace Mengine
         LOGGER_INFO( "resolution [%d %d]"
             , _resolution.getWidth()
             , _resolution.getHeight()
-        );
+            );
 
         float rw = (float)_resolution.getWidth();
         float rh = (float)_resolution.getHeight();
@@ -1711,7 +1750,7 @@ namespace Mengine
             LOGGER_INFO( "area [%d %d]"
                 , areaWidth
                 , areaHeight
-            );
+                );
 
             _viewport.begin.x = ceilf( (rw - areaWidth) * 0.5f );
             _viewport.begin.y = ceilf( (rh - areaHeight) * 0.5f );
@@ -1743,7 +1782,7 @@ namespace Mengine
         LOGGER_INFO( "resolution %d:%d\n"
             , windowResolution.getWidth()
             , windowResolution.getHeight()
-        );
+            );
 
         float aspect = windowResolution.getAspectRatio();
 
@@ -1755,7 +1794,7 @@ namespace Mengine
             LOGGER_INFO( "viewport (1) %f:%f\n"
                 , aspectRatioViewport.getWidth()
                 , aspectRatioViewport.getHeight()
-            );
+                );
 
             if( windowResolution.getWidth() < aspectRatioViewport.getWidth() ||
                 windowResolution.getHeight() < aspectRatioViewport.getHeight() )
@@ -1768,7 +1807,7 @@ namespace Mengine
             LOGGER_INFO( "viewport (2) %d:%d\n"
                 , m_contentResolution.getWidth()
                 , m_contentResolution.getHeight()
-            );
+                );
 
             if( windowResolution.getWidth() < m_contentResolution.getWidth() ||
                 windowResolution.getHeight() < m_contentResolution.getHeight() )
@@ -1787,7 +1826,7 @@ namespace Mengine
             , m_windowResolution.getHeight()
             , _resolution.getWidth()
             , _resolution.getHeight()
-        );
+            );
 
         if( m_windowResolution == _resolution )
         {
@@ -1857,7 +1896,7 @@ namespace Mengine
             , fullscreen
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
-        );
+            );
 
         bool vsync = this->getVSync();
 
@@ -1874,7 +1913,7 @@ namespace Mengine
             , m_renderViewport.begin.y
             , m_renderViewport.getWidth()
             , m_renderViewport.getHeight()
-        );
+            );
 
         RENDER_SERVICE()
             ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
@@ -1901,7 +1940,7 @@ namespace Mengine
                 , gameViewport.end.x
                 , gameViewport.end.y
                 , gameViewportAspect
-            );
+                );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1999,7 +2038,7 @@ namespace Mengine
         {
             LOGGER_WARNING( "alredy set locale '%s'"
                 , _locale.c_str()
-            );
+                );
 
             return;
         }
@@ -2011,7 +2050,7 @@ namespace Mengine
         LOGGER_MESSAGE( "new locale '%s' old '%s'"
             , m_locale.c_str()
             , prevLocale.c_str()
-        );
+            );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
@@ -2205,7 +2244,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( cursorResource, "can't find resource cursor '%s'"
             , _resourceName.c_str()
-        );
+            );
 
         m_cursorResource = cursorResource;
 

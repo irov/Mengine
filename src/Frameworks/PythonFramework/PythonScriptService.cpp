@@ -94,7 +94,7 @@ namespace Mengine
             {
             }
 
-            ~My_observer_bind_call()
+            virtual ~My_observer_bind_call()
             {
             }
 

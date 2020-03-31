@@ -62,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::setLineWidth( float _width )
     {
-        gp_set_line_width( m_canvas, _width );
+        gp_set_line_thickness( m_canvas, _width );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -70,7 +70,7 @@ namespace Mengine
     float Vectorizator::getLineWidth() const
     {
         float lineWidth;
-        gp_get_line_width( m_canvas, &lineWidth );
+        gp_get_line_thickness( m_canvas, &lineWidth );
 
         return lineWidth;
     }
@@ -92,13 +92,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::setLineColor( const Color & _color )
     {
-        gp_color_t c;
-        c.r = _color.getR();
-        c.g = _color.getG();
-        c.b = _color.getB();
-        c.a = _color.getA();
+        float r = _color.getR();
+        float g = _color.getG();
+        float b = _color.getB();
+        float a = _color.getA();
 
-        gp_set_color( m_canvas, &c );
+        gp_set_color( m_canvas, r, g, b, a );
 
         m_invalidateLocalVertex2D = true;
     }

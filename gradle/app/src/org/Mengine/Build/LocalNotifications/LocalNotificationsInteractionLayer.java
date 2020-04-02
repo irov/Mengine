@@ -51,6 +51,11 @@ public class LocalNotificationsInteractionLayer {
         NotificationManager notificationManager = (NotificationManager)_currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, notification);
     }
+    
+    public void clearAll() {
+        NotificationManager notificationManager = (NotificationManager)_currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.clearAll();
+    }    
 
     public Notification getNotification(int id, String title, String content) {
         Intent intent = new Intent(_currentContext, MengineActivity.class);

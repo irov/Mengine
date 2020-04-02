@@ -354,7 +354,7 @@ public class MengineActivity extends SDLActivity {
             }
         });
     }
-
+    
     public static void scheduleLocalNotification(int id, String title, String content, int delay) {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
             Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
@@ -366,6 +366,12 @@ public class MengineActivity extends SDLActivity {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
             Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
             _instance.localNotificationsInteractionLayer.instantlyPresentNotification(notification, id);
+        }
+    }
+    
+    public static void clearAllLocalNotification() {
+        if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
+            _instance.localNotificationsInteractionLayer.clearAll();
         }
     }
 }

@@ -29,6 +29,9 @@ namespace Mengine
         virtual void setEllipseQuality( uint8_t _quality ) = 0;
         virtual uint8_t getEllipseQuality() const = 0;
 
+        virtual void setRectQuality( uint8_t _quality ) = 0;
+        virtual uint8_t getRectQuality() const = 0;
+
     public:
         virtual void beginFill() = 0;
         virtual void endFill() = 0;

@@ -24,7 +24,7 @@ namespace Mengine
         , public BaseUpdation
         , public BaseRender
         , public BaseEventation
-        , public UnknownSpine
+        , public UnknownSpineInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
@@ -63,7 +63,7 @@ namespace Mengine
         float getStateAnimationDuration( const ConstString & _state ) const override;
 
     public:
-        float getAnimationDuration( const ConstString & _name ) const override;
+        bool setStateAnimationLastFrame( const ConstString & _state ) override;
 
     protected:
         bool _compile() override;
@@ -111,6 +111,7 @@ namespace Mengine
             ConstString state;
             ConstString name;
             spAnimationState * animationState;
+            spTrackEntry * track;
             float time;
             float duration;
             float speedFactor;

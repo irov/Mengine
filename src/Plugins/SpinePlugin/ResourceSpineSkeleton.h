@@ -14,7 +14,7 @@ namespace Mengine
     class ResourceSpineSkeleton
         : public Resource
         , private BaseContent
-        , public UnknownResourceSpineSkeleton
+        , public UnknownResourceSpineSkeletonInterface
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();

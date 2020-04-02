@@ -26,19 +26,19 @@ namespace Mengine
         virtual void onSpineStateAnimationEnd( const ConstString & _state, const ConstString & _animation, bool _isEnd ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SpineEventReceiverInterface> SpineEventReceiverPtr;
+    typedef IntrusivePtr<SpineEventReceiverInterface> SpineEventReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( SpineEventReceiverInterface, EVENT_SPINE_EVENT );
     EVENTATION_TYPEID( SpineEventReceiverInterface, EVENT_SPINE_STATE_ANIMATION_END );
     //////////////////////////////////////////////////////////////////////////
-    class UnknownResourceSpineAtlasTexturepacker
+    class UnknownResourceSpineAtlasTexturepackerInterface
         : public UnknownInterface
     {
     public:
         virtual void addResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    class UnknownResourceSpineSkeleton
+    class UnknownResourceSpineSkeletonInterface
         : public UnknownInterface
     {
     public:
@@ -47,7 +47,7 @@ namespace Mengine
 
     };
     //////////////////////////////////////////////////////////////////////////
-    class UnknownSpine
+    class UnknownSpineInterface
         : public UnknownInterface
     {
     public:
@@ -76,6 +76,6 @@ namespace Mengine
         virtual float getStateAnimationDuration( const ConstString & _state ) const = 0;
 
     public:
-        virtual float getAnimationDuration( const ConstString & _name ) const = 0;
+        virtual bool setStateAnimationLastFrame( const ConstString & _state ) = 0;
     };
 }

@@ -16,7 +16,7 @@ static jclass mActivityClass;
 static jmethodID jmethodID_localNotificationsInitializePlugin;
 static jmethodID jmethodID_scheduleLocalNotification;
 static jmethodID jmethodID_instantlyPresentLocalNotification;
-static jmethodID jmethodID_clearAllLocalNotification;
+static jmethodID jmethodID_cancelAllLocalNotification;
 
 
 static Mengine::AndroidNativeLocalNotificationsModule * s_androidNativeLocalNotificationsModule;
@@ -31,7 +31,7 @@ extern "C" {
         jmethodID_localNotificationsInitializePlugin = env->GetStaticMethodID( mActivityClass, "localNotificationsInitializePlugin", "()V" );
         jmethodID_scheduleLocalNotification = env->GetStaticMethodID( mActivityClass, "scheduleLocalNotification", "(ILjava/lang/String;Ljava/lang/String;I)V" );
         jmethodID_instantlyPresentLocalNotification = env->GetStaticMethodID( mActivityClass, "instantlyPresentLocalNotification", "(ILjava/lang/String;Ljava/lang/String;)V" );
-        jmethodID_clearAllLocalNotification = env->GetStaticMethodID( mActivityClass, "clearAllLocalNotification", "()V" );
+        jmethodID_cancelAllLocalNotification = env->GetStaticMethodID( mActivityClass, "cancelAllLocalNotification", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -126,7 +126,7 @@ namespace Mengine
 
         pybind::def_functor( kernel, "androidScheduleLocalNotification", this, &AndroidNativeLocalNotificationsModule::scheduleLocalNotification );
         pybind::def_functor( kernel, "androidInstantlyPresentLocalNotification", this, &AndroidNativeLocalNotificationsModule::instantlyPresentLocalNotification );
-        pybind::def_functor( kernel, "clearAllLocalNotification", this, &AndroidNativeLocalNotificationsModule::clearAllLocalNotification );
+        pybind::def_functor( kernel, "cancelAllLocalNotification", this, &AndroidNativeLocalNotificationsModule::cancelAllLocalNotification );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -216,10 +216,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeLocalNotificationsModule::clearAllLocalNotification()
+    bool AndroidNativeLocalNotificationsModule::cancelAllLocalNotification()
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_clearAllLocalNotification );
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_cancelAllLocalNotification );
 
         return true;
     }

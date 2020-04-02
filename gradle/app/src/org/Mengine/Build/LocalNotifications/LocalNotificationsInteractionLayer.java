@@ -52,9 +52,9 @@ public class LocalNotificationsInteractionLayer {
         notificationManager.notify(id, notification);
     }
     
-    public void clearAll() {
+    public void cancelAll() {
         NotificationManager notificationManager = (NotificationManager)_currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.clearAll();
+        notificationManager.cancelAll();
     }    
 
     public Notification getNotification(int id, String title, String content) {

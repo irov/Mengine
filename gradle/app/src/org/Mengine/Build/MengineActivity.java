@@ -369,9 +369,9 @@ public class MengineActivity extends SDLActivity {
         }
     }
     
-    public static void clearAllLocalNotification() {
+    public static void cancelAllLocalNotification() {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            _instance.localNotificationsInteractionLayer.clearAll();
+            _instance.localNotificationsInteractionLayer.cancelAll();
         }
     }
 }

@@ -125,13 +125,14 @@ namespace Mengine
             animationState->rendererObject = this;
             animationState->listener = &Detail::s_spAnimationStateListener;
 
-            spAnimationState_setAnimation( animationState, 0, animation, _loop ? 1 : 0 );
+            spTrackEntry * track = spAnimationState_setAnimation( animationState, 0, animation, _loop ? 1 : 0 );
 
             AnimationDesc desc;
 
             desc.state = _state;
             desc.name = _name;
             desc.animationState = animationState;
+            desc.track = track;
             desc.time = _timing;
             desc.duration = animation->duration * 1000.f;
             desc.speedFactor = _speedFactor;
@@ -258,7 +259,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Spine::setStateAnimationTiming( const ConstString & _state, float _timing )
     {
-        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
         {
             return _desc.state == _state;
         } );
@@ -272,7 +273,7 @@ namespace Mengine
             return false;
         }
 
-        AnimationDesc & desc = *it_found;
+        const AnimationDesc & desc = *it_found;
 
         if( this->setStateAnimation( _state, desc.name, _timing, desc.speedFactor, desc.loop ) == false )
         {
@@ -368,27 +369,31 @@ namespace Mengine
         return desc.duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Spine::getAnimationDuration( const ConstString & _name ) const
+    bool Spine::setStateAnimationLastFrame( const ConstString & _state )
     {
-        if( this->isCompile() == false )
+        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
         {
-            LOGGER_ERROR( "'%s' not setup resource"
-                , this->getName().c_str()
+            return _desc.state == _state;
+        } );
+
+        if( it_found == m_animations.end() )
+        {
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , _state.c_str()
             );
 
-            return 0.f;
+            return false;
         }
 
-        spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
+        AnimationDesc & desc = *it_found;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( animation, 0.f, "'%s' invalid find skeleton animation '%s'"
-            , this->getName().c_str()
-            , _name.c_str()
-        );
+        desc.time = desc.duration;
+        desc.track->trackTime = desc.duration;
 
-        float duration = animation->duration * 1000.f;
+        spAnimationState_update( desc.animationState, 0.f );
+        spAnimationState_apply( desc.animationState, m_skeleton );
 
-        return duration;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::_compile()

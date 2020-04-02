@@ -73,7 +73,6 @@ namespace Mengine
             .def( "setResourceSpineSkeleton", &Spine::setResourceSpineSkeleton )
             .def( "getResourceSpineSkeleton", &Spine::getResourceSpineSkeleton )
             .def( "mixAnimation", &Spine::mixAnimation )
-            .def( "getAnimationDuration", &Spine::getAnimationDuration )
             .def( "setStateAnimation", &Spine::setStateAnimation )
             .def( "removeStateAnimation", &Spine::removeStateAnimation )
             .def( "setStateAnimationSpeedFactor", &Spine::setStateAnimationSpeedFactor )
@@ -83,6 +82,7 @@ namespace Mengine
             .def( "setStateAnimationFreeze", &Spine::setStateAnimationFreeze )
             .def( "getStateAnimationFreeze", &Spine::getStateAnimationFreeze )
             .def( "getStateAnimationDuration", &Spine::getStateAnimationDuration )
+            .def( "setStateAnimationLastFrame", &Spine::setStateAnimationLastFrame )
             .def_static_native_kernel( "setEventListener", &Detail::s_Spine_setEventListener )
             ;
 

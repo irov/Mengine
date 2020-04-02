@@ -3389,7 +3389,7 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
-        UNSCRIPT_CLASS_WRAPPING( Vectorizator );
+        UNSCRIPT_CLASS_WRAPPING( Graphics );
 
         UNSCRIPT_CLASS_WRAPPING( Window );
 

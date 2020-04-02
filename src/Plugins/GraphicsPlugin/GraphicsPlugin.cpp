@@ -1,30 +1,30 @@
-#include "VectorizatorPlugin.h"
+#include "GraphicsPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 
-#include "Vectorizator.h"
+#include "Graphics.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Vectorizator, Mengine::VectorizatorPlugin );
+PLUGIN_FACTORY( Graphics, Mengine::GraphicsPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    VectorizatorPlugin::VectorizatorPlugin()
+    GraphicsPlugin::GraphicsPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    VectorizatorPlugin::~VectorizatorPlugin()
+    GraphicsPlugin::~GraphicsPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VectorizatorPlugin::_initializePlugin()
+    bool GraphicsPlugin::_initializePlugin()
     {
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Vectorizator" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Vectorizator, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Graphics, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -32,9 +32,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VectorizatorPlugin::_finalizePlugin()
+    void GraphicsPlugin::_finalizePlugin()
     {
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Vectorizator" ) );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ) );
     }
 }

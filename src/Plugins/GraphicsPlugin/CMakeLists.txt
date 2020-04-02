@@ -1,22 +1,22 @@
-set(MY_LIB_NAME VectorizatorPlugin)
+set(MY_LIB_NAME GraphicsPlugin)
 
 ADD_FILTER(
 src
-    VectorizatorInterface.h
+    GraphicsInterface.h
 
-    Vectorizator.h
-    Vectorizator.cpp
+    Graphics.h
+    Graphics.cpp
     
-    VectorizatorPlugin.h
-    VectorizatorPlugin.cpp
-    VectorizatorPlugin.def
+    GraphicsPlugin.h
+    GraphicsPlugin.cpp
+    GraphicsPlugin.def
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
-        VectorizatorScriptEmbedding.h
-        VectorizatorScriptEmbedding.cpp
+        GraphicsScriptEmbedding.h
+        GraphicsScriptEmbedding.cpp
         )
         
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
@@ -24,7 +24,7 @@ endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/graphics/include)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_VECTORIZATOR)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_GRAPHICS)
 
 if(MENGINE_USE_SCRIPT_SERVICE)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})

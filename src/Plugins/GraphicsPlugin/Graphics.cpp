@@ -1,4 +1,4 @@
-#include "Vectorizator.h"
+#include "Graphics.h"
 
 #include "Interface/RenderMaterialServiceInterface.h"
 
@@ -30,20 +30,20 @@ static void gp_free( void * _ptr, void * _ud )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Vectorizator::Vectorizator()
+    Graphics::Graphics()
         : m_canvas( nullptr )
         , m_invalidateLocalVertex2D( false )
     {
         gp_canvas_create( &m_canvas, &gp_malloc, &gp_free, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    Vectorizator::~Vectorizator()
+    Graphics::~Graphics()
     {
         gp_canvas_destroy( m_canvas );
         m_canvas = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Vectorizator::_compile()
+    bool Graphics::_compile()
     {
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
             ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
@@ -55,19 +55,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::_release()
+    void Graphics::_release()
     {
         m_material = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::setLineWidth( float _width )
+    void Graphics::setLineWidth( float _width )
     {
         gp_set_line_thickness( m_canvas, _width );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Vectorizator::getLineWidth() const
+    float Graphics::getLineWidth() const
     {
         float lineWidth;
         gp_get_line_thickness( m_canvas, &lineWidth );
@@ -75,14 +75,14 @@ namespace Mengine
         return lineWidth;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::setLineSoft( float _penumbra )
+    void Graphics::setLineSoft( float _penumbra )
     {
         gp_set_penumbra( m_canvas, _penumbra );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Vectorizator::getLineSoft() const
+    float Graphics::getLineSoft() const
     {
         float linePenumbra;
         gp_get_penumbra( m_canvas, &linePenumbra );
@@ -90,7 +90,7 @@ namespace Mengine
         return linePenumbra;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::setLineColor( const Color & _color )
+    void Graphics::setLineColor( const Color & _color )
     {
         float r = _color.getR();
         float g = _color.getG();
@@ -102,7 +102,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    Color Vectorizator::getLineColor() const
+    Color Graphics::getLineColor() const
     {
         gp_color_t c;
         gp_get_color( m_canvas, &c );
@@ -110,14 +110,14 @@ namespace Mengine
         return Color( c.r, c.g, c.b, c.a );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::setCurveQuality( uint8_t _quality )
+    void Graphics::setCurveQuality( uint8_t _quality )
     {
         gp_set_curve_quality( m_canvas, _quality );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint8_t Vectorizator::getCurveQuality() const
+    uint8_t Graphics::getCurveQuality() const
     {
         gp_uint8_t quality;
         gp_get_curve_quality( m_canvas, &quality );
@@ -125,14 +125,14 @@ namespace Mengine
         return quality;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::setEllipseQuality( uint8_t _quality )
+    void Graphics::setEllipseQuality( uint8_t _quality )
     {
         gp_set_ellipse_quality( m_canvas, _quality );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint8_t Vectorizator::getEllipseQuality() const
+    uint8_t Graphics::getEllipseQuality() const
     {
         gp_uint8_t quality;
         gp_get_ellipse_quality( m_canvas, &quality );
@@ -140,7 +140,7 @@ namespace Mengine
         return quality;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::beginFill()
+    void Graphics::beginFill()
     {
         if( gp_begin_fill( m_canvas ) == GP_FAILURE )
         {
@@ -150,7 +150,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::endFill()
+    void Graphics::endFill()
     {
         if( gp_end_fill( m_canvas ) == GP_FAILURE )
         {
@@ -160,7 +160,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::moveTo( const mt::vec2f & _point )
+    void Graphics::moveTo( const mt::vec2f & _point )
     {
         if( gp_move_to( m_canvas, _point.x, _point.y ) == GP_FAILURE )
         {
@@ -168,7 +168,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::lineTo( const mt::vec2f & _point )
+    void Graphics::lineTo( const mt::vec2f & _point )
     {
         if( gp_line_to( m_canvas, _point.x, _point.y ) == GP_FAILURE )
         {
@@ -178,7 +178,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point )
+    void Graphics::quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point )
     {
         if( gp_quadratic_curve_to( m_canvas, _p0.x, _p0.y, _point.x, _point.y ) == GP_FAILURE )
         {
@@ -188,7 +188,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::bezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point )
+    void Graphics::bezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point )
     {
         if( gp_bezier_curve_to( m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _point.x, _point.y ) == GP_FAILURE )
         {
@@ -198,7 +198,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::drawRect( const mt::vec2f & _point, float _width, float _height )
+    void Graphics::drawRect( const mt::vec2f & _point, float _width, float _height )
     {
         if( gp_draw_rect( m_canvas, _point.x, _point.y, _width, _height ) == GP_FAILURE )
         {
@@ -208,7 +208,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius )
+    void Graphics::drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius )
     {
         if( gp_draw_rounded_rect( m_canvas, _point.x, _point.y, _width, _height, _radius ) == GP_FAILURE )
         {
@@ -220,7 +220,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::drawCircle( const mt::vec2f & _point, float _radius )
+    void Graphics::drawCircle( const mt::vec2f & _point, float _radius )
     {
         if( gp_draw_circle( m_canvas, _point.x, _point.y, _radius ) == GP_FAILURE )
         {
@@ -230,7 +230,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::drawEllipse( const mt::vec2f & _point, float _width, float _height )
+    void Graphics::drawEllipse( const mt::vec2f & _point, float _width, float _height )
     {
         if( gp_draw_ellipse( m_canvas, _point.x, _point.y, _width, _height ) == GP_FAILURE )
         {
@@ -240,7 +240,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::clear()
+    void Graphics::clear()
     {
         gp_canvas_clear( m_canvas );
 
@@ -250,7 +250,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
+    void Graphics::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         if( m_invalidateLocalVertex2D == true )
         {
@@ -271,21 +271,21 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::_invalidateWorldMatrix()
+    void Graphics::_invalidateWorldMatrix()
     {
         Node::_invalidateWorldMatrix();
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::_invalidateColor()
+    void Graphics::_invalidateColor()
     {
         BaseRender::_invalidateColor();
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::updateLocalVertex2D_() const
+    void Graphics::updateLocalVertex2D_() const
     {
         m_invalidateLocalVertex2D = false;
 

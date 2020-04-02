@@ -10,7 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class VectorizatorInterface
+    class GraphicsInterface
         : public UnknownNodeInterface
     {
     public:
@@ -49,6 +49,6 @@ namespace Mengine
         virtual void clear() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<VectorizatorInterface> VectorizatorInterfacePtr;
+    typedef IntrusivePtr<GraphicsInterface> GraphicsInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

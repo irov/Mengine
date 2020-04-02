@@ -7,17 +7,17 @@
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorRenderIndex.h"
 
-#include "VectorizatorInterface.h"
+#include "GraphicsInterface.h"
 
 #include "graphics/graphics.hpp"
 #include "math/vec2.h"
 
 namespace Mengine
 {
-    class Vectorizator
+    class Graphics
         : public Node
         , public BaseRender
-        , public VectorizatorInterface
+        , public GraphicsInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
@@ -25,8 +25,8 @@ namespace Mengine
         DECLARE_NODE_UNKNOWABLE();
 
     public:
-        Vectorizator();
-        ~Vectorizator() override;
+        Graphics();
+        ~Graphics() override;
 
     public:
         bool _compile() override;
@@ -88,6 +88,6 @@ namespace Mengine
         mutable bool m_invalidateLocalVertex2D;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveNodePtr<Vectorizator> VectorizatorPtr;
+    typedef IntrusiveNodePtr<Graphics> GraphicsPtr;
     //////////////////////////////////////////////////////////////////////////
 }

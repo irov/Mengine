@@ -5,15 +5,15 @@
 
 namespace Mengine
 {
-    class VectorizatorPlugin
+    class GraphicsPlugin
         : public PluginBase
         , public Observable
     {
-        PLUGIN_DECLARE( "Vectorizator" )
+        PLUGIN_DECLARE( "Graphics" )
 
     public:
-        VectorizatorPlugin();
-        ~VectorizatorPlugin() override;
+        GraphicsPlugin();
+        ~GraphicsPlugin() override;
 
     protected:
         bool _initializePlugin() override;

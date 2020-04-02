@@ -198,8 +198,8 @@ PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( Texturepacker );
 #endif
 
-#ifdef MENGINE_PLUGIN_VECTORIZATOR_STATIC
-PLUGIN_EXPORT( Vectorizator );
+#ifdef MENGINE_PLUGIN_GRAPHICS_STATIC
+PLUGIN_EXPORT( Graphics );
 #endif
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
@@ -545,8 +545,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Texturepacker, "initialize Plugin Texturepacker...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#ifdef MENGINE_PLUGIN_VECTORIZATOR_STATIC
-        MENGINE_ADD_PLUGIN( Vectorizator, "initialize Plugin Vectorizator...", MENGINE_DOCUMENT_FACTORABLE );
+#ifdef MENGINE_PLUGIN_GRAPHICS_STATIC
+        MENGINE_ADD_PLUGIN( Graphics, "initialize Plugin Graphics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC

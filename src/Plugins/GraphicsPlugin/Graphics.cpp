@@ -27,6 +27,12 @@ static void gp_free( void * _ptr, void * _ud )
     return Mengine::Helper::deallocateMemory( _ptr, "gp" );
 }
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_DEBUG)
+#   define GP_CALL(m, args) if( m args == GP_FAILURE ) MENGINE_ASSERTION_FATAL(false, #m #args)
+#else
+#   define GP_CALL(m, args) m args
+#endif
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -34,12 +40,12 @@ namespace Mengine
         : m_canvas( nullptr )
         , m_invalidateLocalVertex2D( false )
     {
-        gp_canvas_create( &m_canvas, &gp_malloc, &gp_free, nullptr );
+        GP_CALL( gp_canvas_create, (&m_canvas, &gp_malloc, &gp_free, nullptr) );
     }
     //////////////////////////////////////////////////////////////////////////
     Graphics::~Graphics()
     {
-        gp_canvas_destroy( m_canvas );
+        GP_CALL( gp_canvas_destroy, (m_canvas) );
         m_canvas = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -62,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Graphics::setLineWidth( float _width )
     {
-        gp_set_line_thickness( m_canvas, _width );
+        GP_CALL( gp_set_line_thickness, (m_canvas, _width) );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -70,14 +76,14 @@ namespace Mengine
     float Graphics::getLineWidth() const
     {
         float lineWidth;
-        gp_get_line_thickness( m_canvas, &lineWidth );
+        GP_CALL( gp_get_line_thickness, (m_canvas, &lineWidth) );
 
         return lineWidth;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::setLineSoft( float _penumbra )
     {
-        gp_set_penumbra( m_canvas, _penumbra );
+        GP_CALL( gp_set_penumbra, (m_canvas, _penumbra) );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -85,7 +91,7 @@ namespace Mengine
     float Graphics::getLineSoft() const
     {
         float linePenumbra;
-        gp_get_penumbra( m_canvas, &linePenumbra );
+        GP_CALL( gp_get_penumbra, (m_canvas, &linePenumbra) );
 
         return linePenumbra;
     }
@@ -97,7 +103,7 @@ namespace Mengine
         float b = _color.getB();
         float a = _color.getA();
 
-        gp_set_color( m_canvas, r, g, b, a );
+        GP_CALL( gp_set_color, (m_canvas, r, g, b, a) );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -105,14 +111,14 @@ namespace Mengine
     Color Graphics::getLineColor() const
     {
         gp_color_t c;
-        gp_get_color( m_canvas, &c );
+        GP_CALL( gp_get_color, (m_canvas, &c) );
         
         return Color( c.r, c.g, c.b, c.a );
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::setCurveQuality( uint8_t _quality )
     {
-        gp_set_curve_quality( m_canvas, _quality );
+        GP_CALL( gp_set_curve_quality, (m_canvas, _quality) );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -120,14 +126,14 @@ namespace Mengine
     uint8_t Graphics::getCurveQuality() const
     {
         gp_uint8_t quality;
-        gp_get_curve_quality( m_canvas, &quality );
+        GP_CALL( gp_get_curve_quality, (m_canvas, &quality) );
 
         return quality;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::setEllipseQuality( uint8_t _quality )
     {
-        gp_set_ellipse_quality( m_canvas, _quality );
+        GP_CALL( gp_set_ellipse_quality, (m_canvas, _quality) );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -135,114 +141,97 @@ namespace Mengine
     uint8_t Graphics::getEllipseQuality() const
     {
         gp_uint8_t quality;
-        gp_get_ellipse_quality( m_canvas, &quality );
+        GP_CALL( gp_get_ellipse_quality, (m_canvas, &quality) );
         
+        return quality;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setRectQuality( uint8_t _quality )
+    {
+        GP_CALL( gp_set_rect_quality, (m_canvas, _quality) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint8_t Graphics::getRectQuality() const
+    {
+        gp_uint8_t quality;
+        GP_CALL( gp_get_rect_quality, (m_canvas, &quality) );
+
         return quality;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::beginFill()
     {
-        if( gp_begin_fill( m_canvas ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
+        GP_CALL( gp_begin_fill, (m_canvas) );
 
-            return;
-        }
+        m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::endFill()
     {
-        if( gp_end_fill( m_canvas ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
+        GP_CALL( gp_end_fill, (m_canvas) );
 
-            return;
-        }
+        m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::moveTo( const mt::vec2f & _point )
     {
-        if( gp_move_to( m_canvas, _point.x, _point.y ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-        }
+        GP_CALL( gp_move_to, (m_canvas, _point.x, _point.y) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::lineTo( const mt::vec2f & _point )
     {
-        if( gp_line_to( m_canvas, _point.x, _point.y ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-        }
+        GP_CALL( gp_line_to, (m_canvas, _point.x, _point.y) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point )
     {
-        if( gp_quadratic_curve_to( m_canvas, _p0.x, _p0.y, _point.x, _point.y ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-        }
+        GP_CALL( gp_quadratic_curve_to, (m_canvas, _p0.x, _p0.y, _point.x, _point.y) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::bezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point )
     {
-        if( gp_bezier_curve_to( m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _point.x, _point.y ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-        }
+        GP_CALL( gp_bezier_curve_to, (m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _point.x, _point.y) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRect( const mt::vec2f & _point, float _width, float _height )
     {
-        if( gp_draw_rect( m_canvas, _point.x, _point.y, _width, _height ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-        }
+        GP_CALL( gp_draw_rect, (m_canvas, _point.x, _point.y, _width, _height) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius )
     {
-        if( gp_draw_rounded_rect( m_canvas, _point.x, _point.y, _width, _height, _radius ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-
-            return;
-        }
+        GP_CALL( gp_draw_rounded_rect, (m_canvas, _point.x, _point.y, _width, _height, _radius) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawCircle( const mt::vec2f & _point, float _radius )
     {
-        if( gp_draw_circle( m_canvas, _point.x, _point.y, _radius ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-        }
+        GP_CALL( gp_draw_circle, (m_canvas, _point.x, _point.y, _radius) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawEllipse( const mt::vec2f & _point, float _width, float _height )
     {
-        if( gp_draw_ellipse( m_canvas, _point.x, _point.y, _width, _height ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-        }
+        GP_CALL( gp_draw_ellipse, (m_canvas, _point.x, _point.y, _width, _height) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::clear()
     {
-        gp_canvas_clear( m_canvas );
+        GP_CALL( gp_canvas_clear, (m_canvas) );
 
         m_renderVertex2D.clear();
         m_renderIndices.clear();
@@ -293,12 +282,7 @@ namespace Mengine
         this->calcTotalColor( color );
 
         gp_mesh_t mesh;
-        if( gp_calculate_mesh_size( m_canvas, &mesh ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-
-            return;
-        }
+        GP_CALL( gp_calculate_mesh_size, (m_canvas, &mesh) );
 
         m_renderVertex2D.resize( mesh.vertex_count );
         m_renderIndices.resize( mesh.index_count );
@@ -328,12 +312,7 @@ namespace Mengine
         mesh.indices_offset = 0;
         mesh.indices_stride = sizeof( VectorRenderIndex::value_type );
 
-        if( gp_render( m_canvas, &mesh ) == GP_FAILURE )
-        {
-            MENGINE_ASSERTION_FATAL( false, "gp" );
-
-            return;
-        }
+        GP_CALL( gp_render, (m_canvas, &mesh) );
 
         const mt::mat4f & wm = this->getWorldMatrix();
 

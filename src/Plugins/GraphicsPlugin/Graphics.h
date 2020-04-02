@@ -48,6 +48,9 @@ namespace Mengine
         void setEllipseQuality( uint8_t _quality ) override;
         uint8_t getEllipseQuality() const override;
 
+        void setRectQuality( uint8_t _quality ) override;
+        uint8_t getRectQuality() const override;
+
     public:
         void beginFill() override;
         void endFill() override;

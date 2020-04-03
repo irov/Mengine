@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Graphics::setLineWidth( float _width )
     {
-        GP_CALL( gp_set_line_thickness, (m_canvas, _width) );
+        GP_CALL( gp_set_thickness, (m_canvas, _width) );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -76,7 +76,7 @@ namespace Mengine
     float Graphics::getLineWidth() const
     {
         float lineWidth;
-        GP_CALL( gp_get_line_thickness, (m_canvas, &lineWidth) );
+        GP_CALL( gp_get_thickness, (m_canvas, &lineWidth) );
 
         return lineWidth;
     }
@@ -203,28 +203,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRect( const mt::vec2f & _point, float _width, float _height )
     {
-        GP_CALL( gp_draw_rect, (m_canvas, _point.x, _point.y, _width, _height) );
+        GP_CALL( gp_rect, (m_canvas, _point.x, _point.y, _width, _height) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius )
     {
-        GP_CALL( gp_draw_rounded_rect, (m_canvas, _point.x, _point.y, _width, _height, _radius) );
+        GP_CALL( gp_rounded_rect, (m_canvas, _point.x, _point.y, _width, _height, _radius) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawCircle( const mt::vec2f & _point, float _radius )
     {
-        GP_CALL( gp_draw_circle, (m_canvas, _point.x, _point.y, _radius) );
+        GP_CALL( gp_circle, (m_canvas, _point.x, _point.y, _radius) );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::drawEllipse( const mt::vec2f & _point, float _width, float _height )
     {
-        GP_CALL( gp_draw_ellipse, (m_canvas, _point.x, _point.y, _width, _height) );
+        GP_CALL( gp_ellipse, (m_canvas, _point.x, _point.y, _width, _height) );
 
         m_invalidateLocalVertex2D = true;
     }

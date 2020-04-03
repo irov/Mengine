@@ -1,5 +1,7 @@
 #include "LoaderResourceMovie.h"
 
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "ResourceMovie.h"
 
 #include "Kernel/Logger.h"
@@ -84,6 +86,10 @@ namespace Mengine
         {
             content->setConverterType( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
         }
+
+
+        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), codecType );
+        content->setDataflow( dataflow );
 
         VectorMovieLayers layers;
 

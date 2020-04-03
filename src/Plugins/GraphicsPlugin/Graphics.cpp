@@ -17,14 +17,25 @@ static void * gp_malloc( gp_size_t _size, void * _ud )
 {
     MENGINE_UNUSED( _ud );
 
-    return Mengine::Helper::allocateMemory( _size, "gp" );
+    void * p = Mengine::Helper::allocateMemory( _size, "gp" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+static void * gp_realloc( void * _ptr, gp_size_t _size, void * _ud )
+{
+    MENGINE_UNUSED( _ud );
+
+    void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "gp" );
+
+    return p;
 }
 //////////////////////////////////////////////////////////////////////////
 static void gp_free( void * _ptr, void * _ud )
 {
     MENGINE_UNUSED( _ud );
 
-    return Mengine::Helper::deallocateMemory( _ptr, "gp" );
+    Mengine::Helper::deallocateMemory( _ptr, "gp" );
 }
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)
@@ -40,7 +51,7 @@ namespace Mengine
         : m_canvas( nullptr )
         , m_invalidateLocalVertex2D( false )
     {
-        GP_CALL( gp_canvas_create, (&m_canvas, &gp_malloc, &gp_free, nullptr) );
+        GP_CALL( gp_canvas_create, (&m_canvas, &gp_malloc, &gp_realloc, &gp_free, nullptr) );
     }
     //////////////////////////////////////////////////////////////////////////
     Graphics::~Graphics()

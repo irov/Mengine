@@ -180,6 +180,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -223,6 +224,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -246,6 +248,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -267,6 +270,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -293,6 +297,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -316,6 +321,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -337,6 +343,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -358,6 +365,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -379,6 +387,7 @@ namespace Mengine
         if( it_found == m_animations.end() )
         {
             LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
                 , _state.c_str()
             );
 
@@ -405,7 +414,7 @@ namespace Mengine
         if( m_resourceSpineSkeleton->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceSpineSkeleton->getName().c_str()
             );
 

@@ -63,7 +63,7 @@ namespace Mengine
         float getStateAnimationDuration( const ConstString & _state ) const override;
 
     public:
-        bool setStateAnimationLastFrame( const ConstString & _state ) override;
+        bool setStateAnimationLastFrame( const ConstString & _state, const ConstString & _name ) override;
 
     protected:
         bool _compile() override;

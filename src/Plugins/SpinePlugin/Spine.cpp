@@ -377,30 +377,80 @@ namespace Mengine
         return desc.duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Spine::setStateAnimationLastFrame( const ConstString & _state )
+    bool Spine::setStateAnimationLastFrame( const ConstString & _state, const ConstString & _name )
     {
         VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
         {
             return _desc.state == _state;
         } );
 
-        if( it_found == m_animations.end() )
+        if( this->isCompile() == true )
         {
-            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+            if( it_found != m_animations.end() )
+            {
+                const AnimationDesc & desc = *it_found;
+
+                spAnimationState * animationState = desc.animationState;
+
+                spAnimationState_clearTracks( animationState );
+                spAnimationState_dispose( animationState );
+
+                m_animations.erase( it_found );
+            }
+
+            spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
                 , this->getName().c_str()
-                , _state.c_str()
+                , _name.c_str()
             );
 
-            return false;
+            spAnimationState * animationState = spAnimationState_create( m_animationStateData );
+
+            animationState->rendererObject = this;
+            animationState->listener = &Detail::s_spAnimationStateListener;
+
+            spTrackEntry * track = spAnimationState_setAnimation( animationState, 0, animation, 0 );
+
+            AnimationDesc desc;
+
+            desc.state = _state;
+            desc.name = _name;
+            desc.animationState = animationState;
+            desc.track = track;
+            desc.time = animation->duration * 1000.f;
+            desc.duration = animation->duration * 1000.f;
+            desc.speedFactor = 1.f;
+            desc.freeze = false;
+            desc.complete = false;
+            desc.loop = false;
+
+            float spTiming = desc.time * 0.001f;
+            spAnimationState_update( animationState, spTiming );
+
+            m_animations.emplace_back( desc );
         }
+        else
+        {
+            if( it_found != m_animations.end() )
+            {
+                m_animations.erase( it_found );
+            }
 
-        AnimationDesc & desc = *it_found;
+            AnimationDesc desc;
 
-        desc.time = desc.duration;
-        desc.track->trackTime = desc.duration;
+            desc.state = _state;
+            desc.name = _name;
+            desc.animationState = nullptr;
+            desc.time = -1.f;
+            desc.duration = -1.f;
+            desc.speedFactor = 1.f;
+            desc.freeze = false;
+            desc.complete = false;
+            desc.loop = false;
 
-        spAnimationState_update( desc.animationState, 0.f );
-        spAnimationState_apply( desc.animationState, m_skeleton );
+            m_animations.emplace_back( desc );
+        }
 
         return true;
     }
@@ -450,6 +500,11 @@ namespace Mengine
 
             desc.animationState = animationState;
             desc.duration = animation->duration * 1000.f;
+
+            if( desc.time < 0.f )
+            {
+                desc.time = desc.duration;
+            }
 
             float spTiming = desc.time * 0.001f;
 

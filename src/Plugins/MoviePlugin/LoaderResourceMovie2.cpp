@@ -39,6 +39,8 @@ namespace Mengine
 
         const DataflowInterfacePtr & dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
+
         content->setDataflow( dataflow );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includes_composition = metadata->get_Includes_Composition();

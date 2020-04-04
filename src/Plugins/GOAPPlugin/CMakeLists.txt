@@ -1,16 +1,7 @@
-set(MY_LIB_NAME GOAPPlugin)
+set(MY_LIB_NAME EngineGOAPCook)
 
 ADD_FILTER(
-src
-    GOAPPlugin.h
-    GOAPPlugin.cpp
-    GOAPPlugin.def
-    
-    GOAPInterface.h
-    
-    GOAPService.h
-    GOAPService.cpp
-    
+src   
     EngineCook.h
     EngineCook.cpp
 )
@@ -74,6 +65,30 @@ Tasks
     TaskNotify.h
     TaskEventable.h
     TaskEventable.cpp
+)
+
+INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
+
+ADD_MENGINE_LIBRARY(Plugins)
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}GOAP${MENGINE_LIB_SUFFIX})
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
+
+set(MY_LIB_NAME GOAPPlugin)
+
+ADD_FILTER(
+src
+    GOAPPlugin.h
+    GOAPPlugin.cpp
+    GOAPPlugin.def
+    
+    GOAPInterface.h
+    
+    GOAPService.h
+    GOAPService.cpp
 )
 
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)

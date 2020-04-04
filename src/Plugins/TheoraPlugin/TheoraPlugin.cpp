@@ -1,6 +1,7 @@
 #include "TheoraPlugin.h"
 
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "TheoraVideoDecoder.h"
 
@@ -13,6 +14,44 @@ PLUGIN_FACTORY( Theora, Mengine::TheoraPlugin );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static void * ogg_malloc( size_t _size, void * _ud )
+    {
+        MENGINE_UNUSED( _ud );
+
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "ogg" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * ogg_calloc( size_t _num, size_t _size, void * _ud )
+    {
+        MENGINE_UNUSED( _ud );
+
+        void * p = ALLOCATOR_SERVICE()
+            ->calloc( _num, _size, "ogg" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * ogg_realloc( void * _ptr, size_t _size, void * _ud )
+    {
+        MENGINE_UNUSED( _ud );
+
+        void * p = ALLOCATOR_SERVICE()
+            ->realloc( _ptr, _size, "ogg" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void ogg_free( void * _ptr, void * _ud )
+    {
+        MENGINE_UNUSED( _ud );
+
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "ogg" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     TheoraPlugin::TheoraPlugin()
     {
     }
@@ -23,6 +62,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraPlugin::_initializePlugin()
     {
+        OGGAllocatorEx allocator;
+        allocator.ud = nullptr;
+        allocator.malloc = &ogg_malloc;
+        allocator.calloc = &ogg_calloc;
+        allocator.realloc = &ogg_realloc;
+        allocator.free = &ogg_free;
+
+        setOGGAllocatorEx( &allocator );
+
         LOGGER_MESSAGE( "Video Theora Version: %s"
             , theora_version_string()
         );

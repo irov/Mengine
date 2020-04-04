@@ -881,6 +881,26 @@ namespace Mengine
         for( const ConstString & name : modules )
         {
             if( MODULE_SERVICE()
+                ->hasModule( name ) == false )
+            {
+                LOGGER_ERROR( "not exist module '%s'"
+                    , name.c_str()
+                );
+
+                continue;
+            }
+
+            if( MODULE_SERVICE()
+                ->isRunModule( name ) == false )
+            {
+                LOGGER_ERROR( "not run module '%s'"
+                    , name.c_str()
+                );
+
+                continue;
+            }
+
+            if( MODULE_SERVICE()
                 ->stopModule( name ) == false )
             {
                 LOGGER_CRITICAL( "failed to stop module '%s'"
@@ -921,6 +941,16 @@ namespace Mengine
                     ->hasModule( name ) == false )
                 {
                     LOGGER_ERROR( "not exist dev module '%s'"
+                        , name.c_str()
+                    );
+
+                    continue;
+                }
+
+                if( MODULE_SERVICE()
+                    ->isRunModule( name ) == false )
+                {
+                    LOGGER_ERROR( "not run dev module '%s'"
                         , name.c_str()
                     );
 

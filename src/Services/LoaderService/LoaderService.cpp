@@ -5,6 +5,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FilePath.h"
@@ -25,11 +26,31 @@
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 #endif
 
+#include "metabuf/Memory.hpp"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( LoaderService, Mengine::LoaderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    static void * metabuf_malloc( size_t _size, void * _ud )
+    {
+        (void)_ud;
+
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "metabuf" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void metabuf_free( void * _ptr, void * _ud )
+    {
+        (void)_ud;
+
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "metabuf" );
+    }
     //////////////////////////////////////////////////////////////////////////
     LoaderService::LoaderService()
     {
@@ -48,6 +69,8 @@ namespace Mengine
         m_archivator = archivator;
 
         m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
+
+        Metabuf::set_Metabuf_allocator( &metabuf_malloc, &metabuf_free, nullptr );
 
         return true;
     }

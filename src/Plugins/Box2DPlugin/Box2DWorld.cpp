@@ -268,7 +268,7 @@ namespace Mengine
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
-        
+
         b2Body * b2_body1 = body1->getBody();
         b2Body * b2_body2 = body2->getBody();
 
@@ -455,9 +455,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createWheelJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
-        , const mt::vec2f & _offsetBody, const mt::vec2f & _localAxis
-        , float _frequencyHz, float _dampingRatio, bool _collideConnected
-        , float _maxMotorTorque, float _motorSpeed, const DocumentPtr & _doc )
+        , const mt::vec2f & _offsetBody, const mt::vec2f & _localAxis, bool _collideConnected
+        , bool _enableLimit, float _lowerTranslation, float _upperTranslation, float _maxMotorTorque, bool _enableMotor, float _motorSpeed, float _stiffness, float _damping, const DocumentPtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -474,18 +473,16 @@ namespace Mengine
         b2WheelJointDef jointDef;
 
         jointDef.Initialize( b2_body1, b2_body2, anchor1, localAxis );
-        jointDef.frequencyHz = _frequencyHz;
-        jointDef.dampingRatio = _dampingRatio;
+        jointDef.enableLimit = _enableLimit;
         jointDef.collideConnected = _collideConnected;
+        jointDef.lowerTranslation = _lowerTranslation;
+        jointDef.upperTranslation = _upperTranslation;
 
-        jointDef.enableMotor = false;
-
-        if( _motorSpeed != 0.f )
-        {
-            jointDef.maxMotorTorque = _maxMotorTorque;
-            jointDef.motorSpeed = _motorSpeed;
-            jointDef.enableMotor = true;
-        }
+        jointDef.enableMotor = _enableMotor;
+        jointDef.maxMotorTorque = _maxMotorTorque;
+        jointDef.motorSpeed = _motorSpeed;
+        jointDef.stiffness = _stiffness;
+        jointDef.damping = _damping;
 
         Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
 

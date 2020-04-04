@@ -230,11 +230,15 @@ namespace Mengine
             , const Box2DBodyInterfacePtr & _body2
             , const mt::vec2f & _offsetBody
             , const mt::vec2f & _localAxis
-            , float _frequencyHz
-            , float _dampingRatio
             , bool _collideConnected
+            , bool _enableLimit
+            , float _lowerTranslation
+            , float _upperTranslation
             , float _maxMotorTorque
+            , bool _enableMotor
             , float _motorSpeed
+            , float _stiffness
+            , float _damping
             , const DocumentPtr & _doc ) = 0;
 
         virtual Box2DJointInterfacePtr createRevoluteJoint( const Box2DBodyInterfacePtr & _body1

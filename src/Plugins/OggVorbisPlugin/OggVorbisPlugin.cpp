@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void * ogg_malloc( size_t _size, void * _ud )
     {
-        (void)_ud;
+        MENGINE_UNUSED( _ud );
 
         void * p = ALLOCATOR_SERVICE()
             ->malloc( _size, "ogg" );
@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void * ogg_calloc( size_t _num, size_t _size, void * _ud )
     {
-        (void)_ud;
+        MENGINE_UNUSED( _ud );
 
         void * p = ALLOCATOR_SERVICE()
             ->calloc( _num, _size, "ogg" );
@@ -36,7 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void * ogg_realloc( void * _ptr, size_t _size, void * _ud )
     {
-        (void)_ud;
+        MENGINE_UNUSED( _ud );
 
         void * p = ALLOCATOR_SERVICE()
             ->realloc( _ptr, _size, "ogg" );
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void ogg_free( void * _ptr, void * _ud )
     {
-        (void)_ud;
+        MENGINE_UNUSED( _ud );
 
         ALLOCATOR_SERVICE()
             ->free( _ptr, "ogg" );

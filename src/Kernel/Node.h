@@ -18,6 +18,10 @@
 #include "Kernel/IntrusiveSlugIterator.h"
 #include "Kernel/Viewport.h"
 
+#ifdef MENGINE_DEBUG
+#include <type_traits>
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -276,6 +280,8 @@ namespace Mengine
         T reinterpretNodeCast( void * _node )
         {
 #ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "reinterpret node cast use on non 'Nodeable' type");
+
             if( _node == nullptr )
             {
                 return nullptr;
@@ -301,6 +307,8 @@ namespace Mengine
         T staticNodeCast( Node * _node )
         {
 #ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "static node cast use on non 'Nodeable' type");
+
             if( _node == nullptr )
             {
                 return nullptr;
@@ -319,6 +327,8 @@ namespace Mengine
         T staticNodeCast( const Node * _node )
         {
 #ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "static node cast use on non 'Nodeable' type");
+
             if( _node == nullptr )
             {
                 return nullptr;
@@ -331,6 +341,30 @@ namespace Mengine
 #endif
 
             return static_cast<T>(_node);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicNodeCast( Node * _node )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "dynamic node cast use on non 'Nodeable' type");
+#endif
+
+            T t = dynamic_cast<T>(_node);
+
+            return t;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicNodeCast( const Node * _node )
+        {            
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "dynamic node cast use on non 'Nodeable' type");
+#endif
+
+            T t = dynamic_cast<T>(_node);
+
+            return t;
         }
     }
     //////////////////////////////////////////////////////////////////////////

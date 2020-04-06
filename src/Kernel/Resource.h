@@ -16,6 +16,10 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 
+#ifdef MENGINE_DEBUG
+#include <type_traits>
+#endif
+
 namespace Mengine
 {
     class ResourceBankInterface;
@@ -162,6 +166,115 @@ namespace Mengine
     MENGINE_INLINE bool Resource::isCache() const
     {
         return m_cache;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        namespace Detail
+        {
+            template<class T>
+            struct reinterpret_resource_cast_void_t
+            {
+                typedef void * type;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            template<class U>
+            struct reinterpret_resource_cast_void_t<const U *>
+            {
+                typedef const void * type;
+            };
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T reinterpretResourceCast( void * _resource )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "reinterpret resource cast use on non 'Resourcable' type");
+
+            if( _resource == nullptr )
+            {
+                return nullptr;
+            }
+
+            try
+            {
+                if( dynamic_cast<typename Detail::reinterpret_resource_cast_void_t<T>::type>(static_cast<T>(_resource)) == nullptr )
+                {
+                    throw;
+                }
+            }
+            catch( const std::exception & )
+            {
+                throw;
+            }
+#endif
+
+            return reinterpret_cast<T>(_resource);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T staticResourceCast( Resource * _resource )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "static resource cast use on non 'Resourcable' type");
+
+            if( _resource == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( dynamic_cast<T>(_resource) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            return static_cast<T>(_resource);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T staticResourceCast( const Resource * _resource )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "static resource cast use on non 'Resourcable' type");
+
+            if( _resource == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( dynamic_cast<T>(_resource) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            return static_cast<T>(_resource);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicResourceCast( Resource * _resource )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "dynamic resource cast use on non 'Resourcable' type");
+#endif
+
+            T t = dynamic_cast<T>(_resource);
+
+            return t;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicResourceCast( const Resource * _resource )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "dynamic resource cast use on non 'Resourcable' type");
+#endif
+
+            T t = dynamic_cast<T>(_resource);
+
+            return t;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>

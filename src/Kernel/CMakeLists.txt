@@ -354,6 +354,7 @@ Assertion
     AssertionMainThreadGuard.h
     AssertionVocabulary.h
     AssertionVocabulary.cpp
+    AssertionNode.h
 )
 
 ADD_FILTER(

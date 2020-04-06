@@ -22,9 +22,6 @@
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
 
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/HotSpotPolygon.h"
-
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"

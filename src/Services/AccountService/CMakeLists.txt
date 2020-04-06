@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME AccountService)
+MENGINE_PROJECT(AccountService)
 
 ADD_FILTER(
 src

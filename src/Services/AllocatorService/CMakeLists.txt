@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME AllocatorService)
+MENGINE_PROJECT(AllocatorService)
 
 ADD_FILTER(
 src

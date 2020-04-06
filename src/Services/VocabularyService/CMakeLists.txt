@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME VocabularyService)
+MENGINE_PROJECT(VocabularyService)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME SDLTimerSystem)
+MENGINE_PROJECT(SDLTimerSystem)
 
 ADD_FILTER(
 src

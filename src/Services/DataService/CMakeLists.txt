@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME DataService)
+MENGINE_PROJECT(DataService)
 
 ADD_FILTER(
 src

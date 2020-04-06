@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME ModuleService)
+MENGINE_PROJECT(ModuleService)
 
 ADD_FILTER(
 src

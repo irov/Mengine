@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME RenderService)
+MENGINE_PROJECT(RenderService)
 
 ADD_FILTER(
 src

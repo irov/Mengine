@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME FileService)
+MENGINE_PROJECT(FileService)
 
 ADD_FILTER(
 src

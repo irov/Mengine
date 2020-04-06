@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME InputService)
+MENGINE_PROJECT(InputService)
 
 ADD_FILTER(
 src

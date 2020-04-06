@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME CodecService)
+MENGINE_PROJECT(CodecService)
 
 ADD_FILTER(
 src

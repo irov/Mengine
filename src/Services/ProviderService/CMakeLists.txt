@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME ProviderService)
+MENGINE_PROJECT(ProviderService)
 
 ADD_FILTER(
 src

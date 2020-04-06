@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME MockupOptionsSystem)
+MENGINE_PROJECT(MockupOptionsSystem)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-set(MY_LIB_NAME Win32UnicodeSystem)
+MENGINE_PROJECT(Win32UnicodeSystem)
 
 ADD_FILTER(
 src

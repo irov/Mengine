@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME UserdataService)
+MENGINE_PROJECT(UserdataService)
 
 ADD_FILTER(
 src

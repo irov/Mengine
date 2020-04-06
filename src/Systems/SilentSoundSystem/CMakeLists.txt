@@ -1,4 +1,4 @@
-set(MY_LIB_NAME SilentSoundSystem)
+MENGINE_PROJECT(SilentSoundSystem)
 
 ADD_FILTER(
 src

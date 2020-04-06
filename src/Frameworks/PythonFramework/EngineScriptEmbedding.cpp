@@ -268,6 +268,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_testHotspot( HotSpotPolygon * _left, HotSpotPolygon * _right )
             {
+                MENGINE_ASSERTION_MEMORY_PANIC( _left, false, "invalid left pointer" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _right, false, "invalid left pointer" );
+
                 const Polygon & left_poligon = _left->getPolygon();
                 const mt::mat4f & left_wm = _left->getWorldMatrix();
 

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME LoggerService)
+MENGINE_PROJECT(LoggerService)
 
 ADD_FILTER(
 src

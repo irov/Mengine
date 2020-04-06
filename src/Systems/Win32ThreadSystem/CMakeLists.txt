@@ -1,4 +1,4 @@
-set(MY_LIB_NAME Win32ThreadSystem)
+MENGINE_PROJECT(Win32ThreadSystem)
 
 ADD_FILTER(
 src

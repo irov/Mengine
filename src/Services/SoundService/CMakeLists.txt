@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME SoundService)
+MENGINE_PROJECT(SoundService)
 
 ADD_FILTER(
 src

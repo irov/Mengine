@@ -1,4 +1,4 @@
-set(MY_LIB_NAME DX9RenderSystem)
+MENGINE_PROJECT(DX9RenderSystem)
 
 ADD_FILTER(
 src

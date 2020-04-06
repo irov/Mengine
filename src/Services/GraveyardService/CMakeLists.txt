@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME GraveyardService)
+MENGINE_PROJECT(GraveyardService)
 
 ADD_FILTER(
 src

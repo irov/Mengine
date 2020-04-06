@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME TimepipeService)
+MENGINE_PROJECT(TimepipeService)
 
 ADD_FILTER(
 src

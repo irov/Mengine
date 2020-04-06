@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME PackageService)
+MENGINE_PROJECT(PackageService)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME PluginService)
+MENGINE_PROJECT(PluginService)
 
 ADD_FILTER(
 src

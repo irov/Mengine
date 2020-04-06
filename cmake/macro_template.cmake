@@ -120,6 +120,11 @@ MACRO(SET_MENGINE_OUTPUT_DIRECTORY)
     endif()
 ENDMACRO()
 
+MACRO(MENGINE_PROJECT name)
+    PROJECT(${name})
+    SET(SRC_FILES)
+ENDMACRO()
+
 MACRO(ADD_FILTER group_name)
     SOURCE_GROUP(${group_name} FILES ${ARGN})
     SET(SRC_FILES ${SRC_FILES} ${ARGN})
@@ -195,56 +200,56 @@ ENDMACRO()
 MACRO(ADD_MENGINE_LIBRARY)
 	ADD_PRECOMPILED_HEADER()
 
-	ADD_LIBRARY(${MY_LIB_NAME} STATIC ${SRC_FILES})
+	ADD_LIBRARY(${PROJECT_NAME} STATIC ${SRC_FILES})
 	
     IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
-        ADD_DEPENDENCIES(${MY_LIB_NAME} PrecompiledHeader)
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} PrecompiledHeader)
+        ADD_DEPENDENCIES(${PROJECT_NAME} PrecompiledHeader)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
     ENDIF()
     
     set(FILTER_FOLDER ${ARGN})
     list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
     if(MENGINE_USE_SUBFOLDER)
         if(${EXIST_FILTER_FOLDER} GREATER 0)
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
             )
         else()
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${MENGINE_SUBFOLDER_NAME}
             )
         endif()
     else()
         if(${EXIST_FILTER_FOLDER} GREATER 0)
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${FILTER_FOLDER}
             )
         endif()
     endif()
     
-    SET(APPLICATION_LINK_LIBRARIES ${APPLICATION_LINK_LIBRARIES} ${MY_LIB_NAME} PARENT_SCOPE)
+    SET(APPLICATION_LINK_LIBRARIES ${APPLICATION_LINK_LIBRARIES} ${PROJECT_NAME} PARENT_SCOPE)
 ENDMACRO()
 
 MACRO(ADD_MENGINE_SHARED)
 	ADD_PRECOMPILED_HEADER()
 
-	ADD_LIBRARY(${MY_LIB_NAME} SHARED ${SRC_FILES})
+	ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC_FILES})
     
     if(MENGINE_EXTERNAL_PDB)
-        SET_TARGET_PROPERTIES(${MY_LIB_NAME} PROPERTIES 
-            COMPILE_PDB_NAME ${MY_LIB_NAME} 
+        SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES 
+            COMPILE_PDB_NAME ${PROJECT_NAME} 
             PDB_OUTPUT_DIRECTORY ${MENGINE_EXTERNAL_PDB_PATH}
         )
     endif()
     
 	
-	SET_TARGET_PROPERTIES( ${MY_LIB_NAME} 
+	SET_TARGET_PROPERTIES( ${PROJECT_NAME} 
 		PROPERTIES PREFIX ""
 		)
 	
     IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
-        ADD_DEPENDENCIES(${MY_LIB_NAME} PrecompiledHeader)
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} PrecompiledHeader)
+        ADD_DEPENDENCIES(${PROJECT_NAME} PrecompiledHeader)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
     ENDIF()
     
     set(FILTER_FOLDER ${ARGN})
@@ -252,38 +257,38 @@ MACRO(ADD_MENGINE_SHARED)
     
     if(MENGINE_USE_SUBFOLDER)
         if(${EXIST_FILTER_FOLDER} GREATER 0)
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
             )
         else()
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                     FOLDER ${MENGINE_SUBFOLDER_NAME}
                 )
         endif()
     else()
         if(${EXIST_FILTER_FOLDER} GREATER 0)
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${FILTER_FOLDER}
             )
         endif()
     endif()
     
-    SET(APPLICATION_DEPENDENCIES ${APPLICATION_DEPENDENCIES} ${MY_LIB_NAME} PARENT_SCOPE)
+    SET(APPLICATION_DEPENDENCIES ${APPLICATION_DEPENDENCIES} ${PROJECT_NAME} PARENT_SCOPE)
 ENDMACRO()
 
 MACRO(ADD_MENGINE_EXECUTABLE)
-    ADD_EXECUTABLE(${MY_LIB_NAME} WIN32 ${SRC_FILES})
+    ADD_EXECUTABLE(${PROJECT_NAME} WIN32 ${SRC_FILES})
     
     if(MENGINE_EXTERNAL_PDB)
-        set_target_properties(${MY_LIB_NAME} PROPERTIES
-            COMPILE_PDB_NAME ${MY_LIB_NAME}
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+            COMPILE_PDB_NAME ${PROJECT_NAME}
             PDB_OUTPUT_DIRECTORY ${MENGINE_EXTERNAL_PDB_PATH}
         )
     endif()
     
     IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
-        ADD_DEPENDENCIES(${MY_LIB_NAME} PrecompiledHeader)
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} PrecompiledHeader)
+        ADD_DEPENDENCIES(${PROJECT_NAME} PrecompiledHeader)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
     ENDIF()
 ENDMACRO()
 
@@ -300,21 +305,21 @@ MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
     
     if(MENGINE_USE_SUBFOLDER)
         if(${EXIST_FILTER_FOLDER} GREATER 0)
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${FILTER_FOLDER}
             )
         else()
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${MENGINE_SUBFOLDER_NAME}/Plugins
             )
         endif()
     else()
         if(${EXIST_FILTER_FOLDER} GREATER 0)
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${FILTER_FOLDER}
             )
         else()
-            set_target_properties (${MY_LIB_NAME} PROPERTIES
+            set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER Plugins
             )
         endif()
@@ -339,7 +344,7 @@ if(APPLE)
       if( ${FRAMEWORK_${fwname}} STREQUAL FRAMEWORK_${fwname}-NOTFOUND)
           MESSAGE(ERROR ": Framework ${fwname} not found")
       else()
-          TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${FRAMEWORK_${fwname}})
+          TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${FRAMEWORK_${fwname}})
           MESSAGE(STATUS "Framework ${fwname} found at ${FRAMEWORK_${fwname}}")
       endif()
     elseif(MENGINE_TARGET_IOS)
@@ -351,7 +356,7 @@ if(APPLE)
       if( ${FRAMEWORK_${fwname}} STREQUAL FRAMEWORK_${fwname}-NOTFOUND)
           MESSAGE(ERROR ": Framework ${fwname} not found")
       else()
-          TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${FRAMEWORK_${fwname}})
+          TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${FRAMEWORK_${fwname}})
           MESSAGE(STATUS "Framework ${fwname} found at ${FRAMEWORK_${fwname}}")
         endif()
     endif()

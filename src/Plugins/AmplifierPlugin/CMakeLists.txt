@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME AmplifierPlugin)
+MENGINE_PROJECT(AmplifierPlugin)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-set(MY_LIB_NAME Android)
+MENGINE_PROJECT(Android)
 
 ADD_FILTER(
 src

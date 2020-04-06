@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME PlayerService)
+MENGINE_PROJECT(PlayerService)
 
 ADD_FILTER(
 src

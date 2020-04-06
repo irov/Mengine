@@ -1,11 +1,21 @@
 #include "NodeDebuggerApp.h"
 
+#include "Interface/ServiceProviderInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
+#include "Interface/DocumentServiceInterface.h"
+
 #include "Kernel/String.h"
 
 #include "stdex/allocator.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_PROVIDER_EXTERN( ServiceProvider );
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AllocatorService );
+SERVICE_EXTERN( DocumentService );
+//////////////////////////////////////////////////////////////////////////
 static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
 {
     Mengine::String result;
@@ -21,7 +31,7 @@ static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
 
     return result;
 }
-
+//////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
     MENGINE_UNUSED( hInstance );
@@ -29,6 +39,17 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     MENGINE_UNUSED( nShowCmd );
 
     stdex_allocator_initialize();
+
+    Mengine::ServiceProviderInterface * serviceProvider;
+    if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
+    {
+        return false;
+    }
+
+    SERVICE_PROVIDER_SETUP( serviceProvider );
+
+    SERVICE_CREATE( AllocatorService, nullptr );
+    SERVICE_CREATE( DocumentService, nullptr );
 
     {
         Mengine::String address;
@@ -57,6 +78,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             app.Shutdown();
         }
     }
+
+    SERVICE_FINALIZE( DocumentService );
+    SERVICE_DESTROY( DocumentService );
+
+    SERVICE_FINALIZE( AllocatorService );
+    SERVICE_DESTROY( AllocatorService );
+
+    SERVICE_PROVIDER_FINALIZE( serviceProvider );
 
     stdex_allocator_finalize();
 

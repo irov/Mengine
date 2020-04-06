@@ -41,7 +41,7 @@ namespace Mengine
 
         VectorPoints::size_type points_size = m_points.size();
 
-        for( VectorPoints::size_type i = 0; i < points_size; ++i )
+        for( VectorPoints::size_type i = 0; i != points_size; ++i )
         {
             VectorPoints::size_type j = (i + 1) % points_size;
 
@@ -81,7 +81,7 @@ namespace Mengine
         {
             mt::vec2f v_wm;
             mt::mul_v2_v2_m4( v_wm, v, _wm );
-            _out.append( v );
+            _out.append( v_wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////

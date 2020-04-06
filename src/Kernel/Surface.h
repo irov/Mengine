@@ -12,9 +12,14 @@
 #include "Kernel/Unknowable.h"
 #include "Kernel/UpdateContext.h"
 
+#include "Kernel/Color.h"
+
 #include "math/vec2.h"
 #include "math/uv4.h"
-#include "Kernel/Color.h"
+
+#ifdef MENGINE_DEBUG
+#include <type_traits>
+#endif
 
 namespace Mengine
 {
@@ -64,6 +69,115 @@ namespace Mengine
         virtual void _activate();
         virtual void _deactivate();
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        namespace Detail
+        {
+            template<class T>
+            struct reinterpret_surface_cast_void_t
+            {
+                typedef void * type;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            template<class U>
+            struct reinterpret_surface_cast_void_t<const U *>
+            {
+                typedef const void * type;
+            };
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T reinterpretSurfaceCast( void * _surface )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "reinterpret surface cast use on non 'Surfacable' type");
+
+            if( _surface == nullptr )
+            {
+                return nullptr;
+            }
+
+            try
+            {
+                if( dynamic_cast<typename Detail::reinterpret_surface_cast_void_t<T>::type>(static_cast<T>(_surface)) == nullptr )
+                {
+                    throw;
+                }
+            }
+            catch( const std::exception & )
+            {
+                throw;
+            }
+#endif
+
+            return reinterpret_cast<T>(_surface);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T staticSurfaceCast( Surface * _surface )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "static surface cast use on non 'Surfacable' type");
+
+            if( _surface == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( dynamic_cast<T>(_surface) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            return static_cast<T>(_surface);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T staticSurfaceCast( const Surface * _surface )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "static surface cast use on non 'Surfacable' type");
+
+            if( _surface == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( dynamic_cast<T>(_surface) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            return static_cast<T>(_surface);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicSurfaceCast( Surface * _surface )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "dynamic surface cast use on non 'Surfacable' type");
+#endif
+
+            T t = dynamic_cast<T>(_surface);
+
+            return t;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicSurfaceCast( const Surface * _surface )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "dynamic surface cast use on non 'Surfacable' type");
+#endif
+
+            T t = dynamic_cast<T>(_surface);
+
+            return t;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Surface> SurfacePtr;
     //////////////////////////////////////////////////////////////////////////

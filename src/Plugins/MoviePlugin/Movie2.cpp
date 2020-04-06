@@ -26,6 +26,7 @@
 #include "Kernel/EventableHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/ArrayString.h"
+#include "Kernel/AssertionNode.h"
 
 #include "Config/StdString.h"
 
@@ -1083,9 +1084,19 @@ namespace Mengine
             return blend_mode;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void updateMatrixProxy( const Node * _node, ae_bool_t _immutable_matrix, const float * _matrix, ae_bool_t _immutable_color, const ae_color_t & _color, ae_color_channel_t _opacity )
+        static void updateMatrixProxy( Movie2 * _movie2, const Node * _node, ae_bool_t _immutable_matrix, const float * _matrix, ae_bool_t _immutable_color, const ae_color_t & _color, ae_color_channel_t _opacity )
         {
+            MENGINE_UNUSED( _movie2 );
+
             Node * nodeParent = _node->getParent();
+
+            MENGINE_ASSERTION_NODE( nodeParent, MatrixProxy *, "Movie2 '%s' node '%s' type '%s' invalid parent '%s' type '%s' not MatrixProxy"
+                , _movie2->getName().c_str()
+                , _node->getName().c_str()
+                , _node->getType().c_str()
+                , nodeParent->getName().c_str()
+                , nodeParent->getType().c_str()
+            );
 
             MatrixProxy * matrixProxy = Helper::staticNodeCast<MatrixProxy *>( nodeParent );
 
@@ -1152,7 +1163,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
 
-                Detail::updateMatrixProxy( node.get(), AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
+                Detail::updateMatrixProxy( movie2, node.get(), AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'r' ) ) == AE_TRUE )
                 {
@@ -1261,7 +1272,7 @@ namespace Mengine
                     //unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
                 }
 
-                Resource * resourceParticle = Helper::reinterpretNodeCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
+                Resource * resourceParticle = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
 
                 unknownParticleEmitter2->setResourceParticle( ResourcePtr( resourceParticle ) );
 
@@ -1398,7 +1409,7 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surface->setName( c_name );
 
-                    Resource * resourceVideo = Helper::reinterpretNodeCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
+                    Resource * resourceVideo = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
 
                     UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
 
@@ -1442,7 +1453,7 @@ namespace Mengine
                         surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_MUSIC );
                     }
 
-                    ResourceSound * resourceSound = Helper::reinterpretNodeCast<ResourceSound *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
+                    ResourceSound * resourceSound = Helper::reinterpretResourceCast<ResourceSound *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
 
                     surfaceSound->setResourceSound( Helper::makeIntrusivePtr( resourceSound ) );
 
@@ -1592,7 +1603,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        MENGINE_UNUSED( _ud );
+        Movie2 * movie2 = static_cast<Movie2 *>(_ud);
 
         aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer );
 
@@ -1602,7 +1613,7 @@ namespace Mengine
             {
                 Node * particle = Helper::reinterpretNodeCast<Node *>( _callbackData->element_userdata );
 
-                Detail::updateMatrixProxy( particle, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
+                Detail::updateMatrixProxy( movie2, particle, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
 
                 AnimationInterface * particle_animation = particle->getAnimation();
 
@@ -1610,7 +1621,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_VIDEO:
             {
-                Surface * surface = Helper::reinterpretNodeCast<Surface *>( _callbackData->element_userdata );
+                Surface * surface = Helper::reinterpretSurfaceCast<Surface *>( _callbackData->element_userdata );
 
                 AnimationInterface * surface_animation = surface->getAnimation();
 
@@ -1618,7 +1629,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_SOUND:
             {
-                SurfaceSound * surface = Helper::reinterpretNodeCast<SurfaceSound *>( _callbackData->element_userdata );
+                SurfaceSound * surface = Helper::reinterpretSurfaceCast<SurfaceSound *>( _callbackData->element_userdata );
 
                 surface->setVolume( _callbackData->volume );
 
@@ -1630,25 +1641,25 @@ namespace Mengine
             {
                 Movie2Slot * node = Helper::reinterpretNodeCast<Movie2Slot *>( _callbackData->element_userdata );
 
-                Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
+                Detail::updateMatrixProxy( movie2, node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
                 ShapeQuadFixed * node = Helper::reinterpretNodeCast<ShapeQuadFixed *>( _callbackData->element_userdata );
 
-                Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
+                Detail::updateMatrixProxy( movie2, node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 TextField * node = Helper::reinterpretNodeCast<TextField *>( _callbackData->element_userdata );
 
-                Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
+                Detail::updateMatrixProxy( movie2, node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
                 HotSpotPolygon * node = Helper::reinterpretNodeCast<HotSpotPolygon *>( _callbackData->element_userdata );
 
-                Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
+                Detail::updateMatrixProxy( movie2, node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         default:
             {
@@ -2014,7 +2025,7 @@ namespace Mengine
     {
         AE_UNUSED( _ud );
 
-        Movie2SubComposition * m2sc = Helper::reinterpretNodeCast<Movie2SubComposition *>( _callbackData->subcomposition_userdata );
+        Movie2SubComposition * m2sc = reinterpret_cast<Movie2SubComposition *>(_callbackData->subcomposition_userdata);
 
         if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
         {
@@ -2765,7 +2776,7 @@ namespace Mengine
                             continue;
                         }
 
-                        Surface * surface = Helper::reinterpretNodeCast<Surface *>( mesh.element_userdata );
+                        Surface * surface = Helper::reinterpretSurfaceCast<Surface *>( mesh.element_userdata );
 
                         const Color & surfaceColor = surface->getColor();
 
@@ -2821,7 +2832,7 @@ namespace Mengine
                             continue;
                         }
 
-                        const SurfaceTrackMatte * surfaceTrackMatte = Helper::reinterpretNodeCast<const SurfaceTrackMatte *>( mesh.element_userdata );
+                        const SurfaceTrackMatte * surfaceTrackMatte = Helper::reinterpretSurfaceCast<const SurfaceTrackMatte *>( mesh.element_userdata );
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
@@ -2922,7 +2933,7 @@ namespace Mengine
                             continue;
                         }
 
-                        SurfaceTrackMatte * surfaceTrackMatte = Helper::reinterpretNodeCast<SurfaceTrackMatte *>( mesh.element_userdata );
+                        SurfaceTrackMatte * surfaceTrackMatte = Helper::reinterpretSurfaceCast<SurfaceTrackMatte *>( mesh.element_userdata );
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;

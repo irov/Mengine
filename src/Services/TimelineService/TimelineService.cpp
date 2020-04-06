@@ -9,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimelineService::TimelineService()
-        : m_revision( 0 )
+        : m_revision( ~0U )
         , m_current( 0.f )
         , m_time( 0.f )
         , m_total( 0.f )
@@ -22,7 +22,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimelineService::beginOffset( float _offset )
     {
-        MENGINE_ASSERTION_FATAL( m_time >= _offset );
+        MENGINE_ASSERTION_FATAL( m_time >= _offset, "time %f < %f revision (%u)"
+            , m_time
+            , _offset
+            , m_revision
+        );
 
         m_offsets.emplace_back( _offset );
     }
@@ -68,7 +72,10 @@ namespace Mengine
 
         float offset = m_offsets.back();
 
-        MENGINE_ASSERTION_FATAL( m_time >= offset );
+        MENGINE_ASSERTION_FATAL_RETURN( m_time >= offset, 0.f, "time %f < %f"
+            , m_time
+            , offset
+        );
 
         float totalTime = m_total + offset;
 
@@ -77,6 +84,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimelineService::begin( const UpdateContext * _context )
     {
+        MENGINE_ASSERTION_FATAL( m_revision == ~0U, "double begin" );
+
         m_revision = _context->revision;
         m_current = _context->current;
         m_time = _context->time;
@@ -87,5 +96,9 @@ namespace Mengine
     void TimelineService::end()
     {
         m_total += m_time;
+
+        m_revision = ~0U;
+        m_current = -1.f;
+        m_time = -1.f;
     }
 }

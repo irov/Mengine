@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME EnumeratorService)
+MENGINE_PROJECT(EnumeratorService)
 
 ADD_FILTER(
 src

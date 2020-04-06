@@ -1,4 +1,4 @@
-set(MY_LIB_NAME Win32FileGroupPlugin)
+MENGINE_PROJECT(Win32FileGroupPlugin)
 
 ADD_FILTER(
 src

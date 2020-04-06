@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME ConverterService)
+MENGINE_PROJECT(ConverterService)
 
 ADD_FILTER(
 src

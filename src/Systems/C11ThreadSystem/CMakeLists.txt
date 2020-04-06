@@ -1,4 +1,4 @@
-set(MY_LIB_NAME C11ThreadSystem)
+MENGINE_PROJECT(C11ThreadSystem)
 
 ADD_FILTER(
 src

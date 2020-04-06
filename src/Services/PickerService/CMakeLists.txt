@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME PickerService)
+MENGINE_PROJECT(PickerService)
 
 ADD_FILTER(
 src

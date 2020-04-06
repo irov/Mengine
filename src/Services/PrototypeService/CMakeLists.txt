@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME PrototypeService)
+MENGINE_PROJECT(PrototypeService)
 
 ADD_FILTER(
 src

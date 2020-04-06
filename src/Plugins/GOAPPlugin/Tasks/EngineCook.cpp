@@ -1,7 +1,5 @@
 #include "EngineCook.h"
 
-#include "GOAPInterface.h"
-
 #include "TaskNodeEnable.h"
 #include "TaskNodeDisable.h"
 #include "TaskNodeDestroy.h"

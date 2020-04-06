@@ -142,6 +142,7 @@ namespace Mengine
 
             float spTiming = desc.time * 0.001f;
             spAnimationState_update( animationState, spTiming );
+            spAnimationState_apply( animationState, m_skeleton );
 
             m_animations.emplace_back( desc );
         }
@@ -427,6 +428,7 @@ namespace Mengine
 
             float spTiming = desc.time * 0.001f;
             spAnimationState_update( animationState, spTiming );
+            spAnimationState_apply( animationState, m_skeleton );
 
             m_animations.emplace_back( desc );
         }

@@ -1,4 +1,4 @@
-set(MY_LIB_NAME OpenGL)
+MENGINE_PROJECT(OpenGL)
 
 ADD_FILTER(
 src     

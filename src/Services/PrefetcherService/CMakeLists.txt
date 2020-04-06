@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME PrefetcherService)
+MENGINE_PROJECT(PrefetcherService)
 
 ADD_FILTER(
 src

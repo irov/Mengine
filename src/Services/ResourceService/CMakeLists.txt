@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME ResourceService)
+MENGINE_PROJECT(ResourceService)
 
 ADD_FILTER(
 src

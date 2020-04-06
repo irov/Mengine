@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME UpdateService)
+MENGINE_PROJECT(UpdateService)
 
 ADD_FILTER(
 src

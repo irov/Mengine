@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME MemoryService)
+MENGINE_PROJECT(MemoryService)
 
 ADD_FILTER(
 src

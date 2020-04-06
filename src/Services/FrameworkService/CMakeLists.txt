@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME FrameworkService)
+MENGINE_PROJECT(FrameworkService)
 
 ADD_FILTER(
 src

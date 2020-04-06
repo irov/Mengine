@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME ChronometerService)
+MENGINE_PROJECT(ChronometerService)
 
 ADD_FILTER(
 src

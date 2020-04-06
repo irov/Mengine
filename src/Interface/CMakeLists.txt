@@ -1,4 +1,4 @@
-set( MY_LIB_NAME Interface )
+MENGINE_PROJECT(Interface)
 
 ADD_FILTER(
 src     

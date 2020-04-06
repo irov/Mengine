@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME OptionsService)
+MENGINE_PROJECT(OptionsService)
 
 ADD_FILTER(
 src

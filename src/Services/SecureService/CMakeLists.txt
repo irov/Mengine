@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME SecureService)
+MENGINE_PROJECT(SecureService)
 
 ADD_FILTER(
 src

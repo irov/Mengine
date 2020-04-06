@@ -1,4 +1,4 @@
-set(MY_LIB_NAME SDLUnicodeSystem)
+MENGINE_PROJECT(SDLUnicodeSystem)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME Config)
+MENGINE_PROJECT(Config)
 
 list(APPEND CMAKE_MODULE_PATH "${THIRDPARTY_DIR}/cmake-modules/")
 include(GetGitRevisionDescription)

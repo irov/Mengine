@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME GameService)
+MENGINE_PROJECT(GameService)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME C11TimeSystem)
+MENGINE_PROJECT(C11TimeSystem)
 
 ADD_FILTER(
 src

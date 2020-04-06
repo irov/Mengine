@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME SceneService)
+MENGINE_PROJECT(SceneService)
 
 ADD_FILTER(
 src

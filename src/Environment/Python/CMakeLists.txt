@@ -1,4 +1,4 @@
-set(MY_LIB_NAME Python)
+MENGINE_PROJECT(Python)
 
 ADD_FILTER(
 src     

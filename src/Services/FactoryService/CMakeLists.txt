@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME FactoryService)
+MENGINE_PROJECT(FactoryService)
 
 ADD_FILTER(
 src

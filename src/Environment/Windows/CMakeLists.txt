@@ -1,4 +1,4 @@
-set(MY_LIB_NAME Windows)
+MENGINE_PROJECT(Windows)
 
 ADD_FILTER(
 src     

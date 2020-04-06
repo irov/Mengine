@@ -1,4 +1,4 @@
-set(MY_LIB_NAME SDLThreadSystem)
+MENGINE_PROJECT(SDLThreadSystem)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME NotificationService)
+MENGINE_PROJECT(NotificationService)
 
 ADD_FILTER(
 src

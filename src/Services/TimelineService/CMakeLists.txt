@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME TimelineService)
+MENGINE_PROJECT(TimelineService)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME LoaderService)
+MENGINE_PROJECT(LoaderService)
 
 ADD_FILTER(
 src

@@ -7,6 +7,7 @@
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/Config.h"
 
@@ -166,6 +167,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpotPolygon::getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const
     {
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( _camera, "invalid camera nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( _viewport, "invalid viewport nullptr" );
+
         if( _bb != nullptr )
         {
             mt::insideout_box( *_bb );

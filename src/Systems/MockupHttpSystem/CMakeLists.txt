@@ -1,4 +1,4 @@
-set(MY_LIB_NAME MockupHttpSystem)
+MENGINE_PROJECT(MockupHttpSystem)
 
 ADD_FILTER(
 src

@@ -1,4 +1,4 @@
-SET(MY_LIB_NAME WatchdogService)
+MENGINE_PROJECT(WatchdogService)
 
 ADD_FILTER(
 src

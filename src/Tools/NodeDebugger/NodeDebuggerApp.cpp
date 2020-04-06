@@ -1573,11 +1573,15 @@ namespace Mengine
 
         if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            ImGui::Text( "Name: %s", _node->name.c_str() );
+            ImGui::Text( "Name: '%s'", _node->name.c_str() );
             ImGui::SameLine();
             ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
             ImGui::SameLine();
-            ImGui::Text( "Type: %s", _node->type.c_str() );
+            ImGui::Text( "Type: '%s'", _node->type.c_str() );
+            ImGui::SameLine();
+            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
+            ImGui::SameLine();
+            ImGui::Text( "UID: %u", _node->uid );
             ImGui::Spacing();
 
             uiEditorBool( "Enable##node_enable", _node->enable );

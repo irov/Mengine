@@ -1,5 +1,7 @@
 #include "Jewelry.h"
 
+#include "Plugins/GOAPPlugin/GOAPInterface.h"
+
 #include "Engine/Engine.h"
 
 #include "Engine/SurfaceSolidColor.h"
@@ -8,17 +10,6 @@
 #include "Engine/HotSpotCircle.h"
 
 #include "Kernel/Document.h"
-
-#include "Tasks/TaskTransformationTranslateTime.h"
-#include "Tasks/TaskTransformationScaleTime.h"
-#include "Tasks/TaskPickerableMouseEnter.h"
-#include "Tasks/TaskPickerableMouseButton.h"
-#include "Tasks/TaskNodeDisable.h"
-#include "Tasks/TaskNodeEnable.h"
-#include "Tasks/TaskNodeDestroy.h"
-#include "Tasks/TaskGlobalMouseButton.h"
-#include "Tasks/TaskGlobalDelay.h"
-
 
 namespace Mengine
 {
@@ -78,10 +69,9 @@ namespace Mengine
     {
         m_super = EJSUPER_BOMB;
 
-        auto && [source_disappear, source_appear] = _source->addParallel<2>();
-        source_disappear->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.5f, 0.5f, 0.5f ), 200.f );
-
-        source_appear->addTask<TaskNodeEnable>( m_nodeBomb );
+        auto && [source_disappear, source_appear] = Cook::addParallel<2>( _source );
+        Cook::addTransformationScaleTime( source_disappear, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.5f, 0.5f, 0.5f ), 200.f );
+        Cook::addNodeEnable( source_appear, m_nodeBomb );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Jewelry::isBomb() const
@@ -91,7 +81,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeActive_()
     {
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
+        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
 
         Color jewelry_color = jewelry_colors[m_type];
 
@@ -100,7 +90,7 @@ namespace Mengine
         float width = m_size * 0.5f;
         surface->setSolidSize( { width, width } );
 
-        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FUNCTION );
+        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
@@ -111,7 +101,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeBlock_()
     {
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
+        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
 
         Color jewelry_color = jewelry_colors[m_type] * 0.5f;
 
@@ -120,7 +110,7 @@ namespace Mengine
         float full_size = m_size + 10.f;
         surface->setSolidSize( { full_size, full_size } );
 
-        ShapeQuadFixedPtr shape = Helper::generateShapeQuadFixed( MENGINE_DOCUMENT_FUNCTION );
+        ShapeQuadFixedPtr shape = Helper::generateShapeQuadFixed( MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
@@ -135,7 +125,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeBomb_()
     {
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
+        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FACTORABLE );
 
         Color jewelry_color = jewelry_colors[m_type] * 0.5f;
 
@@ -144,7 +134,7 @@ namespace Mengine
         float full_size = m_size * 0.5f + 10.f;
         surface->setSolidSize( {full_size, full_size} );
 
-        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FUNCTION );
+        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
@@ -157,7 +147,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makePickerable_()
     {
-        HotSpotCirclePtr hotspot = Helper::generateHotSpotCircle( MENGINE_DOCUMENT_FUNCTION );
+        HotSpotCirclePtr hotspot = Helper::generateHotSpotCircle( MENGINE_DOCUMENT_FACTORABLE );
 
         float radius = m_size * 0.5f;
         hotspot->setRadius( radius );
@@ -181,8 +171,8 @@ namespace Mengine
 
         m_state |= EJS_BLOCK;
 
-        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 100.f );
-        _source->addTask<TaskNodeEnable>( m_nodeBlock );
+        Cook::addTransformationScaleTime( _source, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 100.f );
+        Cook::addNodeEnable( _source, m_nodeBlock );
     }
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::dead( const GOAP::SourcePtr & _source )
@@ -196,9 +186,9 @@ namespace Mengine
 
         m_matrix->removeJewelry( JewelryPtr::from( this ) );
 
-        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
+        Cook::addTransformationScaleTime( _source, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
 
-        _source->addFunction( this, &Jewelry::finalize );
+        Cook::addFunction( _source, this, &Jewelry::finalize );
     }
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::explosive( const GOAP::SourcePtr & _source )
@@ -212,9 +202,9 @@ namespace Mengine
 
         m_matrix->removeJewelry( JewelryPtr::from( this ) );        
 
-        _source->addTask<TaskTransformationScaleTime>( m_nodeBomb, m_nodeBomb, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
-        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
-        _source->addFunction( this, &Jewelry::finalize );
+        Cook::addTransformationScaleTime( _source, m_nodeBomb, m_nodeBomb, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
+        Cook::addTransformationScaleTime( _source, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
+        Cook::addFunction( _source, this, &Jewelry::finalize );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Jewelry::isBlock() const
@@ -243,7 +233,7 @@ namespace Mengine
         m_size = _size;
         m_stride = _stride;
 
-        NodePtr node = Helper::generateNode( MENGINE_DOCUMENT_FUNCTION );
+        NodePtr node = Helper::generateNode( MENGINE_DOCUMENT_FACTORABLE );
 
         m_node = node;
 
@@ -312,7 +302,7 @@ namespace Mengine
 
         m_state |= EJS_MOVE;
 
-        _source->addTask<TaskTransformationTranslateTime>( m_node, m_node, nullptr, new_position, _time );
+        Cook::addTransformationTranslateTime( _source, m_node, m_node, nullptr, new_position, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::stop()
@@ -332,7 +322,7 @@ namespace Mengine
             return;
         }
 
-        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
+        Cook::addTransformationScaleTime( _source, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::unpickHand( const GOAP::SourcePtr & _source )
@@ -342,6 +332,6 @@ namespace Mengine
             return;
         }
 
-        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 200.f );
+        Cook::addTransformationScaleTime( _source, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 200.f );
     }
 }

@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JewelryFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "JewelryFramework" ), Helper::makeFrameworkFactory<JewelryFramework>() );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "JewelryFramework" ), Helper::makeFrameworkFactory<JewelryFramework>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

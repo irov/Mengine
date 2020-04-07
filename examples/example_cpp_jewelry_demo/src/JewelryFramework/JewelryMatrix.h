@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Kernel/Factorable.h"
-
 #include "GOAP/Event.h"
 
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
+#include "Kernel/Factorable.h"
+
 #include "Config/Lambda.h"
 
 namespace Mengine

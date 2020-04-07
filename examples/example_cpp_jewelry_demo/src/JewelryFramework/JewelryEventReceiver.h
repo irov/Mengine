@@ -6,6 +6,7 @@
 
 #include "Kernel/Factory.h"
 #include "Kernel/DummySceneEventReceiver.h"
+#include "Kernel/Scene.h"
 
 #include "Engine/TextField.h"
 
@@ -53,17 +54,24 @@ namespace Mengine
 
         NodePtr m_base;
 
-        GOAP::ChainPtr m_chain;
+        GOAP::ChainInterfacePtr m_chain;
 
-        uint32_t m_jewelry_type_count;
-        float m_jewelry_size;
-        float m_jewelry_stride;
+        struct Settings
+        {
+            uint32_t m_jewelry_type_count;
+            float m_jewelry_size;
+            float m_jewelry_stride;
 
-        float m_jewelry_cell_fall_time_ms;
-        float m_jewelry_cell_explosive_time_ms;
-        uint32_t m_jewelry_cell_explosive_count;
-        float m_jewelry_spawn_time_ms;
-        bool m_jewelry_collapse;
+            float m_jewelry_cell_fall_time_ms;
+            float m_jewelry_cell_explosive_time_ms;
+            uint32_t m_jewelry_cell_explosive_count;
+            float m_jewelry_spawn_time_ms;
+            bool m_jewelry_collapse;
+        };
+
+        Settings m_settings;
+
+        uint32_t m_timepipeId;
 
         uint32_t m_stage;
         uint64_t m_timemillisecond;

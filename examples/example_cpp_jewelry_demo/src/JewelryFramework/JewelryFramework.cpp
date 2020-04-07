@@ -27,9 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JewelryFramework::_initializeFramework()
     {
-        JewelryEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<JewelryEventReceiver>();
+        JewelryEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<JewelryEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
+        ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FACTORABLE );
 
         scene->setName( STRINGIZE_STRING_LOCAL( "JewelryScene" ) );
 

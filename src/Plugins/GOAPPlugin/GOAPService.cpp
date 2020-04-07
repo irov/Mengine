@@ -72,6 +72,13 @@ namespace Mengine
         return chain;
     }
     //////////////////////////////////////////////////////////////////////////
+    GOAP::EventInterfacePtr GOAPService::makeEvent()
+    {
+        GOAP::EventInterfacePtr event = m_kernel->makeEvent();
+
+        return event;
+    }
+    //////////////////////////////////////////////////////////////////////////
     GOAP::SemaphoreInterfacePtr GOAPService::makeSemaphore( int32_t _value )
     {
         GOAP::EventInterfacePtr event = m_kernel->makeEvent();
@@ -79,5 +86,12 @@ namespace Mengine
         GOAP::SemaphoreInterfacePtr semaphore = m_kernel->makeSemaphore( event, _value );
 
         return semaphore;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GOAP::TimerInterfacePtr GOAPService::makeTimer()
+    {
+        GOAP::TimerInterfacePtr timer = m_kernel->makeTimer();
+
+        return timer;
     }
 }

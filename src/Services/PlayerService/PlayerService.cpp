@@ -45,6 +45,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Resource.h"
+#include "Kernel/Documentable.h"
 
 #include "Kernel/Stringstream.h"
 

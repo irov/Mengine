@@ -28,6 +28,6 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
 #   define MENGINE_DOCUMENTABLE_STR(Ptr, Empty) (dynamic_cast<Mengine::Documentable*>(Ptr)->getDocument()->getMessage())
 #else
-#   define MENGINE_DOCUMENTABLE_STR(Ptr, Empty) Empty
+#   define MENGINE_DOCUMENTABLE_STR(Ptr, Empty) (Empty)
 #endif
 //////////////////////////////////////////////////////////////////////////

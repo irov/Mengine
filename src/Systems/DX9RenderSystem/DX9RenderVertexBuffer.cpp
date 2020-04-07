@@ -141,7 +141,7 @@ namespace Mengine
             LOGGER_ERROR( "%d offset %d invalid lock doc '%s'"
                 , _count
                 , _offset
-                , MENGINE_DOCUMENTABLE_STR()
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );
 
             return nullptr;
@@ -176,7 +176,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid lock size %u (doc %s)"
                 , _size
-                , MENGINE_DOCUMENTABLE_STR()
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );
 
             return false;
@@ -187,7 +187,7 @@ namespace Mengine
         IF_DXCALL( m_pVB, Unlock, () )
         {
             LOGGER_ERROR( "invalid unlock (doc %s)"
-                , MENGINE_DOCUMENTABLE_STR()
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );
 
             return false;

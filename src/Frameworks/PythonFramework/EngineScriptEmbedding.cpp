@@ -366,7 +366,7 @@ namespace Mengine
             SchedulerInterfacePtr s_createScheduler( const ConstString & _name )
             {
                 SchedulerInterfacePtr sm = PLAYER_SERVICE()
-                    ->createSchedulerManager( _name );
+                    ->createSchedulerManager( _name, MENGINE_DOCUMENT_PYBIND );
 
                 return sm;
             }

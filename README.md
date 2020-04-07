@@ -1,5 +1,3 @@
-[![Beerpay](https://beerpay.io/irov/Mengine/badge.svg?style=flat)](https://beerpay.io/irov/Mengine)
-
 # Mengine
 
 Mengine is an multiple platforms engine for creating and running graphical games

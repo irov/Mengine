@@ -122,7 +122,7 @@ namespace Mengine
                 , _count
                 , _offset
                 , m_indexCount
-                , MENGINE_DOCUMENTABLE_STR()
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
             return nullptr;
@@ -147,7 +147,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
                 , _count
                 , _offset
-                , MENGINE_DOCUMENTABLE_STR()
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
             return nullptr;
@@ -182,7 +182,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid lock size %u (doc '%s')"
                 , _size
-                , MENGINE_DOCUMENTABLE_STR()
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
             return false;

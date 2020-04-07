@@ -42,8 +42,6 @@ namespace Mengine
 
     protected:
         bool initializeFileService_();
-        bool initializeUserDirectory_();
-        bool initializeLoggerFile_();
         bool initializeOptionsService_();
         bool initializeLoggerService_();
         bool initializeArchiveService_();
@@ -51,7 +49,6 @@ namespace Mengine
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        LoggerInterfacePtr m_loggerFile;
         LoggerInterfacePtr m_loggerMessageBox;
     };
 }

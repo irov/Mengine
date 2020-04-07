@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/BootstrapperInterface.h"
+#include "Interface/LoggerInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -45,7 +46,14 @@ namespace Mengine
         void stopFrameworks_();
 
     protected:
+        bool loadApplicationIni_();
+        bool mountUserFileGroup_();
+        bool initializeFileLogger_();
+
+    protected:
         VectorFilePath m_packagesPaths;
         VectorFilePath m_settingsPaths;
+
+        LoggerInterfacePtr m_loggerFile;
     };
 }

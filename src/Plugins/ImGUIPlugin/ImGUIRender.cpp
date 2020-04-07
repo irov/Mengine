@@ -129,9 +129,9 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         OpenGLRenderImageExtensionInterface * extension = image->getRenderImageExtention();
 
-        LPDIRECT3DTEXTURE9 pD3DTexture = extension->getD3DTexture();
+        GLuint UID = extension->getUID();
 
-        return (ImTextureID)pD3DTexture;
+        return (ImTextureID)UID;
 #endif
     }
 }

@@ -17,6 +17,7 @@
 #include "Interface/FrameworkServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
@@ -25,7 +26,13 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/VectorString.h"
+#include "Kernel/Stringstream.h"
+#include "Kernel/UnicodeHelper.h"
+#include "Kernel/FileLogger.h"
+
+#include <iomanip>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
@@ -349,6 +356,171 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::loadApplicationIni_()
+    {
+        FilePath applicationPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
+
+        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
+        if( defaultFileGroup->existFile( applicationPath, true ) == true )
+        {
+            ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
+                ->loadConfig( defaultFileGroup, applicationPath, MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, false, "invalid open application settings '%s'"
+                , applicationPath.c_str()
+            );
+
+            VectorFilePath configsPaths;
+            applicationConfig->getValues( "Configs", "Path", configsPaths );
+
+            VectorFilePath credentialsPaths;
+            applicationConfig->getValues( "Credentials", "Path", credentialsPaths );
+
+            applicationConfig->getValues( "Packages", "Path", m_packagesPaths );
+            applicationConfig->getValues( "Settings", "Path", m_settingsPaths );
+
+            for( const FilePath & filePath : configsPaths )
+            {
+                if( CONFIG_SERVICE()
+                    ->loadDefaultConfig( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                {
+                    LOGGER_ERROR( "invalid load config '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return false;
+                }
+            }
+
+            for( const FilePath & filePath : credentialsPaths )
+            {
+                if( CONFIG_SERVICE()
+                    ->loadDefaultConfig( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                {
+                    LOGGER_ERROR( "invalid load credential '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            LOGGER_INFO( "not exist application config '%s'"
+                , applicationPath.c_str()
+            );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::mountUserFileGroup_()
+    {
+        Char userPath[MENGINE_MAX_PATH] = {0};
+        size_t userPathLen = PLATFORM_SERVICE()
+            ->getUserPath( userPath );
+
+        FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, (FilePath::size_type)userPathLen );
+
+        // mount user directory
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount user directory '%s'"
+                , userPath
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::initializeFileLogger_()
+    {
+        bool nologs = HAS_OPTION( "nologs" );
+
+        if( nologs == true )
+        {
+            return true;
+        }
+
+        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+            ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
+        PlatformDateTime dateTime;
+        dateTimeProvider->getLocalDateTime( &dateTime );
+
+        Stringstream ss_date;
+        ss_date << dateTime.year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+        String str_date = ss_date.str();
+
+        WString unicode_date;
+        Helper::utf8ToUnicode( str_date, unicode_date );
+
+        WString unicode_logFilename;
+        unicode_logFilename += L"Game";
+
+        bool developmentMode = HAS_OPTION( "dev" );
+        bool roamingMode = HAS_OPTION( "roaming" );
+        bool noroamingMode = HAS_OPTION( "noroaming" );
+
+        if( developmentMode == true && (roamingMode == false || noroamingMode == false) )
+        {
+            unicode_logFilename += L"_";
+            unicode_logFilename += unicode_date;
+        }
+
+        unicode_logFilename += L".log";
+
+        String utf8_logFilename;
+        if( Helper::unicodeToUtf8( unicode_logFilename, utf8_logFilename ) == false )
+        {
+            LOGGER_ERROR( "failed log directory '%ls' convert to ut8f"
+                , unicode_logFilename.c_str()
+            );
+
+            return false;
+        }
+
+        FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename );
+
+        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+        fileLog->setFileGroup( userFileGroup );
+        fileLog->setFilePath( logFilename );
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( fileLog ) == false )
+        {
+            LOGGER_ERROR( "invalid register file logger '%s'"
+                , logFilename.c_str()
+            );
+        }
+        else
+        {
+            m_loggerFile = fileLog;
+
+            LOGGER_INFO( "starting log to '%s'"
+                , logFilename.c_str()
+            );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
@@ -368,60 +540,19 @@ namespace Mengine
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
-        FilePath applicationPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
-
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        if( fileGroup->existFile( applicationPath, true ) == true )
+        if( this->loadApplicationIni_() == false )
         {
-            ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
-                ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FACTORABLE );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, false, "invalid open application settings '%s'"
-                , applicationPath.c_str()
-            );
-
-            VectorFilePath configsPaths;
-            applicationConfig->getValues( "Configs", "Path", configsPaths );
-
-            VectorFilePath credentialsPaths;
-            applicationConfig->getValues( "Credentials", "Path", credentialsPaths );
-
-            applicationConfig->getValues( "Packages", "Path", m_packagesPaths );
-            applicationConfig->getValues( "Settings", "Path", m_settingsPaths );
-
-            for( const FilePath & filePath : configsPaths )
-            {
-                if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    LOGGER_ERROR( "invalid load config '%s'"
-                        , filePath.c_str()
-                    );
-
-                    return false;
-                }
-            }
-
-            for( const FilePath & filePath : credentialsPaths )
-            {
-                if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    LOGGER_ERROR( "invalid load credential '%s'"
-                        , filePath.c_str()
-                    );
-
-                    return false;
-                }
-            }
+            return false;
         }
-        else
+
+        if( this->mountUserFileGroup_() == false )
         {
-            LOGGER_INFO( "not exist application config '%s'"
-                , applicationPath.c_str()
-            );
+            return false;
+        }
+
+        if( this->initializeFileLogger_() == false )
+        {
+            return false;
         }
 
         SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1098,6 +1229,15 @@ namespace Mengine
         SERVICE_FINALIZE( VocabularyService );
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
+
+        if( m_loggerFile != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerFile );
+
+            m_loggerFile = nullptr;
+        }
+
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( TimepipeService );

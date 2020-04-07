@@ -151,8 +151,11 @@ namespace Mengine
 
         for( const SchedulerInterfacePtr & scheduler : m_schedulers )
         {
-            LOGGER_ERROR( "was forgotten finalize scheduler '%s'"
+            const Char * doc = MENGINE_DOCUMENTABLE_STR( scheduler.get(), "forgotten scheduler" );
+
+            LOGGER_ERROR( "was forgotten finalize scheduler '%s' (doc: %s)"
                 , scheduler->getName().c_str()
+                , doc
             );
 
             scheduler->finalize();
@@ -280,9 +283,9 @@ namespace Mengine
         Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
-    SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
+    SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name, const DocumentPtr & _doc )
     {
-        SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        SchedulerPtr sm = m_factoryScheduleManager->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( sm, nullptr );
 

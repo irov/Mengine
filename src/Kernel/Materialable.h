@@ -61,7 +61,7 @@ namespace Mengine
         MENGINE_INLINE const RenderMaterialInterfacePtr & getMaterial() const;
 
     protected:
-        MENGINE_INLINE void invalidateMaterial();
+        MENGINE_INLINE void invalidateMaterial() const;
         MENGINE_INLINE bool isInvalidateMaterial() const;
 
     protected:
@@ -86,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Materialable> MaterialablePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void Materialable::invalidateMaterial()
+    MENGINE_INLINE void Materialable::invalidateMaterial() const
     {
         m_invalidateMaterial = true;
     }

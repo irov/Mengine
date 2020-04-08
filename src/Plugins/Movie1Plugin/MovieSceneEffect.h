@@ -23,16 +23,16 @@ namespace Mengine
         void enablePropagate( bool _value );
 
     protected:
-        void invalidateColor() override;
+        void invalidateColor() const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        Node * m_propagate;
+        mutable Node * m_propagate;
 
         bool m_propagateEnable;
 

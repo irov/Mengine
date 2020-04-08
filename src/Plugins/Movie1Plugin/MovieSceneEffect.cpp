@@ -65,7 +65,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSceneEffect::invalidateColor()
+    void MovieSceneEffect::invalidateColor() const
     {
         if( m_propagate == nullptr )
         {
@@ -79,7 +79,7 @@ namespace Mengine
         render->setLocalColor( personal_color );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSceneEffect::_invalidateWorldMatrix()
+    void MovieSceneEffect::_invalidateWorldMatrix() const
     {
         if( m_propagate == nullptr )
         {

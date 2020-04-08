@@ -137,21 +137,21 @@ namespace Mengine
         *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::_invalidateWorldMatrix()
+    void MovieMesh2D::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 
         this->invalidateVerticesWM();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::invalidateVertices()
+    void MovieMesh2D::invalidateVertices() const
     {
         m_invalidateVerticesLocal = true;
 
         this->invalidateVerticesWM();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::invalidateVerticesWM()
+    void MovieMesh2D::invalidateVerticesWM() const
     {
         m_invalidateVerticesWM = true;
 
@@ -171,7 +171,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::_invalidateColor()
+    void MovieMesh2D::_invalidateColor() const
     {
         this->invalidateVerticesColor();
 
@@ -185,7 +185,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::invalidateVerticesColor()
+    void MovieMesh2D::invalidateVerticesColor() const
     {
         m_invalidateVerticesColor = true;
     }

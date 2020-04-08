@@ -44,22 +44,22 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
-        void _invalidateColor() override;
-        void _invalidateWorldMatrix() override;
+        void _invalidateColor() const override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
         bool compileResource_();
 
     protected:
-        void invalidateVertices();
+        void invalidateVertices() const;
         void updateVertices() const;
 
     protected:
-        void invalidateVerticesWM();
+        void invalidateVerticesWM() const;
         void updateVerticesWM() const;
 
     protected:
-        void invalidateVerticesColor();
+        void invalidateVerticesColor() const;
         void updateVerticesColor() const;
 
     protected:
@@ -78,7 +78,7 @@ namespace Mengine
         uint32_t m_vertexCount;
         uint32_t m_indicesCount;
 
-        bool m_solid;
+        mutable bool m_solid;
 
         mutable bool m_invalidateVerticesLocal;
         mutable bool m_invalidateVerticesWM;

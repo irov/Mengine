@@ -60,7 +60,7 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 

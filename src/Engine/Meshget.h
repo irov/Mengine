@@ -77,15 +77,15 @@ namespace Mengine
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
-        void _invalidateColor() override;
-        void _invalidateWorldMatrix() override;
+        void _invalidateColor() const override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
-        void invalidateVerticesWM();
+        void invalidateVerticesWM() const;
         void updateVerticesWM() const;
 
     protected:
-        void invalidateVerticesColor();
+        void invalidateVerticesColor() const;
         void updateVerticesColor() const;
 
     protected:

@@ -34,9 +34,9 @@ namespace Mengine
         const Viewport & getScissorViewport() const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
-        void invalidateViewport_();
+        void invalidateViewport_() const;
         void updateViewport_() const;
 
     protected:
@@ -51,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<RenderScissor> RenderScissorPtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void RenderScissor::invalidateViewport_()
+    MENGINE_INLINE void RenderScissor::invalidateViewport_() const
     {
         m_invalidateViewport = true;
     }

@@ -58,7 +58,7 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
         void updateVerticesWM_() const;

@@ -52,6 +52,10 @@ namespace Mengine
         uint8_t getRectQuality() const override;
 
     public:
+        void pushState() override;
+        void popState() override;
+
+    public:
         void beginFill() override;
         void endFill() override;
 
@@ -74,8 +78,8 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
-        void _invalidateColor() override;
+        void _invalidateWorldMatrix() const override;
+        void _invalidateColor() const override;
 
     protected:
         void updateLocalVertex2D_() const;

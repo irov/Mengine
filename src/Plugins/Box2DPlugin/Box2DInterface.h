@@ -15,6 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EBox2DManifoldType
     {
+        EVENT_BOX2DMANIFOLD_NONE,
         EVENT_BOX2DMANIFOLD_CIRCLES,
         EVENT_BOX2DMANIFOLD_FACE_A,
         EVENT_BOX2DMANIFOLD_FACE_B,
@@ -150,6 +151,7 @@ namespace Mengine
     class UnknownPhysicalPlaceholderInterface
         : public UnknownInterface
     {
+    public:
         virtual void setBox2DBody( const Box2DBodyInterfacePtr & _body ) = 0;
         virtual const Box2DBodyInterfacePtr & getBox2DBody() const = 0;
     };

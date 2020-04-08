@@ -148,26 +148,26 @@ namespace Mengine
         *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::_invalidateWorldMatrix()
+    void Meshget::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 
         this->invalidateVerticesWM();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::invalidateVerticesWM()
+    void Meshget::invalidateVerticesWM() const
     {
         m_invalidateVerticesWM = true;
 
         this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::_invalidateColor()
+    void Meshget::_invalidateColor() const
     {
         this->invalidateVerticesColor();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::invalidateVerticesColor()
+    void Meshget::invalidateVerticesColor() const
     {
         m_invalidateVerticesColor = true;
     }

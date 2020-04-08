@@ -81,33 +81,33 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::_invalidateWorldMatrix()
+    void Shape::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 
         this->invalidateVerticesWM();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::invalidateVerticesLocal()
+    void Shape::invalidateVerticesLocal() const
     {
         m_invalidateVerticesLocal = true;
 
         this->invalidateVerticesWM();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::invalidateVerticesWM()
+    void Shape::invalidateVerticesWM() const
     {
         m_invalidateVerticesWM = true;
 
         this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::invalidateVerticesColor()
+    void Shape::invalidateVerticesColor() const
     {
         m_invalidateVerticesColor = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::_invalidateColor()
+    void Shape::_invalidateColor() const
     {
         this->invalidateVerticesColor();
     }

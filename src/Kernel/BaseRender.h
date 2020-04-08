@@ -92,7 +92,7 @@ namespace Mengine
         bool isSolidColor() const override;
 
     protected:
-        void invalidateColor() override;
+        void invalidateColor() const override;
 
     protected:
         void _setLocalTransparent( bool _transparent ) override;

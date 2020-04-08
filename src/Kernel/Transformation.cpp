@@ -43,7 +43,7 @@ namespace Mengine
 
         m_relationTransformation->addRelationTransformationChild_( this );
 
-        if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
+        if( m_relationTransformation->isIdentityWorldMatrix() == true && this->isIdentityWorldMatrix() == true )
         {
             return;
         }
@@ -86,7 +86,7 @@ namespace Mengine
         m_relationChildren.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::invalidateWorldMatrix()
+    void Transformation::invalidateWorldMatrix() const
     {
         if( m_invalidateWorldMatrix == true )
         {
@@ -103,12 +103,12 @@ namespace Mengine
         this->_invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::_invalidateWorldMatrix()
+    void Transformation::_invalidateWorldMatrix() const
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::invalidateLocalMatrix()
+    void Transformation::invalidateLocalMatrix() const
     {
         m_invalidateLocalMatrix = true;
 
@@ -649,7 +649,7 @@ namespace Mengine
 
         mat_base.v3.w = 1.f;
 
-        if( _transformationFlag & (TRANSFORMATION_INVALIDATE_ORIENTATION_YZ) )
+        if( _transformationFlag & (TRANSFORMATION_INVALIDATE_ORIENTATION) )
         {
             mt::mat4f mat_rot;
             mt::make_rotate_m4_euler( mat_rot, _orientation.x, _orientation.y, _orientation.z );

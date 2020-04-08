@@ -316,7 +316,7 @@ namespace Mengine
         return solid;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::invalidateColor()
+    void BaseRender::invalidateColor() const
     {
         Colorable::invalidateColor();
 

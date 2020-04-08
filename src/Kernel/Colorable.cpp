@@ -196,7 +196,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Colorable::invalidateColor()
+    void Colorable::invalidateColor() const
     {
         m_invalidateRelationColor = true;
 
@@ -217,7 +217,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Colorable::_invalidateColor()
+    void Colorable::_invalidateColor() const
     {
         //Empty
     }

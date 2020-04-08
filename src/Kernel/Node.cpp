@@ -1199,9 +1199,9 @@ namespace Mengine
         this->deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_invalidateWorldMatrix()
+    void Node::_invalidateWorldMatrix() const
     {
-        RenderInterface * render = this->getRender();
+        const RenderInterface * render = this->getRender();
 
         if( render != nullptr )
         {

@@ -117,14 +117,14 @@ namespace Mengine
         return test;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotBubbles::_invalidateWorldMatrix()
+    void HotSpotBubbles::_invalidateWorldMatrix() const
     {
         HotSpot::_invalidateWorldMatrix();
 
         this->invalidatemBubbleWM_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotBubbles::invalidatemBubbleWM_()
+    void HotSpotBubbles::invalidatemBubbleWM_() const
     {
         m_invalidateBubbleWM = true;
     }

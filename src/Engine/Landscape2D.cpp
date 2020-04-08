@@ -267,7 +267,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::_invalidateWorldMatrix()
+    void Landscape2D::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 

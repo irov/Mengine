@@ -293,7 +293,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::_invalidateWorldMatrix()
+    void Grid2D::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 

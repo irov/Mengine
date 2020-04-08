@@ -37,11 +37,11 @@ namespace Mengine
         const mt::mat4f & getCameraViewProjectionMatrixInv() const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
-        void invalidateViewMatrix_();
-        void invalidateProjectionMatrix_();
+        void invalidateViewMatrix_() const;
+        void invalidateProjectionMatrix_() const;
 
     protected:
         virtual void _updateViewMatrix() const = 0;
@@ -142,13 +142,13 @@ namespace Mengine
         return m_viewProjectionMatrixInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void RenderCamera::invalidateViewMatrix_()
+    MENGINE_INLINE void RenderCamera::invalidateViewMatrix_() const
     {
         m_invalidateViewMatrix = true;
         m_invalidateViewProjectionMatrix = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void RenderCamera::invalidateProjectionMatrix_()
+    MENGINE_INLINE void RenderCamera::invalidateProjectionMatrix_() const
     {
         m_invalidateProjectionMatrix = true;
         m_invalidateViewProjectionMatrix = true;

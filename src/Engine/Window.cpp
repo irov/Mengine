@@ -453,14 +453,14 @@ namespace Mengine
         *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_invalidateWorldMatrix()
+    void Window::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 
         this->invalidateVertices();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_invalidateColor()
+    void Window::_invalidateColor() const
     {
         this->invalidateVertices();
     }

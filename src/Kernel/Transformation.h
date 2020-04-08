@@ -135,14 +135,14 @@ namespace Mengine
         void coordinate( const mt::vec3f & _delta );
 
     public:
-        void invalidateWorldMatrix();
+        void invalidateWorldMatrix() const;
         MENGINE_INLINE bool isInvalidateWorldMatrix() const;
 
     protected:
-        virtual void _invalidateWorldMatrix();
+        virtual void _invalidateWorldMatrix() const;
 
     public:
-        void invalidateLocalMatrix();
+        void invalidateLocalMatrix() const;
 
     public:
         virtual void updateLocalMatrix() const;
@@ -166,7 +166,7 @@ namespace Mengine
         mutable mt::mat4f m_localMatrix;
         mutable mt::mat4f m_worldMatrix;
 
-        uint8_t m_transformationFlag;
+        mutable uint8_t m_transformationFlag;
         mutable bool m_identityWorldMatrix;
         mutable bool m_invalidateLocalMatrix;
         mutable bool m_invalidateWorldMatrix;

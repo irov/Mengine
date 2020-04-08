@@ -33,6 +33,10 @@ namespace Mengine
         virtual uint8_t getRectQuality() const = 0;
 
     public:
+        virtual void pushState() = 0;
+        virtual void popState() = 0;
+
+    public:
         virtual void beginFill() = 0;
         virtual void endFill() = 0;
 

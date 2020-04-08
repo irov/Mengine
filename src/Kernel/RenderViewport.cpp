@@ -54,7 +54,7 @@ namespace Mengine
         this->invalidateViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderViewport::_invalidateWorldMatrix()
+    void RenderViewport::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 

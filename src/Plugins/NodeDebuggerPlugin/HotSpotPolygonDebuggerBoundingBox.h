@@ -11,6 +11,10 @@ namespace Mengine
         , public Factorable
     {
     public:
+        HotSpotPolygonDebuggerBoundingBox();
+        ~HotSpotPolygonDebuggerBoundingBox() override;
+
+    public:
         bool _getBoundingBox( const HotSpotPolygonPtr & _node, mt::box2f * _bb ) override;
     };
 }

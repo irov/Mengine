@@ -12,6 +12,10 @@ namespace Mengine
         DECLARE_VISITABLE( Node );
 
     public:
+        MovieNodeExtra();
+        ~MovieNodeExtra() override;
+
+    public:
         void movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer );
 
     protected:

@@ -11,6 +11,10 @@ namespace Mengine
         , public Factorable
     {
     public:
+        Movie2DebuggerBoundingBox();
+        ~Movie2DebuggerBoundingBox() override;
+
+    public:
         bool _getBoundingBox( const Movie2Ptr & _node, mt::box2f * _bb ) override;
     };
 }

@@ -304,10 +304,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        SERVICE_LEAVE( FileServiceInterface, [this]()
-        {
-        } );
-
         SERVICE_LEAVE( LoggerServiceInterface, [this]()
         {
             if( m_loggerStdio != nullptr )

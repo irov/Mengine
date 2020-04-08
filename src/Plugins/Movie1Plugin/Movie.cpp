@@ -58,6 +58,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    Movie::~Movie()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
     {
         if( m_resourceMovie == _resourceMovie )

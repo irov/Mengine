@@ -2,6 +2,15 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    TextFieldDebuggerBoundingBox::TextFieldDebuggerBoundingBox()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TextFieldDebuggerBoundingBox::~TextFieldDebuggerBoundingBox()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TextFieldDebuggerBoundingBox::_getBoundingBox( const TextFieldPtr & _node, mt::box2f * _bb )
     {
         Viewport vp;

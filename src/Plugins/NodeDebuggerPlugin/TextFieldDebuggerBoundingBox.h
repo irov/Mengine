@@ -11,6 +11,10 @@ namespace Mengine
         , public Factorable
     {
     public:
+        TextFieldDebuggerBoundingBox();
+        ~TextFieldDebuggerBoundingBox() override;
+
+    public:
         bool _getBoundingBox( const TextFieldPtr & _node, mt::box2f * _bb ) override;
     };
 }

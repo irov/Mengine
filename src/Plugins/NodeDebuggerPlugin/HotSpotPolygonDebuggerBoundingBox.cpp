@@ -2,6 +2,15 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    HotSpotPolygonDebuggerBoundingBox::HotSpotPolygonDebuggerBoundingBox()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HotSpotPolygonDebuggerBoundingBox::~HotSpotPolygonDebuggerBoundingBox()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool HotSpotPolygonDebuggerBoundingBox::_getBoundingBox( const HotSpotPolygonPtr & _node, mt::box2f * _bb )
     {
         const Polygon & polygon = _node->getPolygon();

@@ -71,6 +71,7 @@ namespace Mengine
 
     public:
         Movie();
+        ~Movie() override;
 
     public:
         void setResourceMovie( const ResourceMoviePtr & _resourceMovie );

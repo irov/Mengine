@@ -108,7 +108,7 @@ namespace Mengine
 
         m_world = world;
 
-        float timeStep = 1.0f / 60.0f;
+        float timeStep = 1000.f / 60.0f;
         uint32_t velocityIterations = 8;
         uint32_t positionIterations = 3;
 

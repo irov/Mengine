@@ -48,7 +48,7 @@ namespace Mengine
         return m_viewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderScissor::_invalidateWorldMatrix()
+    void RenderScissor::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 

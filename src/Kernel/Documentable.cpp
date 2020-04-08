@@ -1,5 +1,5 @@
 #include "Kernel/Documentable.h"
-#include "Kernel/DocumentHelper.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {

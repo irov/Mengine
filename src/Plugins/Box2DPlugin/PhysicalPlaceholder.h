@@ -24,16 +24,12 @@ namespace Mengine
         const Box2DBodyInterfacePtr & getBox2DBody() const override;
 
     protected:
-        bool _activate() override;
-        void _deactivate() override;
-
-    protected:
         void updateLocalMatrix() const override;
 
     protected:
         Box2DBodyPtr m_body;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PhysicalPlaceholder> PhysicalBodyPtr;
+    typedef IntrusivePtr<PhysicalPlaceholder> PhysicalPlaceholderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

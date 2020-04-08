@@ -7,7 +7,9 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 
 #include "PhysicalPlaceholder.h"
+
 #include "Box2DBody.h"
+#include "Box2DJoint.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Box2DService );
@@ -41,6 +43,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), Helper::makeDefaultPrototypeGenerator<Box2DJoint, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,6 +61,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DPlugin::_destroyPlugin()

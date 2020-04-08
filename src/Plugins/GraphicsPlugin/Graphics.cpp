@@ -172,6 +172,20 @@ namespace Mengine
         return quality;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::pushState()
+    {
+        GP_CALL( gp_push_state, (m_canvas) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::popState()
+    {
+        GP_CALL( gp_pop_state, (m_canvas) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::beginFill()
     {
         GP_CALL( gp_begin_fill, (m_canvas) );
@@ -271,14 +285,14 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::_invalidateWorldMatrix()
+    void Graphics::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::_invalidateColor()
+    void Graphics::_invalidateColor() const
     {
         BaseRender::_invalidateColor();
 

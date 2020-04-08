@@ -45,7 +45,7 @@ namespace Mengine
         MENGINE_INLINE const Color & getRelationColor() const;
 
     public:
-        virtual void invalidateColor();
+        virtual void invalidateColor() const;
         MENGINE_INLINE bool isInvalidateColor() const;
 
     protected:
@@ -55,7 +55,7 @@ namespace Mengine
         virtual void _setPersonalColor( const Color & _color );
         virtual void _setPersonalAlpha( float _alpha );
 
-        virtual void _invalidateColor();
+        virtual void _invalidateColor() const;
 
     protected:
         virtual void _setLocalTransparent( bool _transparent );

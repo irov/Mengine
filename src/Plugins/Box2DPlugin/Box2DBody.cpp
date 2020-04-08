@@ -140,8 +140,8 @@ namespace Mengine
         unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
     {
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
-        float b2_width = _width;
-        float b2_height = _height;
+        float b2_width = m_scaler.toBox2DWorld( _width );
+        float b2_height = m_scaler.toBox2DWorld( _height );
 
         b2PolygonShape shape;
         shape.SetAsBox( b2_width, b2_height
@@ -186,12 +186,12 @@ namespace Mengine
         return angle;
     }
     //////////////////////////////////////////////////////////////////////////
-    mt::vec2f Box2DBody::getWorldVector( const mt::vec2f & _localVector )       
-    {       
+    mt::vec2f Box2DBody::getWorldVector( const mt::vec2f & _localVector )
+    {
         b2Vec2 b2_localVector = m_scaler.toBox2DWorld( _localVector );
-        b2Vec2 b2_worldVector = m_body->GetWorldVector( b2_localVector );       
+        b2Vec2 b2_worldVector = m_body->GetWorldVector( b2_localVector );
         mt::vec2f worldVector = m_scaler.toEngineWorld( b2_worldVector );
-        return worldVector;     
+        return worldVector;
     }
     //////////////////////////////////////////////////////////////////////////
     float Box2DBody::getMass() const
@@ -255,9 +255,9 @@ namespace Mengine
         m_body->ApplyLinearImpulse( b2_impulse, b2_total_point, true );
     }
     //////////////////////////////////////////////////////////////////////////      
-    void Box2DBody::applyAngularImpulse( float _impulse )       
-    {       
-        m_body->ApplyAngularImpulse( _impulse, true );      
+    void Box2DBody::applyAngularImpulse( float _impulse )
+    {
+        m_body->ApplyAngularImpulse( _impulse, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::onBeginContact( Box2DBody * _body, b2Contact * _contact )
@@ -280,41 +280,44 @@ namespace Mengine
     {
         MENGINE_UNUSED( _contact );
 
+        EBox2DManifoldType oldManifoldType = EVENT_BOX2DMANIFOLD_NONE;
+
         Box2DManifold oldManifold;
 
-        oldManifold.localPoint = m_scaler.toEngineWorld( _oldManifold->localPoint );
-        oldManifold.localNormal = {_oldManifold->localNormal.x, _oldManifold->localNormal.y};
-
-        EBox2DManifoldType oldManifoldType;
-
-        switch( _oldManifold->type )
+        if( _oldManifold->pointCount > 0 )
         {
-        case b2Manifold::e_circles:
-            {
-                oldManifoldType = EVENT_BOX2DMANIFOLD_CIRCLES;
+            oldManifold.localPoint = m_scaler.toEngineWorld( _oldManifold->localPoint );
+            oldManifold.localNormal = {_oldManifold->localNormal.x, _oldManifold->localNormal.y};            
 
-                for( int32 index = 0; index != _oldManifold->pointCount; ++index )
+            switch( _oldManifold->type )
+            {
+            case b2Manifold::e_circles:
                 {
-                    const b2ManifoldPoint * b2_point = _oldManifold->points + index;
+                    oldManifoldType = EVENT_BOX2DMANIFOLD_CIRCLES;
 
-                    Box2DManifoldPoint point;
-                    point.localPoint = m_scaler.toEngineWorld( b2_point->localPoint );
-                    point.normalImpulse = b2_point->normalImpulse;
-                    point.tangentImpulse = b2_point->tangentImpulse;
+                    for( int32 index = 0; index != _oldManifold->pointCount; ++index )
+                    {
+                        const b2ManifoldPoint * b2_point = _oldManifold->points + index;
 
-                    oldManifold.points[index] = point;
-                }
-            }break;
-        case b2Manifold::e_faceA:
-            {
-                oldManifoldType = EVENT_BOX2DMANIFOLD_FACE_A;
-            }break;
-        case b2Manifold::e_faceB:
-            {
-                oldManifoldType = EVENT_BOX2DMANIFOLD_FACE_B;
-            }break;
-        default:
-            return;
+                        Box2DManifoldPoint point;
+                        point.localPoint = m_scaler.toEngineWorld( b2_point->localPoint );
+                        point.normalImpulse = b2_point->normalImpulse;
+                        point.tangentImpulse = b2_point->tangentImpulse;
+
+                        oldManifold.points[index] = point;
+                    }
+                }break;
+            case b2Manifold::e_faceA:
+                {
+                    oldManifoldType = EVENT_BOX2DMANIFOLD_FACE_A;
+                }break;
+            case b2Manifold::e_faceB:
+                {
+                    oldManifoldType = EVENT_BOX2DMANIFOLD_FACE_B;
+                }break;
+            default:
+                return;
+            }
         }
 
         EVENTABLE_OTHER_METHOD( m_eventable, EVENT_BOX2DBODY_PRE_SOLVE )

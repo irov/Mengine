@@ -5,6 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PhysicalPlaceholder::PhysicalPlaceholder()
     {
+        this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
     PhysicalPlaceholder::~PhysicalPlaceholder()
@@ -23,24 +24,12 @@ namespace Mengine
         return m_body;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PhysicalPlaceholder::_activate()
-    {
-        this->invalidateLocalMatrix();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PhysicalPlaceholder::_deactivate()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PhysicalPlaceholder::updateLocalMatrix() const
     {
         MENGINE_ASSERTION( m_body != nullptr );
 
         //always update local matrix
-        m_invalidateLocalMatrix = true; 
+        this->invalidateLocalMatrix();
 
         mt::vec2f position = m_body->getPosition();
         float angle = m_body->getAngle();
@@ -51,6 +40,8 @@ namespace Mengine
         mt::vec2f new_skew = m_skew;
         mt::vec3f new_orientation = m_orientation + mt::vec3f( angle, 0.f, 0.f );
 
-        Transformation::makeLocalMatrix_( m_localMatrix, TRANSFORMATION_INVALIDATE_UNKNOWN, new_position, new_origin, new_scale, new_skew, new_orientation );
+        Transformation::makeLocalMatrix_( m_localMatrix, TRANSFORMATION_INVALIDATE_ALL, new_position, new_origin, new_scale, new_skew, new_orientation );
+
+        m_transformationFlag = TRANSFORMATION_INVALIDATE_ALL;
     }
 }

@@ -7,6 +7,7 @@ OPTION(MENGINE_EXTERNAL_SOURCE "Mengine external sources" OFF)
 OPTION(MENGINE_USE_SUBFOLDER "Mengine use subfolder" OFF)
 
 SET(MENGINE_EXTERNAL_PDB_PATH "" CACHE STRING "Mengine external source path")
+SET(MENGINE_EXTERNAL_PROJECT_NAME "" CACHE STRING "Mengine external project name")
 SET(MENGINE_EXTERNAL_SOURCE_PATH "" CACHE STRING "Mengine external source path")
 SET(MENGINE_EXTERNAL_TEMP_PATH "" CACHE STRING "Mengine external temp path")
 SET(MENGINE_SUBFOLDER_NAME "Mengine" CACHE STRING "Mengine subfolder name")

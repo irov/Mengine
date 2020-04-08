@@ -110,7 +110,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_invalidateWorldMatrix()
+    void HotSpot::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 

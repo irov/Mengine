@@ -3,22 +3,20 @@
 #include "Kernel/Factory.h"
 #include "Kernel/DummySceneEventReceiver.h"
 
-#include "Engine/Vectorizator.h"
-
 #include "Plugins/Box2DPlugin/Box2DInterface.h"
+#include "Plugins/GraphicsPlugin/GraphicsInterface.h"
 
 #include "Interface/TimepipeServiceInterface.h"
 
-#include "GOAP/GOAP.h"
+#include "Kernel/Scene.h"
 
-#include "Box.h"
+#include "GOAP/GOAP.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SimpleBox2DEventReceiver
         : public DummySceneEventReceiver
-        , public TimepipeInterface
         , public Factorable
     {
     public:
@@ -32,23 +30,14 @@ namespace Mengine
         bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
 
-    public:
-        void onTimepipe( const UpdateContext * _context ) override;
-
-    
-    protected:
-        NodePtr m_boxNode;
-
-        GOAP::ChainPtr m_chain;
-
-        Box2DWorldInterfacePtr m_world;
-
-        uint32_t m_timepipeId;
-
-        VectorBoxPtr m_boxes;
-
     protected:
         Scene * m_scene;
+
+        NodePtr m_boxNode;
+
+        GOAP::ChainInterfacePtr m_chain;
+
+        Box2DWorldInterfacePtr m_world;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SimpleBox2DEventReceiver> SimpleBox2DEventReceiverPtr;

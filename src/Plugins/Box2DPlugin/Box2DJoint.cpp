@@ -13,6 +13,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJoint::~Box2DJoint()
     {
+        if( m_world != nullptr && m_joint != nullptr )
+        {
+            m_world->DestroyJoint( m_joint );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Box2DJoint::initialize( b2World * _world, const b2JointDef * _jointDef )

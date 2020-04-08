@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SimpleBox2DFramework::_initializeFramework()
     {
-        SimpleBox2DEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<SimpleBox2DEventReceiver>();
+        SimpleBox2DEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<SimpleBox2DEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
 

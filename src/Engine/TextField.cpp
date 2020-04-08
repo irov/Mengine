@@ -146,7 +146,7 @@ namespace Mengine
         return m_layouts;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_invalidateWorldMatrix()
+    void TextField::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 
@@ -1436,7 +1436,7 @@ namespace Mengine
         return offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_invalidateColor()
+    void TextField::_invalidateColor() const
     {
         this->invalidateVertices_();
     }

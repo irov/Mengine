@@ -34,13 +34,13 @@ namespace Mengine
         void update( const UpdateContext * _context ) override;
 
     protected:
-        void _invalidateColor() override;
-        void _invalidateWorldMatrix() override;
+        void _invalidateColor() const override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
-        void invalidateVerticesLocal();
-        void invalidateVerticesWM();
-        void invalidateVerticesColor();
+        void invalidateVerticesLocal() const;
+        void invalidateVerticesWM() const;
+        void invalidateVerticesColor() const;
 
     protected:
         virtual void updateVerticesLocal() const = 0;

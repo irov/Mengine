@@ -36,10 +36,10 @@ namespace Mengine
         const Viewport & getViewport() const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
-        void invalidateViewport_();
+        void invalidateViewport_() const;
 
     protected:
         void updateViewport_() const;
@@ -57,7 +57,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<RenderViewport> RenderViewportPtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void RenderViewport::invalidateViewport_()
+    MENGINE_INLINE void RenderViewport::invalidateViewport_() const
     {
         m_invalidateViewport = true;
     }

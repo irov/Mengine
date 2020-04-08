@@ -7,6 +7,8 @@
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
+#include "Plugins/GOAPPlugin/GOAPInterface.h"
+
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
 #include "Engine/ShapeQuadFixed.h"
@@ -24,20 +26,13 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/TimepipeHelper.h"
 #include "Kernel/FactoryPool.h"
-
-#include "Tasks/TaskGlobalMouseButton.h"
-#include "Tasks/TaskPrint.h"
-
-#include "Config/Vector.h"
-
-#define WORLDSCALE 1.f
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SimpleBox2DEventReceiver::SimpleBox2DEventReceiver()
         : m_scene( nullptr )
-        , m_timepipeId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -65,8 +60,6 @@ namespace Mengine
         LOGGER_MESSAGE( "Scene onEntityDestroy [%s]"
             , m_scene->getName().c_str()
         );
-
-        m_boxes.clear();
 
         if( m_boxNode != nullptr )
         {
@@ -106,10 +99,10 @@ namespace Mengine
         m_boxNode->setLocalPosition( { width / 2.f, height / 2.f, 0.f } );
 
         // create box2d objects
-        mt::vec2f gravity( 0.f, -10.f );
+        mt::vec2f gravity( 0.f, 10.f );
 
         Box2DWorldInterfacePtr world = BOX2D_SERVICE()
-            ->createWorld( gravity, 128.f, MENGINE_DOCUMENT_FUNCTION );
+            ->createWorld( gravity, 1.f, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( world, false );
 
@@ -122,99 +115,119 @@ namespace Mengine
         m_world->setTimeStep( timeStep, velocityIterations, positionIterations );
 
         // create box with dynamic body
+        if( true )
         {
             Box2DBodyInterfacePtr body = m_world->createBody(
                 false
-                , { 0.f, 20.f }, 0.f, 0.f, 0.f
+                , { -100.f, -200.f }, 0.f, 0.f, 0.f
                 , true, false, false
                 , MENGINE_DOCUMENT_FUNCTION
             );
 
-            mt::vec2f shapeSize( 1.f, 1.f );
+            mt::vec2f shapeSize( 50.f, 50.f );
 
             body->addShapeBox(
-                shapeSize.x, shapeSize.y, { 0.f, 0.f }, 0.f
+                shapeSize.x * 0.5f, shapeSize.y * 0.5f, { 0.f, 0.f }, 0.f
                 , 1.f, 0.2f, 0.f, false
                 , 0xFFFF, 0x0001, 0
             );
 
             // transforms
-            body->setTransform( { 10.f, 20.f }, 45.f * mt::constant::deg2rad );
-            body->setLinearVelocity( { -5.f, 5.f } );
-            body->setAngularVelocity( -90.f * mt::constant::deg2rad );
+            body->setLinearVelocity( { 20.f, 0.f } );
+            //body->setAngularVelocity( -90.f * mt::constant::deg2rad );
 
             // vectorizer
-            VectorizatorPtr vectorizator = Helper::generateVectorizator( MENGINE_DOCUMENT_FUNCTION );
+            NodePtr graphicsNode = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
 
-            vectorizator->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_DynamicBody" ) );
+            graphicsNode->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_DynamicBody" ) );
+
+            GraphicsInterface * graphics = graphicsNode->getUnknown();
 
             Color colorLine( Helper::makeRGBA8( 255, 0, 0, 255 ) );
             Color colorFill( Helper::makeRGBA8( 0, 255, 0, 255 ) );
 
-            vectorizator->setLineColor( colorLine );
-            vectorizator->setLineWidth( 5.f );
+            graphics->setLineColor( colorLine );
+            graphics->setLineWidth( 1.f );
 
-            mt::vec2f size( shapeSize * WORLDSCALE );
+            mt::vec2f size( shapeSize );
             mt::vec2f halfSize = size * 0.5;
 
-            vectorizator->beginFill( colorFill );
-            vectorizator->drawRect( { -halfSize.x, -halfSize.y }, size.x, size.y );
-            vectorizator->endFill();
+            graphics->drawRect( {-halfSize.x, -halfSize.y}, size.x, size.y );
 
-            vectorizator->drawCircle( { 0.f, 0.f }, 5.f );
+            graphics->pushState();
+            graphics->setLineColor( colorFill );
+            graphics->beginFill();
+            graphics->drawRect( {-halfSize.x * 0.5f, -halfSize.y * 0.5f}, size.x * 0.5f, size.y * 0.5f );
+            graphics->endFill();
+            graphics->popState();
 
-            m_boxNode->addChild( vectorizator );
+            m_boxNode->addChild( graphicsNode );
 
             // create box
-            BoxPtr box = Helper::makeFactorableUnique<Box>( body, vectorizator );
+            NodePtr phisicalPlaceholder = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            m_boxes.emplace_back( box );
+            UnknownPhysicalPlaceholderInterface * unknownPhisicalPlaceholder = phisicalPlaceholder->getUnknown();
+
+            unknownPhisicalPlaceholder->setBox2DBody( body );
+
+            phisicalPlaceholder->addChild( graphicsNode );
+
+            m_boxNode->addChild( phisicalPlaceholder );
         }
 
         // create box with static body
+        if( true )
         {
             // static body
             Box2DBodyInterfacePtr body = m_world->createBody(
                 true
-                , { 0.f, 10.f }, 0.f, 0.f, 0.f
+                , { 0.f, 0.f }, 0.f, 0.f, 0.f
                 , true, false, false
                 , MENGINE_DOCUMENT_FUNCTION
             );
 
-            mt::vec2f shapeSize( 1.f, 1.f );
+            mt::vec2f shapeSize( 50.f, 50.f );
 
             body->addShapeBox(
-                shapeSize.x, shapeSize.y, { 0.f, 0.f }, 0.f
+                shapeSize.x * 0.5f, shapeSize.y * 0.5f, { 0.f, 0.f }, 0.f
                 , 1.f, 0.2f, 0.f, false
                 , 0xFFFF, 0x0001, 0
             );
 
             // vectorizer
-            VectorizatorPtr vectorizator = Helper::generateVectorizator( MENGINE_DOCUMENT_FUNCTION );
+            NodePtr graphicsNode = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
 
-            vectorizator->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_StaticBody" ) );
+            graphicsNode->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_StaticBody" ) );
+
+            GraphicsInterface * graphics = graphicsNode->getUnknown();
 
             Color colorLine( Helper::makeRGBA8( 255, 0, 0, 255 ) );
             Color colorFill( Helper::makeRGBA8( 0, 255, 255, 255 ) );
 
-            vectorizator->setLineColor( colorLine );
-            vectorizator->setLineWidth( 5.f );
+            graphics->setLineColor( colorLine );
+            graphics->setLineWidth( 1.f );
 
-            mt::vec2f size( shapeSize * WORLDSCALE );
+            mt::vec2f size( shapeSize );
             mt::vec2f halfSize = size * 0.5;
 
-            vectorizator->beginFill( colorFill );
-            vectorizator->drawRect( { -halfSize.x, -halfSize.y }, size.x, size.y );
-            vectorizator->endFill();
+            graphics->drawRect( {-halfSize.x, -halfSize.y}, size.x, size.y );
 
-            vectorizator->drawCircle( { 0.f, 0.f }, 5.f );
+            graphics->pushState();
+            graphics->setLineColor( colorFill );
+            graphics->beginFill();
+            graphics->drawRect( { -halfSize.x * 0.5f, -halfSize.y * 0.5f}, size.x * 0.5f, size.y * 0.5f );
+            graphics->endFill();
+            graphics->popState();
 
-            m_boxNode->addChild( vectorizator );
+            NodePtr phisicalPlaceholder = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            // create box
-            BoxPtr box = Helper::makeFactorableUnique<Box>( body, vectorizator );
+            UnknownPhysicalPlaceholderInterface * unknownPhisicalPlaceholder = phisicalPlaceholder->getUnknown();
 
-            m_boxes.emplace_back( box );
+            unknownPhisicalPlaceholder->setBox2DBody( body );
+
+            phisicalPlaceholder->addChild( graphicsNode );
+
+            m_boxNode->addChild( phisicalPlaceholder );
         }
 
         return true;
@@ -229,27 +242,18 @@ namespace Mengine
         );
 
         // task chain
-        GOAP::SourcePtr source = GOAP::Helper::makeSource();
+        GOAP::SourceInterfacePtr source = GOAP_SERVICE()
+            ->makeSource();
 
-        source->addTask<TaskGlobalMouseButton>( MC_LBUTTON, true, nullptr );
-        source->addTask<TaskPrint>( "Click" );
+        Cook::addGlobalMouseButton( source, MC_LBUTTON, true, nullptr );
+        Cook::addPrint( source, "Click" );
 
-        GOAP::ChainPtr chain = GOAP::Helper::makeChain( source );
+        GOAP::ChainInterfacePtr chain = GOAP_SERVICE()
+            ->makeChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
         chain->run();
 
         m_chain = chain;
-
-        // subscribe for timepipe updates
-        uint32_t timepipeId = TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
-
-        if( timepipeId == 0 )
-        {
-            return false;
-        }
-
-        m_timepipeId = timepipeId;
 
         return true;
     }
@@ -262,29 +266,11 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-        if( m_timepipeId != 0 )
-        {
-            TIMEPIPE_SERVICE()
-                ->removeTimepipe( m_timepipeId );
-
-            m_timepipeId = 0;
-        }
-
         if( m_chain != nullptr )
         {
             m_chain->cancel();
 
             m_chain = nullptr;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DEventReceiver::onTimepipe( const UpdateContext * _context )
-    {
-        MENGINE_UNUSED( _context );
-
-        for( const BoxPtr & box : m_boxes )
-        {
-            box->update();
         }
     }
 };

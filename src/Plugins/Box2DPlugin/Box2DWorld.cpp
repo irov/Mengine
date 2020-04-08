@@ -147,7 +147,7 @@ namespace Mengine
                 const Box2DBody * body = static_cast<const Box2DBody *>(b2_body->GetUserData());
 
                 mt::vec2f contact_point = m_scaler.toEngineWorld( b2_point );
-                mt::vec2f contact_normal = m_scaler.toEngineWorld( b2_normal );
+                mt::vec2f contact_normal = m_scaler.toEngineWorldNormal( b2_normal );
                 float fraction = _fraction;
 
                 float result = m_response->onResponse( m_index, body, contact_point, contact_normal, fraction );
@@ -181,6 +181,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _joint );
     }
+    //////////////////////////////////////////////////////////////////////////
     void Box2DWorld::SayGoodbye( b2Fixture * _fixture )
     {
         MENGINE_UNUSED( _fixture );
@@ -337,7 +338,7 @@ namespace Mengine
 
         b2PrismaticJointDef jointDef;
 
-        b2Vec2 worldAxis = m_scaler.toBox2DWorld( _unitsWorldAxis );
+        b2Vec2 worldAxis = m_scaler.toBox2DWorldNormal( _unitsWorldAxis );
 
         const b2Vec2 & body1_position = b2_body1->GetPosition();
 
@@ -464,7 +465,7 @@ namespace Mengine
         b2Body * b2_body1 = body1->getBody();
         b2Body * b2_body2 = body2->getBody();
 
-        b2Vec2 localAxis = m_scaler.toBox2DWorld( _localAxis );
+        b2Vec2 localAxis = m_scaler.toBox2DWorldNormal( _localAxis );
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody );
 
         b2Vec2 positionBody1 = b2_body1->GetPosition();

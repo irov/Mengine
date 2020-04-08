@@ -294,12 +294,12 @@ namespace Mengine
         m_verticesImageMaskWM[3].color = argb;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_invalidateColor()
+    void Layer2D::_invalidateColor() const
     {
         m_invalidateVerticesImageMaskColor = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_invalidateWorldMatrix()
+    void Layer2D::_invalidateWorldMatrix() const
     {
         Node::_invalidateWorldMatrix();
 

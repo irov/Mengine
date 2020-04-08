@@ -168,7 +168,7 @@ namespace Mengine
         virtual void _afterDeactivate();
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
         bool compile() override;

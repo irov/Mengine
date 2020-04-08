@@ -24,10 +24,10 @@ namespace Mengine
         bool testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
-        void invalidatemBubbleWM_();
+        void invalidatemBubbleWM_() const;
         void updateBubbleWM_() const;
 
     protected:

@@ -64,8 +64,8 @@ namespace Mengine
         void updateVerticesImageMaskColor() const;
 
     protected:
-        void _invalidateColor() override;
-        void _invalidateWorldMatrix() override;
+        void _invalidateColor() const override;
+        void _invalidateWorldMatrix() const override;
 
     protected:
         const RenderViewportInterfacePtr & getPickerViewport() const override;

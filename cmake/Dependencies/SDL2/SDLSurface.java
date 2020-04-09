@@ -254,7 +254,9 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         if (source == InputDevice.SOURCE_UNKNOWN) {
             InputDevice device = InputDevice.getDevice(deviceId);
-            source = device.getSources();
+            if (device != null) {
+                source = device.getSources();
+            }
         }
 
         if ((source & InputDevice.SOURCE_KEYBOARD) != 0) {
@@ -486,5 +488,4 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         return false;
     }
-
 }

@@ -81,7 +81,7 @@ namespace Mengine
         );
 
         // create node for box2d objects
-        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FUNCTION );
+        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
@@ -102,7 +102,7 @@ namespace Mengine
         mt::vec2f gravity( 0.f, 10.f );
 
         Box2DWorldInterfacePtr world = BOX2D_SERVICE()
-            ->createWorld( gravity, 1.f, MENGINE_DOCUMENT_FUNCTION );
+            ->createWorld( gravity, 1.f, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( world, false );
 

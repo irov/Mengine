@@ -29,7 +29,7 @@ namespace Mengine
     {
         SimpleBox2DEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<SimpleBox2DEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
+        ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FACTORABLE );
 
         scene->setName( STRINGIZE_STRING_LOCAL( "SimpleBox2DScene" ) );
 

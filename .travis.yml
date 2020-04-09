@@ -33,6 +33,6 @@ script:
     - mkdir -p solutions/solution_xcode_sdl/$BUILD_CONFIGURATION
     - pushd solutions/solution_xcode_sdl/$BUILD_CONFIGURATION
     - cmake -G"Xcode" -S "$PWD/../../../cmake/Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DMENGINE_BUILD_ONLY_EXECUTABLE_MODULE=ON -DMENGINE_PLUGIN_CURL_FORCE_DISABLE=ON
-    - cmake --build . --config $BUILD_CONFIGURATION-- -quiet
+    - cmake --build . --config $BUILD_CONFIGURATION -- -quiet
     - popd
   

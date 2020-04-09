@@ -26,7 +26,7 @@ namespace Mengine
         ConstString getFilePathExt( const FilePath & _filePath );
         //////////////////////////////////////////////////////////////////////////
         template<FilePath::hash_type Hash>
-        FilePath stringizeFileTemplate( const Char * _value, FilePath::size_type _size )
+        const FilePath & stringizeFileTemplate( const Char * _value, FilePath::size_type _size )
         {
             static FilePath fp = Helper::stringizeFileHashUnique( _value, _size, Hash );
 

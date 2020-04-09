@@ -20,6 +20,33 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TimepipeService::_initializeService()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TimepipeService::_finalizeService()
+    {
+        m_timepipe.erase( std::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
+        {
+            return _desc.id == ~0U;
+        } ), m_timepipe.end() );
+
+#ifdef MENGINE_DEBUG
+        for( const TimepipeDesc & desc : m_timepipe )
+        {
+            LOGGER_ERROR( "Not remove timepipe '%s'"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_timepipe.clear();
+        m_timepipeAdd.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
     {
         uint32_t newid = GENERATE_UNIQUE_IDENTITY();

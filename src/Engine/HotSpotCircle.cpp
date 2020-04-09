@@ -74,7 +74,12 @@ namespace Mengine
 
         float v_sqrlength = v.sqrlength();
 
-        if( v_sqrlength < m_radius * m_radius )
+        mt::vec2f r;
+        mt::mul_v2_v2_m4_r( r, mt::vec2f( m_radius, m_radius ), wm );
+
+        float r_sqrlength = r.sqrlength();
+
+        if( v_sqrlength < r_sqrlength )
         {
             return !m_outward;
         }
@@ -115,7 +120,10 @@ namespace Mengine
 
         float v_sqrlength = v.sqrlength();
 
-        if( v_sqrlength < (m_radius + _radiusx) * (m_radius + _radiusy) )
+        mt::vec2f r;
+        mt::mul_v2_v2_m4_r( r, mt::vec2f( m_radius, m_radius ), wm );
+
+        if( v_sqrlength < (r.x + _radiusx) * (r.y + _radiusy) )
         {
             return !m_outward;
         }

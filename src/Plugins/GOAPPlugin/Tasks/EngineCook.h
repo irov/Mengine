@@ -3,6 +3,7 @@
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/SchedulerInterface.h"
 
+#include "TaskEnum.h"
 #include "TaskNotify.h"
 #include "TaskEventable.h"
 
@@ -23,38 +24,38 @@ namespace Mengine
     {
         using namespace GOAP::Cook;
 
-        MENGINE_DLL_EXPORT void addAnimatablePause( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
-        MENGINE_DLL_EXPORT void addAnimatablePlay( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
-        MENGINE_DLL_EXPORT void addAnimatablePlayWait( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable, const EventablePtr & _eventable );
-        MENGINE_DLL_EXPORT void addAnimatableResume( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
-        MENGINE_DLL_EXPORT void addAnimatableRewind( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
-        MENGINE_DLL_EXPORT void addAnimatableStop( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
-        MENGINE_DLL_EXPORT void addNodeDestroy( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
-        MENGINE_DLL_EXPORT void addNodeDisable( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
-        MENGINE_DLL_EXPORT void addNodeEnable( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
+        void addAnimatablePause( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
+        void addAnimatablePlay( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
+        void addAnimatablePlayWait( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable, const EventablePtr & _eventable );
+        void addAnimatableResume( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
+        void addAnimatableRewind( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
+        void addAnimatableStop( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
+        void addNodeDestroy( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
+        void addNodeDisable( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
+        void addNodeEnable( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
 
         typedef Lambda<bool( const InputMouseButtonEvent &, bool * )> LambdaPickerMouseButtonEvent;
-        MENGINE_DLL_EXPORT void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter );
+        void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter );
 
         typedef Lambda<bool( const InputMouseEnterEvent &, bool * )> LambdaPickerMouseEnterEvent;
-        MENGINE_DLL_EXPORT void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter );
+        void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter );
 
         typedef Lambda<bool( const InputMouseLeaveEvent & )> LambdaPickerMouseLeaveEvent;
-        MENGINE_DLL_EXPORT void addPickerableMouseLeave( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter );
+        void addPickerableMouseLeave( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter );
 
-        MENGINE_DLL_EXPORT void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed );
-        MENGINE_DLL_EXPORT void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time );
-        MENGINE_DLL_EXPORT void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time );
-        MENGINE_DLL_EXPORT void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed );
-        MENGINE_DLL_EXPORT void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time );
+        void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed );
+        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time );
+        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags = ETASK_FLAG_NONE );
+        void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed );
+        void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time );
 
-        MENGINE_DLL_EXPORT void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time );
+        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time );
 
-        MENGINE_DLL_EXPORT void addPrint( const GOAP::SourceInterfacePtr & _source, const Char * _format, ... );
+        void addPrint( const GOAP::SourceInterfacePtr & _source, const Char * _format, ... );
 
-        MENGINE_DLL_EXPORT void addDelay( const GOAP::SourceInterfacePtr & _source, const SchedulerInterfacePtr & _scheduler, float _time );
-        MENGINE_DLL_EXPORT void addGlobalDelay( const GOAP::SourceInterfacePtr & _source, float _time );
-        MENGINE_DLL_EXPORT void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time );
+        void addDelay( const GOAP::SourceInterfacePtr & _source, const SchedulerInterfacePtr & _scheduler, float _time );
+        void addGlobalDelay( const GOAP::SourceInterfacePtr & _source, float _time );
+        void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time );
         //////////////////////////////////////////////////////////////////////////
         template<class ID, class ... Args>
         void addNotify( const GOAP::SourceInterfacePtr & _source, Args && ... _args )
@@ -69,16 +70,16 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyEvent;
-        MENGINE_DLL_EXPORT void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter );
+        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaInputMouseButtonEvent;
-        MENGINE_DLL_EXPORT void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter );
+        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputMouseMoveEvent & )> LambdaInputMouseMoveEvent;
-        MENGINE_DLL_EXPORT void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter );
+        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
-        MENGINE_DLL_EXPORT void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter );
+        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter );
         //////////////////////////////////////////////////////////////////////////
         using GOAP::Cook::addFunction;
         //////////////////////////////////////////////////////////////////////////

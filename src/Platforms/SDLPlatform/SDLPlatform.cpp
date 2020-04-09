@@ -344,7 +344,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_runService()
     {
-        DateTimeProviderInterfacePtr dateTimeProvider = 
+        DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
         PlatformDateTime dateTime;
@@ -488,7 +488,7 @@ namespace Mengine
         {
             if( SDL_JoystickGetAttached( m_accelerometer ) )
             {
-                SDL_JoystickClose( m_accelerometer );                
+                SDL_JoystickClose( m_accelerometer );
             }
 
             m_accelerometer = nullptr;
@@ -1039,12 +1039,12 @@ namespace Mengine
     {
         struct stat sb;
         int err = stat( _fullpath, &sb );
-        
+
         if( err != 0 )
         {
             return false;
         }
-        
+
         if( (sb.st_mode & S_IFMT) == S_IFDIR )
         {
             return true;
@@ -1499,7 +1499,7 @@ namespace Mengine
         uint32_t id = GENERATE_UNIQUE_IDENTITY();
 
         SDLEventHandlerDesc desc;
-        
+
         desc.id = id;
         desc.handler = _handler;
 

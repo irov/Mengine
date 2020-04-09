@@ -649,26 +649,23 @@ namespace Mengine
 
         mat_base.v3.w = 1.f;
 
-        if( _transformationFlag & (TRANSFORMATION_INVALIDATE_ORIENTATION) )
+        if( _transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION_YZ )
         {
             mt::mat4f mat_rot;
             mt::make_rotate_m4_euler( mat_rot, _orientation.x, _orientation.y, _orientation.z );
 
             mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
         }
+        else if( _transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION_X )
+        {
+            mt::mat4f mat_rot;
+            mt::make_rotate_z_axis_m4( mat_rot, _orientation.x );
+
+            mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
+        }
         else
         {
-            if( _transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION_X )
-            {
-                mt::mat4f mat_rot;
-                mt::make_rotate_z_axis_m4( mat_rot, _orientation.x );
-
-                mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
-            }
-            else
-            {
-                _lm = mat_base;
-            }
+            _lm = mat_base;
         }
 
         if( _transformationFlag & TRANSFORMATION_INVALIDATE_POSITION )

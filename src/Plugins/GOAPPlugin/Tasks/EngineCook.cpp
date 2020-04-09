@@ -108,9 +108,9 @@ namespace Mengine
             addTask<TaskTransformationRotateYTime>( _source, _transformation, _affectorable, _easing, _to, _time );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time )
+        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags )
         {
-            addTask<TaskTransformationScaleTime>( _source, _transformation, _affectorable, _easing, _to, _time );
+            addTask<TaskTransformationScaleTime>( _source, _transformation, _affectorable, _easing, _to, _time, _flags );
         }
         //////////////////////////////////////////////////////////////////////////
         void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed )

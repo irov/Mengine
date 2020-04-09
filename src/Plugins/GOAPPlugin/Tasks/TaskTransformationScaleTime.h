@@ -2,23 +2,18 @@
 
 #include "GOAP/Task.h"
 
+#include "TaskEnum.h"
+
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum ETaskTransformationScaleFlags
-    {
-        ETASK_FLAG_NONE = 0,
-        ETASK_FLAG_NOREWIND = 1 << 0,
-    };
-    //////////////////////////////////////////////////////////////////////////
     class TaskTransformationScaleTime
         : public GOAP::Task
     {
     public:
-        TaskTransformationScaleTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags = ETASK_FLAG_NONE );
+        TaskTransformationScaleTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags );
         ~TaskTransformationScaleTime() override;
 
     protected:

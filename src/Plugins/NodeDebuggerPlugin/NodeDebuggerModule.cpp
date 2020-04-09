@@ -70,12 +70,14 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_INCREF_FACTORY_GENERATION, this, &NodeDebuggerModule::notifyIncrefFactoryGeneration );
 
-        m_globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
+        uint32_t globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
             uint32_t exitCode;
             PLATFORM_SERVICE()
                 ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );
         }, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_globalKeyHandlerF2 = globalKeyHandlerF2;
 
         return true;
     }
@@ -116,10 +118,11 @@ namespace Mengine
 
         m_archivator = nullptr;
 
-        const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-            ->getGlobalInputHandler();
-
-        globalHandleSystem->removeGlobalHandler( m_globalKeyHandlerF2 );
+        if( m_globalKeyHandlerF2 != 0 )
+        {
+            Helper::removeGlobalHandler( m_globalKeyHandlerF2 );
+            m_globalKeyHandlerF2 = 0;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const

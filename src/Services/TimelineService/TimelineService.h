@@ -15,6 +15,10 @@ namespace Mengine
         ~TimelineService() override;
 
     public:
+        bool _initializeService() override;
+        void _finalizeService() override;
+
+    public:
         void beginOffset( float _offset ) override;
         float getOffset() const override;
         void endOffset() override;

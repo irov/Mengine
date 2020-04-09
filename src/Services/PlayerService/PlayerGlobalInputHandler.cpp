@@ -29,6 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::finalize()
     {
+#ifdef MENGINE_DEBUG
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();
 
@@ -37,7 +38,6 @@ namespace Mengine
             return _handle.dead;
         } ), m_handlers.end() );
 
-#ifdef MENGINE_DEBUG
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             LOGGER_ERROR( "Forgot remove player global input handler [%d] (doc: %s)"
@@ -52,6 +52,7 @@ namespace Mengine
         );
 
         m_handlers.clear();
+        m_handlersAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleKeyEvent( const InputKeyEvent & _event )

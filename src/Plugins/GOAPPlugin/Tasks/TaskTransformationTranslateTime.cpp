@@ -72,9 +72,9 @@ namespace Mengine
         protected:
             void _complete( bool _isEnd ) override
             {
-                MENGINE_UNUSED( _isEnd );
+                bool skiped = (_isEnd == false);
 
-                m_node->complete();
+                m_node->complete( true, skiped );
             }
 
         protected:

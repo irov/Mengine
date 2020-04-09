@@ -17,6 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/Document.h"
 
 #include "ozz/base/maths/math_ex.h"

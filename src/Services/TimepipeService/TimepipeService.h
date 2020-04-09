@@ -15,6 +15,10 @@ namespace Mengine
         ~TimepipeService() override;
 
     public:
+        bool _initializeService() override;
+        void _finalizeService() override;
+
+    public:
         uint32_t addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc ) override;
         TimepipeInterfacePtr removeTimepipe( uint32_t _id ) override;
 

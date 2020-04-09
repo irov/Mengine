@@ -21,7 +21,7 @@ namespace Mengine
         ConstString stringizeStringHashUnique( const Char * _value, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash );
         //////////////////////////////////////////////////////////////////////////
         template<ConstString::hash_type Hash>
-        ConstString stringizeStringTemplate( const Char * _value, ConstStringHolder::size_type _size )
+        const ConstString & stringizeStringTemplate( const Char * _value, ConstStringHolder::size_type _size )
         {
             static ConstString cstr = Helper::stringizeStringHashUnique( _value, _size, Hash );
 

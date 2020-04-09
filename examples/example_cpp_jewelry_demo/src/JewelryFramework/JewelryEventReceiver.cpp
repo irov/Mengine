@@ -174,7 +174,10 @@ namespace Mengine
 
             cache_stage = m_stage;
 
-            Helper::stringalized( _arg->c_str(), &m_stage );
+            Char arg_buffer[16];
+            Helper::stringalized( m_stage, arg_buffer, 16 );
+
+            _arg->assign( arg_buffer );
 
             return true;
         } );
@@ -211,7 +214,10 @@ namespace Mengine
 
             cache_time = timesecond;
 
-            Helper::stringalized( _arg->c_str(), &timesecond );
+            Char arg_buffer[16];
+            Helper::stringalized( timesecond, arg_buffer, 16 );
+
+            _arg->assign( arg_buffer );
 
             return true;
         } );

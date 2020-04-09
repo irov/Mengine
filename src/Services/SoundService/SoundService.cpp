@@ -28,7 +28,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundService::SoundService()
-        : m_timepipe( 0 )
+        : m_timepipeId( 0 )
         , m_supportStream( true )
         , m_muted( false )
         , m_turnStream( true )
@@ -82,7 +82,7 @@ namespace Mengine
         uint32_t timepipe = TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_timepipe = timepipe;
+        m_timepipeId = timepipe;
 
         return true;
     }
@@ -129,10 +129,13 @@ namespace Mengine
 
         m_soundVolumeProviders.clear();
 
-        TIMEPIPE_SERVICE()
-            ->removeTimepipe( m_timepipe );
+        if( m_timepipeId != 0 )
+        {
+            TIMEPIPE_SERVICE()
+                ->removeTimepipe( m_timepipeId );
 
-        m_timepipe = 0;
+            m_timepipeId = 0;
+        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundEmitter );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWorkerTaskSoundBufferUpdate );

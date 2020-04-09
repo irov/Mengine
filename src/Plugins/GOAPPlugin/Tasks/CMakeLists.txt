@@ -8,6 +8,7 @@ src
 
 ADD_FILTER(
 Tasks
+    TaskEnum.h
     TaskNodeEnable.h
     TaskNodeEnable.cpp
     TaskNodeDisable.h

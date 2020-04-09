@@ -20,6 +20,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TimelineService::_initializeService()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TimelineService::_finalizeService()
+    {
+        m_offsets.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TimelineService::beginOffset( float _offset )
     {
         MENGINE_ASSERTION_FATAL( m_time >= _offset, "time %f < %f revision (%u)"

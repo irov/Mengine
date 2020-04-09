@@ -427,7 +427,7 @@ namespace Mengine
 
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount user directory '%s'"
                 , userPath
@@ -449,7 +449,7 @@ namespace Mengine
         }
 
         DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-            ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+            ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
@@ -497,7 +497,7 @@ namespace Mengine
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FUNCTION );
+        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         fileLog->setFileGroup( userFileGroup );
         fileLog->setFilePath( logFilename );
@@ -1165,11 +1165,12 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
         }
 
+        this->stopModules_();
+        this->stopDevModules_();
+
         SERVICE_PROVIDER_STOP();
 
         this->stopFrameworks_();
-        this->stopModules_();
-        this->stopDevModules_();
 
         this->finalizeFrameworks_();
 
@@ -1201,7 +1202,7 @@ namespace Mengine
         }
 
         SERVICE_FINALIZE( LoaderService );
-        SERVICE_FINALIZE( TimelineService );
+        SERVICE_FINALIZE( TimelineService );        
         SERVICE_FINALIZE( WatchdogService );
         SERVICE_FINALIZE( ModuleService );
         SERVICE_FINALIZE( FrameworkService );
@@ -1229,6 +1230,7 @@ namespace Mengine
         SERVICE_FINALIZE( VocabularyService );
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
+        SERVICE_FINALIZE( TimepipeService );
 
         if( m_loggerFile != nullptr )
         {
@@ -1240,7 +1242,6 @@ namespace Mengine
 
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
-        SERVICE_FINALIZE( TimepipeService );
         SERVICE_FINALIZE( Platform );
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( LoggerService );

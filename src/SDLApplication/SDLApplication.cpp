@@ -162,8 +162,6 @@ namespace Mengine
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 
-        loggerStdio->setVerboseFlag( LM_MESSAGE );
-
         LOGGER_SERVICE()
             ->registerLogger( loggerStdio );
 

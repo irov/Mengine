@@ -5,6 +5,7 @@ OPTION(MENGINE_USE_SCRIPT_SERVICE "Mengine use script" ON)
 OPTION(MENGINE_EXTERNAL_PDB "Mengine external pdb" OFF)
 OPTION(MENGINE_EXTERNAL_SOURCE "Mengine external sources" OFF)
 OPTION(MENGINE_USE_SUBFOLDER "Mengine use subfolder" OFF)
+OPTION(MENGINE_LOGGER_DEBUG "Mengine logger enable" OFF)
 
 SET(MENGINE_EXTERNAL_PDB_PATH "" CACHE STRING "Mengine external source path")
 SET(MENGINE_EXTERNAL_SOURCE_PATH "" CACHE STRING "Mengine external source path")

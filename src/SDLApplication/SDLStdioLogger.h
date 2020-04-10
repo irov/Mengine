@@ -5,12 +5,11 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class SDLStdioLogger
         : public LoggerBase
     {
     public:
-		SDLStdioLogger();
+        SDLStdioLogger();
         ~SDLStdioLogger() override;
 
     public:

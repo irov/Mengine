@@ -2,7 +2,7 @@
 
 #include "Box2DInterface.h"
 
-#include "Box2D/Box2D.h"
+#include "box2d/box2d.h"
 
 namespace Mengine
 {

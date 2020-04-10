@@ -6,7 +6,7 @@
 
 #include "Box2DScaler.h"
 
-#include "Box2D/Box2D.h"
+#include "box2d/box2d.h"
 
 #include "Kernel/Vector.h"
 

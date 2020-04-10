@@ -21,6 +21,8 @@ Containers
     List.h
     Tuple.h
     Regex.h
+    Optional.h
+    Variant.h
 )
 
 ADD_FILTER(
@@ -450,6 +452,8 @@ Core
     ValueFollower.h
     ValueFollowerLinear.h
     ValueFollowerAcceleration.h
+    
+    DecimalDigitsHelper.h
     
     StringHelper.h
     StringHelper.cpp

@@ -40,11 +40,11 @@ environment:
       
 
 build_script:
-- echo "Architecture: %ARCHITECTURE%"
-- echo "Generator: %GENERATOR%"
-- echo "Configuration: %configuration%"
-- echo "Dependencies: %CMAKE_DEPENDENCIES_DIR%"
-- echo "Solution: %CMAKE_SOLUTION_DIR%"
+- echo "Architecture '%ARCHITECTURE%'"
+- echo "Generator '%GENERATOR%'"
+- echo "Configuration '%configuration%'"
+- echo "Dependencies '%CMAKE_DEPENDENCIES_DIR%'"
+- echo "Solution '%CMAKE_SOLUTION_DIR%'"
 
 - cmake --version
 

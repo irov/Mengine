@@ -5,76 +5,68 @@ branches:
   - master
 
 image:
-- Visual Studio 2017
+- Visual Studio 2019
 
 configuration:
 - Debug
 - Release
 
 environment:
-  TOOLSET: v141
-  ToolsVersion: 15.0
-  VCVARSALL: '%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
-  
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-      PLATFORM: x86      
-      ARCHITECTURE: x86
-      GENERATOR: Visual Studio 15 2017
+    - ARCHITECTURE: Win32
+      GENERATOR: Visual Studio 16 2019
       CMAKE_DEPENDENCIES_DIR: Depends_WIN32
       CMAKE_SOLUTION_DIR: Win32
-    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-      PLATFORM: x64
-      ARCHITECTURE: x86_amd64
-      GENERATOR: Visual Studio 15 2017 Win64
+    - ARCHITECTURE: x64
+      GENERATOR: Visual Studio 16 2019
       CMAKE_DEPENDENCIES_DIR: Depends_WIN64
       CMAKE_SOLUTION_DIR: Win64
-    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-      PLATFORM: x86      
-      ARCHITECTURE: x86
-      GENERATOR: Visual Studio 15 2017
+    - ARCHITECTURE: Win32
+      GENERATOR: Visual Studio 16 2019
       CMAKE_DEPENDENCIES_DIR: Depends_WIN32_SDL
       CMAKE_SOLUTION_DIR: Win32_SDL
-    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-      PLATFORM: x64
-      ARCHITECTURE: x86_amd64
-      GENERATOR: Visual Studio 15 2017 Win64
+    - ARCHITECTURE: x64
+      GENERATOR: Visual Studio 16 2019
       CMAKE_DEPENDENCIES_DIR: Depends_WIN64_SDL
       CMAKE_SOLUTION_DIR: Win64_SDL
-    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-      PLATFORM: x86      
-      ARCHITECTURE: x86
-      GENERATOR: Visual Studio 15 2017
+    - ARCHITECTURE: Win32
+      GENERATOR: Visual Studio 16 2019
       CMAKE_DEPENDENCIES_DIR: Depends_WIN32
       CMAKE_SOLUTION_DIR: Tools_Win32
-    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-      PLATFORM: x64
-      ARCHITECTURE: x86_amd64
-      GENERATOR: Visual Studio 15 2017 Win64
+    - ARCHITECTURE: x64
+      GENERATOR: Visual Studio 16 2019
       CMAKE_DEPENDENCIES_DIR: Depends_WIN64
       CMAKE_SOLUTION_DIR: Tools_Win64
       
 
 build_script:
-- echo "Platform '%PLATFORM%'"
-- echo "Generator '%GENERATOR%'"
-- echo "Toolset '%TOOLSET%'"
-- echo "ToolsetVersion '%ToolsVersion%'"
-- echo "Configuration '%configuration%'"
-- echo "Dependencies '%CMAKE_DEPENDENCIES_DIR%'"
-- echo "Solution '%CMAKE_SOLUTION_DIR%'"
-- call "%VCVARSALL%" %ARCHITECTURE%
+- echo "Architecture: %ARCHITECTURE%"
+- echo "Generator: %GENERATOR%"
+- echo "Configuration: %configuration%"
+- echo "Dependencies: %CMAKE_DEPENDENCIES_DIR%"
+- echo "Solution: %CMAKE_SOLUTION_DIR%"
+
 - cmake --version
-- echo "Configured Downloads"
-- pushd .\cmake\Downloads && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% -DMENGINE_DOWNLOADS_SILENT=ON & popd
+
 - echo "Downloads Dependencies"
-- pushd .\cmake\Downloads && cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal & popd
-- echo "Configured %CMAKE_DEPENDENCIES_DIR%"
-- pushd .\cmake\%CMAKE_DEPENDENCIES_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% & popd
+- mkdir cmake_downloads
+- cd cmake_downloads
+- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\Downloads" -DCMAKE_BUILD_TYPE=%configuration% -DMENGINE_DOWNLOADS_SILENT=ON
+- cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal
+- cd ..
+
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
-- pushd .\cmake\%CMAKE_DEPENDENCIES_DIR% && cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal & popd
-- echo "Configured Solution %CMAKE_SOLUTION_DIR%"
-- pushd .\cmake\%CMAKE_SOLUTION_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% & popd
+- mkdir cmake_dependencies
+- cd cmake_dependencies
+- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_DEPENDENCIES_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
+- cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal
+- cd ..
+
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
-- pushd .\cmake\%CMAKE_SOLUTION_DIR% && cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal & popd
+- mkdir cmake_solution
+- cd cmake_solution
+- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_SOLUTION_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
+- cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal
+- cd ..
+
 - echo "Complete!"

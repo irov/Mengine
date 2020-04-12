@@ -6,6 +6,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Environment/Windows/WindowsIncluder.h"
@@ -66,7 +67,7 @@ namespace Mengine
         {
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
-                volatile unsigned int * p = nullptr; 
+                volatile uint32_t * p = nullptr; 
                 *p = 0xBADC0DE;
 
                 return;
@@ -88,6 +89,11 @@ namespace Mengine
                     , _line
                     , _test
                     , str_info);
+            }
+
+            if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+            {
+                NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
             }
 
             if( _level == ASSERTION_LEVEL_FATAL )

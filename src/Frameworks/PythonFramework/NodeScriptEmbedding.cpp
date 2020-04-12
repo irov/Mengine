@@ -651,10 +651,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        void * p = nullptr;
-        MENGINE_ASSERTION_MEMORY_PANIC( p, false, "Bla bla bla %s:%d", "Blo!", 1 );
-
-
         NodeScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<NodeScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( nodeScriptMethod->initialize() == false )

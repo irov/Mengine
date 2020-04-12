@@ -1,0 +1,1 @@
+@call %~dp0make_solution_msvc16_x64.bat Release

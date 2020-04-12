@@ -282,7 +282,7 @@ namespace Mengine
         VectorRenderIndex::value_type * indexData = m_renderIndices.data();
         VectorRenderIndex::size_type indexSize = m_renderIndices.size();
 
-        _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, (uint32_t)vertexSize, indexData, (uint32_t)indexSize, nullptr, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::_invalidateWorldMatrix() const

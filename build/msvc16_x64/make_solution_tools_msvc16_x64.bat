@@ -1,0 +1,26 @@
+@echo off
+
+if ["%~1"]==[""] (
+  @echo invalid arguments, please select configuration
+  goto end
+)
+
+set "CONFIGURATION=%1"
+
+@echo Starting make solution tools %CONFIGURATION% configuration...
+
+set "VERSION=16"
+set "YEAR=2019"
+
+@pushd %~dp0..
+@call vcvarsall_msvc%VERSION%_x64.bat
+@popd
+
+@pushd %~dp0..
+@call make_solution.bat "SOLUTION_NAME=solution_tools_msvc%VERSION%_x64" "SOURCE_DIRECTORY=%CD%\..\cmake\Tools_Win64" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=Win64" "LIBRARY_DIRECTORY=Depends_WIN64"
+@popd
+
+:end
+@echo Done
+
+@pause

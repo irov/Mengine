@@ -171,7 +171,7 @@ namespace Mengine
     {
         VectorSamplerOzzAnimations::size_type count = m_samplerOzzAnimations.size();
 
-        return count;
+        return (uint32_t)count;
     }
     //////////////////////////////////////////////////////////////////////////
     const SamplerOzzAnimationInterfacePtr & NodeOzzAnimation::getOzzAnimationSampler( uint32_t _index ) const
@@ -253,7 +253,7 @@ namespace Mengine
 
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
-        int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
         vertexBuffer->resize( vertex_count );
 
@@ -266,7 +266,7 @@ namespace Mengine
 
         Detail::Mesh::VectorTriangleIndices::size_type triangle_indices_buffer_size = triangle_indices.size();
 
-        indexStream->resize( triangle_indices_buffer_size );
+        indexStream->resize( (uint32_t)triangle_indices_buffer_size );
 
         m_indexBuffer = indexStream;
 
@@ -401,15 +401,15 @@ namespace Mengine
         }
 
         // Renders skin.
-        int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        size_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
         // Positions and normals are interleaved to improve caching while executing
         // skinning job.
 
-        uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
+        size_t skinned_data_size = vertex_count * ozz_vertex_stride;
 
         // Reallocate vertex buffer.
-        const uint32_t vbo_size = skinned_data_size;
+        size_t vbo_size = skinned_data_size;
         void * vbo_map = m_vertexMemory->newBuffer( vbo_size );
 
         // Iterate mesh parts and fills vbo.
@@ -419,7 +419,7 @@ namespace Mengine
         for( const Detail::Part & part : ozz_mesh.parts )
         {
             // Skip this iteration if no vertex.
-            size_t part_vertex_count = Detail::getPartVertexCount( part );
+            uint32_t part_vertex_count = Detail::getPartVertexCount( part );
 
             if( part_vertex_count == 0 )
             {
@@ -429,7 +429,7 @@ namespace Mengine
             // Fills the job.
             ozz::geometry::SkinningJob skinning_job;
             skinning_job.vertex_count = static_cast<int32_t>(part_vertex_count);
-            int32_t part_influences_count = getPartInfluencesCount( part );
+            uint32_t part_influences_count = Detail::getPartInfluencesCount( part );
 
             // Clamps joints influence count according to the option.
             skinning_job.influences_count = part_influences_count;
@@ -564,7 +564,7 @@ namespace Mengine
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
         // Renders skin.
-        int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
         // Reallocate vertex buffer.
         uint32_t vbo_size = vertex_count;
@@ -606,6 +606,6 @@ namespace Mengine
         new_context.scissor = _context->scissor;
         new_context.target = _context->target;
 
-        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, (uint32_t)indices_count, MENGINE_DOCUMENT_FORWARD );
     }
 }

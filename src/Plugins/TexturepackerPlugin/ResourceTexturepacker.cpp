@@ -260,7 +260,7 @@ namespace Mengine
                 else
                 {
                     size_t size_full_name = ext_delimiter - name;
-                    c_name = Helper::stringizeStringSize( name, size_full_name );
+                    c_name = Helper::stringizeStringSize( name, (ConstStringHolder::size_type)size_full_name );
                 }
             }
 

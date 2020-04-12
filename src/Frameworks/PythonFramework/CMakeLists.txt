@@ -63,6 +63,8 @@ Wrapper
     HelperScriptEmbedding.cpp
     SoundScriptEmbedding.h
     SoundScriptEmbedding.cpp
+    KernelScriptEmbedding.h
+    KernelScriptEmbedding.cpp
     NodeScriptEmbedding.h
     NodeScriptEmbedding.cpp
     EngineScriptEmbedding.h

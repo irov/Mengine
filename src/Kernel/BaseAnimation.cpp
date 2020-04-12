@@ -3,6 +3,8 @@
 #include "Interface/UpdationInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 
+#include "Kernel/MixinDebug.h"
+
 #include "math/utils.h"
 
 namespace Mengine
@@ -301,7 +303,11 @@ namespace Mengine
             float deltha = m_playTime - _context->current;
             totalTime -= deltha;
 
-            MENGINE_ASSERTION_FATAL( totalTime >= 0.f );
+            MENGINE_ASSERTION_FATAL( totalTime >= 0.f, "totalTime %f < 0.f ['%s:%s']"
+                , totalTime
+                , MENGINE_MIXIN_DEBUG_NAME( this )
+                , MENGINE_MIXIN_DEBUG_TYPE( this )
+            );
         }
 
         float speedFactor = this->getAnimationSpeedFactor();

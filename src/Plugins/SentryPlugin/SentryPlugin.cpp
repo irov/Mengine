@@ -63,6 +63,7 @@ namespace Mengine
         sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, this, &SentryPlugin::notifyCreateApplication_ );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ASSERTION, this, &SentryPlugin::notifyAssertion_ );
 
         return true;
     }
@@ -76,12 +77,26 @@ namespace Mengine
         }
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
 
         sentry_shutdown();
     }
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::_destroyPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SentryPlugin::notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    {
+        MENGINE_UNUSED( _level );
+
+        sentry_set_extra( "Assetion Test", sentry_value_new_string( _test ) );
+        sentry_set_extra( "Assetion Function", sentry_value_new_string( _file ) );
+        sentry_set_extra( "Assetion Line", sentry_value_new_int32( _line ) );
+
+        sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Assertion", _message );
+
+        sentry_capture_event( event );
     }
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyCreateApplication_()
@@ -114,15 +129,5 @@ namespace Mengine
         sprintf( releaseString, "%s@%u", projectName, projectVersion );
 
         sentry_options_set_release( m_options, releaseString );
-
-        //sentry_capture_event( sentry_value_new_message_event(
-        //    /*   level */ SENTRY_LEVEL_INFO,
-        //    /*  logger */ "custom",
-        //    /* message */ "It works!"
-        //) );
-
-        //Sleep( 1000 );
-
-        //*(int *)(0) = 0;
     }
 }

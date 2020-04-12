@@ -569,6 +569,9 @@ Core
     Hashtable.h
     HashHelper.h
     
+    NodeHelper.h
+    MixinDebug.h
+    
     ThreadMutexScope.h
     ThreadMutexScope.cpp
     

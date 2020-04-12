@@ -10,6 +10,7 @@
 #include "GameScriptEmbedding.h"
 #include "HelperScriptEmbedding.h"
 #include "MathScriptEmbedding.h"
+#include "KernelScriptEmbedding.h"
 #include "NodeScriptEmbedding.h"
 #include "SoundScriptEmbedding.h"
 
@@ -54,6 +55,11 @@ namespace Mengine
         {
             return false;
         }
+        
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ), Helper::makeFactorableUnique<KernelScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
 
         if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ), Helper::makeFactorableUnique<NodeScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
@@ -92,6 +98,7 @@ namespace Mengine
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ) );
+        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "KernelScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );

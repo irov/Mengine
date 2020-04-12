@@ -13,18 +13,18 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        size_t getPartVertexCount( const Part & _part )
+        uint32_t getPartVertexCount( const Part & _part )
         {
             Part::VectorPositions::size_type position_size = _part.positions.size();
 
-            size_t vertex_count = position_size / 3;
+            uint32_t vertex_count = (uint32_t)position_size / 3;
 
             return vertex_count;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t getPartInfluencesCount( const Part & _part )
+        uint32_t getPartInfluencesCount( const Part & _part )
         {
-            const size_t _vertex_count = getPartVertexCount( _part );
+            uint32_t _vertex_count = getPartVertexCount( _part );
 
             if( _vertex_count == 0 )
             {
@@ -33,16 +33,16 @@ namespace Mengine
 
             Part::VectorJointIndices::size_type joint_indices_size = _part.joint_indices.size();
 
-            return joint_indices_size / _vertex_count;
+            return (uint32_t)joint_indices_size / _vertex_count;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t getMeshVertexCount( const Mesh & _mesh )
+        uint32_t getMeshVertexCount( const Mesh & _mesh )
         {
-            size_t vertex_count = 0;
+            uint32_t vertex_count = 0;
 
             for( const Part & part : _mesh.parts )
             {
-                size_t part_vertex_count = getPartVertexCount( part );
+                uint32_t part_vertex_count = getPartVertexCount( part );
 
                 vertex_count += part_vertex_count;
             }

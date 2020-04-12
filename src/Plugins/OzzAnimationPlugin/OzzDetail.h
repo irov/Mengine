@@ -114,10 +114,10 @@ namespace Mengine
         };
 
 
-        size_t getPartVertexCount( const Part & _part );
-        size_t getPartInfluencesCount( const Part & _part );
+        uint32_t getPartVertexCount( const Part & _part );
+        uint32_t getPartInfluencesCount( const Part & _part );
 
-        size_t getMeshVertexCount( const Mesh & _mesh );
+        uint32_t getMeshVertexCount( const Mesh & _mesh );
     }
 }
 

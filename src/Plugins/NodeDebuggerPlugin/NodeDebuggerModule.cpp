@@ -476,8 +476,8 @@ namespace Mengine
         _renderPipeline->addRenderObject( &node_context
                 , debugMaterial
                 , nullptr
-                , vertices.data(), vertices.size()
-                , indices.data(), indices.size()
+                , vertices.data(), (uint32_t)vertices.size()
+                , indices.data(), (uint32_t)indices.size()
                 , &bbox
                 , false, MENGINE_DOCUMENT_FORWARD );
     }

@@ -114,7 +114,7 @@ namespace Mengine
                     fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
 
                     Char factorymsg[2048];
-                    int factorymsg_length = snprintf( factorymsg, 2048, "Factory '%s' [%u]:\n"
+                    int factorymsg_length = snprintf( factorymsg, 2048, "Factory '%s' [%zu]:\n"
                         , name.c_str()
                         , objects.size()
                     );

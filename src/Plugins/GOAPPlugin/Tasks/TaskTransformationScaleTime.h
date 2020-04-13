@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 #include "TaskEnum.h"
 
@@ -10,7 +10,7 @@
 namespace Mengine
 {
     class TaskTransformationScaleTime
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskTransformationScaleTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags );

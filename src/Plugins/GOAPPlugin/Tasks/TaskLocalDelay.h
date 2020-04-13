@@ -2,12 +2,12 @@
 
 #include "Kernel/Scheduler.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {
     class TaskLocalDelay
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskLocalDelay( float _time );

@@ -114,7 +114,7 @@ namespace Mengine
 #endif
 
         m_touchpad = false;
-        m_desktop = false;
+        m_desktop = true;
 
         if( HAS_OPTION( "win32" ) )
         {
@@ -778,7 +778,7 @@ namespace Mengine
 
         ::RegCloseKey( hKey );
 
-        if( ::wcslen( unicode_fontPath ) == 0 )
+        if( MENGINE_WCSLEN( unicode_fontPath ) == 0 )
         {
             _fontPath[0] = '\0';
 
@@ -1883,7 +1883,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecW( fullPath );
 
-        size_t len = ::wcslen( fullPath );
+        size_t len = MENGINE_WCSLEN( fullPath );
 
         if( len == 0 )
         {
@@ -1907,7 +1907,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _directoryPath )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[::strlen( _directoryPath ) - 1] == '/'), false );
+        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, '/' ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
 
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -1922,7 +1922,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory_( const WChar * _directoryPath )
     {
-        size_t unicode_pathSize = ::wcslen( _directoryPath );
+        size_t unicode_pathSize = MENGINE_WCSLEN( _directoryPath );
 
         WChar fullPath[MENGINE_MAX_PATH];
 
@@ -2030,7 +2030,7 @@ namespace Mengine
         WChar pathCorrect[MENGINE_MAX_PATH];
         Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
-        size_t len = ::wcslen( pathCorrect );
+        size_t len = MENGINE_WCSLEN( pathCorrect );
 
         if( len == 0 )
         {
@@ -2135,7 +2135,7 @@ namespace Mengine
                     ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
                     WChar unicode_out[MENGINE_MAX_PATH] = { 0 };
-                    if( wcslen( _dir ) != 0 )
+                    if( MENGINE_WCSLEN( _dir ) != 0 )
                     {
                         ::PathRelativePathTo( unicode_out,
                             _dir,

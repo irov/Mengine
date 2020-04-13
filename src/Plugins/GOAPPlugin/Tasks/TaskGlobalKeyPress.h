@@ -1,12 +1,13 @@
 #pragma once
 
+#include "GOAP/TaskInterface.h"
+
 #include "Interface/InputHandlerInterface.h"
 
 #include "Kernel/KeyCode.h"
 
 #include "Config/Lambda.h"
 
-#include "GOAP/Task.h"
 
 namespace Mengine
 {
@@ -14,7 +15,7 @@ namespace Mengine
     typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyEvent;
     //////////////////////////////////////////////////////////////////////////
     class TaskGlobalKeyPress
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskGlobalKeyPress( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter );

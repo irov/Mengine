@@ -2,12 +2,12 @@
 
 #include "Checkbox.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {
     class TaskCheckboxChangeAny
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskCheckboxChangeAny( const CheckboxPtr & _checkbox );

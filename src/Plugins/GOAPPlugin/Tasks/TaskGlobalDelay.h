@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Kernel/Scheduler.h"
+#include "GOAP/TaskInterface.h"
 
-#include "GOAP/Task.h"
+#include "Kernel/Scheduler.h"
 
 namespace Mengine
 {
     class TaskGlobalDelay
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskGlobalDelay( float _time );

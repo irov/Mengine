@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
@@ -9,7 +9,7 @@
 namespace Mengine
 {
     class TaskColorableAlphaTime
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskColorableAlphaTime( const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time );

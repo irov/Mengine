@@ -88,7 +88,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
     {
-        MENGINE_UNUSED( _level );
+        if( _level < ASSERTION_LEVEL_FATAL )
+        {
+            return;
+        }
 
         sentry_set_extra( "Assetion Test", sentry_value_new_string( _test ) );
         sentry_set_extra( "Assetion Function", sentry_value_new_string( _file ) );

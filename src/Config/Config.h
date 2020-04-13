@@ -52,6 +52,12 @@
 #define MENGINE_RELEASE
 #endif
 
+#ifndef MENGINE_DEBUG
+#define MENGINE_RELEASE_UNUSED(X) MENGINE_UNUSED(X)
+#else
+#define MENGINE_RELEASE_UNUSED(X)
+#endif
+
 #ifdef MENGINE_DEBUG
 #define MENGINE_DEBUG_ATTRIBUTE(X, Y) (X)
 #else

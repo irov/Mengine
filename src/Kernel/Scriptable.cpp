@@ -30,8 +30,6 @@ namespace Mengine
             MENGINE_THROW_EXCEPTION( "'%s' but scope not settup bindable"
                 , _kernel->object_repr_type( _embed )
             );
-
-            return;
         }
 #endif
         m_kernel = _kernel;

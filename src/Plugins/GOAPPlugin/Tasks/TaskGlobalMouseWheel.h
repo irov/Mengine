@@ -1,11 +1,10 @@
 #pragma once
 
+#include "GOAP/TaskInterface.h"
+
 #include "Interface/InputHandlerInterface.h"
 
 #include "Config/Lambda.h"
-
-#include "GOAP/Task.h"
-
 
 namespace Mengine
 {
@@ -13,7 +12,7 @@ namespace Mengine
     typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
     //////////////////////////////////////////////////////////////////////////
     class TaskGlobalMouseWheel
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskGlobalMouseWheel( const LambdaInputMouseWheelEvent & _filter );

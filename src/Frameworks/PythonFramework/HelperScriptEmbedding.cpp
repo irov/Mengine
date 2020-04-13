@@ -727,7 +727,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logger( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message )
             {
-                size_t messagelen = strlen( _message );
+                size_t messagelen = MENGINE_STRLEN( _message );
 
                 LOGGER_SERVICE()
                     ->logMessage( _level, _flag, _color, _message, messagelen );
@@ -2332,7 +2332,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                size_t setting_value_len = strlen( setting_value );
+                size_t setting_value_len = MENGINE_STRLEN( setting_value );
 
                 if( setting_value_len == 0 )
                 {

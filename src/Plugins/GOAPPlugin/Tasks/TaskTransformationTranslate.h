@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
@@ -8,7 +8,7 @@
 namespace Mengine
 {
     class TaskTransformationTranslate
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskTransformationTranslate( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed );

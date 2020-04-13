@@ -4,6 +4,9 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdArg.h"
+#include "Config/StdString.h"
+
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DECODER_JPEG_INPUT_BUF_SIZE
 #define MENGINE_DECODER_JPEG_INPUT_BUF_SIZE 4096
@@ -294,7 +297,7 @@ namespace Mengine
         {
             if( m_options.channels == 1 )
             {
-                memset( _buffer, 255, _bufferSize );
+                MENGINE_MEMSET( _buffer, 255, _bufferSize );
 
                 return _bufferSize;
             }

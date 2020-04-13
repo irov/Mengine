@@ -2,12 +2,12 @@
 
 #include "Button.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {
     class TaskButtonClick
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskButtonClick( const ButtonPtr & _button );

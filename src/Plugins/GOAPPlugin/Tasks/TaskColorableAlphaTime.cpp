@@ -4,7 +4,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Assertion.h"
 
-#include "GOAP/Node.h"
+#include "GOAP/NodeInterface.h"
 
 namespace Mengine
 {

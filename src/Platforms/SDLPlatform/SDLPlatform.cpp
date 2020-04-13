@@ -109,7 +109,7 @@ namespace Mengine
         return pathLen;
 #elif defined(MENGINE_PLATFORM_IOS)
         const char deploy_ios_data[] = "deploy-ios-data/";
-        strcpy( _path, deploy_ios_data );
+        MENGINE_STRCPY( _path, deploy_ios_data );
 
         return sizeof( deploy_ios_data ) - 1;
 #else  
@@ -137,11 +137,11 @@ namespace Mengine
                 return 0;
             }
 
-            strcpy( _path, currentPath );
-            strcat( _path, "User" );
-            strcat( _path, "/" );
+            MENGINE_STRCPY( _path, currentPath );
+            MENGINE_STRCAT( _path, "User" );
+            MENGINE_STRCAT( _path, "/" );
 
-            size_t pathLen = strlen( _path );
+            size_t pathLen = MENGINE_STRLEN( _path );
 
             return pathLen;
         }
@@ -151,7 +151,7 @@ namespace Mengine
 
         char * sdl_prefPath = SDL_GetPrefPath( Project_Company.c_str(), Project_Name.c_str() );
 
-        size_t sdl_prefPathLen = strlen( sdl_prefPath );
+        size_t sdl_prefPathLen = MENGINE_STRLEN( sdl_prefPath );
 
         if( sdl_prefPathLen >= MENGINE_MAX_PATH )
         {
@@ -188,11 +188,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getShortPathName( const Char * _path, Char * _short, size_t _len ) const
     {
-        size_t pathSize = strlen( _path );
+        size_t pathSize = MENGINE_STRLEN( _path );
 
         if( _len == pathSize )
         {
-            strcpy( _short, _path );
+            MENGINE_STRCPY( _short, _path );
         }
 
         return pathSize;
@@ -250,7 +250,7 @@ namespace Mengine
             break;
         }
 
-        size_t messageLen = ::strlen( _message );
+        size_t messageLen = MENGINE_STRLEN( _message );
 
         LOGGER_SERVICE()
             ->logMessage( level, 0, LCOLOR_NONE, _message, messageLen );
@@ -281,32 +281,38 @@ namespace Mengine
 
         const Char * sdlPlatform = SDL_GetPlatform();
 
-        if( strcmp( sdlPlatform, "Windows" ) == 0 )
+        if( MENGINE_STRCMP( sdlPlatform, "Windows" ) == 0 )
         {
             m_desktop = true;
             m_touchpad = false;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
         }
-        else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
+        else if( MENGINE_STRCMP( sdlPlatform, "Mac OS X" ) == 0 )
         {
             m_desktop = true;
             m_touchpad = false;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
-        else if( strcmp( sdlPlatform, "Android" ) == 0 )
+        else if( MENGINE_STRCMP( sdlPlatform, "Android" ) == 0 )
         {
             m_desktop = false;
             m_touchpad = true;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
             SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
         }
-        else if( strcmp( sdlPlatform, "iOS" ) == 0 )
+        else if( MENGINE_STRCMP( sdlPlatform, "iOS" ) == 0 )
         {
             m_desktop = false;
             m_touchpad = true;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
             SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
+        }
+        else
+        {
+            LOGGER_ERROR( "SDL Platform '%s' unspecified"
+                , sdlPlatform
+            );
         }
 
         if( HAS_OPTION( "touchpad" ) == true )
@@ -452,11 +458,11 @@ namespace Mengine
 
             bool isAccelerometer = false;
 
-            if( strcmp( joystickName, "Android Accelerometer" ) == 0 )
+            if( MENGINE_STRCMP( joystickName, "Android Accelerometer" ) == 0 )
             {
                 isAccelerometer = true;
             }
-            else if( strcmp( joystickName, "iOS Accelerometer" ) == 0 )
+            else if( MENGINE_STRCMP( joystickName, "iOS Accelerometer" ) == 0 )
             {
                 isAccelerometer = true;
             }
@@ -1069,7 +1075,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( fullPath );
 
-        size_t len = strlen( fullPath );
+        size_t len = MENGINE_STRLEN( fullPath );
 
         if( len == 0 )	// current dir
         {
@@ -1166,8 +1172,8 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathCorrect, _path );
 
         Char fullPath[MENGINE_MAX_PATH];
-        ::strcpy( fullPath, userPath );
-        ::strcat( fullPath, pathCorrect );
+        MENGINE_STRCPY( fullPath, userPath );
+        MENGINE_STRCAT( fullPath, pathCorrect );
 
         int result = ::remove( fullPath );
 

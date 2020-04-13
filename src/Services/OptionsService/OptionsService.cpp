@@ -38,7 +38,7 @@ namespace Mengine
         {
             const Char * option_str = _arguments->getArgument( index );
 
-            const Char * option_key_str = strchr( option_str, '-' );
+            const Char * option_key_str = MENGINE_STRCHR( option_str, '-' );
 
             if( option_key_str == nullptr )
             {
@@ -47,7 +47,7 @@ namespace Mengine
 
             option_key_str += 1;
 
-            const Char * option_value_str = strchr( option_key_str, ':' );
+            const Char * option_value_str = MENGINE_STRCHR( option_key_str, ':' );
 
             Option op;
 
@@ -71,7 +71,7 @@ namespace Mengine
                     return false;
                 }
 
-                strncpy( op.key, option_key_str, key_size );
+                MENGINE_STRNCPY( op.key, option_key_str, key_size );
                 op.key[key_size] = '\0';
 
                 if( MENGINE_STRLEN( option_value_str + 1 ) >= MENGINE_OPTIONS_VALUE_SIZE )

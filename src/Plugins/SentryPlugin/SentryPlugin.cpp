@@ -5,6 +5,7 @@
 #include "Interface/NotificatorInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
 #include "Kernel/Logger.h"
@@ -88,7 +89,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
     {
-        MENGINE_UNUSED( _level );
+        if( _level < ASSERTION_LEVEL_FATAL )
+        {
+            return;
+        }
 
         sentry_set_extra( "Assetion Test", sentry_value_new_string( _test ) );
         sentry_set_extra( "Assetion Function", sentry_value_new_string( _file ) );
@@ -121,13 +125,29 @@ namespace Mengine
 
         sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
 
+        sentry_set_extra( "Debug", sentry_value_new_bool( MENGINE_DEBUG_ATTRIBUTE( true, false ) ) );
+
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        sentry_set_extra( "Development", sentry_value_new_bool( developmentMode == true ? 1 : 0 ) );
+
 #ifdef MENGINE_GIT_SHA1
-        sentry_set_extra( "Git", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
+        sentry_set_extra( "Commit", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
 #endif
 
         Char releaseString[32];
         sprintf( releaseString, "%s@%u", projectName, projectVersion );
 
         sentry_options_set_release( m_options, releaseString );
+
+        if( HAS_OPTION( "sentrycrash" ) == true )
+        {
+            sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Test", "sentrycrash" );
+
+            sentry_capture_event( event );
+
+            volatile uint32_t * p = nullptr;
+            *p = 0xBADC0DE;
+        }
     }
 }

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Kernel/Scheduler.h"
+#include "GOAP/TaskInterface.h"
 
-#include "GOAP/Task.h"
+#include "Kernel/Scheduler.h"
 
 namespace Mengine
 {
     class TaskDelay
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskDelay( const SchedulerInterfacePtr & _scheduler, float _time );

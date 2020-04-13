@@ -88,7 +88,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::FunctionProviderPtr provider = GOAP::Helper::makeFunctionProvider( allocator, [&, _self, _method, _args ...]()
+            GOAP::FunctionProviderInterfacePtr provider = GOAP::Helper::makeFunctionProvider( allocator, [&, _self, _method, _args ...]()
             {
                 P * p = _self.get();
                 (p->*_method)(_args ...);
@@ -104,7 +104,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::FunctionContextProviderPtr provider = GOAP::Helper::makeFunctionContextProvider( allocator, [&, _self, _method, _args ...]( bool _skip )
+            GOAP::FunctionContextProviderInterfacePtr provider = GOAP::Helper::makeFunctionContextProvider( allocator, [&, _self, _method, _args ...]( bool _skip )
             {
                 P * p = _self.get();
                 (p->*_method)(_skip, _args ...);
@@ -120,7 +120,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::CallbackProviderPtr provider = GOAP::Helper::makeCallbackProvider( allocator, [&, _self, _method, _args ...]( const GOAP::CallbackObserverPtr & _callback, bool _skip )
+            GOAP::CallbackProviderInterfacePtr provider = GOAP::Helper::makeCallbackProvider( allocator, [&, _self, _method, _args ...]( const GOAP::CallbackObserverPtr & _callback, bool _skip )
             {
                 P * p = _self.get();
                 (p->*_method)(_callback, _skip, _args ...);
@@ -136,7 +136,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::ScopeProviderPtr provider = GOAP::Helper::makeScopeProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
+            GOAP::ScopeProviderInterfacePtr provider = GOAP::Helper::makeScopeProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
             {
                 P * p = _self.get();
                 (p->*_method)(_source, _args ...);
@@ -152,7 +152,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::IfProviderPtr provider = GOAP::Helper::makeIfProvider( allocator, [&, _self, _method, _args ...]()
+            GOAP::IfProviderInterfacePtr provider = GOAP::Helper::makeIfProvider( allocator, [&, _self, _method, _args ...]()
             {
                 P * p = _self.get();
                 return (p->*_method)(_args ...);
@@ -170,7 +170,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::WhileProviderPtr provider = GOAP::Helper::makeWhileProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
+            GOAP::WhileProviderInterfacePtr provider = GOAP::Helper::makeWhileProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
             {
                 P * p = _self.get();
                 return (p->*_method)(_source, _args ...);

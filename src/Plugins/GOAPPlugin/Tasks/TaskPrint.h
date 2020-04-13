@@ -5,12 +5,12 @@
 
 #include "Config/StdArg.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {
     class TaskPrint
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskPrint( const Char * _format, ... );

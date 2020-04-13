@@ -36,7 +36,7 @@ namespace Mengine
                 DWORD dwConversionFlags = 0;
 #   endif
 
-                size_t unicode_path_len = wcslen( unicode_path );
+                size_t unicode_path_len = MENGINE_WCSLEN( unicode_path );
 
                 int utf8_size = ::WideCharToMultiByte(
                     CP_UTF8

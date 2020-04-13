@@ -2019,7 +2019,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::getProjectName( Char * _projectName ) const
     {
-        strcpy( _projectName, m_projectName );
+        MENGINE_STRCPY( _projectName, m_projectName );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getProjectCodename() const

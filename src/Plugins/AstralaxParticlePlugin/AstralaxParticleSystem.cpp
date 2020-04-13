@@ -937,8 +937,8 @@ namespace Mengine
         MagicStatesCache key;
         key.textures = textures;
 
-        memset( key.states + 0, 0, sizeof( MAGIC_TEXTURE_STATES ) );
-        memset( key.states + 1, 0, sizeof( MAGIC_TEXTURE_STATES ) );
+        MENGINE_MEMSET( key.states + 0, 0, sizeof( MAGIC_TEXTURE_STATES ) );
+        MENGINE_MEMSET( key.states + 1, 0, sizeof( MAGIC_TEXTURE_STATES ) );
 
         for( int32_t i = 0; i != textures; ++i )
         {

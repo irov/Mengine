@@ -15,6 +15,7 @@
 #include "Kernel/Stringstream.h"
 
 #include "Config/StdIntTypes.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -142,7 +143,7 @@ namespace Mengine
             }
 
 #ifdef MENGINE_DEBUG
-            if( strchr( ini_value, '\\' ) != nullptr )
+            if( MENGINE_STRCHR( ini_value, '\\' ) != nullptr )
             {
                 LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
                     , _ini.path.c_str()

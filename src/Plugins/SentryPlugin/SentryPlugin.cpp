@@ -132,12 +132,22 @@ namespace Mengine
         sentry_set_extra( "Development", sentry_value_new_bool( developmentMode == true ? 1 : 0 ) );
 
 #ifdef MENGINE_GIT_SHA1
-        sentry_set_extra( "Git", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
+        sentry_set_extra( "Commit", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
 #endif
 
         Char releaseString[32];
         sprintf( releaseString, "%s@%u", projectName, projectVersion );
 
         sentry_options_set_release( m_options, releaseString );
+
+        if( HAS_OPTION( "sentrycrash" ) == true )
+        {
+            sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Test", "sentrycrash" );
+
+            sentry_capture_event( event );
+
+            volatile uint32_t * p = nullptr;
+            *p = 0xBADC0DE;
+        }
     }
 }

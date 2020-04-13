@@ -339,6 +339,15 @@ namespace Mengine
         m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDateTimeProviders = Helper::makeFactoryPool<SDLDateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
+        SDL_bool AndroidTV = SDL_IsAndroidTV();
+
+        LOGGER_MESSAGE( "Android SDK version: %d", AndroidSDKVersion );
+        LOGGER_MESSAGE( "Android TV: %d", AndroidTV );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

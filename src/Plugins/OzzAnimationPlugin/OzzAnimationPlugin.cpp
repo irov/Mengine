@@ -20,6 +20,8 @@
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/Document.h"
 
+#include "Config/StdString.h"
+
 #include "ozz/base/maths/math_ex.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,7 +89,7 @@ namespace Mengine
             {
                 Header * old_header = reinterpret_cast<Header *>(
                     reinterpret_cast<char *>(_block) - sizeof( Header ));
-                memcpy( new_block, _block, old_header->size );
+                MENGINE_MEMCPY( new_block, _block, old_header->size );
                 ALLOCATOR_SERVICE()
                     ->free( old_header->unaligned, "ozz" );
             }

@@ -18,16 +18,24 @@
 #define MENGINE_STRCPY(a, b) ::strcpy(a, b)
 #endif
 
+#ifndef MENGINE_STRNCPY
+#define MENGINE_STRNCPY(a, b, n) ::strncpy( a, b, n )
+#endif
+
 #ifndef MENGINE_STRCAT
 #define MENGINE_STRCAT(a, b) ::strcat(a, b)
 #endif
 
-#ifndef MENGINE_STRNCMP
-#define MENGINE_STRNCMP(a, b, n) ::strncmp(a, b, n)
+#ifndef MENGINE_STRCHR
+#define MENGINE_STRCHR(a, b) ::strchr(a, b)
 #endif
 
 #ifndef MENGINE_STRRCHR
-#define MENGINE_STRRCHR(s, c) ::strrchr(s, c)
+#define MENGINE_STRRCHR(a, b) ::strrchr(a, b)
+#endif
+
+#ifndef MENGINE_STRNCMP
+#define MENGINE_STRNCMP(a, b, n) ::strncmp(a, b, n)
 #endif
 
 #ifndef MENGINE_MEMCPY

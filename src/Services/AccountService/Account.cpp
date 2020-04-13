@@ -234,7 +234,7 @@ namespace Mengine
             return false;
         }
 
-        ::strncpy( m_uid.data, uid, AccountUID::size_data );
+        MENGINE_STRNCPY( m_uid.data, uid, AccountUID::size_data );
 
         for( MapSettings::iterator
             it = m_settings.begin(),

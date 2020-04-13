@@ -247,7 +247,7 @@ namespace Mengine
             }
             else
             {
-                const Char * ext_delimiter = ::strrchr( name, '.' );
+                const Char * ext_delimiter = MENGINE_STRRCHR( name, '.' );
 
                 if( ext_delimiter == nullptr )
                 {

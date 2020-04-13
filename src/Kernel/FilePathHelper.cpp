@@ -5,6 +5,7 @@
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -98,7 +99,7 @@ namespace Mengine
         {
             const Char * str_filePath = _filePath.c_str();
 
-            const Char * dot_find = strrchr( str_filePath, '.' );
+            const Char * dot_find = MENGINE_STRRCHR( str_filePath, '.' );
 
             if( dot_find == nullptr )
             {

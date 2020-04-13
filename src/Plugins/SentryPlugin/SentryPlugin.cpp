@@ -5,6 +5,7 @@
 #include "Interface/NotificatorInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
 #include "Kernel/Logger.h"
@@ -123,6 +124,12 @@ namespace Mengine
         Helper::stringalized( projectVersion, projectVersionString, 32 );
 
         sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
+
+        sentry_set_extra( "Debug", sentry_value_new_bool( MENGINE_DEBUG_ATTRIBUTE( true, false ) ) );
+
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        sentry_set_extra( "Development", sentry_value_new_bool( developmentMode == true ? 1 : 0 ) );
 
 #ifdef MENGINE_GIT_SHA1
         sentry_set_extra( "Git", sentry_value_new_string( MENGINE_GIT_SHA1 ) );

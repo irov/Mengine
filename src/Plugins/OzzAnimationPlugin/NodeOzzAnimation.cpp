@@ -10,6 +10,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "Config/StdString.h"
+
 #include "OzzDetail.h"
 
 #include "ozz/base/maths/soa_transform.h"
@@ -536,7 +538,7 @@ namespace Mengine
                 {
                     uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
 
-                    memcpy( vbo_colors_buffer, &argb, ozz_colors_size );
+                    MENGINE_MEMCPY( vbo_colors_buffer, &argb, ozz_colors_size );
                 }
             }
 
@@ -549,7 +551,7 @@ namespace Mengine
             {
                 uint8_t * vbo_uvs_buffer = reinterpret_cast<uint8_t *>(it);
 
-                memcpy( vbo_uvs_buffer, part_uvs_buffer, ozz_uvs_size );
+                MENGINE_MEMCPY( vbo_uvs_buffer, part_uvs_buffer, ozz_uvs_size );
 
                 part_uvs_buffer += ozz_uvs_size;
             }

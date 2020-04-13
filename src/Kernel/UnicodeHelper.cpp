@@ -50,7 +50,7 @@ namespace Mengine
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
-            size_t unicodeSize = wcslen( _unicode );
+            size_t unicodeSize = MENGINE_WCSLEN( _unicode );
 
             size_t utf8Size;
             if( unicodeService->unicodeToUtf8( _unicode, unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )

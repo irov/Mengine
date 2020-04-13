@@ -308,6 +308,12 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
             SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
         }
+        else
+        {
+            LOGGER_ERROR( "SDL Platform '%s' unspecified"
+                , sdlPlatform
+            );
+        }
 
         if( HAS_OPTION( "touchpad" ) == true )
         {

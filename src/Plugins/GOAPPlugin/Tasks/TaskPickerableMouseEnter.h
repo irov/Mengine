@@ -5,7 +5,7 @@
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/EventationInterface.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 #include "Config/Lambda.h"
 
@@ -15,7 +15,7 @@ namespace Mengine
     typedef Lambda<bool( const InputMouseEnterEvent &, bool * )> LambdaPickerMouseEnterEvent;
     //////////////////////////////////////////////////////////////////////////
     class TaskPickerableMouseEnter
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter );

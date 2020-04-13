@@ -1,17 +1,17 @@
 #pragma once
 
+#include "GOAP/TaskInterface.h"
+
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/Tuple.h"
 
-#include "GOAP/Task.h"
-
 namespace Mengine
 {
     template<class ID, class ... Args>
     class TaskNotify
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskNotify( Args && ... _args )

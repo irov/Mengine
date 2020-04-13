@@ -114,7 +114,7 @@ namespace Mengine
 #endif
 
         m_touchpad = false;
-        m_desktop = false;
+        m_desktop = true;
 
         if( HAS_OPTION( "win32" ) )
         {

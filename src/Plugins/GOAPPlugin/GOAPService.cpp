@@ -5,7 +5,8 @@
 #include "Kernel/MemoryAllocator.h"
 
 #include "GOAP/GOAP.h"
-#include "GOAP/SourceProvider.h"
+
+#include "GOAP/SourceProviderInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GOAPService, Mengine::GOAPService );

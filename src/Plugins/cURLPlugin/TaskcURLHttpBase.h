@@ -2,14 +2,14 @@
 
 #include "cURLInterface.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 #include "GOAP/NodeInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class TaskcURLHttpBase
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskcURLHttpBase( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver );

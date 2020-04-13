@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 #include "Interface/EventReceiverInterface.h"
 
@@ -10,7 +10,7 @@
 namespace Mengine
 {
     class TaskAnimatablePlayWait
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr & _eventable );

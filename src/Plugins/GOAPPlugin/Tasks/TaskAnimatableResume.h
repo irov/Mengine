@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Kernel/Animatable.h"
+#include "GOAP/TaskInterface.h"
 
-#include "GOAP/Task.h"
+#include "Kernel/Animatable.h"
 
 namespace Mengine
 {
     class TaskAnimatableResume
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskAnimatableResume( const AnimatablePtr & _animatable );

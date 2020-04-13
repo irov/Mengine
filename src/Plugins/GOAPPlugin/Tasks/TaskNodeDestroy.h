@@ -2,12 +2,12 @@
 
 #include "Kernel/Node.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {
     class TaskNodeDestroy
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskNodeDestroy( const NodePtr & _node );

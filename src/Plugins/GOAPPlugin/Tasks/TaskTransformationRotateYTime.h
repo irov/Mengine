@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
@@ -8,7 +8,7 @@
 namespace Mengine
 {
     class TaskTransformationRotateYTime
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskTransformationRotateYTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time );

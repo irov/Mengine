@@ -2,12 +2,12 @@
 
 #include "RouterButtonEventReceiver.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {
     class TaskRouterButtonClick
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         TaskRouterButtonClick( const ConstString & _state, const RouterButtonEventReceiverPtr & _router );

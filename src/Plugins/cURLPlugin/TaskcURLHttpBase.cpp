@@ -4,7 +4,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
-#include "GOAP/Source.h"
+#include "GOAP/SourceInterface.h"
 #include "GOAP/NodeInterface.h"
 
 namespace Mengine

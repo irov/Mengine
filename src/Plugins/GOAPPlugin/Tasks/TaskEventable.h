@@ -1,12 +1,12 @@
 #pragma once
 
+#include "GOAP/TaskInterface.h"
+
 #include "Interface/EventationInterface.h"
 
 #include "Kernel/Eventable.h"
 
 #include "Config/Lambda.h"
-
-#include "GOAP/Task.h"
 
 namespace Mengine
 {
@@ -44,7 +44,7 @@ namespace Mengine
 #endif
 
     class TaskEventable
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         template<class M, class ... Args>

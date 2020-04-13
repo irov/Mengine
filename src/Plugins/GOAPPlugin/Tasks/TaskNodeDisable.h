@@ -2,12 +2,12 @@
 
 #include "Kernel/Node.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {
     class TaskNodeDisable
-        : public GOAP::Task
+        : public GOAP::TaskInterface
     {
     public:
         explicit TaskNodeDisable( const NodePtr & _node );

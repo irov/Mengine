@@ -78,25 +78,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::createService( FServiceProviderGenerator _generator, bool _safe, const DocumentPtr & _doc )
     {
-        if( m_servicesCount == MENGINE_SERVICE_PROVIDER_COUNT )
-        {
-            MENGINE_THROW_EXCEPTION( "overflow service count doc '%s'"
-                , MENGINE_DOCUMENT_STR( _doc )
-                );
+        MENGINE_RELEASE_UNUSED( _safe );
 
-            return false;
-        }
+        MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count doc '%s'"
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
 
         ServiceInterfacePtr service = this->generateService_( _generator, _doc );
 
         if( service == nullptr )
         {
-            if( _safe == false )
-            {
-                MENGINE_THROW_EXCEPTION( "invalid generate service doc '%s'"
-                    , MENGINE_DOCUMENT_STR( _doc )
-                    );
-            }
+            MENGINE_ASSERTION_EXCEPTION( _safe == true, "invalid generate service doc '%s'"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             return false;
         }
@@ -117,13 +111,10 @@ namespace Mengine
 
         if( successful == false )
         {
-            if( _safe == false )
-            {
-                MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' doc '%s'"
-                    , name
-                    , MENGINE_DOCUMENT_STR( _doc )
-                    );
-            }
+            MENGINE_ASSERTION_EXCEPTION( _safe == true, "invalid initialize service '%s' doc '%s'"
+                , name
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             return false;
         }

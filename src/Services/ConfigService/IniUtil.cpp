@@ -155,8 +155,6 @@ namespace Mengine
                     , _section
                     , _key
                 );
-
-                return false;
             }
 #endif
 

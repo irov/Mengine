@@ -1,5 +1,6 @@
 #include "Assertion.h"
 
+#include "Kernel/Exception.h"
 #include "Kernel/Logger.h"
 
 #include "Interface/OptionsServiceInterface.h"
@@ -81,6 +82,13 @@ namespace Mengine
             MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE - 1, _format, argList );
             
             MENGINE_VA_LIST_END( argList );
+
+            if( _level == ASSERTION_LEVEL_EXCEPTION )
+            {
+                MENGINE_THROW_EXCEPTION( "%s"
+                    , str_info
+                );
+            }
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {

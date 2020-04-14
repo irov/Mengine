@@ -77,11 +77,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer DX9RenderSystem::getRenderDevice() const
-    {
-        return m_pD3DDevice;
-    }
-    //////////////////////////////////////////////////////////////////////////
     ERenderPlatform DX9RenderSystem::getRenderPlatformType() const
     {
         return RP_DX9;
@@ -1031,6 +1026,16 @@ namespace Mengine
     uint32_t DX9RenderSystem::getTextureCount() const
     {
         return m_textureCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UnknownPointer DX9RenderSystem::getRenderSystemExtention()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    IDirect3DDevice9 * DX9RenderSystem::getDirect3DDevice9() const
+    {
+        return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::supportTextureFormat( EPixelFormat _format ) const

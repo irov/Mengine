@@ -47,9 +47,6 @@ namespace Mengine
         SERVICE_DECLARE( "RenderSystem" )
 
     public:
-        virtual Pointer getRenderDevice() const = 0;
-
-    public:
         virtual ERenderPlatform getRenderPlatformType() const = 0;
         virtual const ConstString & getRenderPlatformName() const = 0;
 
@@ -139,6 +136,9 @@ namespace Mengine
 
         virtual uint32_t getTextureMemoryUse() const = 0;
         virtual uint32_t getTextureCount() const = 0;
+
+    public:
+        virtual UnknownPointer getRenderSystemExtention() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

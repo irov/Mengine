@@ -60,12 +60,23 @@ android {
         println versionName
         
         ndk {
-            abiFilters "arm64-v8a", "armeabi-v7a"
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            abiFilters.clear()
         }
+        
         signingConfig signingConfigs.config
         targetSdkVersion 28
 
         multiDexEnabled true
+    }
+    
+    splits {
+        abi {
+            enable true //enables the ABIs split mechanism
+            reset() //reset the list of ABIs to be included to an empty string
+            include 'arm64-v8a', 'armeabi-v7a', 'x86', "x86_64"
+            universalApk true
+        }
     }
     
     externalNativeBuild {

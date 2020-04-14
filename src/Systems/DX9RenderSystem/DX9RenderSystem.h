@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/DX9RenderSystemExtensionInterface.h"
 
 #include "DX9RenderResourceHandler.h"
 
@@ -27,6 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DX9RenderSystem
         : public ServiceBase<RenderSystemInterface>
+        , public DX9RenderSystemExtensionInterface
     {
     public:
         DX9RenderSystem();
@@ -35,9 +37,6 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        Pointer getRenderDevice() const override;
 
     public:
         ERenderPlatform getRenderPlatformType() const override;
@@ -131,6 +130,12 @@ namespace Mengine
     public:
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
+
+    public:
+        UnknownPointer getRenderSystemExtention() override;
+
+    public:
+        IDirect3DDevice9 * getDirect3DDevice9() const override;
 
     protected:
         void updateVSyncDPP_();

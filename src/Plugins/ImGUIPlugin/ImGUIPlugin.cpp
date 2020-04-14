@@ -12,6 +12,10 @@
 #include "Interface/SDLPlatformExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#include "Interface/DX9RenderSystemExtensionInterface.h"
+#endif
+
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
@@ -190,8 +194,10 @@ namespace Mengine
 
         ImGui_ImplWin32_Init( hWnd );
 
-        IDirect3DDevice9 * d3dDevice = RENDER_SYSTEM()
-            ->getRenderDevice();
+        DX9RenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
+        IDirect3DDevice9 * d3dDevice = extension->getDirect3DDevice9();
         
         ImGui_ImplDX9_Init( d3dDevice );
         ImGui_ImplDX9_CreateDeviceObjects();

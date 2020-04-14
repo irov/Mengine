@@ -16,6 +16,8 @@ PFNGLBLENDEQUATIONPROC              glBlendEquation_ = nullptr;
 PFNGLGENBUFFERSPROC                 glGenBuffers = nullptr;
 PFNGLBINDBUFFERPROC                 glBindBuffer = nullptr;
 PFNGLBUFFERDATAPROC                 glBufferData = nullptr;
+PFNGLMAPBUFFERPROC                  glMapBuffer = nullptr;
+PFNGLUNMAPBUFFERPROC                glUnmapBuffer = nullptr;
 PFNGLDELETEBUFFERSPROC              glDeleteBuffers = nullptr;
 PFNGLBUFFERSUBDATAPROC              glBufferSubData = nullptr;
 
@@ -127,6 +129,8 @@ namespace Mengine
             GETGLPROC( PFNGLGENBUFFERSPROC, glGenBuffers );
             GETGLPROC( PFNGLBINDBUFFERPROC, glBindBuffer );
             GETGLPROC( PFNGLBUFFERDATAPROC, glBufferData );
+            GETGLPROC( PFNGLMAPBUFFERPROC, glMapBuffer );
+            GETGLPROC( PFNGLUNMAPBUFFERPROC, glUnmapBuffer );
             GETGLPROC( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
             GETGLPROC( PFNGLBUFFERSUBDATAPROC, glBufferSubData );
 

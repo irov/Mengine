@@ -28,29 +28,20 @@ public class AdMobInteractionLayer {
     private RewardedVideoAd _rewardedVideoAd;
 
     static native void AndroidNativeAdMob_onAdLoaded();
-
     static native void AndroidNativeAdMob_onAdFailedToLoad(int errorCode);
-
     static native void AndroidNativeAdMob_onAdOpened();
-
+    static native void AndroidNativeAdMob_onAdFailedToOpened();
     static native void AndroidNativeAdMob_onAdLeftApplication();
-
     static native void AndroidNativeAdMob_onAdClosed();
-
+    
     static native void AndroidNativeAdMob_onRewardedVideoAdLoaded();
-
-    static native void AndroidNativeAdMob_onRewardedVideoAdOpened();
-
+    static native void AndroidNativeAdMob_onRewardedVideoAdOpened();    
+    static native void AndroidNativeAdMob_onRewardedVideoAdFailedToOpened();
     static native void AndroidNativeAdMob_onRewardedVideoStarted();
-
     static native void AndroidNativeAdMob_onRewardedVideoAdClosed();
-
     static native void AndroidNativeAdMob_onRewarded(String rewardType, int rewardAmount);
-
     static native void AndroidNativeAdMob_onRewardedVideoAdLeftApplication();
-
     static native void AndroidNativeAdMob_onRewardedVideoAdFailedToLoad(int errorCode);
-
     static native void AndroidNativeAdMob_onRewardedVideoCompleted();
 
     public AdMobInteractionLayer(Activity activity, String admobAppId, String interAdUnitId, String videoAdUnitId) {
@@ -151,8 +142,10 @@ public class AdMobInteractionLayer {
             @Override
             public void run() {
                 if (!_interstitialAd.isLoaded()) {
+                    AndroidNativeAdMob_onAdFailedToOpened();
                     return;
                 }
+                
                 _interstitialAd.show();
             }
         });
@@ -173,6 +166,7 @@ public class AdMobInteractionLayer {
             @Override
             public void run() {
                 if (!_rewardedVideoAd.isLoaded()) {
+                    AndroidNativeAdMob_onRewardedVideoAdFailedToOpened();
                     return;
                 }
                 _rewardedVideoAd.show();

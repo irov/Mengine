@@ -120,7 +120,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::CallbackProviderInterfacePtr provider = GOAP::Helper::makeCallbackProvider( allocator, [&, _self, _method, _args ...]( const GOAP::CallbackObserverPtr & _callback, bool _skip )
+            GOAP::CallbackProviderInterfacePtr provider = GOAP::Helper::makeCallbackProvider( allocator, [&, _self, _method, _args ...]( const GOAP::CallbackObserverInterfacePtr & _callback, bool _skip )
             {
                 P * p = _self.get();
                 (p->*_method)(_callback, _skip, _args ...);

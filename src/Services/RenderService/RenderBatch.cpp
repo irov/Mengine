@@ -100,6 +100,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderBatch::lock()
     {
+        if( m_vertexCount == 0U )
+        {
+            m_lockData.vertexMemory = nullptr;
+            m_lockData.indexMemory = nullptr;
+
+            m_lockData.vertexSize = m_vertexBuffer->getVertexSize();
+            m_lockData.indexSize = m_indexBuffer->getIndexSize();
+
+            m_lockData.vbPos = 0U;
+            m_lockData.ibPos = 0U;
+
+            return true;
+        }
+
         if( m_vertexBuffer->resize( m_vertexCount ) == false )
         {
             LOGGER_ERROR( "failed to resize vertex buffer '%u'"
@@ -137,14 +151,19 @@ namespace Mengine
         m_lockData.vertexSize = m_vertexBuffer->getVertexSize();
         m_lockData.indexSize = m_indexBuffer->getIndexSize();
 
-        m_lockData.vbPos = 0;
-        m_lockData.ibPos = 0;
+        m_lockData.vbPos = 0U;
+        m_lockData.ibPos = 0U;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderBatch::unlock()
-    {        
+    {   
+        if( m_vertexCount == 0U )
+        {
+            return true;
+        }
+
         m_lockData.vertexMemory = nullptr;
         m_lockData.indexMemory = nullptr;
 

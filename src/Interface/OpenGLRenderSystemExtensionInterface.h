@@ -6,10 +6,8 @@
 
 namespace Mengine
 {
-    class OpenGLRenderImageExtensionInterface
+    class OpenGLRenderSystemExtensionInterface
         : public UnknownInterface
     {
-    public:
-        virtual GLuint getUID() const = 0;
     };
 }

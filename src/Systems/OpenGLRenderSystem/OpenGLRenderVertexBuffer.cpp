@@ -45,8 +45,13 @@ namespace Mengine
         m_vertexSize = _elementSize;
         m_usage = s_getGLBufferType( _bufferType );
 
+#if defined(MENGINE_RENDER_OPENGL_ES)
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+#else
+        MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
@@ -104,20 +109,40 @@ namespace Mengine
         m_lockOffset = _offset;
         m_lockCount = _count;
 
+#if defined(MENGINE_RENDER_OPENGL_ES)
         const uint32_t bufferSize = m_lockCount * m_vertexSize;
 
         m_memory->newBuffer( bufferSize );
+#else
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        void * buffer = nullptr;
+        GLCALLR( buffer, glMapBuffer, (GL_ARRAY_BUFFER, GL_WRITE_ONLY) );
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+
+        const uint32_t bufferOffset = m_lockOffset * m_vertexSize;
+        const uint32_t bufferSize = m_lockCount * m_vertexSize;
+
+        m_memory->setBuffer( (uint8_t *)buffer + bufferOffset, bufferSize );
+#endif
 
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::unlock()
     {
+#if defined(MENGINE_RENDER_OPENGL_ES)
         void * memory_buffer = m_memory->getBuffer();
 
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * m_vertexSize, m_lockCount * m_vertexSize, memory_buffer) );
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+#else
+        m_memory->setBuffer( nullptr, 0 );
+
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        GLCALL( glUnmapBuffer, (GL_ARRAY_BUFFER) );
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+#endif
 
         m_lockOffset = 0;
         m_lockCount = 0;

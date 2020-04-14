@@ -264,8 +264,9 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
-        const Resolution & windowResolution = APPLICATION_SERVICE()
-            ->getCurrentResolution();
+        Resolution windowResolution;
+        APPLICATION_SERVICE()
+            ->calcWindowResolution( windowResolution );
 
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();

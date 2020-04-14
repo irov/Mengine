@@ -47,8 +47,13 @@ namespace Mengine
         uint32_t m_lockOffset;
         uint32_t m_lockCount;
 
+#if defined(MENGINE_RENDER_OPENGL_ES)
         MemoryBufferInterfacePtr m_memory;
+#else
+        MemoryProxyInterfacePtr m_memory;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderIndexBuffer> OpenGLRenderIndexBufferPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

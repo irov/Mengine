@@ -11,7 +11,17 @@ android {
         versionName "1.0"
 
         ndk {
-            abiFilters "arm64-v8a", "armeabi-v7a"
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            abiFilters.clear()
+        }
+    }
+    
+    splits {
+        abi {
+            enable true //enables the ABIs split mechanism
+            reset() //reset the list of ABIs to be included to an empty string
+            include 'arm64-v8a', 'armeabi-v7a', 'x86', "x86_64"
+            universalApk true
         }
     }
     
@@ -33,6 +43,7 @@ android {
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DCMAKE_BUILD_TYPE:STRING=Debug",
+                            "-DANDROID_STL=c++_shared",
                             "-DLIBTYPE=SHARED",
                             "-DALSOFT_DLOPEN:BOOLEAN=OFF",
                             "-DALSOFT_WERROR:BOOLEAN=OFF",
@@ -66,6 +77,7 @@ android {
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DCMAKE_BUILD_TYPE:STRING=Release",
+                            "-DANDROID_STL=c++_shared",
                             "-DLIBTYPE=SHARED",
                             "-DALSOFT_DLOPEN:BOOLEAN=OFF",
                             "-DALSOFT_WERROR:BOOLEAN=OFF",

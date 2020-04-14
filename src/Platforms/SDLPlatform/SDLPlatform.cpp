@@ -209,9 +209,9 @@ namespace Mengine
     void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
     {
         SDL_Rect rect;
-        SDL_GetDisplayBounds( 0, &rect );
+        SDL_GetDisplayUsableBounds( 0, &rect );
 
-        LOGGER_WARNING( "client resolution width %d height %d"
+        LOGGER_MESSAGE( "client resolution width %d height %d"
             , rect.w
             , rect.h
         );

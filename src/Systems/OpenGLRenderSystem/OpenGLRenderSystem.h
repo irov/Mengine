@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/OpenGLRenderSystemExtensionInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "OpenGLRenderImage.h"
@@ -16,30 +17,10 @@
 
 namespace Mengine
 {
-    struct TextureStage
-    {
-        TextureStage()
-            : texture( nullptr )
-            , minFilter( 0 )
-            , magFilter( 0 )
-            , wrapS( 0 )
-            , wrapT( 0 )
-            , border( 0 )
-        {
-        }
-
-        OpenGLRenderImage * texture;
-
-        GLenum minFilter;
-        GLenum magFilter;
-        GLenum wrapS;
-        GLenum wrapT;
-
-        uint32_t border;
-    };
-
+    //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderSystem
         : public ServiceBase<RenderSystemInterface>
+        , public OpenGLRenderSystemExtensionInterface
     {
     public:
         OpenGLRenderSystem();
@@ -140,9 +121,8 @@ namespace Mengine
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
 
-
-    protected:
-        Pointer getRenderDevice() const override;
+    public:
+        UnknownPointer getRenderSystemExtention() override;
 
     protected:
         void findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
@@ -185,6 +165,28 @@ namespace Mengine
         OpenGLRenderProgramVariablePtr m_currentProgramVariable;
 
         uint32_t m_glMaxCombinedTextureImageUnits;
+
+        struct TextureStage
+        {
+            TextureStage()
+                : texture( nullptr )
+                , minFilter( 0 )
+                , magFilter( 0 )
+                , wrapS( 0 )
+                , wrapT( 0 )
+                , border( 0 )
+            {
+            }
+
+            OpenGLRenderImage * texture;
+
+            GLenum minFilter;
+            GLenum magFilter;
+            GLenum wrapS;
+            GLenum wrapT;
+
+            uint32_t border;
+        };
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
 

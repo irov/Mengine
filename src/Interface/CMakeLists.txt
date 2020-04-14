@@ -159,6 +159,8 @@ Render
     RenderEnumInterface.h
     RenderServiceInterface.h
     RenderSystemInterface.h
+    DX9RenderSystemExtensionInterface.h
+    OpenGLRenderSystemExtensionInterface.h
     RenderProgramVariableInterface.h
     RenderImageInterface.h
     RenderImageLoaderInterface.h

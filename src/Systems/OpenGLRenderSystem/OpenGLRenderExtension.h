@@ -21,6 +21,8 @@ extern PFNGLBLENDEQUATIONPROC               glBlendEquation_;
 extern PFNGLGENBUFFERSPROC                  glGenBuffers;
 extern PFNGLBINDBUFFERPROC                  glBindBuffer;
 extern PFNGLBUFFERDATAPROC                  glBufferData;
+extern PFNGLMAPBUFFERPROC                   glMapBuffer;
+extern PFNGLUNMAPBUFFERPROC                 glUnmapBuffer;
 extern PFNGLDELETEBUFFERSPROC               glDeleteBuffers;
 extern PFNGLBUFFERSUBDATAPROC               glBufferSubData;
 

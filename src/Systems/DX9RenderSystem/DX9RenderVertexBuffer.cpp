@@ -8,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Documentable.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/memorycopy.h"
 
@@ -64,6 +65,8 @@ namespace Mengine
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid create memory proxy" );
 
         m_memory = memory;
 

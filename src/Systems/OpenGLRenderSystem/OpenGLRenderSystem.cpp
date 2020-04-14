@@ -706,9 +706,9 @@ namespace Mengine
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer OpenGLRenderSystem::getRenderDevice() const
+    UnknownPointer OpenGLRenderSystem::getRenderSystemExtention()
     {
-        return nullptr;
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setDepthBufferTestEnable( bool _depthTest )

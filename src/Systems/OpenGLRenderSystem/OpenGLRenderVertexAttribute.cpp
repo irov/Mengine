@@ -5,6 +5,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdBaseTsd.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -89,7 +91,7 @@ namespace Mengine
                 , gl_type
                 , attribute.normalized
                 , attribute.stride
-                , reinterpret_cast<const GLvoid *>(attribute.offset)
+                , MENGINE_UIN32_TO_POINTER( const GLvoid *, attribute.offset )
                 ) );
         }
     }

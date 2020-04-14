@@ -5,7 +5,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Config/StdBaseTsd.h"
+#include "Config/UInt32ToPointer.h"
 
 namespace Mengine
 {
@@ -91,7 +91,7 @@ namespace Mengine
                 , gl_type
                 , attribute.normalized
                 , attribute.stride
-                , MENGINE_UIN32_TO_POINTER( const GLvoid *, attribute.offset )
+                , MENGINE_UINT32_TO_POINTER( const GLvoid *, attribute.offset )
                 ) );
         }
     }

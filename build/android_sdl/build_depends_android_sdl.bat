@@ -14,6 +14,7 @@ set ANDROID_NDK=%ANDROID_SDK%\ndk-bundle
 set ANDROID_SYSROOT=%ANDROID_NDK%\sysroot
 set MAKE_PROGRAM=%ANDROID_SDK%\cmake\3.6.4111459\bin\ninja.exe
 set TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
+set CMAKE_GENERATOR="Ninja"
 set CMAKE_EXE=%ANDROID_SDK%\cmake\3.6.4111459\bin\cmake.exe
 set CMAKE_PATH=%CD%\..\..\cmake\Depends_Android_SDL
 set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
@@ -21,9 +22,9 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\x86
 @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\x86
 
-%CMAKE_EXE% -G "Android Gradle - Ninja" ^
+%CMAKE_EXE% -G %CMAKE_GENERATOR% ^
     -DANDROID_PLATFORM=android-18 ^
-    -DANDROID_ARM_NEON=TRUE ^
+    -DANDROID_ARM_NEON=FALSE ^
     -DANDROID_ABI=x86 ^
     -DANDROID_STL=c++_shared ^
     -DANDROID_TOOLCHAIN=clang ^
@@ -41,9 +42,9 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\x86_64
 @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\x86_64
 
-%CMAKE_EXE% -G "Android Gradle - Ninja" ^
+%CMAKE_EXE% -G %CMAKE_GENERATOR% ^
     -DANDROID_PLATFORM=android-18 ^
-    -DANDROID_ARM_NEON=TRUE ^
+    -DANDROID_ARM_NEON=FALSE ^
     -DANDROID_ABI=x86_64 ^
     -DANDROID_STL=c++_shared ^
     -DANDROID_TOOLCHAIN=clang ^
@@ -61,7 +62,7 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\armeabi-v7a
 @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\armeabi-v7a
 
-%CMAKE_EXE% -G "Android Gradle - Ninja" ^
+%CMAKE_EXE% -G %CMAKE_GENERATOR% ^
     -DANDROID_PLATFORM=android-18 ^
     -DANDROID_ARM_NEON=TRUE ^
     -DANDROID_ABI=armeabi-v7a ^
@@ -81,7 +82,7 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\arm64-v8a
 @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\arm64-v8a
 
-%CMAKE_EXE% -G "Android Gradle - Ninja" ^
+%CMAKE_EXE% -G %CMAKE_GENERATOR% ^
     -DANDROID_PLATFORM=android-18 ^
     -DANDROID_ARM_NEON=TRUE ^
     -DANDROID_ABI=arm64-v8a ^

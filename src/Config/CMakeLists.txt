@@ -23,7 +23,7 @@ src
     StdIO.h
     StdLib.h
     StdString.h
-    StdBaseTsd.h
+    UInt32ToPointer.h
     Metaprogramming.h
     GitSHA1.h
     cmake_dummy.cpp

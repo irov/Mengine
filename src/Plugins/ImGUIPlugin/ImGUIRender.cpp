@@ -15,6 +15,8 @@
 #include "Interface/OpenGLRenderImageExtensionInterface.h"
 #endif
 
+#include "Config/StdBaseTsd.h"
+
 #include "imgui.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
@@ -131,7 +133,7 @@ namespace Mengine
 
         GLuint UID = extension->getUID();
 
-        return (ImTextureID)UID;
+        return MENGINE_UIN32_TO_POINTER( ImTextureID, UID );
 #endif
     }
 }

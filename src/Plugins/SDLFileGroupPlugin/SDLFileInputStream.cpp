@@ -81,7 +81,7 @@ namespace Mengine
             return false;
         }
 
-        if( _offset + _size > size )
+        if( _offset + _size > (size_t)size )
         {
             LOGGER_ERROR( "invalid file '%s' range %d:%d size %d"
                 , fullPath

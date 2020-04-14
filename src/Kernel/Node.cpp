@@ -445,11 +445,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChild( const NodePtr & _node )
     {
-        MENGINE_ASSERTION( _node != nullptr, "node '%s' invalid add child NULL node"
+        MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add child NULL node"
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION( _node != this, "node '%s' invalid self child node"
+        MENGINE_ASSERTION_FATAL( _node != this, "node '%s' invalid self child node"
             , this->getName().c_str()
         );
 
@@ -458,11 +458,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChildFront( const NodePtr & _node )
     {
-        MENGINE_ASSERTION( _node != nullptr, "node '%s' invalid add front child NULL node"
+        MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add front child NULL node"
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION( _node != this, "node '%s' invalid self child node"
+        MENGINE_ASSERTION_FATAL( _node != this, "node '%s' invalid self child node"
             , this->getName().c_str()
         );
 
@@ -471,21 +471,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
     {
-        MENGINE_ASSERTION( _node != nullptr, "node '%s' invalid add child NULL node (node)"
+        MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add child NULL node (node)"
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION( _after != nullptr, "node '%s' invalid add after NULL node (node)"
+        MENGINE_ASSERTION_FATAL( _after != nullptr, "node '%s' invalid add after NULL node (node)"
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION( _node != _after, "node '%s' invalid add child '%s' is equal after '%s' (node)"
+        MENGINE_ASSERTION_FATAL( _node != _after, "node '%s' invalid add child '%s' is equal after '%s' (node)"
             , this->getName().c_str()
             , _node->getName().c_str()
             , _after->getName().c_str()
         );
 
-        MENGINE_ASSERTION( stdex::helper::intrusive_find( m_children.begin(), m_children.end(), _after ) != m_children.end(), "node '%s' after is not child"
+        MENGINE_ASSERTION_FATAL( stdex::helper::intrusive_find( m_children.begin(), m_children.end(), _after ) != m_children.end(), "node '%s' after is not child"
             , this->getName().c_str()
         );
 
@@ -763,12 +763,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )
     {
-        MENGINE_ASSERTION_RETURN( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), _node ) == true, false, "node '%s' not found children '%s'"
+        MENGINE_ASSERTION_FATAL_RETURN( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), _node ) == true, false, "node '%s' not found children '%s'"
             , this->getName().c_str()
             , _node->getName().c_str()
         );
 
-        MENGINE_ASSERTION_RETURN( _node != this, false, "node '%s' invalid self child node"
+        MENGINE_ASSERTION_FATAL_RETURN( _node != this, false, "node '%s' invalid self child node"
             , this->getName().c_str()
         );
 

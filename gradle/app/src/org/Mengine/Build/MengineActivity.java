@@ -108,6 +108,8 @@ public class MengineActivity extends SDLActivity {
         } else {
             Log.e(TAG, "_instance == null -> init plugins");
 
+            _instance = this;
+
             initPlugins();
         }
     }

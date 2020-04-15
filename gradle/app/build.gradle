@@ -62,13 +62,15 @@ android {
         
         ndk {
             if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-                abiFilters ANDROID_APP_ABI_FILTERS.split(",")
+                abiFilters = []
+                abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it as String})
             } else {
                 abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }
-            
-            abiFilters.clear()
         }
+        
+        print 'ANDROID_APP_ABI_FILTERS = '
+        println ndk.abiFilters
         
         signingConfig signingConfigs.config
         targetSdkVersion 28
@@ -80,9 +82,12 @@ android {
         abi {
             enable true //enables the ABIs split mechanism
             reset() //reset the list of ABIs to be included to an empty string
-            
+
+            ANDROID_APP_ABI_FILTERS2 = "arm64-v8a, armeabi-v7a, x86, x86_64"
+
             if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-                include ANDROID_APP_ABI_FILTERS.split(",")
+                include = []
+                include.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it as String})
             } else {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }

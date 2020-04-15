@@ -10,6 +10,7 @@ set "CONFIGURATION=%1"
 @echo Starting dependencies build %CONFIGURATION% configuration...
 
 set ANDROID_SDK=%LOCALAPPDATA%\Android\sdk
+set ANDROID_SDK_MANAGER=%ANDROID_SDK%\cmdline-tools\latest\bin\sdkmanager.bat
 set ANDROID_NDK=%ANDROID_SDK%\ndk-bundle
 set ANDROID_SYSROOT=%ANDROID_NDK%\sysroot
 set MAKE_PROGRAM=%ANDROID_SDK%\cmake\3.6.4111459\bin\ninja.exe
@@ -18,6 +19,10 @@ set CMAKE_GENERATOR="Ninja"
 set CMAKE_EXE=%ANDROID_SDK%\cmake\3.6.4111459\bin\cmake.exe
 set CMAKE_PATH=%CD%\..\..\cmake\Depends_Android_SDL
 set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
+
+call %ANDROID_SDK_MANAGER% --install "ndk-bundle"
+call %ANDROID_SDK_MANAGER% --install "cmake;3.6.4111459"
+call %ANDROID_SDK_MANAGER% --install "cmake;3.10.2.4988404"
 
 @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\x86
 @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\x86

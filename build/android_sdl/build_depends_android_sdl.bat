@@ -33,9 +33,9 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_MAKE_PROGRAM=%MAKE_PROGRAM% ^
     -DCMAKE_TOOLCHAIN_FILE=%TOOLCHAIN_FILE% ^
     -DCMAKE_SYSROOT_COMPILE=%ANDROID_SYSROOT% ^
-    %CMAKE_PATH%
+    -S %CMAKE_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION%
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
 
 @popd
 
@@ -53,9 +53,9 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_MAKE_PROGRAM=%MAKE_PROGRAM% ^
     -DCMAKE_TOOLCHAIN_FILE=%TOOLCHAIN_FILE% ^
     -DCMAKE_SYSROOT_COMPILE=%ANDROID_SYSROOT% ^
-    %CMAKE_PATH%
+    -S %CMAKE_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION%
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
 
 @popd
 
@@ -73,9 +73,9 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_MAKE_PROGRAM=%MAKE_PROGRAM% ^
     -DCMAKE_TOOLCHAIN_FILE=%TOOLCHAIN_FILE% ^
     -DCMAKE_SYSROOT_COMPILE=%ANDROID_SYSROOT% ^
-    %CMAKE_PATH%
+    -S %CMAKE_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION%
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
 
 @popd
 
@@ -93,9 +93,9 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_MAKE_PROGRAM=%MAKE_PROGRAM% ^
     -DCMAKE_TOOLCHAIN_FILE=%TOOLCHAIN_FILE% ^
     -DCMAKE_SYSROOT_COMPILE=%ANDROID_SYSROOT% ^
-    %CMAKE_PATH%
+    -S %CMAKE_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION%
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
     
 @popd
 

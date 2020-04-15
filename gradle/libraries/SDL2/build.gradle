@@ -12,12 +12,11 @@ android {
 
         ndk {
             if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-                abiFilters ANDROID_APP_ABI_FILTERS.split(",")
+                abiFilters = []
+                abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it as String})
             } else {
                 abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }
-            
-            abiFilters.clear()
         }
     }
     
@@ -27,7 +26,8 @@ android {
             reset() //reset the list of ABIs to be included to an empty string
             
             if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-                include ANDROID_APP_ABI_FILTERS.split(",")
+                include = []
+                include.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it as String})
             } else {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }

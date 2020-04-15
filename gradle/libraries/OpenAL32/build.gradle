@@ -13,7 +13,7 @@ android {
         ndk {
             if (findProperty("ANDROID_APP_ABI_FILTERS")) {
                 abiFilters = []
-                abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it as String})
+                abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
             } else {
                 abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }

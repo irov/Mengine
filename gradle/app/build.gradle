@@ -59,8 +59,14 @@ android {
         print 'ANDROID_APP_NAME_VERSION = '
         println versionName
         
+        
         ndk {
-            abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            if (findProperty("ANDROID_APP_ABI_FILTERS")) {
+                abiFilters ANDROID_APP_ABI_FILTERS.split(",")
+            } else {
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            }
+            
             abiFilters.clear()
         }
         
@@ -74,7 +80,13 @@ android {
         abi {
             enable true //enables the ABIs split mechanism
             reset() //reset the list of ABIs to be included to an empty string
-            include 'arm64-v8a', 'armeabi-v7a', 'x86', "x86_64"
+            
+            if (findProperty("ANDROID_APP_ABI_FILTERS")) {
+                include ANDROID_APP_ABI_FILTERS.split(",")
+            } else {
+                include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+            }
+            
             universalApk true
         }
     }

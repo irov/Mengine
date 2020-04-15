@@ -4,7 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Hashtable.h"
+#include "Kernel/Hashtable2.h"
 
 #ifndef MENGINE_MASTER_RELEASE
 #   include "Kernel/Map.h"
@@ -33,27 +33,7 @@ namespace Mengine
         void foreachVocabulary( const ConstString & _category, const LambdaVocabulary & _lambda ) const override;
 
     protected:
-        struct CategoryKey
-        {
-            HashType hash;
-            ConstString category;
-            ConstString type;
-
-            bool operator == ( const CategoryKey & _key ) const
-            {
-                return category == _key.category && type == _key.type;
-            }
-        };
-
-        struct CategoryKeyHashgen
-        {
-            HashType operator() ( const CategoryKey & _key ) const
-            {
-                return _key.hash;
-            }
-        };
-
-        typedef Hashtable<CategoryKey, MixinPtr, CategoryKeyHashgen> HashtableMixins;
+        typedef Hashtable2<ConstString, ConstString, MixinPtr> HashtableMixins;
         HashtableMixins m_mixins;
     };
 }

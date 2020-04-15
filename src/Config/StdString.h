@@ -38,6 +38,10 @@
 #define MENGINE_STRNCMP(a, b, n) ::strncmp(a, b, n)
 #endif
 
+#ifndef MENGINE_STRSTR
+#define MENGINE_STRSTR(a, b) ::strstr(a, b)
+#endif
+
 #ifndef MENGINE_MEMCPY
 #define MENGINE_MEMCPY(a, b, n) ::memcpy(a, b, n)
 #endif

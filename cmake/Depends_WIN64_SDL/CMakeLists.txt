@@ -4,9 +4,9 @@ OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 
 PROJECT(Depends_WIN64_SDL)
 
-INCLUDE(../base_template.cmake)
-INCLUDE(../macro_template.cmake)
-INCLUDE(../win64_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../win64_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(WINDOWS OPENGL X64 SDL MSVC)
 

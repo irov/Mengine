@@ -4,9 +4,9 @@ OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 
 PROJECT(Depends_Xcode_IOS_SDL_Simulator)
 
-INCLUDE(../base_template.cmake)
-INCLUDE(../macro_template.cmake)
-INCLUDE(../xcode_ios_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(IOS OPENGL X86 SDL XCODE)
 

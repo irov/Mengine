@@ -4,7 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Hashtable.h"
+#include "Kernel/Hashtable2.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine
@@ -33,40 +33,7 @@ namespace Mengine
         void foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const override;
 
     protected:
-        struct CategoryKey
-        {
-            CategoryKey()
-                : hash( ~0ULL )
-            {
-            }
-
-            CategoryKey( const ConstString & _category, const ConstString & _prototype )
-                : category( _category )
-                , prototype( _prototype )
-                , hash( _category.hash() ^ _prototype.hash() )
-            {
-            }
-
-            ConstString category;
-            ConstString prototype;
-
-            HashType hash;
-
-            bool operator == ( const CategoryKey & _key ) const
-            {
-                return category == _key.category && prototype == _key.prototype;
-            }
-        };
-
-        struct CategoryKeyHashgen
-        {
-            HashType operator() ( const CategoryKey & _key ) const
-            {
-                return _key.hash;
-            }
-        };
-
-        typedef Hashtable<CategoryKey, PrototypeGeneratorInterfacePtr, CategoryKeyHashgen> HashtablePrototypes;
+        typedef Hashtable2<ConstString, ConstString, PrototypeGeneratorInterfacePtr> HashtablePrototypes;
         HashtablePrototypes m_generators;
     };
 }

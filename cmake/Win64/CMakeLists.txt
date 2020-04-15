@@ -4,11 +4,11 @@ SET(MENGINE_PROJECT_NAME "Mengine_WIN64" CACHE STRING "Mengine project name")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
-INCLUDE(../dev_options_template.cmake)
-INCLUDE(../base_template.cmake)
-INCLUDE(../macro_template.cmake)
-INCLUDE(../win64_template.cmake)
-INCLUDE(../mengine_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../dev_options_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../win64_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")

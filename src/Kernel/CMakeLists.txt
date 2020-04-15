@@ -567,6 +567,7 @@ Core
     
     Hashgen.h
     Hashtable.h
+    Hashtable2.h
     HashHelper.h
     
     NodeHelper.h

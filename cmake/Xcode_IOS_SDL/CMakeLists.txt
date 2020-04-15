@@ -9,11 +9,11 @@ SET(MENGINE_PROJECT_NAME "Mengine_Xcode_IOS_SDL" CACHE STRING "Mengine project n
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
-INCLUDE(../master_options_template.cmake)
-INCLUDE(../base_template.cmake)
-INCLUDE(../macro_template.cmake)
-INCLUDE(../xcode_ios_template.cmake)
-INCLUDE(../mengine_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../master_options_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../xcode_ios_template.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(IOS OPENGL X64 SDL XCODE)
 

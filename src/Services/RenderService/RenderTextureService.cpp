@@ -92,7 +92,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * _texture ) const
     {
-        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _filePath ) );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        const RenderTextureInterface * texture = m_textures.find( fileGroupName, _filePath );
 
         if( texture == nullptr )
         {
@@ -114,7 +116,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureService::getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const
     {
-        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _filePath ) );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        const RenderTextureInterface * texture = m_textures.find( fileGroupName, _filePath );
 
         if( texture == nullptr )
         {
@@ -288,7 +292,7 @@ namespace Mengine
 
         const ConstString & fileGroupName = _fileGroup->getName();
 
-        m_textures.emplace( std::make_pair( fileGroupName, _filePath ), texture_ptr );
+        m_textures.emplace( fileGroupName, _filePath, texture_ptr );
 
         LOGGER_INFO( "cache texture '%s:%s'"
             , fileGroupName.c_str()
@@ -300,7 +304,7 @@ namespace Mengine
     {
         const ConstString & fileGroupName = _fileGroup->getName();
 
-        const RenderTextureInterface * texture = m_textures.find( std::make_pair( fileGroupName, _filePath ) );
+        const RenderTextureInterface * texture = m_textures.find( fileGroupName, _filePath );
 
         if( texture != nullptr )
         {
@@ -481,7 +485,12 @@ namespace Mengine
 
         if( filePath.empty() == false )
         {
-            m_textures.erase( std::make_pair( fileGroup->getName(), filePath ) );
+            const ConstString & fileGroupName = fileGroup->getName();
+
+            RenderTextureInterface * erase_texture = m_textures.erase( fileGroupName, filePath );
+            MENGINE_UNUSED( erase_texture );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( erase_texture, false );
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, _texture );
         }

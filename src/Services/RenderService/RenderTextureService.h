@@ -5,7 +5,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Hashtable.h"
+#include "Kernel/Hashtable2.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Pair.h"
 
@@ -53,8 +53,7 @@ namespace Mengine
         void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, EPixelFormat & _format ) const;
 
     protected:
-        typedef Pair<ConstString, FilePath> MapRenderTextureKey;
-        typedef Hashtable<MapRenderTextureKey, RenderTextureInterface *> MapRenderTextureEntry;
+        typedef Hashtable2<ConstString, FilePath, RenderTextureInterface *> MapRenderTextureEntry;
         MapRenderTextureEntry m_textures;
 
         FactoryPtr m_factoryRenderTexture;

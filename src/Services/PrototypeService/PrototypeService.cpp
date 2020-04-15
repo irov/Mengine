@@ -35,8 +35,12 @@ namespace Mengine
         {
             const PrototypeGeneratorInterfacePtr & generator = value.element;
 
-            LOGGER_ERROR( "Forgot remove generator '%s'"
-                , value.key.prototype.c_str()
+            const ConstString & category = value.key1;
+            const ConstString & prototype = value.key1;
+
+            LOGGER_ERROR( "Forgot remove '%s' generator '%s'"
+                , category.c_str()
+                , prototype.c_str()
             );
 
             generator->finalize();
@@ -60,14 +64,12 @@ namespace Mengine
             return false;
         }
 
-        CategoryKey key{ _category, _prototype };
-
-        MENGINE_ASSERTION_FATAL_RETURN( m_generators.exist( key ) == false, false, "prototype '%s:%s' alredy exist"
+        MENGINE_ASSERTION_FATAL_RETURN( m_generators.exist( _category, _prototype ) == false, false, "prototype '%s:%s' alredy exist"
             , _category.c_str()
             , _prototype.c_str()
         );
 
-        m_generators.emplace( key, _generator );
+        m_generators.emplace( _category, _prototype, _generator );
 
         LOGGER_INFO( "add '%s:%s'"
             , _category.c_str()
@@ -79,11 +81,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::removePrototype( const ConstString & _category, const ConstString & _prototype )
     {
-        CategoryKey key{ _category, _prototype };
+        PrototypeGeneratorInterfacePtr generator = m_generators.erase( _category, _prototype );
 
-        PrototypeGeneratorInterfacePtr generator = m_generators.erase( key );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, false, "not found prototype '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, false, "not found '%s' prototype '%s'"
+            , _category.c_str()
             , _prototype.c_str()
         );
 
@@ -94,9 +95,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::hasGenerator( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * _generator ) const
     {
-        CategoryKey key{_category, _prototype};
-
-        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
+        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
         if( generator == nullptr )
         {
@@ -113,11 +112,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const PrototypeGeneratorInterfacePtr & PrototypeService::getGenerator( const ConstString & _category, const ConstString & _prototype ) const
     {
-        CategoryKey key{ _category, _prototype };
+        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
-        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, PrototypeGeneratorInterfacePtr::none(), "prototype not found '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, PrototypeGeneratorInterfacePtr::none(), "prototype not found '%s' generator '%s'"
             , _category.c_str()
             , _prototype.c_str()
         );
@@ -127,9 +124,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
     {
-        CategoryKey key{ _category, _prototype };
-
-        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
+        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
         MENGINE_ASSERTION_MEMORY_PANIC( generator, nullptr, "prototype not found '%s:%s' doc '%s'"
             , _category.c_str()

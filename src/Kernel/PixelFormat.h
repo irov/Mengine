@@ -63,19 +63,19 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE bool isTexturePOW2( uint32_t n )
+        MENGINE_CONSTEXPR bool isTexturePOW2( uint32_t n )
         {
             return !(n & (n - 1));
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE uint32_t getPower2( uint32_t _n )
+        MENGINE_CONSTEXPR uint32_t getPower2( uint32_t _n )
         {
             uint32_t np = 1 << _n;
 
             return np;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE uint32_t getTexturePOW2( uint32_t n )
+        MENGINE_CONSTEXPR uint32_t getTexturePOW2( uint32_t n )
         {
             --n;
             n |= n >> 16;

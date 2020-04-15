@@ -8,7 +8,7 @@
 @popd
 
 @pushd %~dp0..\..\solutions\downloads
-@call CMake.exe --build . -- /verbosity:minimal
+@call CMake.exe --build . -j 4 -- /verbosity:minimal
 @popd
 
 @echo Done

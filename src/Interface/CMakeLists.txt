@@ -120,8 +120,6 @@ src
     SettingInterface.h
     SettingsServiceInterface.h
     DocumentServiceInterface.h
-    
-    dummy.cpp
 )
 
 ADD_FILTER(

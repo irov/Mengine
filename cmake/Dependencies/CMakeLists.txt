@@ -79,6 +79,14 @@ PROJECT(Dependencies)
 
 message("============@@##START##@@============")
 
+#dependencies zlib
+if(MENGINE_DEPENDENCE_ZLIB)
+    message("================zlib================")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
+    
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
+endif()
+
 #dependencies sentry
 if(MENGINE_TARGET_WINDOWS)
     if(MENGINE_DEPENDENCE_SENTRY)
@@ -91,14 +99,6 @@ if(MENGINE_TARGET_WINDOWS)
         
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/sentry ${CMAKE_TEMP_DIR}/sentry)
     endif()
-endif()
-
-#dependencies zlib
-if(MENGINE_DEPENDENCE_ZLIB)
-    message("================zlib================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
-    
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
 endif()
 
 #dependencies graphics
@@ -136,19 +136,10 @@ endif()
 #dependencies Box2D
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================Box2D================")
-    ADD_SUBDIRECTORY(Box2D)
+    
+    #Android support only 3.6 CMake (Box2D 3.8 minimal)
+    ADD_SUBDIRECTORY(box2d)
 endif()
-
-#Android support only 3.6 CMake (Box2D 3.8 minimal)
-#if(MENGINE_DEPENDENCE_BOX2D)
-#    message("================Box2D================")
-#    SET(BOX2D_BUILD_TESTS OFF CACHE BOOL "BOX2D_BUILD_TESTS" FORCE)
-#    SET(BOX2D_BUILD_SAMPLES OFF CACHE BOOL "BOX2D_BUILD_SAMPLES" FORCE)
-#    SET(BOX2D_BUILD_DOCS OFF CACHE BOOL "BOX2D_BUILD_DOCS" FORCE)
-#    
-#    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/Box2D ${CMAKE_TEMP_DIR}/Box2D)
-#endif()
-
 
 #dependencies lz4
 if(MENGINE_DEPENDENCE_LZ4)

@@ -80,11 +80,16 @@ PROJECT(Dependencies)
 message("============@@##START##@@============")
 
 #dependencies sentry
-if(MSVC)
+if(MENGINE_TARGET_WINDOWS)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
         
-        ADD_SUBDIRECTORY(sentry)
+        set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
+        set(SENTRY_BUILD_TESTS OFF CACHE BOOL "SENTRY_BUILD_TESTS" FORCE)
+        set(SENTRY_BUILD_EXAMPLES OFF CACHE BOOL "SENTRY_BUILD_EXAMPLES" FORCE)
+        set(SENTRY_ENABLE_INSTALL OFF CACHE BOOL "SENTRY_ENABLE_INSTALL" FORCE)
+        
+        ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/sentry ${CMAKE_TEMP_DIR}/sentry)
     endif()
 endif()
 

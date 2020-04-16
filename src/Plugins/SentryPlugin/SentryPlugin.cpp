@@ -80,6 +80,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
 
+        sentry_options_free( m_options );
+
         sentry_shutdown();
     }
     //////////////////////////////////////////////////////////////////////////

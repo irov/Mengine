@@ -209,12 +209,8 @@ endif()
 #dependencies libwebp
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
-    IF(MENGINE_TARGET_MINGW)
-        set(WEBP_ENABLE_SIMD OFF CACHE BOOL "Enable any SIMD optimization." FORCE)
-    ELSE()
-        set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
-    ENDIF()
-    
+
+    set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
     set(WEBP_BUILD_ANIM_UTILS OFF CACHE BOOL "WEBP_BUILD_ANIM_UTILS" FORCE)
     set(WEBP_BUILD_CWEBP OFF CACHE BOOL "Build the cwebp command line tool." FORCE)
     set(WEBP_BUILD_DWEBP OFF CACHE BOOL "Build the dwebp command line tool." FORCE)

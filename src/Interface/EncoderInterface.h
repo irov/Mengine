@@ -16,7 +16,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual bool setOptions( CodecOptions * _options ) = 0;
+        virtual bool setOptions( const CodecOptions * _options ) = 0;
 
     public:
         virtual size_t encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo ) = 0;

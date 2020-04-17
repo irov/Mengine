@@ -2,6 +2,9 @@
 
 #include "Kernel/Logger.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
+
 #ifndef MENGINE_JPEG_OUTPUT_BUF_SIZE
 #define MENGINE_JPEG_OUTPUT_BUF_SIZE 4096
 #endif
@@ -131,6 +134,9 @@ namespace Mengine
     size_t ImageEncoderJPEG::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, 0 );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 

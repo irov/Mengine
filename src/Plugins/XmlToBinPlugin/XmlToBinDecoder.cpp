@@ -11,6 +11,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 #include "Metacode/Metacode.h"
 
@@ -83,6 +85,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinDecoder::setOptions( const CodecOptions * _options )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_TYPE( _options, const XmlCodecOptions * );
+
         m_options = *static_cast<const XmlCodecOptions *>(_options);
 
         return true;
@@ -91,6 +96,7 @@ namespace Mengine
     void XmlToBinDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _dataInfo );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////

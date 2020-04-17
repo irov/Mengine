@@ -3,9 +3,11 @@
 #include "ImageCodecDDS.h"
 
 #include "Kernel/PixelFormat.h"
-
 #include "Kernel/Magic.h"
 #include "Kernel/Logger.h"
+
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 #include "Config/StdString.h"
 
@@ -28,6 +30,9 @@ namespace Mengine
     size_t ImageEncoderDDS::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, false );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
         const ImageCodecDataInfo * imageInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 

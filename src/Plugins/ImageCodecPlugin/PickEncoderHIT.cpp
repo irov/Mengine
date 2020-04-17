@@ -6,6 +6,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 #include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
@@ -30,9 +31,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t PickEncoderHIT::encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo )
+    size_t PickEncoderHIT::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, false );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const PickCodecDataInfo * );
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HIT ), GET_MAGIC_VERSION( MAGIC_HIT ) ) == false )
         {
@@ -42,7 +46,7 @@ namespace Mengine
             return 0;
         }
 
-        const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo *>(_bufferDataInfo);
+        const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo *>(_dataInfo);
 
         m_stream->write( &dataInfo->width, sizeof( dataInfo->width ) );
         m_stream->write( &dataInfo->height, sizeof( dataInfo->height ) );

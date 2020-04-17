@@ -5,6 +5,7 @@
 
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -30,9 +31,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderACF::encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo )
+    size_t ImageEncoderACF::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, false );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
         {
@@ -42,7 +46,7 @@ namespace Mengine
             return 0;
         }
 
-        const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
+        const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 
         uint32_t width = dataInfo->width;
         m_stream->write( &width, sizeof( width ) );

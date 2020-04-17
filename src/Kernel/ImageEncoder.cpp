@@ -1,5 +1,8 @@
 #include "ImageEncoder.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -7,13 +10,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageEncoder::setOptions( CodecOptions * _options )
+    bool ImageEncoder::setOptions( const CodecOptions * _options )
     {
-        if( _options != nullptr )
-        {
-            m_options = *static_cast<ImageCodecOptions *>(_options);
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_TYPE( _options, const ImageCodecOptions * );
 
+        m_options = *static_cast<const ImageCodecOptions *>(_options);
+        
         bool result = this->_invalidateOptions();
 
         return result;

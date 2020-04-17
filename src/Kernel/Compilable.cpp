@@ -26,7 +26,7 @@ namespace Mengine
 
         m_compile = true;
 
-        return m_compile;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Compilable::release()

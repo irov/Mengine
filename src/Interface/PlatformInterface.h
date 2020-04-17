@@ -22,6 +22,10 @@
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
 #endif
 
+#ifndef MENGINE_PLATFORM_USER_MAXNAME
+#define MENGINE_PLATFORM_USER_MAXNAME 256
+#endif
+
 namespace Mengine
 {
     class PlatformInterface
@@ -76,6 +80,7 @@ namespace Mengine
 
         virtual size_t getCurrentPath( Char * _filePath ) const = 0;
         virtual size_t getUserPath( Char * _filePath ) const = 0;
+        virtual size_t getUserName( Char * _userName ) const = 0;
 
         virtual void minimizeWindow() = 0;
 

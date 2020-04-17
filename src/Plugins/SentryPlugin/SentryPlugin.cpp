@@ -80,8 +80,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
 
-        sentry_options_free( m_options );
-
         sentry_shutdown();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -107,22 +105,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyCreateApplication_()
     {
-        Char companyName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];
+        Char companyName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {0};
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
 
         sentry_set_extra( "Company", sentry_value_new_string( companyName ) );
 
-        Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];
+        Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {0};
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
         sentry_set_extra( "Project", sentry_value_new_string( projectName ) );
 
+        Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {0};
+        PLATFORM_SERVICE()
+            ->getUserName( userName );
+
+        sentry_set_extra( "User", sentry_value_new_string( userName ) );
+
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
 
-        Char projectVersionString[32];
+        Char projectVersionString[32] = {0};
         Helper::stringalized( projectVersion, projectVersionString, 32 );
 
         sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );

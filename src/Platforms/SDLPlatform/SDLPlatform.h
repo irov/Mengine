@@ -88,8 +88,9 @@ namespace Mengine
         bool isDebuggerPresent() const override;
         bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
 
-        size_t getCurrentPath( Char * _path ) const override;
-        size_t getUserPath( Char * _path ) const override;
+        size_t getCurrentPath( Char * _currentPath ) const override;
+        size_t getUserPath( Char * _userPath ) const override;
+        size_t getUserName( Char * _userName ) const override;
 
         void minimizeWindow() override;
 

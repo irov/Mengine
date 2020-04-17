@@ -54,5 +54,5 @@ GIT_CLONE(xmlsax https://github.com/irov/xmlsax.git)
 GIT_CLONE(box2d https://github.com/erincatto/Box2D.git)
 GIT_CLONE(graphics https://github.com/irov/graphics.git)
 GIT_CLONE(cmake-modules https://github.com/rpavlik/cmake-modules.git)
-GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.2.3")
+GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.2.4")
 

@@ -72,6 +72,7 @@ namespace Mengine
 
         size_t getCurrentPath( Char * _currentPath ) const override;
         size_t getUserPath( Char * _userPath ) const override;
+        size_t getUserName( Char * _userName ) const override;
 
         void minimizeWindow() override;
 

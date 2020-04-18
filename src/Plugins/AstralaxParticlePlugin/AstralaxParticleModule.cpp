@@ -7,6 +7,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "ResourceAstralax.h"
 #include "LoaderResourceAstralax.h"

@@ -220,6 +220,8 @@ PrototypeGenerator
     FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
+    BaseScriptablePrototypeGenerator.cpp
+    BaseScriptablePrototypeGenerator.h
     ScriptablePrototypeGenerator.h
     ResourcePrototypeGenerator.h
     SurfacePrototypeGenerator.h

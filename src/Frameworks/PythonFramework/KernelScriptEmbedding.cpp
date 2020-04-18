@@ -419,6 +419,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
+
                 Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
                 Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
 

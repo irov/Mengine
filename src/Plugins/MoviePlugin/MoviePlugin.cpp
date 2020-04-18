@@ -10,6 +10,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"

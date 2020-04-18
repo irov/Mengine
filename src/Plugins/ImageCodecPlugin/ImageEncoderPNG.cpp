@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 namespace Mengine
 {
@@ -111,11 +112,14 @@ namespace Mengine
         png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo )
+    size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
 
-        const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, false );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+
+        const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 
         int32_t color_type;
         if( dataInfo->channels == 1 )

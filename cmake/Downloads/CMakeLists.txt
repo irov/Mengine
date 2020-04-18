@@ -13,7 +13,6 @@ DOWNLOAD_URL_HASH(boost https://dl.bintray.com/boostorg/release/1.72.0/source/bo
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
 DOWNLOAD_URL_HASH(openssl https://www.npcglib.org/~stathis/downloads/openssl-1.1.0f-vs2017.7z MD5 b6f8903afb8c61d3c4b93d439142e3b1)
 DOWNLOAD_URL(openssl_android https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.1a/only_android_openssl-1.1.1a.zip)
-DOWNLOAD_URL(sentry https://github.com/getsentry/sentry-native/releases/download/0.1.4/sentry-native-0.1.4.zip)
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 
@@ -55,4 +54,5 @@ GIT_CLONE(xmlsax https://github.com/irov/xmlsax.git)
 GIT_CLONE(box2d https://github.com/erincatto/Box2D.git)
 GIT_CLONE(graphics https://github.com/irov/graphics.git)
 GIT_CLONE(cmake-modules https://github.com/rpavlik/cmake-modules.git)
+GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.2.4")
 

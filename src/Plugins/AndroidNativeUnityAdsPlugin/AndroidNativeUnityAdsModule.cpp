@@ -30,8 +30,8 @@ extern "C" {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
         jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "unityInitializePlugin", "(Ljava/lang/String;)V" );
-        jmethodID_setupAds = env->GetStaticMethodID( mActivityClass, "unitySetupAds", "(Z)V" );
-        jmethodID_showAd = env->GetStaticMethodID( mActivityClass, "unityShowAd", "(Ljava/lang/String;)V" );
+        jmethodID_setupAds = env->GetStaticMethodID( mActivityClass, "unitySetupAds", "(Z)Z" );
+        jmethodID_showAd = env->GetStaticMethodID( mActivityClass, "unityShowAd", "(Ljava/lang/String;)Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -279,7 +279,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsModule::_update( bool _focus )
     {
-        (void)_focus;
+        MENGINE_UNUSED(_focus);
 
         m_eventation.invoke();
     }
@@ -309,9 +309,9 @@ namespace Mengine
 
         jboolean jdebug = static_cast<jboolean>(_debug);
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_setupAds, jdebug );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_setupAds, jdebug );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeUnityAdsModule::showAd( const String & _placementId )
@@ -321,11 +321,11 @@ namespace Mengine
         const Char * placementId_str = _placementId.c_str();
         jstring jplacementId = env->NewStringUTF( placementId_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_showAd, jplacementId );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_showAd, jplacementId );
 
         env->DeleteLocalRef( jplacementId );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsModule::setEventHandler( const UnityAdsEventHandlerPtr & _handler )

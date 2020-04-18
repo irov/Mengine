@@ -66,37 +66,34 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity )
+        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
-            size_t utf8Size;
-            bool successful = unicodeService->unicodeToUtf8( _unicode, _unicodeSize, _utf8, _utf8Capacity, &utf8Size );
+            bool successful = unicodeService->unicodeToUtf8( _unicode, _unicodeSize, _utf8, _utf8Capacity, _utf8Size );
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8( const WString & _unicode, Char * _utf8, size_t _utf8Capacity )
+        bool unicodeToUtf8( const WString & _unicode, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
             const WChar * unicodeStr = _unicode.c_str();
             size_t unicodeSize = _unicode.size();
 
-            size_t utf8Size;
-            bool successful = unicodeService->unicodeToUtf8( unicodeStr, unicodeSize, _utf8, _utf8Capacity, &utf8Size );
+            bool successful = unicodeService->unicodeToUtf8( unicodeStr, unicodeSize, _utf8, _utf8Capacity, _utf8Size );
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const Char * _utf8, WChar * _unicode, size_t _unicodeCapacity )
+        bool utf8ToUnicode( const Char * _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
             size_t utf8Size = MENGINE_STRLEN( _utf8 );
 
-            size_t unicodeSize;
-            bool successful = unicodeService->utf8ToUnicode( _utf8, utf8Size, _unicode, _unicodeCapacity, &unicodeSize );
+            bool successful = unicodeService->utf8ToUnicode( _utf8, utf8Size, _unicode, _unicodeCapacity, _unicodeSize );
 
             return successful;
         }
@@ -130,12 +127,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity )
+        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
-            size_t unicodeSize;
-            bool successful = unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode, _unicodeCapacity, &unicodeSize );
+            bool successful = unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode, _unicodeCapacity, _unicodeSize );
 
             return successful;
         }
@@ -176,9 +172,9 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const String & _utf8, WChar * _unicode, size_t _unicodeCapacity )
+        bool utf8ToUnicode( const String & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity );
+            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }
@@ -204,9 +200,9 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const FilePath & _utf8, WChar * _unicode, size_t _unicodeCapacity )
+        bool utf8ToUnicode( const FilePath & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity );
+            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }

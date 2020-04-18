@@ -173,28 +173,44 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
-    public static void facebookPerformLogin(String[] readPermissions) {
+    public static boolean facebookPerformLogin(String[] readPermissions) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
+            
+            return true;
         }
+        
+        return false;
     }
 
-    public static void facebookGetUser() {
+    public static boolean facebookGetUser() {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.getUser();
+            
+            return true;
         }
+        
+        return false;
     }
 
-    public static void facebookShareLink(String link) {
+    public static boolean facebookShareLink(String link) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.shareLink(_instance, link);
+            
+            return true;
         }
+        
+        return false;
     }
 
-    public static void facebookGetProfilePictureLink(String typeParameter) {
+    public static boolean facebookGetProfilePictureLink(String typeParameter) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
+            
+            return true;
         }
+        
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,17 +228,24 @@ public class MengineActivity extends SDLActivity {
         });
     }
 
-    public static void unitySetupAds(final boolean debug) {
+    public static boolean unitySetupAds(final boolean debug) {
         if (_instance != null && _instance.unityAdsInteractionLayer != null) {
             _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
+            
+            return true;
         }
+        
+        return false;
     }
 
-    public static void unityShowAd(final String placementId) {
-
+    public static boolean unityShowAd(final String placementId) {
         if (_instance != null && _instance.unityAdsInteractionLayer != null) {
             _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
+            
+            return true;
         }
+        
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,28 +263,44 @@ public class MengineActivity extends SDLActivity {
         });
     }
 
-    public static void admobSetupInterstitialAd() {
+    public static boolean admobSetupInterstitialAd() {
         if (_instance != null && _instance.adMobInteractionLayer != null) {
             _instance.adMobInteractionLayer.setupInterstitialAd();
+            
+            return true;
         }
+        
+        return false;
     }
 
-    public static void admobShowInterstitialAd() {
+    public static boolean admobShowInterstitialAd() {
         if (_instance != null && _instance.adMobInteractionLayer != null) {
             _instance.adMobInteractionLayer.showInterstitialAd();
+            
+            return true;
         }
+        
+        return false;
     }
 
-    public static void admobSetupRewardedVideoAd() {
+    public static boolean admobSetupRewardedVideoAd() {
         if (_instance != null && _instance.adMobInteractionLayer != null) {
             _instance.adMobInteractionLayer.setupRewardedVideoAd();
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void admobShowRewardedVideoAd() {
+    public static boolean admobShowRewardedVideoAd() {
         if (_instance != null && _instance.adMobInteractionLayer != null) {
             _instance.adMobInteractionLayer.showRewardedVideoAd();
+            
+            return true;
         }
+
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,57 +318,87 @@ public class MengineActivity extends SDLActivity {
         });
     }
 
-    public static void devtodevOnTutorialEvent(int stateOrStep) {
+    public static boolean devtodevOnTutorialEvent(int stateOrStep) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.onTutorialEvent(stateOrStep);
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void devtodevSetCurrentLevel(int level) {
+    public static boolean devtodevSetCurrentLevel(int level) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.setCurrentLevel(level);
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void devtodevOnLevelUp(int level) {
+    public static boolean devtodevOnLevelUp(int level) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.onLevelUp(level);
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void devtodevOnCurrencyAccrual(String currencyName, int currencyAmount, int accrualType) {
+    public static boolean devtodevOnCurrencyAccrual(String currencyName, int currencyAmount, int accrualType) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.onCurrencyAccrual(currencyName, currencyAmount, accrualType);
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void devtodevOnRealPayment(String paymentId, float inAppPrice, String inAppName, String inAppCurrencyISOCode) {
+    public static boolean devtodevOnRealPayment(String paymentId, float inAppPrice, String inAppName, String inAppCurrencyISOCode) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.onRealPayment(paymentId, inAppPrice, inAppName, inAppCurrencyISOCode);
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void devtodevOnInAppPurchase(String purchaseId, String purchaseType, int purchaseAmount, int purchasePrice, String purchaseCurrency) {
+    public static boolean devtodevOnInAppPurchase(String purchaseId, String purchaseType, int purchaseAmount, int purchasePrice, String purchaseCurrency) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.onInAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void devtodevOnSimpleCustomEvent(String eventName, String intJSON, String floatJSON, String stringJSON) {
+    public static boolean devtodevOnSimpleCustomEvent(String eventName, String intJSON, String floatJSON, String stringJSON) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName, intJSON, floatJSON, stringJSON);
+            
+            return true;
         }
+
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Linking Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void openURL(final String url) {
+    public static boolean openURL(final String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
         _instance.startActivity(Intent.createChooser(intent, ""));
+        
+        return true;
     }
 
-    public static void openMail(final String email, final String subject, final String body) {
+    public static boolean openMail(final String email, final String subject, final String body) {
 //        Intent intent = new Intent(Intent.ACTION_SEND);
 //        intent.setType("plain/text");
 //        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
@@ -338,6 +407,8 @@ public class MengineActivity extends SDLActivity {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
         _instance.startActivity(Intent.createChooser(intent, ""));
+        
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -357,23 +428,35 @@ public class MengineActivity extends SDLActivity {
         });
     }
     
-    public static void scheduleLocalNotification(int id, String title, String content, int delay) {
+    public static boolean scheduleLocalNotification(int id, String title, String content, int delay) {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
             Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
             _instance.localNotificationsInteractionLayer.scheduleNotification(notification, id, delay);
+            
+            return true;
         }
+
+        return false;
     }
 
-    public static void instantlyPresentLocalNotification(int id, String title, String content) {
+    public static boolean instantlyPresentLocalNotification(int id, String title, String content) {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
             Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
             _instance.localNotificationsInteractionLayer.instantlyPresentNotification(notification, id);
+            
+            return true;
         }
+
+        return false;
     }
     
-    public static void cancelAllLocalNotification() {
+    public static boolean cancelAllLocalNotification() {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
             _instance.localNotificationsInteractionLayer.cancelAll();
+            
+            return true;
         }
+
+        return false;
     }
 }

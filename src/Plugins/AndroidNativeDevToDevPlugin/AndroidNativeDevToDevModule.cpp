@@ -34,13 +34,13 @@ extern "C"
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
         jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "devtodevInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
-        jmethodID_onTutorialEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnTutorialEvent", "(I)V" );
-        jmethodID_setCurrentLevel = mEnv->GetStaticMethodID( mActivityClass, "devtodevSetCurrentLevel", "(I)V" );
-        jmethodID_onLevelUp = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnLevelUp", "(I)V" );
-        jmethodID_onCurrencyAccrual = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnCurrencyAccrual", "(Ljava/lang/String;II)V" );
-        jmethodID_onRealPayment = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnRealPayment", "(Ljava/lang/String;FLjava/lang/String;Ljava/lang/String;)V" );
-        jmethodID_onInAppPurchase = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnInAppPurchase", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;)V" );
-        jmethodID_onSimpleCustomEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnSimpleCustomEvent", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
+        jmethodID_onTutorialEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnTutorialEvent", "(I)Z" );
+        jmethodID_setCurrentLevel = mEnv->GetStaticMethodID( mActivityClass, "devtodevSetCurrentLevel", "(I)Z" );
+        jmethodID_onLevelUp = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnLevelUp", "(I)Z" );
+        jmethodID_onCurrencyAccrual = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnCurrencyAccrual", "(Ljava/lang/String;II)Z" );
+        jmethodID_onRealPayment = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnRealPayment", "(Ljava/lang/String;FLjava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_onInAppPurchase = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnInAppPurchase", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;)Z" );
+        jmethodID_onSimpleCustomEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnSimpleCustomEvent", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -178,9 +178,9 @@ namespace Mengine
 
         jint jstateOrStep = static_cast<jint>(_stateOrStep);
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_onTutorialEvent, jstateOrStep );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_onTutorialEvent, jstateOrStep );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::setCurrentLevel( int _level )
@@ -189,9 +189,9 @@ namespace Mengine
 
         jint jlevel = static_cast<jint>(_level);
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_setCurrentLevel, jlevel );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_setCurrentLevel, jlevel );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::onLevelUp( int _level )
@@ -200,9 +200,9 @@ namespace Mengine
 
         jint jlevel = static_cast<jint>(_level);
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_onLevelUp, jlevel );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_onLevelUp, jlevel );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::onCurrencyAccrual( const String & _currencyName, int _currencyAmount, int _accrualType )
@@ -214,11 +214,11 @@ namespace Mengine
         jint jcurrencyAmount = static_cast<jint>(_currencyAmount);
         jint jaccrualType = static_cast<jint>(_accrualType);
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_onCurrencyAccrual, jcurrencyName, jcurrencyAmount, jaccrualType );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_onCurrencyAccrual, jcurrencyName, jcurrencyAmount, jaccrualType );
 
         env->DeleteLocalRef( jcurrencyName );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::onRealPayment( const String & _paymentId, float _inAppPrice, const String & _inAppName, const String & _inAppCurrencyISOCode )
@@ -233,13 +233,13 @@ namespace Mengine
         const Char * inAppCurrencyISOCode_str = _inAppCurrencyISOCode.c_str();
         jstring jinAppCurrencyISOCode = env->NewStringUTF( inAppCurrencyISOCode_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_onRealPayment, jpaymentId, jinAppPrice, jinAppName, jinAppCurrencyISOCode );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_onRealPayment, jpaymentId, jinAppPrice, jinAppName, jinAppCurrencyISOCode );
 
         env->DeleteLocalRef( jpaymentId );
         env->DeleteLocalRef( jinAppName );
         env->DeleteLocalRef( jinAppCurrencyISOCode );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::onInAppPurchase( const String & _purchaseId, const String & _purchaseType, int _purchaseAmount, int _purchasePrice, const String & _purchaseCurrency )
@@ -255,13 +255,13 @@ namespace Mengine
         const Char * purchaseCurrency_str = _purchaseCurrency.c_str();
         jstring jpurchaseCurrency = env->NewStringUTF( purchaseCurrency_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_onInAppPurchase, jpurchaseId, jpurchaseType, jpurchaseAmount, jpurchasePrice, jpurchaseCurrency );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_onInAppPurchase, jpurchaseId, jpurchaseType, jpurchaseAmount, jpurchasePrice, jpurchaseCurrency );
 
         env->DeleteLocalRef( jpurchaseId );
         env->DeleteLocalRef( jpurchaseType );
         env->DeleteLocalRef( jpurchaseCurrency );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::onSimpleCustomEvent( const String & _eventName, const String & _intJSON, const String & _floatJSON, const String & _stringJSON )
@@ -277,13 +277,13 @@ namespace Mengine
         const Char * stringJSON_str = _stringJSON.c_str();
         jstring jstringJSON = env->NewStringUTF( stringJSON_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_onSimpleCustomEvent, jeventName, jintJSON, jfloatJSON, jstringJSON );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_onSimpleCustomEvent, jeventName, jintJSON, jfloatJSON, jstringJSON );
 
         env->DeleteLocalRef( jeventName );
         env->DeleteLocalRef( jintJSON );
         env->DeleteLocalRef( jfloatJSON );
         env->DeleteLocalRef( jstringJSON );
 
-        return true;
+        return (bool)jReturnValue;
     }
 }

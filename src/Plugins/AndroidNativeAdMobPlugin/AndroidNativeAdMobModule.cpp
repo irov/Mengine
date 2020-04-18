@@ -34,10 +34,10 @@ extern "C" {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
         jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "admobInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
-        jmethodID_setupInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobSetupInterstitialAd", "()V" );
-        jmethodID_showInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobShowInterstitialAd", "()V" );
-        jmethodID_setupRewardedVideoAd = env->GetStaticMethodID( mActivityClass, "admobSetupRewardedVideoAd", "()V" );
-        jmethodID_showRewardedVideoAd = env->GetStaticMethodID( mActivityClass, "admobShowRewardedVideoAd", "()V" );
+        jmethodID_setupInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobSetupInterstitialAd", "()Z" );
+        jmethodID_showInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobShowInterstitialAd", "()Z" );
+        jmethodID_setupRewardedVideoAd = env->GetStaticMethodID( mActivityClass, "admobSetupRewardedVideoAd", "()Z" );
+        jmethodID_showRewardedVideoAd = env->GetStaticMethodID( mActivityClass, "admobShowRewardedVideoAd", "()Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -463,36 +463,36 @@ namespace Mengine
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_setupInterstitialAd );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_setupInterstitialAd );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeAdMobModule::showInterstitialAd()
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_showInterstitialAd );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_showInterstitialAd );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeAdMobModule::setupRewardedVideoAd()
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_setupRewardedVideoAd );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_setupRewardedVideoAd );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeAdMobModule::showRewardedVideoAd()
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_showRewardedVideoAd );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_showRewardedVideoAd );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeAdMobModule::setEventHandler( const AdMobEventHandlerPtr & _handler )

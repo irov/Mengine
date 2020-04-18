@@ -40,6 +40,7 @@
 
 #include <Psapi.h>
 #include <Shlwapi.h>
+#include <Lmcons.h>
 
 #include <tlhelp32.h>
 #include <shellapi.h>

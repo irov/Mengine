@@ -79,21 +79,26 @@ PROJECT(Dependencies)
 
 message("============@@##START##@@============")
 
-#dependencies sentry
-if(MSVC)
-    if(MENGINE_DEPENDENCE_SENTRY)
-        message("================sentry================")
-        
-        ADD_SUBDIRECTORY(sentry)
-    endif()
-endif()
-
 #dependencies zlib
 if(MENGINE_DEPENDENCE_ZLIB)
     message("================zlib================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
+endif()
+
+#dependencies sentry
+if(MENGINE_TARGET_WINDOWS)
+    if(MENGINE_DEPENDENCE_SENTRY)
+        message("================sentry================")
+        
+        set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
+        set(SENTRY_BUILD_TESTS OFF CACHE BOOL "SENTRY_BUILD_TESTS" FORCE)
+        set(SENTRY_BUILD_EXAMPLES OFF CACHE BOOL "SENTRY_BUILD_EXAMPLES" FORCE)
+        set(SENTRY_ENABLE_INSTALL OFF CACHE BOOL "SENTRY_ENABLE_INSTALL" FORCE)
+        
+        ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/sentry ${CMAKE_TEMP_DIR}/sentry)
+    endif()
 endif()
 
 #dependencies graphics
@@ -131,19 +136,10 @@ endif()
 #dependencies Box2D
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================Box2D================")
-    ADD_SUBDIRECTORY(Box2D)
+    
+    #Android support only 3.6 CMake (Box2D 3.8 minimal)
+    ADD_SUBDIRECTORY(box2d)
 endif()
-
-#Android support only 3.6 CMake (Box2D 3.8 minimal)
-#if(MENGINE_DEPENDENCE_BOX2D)
-#    message("================Box2D================")
-#    SET(BOX2D_BUILD_TESTS OFF CACHE BOOL "BOX2D_BUILD_TESTS" FORCE)
-#    SET(BOX2D_BUILD_SAMPLES OFF CACHE BOOL "BOX2D_BUILD_SAMPLES" FORCE)
-#    SET(BOX2D_BUILD_DOCS OFF CACHE BOOL "BOX2D_BUILD_DOCS" FORCE)
-#    
-#    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/Box2D ${CMAKE_TEMP_DIR}/Box2D)
-#endif()
-
 
 #dependencies lz4
 if(MENGINE_DEPENDENCE_LZ4)
@@ -213,12 +209,8 @@ endif()
 #dependencies libwebp
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
-    IF(MENGINE_TARGET_MINGW)
-        set(WEBP_ENABLE_SIMD OFF CACHE BOOL "Enable any SIMD optimization." FORCE)
-    ELSE()
-        set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
-    ENDIF()
-    
+
+    set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
     set(WEBP_BUILD_ANIM_UTILS OFF CACHE BOOL "WEBP_BUILD_ANIM_UTILS" FORCE)
     set(WEBP_BUILD_CWEBP OFF CACHE BOOL "Build the cwebp command line tool." FORCE)
     set(WEBP_BUILD_DWEBP OFF CACHE BOOL "Build the dwebp command line tool." FORCE)

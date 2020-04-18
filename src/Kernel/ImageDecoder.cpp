@@ -1,6 +1,7 @@
 #include "ImageDecoder.h"
 
-#include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 namespace Mengine
 {
@@ -9,28 +10,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ImageDecoder::~ImageDecoder()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ImageDecoder::setOptions( const CodecOptions * _options )
     {
-        if( _options != nullptr )
-        {
-            m_options = *static_cast<const ImageCodecOptions *>(_options);
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_TYPE( _options, const ImageCodecOptions * );
 
-        if( m_options.pitch == 0 )
-        {
-            LOGGER_ERROR( "pitch == 0"
-            );
+        m_options = *static_cast<const ImageCodecOptions *>(_options);
 
-            return false;
-        }
-
-        if( m_options.channels == 0 )
-        {
-            LOGGER_ERROR( "channels == 0"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( m_options.pitch != 0, false, "pitch == 0" );
+        MENGINE_ASSERTION_FATAL_RETURN( m_options.channels != 0, false, "pitch == 0" );
 
         bool result = this->_invalidateOptions();
 
@@ -39,6 +31,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoder::_invalidateOptions()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -49,6 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( _dataInfo );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+
         m_dataInfo = *static_cast<const ImageCodecDataInfo *>(_dataInfo);
     }
     //////////////////////////////////////////////////////////////////////////

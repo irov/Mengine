@@ -5,6 +5,7 @@
 
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -51,6 +52,9 @@ namespace Mengine
     size_t ImageEncoderHTF::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, false );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
         {

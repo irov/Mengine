@@ -33,12 +33,12 @@ extern "C"
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
         jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
-        jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
-        jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
-        jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
+        jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)Z" );
+        jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()Z" );
+        jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)Z" );
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
         jmethodID_getAccessToken = mEnv->GetStaticMethodID( mActivityClass, "facebookGetAccessToken", "()Ljava/lang/String;" );
-        jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)V" );
+        jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -390,40 +390,40 @@ namespace Mengine
     {
         JNIEnv *env = Mengine_JNI_GetEnv();
 
-        if( _permissions.empty() == false )
-        {
-            VectorString::size_type permissionsCount = _permissions.size();
+        if( _permissions.empty() == true ) {
 
-            jclass jclass_string = env->FindClass( "java/lang/String" );
-            jobjectArray jpermissions = env->NewObjectArray( permissionsCount, jclass_string, NULL );
+            jboolean jReturnValue = env->CallStaticBooleanMethod(mActivityClass, jmethodID_performLogin, nullptr);
 
-            uint32_t jpermissionIterator = 0;
-            for( const String & permission : _permissions )
-            {
-                const Char * permission_str = permission.c_str();
-
-                jstring jpermission = env->NewStringUTF( permission_str );
-
-                env->SetObjectArrayElement( jpermissions, jpermissionIterator++, jpermission );
-            }
-
-            env->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, jpermissions );
-        }
-        else
-        {
-            env->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, nullptr );
+            return (bool) jReturnValue;
         }
 
-        return true;
+        VectorString::size_type permissionsCount = _permissions.size();
+
+        jclass jclass_string = env->FindClass( "java/lang/String" );
+        jobjectArray jpermissions = env->NewObjectArray( permissionsCount, jclass_string, NULL );
+
+        uint32_t jpermissionIterator = 0;
+        for( const String & permission : _permissions )
+        {
+            const Char * permission_str = permission.c_str();
+
+            jstring jpermission = env->NewStringUTF( permission_str );
+
+            env->SetObjectArrayElement( jpermissions, jpermissionIterator++, jpermission );
+        }
+
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_performLogin, jpermissions );
+
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::getUser()
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_getUser );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_getUser );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::shareLink( const String & _link )
@@ -433,11 +433,11 @@ namespace Mengine
         const Char * link_str = _link.c_str();
         jstring jlink = env->NewStringUTF( link_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_shareLink, jlink );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_shareLink, jlink );
         
         env->DeleteLocalRef( jlink );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::getProfilePictureLink( const String & _typeParameter )
@@ -447,10 +447,10 @@ namespace Mengine
         const Char * typeParameter_str = _typeParameter.c_str();
         jstring jtypeParameter = env->NewStringUTF( typeParameter_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_getProfilePictureLink, jtypeParameter );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_getProfilePictureLink, jtypeParameter );
         
         env->DeleteLocalRef( jtypeParameter );
 
-        return true;
+        return (bool)jReturnValue;
     }
 }

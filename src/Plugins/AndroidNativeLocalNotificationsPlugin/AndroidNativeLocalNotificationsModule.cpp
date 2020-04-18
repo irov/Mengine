@@ -29,9 +29,9 @@ extern "C" {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
         jmethodID_localNotificationsInitializePlugin = env->GetStaticMethodID( mActivityClass, "localNotificationsInitializePlugin", "()V" );
-        jmethodID_scheduleLocalNotification = env->GetStaticMethodID( mActivityClass, "scheduleLocalNotification", "(ILjava/lang/String;Ljava/lang/String;I)V" );
-        jmethodID_instantlyPresentLocalNotification = env->GetStaticMethodID( mActivityClass, "instantlyPresentLocalNotification", "(ILjava/lang/String;Ljava/lang/String;)V" );
-        jmethodID_cancelAllLocalNotification = env->GetStaticMethodID( mActivityClass, "cancelAllLocalNotification", "()V" );
+        jmethodID_scheduleLocalNotification = env->GetStaticMethodID( mActivityClass, "scheduleLocalNotification", "(ILjava/lang/String;Ljava/lang/String;I)Z" );
+        jmethodID_instantlyPresentLocalNotification = env->GetStaticMethodID( mActivityClass, "instantlyPresentLocalNotification", "(ILjava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_cancelAllLocalNotification = env->GetStaticMethodID( mActivityClass, "cancelAllLocalNotification", "()Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -169,9 +169,9 @@ namespace Mengine
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_localNotificationsInitializePlugin );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_localNotificationsInitializePlugin );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeLocalNotificationsModule::scheduleLocalNotification( int _id, const String & _title, const String & _content, int _delay )
@@ -188,12 +188,12 @@ namespace Mengine
 
         jint jdelay = static_cast<jint>(_delay);
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_scheduleLocalNotification, jid, jtitle, jcontent, jdelay );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_scheduleLocalNotification, jid, jtitle, jcontent, jdelay );
 
         env->DeleteLocalRef( jtitle );
         env->DeleteLocalRef( jcontent );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeLocalNotificationsModule::instantlyPresentLocalNotification( int _id, const String & _title, const String & _content )
@@ -208,19 +208,20 @@ namespace Mengine
         const Char * content_str = _content.c_str();
         jstring jcontent = env->NewStringUTF( content_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_instantlyPresentLocalNotification, jid, jtitle, jcontent );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_instantlyPresentLocalNotification, jid, jtitle, jcontent );
 
         env->DeleteLocalRef( jtitle );
         env->DeleteLocalRef( jcontent );
 
-        return true;
+        return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeLocalNotificationsModule::cancelAllLocalNotification()
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_cancelAllLocalNotification );
 
-        return true;
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_cancelAllLocalNotification );
+
+        return (bool)jReturnValue;
     }
 }

@@ -1,5 +1,8 @@
 #include "VideoDecoder.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,11 +16,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoDecoder::setOptions( const CodecOptions * _options )
     {
-        if( _options != nullptr )
-        {
-            m_options = *static_cast<const VideoCodecOptions *>(_options);
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_TYPE( _options, const VideoCodecOptions * );
 
+        m_options = *static_cast<const VideoCodecOptions *>(_options);
+    
         bool result = this->_invalidateOptions();
 
         return result;
@@ -30,6 +33,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VideoDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( _dataInfo );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const VideoCodecDataInfo * );
+
         m_dataInfo = *static_cast<const VideoCodecDataInfo *>(_dataInfo);
     }
     //////////////////////////////////////////////////////////////////////////

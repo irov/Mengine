@@ -356,7 +356,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::isDebuggerPresent() const
     {
-        if( IsDebuggerPresent() == FALSE )
+        if( ::IsDebuggerPresent() == FALSE )
         {
             return false;
         }
@@ -371,7 +371,7 @@ namespace Mengine
         MENGINE_UNUSED( _full );
 
 #if defined(MENGINE_DEBUG)
-        if( IsDebuggerPresent() == TRUE )
+        if( ::IsDebuggerPresent() == TRUE )
         {
             return false;
         }
@@ -492,7 +492,7 @@ namespace Mengine
         }
 
         LARGE_INTEGER performanceCount;
-        QueryPerformanceCounter( &performanceCount );
+        ::QueryPerformanceCounter( &performanceCount );
 
         LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
 
@@ -3025,6 +3025,24 @@ namespace Mengine
         }
 
         return currentPathLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32Platform::getUserName( Char * _userName ) const
+    {
+        WChar unicode_userName[UNLEN + 1] = {0};
+        DWORD unicode_userNameLen = UNLEN + 1;
+        if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
+        {
+            return 0;
+        }
+
+        size_t userNameLen;
+        if( Helper::unicodeToUtf8Size( unicode_userName, unicode_userNameLen, _userName, MENGINE_PLATFORM_USER_MAXNAME + 1, &userNameLen ) == false )
+        {
+            return 0;
+        }
+
+        return userNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::minimizeWindow()

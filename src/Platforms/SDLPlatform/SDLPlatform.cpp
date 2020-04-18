@@ -84,7 +84,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-    size_t SDLPlatform::getCurrentPath( Char * _path ) const
+    size_t SDLPlatform::getCurrentPath( Char * _currentPath ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_path[MENGINE_MAX_PATH];
@@ -101,7 +101,7 @@ namespace Mengine
         Helper::pathCorrectBackslashToW( unicode_path, unicode_path );
 
         size_t pathLen;
-        if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &pathLen ) == false )
+        if( Helper::unicodeToUtf8( unicode_path, _currentPath, MENGINE_MAX_PATH, &pathLen ) == false )
         {
             return 0;
         }
@@ -109,17 +109,17 @@ namespace Mengine
         return pathLen;
 #elif defined(MENGINE_PLATFORM_IOS)
         const char deploy_ios_data[] = "deploy-ios-data/";
-        MENGINE_STRCPY( _path, deploy_ios_data );
+        MENGINE_STRCPY( _currentPath, deploy_ios_data );
 
         return sizeof( deploy_ios_data ) - 1;
 #else  
-        _path[0] = L'\0';
+        _currentPath[0] = L'\0';
 
         return 0;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getUserPath( Char * _path ) const
+    size_t SDLPlatform::getUserPath( Char * _userPath ) const
     {
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
@@ -137,11 +137,11 @@ namespace Mengine
                 return 0;
             }
 
-            MENGINE_STRCPY( _path, currentPath );
-            MENGINE_STRCAT( _path, "User" );
-            MENGINE_STRCAT( _path, "/" );
+            MENGINE_STRCPY( _userPath, currentPath );
+            MENGINE_STRCAT( _userPath, "User" );
+            MENGINE_STRCAT( _userPath, "/" );
 
-            size_t pathLen = MENGINE_STRLEN( _path );
+            size_t pathLen = MENGINE_STRLEN( _userPath );
 
             return pathLen;
         }
@@ -160,11 +160,18 @@ namespace Mengine
             return 0;
         }
 
-        Helper::pathCorrectBackslashToA( _path, sdl_prefPath );
+        Helper::pathCorrectBackslashToA( _userPath, sdl_prefPath );
 
         SDL_free( sdl_prefPath );
 
         return sdl_prefPathLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatform::getUserName( Char * _userName ) const
+    {
+        _userName[0] = '\0';
+
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     float SDLPlatform::getJoystickAxis( uint32_t _index ) const
@@ -850,7 +857,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::isDebuggerPresent() const
     {
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        if( ::IsDebuggerPresent() == FALSE )
+        {
+            return false;
+        }
+
+        return true;
+#else
+
         return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )

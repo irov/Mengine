@@ -1,0 +1,23 @@
+#include "AreaOfInterestActor.h"
+
+namespace Mengine
+{
+	//////////////////////////////////////////////////////////////////////////
+	AreaOfInterestActor::AreaOfInterestActor()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	AreaOfInterestActor::~AreaOfInterestActor()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AreaOfInterestActor::setProvider( const AreaOfInterestActorProviderInterfacePtr & _provider )
+	{
+		m_provider = _provider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const AreaOfInterestActorProviderInterfacePtr & AreaOfInterestActor::getProvider() const
+	{
+		return m_provider;
+	}
+}

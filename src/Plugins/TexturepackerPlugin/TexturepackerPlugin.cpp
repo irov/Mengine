@@ -4,6 +4,7 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "ResourceTexturepacker.h"
 

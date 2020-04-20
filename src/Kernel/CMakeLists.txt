@@ -568,6 +568,11 @@ Core
     
     Range.h
     
+    Component.h
+    Component.cpp
+    Componentable.h
+    Componentable.cpp
+    
     Hashgen.h
     Hashtable.h
     Hashtable2.h

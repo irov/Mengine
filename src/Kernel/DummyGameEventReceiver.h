@@ -43,6 +43,7 @@ namespace Mengine
         void onGameDeleteAccount( const ConstString & _accountID ) override;
         void onGameSelectAccount( const ConstString & _accountID ) override;
         void onGameUselectAccount( const ConstString & _accountID ) override;
+        void onGameTurnSound( bool _turn ) override;
         void onGameChangeSoundVolume( float _sound, float _music, float _voice ) override;
         void onGameCursorMode( bool _mode ) override;
         void onGameUser( const ConstString & _event, const MapWParams & _params ) override;

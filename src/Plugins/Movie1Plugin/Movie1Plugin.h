@@ -1,14 +1,12 @@
 #pragma once
 
 #include "Kernel/PluginBase.h"
-#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Movie1Plugin
         : public PluginBase
-        , public Observable
     {
         PLUGIN_DECLARE( "Movie1" )
 

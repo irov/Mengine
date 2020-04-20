@@ -3,14 +3,12 @@
 #include "cURLInterface.h"
 
 #include "Kernel/PluginBase.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Factory.h"
 
 namespace Mengine
 {
     class cURLPlugin
         : public PluginBase
-        , public Observable
     {
         PLUGIN_DECLARE( "cURL" );
 

@@ -37,7 +37,7 @@ namespace Mengine
 
             duration += delay;
 
-            MENGINE_ASSERTION_RESOURCE_TYPE( resourceName, ResourceImagePtr, false, "resource '%s' type does not match 'ResourceImage'"
+            MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( resourceName, ResourceImagePtr, false, "resource '%s' type does not match 'ResourceImage'"
                 , resourceName.c_str() 
             );
 

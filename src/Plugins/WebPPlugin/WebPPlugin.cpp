@@ -4,7 +4,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "ImageDecoderWEBP.h"
+#include "ImageDecoderWebP.h"
 
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/EncoderFactory.h"

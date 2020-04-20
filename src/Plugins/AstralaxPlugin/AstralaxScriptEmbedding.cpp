@@ -24,7 +24,7 @@ namespace Mengine
     namespace Detail
     {
         ////////////////////////////////////////////////////////////////////////////        
-        static PyObject * s_ParticleEmitter2_setEventListener( pybind::kernel_interface * _kernel, AstralaxEmitter * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * s_AstralaxEmitter_setEventListener( pybind::kernel_interface * _kernel, AstralaxEmitter * _node, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -55,8 +55,10 @@ namespace Mengine
             ;
 
         pybind::interface_<AstralaxEmitter, pybind::bases<Node, Eventable, Animatable> >( _kernel, "ParticleEmitter2", false )
-            .def( "setResourceParticle", &AstralaxEmitter::setResourceParticle )
-            .def( "getResourceParticle", &AstralaxEmitter::getResourceParticle )
+            .def_deprecated( "setResourceParticle", &AstralaxEmitter::setResourceAstralax, "use setResourceAstralax" )
+            .def_deprecated( "getResourceParticle", &AstralaxEmitter::getResourceAstralax, "use getResourceAstralax" )
+            .def( "setResourceAstralax", &AstralaxEmitter::setResourceAstralax )
+            .def( "getResourceAstralax", &AstralaxEmitter::getResourceAstralax )
 
             .def( "setEmitterTranslateWithParticle", &AstralaxEmitter::setEmitterTranslateWithParticle )
             .def( "setEmitterPositionRelative", &AstralaxEmitter::setEmitterPositionRelative )
@@ -72,7 +74,7 @@ namespace Mengine
 
             .def( "setEmitterRandomMode", &AstralaxEmitter::setEmitterRandomMode )
             .def( "getEmitterRandomMode", &AstralaxEmitter::getEmitterRandomMode )
-            .def_static_native_kernel( "setEventListener", &Detail::s_ParticleEmitter2_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::s_AstralaxEmitter_setEventListener )
             ;
 
         VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<PythonScriptWrapper<AstralaxEmitter>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );

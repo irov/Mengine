@@ -603,7 +603,7 @@ namespace Mengine
                 bool nopause = APPLICATION_SERVICE()
                     ->getNopause();
 
-                if( focus == true && m_active == true || nopause == true )
+                if( (focus == true && m_active == true) || nopause == true )
                 {
                     bool sucessful = APPLICATION_SERVICE()
                         ->render();
@@ -2911,7 +2911,7 @@ namespace Mengine
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 
-        if( developmentMode == true && roamingMode == false || noroamingMode == true )
+        if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
             WChar currentPath[MENGINE_MAX_PATH];
             DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );

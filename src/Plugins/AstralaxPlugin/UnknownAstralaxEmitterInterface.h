@@ -8,12 +8,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class UnknownParticleEmitterInterface
+    class UnknownAstralaxEmitterInterface
         : public UnknownInterface
     {
     public:
-        virtual void setResourceParticle( const ResourcePtr & _resource ) = 0;
-        virtual const ResourcePtr & getResourceParticle() const = 0;
+        virtual void setResourceAstralax( const ResourcePtr & _resource ) = 0;
+        virtual const ResourcePtr & getResourceAstralax() const = 0;
 
         virtual void setEmitterPositionProviderOriginOffset( const mt::vec3f & _originOffset ) = 0;
 
@@ -22,6 +22,6 @@ namespace Mengine
         virtual void setEmitterCameraRelative( bool _cameraRelative ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<UnknownParticleEmitterInterface> UnknownParticleEmitterInterfacePtr;
+    typedef IntrusivePtr<UnknownAstralaxEmitterInterface> UnknownParticleEmitterInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

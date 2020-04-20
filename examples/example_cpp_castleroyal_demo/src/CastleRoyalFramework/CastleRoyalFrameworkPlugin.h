@@ -4,20 +4,17 @@
 
 namespace Mengine
 {
-    class AstralaxParticlePlugin
+    class SimpleBox2DFrameworkPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AstralaxParticle" )
+        PLUGIN_DECLARE( "SimpleBox2DFramework" )
 
     public:
-        AstralaxParticlePlugin();
-        ~AstralaxParticlePlugin() override;
+        SimpleBox2DFrameworkPlugin();
+        ~SimpleBox2DFrameworkPlugin() override;
 
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
-
-    protected:
-        void _destroyPlugin() override;
     };
 }

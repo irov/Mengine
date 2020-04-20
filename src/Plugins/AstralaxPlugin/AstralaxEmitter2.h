@@ -16,8 +16,6 @@
 
 namespace Mengine
 {
-    class AstralaxParticleSystem;
-
     class AstralaxEmitter2
         : public AstralaxEmitterInterface
         , public Factorable
@@ -27,7 +25,7 @@ namespace Mengine
         ~AstralaxEmitter2() override;
 
     public:
-        bool initialize( AstralaxParticleSystem * _particleSystem, const AstralaxEmitterContainerInterfacePtr & _container );
+        bool initialize( const AstralaxEmitterContainerInterfacePtr & _container );
         void finalize();
 
     public:
@@ -88,8 +86,6 @@ namespace Mengine
         bool setupBasePosition_();
 
     protected:
-        AstralaxParticleSystem * m_particleSystem;
-
         AstralaxEmitterContainerInterfacePtr m_container;
 
         HM_EMITTER m_emitterId;

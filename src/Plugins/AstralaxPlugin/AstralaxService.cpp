@@ -1,4 +1,7 @@
-#include "AstralaxParticleSystem.h"
+#include "AstralaxService.h"
+
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
 #include "Kernel/FactoryPool.h"
@@ -13,23 +16,32 @@
 #include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AstralaxSystem, Mengine::AstralaxParticleSystem );
+SERVICE_FACTORY( AstralaxService, Mengine::AstralaxService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticleSystem::AstralaxParticleSystem()
-        : m_renderPlatform( RP_UNKNOWN )
+    AstralaxService::AstralaxService()
+        : m_maxParticlesNum( 0 )
+        , m_renderPlatform( RP_UNKNOWN )
         , m_materialCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticleSystem::~AstralaxParticleSystem()
+    AstralaxService::~AstralaxService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticleSystem::_initializeService()
+    bool AstralaxService::_initializeService()
     {
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+
+        m_archivator = archivator;
+
+        m_maxParticlesNum = CONFIG_VALUE( "Engine", "ParticleMaxCount", 10000U );
+
         bool states[17];
         states[MAGIC_RENDER_STATE_BLENDING] = false;
         states[MAGIC_RENDER_STATE_TEXTURE_COUNT] = false;
@@ -74,14 +86,16 @@ namespace Mengine
         m_renderPlatform = RENDER_SYSTEM()
             ->getRenderPlatformType();
 
-        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer, 16>( this, &AstralaxParticleSystem::onEmitterContainerRelease_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxParticleSystem::onEmitterRelease_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer, 16>( this, &AstralaxService::onEmitterContainerRelease_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxService::onEmitterRelease_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem::_finalizeService()
+    void AstralaxService::_finalizeService()
     {
+        m_archivator = nullptr;
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitterContainer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitter );
 
@@ -89,7 +103,7 @@ namespace Mengine
         m_factoryPoolAstralaxEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem::_stopService()
+    void AstralaxService::_stopService()
     {
         m_atlases.clear();
         m_containers.clear();
@@ -105,7 +119,7 @@ namespace Mengine
         m_renderFragmentShaderCache.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
+    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
@@ -113,7 +127,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( container->initialize( _fileGroup, _filePath, _archivator ) == false )
+        if( container->initialize( _fileGroup, _filePath, m_archivator ) == false )
         {
             LOGGER_ERROR( "invalid initialize container doc '%s'"
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -159,11 +173,11 @@ namespace Mengine
         return new_container;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterInterfacePtr AstralaxParticleSystem::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc )
+    AstralaxEmitterInterfacePtr AstralaxService::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc )
     {
         AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject( _doc );
 
-        if( emitter->initialize( this, _container ) == false )
+        if( emitter->initialize( _container ) == false )
         {
             return nullptr;
         }
@@ -181,7 +195,7 @@ namespace Mengine
         return emitter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticleSystem::updateAtlas()
+    bool AstralaxService::updateAtlas()
     {
         MAGIC_CHANGE_ATLAS c;
         while( Magic_GetNextAtlasChange( &c ) == MAGIC_SUCCESS )
@@ -221,7 +235,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticleSystem::updateMaterial()
+    bool AstralaxService::updateMaterial()
     {
         int32_t newMaterialCount = Magic_GetMaterialCount();
 
@@ -331,7 +345,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * AstralaxParticleSystem::getMaterialStage( int32_t _index ) const
+    const RenderMaterialStage * AstralaxService::getMaterialStage( int32_t _index ) const
     {
         if( _index >= m_materialCount )
         {
@@ -341,7 +355,7 @@ namespace Mengine
         return m_stages[_index];
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & AstralaxParticleSystem::getResourceImage( int32_t _index ) const
+    const ResourceImagePtr & AstralaxService::getResourceImage( int32_t _index ) const
     {
         MENGINE_ASSERTION_RETURN( (VectorAtlasDesc::size_type)_index < m_atlases.size(), ResourceImagePtr::none(), "index %d but size is %d"
             , _index
@@ -353,14 +367,19 @@ namespace Mengine
         return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t AstralaxParticleSystem::getEmitterCount() const
+    uint32_t AstralaxService::getEmitterCount() const
     {
         uint32_t countObject = m_factoryPoolAstralaxEmitter->getCountObject();
 
         return countObject;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem::createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
+    uint32_t AstralaxService::getMaxParticlesCount() const
+    {
+        return m_maxParticlesNum;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxService::createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
     {
         MAGIC_VERTEX_FORMAT vertex_format = m->format;
 
@@ -596,7 +615,7 @@ namespace Mengine
         ss << "}" << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem::createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m )
+    void AstralaxService::createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m )
     {
         MAGIC_VERTEX_FORMAT vertex_format = m->format;
 
@@ -823,7 +842,7 @@ namespace Mengine
         ss << "}" << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr AstralaxParticleSystem::cacheFragmentShader_( const MAGIC_MATERIAL * m )
+    RenderFragmentShaderInterfacePtr AstralaxService::cacheFragmentShader_( const MAGIC_MATERIAL * m )
     {
         int32_t textures = m->textures;
 
@@ -932,7 +951,7 @@ namespace Mengine
             }break;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, nullptr, "not support this particle shader" );
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, nullptr, "not support this astralax particle shader" );
 
         MagicStatesCache key;
         key.textures = textures;
@@ -952,7 +971,7 @@ namespace Mengine
         return fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem::onEmitterContainerRelease_( AstralaxEmitterContainer * _container )
+    void AstralaxService::onEmitterContainerRelease_( AstralaxEmitterContainer * _container )
     {
         uint32_t id = _container->getPtcId();
 
@@ -976,7 +995,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem::onEmitterRelease_( AstralaxEmitter2 * _emitter )
+    void AstralaxService::onEmitterRelease_( AstralaxEmitter2 * _emitter )
     {
         _emitter->finalize();
     }

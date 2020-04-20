@@ -1,8 +1,8 @@
-#include "AstralaxParticlePlugin.h"
+#include "AstralaxPlugin.h"
 
 #include "AstralaxInterface.h"
 
-#include "AstralaxParticleModule.h"
+#include "AstralaxModule.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
@@ -10,43 +10,39 @@
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AstralaxService );
-SERVICE_EXTERN( AstralaxSystem );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AstralaxParticlePlugin, Mengine::AstralaxParticlePlugin );
+PLUGIN_FACTORY( AstralaxPlugin, Mengine::AstralaxPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticlePlugin::AstralaxParticlePlugin()
+    AstralaxPlugin::AstralaxPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticlePlugin::~AstralaxParticlePlugin()
+    AstralaxPlugin::~AstralaxPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticlePlugin::_initializePlugin()
+    bool AstralaxPlugin::_initializePlugin()
     {
-        LOGGER_INFO( "Initializing Astralax Particle System..." );
+        LOGGER_INFO( "Initializing Astralax System..." );
 
         SERVICE_CREATE( AstralaxService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( AstralaxSystem, MENGINE_DOCUMENT_FACTORABLE );
 
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralaxParticle" )
-            , Helper::makeModuleFactory<AstralaxParticleModule>( MENGINE_DOCUMENT_FACTORABLE ) );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralax" )
+            , Helper::makeModuleFactory<AstralaxModule>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticlePlugin::_finalizePlugin()
+    void AstralaxPlugin::_finalizePlugin()
     {
         SERVICE_FINALIZE( AstralaxService );
-        SERVICE_FINALIZE( AstralaxSystem );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticlePlugin::_destroyPlugin()
+    void AstralaxPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( AstralaxService );
-        SERVICE_DESTROY( AstralaxSystem );
     }
 }

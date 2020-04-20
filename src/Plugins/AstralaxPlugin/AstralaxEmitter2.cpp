@@ -1,6 +1,5 @@
 #include "AstralaxEmitter2.h"
 
-#include "AstralaxParticleSystem.h"
 #include "AstralaxEmitterContainer.h"
 
 #include "Kernel/Logger.h"
@@ -11,8 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitter2::AstralaxEmitter2()
-        : m_particleSystem( nullptr )
-        , m_emitterId( 0 )
+        : m_emitterId( 0 )
         , m_updateSpeed( 0.f )
         , m_leftBorder( 0.0 )
         , m_rightBorder( 0.0 )
@@ -31,9 +29,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::initialize( AstralaxParticleSystem * _particleSystem, const AstralaxEmitterContainerInterfacePtr & _container )
+    bool AstralaxEmitter2::initialize( const AstralaxEmitterContainerInterfacePtr & _container )
     {
-        m_particleSystem = _particleSystem;
         m_container = _container;
 
         HM_EMITTER emitterId = stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(m_container)
@@ -528,7 +525,8 @@ namespace Mengine
             return false;
         }
 
-        if( m_particleSystem->updateAtlas() == false )
+        if( ASTRALAX_SERVICE()
+            ->updateAtlas() == false )
         {
             return false;
         }

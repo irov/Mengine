@@ -103,7 +103,7 @@ namespace Mengine
             return nullptr;
         }
 
-        AstralaxEmitterInterfacePtr emitter = ASTRALAX_SYSTEM()
+        AstralaxEmitterInterfacePtr emitter = ASTRALAX_SERVICE()
             ->createEmitter( m_container, _doc );
 
         return emitter;

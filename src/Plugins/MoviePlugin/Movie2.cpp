@@ -5,7 +5,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
-#include "Plugins/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
+#include "Plugins/AstralaxPlugin/UnknownAstralaxEmitterInterface.h"
 #include "Plugins/VideoPlugin/VideoUnknownInterface.h"
 
 #include "Movie2Data.h"
@@ -157,11 +157,11 @@ namespace Mengine
             }
         }
 
-        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableAstralaxEmitters::value_type & value : m_astralaxEmitters )
         {
-            const NodePtr & particle = value.element;
+            const NodePtr & astralaxEmitter = value.element;
 
-            AnimationInterface * animation = particle->getAnimation();
+            AnimationInterface * animation = astralaxEmitter->getAnimation();
 
             if( animation == nullptr )
             {
@@ -202,11 +202,11 @@ namespace Mengine
             }
         }
 
-        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableAstralaxEmitters::value_type & value : m_astralaxEmitters )
         {
-            const NodePtr & particle = value.element;
+            const NodePtr & astralaxEmitter = value.element;
 
-            AnimationInterface * animation = particle->getAnimation();
+            AnimationInterface * animation = astralaxEmitter->getAnimation();
 
             if( animation != nullptr )
             {
@@ -657,13 +657,14 @@ namespace Mengine
 
         m_sprites.clear();
 
-        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableAstralaxEmitters::value_type & value : m_astralaxEmitters )
         {
-            const NodePtr & particle = value.element;
-            particle->removeFromParent();
+            const NodePtr & astralaxEmitter = value.element;
+
+            astralaxEmitter->removeFromParent();
         }
 
-        m_particleEmitters.clear();
+        m_astralaxEmitters.clear();
 
         m_subCompositions.clear();
     }
@@ -1257,26 +1258,26 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
 
-                UnknownParticleEmitterInterface * unknownParticleEmitter2 = node->getUnknown();
+                UnknownAstralaxEmitterInterface * unknownAstralaxEmitter = node->getUnknown();
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', '\0', 't' ) ) == AE_TRUE )
                 {
-                    unknownParticleEmitter2->setEmitterPositionRelative( true );
-                    unknownParticleEmitter2->setEmitterCameraRelative( false );
-                    unknownParticleEmitter2->setEmitterTranslateWithParticle( false );
+                    unknownAstralaxEmitter->setEmitterPositionRelative( true );
+                    unknownAstralaxEmitter->setEmitterCameraRelative( false );
+                    unknownAstralaxEmitter->setEmitterTranslateWithParticle( false );
                 }
                 else
                 {
-                    unknownParticleEmitter2->setEmitterPositionRelative( false );
-                    unknownParticleEmitter2->setEmitterCameraRelative( false );
+                    unknownAstralaxEmitter->setEmitterPositionRelative( false );
+                    unknownAstralaxEmitter->setEmitterCameraRelative( false );
                     //unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
                 }
 
                 Resource * resourceParticle = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
 
-                unknownParticleEmitter2->setResourceParticle( ResourcePtr( resourceParticle ) );
+                unknownAstralaxEmitter->setResourceAstralax( ResourcePtr::from( resourceParticle ) );
 
-                unknownParticleEmitter2->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
+                unknownAstralaxEmitter->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
 
                 //EMaterialBlendMode blend_mode = getMovieBlendMode( layer );
 
@@ -3106,19 +3107,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addParticle_( uint32_t _index, const NodePtr & _particleEmitter )
     {
-        m_particleEmitters.emplace( _index, _particleEmitter );
+        m_astralaxEmitters.emplace( _index, _particleEmitter );
     }
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Movie2::getParticle_( uint32_t _index ) const
     {
-        const NodePtr & particleEmitter = m_particleEmitters.find( _index );
+        const NodePtr & particleEmitter = m_astralaxEmitters.find( _index );
 
         return particleEmitter;
     }
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Movie2::findParticle( const ConstString & _name ) const
     {
-        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableAstralaxEmitters::value_type & value : m_astralaxEmitters )
         {
             const NodePtr & particle = value.element;
 
@@ -3135,7 +3136,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasParticle( const ConstString & _name ) const
     {
-        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableAstralaxEmitters::value_type & value : m_astralaxEmitters )
         {
             const NodePtr & particle = value.element;
 

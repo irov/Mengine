@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 
 #include "Kernel/ConstString.h"
 
 namespace Mengine
 {
     class FrameworkInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void setName( const ConstString & _name ) = 0;

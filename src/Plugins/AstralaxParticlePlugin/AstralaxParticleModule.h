@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Kernel/ModuleBase.h"
-#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class AstralaxParticleModule
         : public ModuleBase
-        , public Observable
     {
     public:
         AstralaxParticleModule();

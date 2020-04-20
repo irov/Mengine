@@ -3,13 +3,11 @@
 #include "Interface/CodecInterface.h"
 
 #include "Kernel/PluginBase.h"
-#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class VideoPlugin
         : public PluginBase
-        , public Observable
     {
     public:
         PLUGIN_DECLARE( "Video" )

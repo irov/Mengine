@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Kernel/PluginBase.h"
-#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class JSONPlugin
         : public PluginBase
-        , public Observable
     {
     public:
         PLUGIN_DECLARE( "JSONPlugin" )

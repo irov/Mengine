@@ -3,6 +3,8 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificatorInterface.h"
 
 #include "Engine/ResourceMusic.h"
 
@@ -79,11 +81,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Amplifier::_initializeService()
     {
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_TURN_SOUND, this, &Amplifier::notifyTurnSound_ );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Amplifier::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TURN_SOUND );
+
         MENGINE_ASSERTION_FATAL( m_soundIdentity == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -289,6 +295,18 @@ namespace Mengine
     void Amplifier::_stopService()
     {
         this->stopMusic();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Amplifier::notifyTurnSound_( bool _turn )
+    {
+        if( _turn == true )
+        {
+            this->resumeMusic();
+        }
+        else
+        {
+            this->pauseMusic();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

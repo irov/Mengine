@@ -91,6 +91,7 @@ endif()
 if(MENGINE_TARGET_WINDOWS)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/CMakeLists.txt COPYONLY)
         
         set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
         set(SENTRY_BUILD_TESTS OFF CACHE BOOL "SENTRY_BUILD_TESTS" FORCE)

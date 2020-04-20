@@ -4,7 +4,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
-#include "Plugins/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
+#include "Plugins/AstralaxPlugin/UnknownAstralaxEmitterInterface.h"
 #include "Plugins/VideoPlugin/VideoUnknownInterface.h"
 
 #include "ResourceMovie.h"
@@ -1812,7 +1812,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_particles, false );
 
-        UnknownParticleEmitterInterface * unknownParticleEmitter2 = layer_particles->getUnknown();
+        UnknownAstralaxEmitterInterface * unknownParticleEmitter2 = layer_particles->getUnknown();
 
         AnimationInterface * animationParticleEmitter2 = layer_particles->getAnimation();
 
@@ -1821,7 +1821,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceParticle, false );
 
-        unknownParticleEmitter2->setResourceParticle( resourceParticle );
+        unknownParticleEmitter2->setResourceAstralax( resourceParticle );
 
         animationParticleEmitter2->setIntervalStart( _layer.startInterval );
         animationParticleEmitter2->setPlayCount( _layer.playCount );

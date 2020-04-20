@@ -158,13 +158,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxEmitterContainerInterface> AstralaxEmitterContainerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class AstralaxSystemInterface
+    class AstralaxServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AstralaxSystem" )
+        SERVICE_DECLARE( "AstralaxService" )
 
     public:
-        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc ) = 0;
+        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const DocumentPtr & _doc ) = 0;
         virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc ) = 0;
 
     public:
@@ -173,21 +173,10 @@ namespace Mengine
 
     public:
         virtual uint32_t getEmitterCount() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-#   define ASTRALAX_SYSTEM()\
-	((AstralaxSystemInterface *)SERVICE_GET(Mengine::AstralaxSystemInterface))
-    //////////////////////////////////////////////////////////////////////////
-    class AstralaxServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "AstralaxService" )
-
-    public:
-        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const DocumentPtr & _doc ) = 0;
-
-    public:
         virtual uint32_t getMaxParticlesCount() const = 0;
+
+    public:
+        virtual bool updateAtlas() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

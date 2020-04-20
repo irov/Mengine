@@ -27,12 +27,12 @@
 
 namespace Mengine
 {
-    class AstralaxParticleSystem
-        : public ServiceBase<AstralaxSystemInterface>
+    class AstralaxService
+        : public ServiceBase<AstralaxServiceInterface>
     {
     public:
-        AstralaxParticleSystem();
-        ~AstralaxParticleSystem() override;
+        AstralaxService();
+        ~AstralaxService() override;
 
     public:
         bool _initializeService() override;
@@ -40,7 +40,7 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc ) override;
+        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) override;
         AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc ) override;
 
     public:
@@ -49,9 +49,12 @@ namespace Mengine
 
     public:
         uint32_t getEmitterCount() const override;
+        uint32_t getMaxParticlesCount() const override;
 
     public:
-        bool updateAtlas();
+        bool updateAtlas() override;
+
+    public:
         bool updateMaterial();
 
     protected:
@@ -59,6 +62,10 @@ namespace Mengine
         void onEmitterRelease_( AstralaxEmitter2 * _emitter );
 
     protected:
+        ArchivatorInterfacePtr m_archivator;
+
+        uint32_t m_maxParticlesNum;
+
         ERenderPlatform m_renderPlatform;
 
         FactoryPtr m_factoryPoolAstralaxEmitterContainer;
@@ -77,7 +84,7 @@ namespace Mengine
         MapHashEmitterContainers m_containers;
 
         int32_t m_materialCount;
-        const RenderMaterialStage * m_stages[256] = {nullptr};
+        const RenderMaterialStage * m_stages[256] = { nullptr };
 
         typedef Vector<ResourceImagePtr> VectorAtlasDesc;
         VectorAtlasDesc m_atlases;

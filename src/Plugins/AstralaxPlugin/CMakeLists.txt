@@ -1,17 +1,15 @@
-MENGINE_PROJECT(AstralaxParticlePlugin)
+MENGINE_PROJECT(AstralaxPlugin)
 
 ADD_FILTER(
 src
-    AstralaxParticleModule.cpp
-    AstralaxParticleModule.h
+    AstralaxModule.cpp
+    AstralaxModule.h
     AstralaxEmitter.cpp
     AstralaxEmitter.h
     AstralaxEmitter2.cpp
     AstralaxEmitter2.h
     AstralaxEmitterContainer.cpp
     AstralaxEmitterContainer.h
-    AstralaxParticleSystem.cpp
-    AstralaxParticleSystem.h
     ResourceAstralax.cpp
     ResourceAstralax.h
     LoaderResourceAstralax.cpp
@@ -22,11 +20,11 @@ src
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h
     
-    UnknownParticleEmitterInterface.h
+    UnknownAstralaxEmitterInterface.h
 
-    AstralaxParticlePlugin.cpp
-    AstralaxParticlePlugin.h
-    AstralaxParticlePlugin.def    
+    AstralaxPlugin.cpp
+    AstralaxPlugin.h
+    AstralaxPlugin.def
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

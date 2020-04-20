@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AstralaxInterface.h"
-#include "UnknownParticleEmitterInterface.h"
+#include "UnknownAstralaxEmitterInterface.h"
 
 #include "ResourceAstralax.h"
 
@@ -17,19 +17,19 @@
 #include "math/mat3.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_PARTICLE_MAX_ATLAS_TEXTURE
-#define MENGINE_PARTICLE_MAX_ATLAS_TEXTURE 8
+#ifndef MENGINE_PLUGIN_ASTRALAX_MAX_ATLAS_TEXTURE
+#define MENGINE_PLUGIN_ASTRALAX_MAX_ATLAS_TEXTURE 8
 #endif
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EParticleEmitter2EventFlag
+    enum EAstralaxEmitter2EventFlag
     {
-        __EVENT_PARTICLE_EMITTER2_LAST__ = __EVENT_ANIMATION_LAST__
+        __EVENT_ASTRALAX_EMITTER2_LAST__ = __EVENT_ANIMATION_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class ParticleEmitter2EventReceiverInterface
+    class AstralaxEmitter2EventReceiverInterface
         : public AnimationEventReceiverInterface
     {
     public:
@@ -43,7 +43,7 @@ namespace Mengine
         , public BaseAnimation
         , public AstralaxPositionProviderInterface
         , public AstralaxCameraProviderInterface
-        , public UnknownParticleEmitterInterface
+        , public UnknownAstralaxEmitterInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
@@ -78,13 +78,14 @@ namespace Mengine
         bool changeEmitterPolygon( const Polygon & _polygon );
         void removeEmitterPolygon();
 
-        void setResourceParticle( const ResourcePtr & _resource ) override;
-        const ResourcePtr & getResourceParticle() const override;
-
-        float _getDuration() const;
-
+        void setResourceAstralax( const ResourcePtr & _resource ) override;
+        const ResourcePtr & getResourceAstralax() const override;
+        
         void setEmitterRandomMode( bool _randomMode );
         bool getEmitterRandomMode() const;
+
+    protected:
+        float _getDuration() const override;
 
     protected:
         void _setLoop( bool _value ) override;
@@ -114,7 +115,7 @@ namespace Mengine
         void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) override;
 
     protected:
-        ResourceAstralaxPtr m_resourceParticle;
+        ResourceAstralaxPtr m_resourceAstralax;
 
         ConstString m_emitterImageName;
 

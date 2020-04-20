@@ -14,6 +14,7 @@
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/RenderUtils.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
 
@@ -60,25 +61,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceParticle, false, "emitter '%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceAstralax, false, "emitter '%s' resource is null"
             , this->getName().c_str()
         );
 
-        if( m_resourceParticle->compile() == false )
+        if( m_resourceAstralax->compile() == false )
         {
             LOGGER_ERROR( "emitter '%s' resource '%s' not compile"
                 , this->getName().c_str()
-                , m_resourceParticle->getName().c_str()
+                , m_resourceAstralax->getName().c_str()
             );
 
             return false;
         }
 
-        AstralaxEmitterInterfacePtr emitter = m_resourceParticle->createEmitter( MENGINE_DOCUMENT_FACTORABLE );
+        AstralaxEmitterInterfacePtr emitter = m_resourceAstralax->createEmitter( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( emitter, false, "emitter '%s' can't create emitter source '%s'"
             , this->getName().c_str()
-            , m_resourceParticle->getName().c_str()
+            , m_resourceAstralax->getName().c_str()
         );
 
         if( m_emitterTranslateWithParticleSetup == true )
@@ -115,8 +116,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return false;
@@ -128,8 +129,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return false;
@@ -142,8 +143,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return false;
@@ -155,8 +156,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return false;
@@ -174,7 +175,7 @@ namespace Mengine
         m_emitter->setCameraProvider( nullptr );
         m_emitter = nullptr;
 
-        m_resourceParticle->release();
+        m_resourceAstralax->release();
 
         Helper::freeArrayT( m_renderVertices );
         m_renderVertices = nullptr;
@@ -383,7 +384,7 @@ namespace Mengine
             {
                 int32_t textureId = mesh.texture[i];
 
-                const ResourceImagePtr & image = ASTRALAX_SYSTEM()
+                const ResourceImagePtr & image = ASTRALAX_SERVICE()
                     ->getResourceImage( textureId );
 
                 if( image == nullptr )
@@ -401,7 +402,7 @@ namespace Mengine
                 textures[i] = texture;
             }
 
-            const RenderMaterialStage * stage = ASTRALAX_SYSTEM()
+            const RenderMaterialStage * stage = ASTRALAX_SERVICE()
                 ->getMaterialStage( mesh.material );
 
             const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
@@ -468,18 +469,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::setResourceParticle( const ResourcePtr & _resourceParticle )
+    void AstralaxEmitter::setResourceAstralax( const ResourcePtr & _resourceParticle )
     {
-        if( m_resourceParticle == _resourceParticle )
+        MENGINE_ASSERTION_RESOURCE_TYPE( _resourceParticle, ResourceAstralaxPtr, "Resource '%s' invalid type '%s' is not 'ResourceAstralax'"
+            , _resourceParticle->getName().c_str()
+            , _resourceParticle->getType().c_str()
+        );
+
+        if( m_resourceAstralax == _resourceParticle )
         {
             return;
-        }
+        }        
 
         this->recompile( [this, &_resourceParticle]()
         {
-            m_resourceParticle = stdex::intrusive_static_cast<ResourceAstralaxPtr>(_resourceParticle);
+            m_resourceAstralax = stdex::intrusive_static_cast<ResourceAstralaxPtr>(_resourceParticle);
 
-            if( m_resourceParticle == nullptr )
+            if( m_resourceAstralax == nullptr )
             {
                 return false;
             }
@@ -488,9 +494,9 @@ namespace Mengine
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & AstralaxEmitter::getResourceParticle() const
+    const ResourcePtr & AstralaxEmitter::getResourceAstralax() const
     {
-        return m_resourceParticle;
+        return m_resourceAstralax;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::setEmitterTranslateWithParticle( bool _translateWithParticle )
@@ -522,8 +528,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return;
@@ -535,8 +541,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return;
@@ -559,8 +565,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return;
@@ -572,8 +578,8 @@ namespace Mengine
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
-                    , m_resourceParticle->getGroupName().c_str()
-                    , m_resourceParticle->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
                 );
 
                 return;

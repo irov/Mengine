@@ -21,7 +21,7 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
-#include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
+#include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 
 #include "PlayerGlobalInputHandler.h"

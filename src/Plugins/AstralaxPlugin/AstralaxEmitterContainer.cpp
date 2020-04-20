@@ -1,5 +1,4 @@
 #include "AstralaxEmitterContainer.h"
-#include "AstralaxParticleSystem.h"
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -97,7 +96,7 @@ namespace Mengine
     {
         if( Magic_HasTextures( m_mf ) == true )
         {
-            LOGGER_ERROR( "particle textures are stored within the file"
+            LOGGER_ERROR( "astralax particle textures are stored within the file"
             );
 
             return false;

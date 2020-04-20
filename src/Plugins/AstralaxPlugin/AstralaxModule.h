@@ -4,12 +4,12 @@
 
 namespace Mengine
 {
-    class AstralaxParticleModule
+    class AstralaxModule
         : public ModuleBase
     {
     public:
-        AstralaxParticleModule();
-        ~AstralaxParticleModule() override;
+        AstralaxModule();
+        ~AstralaxModule() override;
 
     protected:
         bool _initializeModule() override;

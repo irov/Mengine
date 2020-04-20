@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         bool initialize( uint32_t _indexSize, EBufferType _bufferType ) override;
-        void finalize();
+        void finalize() override;
 
     protected:
         uint32_t getIndexCount() const override;

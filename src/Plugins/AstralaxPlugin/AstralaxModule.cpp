@@ -1,4 +1,4 @@
-#include "AstralaxParticleModule.h"
+#include "AstralaxModule.h"
 
 #include "AstralaxInterface.h"
 
@@ -31,17 +31,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticleModule::AstralaxParticleModule()
+    AstralaxModule::AstralaxModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticleModule::~AstralaxParticleModule()
+    AstralaxModule::~AstralaxModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticleModule::_initializeModule()
+    bool AstralaxModule::_initializeModule()
     {
-        LOGGER_INFO( "Initializing Particle System ..." );
+        LOGGER_INFO( "Initializing Astralax Module ..." );
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
@@ -99,7 +99,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleModule::_finalizeModule()
+    void AstralaxModule::_finalizeModule()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );

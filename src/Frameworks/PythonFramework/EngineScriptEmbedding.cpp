@@ -1775,7 +1775,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_copyFile_( const ConstString & _resourceFilePath, const MemoryBufferInterfacePtr & _memory )
             {
-                MENGINE_ASSERTION_RESOURCE_TYPE( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
+                MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
                     , _resourceFilePath.c_str()
                     );
 

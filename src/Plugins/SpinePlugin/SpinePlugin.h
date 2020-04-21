@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Kernel/PluginBase.h"
-#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class SpinePlugin
         : public PluginBase
-        , public Observable
     {
         PLUGIN_DECLARE( "Spine" )
 

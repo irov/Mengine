@@ -207,10 +207,19 @@ MACRO(ADD_MENGINE_LIBRARY)
         TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
     ENDIF()
     
-    set(FILTER_FOLDER ${ARGN})
-    list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
-    if(MENGINE_USE_SUBFOLDER)
-        if(${EXIST_FILTER_FOLDER} GREATER 0)
+    set(extra_macro_args ${ARGN})
+    list(LENGTH extra_macro_args num_extra_args)
+    
+    set(USE_SUBFOLDER ON)
+    if(${num_extra_args} EQUAL 1)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+    elseif(${num_extra_args} EQUAL 2)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+        list(GET extra_macro_args 1 USE_SUBFOLDER)
+    endif()
+
+    if(MENGINE_USE_SUBFOLDER AND USE_SUBFOLDER)
+        if(${num_extra_args} GREATER 0)
             set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
             )
@@ -220,7 +229,7 @@ MACRO(ADD_MENGINE_LIBRARY)
             )
         endif()
     else()
-        if(${EXIST_FILTER_FOLDER} GREATER 0)
+        if(${num_extra_args} GREATER 0)
             set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${FILTER_FOLDER}
             )
@@ -252,11 +261,19 @@ MACRO(ADD_MENGINE_SHARED)
         TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
     ENDIF()
     
-    set(FILTER_FOLDER ${ARGN})
-    list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
+    set(extra_macro_args ${ARGN})
+    list(LENGTH extra_macro_args num_extra_args)
     
-    if(MENGINE_USE_SUBFOLDER)
-        if(${EXIST_FILTER_FOLDER} GREATER 0)
+    set(USE_SUBFOLDER ON)
+    if(${num_extra_args} EQUAL 1)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+    elseif(${num_extra_args} EQUAL 2)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+        list(GET extra_macro_args 1 USE_SUBFOLDER)
+    endif()
+    
+    if(MENGINE_USE_SUBFOLDER AND USE_SUBFOLDER)
+        if(${num_extra_args} GREATER 0)
             set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
             )
@@ -266,7 +283,7 @@ MACRO(ADD_MENGINE_SHARED)
                 )
         endif()
     else()
-        if(${EXIST_FILTER_FOLDER} GREATER 0)
+        if(${num_extra_args} GREATER 0)
             set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${FILTER_FOLDER}
             )
@@ -300,13 +317,21 @@ MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
         ADD_MENGINE_LIBRARY()
     ENDIF()
     
-    set(FILTER_FOLDER ${ARGN})
-    list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
+    set(extra_macro_args ${ARGN})
+    list(LENGTH extra_macro_args num_extra_args)
     
-    if(MENGINE_USE_SUBFOLDER)
-        if(${EXIST_FILTER_FOLDER} GREATER 0)
+    set(USE_SUBFOLDER ON)
+    if(${num_extra_args} EQUAL 1)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+    elseif(${num_extra_args} EQUAL 2)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+        list(GET extra_macro_args 1 USE_SUBFOLDER)
+    endif()
+    
+    if(MENGINE_USE_SUBFOLDER AND ${USE_SUBFOLDER})
+        if(${num_extra_args} GREATER 0)
             set_target_properties (${PROJECT_NAME} PROPERTIES
-                FOLDER ${FILTER_FOLDER}
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
             )
         else()
             set_target_properties (${PROJECT_NAME} PROPERTIES
@@ -314,7 +339,7 @@ MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
             )
         endif()
     else()
-        if(${EXIST_FILTER_FOLDER} GREATER 0)
+        if(${num_extra_args} GREATER 0)
             set_target_properties (${PROJECT_NAME} PROPERTIES
                 FOLDER ${FILTER_FOLDER}
             )

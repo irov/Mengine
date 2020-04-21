@@ -9,6 +9,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         MENGINE_CONSTEXPR uint64_t xmul12864( uint64_t a, uint64_t b )
         {
             const uint64_t a32 = a >> 32;
@@ -29,7 +30,7 @@ namespace Mengine
 
             return x4;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         MENGINE_CONSTEXPR HashType makeHash( const Char * _data, const HashType _len )
         {
             if( _len == 0 )

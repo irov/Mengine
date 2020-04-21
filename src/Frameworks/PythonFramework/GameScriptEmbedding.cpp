@@ -179,6 +179,11 @@ namespace Mengine
                 m_cb.call( _accountID );
             }
 
+            void onGameTurnSound( bool _turn ) override
+            {
+                m_cb.call( _turn );
+            }
+
             void onGameChangeSoundVolume( float _sound, float _music, float _voice ) override
             {
                 m_cb.call( _sound, _music, _voice );

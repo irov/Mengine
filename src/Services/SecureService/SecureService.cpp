@@ -1,5 +1,7 @@
 #include "SecureService.h"
 
+#include "Interface/OptionsServiceInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/HashHelper.h"
 
@@ -22,11 +24,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SecureService::_initializeService()
     {
-        Mengine::HashType secureHash =
-#include "Config/Secure.h"
-            ;
+        const Char * secure = GET_OPTION_VALUE( "secure", MENGINE_SECURE_VALUE );
 
-        m_secureHash = secureHash;
+        size_t secure_len = MENGINE_STRLEN( secure );
+
+        m_secureHash = Helper::makeHash( secure, secure_len );
 
         return true;
     }

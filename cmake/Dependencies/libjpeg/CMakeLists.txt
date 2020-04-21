@@ -5,9 +5,9 @@ project(jpeg)
 SET(SOURCE_DIR ${THIRDPARTY_DIR}/libjpeg)
 
 IF(MENGINE_RENDER_DIRECTX)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx.h ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jmorecfg.h COPYONLY)
 ELSE()
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jmorecfg.h COPYONLY)
 ENDIF()
 
 
@@ -67,5 +67,6 @@ ${SOURCE_DIR}/jmemansi.c
 )
 
 include_directories(${SOURCE_DIR})
+include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} STATIC ${jpeg_sources})

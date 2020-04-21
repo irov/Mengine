@@ -83,6 +83,7 @@ message("============@@##START##@@============")
 if(MENGINE_DEPENDENCE_ZLIB)
     message("================zlib================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/gzguts.h ${THIRDPARTY_DIR}/zlib/gzguts.h COPYONLY)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
 endif()
@@ -91,6 +92,7 @@ endif()
 if(MENGINE_TARGET_WINDOWS)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/CMakeLists.txt COPYONLY)
         
         set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
         set(SENTRY_BUILD_TESTS OFF CACHE BOOL "SENTRY_BUILD_TESTS" FORCE)
@@ -237,7 +239,8 @@ endif()
 #dependencies stdex
 if(MENGINE_DEPENDENCE_STDEX)
     message("================stdex================")
-    set(STDEX_EXTERNAL_BUILD ON CACHE BOOL "STDEX_EXTERNAL_BUILD" FORCE)    
+    set(STDEX_EXTERNAL_BUILD ON CACHE BOOL "STDEX_EXTERNAL_BUILD" FORCE)
+    set(STDEX_INSTALL OFF CACHE BOOL "STDEX_EXTERNAL_BUILD" FORCE)
     set(STDEX_DBGHELP_INCLUDE "${MENGINE_REPOSITORY}/src/Environment/Windows" CACHE STRING "STDEX_DBGHELP_INCLUDE" FORCE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/stdex ${CMAKE_TEMP_DIR}/stdex)
@@ -255,21 +258,22 @@ endif()
 #dependencies ozz
 if(MENGINE_DEPENDENCE_OZZ)
 message("================ozz================")
-    if(NOT MENGINE_TARGET_ANDROID AND NOT MENGINE_TARGET_IOS)
-        set(ozz_build_tools OFF CACHE BOOL "ozz_build_tools" FORCE)
-		set(ozz_build_fbx OFF CACHE BOOL "ozz_build_fbx" FORCE)
-		set(ozz_build_data OFF CACHE BOOL "ozz_build_data" FORCE)
-		set(ozz_build_samples OFF CACHE BOOL "ozz_build_samples" FORCE)
-		set(ozz_build_howtos OFF CACHE BOOL "ozz_build_howtos" FORCE)
-		set(ozz_build_tests OFF CACHE BOOL "ozz_build_tests" FORCE)
-		set(ozz_build_simd_ref OFF CACHE BOOL "ozz_build_simd_ref" FORCE)
-		set(ozz_build_cpp11 ON CACHE BOOL "ozz_build_cpp11" FORCE)
-		set(ozz_build_msvc_rt_dll OFF CACHE BOOL "ozz_build_msvc_rt_dll" FORCE)
-        set(ozz_build_postfix OFF CACHE BOOL "ozz_build_postfix" FORCE)
-		set(ozz_run_tests_headless OFF CACHE BOOL "ozz_run_tests_headless" FORCE)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ozz/base_io_stream.cc ${THIRDPARTY_DIR}/ozz/src/base/io/stream.cc COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ozz/dump2ozz_CMakeLists.txt ${THIRDPARTY_DIR}/ozz/src/animation/offline/tools/CMakeLists.txt COPYONLY)
+    
+    set(ozz_build_tools OFF CACHE BOOL "ozz_build_tools" FORCE)
+    set(ozz_build_fbx OFF CACHE BOOL "ozz_build_fbx" FORCE)
+    set(ozz_build_data OFF CACHE BOOL "ozz_build_data" FORCE)
+    set(ozz_build_samples OFF CACHE BOOL "ozz_build_samples" FORCE)
+    set(ozz_build_howtos OFF CACHE BOOL "ozz_build_howtos" FORCE)
+    set(ozz_build_tests OFF CACHE BOOL "ozz_build_tests" FORCE)
+    set(ozz_build_simd_ref OFF CACHE BOOL "ozz_build_simd_ref" FORCE)
+    set(ozz_build_cpp11 ON CACHE BOOL "ozz_build_cpp11" FORCE)
+    set(ozz_build_msvc_rt_dll OFF CACHE BOOL "ozz_build_msvc_rt_dll" FORCE)
+    set(ozz_build_postfix OFF CACHE BOOL "ozz_build_postfix" FORCE)
+    set(ozz_run_tests_headless OFF CACHE BOOL "ozz_run_tests_headless" FORCE)
 
-        ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/ozz ${CMAKE_TEMP_DIR}/ozz)
-    endif()
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/ozz ${CMAKE_TEMP_DIR}/ozz)
 endif()
 
 #dependencies libmovie
@@ -374,6 +378,8 @@ if(MENGINE_DEPENDENCE_FREETYPE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/freetype ${CMAKE_TEMP_DIR}/freetype)
     
+    add_dependencies(freetype zlib)
+    
     if(MENGINE_TARGET_IOS)
         unset(IOS_PLATFORM CACHE)
     endif()
@@ -464,6 +470,8 @@ if(MENGINE_DEPENDENCE_CURL)
     endif()
 	
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/curl ${CMAKE_TEMP_DIR}/curl)
+    
+    add_dependencies(libcurl zlib)
 endif()
 
 #dependencies SDL2

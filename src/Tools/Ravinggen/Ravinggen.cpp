@@ -32,6 +32,7 @@
 #include "Kernel/Ravingcode.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolLogger.h"
@@ -50,6 +51,7 @@ PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AllocatorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
@@ -80,7 +82,9 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
+        SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
+
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
 
@@ -152,6 +156,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         
     Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
     Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
+    Mengine::WString secure = parse_kwds( lpCmdLine, L"--secure", Mengine::WString() );
 
     if( in.empty() == true )
     {
@@ -164,6 +169,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     if( out.empty() == true )
     {
         message_error( "not found 'out' param"
+        );
+
+        return 0;
+    }
+
+    if( secure.empty() == true )
+    {
+        message_error( "not found 'secure' param"
         );
 
         return 0;
@@ -198,8 +211,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     void * memoryBuffer = memory->getBuffer();
     size_t memorySize = memory->getSize();
 
-    Mengine::HashType sequreHash = SECURE_SERVICE()
-        ->getSequreHash();
+    Mengine::Char utf8_secure[1024];
+    size_t utf8_secure_len;
+    Mengine::Helper::unicodeToUtf8( secure, utf8_secure, 1024, &utf8_secure_len );
+
+    Mengine::HashType sequreHash = Mengine::Helper::makeHash( utf8_secure, utf8_secure_len );
 
     Mengine::Helper::ravingcode( (uint32_t)sequreHash, memoryBuffer, memorySize, memoryBuffer );
 

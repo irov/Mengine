@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/PluginBase.h"
-#include "Kernel/Observable.h"
 
 #include "movie/movie.hpp"
 
@@ -10,7 +9,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class MoviePlugin
         : public PluginBase
-        , public Observable
     {
         PLUGIN_DECLARE( "Movie" )
 

@@ -5,9 +5,7 @@
 #include "cURLInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/Factory.h"
-
 #include "Kernel/ThreadTask.h"
 
 namespace Mengine

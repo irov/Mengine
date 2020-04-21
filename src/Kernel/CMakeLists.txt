@@ -220,6 +220,8 @@ PrototypeGenerator
     FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
+    BaseScriptablePrototypeGenerator.cpp
+    BaseScriptablePrototypeGenerator.h
     ScriptablePrototypeGenerator.h
     ResourcePrototypeGenerator.h
     SurfacePrototypeGenerator.h
@@ -565,6 +567,11 @@ Core
     UnicodeHelper.cpp
     
     Range.h
+    
+    Component.h
+    Component.cpp
+    Componentable.h
+    Componentable.cpp
     
     Hashgen.h
     Hashtable.h

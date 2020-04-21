@@ -1,10 +1,12 @@
 #pragma once
 
-#include "Interface/AmplifierInterface.h"
+#include "AmplifierInterface.h"
+
 #include "Interface/SoundIdentityInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Observable.h"
 #include "Kernel/Map.h"
 
 #include "Config/Typedef.h"
@@ -13,6 +15,7 @@ namespace Mengine
 {
     class Amplifier
         : public ServiceBase<AmplifierInterface>
+        , public Observable
     {
     public:
         Amplifier();
@@ -37,6 +40,9 @@ namespace Mengine
 
         void setPosMs( float _posMs ) override;
         float getPosMs() const override;
+
+    protected:
+        void notifyTurnSound_( bool _turn );
 
     protected:
         SoundIdentityInterfacePtr m_soundIdentity;

@@ -3,6 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "ResourceOzzMesh.h"
 #include "ResourceOzzSkeleton.h"

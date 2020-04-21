@@ -9,7 +9,6 @@
 #include "Kernel/Deque.h"
 #include "Kernel/ModuleBase.h"
 #include "Kernel/NodeUniqueFinder.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Scene.h"
 
 #include "Interface/SocketInterface.h"
@@ -47,7 +46,6 @@ namespace Mengine
     class NodeDebuggerModule
         : public ModuleBase
         , public ThreadWorkerInterface
-        , public Observable
     {
     public:
         NodeDebuggerModule();

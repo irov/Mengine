@@ -3,12 +3,13 @@
 #include "Interface/ModuleInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class ModuleBase
         : public ModuleInterface
-        , public Factorable
+        , public Observable
     {
     public:
         ModuleBase();

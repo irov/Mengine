@@ -15,7 +15,6 @@ src
     Define.h
     Config.h
     Export.h
-    Secure.h
     StdInt.h
     StdDef.h
     StdIntTypes.h

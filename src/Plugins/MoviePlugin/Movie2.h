@@ -243,8 +243,8 @@ namespace Mengine
         typedef Hashtable<uint32_t, ShapeQuadFixedPtr> HashtableSprites;
         HashtableSprites m_sprites;
 
-        typedef Hashtable<uint32_t, NodePtr> HashtableParticleEmitter2s;
-        HashtableParticleEmitter2s m_particleEmitters;
+        typedef Hashtable<uint32_t, NodePtr> HashtableAstralaxEmitters;
+        HashtableAstralaxEmitters m_astralaxEmitters;
 
         typedef Vector<MatrixProxyPtr> VectorMatrixProxies;
         VectorMatrixProxies m_matrixProxies;

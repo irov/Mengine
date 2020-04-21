@@ -258,6 +258,7 @@ endif()
 #dependencies ozz
 if(MENGINE_DEPENDENCE_OZZ)
 message("================ozz================")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ozz/base_io_stream.cc ${THIRDPARTY_DIR}/ozz/src/base/io/stream.cc COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ozz/dump2ozz_CMakeLists.txt ${THIRDPARTY_DIR}/ozz/src/animation/offline/tools/CMakeLists.txt COPYONLY)
     
     set(ozz_build_tools OFF CACHE BOOL "ozz_build_tools" FORCE)

@@ -8,24 +8,6 @@
 #include "pugixml.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-static void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size )
-{
-    DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
-
-    int utf8_size = ::WideCharToMultiByte(
-        CP_UTF8
-        , dwConversionFlags
-        , _unicode
-        , _size
-        , _utf8
-        , _capacity
-        , NULL
-        , NULL
-    );
-
-    _utf8[utf8_size] = 0;
-}
-//////////////////////////////////////////////////////////////////////////
 static void * stdlib_movie_alloc( void * _data, size_t _size )
 {
     (void)_data;

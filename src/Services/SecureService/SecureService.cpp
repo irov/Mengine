@@ -22,11 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SecureService::_initializeService()
     {
-        Mengine::HashType secureHash =
-#include "Config/Secure.h"
-            ;
-
-        m_secureHash = secureHash;
+        m_secureHash = Helper::makeHashString( MENGINE_SECURE_VALUE );
 
         return true;
     }

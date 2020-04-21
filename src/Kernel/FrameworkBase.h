@@ -2,13 +2,13 @@
 
 #include "Interface/FrameworkInterface.h"
 
-#include "Kernel/Factorable.h"
+#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class FrameworkBase
         : public FrameworkInterface
-        , public Factorable
+        , public Observable
     {
     public:
         FrameworkBase();

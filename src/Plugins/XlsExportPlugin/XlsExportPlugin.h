@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Kernel/Observable.h"
-
 #include "Kernel/PluginBase.h"
 #include "Kernel/ConstString.h"
 
@@ -11,7 +9,6 @@ namespace Mengine
 {
     class XlsExportPlugin
         : public PluginBase
-        , public Observable
     {
         PLUGIN_DECLARE( "XlsExport" )
 

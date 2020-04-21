@@ -224,6 +224,12 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void DummyGameEventReceiver::onGameTurnSound( bool _turn )
+    {
+        MENGINE_UNUSED( _turn );
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameChangeSoundVolume( float _sound, float _music, float _voice )
     {
         MENGINE_UNUSED( _sound );

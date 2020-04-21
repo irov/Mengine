@@ -1,6 +1,6 @@
 #include "ToolUtils/ToolUtils.h"
 
-#include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
+#include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
 #include "magic.h"
 

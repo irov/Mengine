@@ -43,6 +43,7 @@ namespace Mengine
         EVENT_GAME_DELETE_ACCOUNT,
         EVENT_GAME_SELECT_ACCOUNT,
         EVENT_GAME_UNSELECT_ACCOUNT,
+        EVENT_GAME_TURN_SOUND,
         EVENT_GAME_CHANGE_SOUND_VOLUME,
         EVENT_GAME_CURSOR_MODE,
         EVENT_GAME_USER,
@@ -87,6 +88,7 @@ namespace Mengine
         virtual void onGameDeleteAccount( const ConstString & _accountID ) = 0;
         virtual void onGameSelectAccount( const ConstString & _accountID ) = 0;
         virtual void onGameUselectAccount( const ConstString & _accountID ) = 0;
+        virtual void onGameTurnSound( bool _turn ) = 0;
         virtual void onGameChangeSoundVolume( float _sound, float _music, float _voice ) = 0;
         virtual void onGameCursorMode( bool _mode ) = 0;
         virtual void onGameUser( const ConstString & _event, const MapWParams & _params ) = 0;
@@ -125,6 +127,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CREATE_ACCOUNT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_DELETE_ACCOUNT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_SELECT_ACCOUNT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_TURN_SOUND );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_UNSELECT_ACCOUNT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CHANGE_SOUND_VOLUME );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CURSOR_MODE );

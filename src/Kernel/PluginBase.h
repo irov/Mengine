@@ -6,6 +6,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Observable.h"
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
 
@@ -13,6 +14,7 @@ namespace Mengine
 {
     class PluginBase
         : public PluginInterface
+        , public Observable
     {
     public:
         PluginBase();

@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Kernel/FrameworkBase.h"
-#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class UIFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         UIFramework();

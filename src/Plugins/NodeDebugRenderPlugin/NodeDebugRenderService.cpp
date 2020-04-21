@@ -12,7 +12,7 @@
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
-#include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
+#include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
@@ -316,9 +316,9 @@ namespace Mengine
 
                 ss << "Texture Count: " << textureCount << std::endl;
 
-                if( SERVICE_EXIST( Mengine::AstralaxSystemInterface ) == true )
+                if( SERVICE_EXIST( Mengine::AstralaxServiceInterface ) == true )
                 {
-                    uint32_t particlesCount = ASTRALAX_SYSTEM()
+                    uint32_t particlesCount = ASTRALAX_SERVICE()
                         ->getEmitterCount();
 
                     ss << "Particles: " << particlesCount << std::endl;

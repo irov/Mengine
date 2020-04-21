@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/UpdateContext.h"
@@ -11,7 +11,7 @@
 namespace Mengine
 {
     class ModuleInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void setName( const ConstString & _name ) = 0;

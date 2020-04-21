@@ -23,6 +23,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -32,6 +33,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/AssertionResourceType.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceImageDefault.h"
@@ -1773,7 +1775,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_copyFile_( const ConstString & _resourceFilePath, const MemoryBufferInterfacePtr & _memory )
             {
-                MENGINE_ASSERTION_RESOURCE_TYPE( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
+                MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
                     , _resourceFilePath.c_str()
                     );
 

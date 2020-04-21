@@ -1,7 +1,6 @@
 #include "GameService.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/AmplifierInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
@@ -432,20 +431,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::turnSound( bool _turn )
     {
-        if( _turn == true )
-        {
-            if( AMPLIFIER_SERVICE() )
-            {
-                AMPLIFIER_SERVICE()->resumeMusic();
-            }
-        }
-        else
-        {
-            if( AMPLIFIER_SERVICE() )
-            {
-                AMPLIFIER_SERVICE()->pauseMusic();
-            }
-        }
+        EVENTABLE_METHOD( EVENT_GAME_TURN_SOUND )
+            ->onGameTurnSound( _turn );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFocus( bool _focus )

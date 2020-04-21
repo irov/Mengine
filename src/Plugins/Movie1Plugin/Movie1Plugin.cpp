@@ -9,6 +9,7 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "MovieScriptEmbedding.h"

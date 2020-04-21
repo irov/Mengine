@@ -49,6 +49,10 @@ namespace Mengine
             Helper::freeArrayT( m_buffer );
         }
 
+    private:
+        Hashtable2( const Hashtable2 & ) = delete;
+        Hashtable2( Hashtable2 && ) = delete;
+
     protected:
         static hash_type get_hash_key( const key_type1 & _key1, const key_type2 & _key2 )
         {
@@ -655,6 +659,10 @@ namespace Mengine
 
             Helper::freeArrayT( m_buffer );
         }
+
+    private:
+        Hashtable2( const Hashtable2 & ) = delete;
+        Hashtable2( Hashtable2 && ) = delete;
 
     protected:
         static hash_type get_hash_key( const key_type1 & _key1, const key_type2 & _key2 )

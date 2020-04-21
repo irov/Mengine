@@ -71,7 +71,6 @@ src
     ArchiveServiceInterface.h
     PrefetcherObserverInterface.h
     PrefetcherServiceInterface.h
-    AmplifierInterface.h
     GraveyardServiceInterface.h
     GlobalInputHandlerInterface.h
     NotificationServiceInterface.h
@@ -120,6 +119,7 @@ src
     SettingInterface.h
     SettingsServiceInterface.h
     DocumentServiceInterface.h
+    ComponentServiceInterface.h
 )
 
 ADD_FILTER(

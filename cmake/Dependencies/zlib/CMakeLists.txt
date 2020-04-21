@@ -67,8 +67,8 @@ set(ZLIB_PC ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
 		${ZLIB_PC} @ONLY)
 configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
-		${CMAKE_CURRENT_BINARY_DIR}/zconf.h @ONLY)
-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
+		${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zconf.h @ONLY)
+include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME} ${CMAKE_SOURCE_DIR})
 
 
 #============================================================================
@@ -76,7 +76,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 #============================================================================
 
 set(ZLIB_PUBLIC_HDRS
-    ${CMAKE_CURRENT_BINARY_DIR}/zconf.h
+    ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/zconf.h
     zlib.h
 )
 set(ZLIB_PRIVATE_HDRS

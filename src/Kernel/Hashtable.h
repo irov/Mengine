@@ -46,6 +46,10 @@ namespace Mengine
             Helper::freeArrayT( m_buffer );
         }
 
+    private:
+        Hashtable( const Hashtable & ) = delete;
+        Hashtable( Hashtable && ) = delete;
+
     public:
         const element_type_ptr & emplace( const key_type & _key, const element_type_ptr & _element )
         {
@@ -632,6 +636,10 @@ namespace Mengine
 
             Helper::freeArrayT( m_buffer );
         }
+
+    private:
+        Hashtable( const Hashtable & ) = delete;
+        Hashtable( Hashtable && ) = delete;
 
     public:
         element_type_ptr emplace( const key_type & _key, element_type_ptr _element )

@@ -95,6 +95,7 @@ SERVICE_EXTERN( TimepipeService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
+SERVICE_EXTERN( ComponentService );
 
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
@@ -539,6 +540,7 @@ namespace Mengine
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( ComponentService, MENGINE_DOCUMENT_FACTORABLE );
 
         if( this->loadApplicationIni_() == false )
         {
@@ -1231,6 +1233,7 @@ namespace Mengine
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
+        SERVICE_FINALIZE( ComponentService );
 
         if( m_loggerFile != nullptr )
         {
@@ -1294,6 +1297,7 @@ namespace Mengine
         SERVICE_DESTROY( FileService );
         SERVICE_DESTROY( ThreadSystem );
         SERVICE_DESTROY( TimepipeService );
+        SERVICE_DESTROY( ComponentService );
         SERVICE_DESTROY( Platform );
         SERVICE_DESTROY( NotificationService );
         SERVICE_DESTROY( LoggerService );

@@ -61,38 +61,6 @@ namespace Mengine
 
             return x;
         }
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_CONSTEXPR HashType makeHashString( const Char * _data )
-        {
-            const Char * p = _data;
-
-            if( *p == '\0' )
-            {
-                return 0LL;
-            }
-
-            const HashType b = *p;
-
-            HashType x = b << 7;
-
-            for( const HashType b2 = *p; *p != 0; ++p )
-            {
-                const HashType x2 = xmul12864( 1000003ULL, x );
-
-                x = x2 ^ b2;
-            }
-
-            HashType len = p - _data;
-
-            x ^= len;
-
-            if( x == -1 )
-            {
-                x = -2;
-            }
-
-            return x;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Literals

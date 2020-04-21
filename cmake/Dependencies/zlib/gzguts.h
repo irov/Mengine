@@ -18,12 +18,13 @@
 #  define ZLIB_INTERNAL
 #endif
 
+#include <stdio.h>
+#include "zlib.h"
+
 #ifdef HAVE_UNISTD_H
 #   include "unistd.h"
 #endif
 
-#include <stdio.h>
-#include "zlib.h"
 #ifdef STDC
 #  include <string.h>
 #  include <stdlib.h>

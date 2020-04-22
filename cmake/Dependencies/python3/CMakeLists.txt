@@ -333,6 +333,8 @@ include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include)
 include_directories(${SOURCE_DIR}/Include/internal)
 
+include_directories(${THIRDPARTY_DIR}/zlib)
+include_directories(${THIRDPARTY_CONFIG_DIR}/zlib)
 
 if(WIN32)
   include_directories(
@@ -340,7 +342,6 @@ if(WIN32)
     ${SOURCE_DIR}/Python 
     ${SOURCE_DIR}/Modules/expat
     )
-  include_directories(${THIRDPARTY_DIR}/zlib)
 
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS)

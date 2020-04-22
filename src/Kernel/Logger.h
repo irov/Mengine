@@ -25,7 +25,7 @@ namespace Mengine
         bool getNewline() const;
 
     public:
-        const LoggerOperator & operator()( const Char * _format, ... ) const;
+        const LoggerOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const;
 
     public:
         void logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const;

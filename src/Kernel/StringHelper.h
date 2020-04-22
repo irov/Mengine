@@ -8,7 +8,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        String stringFormat( const Char * _format, ... );
+        String stringFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... );
 
         void split( VectorString & _outStrings, const String & _str, bool _trimDelims, const String & _delim );
         void wsplit( VectorWString & _outStrings, const WString & _str, bool _trimDelims, const WString & _delim );

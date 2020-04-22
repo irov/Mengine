@@ -124,7 +124,26 @@
 #define MENGINE_MASTER_DEVELOPMENT
 #endif
 
-#if defined(__APPLE__)
+#if defined(MENGINE_PLATFORM_OSX)
 #   define off64_t off_t
 #   define fopen64 fopen
+#endif
+
+#if defined(MENGINE_DEBUG)
+#   if defined(MENGINE_TOOLCHAIN_MSVC)
+#       if _MSC_VER >= 1400
+#           include <sal.h>
+#           if _MSC_VER > 1400
+#               define MENGINE_CHECK_FORMAT_STRING(p) _Printf_format_string_ p
+#           else
+#               define MENGINE_CHECK_FORMAT_STRING(p) __format_string p
+#           endif
+#       else
+#           define MENGINE_CHECK_FORMAT_STRING(p) p
+#       endif
+#   else
+#       define MENGINE_CHECK_FORMAT_STRING(p) p
+#   endif
+#else
+#   define MENGINE_CHECK_FORMAT_STRING(p) p
 #endif

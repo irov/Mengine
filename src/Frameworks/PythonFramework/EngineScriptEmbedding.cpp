@@ -2545,7 +2545,6 @@ namespace Mengine
             pybind::tuple s_SecureValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureValue * _secure )
             {
                 uint32_t unprotected_value;
-
                 if( _secure->getUnprotectedValue( &unprotected_value ) == false )
                 {
                     return pybind::make_tuple_t( _kernel, false, 0 );
@@ -3898,6 +3897,7 @@ namespace Mengine
             .def( "additiveSecureValue", &SecureValue::additiveSecureValue )
             .def( "substractSecureValue", &SecureValue::substractSecureValue )
             .def( "additive2SecureValue", &SecureValue::additive2SecureValue )
+            .def( "cmpSecureValue", &SecureValue::cmpSecureValue )
             ;
 
         pybind::def_functor( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureValue );

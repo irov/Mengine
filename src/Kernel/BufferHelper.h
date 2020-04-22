@@ -7,6 +7,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        size_t bufferFormat( Char * _buffer, size_t _capacity, const Char * _format, ... );
+        size_t bufferFormat( Char * _buffer, size_t _capacity, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... );
     }
 }

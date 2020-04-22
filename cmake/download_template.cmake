@@ -20,6 +20,7 @@ include(ExternalProject)
 find_package(Git REQUIRED)
 
 macro(DOWNLOAD_FILE NAME URL FILE)
+    MESSAGE("Download ${NAME}: ${URL}")
     if(NOT EXISTS ${MENGINE_DOWNLOADS_PATH}/${NAME}/${FILE})
         if(MENGINE_FILE_DOWNLOAD_SHOW_PROGRESS)
             file(DOWNLOAD ${URL} ${MENGINE_DOWNLOADS_PATH}/${NAME}/${FILE} SHOW_PROGRESS)
@@ -30,6 +31,7 @@ macro(DOWNLOAD_FILE NAME URL FILE)
 endmacro()
 
 macro(DOWNLOAD_URL NAME URL)
+    MESSAGE("Download ${NAME}: ${URL}")
     ExternalProject_Add(${NAME}_download PREFIX ${NAME}
         SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
         
@@ -46,6 +48,7 @@ macro(DOWNLOAD_URL NAME URL)
 endmacro()
 
 macro(DOWNLOAD_URL_HASH NAME URL HASH_ALGO HASH)
+    MESSAGE("Download ${NAME}: ${URL}")
     ExternalProject_Add(${NAME}_download PREFIX ${NAME}
         SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
         
@@ -63,6 +66,8 @@ macro(DOWNLOAD_URL_HASH NAME URL HASH_ALGO HASH)
 endmacro()
 
 macro(GIT_CLONE NAME REPOSITORY)
+    MESSAGE("Git ${NAME}: ${REPOSITORY}")
+    
     set(TAG ${ARGN})
     
     list(LENGTH TAG EXIST_TAG)

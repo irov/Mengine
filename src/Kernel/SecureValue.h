@@ -22,11 +22,13 @@ namespace Mengine
         bool getUnprotectedValue( uint32_t * _value ) const;
 
     public:
-        bool setupSecureValue( const SecureValuePtr & _setup );
+        bool setupSecureValue( const SecureValuePtr & _value );
         bool additiveSecureValue( const SecureValuePtr & _add );
         bool substractSecureValue( const SecureValuePtr & _sub );
 
         bool additive2SecureValue( const SecureValuePtr & _add, const SecureValuePtr & _pow );
+
+        bool cmpSecureValue( const SecureValuePtr & _value, int32_t * _result ) const;
 
     public:
         uint32_t m_value;

@@ -19,7 +19,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line );
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... );
+        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... );
         //////////////////////////////////////////////////////////////////////////
         class AssertionOperator
         {
@@ -29,7 +29,7 @@ namespace Mengine
 
         public:
             const AssertionOperator & operator()() const;
-            const AssertionOperator & operator()( const Char * _format, ... ) const;
+            const AssertionOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const;
 
         protected:
             uint32_t m_level;
@@ -102,6 +102,8 @@ namespace Mengine
 #   define MENGINE_ASSERTION_FATAL_RETURN(Condition, Ret, ...) if(!(Condition)) return Mengine::Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
 #   define MENGINE_ASSERTION_EXCEPTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_EXCEPTION, #Condition, nullptr, 0 ) (__VA_ARGS__)
 #   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, nullptr, 0 ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_RESULT(Result, ...) MENGINE_ASSERTION(Result, __VA_ARGS__)
+#   define MENGINE_ASSERTION_RESULT_FATAL(Result, ...) MENGINE_ASSERTION_FATAL(Result, __VA_ARGS__)
 #else
 #   define MENGINE_ASSERTION(Condition, ...)
 #   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...)
@@ -109,5 +111,7 @@ namespace Mengine
 #   define MENGINE_ASSERTION_FATAL_RETURN(Condition, Ret, ...)
 #   define MENGINE_ASSERTION_EXCEPTION(Condition, ...)
 #   define MENGINE_ASSERTION_CRITICAL(Condition, ...)
+#   define MENGINE_ASSERTION_RESULT(Result, ...) MENGINE_UNUSED(Result)
+#   define MENGINE_ASSERTION_RESULT_FATAL(Result, ...) MENGINE_UNUSED(Result)
 #endif
 //////////////////////////////////////////////////////////////////////////

@@ -2651,7 +2651,38 @@ namespace Mengine
             {
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->pickTrap( _point, 0, 0.f, pickers );
+                    ->pickTrap( _point, 0, 0.f, true, pickers );
+
+                pybind::list pyret( _kernel );
+
+                bool onFocus = APPLICATION_SERVICE()
+                    ->isFocus();
+
+                if( onFocus == false )
+                {
+                    return pyret;
+                }
+
+                for( const PickerInterfacePtr & picker : pickers )
+                {
+                    Scriptable * scriptable = picker->getPickerScriptable();
+
+                    if( scriptable == nullptr )
+                    {
+                        continue;
+                    }
+
+                    pyret.append( scriptable );
+                }
+
+                return pyret;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pybind::list s_pickAllHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
+            {
+                VectorPickers pickers;
+                PICKER_SERVICE()
+                    ->pickTrap( _point, 0, 0.f, false, pickers );
 
                 pybind::list pyret( _kernel );
 
@@ -3695,6 +3726,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "existText", nodeScriptMethod, &EngineScriptMethod::s_existText );
 
         pybind::def_functor_kernel( _kernel, "pickHotspot", nodeScriptMethod, &EngineScriptMethod::s_pickHotspot );
+        pybind::def_functor_kernel( _kernel, "pickAllHotspot", nodeScriptMethod, &EngineScriptMethod::s_pickAllHotspot );
 
         pybind::def_functor( _kernel, "blockInput", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerBlockInput );
         pybind::def_functor( _kernel, "setMousePickerHandleValue", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerHandleValue );

@@ -11,7 +11,6 @@
 #include "Kernel/Observable.h"
 #include "Kernel/Exception.h"
 #include "Kernel/IntrusivePtr.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Tuple.h"
 
 #include <type_traits>
@@ -180,11 +179,11 @@ namespace Mengine
 #define NOTIFICATION_SERVICE()\
     ((Mengine::NotificationServiceInterface*)SERVICE_GET(Mengine::NotificationServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method )\
-    NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method, MENGINE_DOCUMENT_FACTORABLE )
+#define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method, Doc )\
+    NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method, Doc )
 //////////////////////////////////////////////////////////////////////////
-#define NOTIFICATION_ADDOBSERVERLAMBDA( ID, Observer, L )\
-    NOTIFICATION_SERVICE()->addObserverLambda<ID>( Observer, L, MENGINE_DOCUMENT_FACTORABLE )
+#define NOTIFICATION_ADDOBSERVERLAMBDA( ID, Observer, L, Doc )\
+    NOTIFICATION_SERVICE()->addObserverLambda<ID>( Observer, L, Doc )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )

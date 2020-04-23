@@ -34,12 +34,12 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ), Helper::makeFactorableUnique<AmplifierScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "AmplifierScriptEmbedding" ) );
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;

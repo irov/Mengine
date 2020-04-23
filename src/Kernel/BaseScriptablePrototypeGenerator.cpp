@@ -43,7 +43,7 @@ namespace Mengine
             }
 
             m_scriptWrapper = scriptWrapper;
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::unregisterScriptWrapperObserver()

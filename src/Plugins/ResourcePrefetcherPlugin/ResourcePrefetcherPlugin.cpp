@@ -49,12 +49,12 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ), Helper::makeFactorableUnique<DefaultResourcePrefetcher>( MENGINE_DOCUMENT_FACTORABLE ) );

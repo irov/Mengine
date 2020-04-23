@@ -30,7 +30,7 @@ namespace Mengine
     {
         m_graveyardTime = CONFIG_VALUE( "Engine", "GraveyardTime", 1000.f );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, this, &GraveyardService::onEngineTextureDestroy );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, this, &GraveyardService::onEngineTextureDestroy, MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t timepipe = TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );

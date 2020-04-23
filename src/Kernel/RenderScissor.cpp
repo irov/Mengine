@@ -22,7 +22,7 @@ namespace Mengine
             return true;
         }
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderScissor::notifyChangeWindowResolution );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderScissor::notifyChangeWindowResolution, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateViewport_();
 

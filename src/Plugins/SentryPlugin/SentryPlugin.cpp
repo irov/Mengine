@@ -63,8 +63,8 @@ namespace Mengine
 
         sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, this, &SentryPlugin::notifyCreateApplication_ );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ASSERTION, this, &SentryPlugin::notifyAssertion_ );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, this, &SentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ASSERTION, this, &SentryPlugin::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

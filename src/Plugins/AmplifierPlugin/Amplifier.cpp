@@ -81,7 +81,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Amplifier::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_TURN_SOUND, this, &Amplifier::notifyTurnSound_ );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_TURN_SOUND, this, &Amplifier::notifyTurnSound_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

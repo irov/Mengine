@@ -55,9 +55,9 @@ namespace Mengine
             return false;
         }
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_TEXT_ALIAS, this, &TextField::notifyChangeTextAliasArguments );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_TEXT_ALIAS, this, &TextField::notifyChangeTextAliasArguments, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateTextLines();
 

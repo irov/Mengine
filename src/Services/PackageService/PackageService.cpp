@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryPackage = Helper::makeFactoryPool<Package, 8>( MENGINE_DOCUMENT_FACTORABLE );
 

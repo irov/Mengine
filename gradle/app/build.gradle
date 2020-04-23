@@ -61,11 +61,13 @@ android {
         
         
         ndk {
+            abiFilters = []
+
             if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-                abiFilters = []
                 abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
             } else {
                 abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                abiFilters.clear()
             }
         }
 
@@ -85,7 +87,7 @@ android {
 
             include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
 
-            universalApk true
+            universalApk false
         }
     }
     
@@ -193,6 +195,21 @@ task openal_CMakeLists(type: Copy) {
 preBuild.dependsOn openal_copy_bsinc_inc
 preBuild.dependsOn openal_CMakeLists
 
+ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
+
+import com.android.build.OutputFile
+
+android.applicationVariants.all { variant ->
+    variant.outputs.each { output ->    
+        def baseAbiVersionCode = project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
+
+        if (baseAbiVersionCode != null) {
+            output.versionCodeOverride =
+                    baseAbiVersionCode * 1000 + variant.versionCode
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':unity-ads')
@@ -219,5 +236,6 @@ dependencies {
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
 }
+
 apply plugin: 'com.google.gms.google-services'
 

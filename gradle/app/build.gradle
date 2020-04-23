@@ -61,9 +61,9 @@ android {
         
         
         ndk {
-            abiFilters = []
-
             if (findProperty("ANDROID_APP_ABI_FILTERS")) {
+                abiFilters = []
+                
                 abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
             } else {
                 abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
@@ -205,7 +205,7 @@ android.applicationVariants.all { variant ->
 
         if (baseAbiVersionCode != null) {
             output.versionCodeOverride =
-                    baseAbiVersionCode * 1000 + variant.versionCode
+                    baseAbiVersionCode * 1000000 + variant.versionCode
         }
     }
 }

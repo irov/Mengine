@@ -5,6 +5,7 @@
 #include "Interface/TimelineServiceInterface.h"
 
 #include "Kernel/IntrusivePtrScope.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -115,7 +116,7 @@ namespace Mengine
             this->unlink();
 
             TIMELINE_SERVICE()
-                ->beginOffset( used );
+                ->beginOffset( used, MENGINE_DOCUMENT_FACTORABLE );
 
             this->complete( true );
 

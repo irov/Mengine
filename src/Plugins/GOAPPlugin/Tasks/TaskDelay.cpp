@@ -69,7 +69,7 @@ namespace Mengine
     {
         SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( MENGINE_DOCUMENT_FUNCTION, this, _node );
 
-        uint32_t id = m_scheduler->event( m_time, ev );
+        uint32_t id = m_scheduler->event( m_time, ev, MENGINE_DOCUMENT_FUNCTION );
 
         if( id == 0 )
         {

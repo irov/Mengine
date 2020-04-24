@@ -32,10 +32,10 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        uint32_t event( float _delay, const SchedulerEventInterfacePtr & _event ) override;
+        uint32_t event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
 
     public:
-        uint32_t timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event ) override;
+        uint32_t timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
 
     public:
         bool refresh( uint32_t _id ) override;
@@ -96,6 +96,8 @@ namespace Mengine
             bool dead;
             bool freeze;
             bool iterate_invalide;
+
+            DocumentPtr doc;
         };
 
         typedef Vector<SchedulerEventDesc> VectorSchedulers;

@@ -286,7 +286,7 @@ namespace Mengine
 
                 sl->initialize( _script, _args );
 
-                uint32_t id = _scheduleManager->event( _timing, sl );
+                uint32_t id = _scheduleManager->event( _timing, sl, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -305,7 +305,7 @@ namespace Mengine
                 PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_event->initialize( _event, _args );
 
-                uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event );
+                uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -328,7 +328,7 @@ namespace Mengine
                     py_event->initialize( _event, _args );
                 }
 
-                uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event );
+                uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }

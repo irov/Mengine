@@ -50,10 +50,10 @@ namespace Mengine
         virtual const ConstString & getName() const = 0;
 
     public:
-        virtual uint32_t event( float _delay, const SchedulerEventInterfacePtr & _event ) = 0;
+        virtual uint32_t event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual uint32_t timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event ) = 0;
+        virtual uint32_t timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool refresh( uint32_t _id ) = 0;

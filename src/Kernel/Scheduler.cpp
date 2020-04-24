@@ -84,7 +84,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event )
+    uint32_t Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
             , this->getName().c_str()
@@ -112,12 +112,14 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalide = true;
 
+        desc.doc = _doc;
+
         m_schedulersAdd.emplace_back( desc );
 
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event )
+    uint32_t Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
     {
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
@@ -138,6 +140,8 @@ namespace Mengine
         desc.dead = false;
         desc.freeze = false;
         desc.iterate_invalide = true;
+
+        desc.doc = _doc;
 
         m_schedulersAdd.emplace_back( desc );
 
@@ -253,6 +257,7 @@ namespace Mengine
         case EST_EVENT:
             {
                 SchedulerEventInterfacePtr event = _event.event;
+
                 _event.event = nullptr;
 
                 event->onSchedulerStop( _event.id );
@@ -260,6 +265,7 @@ namespace Mengine
         case EST_TIMING:
             {
                 SchedulerEventInterfacePtr event = _event.event;
+
                 _event.event = nullptr;
                 _event.timer = nullptr;
                 _event.pipe = nullptr;
@@ -327,7 +333,7 @@ namespace Mengine
                     float timeOffset = desc.delay - old_timing;
 
                     TIMELINE_SERVICE()
-                        ->beginOffset( timeOffset );
+                        ->beginOffset( timeOffset, desc.doc );
 
                     desc.dead = true;
 
@@ -386,7 +392,7 @@ namespace Mengine
                         desc.iterate_invalide = true;
 
                         TIMELINE_SERVICE()
-                            ->beginOffset( timeOffset );
+                            ->beginOffset( timeOffset, desc.doc );
 
                         desc.timer->onSchedulerTiming( desc.id, iterate, desc.delay );
 

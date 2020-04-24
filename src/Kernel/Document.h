@@ -15,7 +15,7 @@ namespace Mengine
     {
     public:
         Document();
-        ~Document();
+        ~Document() override;
 
     public:
         void setParent( const DocumentPtr & _parent );

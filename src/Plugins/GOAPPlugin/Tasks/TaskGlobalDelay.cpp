@@ -72,7 +72,7 @@ namespace Mengine
         const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
             ->getGlobalScheduler();
 
-        uint32_t id = scheduler->event( m_time, ev );
+        uint32_t id = scheduler->event( m_time, ev, MENGINE_DOCUMENT_FUNCTION );
 
         if( id == 0 )
         {

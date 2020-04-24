@@ -32,12 +32,13 @@ namespace Mengine
         m_offsets.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimelineService::beginOffset( float _offset )
+    void TimelineService::beginOffset( float _offset, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_time >= _offset, "time %f < %f revision (%u)"
+        MENGINE_ASSERTION_FATAL( m_time >= _offset, "time %f < %f revision (%u) [doc: %s]"
             , m_time
             , _offset
             , m_revision
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         m_offsets.emplace_back( _offset );

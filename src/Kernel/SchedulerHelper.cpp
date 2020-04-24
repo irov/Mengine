@@ -94,7 +94,7 @@ namespace Mengine
         {
             SchedulerEventInterfacePtr event = Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _doc, _event );
 
-            uint32_t id = _scheduler->event( _delay, event );
+            uint32_t id = _scheduler->event( _delay, event, _doc );
 
             return id;
         }
@@ -105,7 +105,7 @@ namespace Mengine
             SchedulerTimingInterfacePtr timing = Helper::makeFactorableUnique<Detail::HelperScheduleTiming>( _doc, _timing );
             SchedulerEventInterfacePtr event = _event != nullptr ? Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _doc, _event ) : nullptr;
 
-            uint32_t id = _scheduler->timing( pipe, timing, event );
+            uint32_t id = _scheduler->timing( pipe, timing, event, _doc );
 
             return id;
         }

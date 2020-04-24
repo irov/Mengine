@@ -350,7 +350,7 @@ namespace Mengine
                 PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_event->initialize( _event, _args );
 
-                uint32_t id = tm->timing( py_pipe, py_timing, py_event );
+                uint32_t id = tm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -402,7 +402,7 @@ namespace Mengine
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getScheduler();
 
-                uint32_t id = sm->timing( py_pipe, py_timing, py_event );
+                uint32_t id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -415,7 +415,7 @@ namespace Mengine
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
                 sl->initialize( _script, _args );
 
-                uint32_t id = sm->event( _timing, sl );
+                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -529,7 +529,7 @@ namespace Mengine
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
                 sl->initialize( _cb, _args );
 
-                uint32_t id = sm->event( _timing, sl );
+                uint32_t id = sm->event( _timing, sl, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }

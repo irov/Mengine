@@ -57,23 +57,23 @@ android {
         println versionCode
         
         print 'ANDROID_APP_NAME_VERSION = '
-        println versionName
-        
-        ndk {
-            if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-                abiFilters = []
-                abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
-            }
-        }
+        println versionName        
 
-        print 'ANDROID_APP_ABI_FILTERS = '
-        println ndk.abiFilters
-        
         signingConfig signingConfigs.config
         targetSdkVersion 28
 
         multiDexEnabled true
     }
+    
+    ndk {
+        if (findProperty("ANDROID_APP_ABI_FILTERS")) {
+            abiFilters = []
+            abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
+        }    
+    }
+    
+    print 'ANDROID_APP_ABI_FILTERS = '
+    println ndk.abiFilters
     
     splits {
         abi {

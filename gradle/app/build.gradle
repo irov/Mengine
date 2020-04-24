@@ -84,13 +84,6 @@ android {
     }
     
     buildTypes {
-        ndk {
-            if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-                abiFilters = []
-                abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
-            }
-        }
-    
         debug {
             debuggable true
             externalNativeBuild {

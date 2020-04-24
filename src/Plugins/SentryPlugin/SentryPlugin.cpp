@@ -12,6 +12,7 @@
 
 #include "Config/GitSHA1.h"
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
@@ -137,12 +138,16 @@ namespace Mengine
 
         sentry_set_extra( "Development", sentry_value_new_bool( developmentMode == true ? 1 : 0 ) );
 
+        bool masterMode = MENGINE_MASTER_ATTRIBUTE( true, false );
+
+        sentry_set_extra( "Master", sentry_value_new_bool( masterMode ) );
+
 #ifdef MENGINE_GIT_SHA1
         sentry_set_extra( "Commit", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
 #endif
 
-        Char releaseString[32];
-        sprintf( releaseString, "%s@%u", projectName, projectVersion );
+        Char releaseString[256];
+        MENGINE_SNPRINTF( releaseString, 256, "%s@%u", projectName, projectVersion );
 
         sentry_options_set_release( m_options, releaseString );
 

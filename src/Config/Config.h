@@ -64,6 +64,12 @@
 #define MENGINE_DEBUG_ATTRIBUTE(X, Y) (Y)
 #endif
 
+#ifdef MENGINE_MASTER_RELEASE
+#define MENGINE_MASTER_ATTRIBUTE(X, Y) (X)
+#else
+#define MENGINE_MASTER_ATTRIBUTE(X, Y) (Y)
+#endif
+
 #define MENGINE_CONSTEXPR constexpr
 #define MENGINE_INLINE inline
 

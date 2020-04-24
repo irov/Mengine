@@ -164,7 +164,9 @@ android {
     }
     
     afterEvaluate {
-        assembleRelease.finalizedBy(uploadCrashlyticsSymbolFileRelease)
+        if (findProperty("ANDROID_APP_UPLOAD_CRASHLYTICS")) {
+            assembleRelease.finalizedBy(uploadCrashlyticsSymbolFileRelease)
+        }
     }
 }
 

@@ -66,13 +66,12 @@ macro(DOWNLOAD_URL_HASH NAME URL HASH_ALGO HASH)
 endmacro()
 
 macro(GIT_CLONE NAME REPOSITORY)
-    MESSAGE("Git ${NAME}: ${REPOSITORY}")
-    
     set(TAG ${ARGN})
     
     list(LENGTH TAG EXIST_TAG)
     
     if(${EXIST_TAG} GREATER 0)
+        MESSAGE("Git ${NAME}: ${REPOSITORY} [${TAG}]")
         ExternalProject_Add( "${NAME}_${TAG}_download" PREFIX ${NAME}
             SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
             
@@ -86,6 +85,8 @@ macro(GIT_CLONE NAME REPOSITORY)
             INSTALL_COMMAND ""
         )
     else()
+        MESSAGE("Git ${NAME}: ${REPOSITORY}")
+        
         ExternalProject_Add(${NAME}_download PREFIX ${NAME}
             SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
             

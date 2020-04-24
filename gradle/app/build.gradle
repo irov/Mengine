@@ -64,16 +64,7 @@ android {
 
         multiDexEnabled true
     }
-    
-    ndk {
-        if (findProperty("ANDROID_APP_ABI_FILTERS")) {
-            abiFilters = []
-            abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
-        }    
-    }
-    
-    print 'ANDROID_APP_ABI_FILTERS = '
-    println ndk.abiFilters
+
     
     splits {
         abi {
@@ -93,6 +84,13 @@ android {
     }
     
     buildTypes {
+        ndk {
+            if (findProperty("ANDROID_APP_ABI_FILTERS")) {
+                abiFilters = []
+                abiFilters.addAll(ANDROID_APP_ABI_FILTERS.split(",").collect{it.trim() as String})
+            }
+        }
+    
         debug {
             debuggable true
             externalNativeBuild {

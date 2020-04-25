@@ -40,11 +40,11 @@ WIN32 is still required for the locale module.
 #endif /* USE_DL_EXPORT */
 
 /* Visual Studio 2005 introduces deprecation warnings for
-"insecure" and POSIX functions. The insecure functions should
-be replaced by *_s versions (according to Microsoft); the
-POSIX functions by _* versions (which, according to Microsoft,
-would be ISO C conforming). Neither renaming is feasible, so
-we just silence the warnings. */
+   "insecure" and POSIX functions. The insecure functions should
+   be replaced by *_s versions (according to Microsoft); the
+   POSIX functions by _* versions (which, according to Microsoft,
+   would be ISO C conforming). Neither renaming is feasible, so
+   we just silence the warnings. */
 
 #ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE 1
@@ -68,19 +68,19 @@ we just silence the warnings. */
 #include <io.h>
 #endif
 
-#undef HAVE_HYPOT
+#define HAVE_HYPOT
 #define HAVE_STRFTIME
 #define DONT_HAVE_SIG_ALARM
 #define DONT_HAVE_SIG_PAUSE
-//#define LONG_BIT	32
+#define LONG_BIT 32
 #define WORD_BIT 32
 #define PREFIX ""
 #define EXEC_PREFIX ""
 
-#	ifdef WIN32
+#ifdef WIN32
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
-#	endif
+#endif
 
 #ifndef PYTHONPATH
 #	define PYTHONPATH ".\\DLLs;.\\lib;.\\lib\\plat-win;.\\lib\\lib-tk"
@@ -109,36 +109,36 @@ we just silence the warnings. */
 #ifdef _MSC_VER
 
 /* We want COMPILER to expand to a string containing _MSC_VER's *value*.
-* This is horridly tricky, because the stringization operator only works
-* on macro arguments, and doesn't evaluate macros passed *as* arguments.
-* Attempts simpler than the following appear doomed to produce "_MSC_VER"
-* literally in the string.
-*/
+ * This is horridly tricky, because the stringization operator only works
+ * on macro arguments, and doesn't evaluate macros passed *as* arguments.
+ * Attempts simpler than the following appear doomed to produce "_MSC_VER"
+ * literally in the string.
+ */
 #define _Py_PASTE_VERSION(SUFFIX) \
 	("[MSC v." _Py_STRINGIZE(_MSC_VER) " " SUFFIX "]")
 /* e.g., this produces, after compile-time string catenation,
-* 	("[MSC v.1200 32 bit (Intel)]")
-*
-* _Py_STRINGIZE(_MSC_VER) expands to
-* _Py_STRINGIZE1((_MSC_VER)) expands to
-* _Py_STRINGIZE2(_MSC_VER) but as this call is the result of token-pasting
-*      it's scanned again for macros and so further expands to (under MSVC 6)
-* _Py_STRINGIZE2(1200) which then expands to
-* "1200"
-*/
+ * 	("[MSC v.1200 32 bit (Intel)]")
+ *
+ * _Py_STRINGIZE(_MSC_VER) expands to
+ * _Py_STRINGIZE1((_MSC_VER)) expands to
+ * _Py_STRINGIZE2(_MSC_VER) but as this call is the result of token-pasting
+ *      it's scanned again for macros and so further expands to (under MSVC 6)
+ * _Py_STRINGIZE2(1200) which then expands to
+ * "1200"
+ */
 #define _Py_STRINGIZE(X) _Py_STRINGIZE1((X))
 #define _Py_STRINGIZE1(X) _Py_STRINGIZE2 ## X
 #define _Py_STRINGIZE2(X) #X
 
 /* MSVC defines _WINxx to differentiate the windows platform types
 
-Note that for compatibility reasons _WIN32 is defined on Win32
-*and* on Win64. For the same reasons, in Python, MS_WIN32 is
-defined on Win32 *and* Win64. Win32 only code must therefore be
-guarded as follows:
-#if defined(MS_WIN32) && !defined(MS_WIN64)
-Some modules are disabled on Itanium processors, therefore we
-have MS_WINI64 set for those targets, otherwise MS_WINX64
+   Note that for compatibility reasons _WIN32 is defined on Win32
+   *and* on Win64. For the same reasons, in Python, MS_WIN32 is
+   defined on Win32 *and* Win64. Win32 only code must therefore be
+   guarded as follows:
+   	#if defined(MS_WIN32) && !defined(MS_WIN64)
+   Some modules are disabled on Itanium processors, therefore we
+   have MS_WINI64 set for those targets, otherwise MS_WINX64
 */
 #ifdef _WIN64
 #define MS_WIN64
@@ -177,11 +177,11 @@ have MS_WINI64 set for those targets, otherwise MS_WINX64
 #endif
 
 /* We only set these values when building Python - we don't want to force
-these values on extensions, as that will affect the prototypes and
-structures exposed in the Windows headers. Even when building Python, we
-allow a single source file to override this - they may need access to
-structures etc so it can optionally use new Windows features if it
-determines at runtime they are available.
+   these values on extensions, as that will affect the prototypes and
+   structures exposed in the Windows headers. Even when building Python, we
+   allow a single source file to override this - they may need access to
+   structures etc so it can optionally use new Windows features if it
+   determines at runtime they are available.
 */
 #if defined(Py_BUILD_CORE) || defined(Py_BUILD_CORE_MODULE)
 #ifndef NTDDI_VERSION
@@ -228,11 +228,6 @@ typedef int pid_t;
 #define Py_IS_FINITE(X) _finite(X)
 #define copysign _copysign
 
-/* VS 2010 and above already defines hypot as _hypot */
-//#if _MSC_VER < 1600
-//#define hypot _hypot
-//#endif
-
 #endif /* _MSC_VER */
 
 /* define some ANSI types that are not defined in earlier Win headers */
@@ -249,11 +244,11 @@ typedef int pid_t;
 
 #ifdef _WIN32
 /* tested with BCC 5.5 (__BORLANDC__ >= 0x0550)
-*/
+ */
 
 typedef int pid_t;
 /* BCC55 seems to understand __declspec(dllimport), it is used in its
-own header files (winnt.h, ...) - so we can do nothing and get the default*/
+   own header files (winnt.h, ...) - so we can do nothing and get the default*/
 
 #undef HAVE_SYS_UTIME_H
 #define HAVE_UTIME_H
@@ -274,10 +269,10 @@ own header files (winnt.h, ...) - so we can do nothing and get the default*/
 /* egcs/gnu-win32 defines __GNUC__ and _WIN32 */
 #if defined(__GNUC__) && defined(_WIN32)
 /* XXX These defines are likely incomplete, but should be easy to fix.
-They should be complete enough to build extension modules. */
+   They should be complete enough to build extension modules. */
 /* Suggested by Rene Liebscher <R.Liebscher@gmx.de> to avoid a GCC 2.91.*
-bug that requires structure imports.  More recent versions of the
-compiler don't exhibit this bug.
+   bug that requires structure imports.  More recent versions of the
+   compiler don't exhibit this bug.
 */
 #if (__GNUC__==2) && (__GNUC_MINOR__<=91)
 #warning "Please use an up-to-date version of gcc! (>2.91 recommended)"
@@ -294,7 +289,7 @@ compiler don't exhibit this bug.
 /* lcc-win32 defines __LCC__ */
 #if defined(__LCC__)
 /* XXX These defines are likely incomplete, but should be easy to fix.
-They should be complete enough to build extension modules. */
+   They should be complete enough to build extension modules. */
 
 #define COMPILER "[lcc-win32]"
 typedef int pid_t;
@@ -306,7 +301,7 @@ typedef int pid_t;
 /* End of compilers - finish up */
 
 #ifndef NO_STDIO_H
-#include <stdio.h>
+#	include <stdio.h>
 #endif
 
 /* 64 bit ints are usually spelt __int64 unless compiler has overridden */
@@ -317,8 +312,6 @@ typedef int pid_t;
 #	define PY_LLONG_MIN _I64_MIN
 #	define PY_ULLONG_MAX _UI64_MAX
 #endif
-
-#	define PY_FORMAT_LONG_LONG "llx"
 
 /* For Windows the Python core is in a DLL by default.  Test
 Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
@@ -345,8 +338,8 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 
 #if defined(MS_WIN64)
 /* maintain "win32" sys.platform for backward compatibility of Python code,
-the Win64 API should be close enough to the Win32 API to make this
-preferable */
+   the Win64 API should be close enough to the Win32 API to make this
+   preferable */
 #	define PLATFORM "win32"
 #	define SIZEOF_VOID_P 8
 #	define SIZEOF_TIME_T 8
@@ -355,20 +348,20 @@ preferable */
 #	define SIZEOF_HKEY 8
 #	define SIZEOF_SIZE_T 8
 /* configure.ac defines HAVE_LARGEFILE_SUPPORT iff HAVE_LONG_LONG,
-sizeof(off_t) > sizeof(long), and sizeof(PY_LONG_LONG) >= sizeof(off_t).
-On Win64 the second condition is not true, but if fpos_t replaces off_t
-then this is true. The uses of HAVE_LARGEFILE_SUPPORT imply that Win64
-should define this. */
+   sizeof(off_t) > sizeof(long), and sizeof(PY_LONG_LONG) >= sizeof(off_t).
+   On Win64 the second condition is not true, but if fpos_t replaces off_t
+   then this is true. The uses of HAVE_LARGEFILE_SUPPORT imply that Win64
+   should define this. */
 #	define HAVE_LARGEFILE_SUPPORT
 #elif defined(MS_WIN32)
 #	define PLATFORM "win32"
-#   undef HAVE_LARGEFILE_SUPPORT
+#	define HAVE_LARGEFILE_SUPPORT
 #	define SIZEOF_VOID_P 4
 #	define SIZEOF_OFF_T 4
 #	define SIZEOF_FPOS_T 8
 #	define SIZEOF_HKEY 4
 #	define SIZEOF_SIZE_T 4
-/* MS VS2005 changes time_t to a 64-bit type on all platforms */
+	/* MS VS2005 changes time_t to a 64-bit type on all platforms */
 #	if defined(_MSC_VER) && _MSC_VER >= 1400
 #	define SIZEOF_TIME_T 8
 #	else
@@ -391,9 +384,9 @@ should define this. */
 #define SIZEOF_FLOAT 4
 
 /* VC 7.1 has them and VC 6.0 does not.  VC 6.0 has a version number of 1200.
-Microsoft eMbedded Visual C++ 4.0 has a version number of 1201 and doesn't
-define these.
-If some compiler does not provide them, modify the #if appropriately. */
+   Microsoft eMbedded Visual C++ 4.0 has a version number of 1201 and doesn't
+   define these.
+   If some compiler does not provide them, modify the #if appropriately. */
 #if defined(_MSC_VER)
 #if _MSC_VER > 1300
 #define HAVE_UINTPTR_T 1
@@ -407,7 +400,7 @@ If some compiler does not provide them, modify the #if appropriately. */
 #endif
 
 /* define signed and unsigned exact-width 32-bit and 64-bit types, used in the
-implementation of Python long integers. */
+   implementation of Python long integers. */
 #ifndef PY_UINT32_T
 #if SIZEOF_INT == 4
 #define HAVE_UINT32_T 1
@@ -459,8 +452,8 @@ implementation of Python long integers. */
 #define HAVE_DECL_ISNAN 1
 
 /* Define if on AIX 3.
-System headers sometimes define this.
-We just want to avoid a redefinition error message.  */
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
 #ifndef _ALL_SOURCE
 /* #undef _ALL_SOURCE */
 #endif
@@ -482,7 +475,7 @@ We just want to avoid a redefinition error message.  */
 /* #define DIRENT 1 */
 
 /* Define to the type of elements in the array set by `getgroups'.
-Usually this is either `int' or `gid_t'.  */
+   Usually this is either `int' or `gid_t'.  */
 /* #undef GETGROUPS_T */
 
 /* Define to `int' if <sys/types.h> doesn't define.  */
@@ -508,7 +501,7 @@ tzname.  */
 /* #undef pid_t */
 
 /* Define if the system does not provide POSIX.1 features except
-with this defined.  */
+   with this defined.  */
 /* #undef _POSIX_1_SOURCE */
 
 /* Define if you need to in order for stat and other things to work.  */
@@ -542,7 +535,7 @@ with this defined.  */
 /* #undef VOID_CLOSEDIR */
 
 /* Define if getpgrp() must be called as getpgrp(0)
-and (consequently) setpgrp() as setpgrp(0, 0). */
+   and (consequently) setpgrp() as setpgrp(0, 0). */
 /* #undef GETPGRP_HAVE_ARGS */
 
 /* Define this if your time.h defines altzone */
@@ -557,7 +550,7 @@ and (consequently) setpgrp() as setpgrp(0, 0). */
 #define HAVE_PROTOTYPES
 
 /* Define if  you can safely include both <sys/select.h> and <sys/time.h>
-(which you can't on SCO ODT 3.0). */
+   (which you can't on SCO ODT 3.0). */
 /* #undef SYS_SELECT_WITH_SYS_TIME */
 
 /* Define if you want documentation strings in extension modules */
@@ -566,10 +559,7 @@ and (consequently) setpgrp() as setpgrp(0, 0). */
 /* Define if you want to compile in rudimentary thread support */
 #undef WITH_THREAD
 
-#if defined(WIN32) && !defined(NDEBUG)
-#   define NT_THREADS
-#endif
-
+#define NT_THREADS
 /* Define if you want to use the GNU readline library */
 /* #define WITH_READLINE 1 */
 
@@ -582,7 +572,7 @@ and (consequently) setpgrp() as setpgrp(0, 0). */
 #define Py_UNICODE_SIZE 2
 
 /* Use Python's own small-block memory-allocator. */
-#define WITH_PYMALLOC
+#define WITH_PYMALLOC 1
 
 /* Define if you have clock.  */
 /* #define HAVE_CLOCK */
@@ -771,12 +761,11 @@ and (consequently) setpgrp() as setpgrp(0, 0). */
 /* #undef HAVE_LIBTHREAD */
 
 /* WinSock does not use a bitmask in select, and uses
-socket handles greater than FD_SETSIZE */
+   socket handles greater than FD_SETSIZE */
 #define Py_SOCKET_FD_CAN_BE_GE_FD_SETSIZE
 
 /* Define if C doubles are 64-bit IEEE 754 binary format, stored with the
-least significant byte first */
+   least significant byte first */
 #define DOUBLE_IS_LITTLE_ENDIAN_IEEE754 1
 
 #endif /* !Py_CONFIG_H */
-

@@ -1,0 +1,1 @@
+@call build_solution_tools_mingw_x64.bat Release

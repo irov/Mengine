@@ -1,9 +1,12 @@
 #include "MT19937Randomizer.h"
 
+#include "Kernel/Assertion.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::MT19937Randomizer()
+        : m_engineRandomize( std::random_device()() )
     {
         std::mt19937::result_type min_value = (m_engineRandomize.min)();
         std::mt19937::result_type max_value = (m_engineRandomize.max)();
@@ -55,6 +58,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float MT19937Randomizer::getRandomf( float _max ) const
     {
+        MENGINE_ASSERTION_FATAL( _max >= 0.f );
+
         if( _max < m_epsilon )
         {
             return 0.f;
@@ -69,6 +74,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float MT19937Randomizer::getRandomRangef( float _min, float _max ) const
     {
+        MENGINE_ASSERTION_FATAL( _min >= 0.f );
+        MENGINE_ASSERTION_FATAL( _max >= 0.f );
+
         if( _max < m_epsilon )
         {
             return 0.f;

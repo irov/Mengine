@@ -70,6 +70,7 @@ namespace Mengine
 
     public:
         virtual bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) = 0;
+        virtual void removeCodecExt( const ConstString & _ext ) = 0;
         virtual const ConstString & findCodecType( const FilePath & _filePath ) const = 0;
     };
 }

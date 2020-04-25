@@ -15,13 +15,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class SimpleBox2DEventReceiver
+    class CastleRoyalEventReceiver
         : public DummySceneEventReceiver
         , public Factorable
     {
     public:
-        SimpleBox2DEventReceiver();
-        ~SimpleBox2DEventReceiver() override;
+        CastleRoyalEventReceiver();
+        ~CastleRoyalEventReceiver() override;
 
     public:
         bool onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity ) override;
@@ -40,6 +40,6 @@ namespace Mengine
         Box2DWorldInterfacePtr m_world;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SimpleBox2DEventReceiver> SimpleBox2DEventReceiverPtr;
+    typedef IntrusivePtr<CastleRoyalEventReceiver> CastleRoyalEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

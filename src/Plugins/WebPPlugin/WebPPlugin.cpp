@@ -50,6 +50,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void WebPPlugin::_finalizePlugin()
     {
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "webp" ) );
+
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "webpImage" ) );
     }
 }

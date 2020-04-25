@@ -1,4 +1,4 @@
-#include "SimpleBox2DFramework.h"
+#include "CastleRoyalFramework.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -11,27 +11,27 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "SimpleBox2DEventReceiver.h"
+#include "CastleRoyalEventReceiver.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DFramework::SimpleBox2DFramework()
+    CastleRoyalFramework::CastleRoyalFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DFramework::~SimpleBox2DFramework()
+    CastleRoyalFramework::~CastleRoyalFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DFramework::_initializeFramework()
+    bool CastleRoyalFramework::_initializeFramework()
     {
-        SimpleBox2DEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<SimpleBox2DEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
+        CastleRoyalEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<CastleRoyalEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FACTORABLE );
 
-        scene->setName( STRINGIZE_STRING_LOCAL( "SimpleBox2DScene" ) );
+        scene->setName( STRINGIZE_STRING_LOCAL( "Example" ) );
 
         SCENE_SERVICE()
             ->setCurrentScene( scene, false, false, nullptr );
@@ -39,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DFramework::_finalizeFramework()
+    void CastleRoyalFramework::_finalizeFramework()
     {
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );

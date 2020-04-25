@@ -1,4 +1,4 @@
-#include "SimpleBox2DEventReceiver.h"
+#include "CastleRoyalEventReceiver.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -31,16 +31,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DEventReceiver::SimpleBox2DEventReceiver()
+    CastleRoyalEventReceiver::CastleRoyalEventReceiver()
         : m_scene( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DEventReceiver::~SimpleBox2DEventReceiver()
+    CastleRoyalEventReceiver::~CastleRoyalEventReceiver()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
+    bool CastleRoyalEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -53,7 +53,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
+    void CastleRoyalEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -72,7 +72,7 @@ namespace Mengine
         m_world = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
+    bool CastleRoyalEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -132,14 +132,9 @@ namespace Mengine
                 , 0xFFFF, 0x0001, 0
             );
 
-            // transforms
             body->setLinearVelocity( { 20.f, 0.f } );
-            //body->setAngularVelocity( -90.f * mt::constant::deg2rad );
 
-            // vectorizer
             NodePtr graphicsNode = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
-
-            graphicsNode->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_DynamicBody" ) );
 
             GraphicsInterface * graphics = graphicsNode->getUnknown();
 
@@ -194,10 +189,7 @@ namespace Mengine
                 , 0xFFFF, 0x0001, 0
             );
 
-            // vectorizer
             NodePtr graphicsNode = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FUNCTION );
-
-            graphicsNode->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_StaticBody" ) );
 
             GraphicsInterface * graphics = graphicsNode->getUnknown();
 
@@ -233,7 +225,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
+    bool CastleRoyalEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -258,7 +250,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void CastleRoyalEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 

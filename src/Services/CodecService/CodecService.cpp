@@ -32,6 +32,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void CodecService::_finalizeService()
     {
+#if defined(MENGINE_DEBUG)
+        for( auto && [key, value] : m_codecExts )
+        {
+            LOGGER_ERROR( "Codec exts '%s' not clear"
+                , key.c_str()
+            );
+        }
+#endif
+
+        m_codecExts.clear();
+
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "DecoderFactory" ) );
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "EncoderFactory" ) );
     }
@@ -98,6 +109,13 @@ namespace Mengine
         m_codecExts.emplace( _ext, _codecType );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CodecService::removeCodecExt( const ConstString & _ext )
+    {
+        MENGINE_ASSERTION( m_codecExts.find( _ext ) != m_codecExts.end() );
+
+        m_codecExts.erase( _ext );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & CodecService::findCodecType( const FilePath & _filePath ) const

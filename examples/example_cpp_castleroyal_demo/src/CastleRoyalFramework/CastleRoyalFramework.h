@@ -5,13 +5,12 @@
 
 namespace Mengine
 {
-    class SimpleBox2DFramework
+    class CastleRoyalFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
-        SimpleBox2DFramework();
-        ~SimpleBox2DFramework() override;
+        CastleRoyalFramework();
+        ~CastleRoyalFramework() override;
 
     protected:
         bool _initializeFramework() override;

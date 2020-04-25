@@ -1,35 +1,35 @@
-#include "SimpleBox2DFrameworkPlugin.h"
+#include "CastleRoyalFrameworkPlugin.h"
 
 #include "Interface/FrameworkFactoryInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
-#include "SimpleBox2DFramework.h"
+#include "CastleRoyalFramework.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FrameworkFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( SimpleBox2DFramework, Mengine::SimpleBox2DFrameworkPlugin )
+PLUGIN_FACTORY( CastleRoyalFramework, Mengine::CastleRoyalFrameworkPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {    
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DFrameworkPlugin::SimpleBox2DFrameworkPlugin()
+    CastleRoyalFrameworkPlugin::CastleRoyalFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DFrameworkPlugin::~SimpleBox2DFrameworkPlugin()
+    CastleRoyalFrameworkPlugin::~CastleRoyalFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DFrameworkPlugin::_initializePlugin()
+    bool CastleRoyalFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "SimpleBox2DFramework" ), Helper::makeFrameworkFactory<SimpleBox2DFramework>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "CastleRoyalFramework" ), Helper::makeFrameworkFactory<CastleRoyalFramework>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DFrameworkPlugin::_finalizePlugin()
+    void CastleRoyalFrameworkPlugin::_finalizePlugin()
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "SimpleBox2DFramework" ) );
     }

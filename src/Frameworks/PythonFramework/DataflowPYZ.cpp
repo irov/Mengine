@@ -101,7 +101,9 @@ namespace Mengine
         const uint8_t * source_buffer = _memory->getBuffer();
         size_t source_size = _memory->getSize();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, false, "module invalid buffer [doc: %s]"
+            , MENGINE_DOCUMENT_STR( _doc ) 
+        );
 
         long file_magic = s_get_int( source_buffer );
         long py_magic = m_kernel->marshal_magic_number();
@@ -118,10 +120,11 @@ namespace Mengine
 
         PyObject * py_code = m_kernel->marshal_get_object( (char *)source_buffer + 8, source_size - 8 );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "module invalid marshal get object"
-        );
+        MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "module invalid marshal get object [doc: %s]"
+            , MENGINE_DOCUMENT_STR( _doc )
+            );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( m_kernel->code_check( py_code ) == false )
         {
             LOGGER_ERROR( "module marshal get object not code"

@@ -30,9 +30,10 @@ Win32Application
 if(MENGINE_TOOLCHAIN_MINGW)
     # resource compilation for mingw
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o
-                       COMMAND ${MINGW32_ROOT}/bin/windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
-                                           -i${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
+                       COMMAND ${MINGW_ROOT}/bin/windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
+                                           -i ${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
                                            -o ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
+    
     SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
 endif()
 
@@ -56,7 +57,7 @@ if(MSVC)
 endif()
 
 if(MINGW)
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map"            )
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map")
 endif()
 
 ADD_DEPENDENCIES(${PROJECT_NAME} ${APPLICATION_DEPENDENCIES})

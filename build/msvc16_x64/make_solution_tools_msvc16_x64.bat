@@ -17,7 +17,7 @@ set "YEAR=2019"
 @popd
 
 @pushd %~dp0..
-@call make_solution.bat "SOLUTION_NAME=solution_tools_msvc%VERSION%_x64" "SOURCE_DIRECTORY=%CD%\..\cmake\Tools_Win64" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=x64" "LIBRARY_DIRECTORY=Depends_WIN64"
+@call make_solution.bat "SOLUTION_NAME=solution_tools_msvc%VERSION%_x64" "SOURCE_DIRECTORY=%CD%\..\cmake\Tools_Win64" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=x64"
 @popd
 
 :end

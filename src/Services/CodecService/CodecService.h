@@ -25,6 +25,7 @@ namespace Mengine
 
     public:
         bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) override;
+        void removeCodecExt( const ConstString & _ext ) override;
         const ConstString & findCodecType( const FilePath & _filePath ) const override;
 
     protected:

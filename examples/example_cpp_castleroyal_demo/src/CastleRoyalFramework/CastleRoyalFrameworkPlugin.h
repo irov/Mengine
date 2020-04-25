@@ -4,14 +4,14 @@
 
 namespace Mengine
 {
-    class SimpleBox2DFrameworkPlugin
+    class CastleRoyalFrameworkPlugin
         : public PluginBase
     {
         PLUGIN_DECLARE( "SimpleBox2DFramework" )
 
     public:
-        SimpleBox2DFrameworkPlugin();
-        ~SimpleBox2DFrameworkPlugin() override;
+        CastleRoyalFrameworkPlugin();
+        ~CastleRoyalFrameworkPlugin() override;
 
     protected:
         bool _initializePlugin() override;

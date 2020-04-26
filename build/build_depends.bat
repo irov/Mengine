@@ -39,6 +39,6 @@ CMake -G "%GENERATOR%" %CMAKE_PLATFORM_TOOLSET% %CMAKE_ARCHITECTURE% -S "%SOURCE
 
 @pushd "%BUILD_TEMP_DIR%"
 
-CMake --build .\ -j 4 --config %CONFIGURATION% %CMAKE_VERBOSITY%
+CMake --build .\ -j 8 --config %CONFIGURATION% %CMAKE_VERBOSITY%
 
 @popd

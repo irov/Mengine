@@ -145,7 +145,7 @@ namespace Mengine
             pybind::list py_list( _kernel );
 
             VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Slots>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
-            _movie->visitSockets( visitor );
+            _movie->visitSlots( visitor );
 
             return py_list;
         }

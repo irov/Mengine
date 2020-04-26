@@ -398,7 +398,10 @@ namespace Mengine
             }
         }
 
-        MENGINE_ASSERTION_FATAL( m_files.find( _filePath ) != m_files.end(), nullptr );
+        MENGINE_ASSERTION_FATAL( m_files.find( _filePath ) != m_files.end(), "'%s' invalid found file '%s'"
+            , this->getName().c_str()
+            , _filePath.c_str() 
+        );
 
         if( _streaming == true )
         {

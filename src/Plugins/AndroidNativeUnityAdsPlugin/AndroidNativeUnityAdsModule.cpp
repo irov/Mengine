@@ -25,7 +25,7 @@ static Mengine::AndroidNativeUnityAdsModule * s_androidNativeUnityModule = nullp
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1setupUnityJNI )(JNIEnv *env, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1setupUnityJNI )(JNIEnv * env, jclass cls)
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
@@ -35,7 +35,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1onSDKInitialized )(JNIEnv *env, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1onSDKInitialized )(JNIEnv * env, jclass cls)
     {
         if( s_androidNativeUnityModule != nullptr )
         {
@@ -47,7 +47,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsClick )(JNIEnv *env, jclass cls, jstring placementId_)
+        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsClick )(JNIEnv * env, jclass cls, jstring placementId_)
     {
         const char * placementId = env->GetStringUTFChars( placementId_, 0 );
 
@@ -65,7 +65,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsPlacementStateChanged )(JNIEnv *env,
+        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsPlacementStateChanged )(JNIEnv * env,
             jclass cls, jstring placementId_, jint placementState_, jint placementState1_)
     {
         const char * placementId = env->GetStringUTFChars( placementId_, 0 );
@@ -86,7 +86,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsReady )(JNIEnv *env, jclass cls, jstring placementId_)
+        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsReady )(JNIEnv * env, jclass cls, jstring placementId_)
     {
         const char * placementId = env->GetStringUTFChars( placementId_, 0 );
 
@@ -104,7 +104,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsStart )(JNIEnv *env, jclass cls, jstring placementId_)
+        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsStart )(JNIEnv * env, jclass cls, jstring placementId_)
     {
         const char * placementId = env->GetStringUTFChars( placementId_, 0 );
 
@@ -122,7 +122,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsFinish )(JNIEnv *env, jclass cls, jstring placementId_, jint finishState_)
+        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsFinish )(JNIEnv * env, jclass cls, jstring placementId_, jint finishState_)
     {
         const char * placementId = env->GetStringUTFChars( placementId_, 0 );
         int finishState = static_cast<int>(finishState_);
@@ -141,7 +141,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsError )(JNIEnv *env, jclass cls,
+        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsError )(JNIEnv * env, jclass cls,
             jint unityAdsError_, jstring message_)
     {
         int unityAdsError = static_cast<int>(unityAdsError_);
@@ -174,7 +174,8 @@ namespace Mengine
             PythonUnityAdsEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
-            {}
+            {
+            }
 
         protected:
             void onUnityAdsInitialized() override
@@ -255,7 +256,7 @@ namespace Mengine
 
         pybind::def_functor( kernel, "androidUnityInitialize", this, &AndroidNativeUnityAdsModule::initializeSDK );
         pybind::def_functor( kernel, "androidUnitySetupAds", this, &AndroidNativeUnityAdsModule::setupAds );
-        pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );        
+        pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -279,7 +280,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsModule::_update( bool _focus )
     {
-        MENGINE_UNUSED(_focus);
+        MENGINE_UNUSED( _focus );
 
         m_eventation.invoke();
     }

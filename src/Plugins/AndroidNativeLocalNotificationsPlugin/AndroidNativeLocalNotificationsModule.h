@@ -8,7 +8,7 @@
 
 #include "Config/Lambda.h"
 
-namespace Mengine 
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AndroidNativeLocalNotificationsModule
@@ -37,7 +37,7 @@ namespace Mengine
 
     public:
         bool initializeLocalNotifications();
-        
+
     public:
         bool scheduleLocalNotification( int _id, const String & _title, const String & _content, int _delay );
         bool instantlyPresentLocalNotification( int _id, const String & _title, const String & _content );

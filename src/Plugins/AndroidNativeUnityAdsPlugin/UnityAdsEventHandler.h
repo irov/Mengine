@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     enum EnumUnityAdsEventHandler
     {
         UNITYADS_INITIALIZE,
@@ -16,7 +17,7 @@ namespace Mengine
         UNITYADS_FINISH,
         UNITYADS_ERROR,
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class UnityAdsEventHandler
         : public Mixin
     {

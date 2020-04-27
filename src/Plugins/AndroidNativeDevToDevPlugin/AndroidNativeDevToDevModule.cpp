@@ -29,7 +29,7 @@ extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1setupDevToDevJNI )(JNIEnv *mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1setupDevToDevJNI )(JNIEnv * mEnv, jclass cls)
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
@@ -44,7 +44,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1onSDKInitialized )(JNIEnv *mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1onSDKInitialized )(JNIEnv * mEnv, jclass cls)
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
@@ -70,7 +70,8 @@ namespace Mengine
             PythonDevToDevEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
-            {}
+            {
+            }
 
         protected:
             void onDevToDevInitialized() override
@@ -185,7 +186,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::setCurrentLevel( int _level )
     {
-        JNIEnv *env = Mengine_JNI_GetEnv();
+        JNIEnv * env = Mengine_JNI_GetEnv();
 
         jint jlevel = static_cast<jint>(_level);
 
@@ -196,7 +197,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::onLevelUp( int _level )
     {
-        JNIEnv *env = Mengine_JNI_GetEnv();
+        JNIEnv * env = Mengine_JNI_GetEnv();
 
         jint jlevel = static_cast<jint>(_level);
 

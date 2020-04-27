@@ -253,7 +253,7 @@ namespace Mengine
                 {
                     c_name = Helper::stringizeString( name );
                 }
-                else if( MENGINE_STRCMP( ext_delimiter, ".png" ) != 0 )
+                else if( MENGINE_STRCMP( ext_delimiter, ".png" ) != 0 && MENGINE_STRCMP( ext_delimiter, ".jpg" ) != 0 )
                 {
                     c_name = Helper::stringizeString( name );
                 }

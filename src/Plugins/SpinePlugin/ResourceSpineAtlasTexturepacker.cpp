@@ -46,6 +46,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( atlas, false );
 
         spAtlasPage * lastPage = nullptr;
+        spAtlasRegion * lastRegion = nullptr;
 
         for( TexturepackerDesc & desc : m_texturepackers )
         {
@@ -89,10 +90,6 @@ namespace Mengine
 
             const ResourceImagePtr & atlasImage = unknownResourceTexturepacker->getAtlasImage();
             page->rendererObject = atlasImage.get();
-
-            atlas->pages = page;
-
-            spAtlasRegion * lastRegion = nullptr;
 
             const VectorResourceImages & frames = unknownResourceTexturepacker->getFrames();
 

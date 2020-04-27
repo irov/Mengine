@@ -9,7 +9,7 @@
 PLUGIN_FACTORY( AndroidNativeUnityAds, Mengine::AndroidNativeUnityAdsPlugin )
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     AndroidNativeUnityAdsPlugin::AndroidNativeUnityAdsPlugin()
     {
@@ -22,12 +22,12 @@ namespace Mengine
     bool AndroidNativeUnityAdsPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidUnityAds" )
-            , Helper::makeModuleFactory<AndroidNativeUnityAdsModule>(MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<AndroidNativeUnityAdsModule>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsPlugin::_finalizePlugin()
     {
-    }    
+    }
 }

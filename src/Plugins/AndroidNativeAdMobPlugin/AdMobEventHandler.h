@@ -32,7 +32,7 @@ namespace Mengine
     {
     public:
         virtual void onAdMobInitialized() = 0;
-        
+
     public:
         virtual void onAdMobInterstitialAdLoaded() = 0;
         virtual void onAdMobInterstitialAdFailedToLoad( int _errorCode ) = 0;

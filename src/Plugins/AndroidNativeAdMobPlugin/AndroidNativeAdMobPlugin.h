@@ -2,7 +2,7 @@
 
 #include "Kernel/PluginBase.h"
 
-namespace Mengine 
+namespace Mengine
 {
     class AndroidNativeAdMobPlugin
         : public PluginBase

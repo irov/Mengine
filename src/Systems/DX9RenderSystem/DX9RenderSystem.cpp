@@ -456,15 +456,15 @@ namespace Mengine
             LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
             );
 
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
-                D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                m_d3dpp, &m_pD3DDevice );
+            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
+                , D3DCREATE_SOFTWARE_VERTEXPROCESSING
+                , m_d3dpp, &m_pD3DDevice );
         }
         else
         {
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
-                D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
-                m_d3dpp, &m_pD3DDevice );
+            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
+                , D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
+                , m_d3dpp, &m_pD3DDevice );
 
             if( FAILED( hr ) )
             {
@@ -473,9 +473,9 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
-                    D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
-                    m_d3dpp, &m_pD3DDevice );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
+                    , D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
+                    , m_d3dpp, &m_pD3DDevice );
             }
 
             if( FAILED( hr ) )
@@ -485,9 +485,9 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
-                    D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                    m_d3dpp, &m_pD3DDevice );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
+                    , D3DCREATE_HARDWARE_VERTEXPROCESSING
+                    , m_d3dpp, &m_pD3DDevice );
             }
 
             if( FAILED( hr ) )
@@ -497,9 +497,9 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
-                    D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
-                    m_d3dpp, &m_pD3DDevice );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
+                    , D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
+                    , m_d3dpp, &m_pD3DDevice );
             }
 
             if( FAILED( hr ) )
@@ -509,9 +509,9 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
-                    D3DCREATE_MIXED_VERTEXPROCESSING,
-                    m_d3dpp, &m_pD3DDevice );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
+                    , D3DCREATE_MIXED_VERTEXPROCESSING
+                    , m_d3dpp, &m_pD3DDevice );
             }
 
             if( FAILED( hr ) )
@@ -521,9 +521,9 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle,
-                    D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
-                    m_d3dpp, &m_pD3DDevice );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
+                    , D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
+                    , m_d3dpp, &m_pD3DDevice );
             }
 
             if( FAILED( hr ) )
@@ -533,9 +533,9 @@ namespace Mengine
                 );
 
                 Sleep( 100 );
-                hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, windowHandle,
-                    D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                    m_d3dpp, &m_pD3DDevice );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, windowHandle
+                    , D3DCREATE_SOFTWARE_VERTEXPROCESSING
+                    , m_d3dpp, &m_pD3DDevice );
             }
         }
 

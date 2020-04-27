@@ -18,13 +18,12 @@ static jmethodID jmethodID_scheduleLocalNotification;
 static jmethodID jmethodID_instantlyPresentLocalNotification;
 static jmethodID jmethodID_cancelAllLocalNotification;
 
-
 static Mengine::AndroidNativeLocalNotificationsModule * s_androidNativeLocalNotificationsModule;
 
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLocalNotifications_1setupLocalNotificationsJNI )(JNIEnv *env, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLocalNotifications_1setupLocalNotificationsJNI )(JNIEnv * env, jclass cls)
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
@@ -35,7 +34,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLocalNotifications_1onLocalNotificationsInitialized )( JNIEnv *env, jclass cls )
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLocalNotifications_1onLocalNotificationsInitialized )(JNIEnv * env, jclass cls)
     {
         if( s_androidNativeLocalNotificationsModule != nullptr )
         {
@@ -47,13 +46,13 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLocalNotifications_1onLocalNotificationsPress )( JNIEnv *env, jclass cls, jint _id )
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLocalNotifications_1onLocalNotificationsPress )(JNIEnv * env, jclass cls, jint _id)
     {
         int id = static_cast<int>(_id);
 
         if( s_androidNativeLocalNotificationsModule != nullptr )
         {
-            s_androidNativeLocalNotificationsModule->addCommand( [ id ]( const Mengine::LocalNotificationsEventHandlerPtr & _eventHandler )
+            s_androidNativeLocalNotificationsModule->addCommand( [id]( const Mengine::LocalNotificationsEventHandlerPtr & _eventHandler )
             {
                 _eventHandler->onLocalNotificationsPress( id );
             } );
@@ -74,7 +73,8 @@ namespace Mengine
             PythonLocalNotificationsEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
-            {}
+            {
+            }
 
             ~PythonLocalNotificationsEventHandler() override
             {

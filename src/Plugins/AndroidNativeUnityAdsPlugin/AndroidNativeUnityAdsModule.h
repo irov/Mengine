@@ -9,7 +9,7 @@
 
 #include "Config/Lambda.h"
 
-namespace Mengine 
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef Lambda<void( const UnityAdsEventHandlerPtr & )> LambdaUnityAdEventHandler;
@@ -42,7 +42,7 @@ namespace Mengine
         bool initializeSDK( const String & _gameId );
         bool setupAds( bool _debug );
         bool showAd( const String & _placementId );
-        
+
     protected:
         UnityAdsEventation m_eventation;
     };

@@ -16,9 +16,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemsys.h ${SOURCE_DIR}/jmemsys.h COP
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jconfig.h COPYONLY)
 
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h)
-    message("jpeg remove jmorecfg.h form: ${CMAKE_CURRENT_SOURCE_DIR}") 
-    file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h)
+if(EXISTS ${SOURCE_DIR}/jmorecfg.h)
+    message("jpeg remove jmorecfg.h form: ${SOURCE_DIR}") 
+    file(REMOVE ${SOURCE_DIR}/jmorecfg.h)
 endif()
 
 # OUR SOURCES

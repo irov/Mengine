@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
     <root name="src"/>
-    <builddir>cppcheck</builddir>
+    <builddir>contributing/cppcheck</builddir>
     <analyze-all-vs-configs>true</analyze-all-vs-configs>
 </project>

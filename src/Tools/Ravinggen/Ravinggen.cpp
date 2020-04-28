@@ -28,7 +28,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/PathHelper.h"
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Ravingcode.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FileStreamHelper.h"

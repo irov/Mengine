@@ -14,7 +14,12 @@ ENDIF()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemansi.c ${SOURCE_DIR}/jmemansi.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemsys.h ${SOURCE_DIR}/jmemsys.h COPYONLY)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME}/jconfig.h COPYONLY)
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h)
+    message("jpeg remove jmorecfg.h form: ${CMAKE_CURRENT_SOURCE_DIR}") 
+    file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h)
+endif()
 
 # OUR SOURCES
 set(jpeg_sources

@@ -149,7 +149,7 @@ namespace Mengine
             const ContentInterface * json_content = m_resourceJSON->getContent();
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
-            
+
             ContentInterface * resource_content = resource->getContent();
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
@@ -284,10 +284,10 @@ namespace Mengine
                 int32_t spriteSourceSize_w = spriteSourceSize["w"];
                 int32_t spriteSourceSize_h = spriteSourceSize["h"];
 
-                mt::vec2f offset( (float)spriteSourceSize_x, (float)spriteSourceSize_y );
-                mt::vec2f size( (float)spriteSourceSize_w, (float)spriteSourceSize_h );                
-
+                mt::vec2f offset( (float)spriteSourceSize_x, (float)sourceSize_h - spriteSourceSize_h - spriteSourceSize_y );
                 image->setOffset( offset );
+
+                mt::vec2f size( (float)spriteSourceSize_w, (float)spriteSourceSize_h );
                 image->setSize( size );
             }
             else
@@ -340,7 +340,7 @@ namespace Mengine
         }
 
         m_hashtableFrames.clear();
-        
+
         for( const ResourceImagePtr & frame : m_frames )
         {
             frame->release();

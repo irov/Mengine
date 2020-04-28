@@ -124,7 +124,7 @@
 #include "DelaySchedulePipe.h"
 
 #include "Kernel/Polygon.h"
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
 #include "Kernel/SecureValue.h"
 

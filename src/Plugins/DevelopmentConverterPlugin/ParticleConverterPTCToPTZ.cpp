@@ -12,7 +12,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Stream.h"
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImage.h"

@@ -1,6 +1,6 @@
 #include "JSONService.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"

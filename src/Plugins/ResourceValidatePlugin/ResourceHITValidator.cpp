@@ -3,7 +3,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PickCodecInterface.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"

@@ -3,7 +3,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/CRC32.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"

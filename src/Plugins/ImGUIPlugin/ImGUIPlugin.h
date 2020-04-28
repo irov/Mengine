@@ -20,11 +20,6 @@ namespace Mengine
         void _destroyPlugin() override;
 
     protected:
-        void notifyCreateRenderWindow_();
-        void notifyRenderDeviceLostPrepare_();
-        void notifyRenderDeviceLostRestore_();
-
-    protected:
         uint32_t m_handlerId;
     };
 }

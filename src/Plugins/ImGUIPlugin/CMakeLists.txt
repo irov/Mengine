@@ -6,6 +6,9 @@ src
 
     ImGUIPlugin.cpp
     ImGUIPlugin.h
+    ImGUIModule.cpp
+    ImGUIModule.h
+    
     ImGUIRender.cpp
     ImGUIRender.h
 )

@@ -2,7 +2,7 @@
 
 #include "Interface/FileGroupInterface.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

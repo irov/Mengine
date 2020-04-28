@@ -5,7 +5,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"

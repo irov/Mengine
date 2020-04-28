@@ -3,7 +3,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"

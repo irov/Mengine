@@ -7,7 +7,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"

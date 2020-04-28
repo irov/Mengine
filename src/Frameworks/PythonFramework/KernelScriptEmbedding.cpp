@@ -86,7 +86,7 @@
 #include "DelaySchedulePipe.h"
 
 #include "Kernel/Polygon.h"
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
 
 #include "math/angle.h"
@@ -336,6 +336,15 @@ namespace Mengine
             class PythonSceneChangeCallback
                 : public SceneChangeCallbackInterface
             {
+            public:
+                PythonSceneChangeCallback()
+                {
+                }
+
+                ~PythonSceneChangeCallback() override
+                {
+                }
+
             public:
                 void initialize( const pybind::object & _cb, const pybind::args & _args )
                 {

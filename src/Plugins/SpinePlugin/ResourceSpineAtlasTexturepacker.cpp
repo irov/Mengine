@@ -113,6 +113,8 @@ namespace Mengine
 
                 region->rotate = uvImageRotate;
 
+                region->flip = 0; //TODO
+
                 const mt::uv4f & uv = frame->getUVImage();
 
                 region->x = (int)(uv.p0.x * atlasWidthF + 0.5f);

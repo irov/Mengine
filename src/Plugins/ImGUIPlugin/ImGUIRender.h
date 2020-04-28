@@ -14,7 +14,7 @@ namespace Mengine
         , public BaseRender
         , public RenderExternalInterface
         , public ImGUIRenderProviderInterface
-        , public UnknownImGUIRender
+        , public UnknownImGUIRenderInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();

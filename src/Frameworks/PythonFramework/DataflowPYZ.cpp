@@ -5,7 +5,7 @@
 #include "PythonScriptCodeData.h"
 
 #include "Kernel/Stream.h"
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"

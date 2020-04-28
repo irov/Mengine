@@ -1,4 +1,4 @@
-#include "MemoryHelper.h"
+#include "MemoryStreamHelper.h"
 
 #include "Interface/MemoryServiceInterface.h"
 

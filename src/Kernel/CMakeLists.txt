@@ -442,8 +442,8 @@ Core
     
     MemoryAllocator.h
     
-    MemoryHelper.h
-    MemoryHelper.cpp
+    MemoryStreamHelper.h
+    MemoryStreamHelper.cpp
 
     ValueInterpolator.h
     ValueInterpolatorLinear.h

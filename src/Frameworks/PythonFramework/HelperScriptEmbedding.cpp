@@ -37,7 +37,7 @@
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/Color.h"
 #include "Kernel/Document.h"
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/VectorRenderIndex.h"
 

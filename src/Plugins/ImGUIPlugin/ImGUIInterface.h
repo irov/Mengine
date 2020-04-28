@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ImGUIRenderProviderInterface
         : public Mixin
     {
@@ -18,12 +19,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ImGUIRenderProviderInterface> ImGUIRenderProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class UnknownImGUIRender
+    class UnknownImGUIRenderInterface
         : public UnknownInterface
     {
     public:
         typedef Lambda<void( const ImGUIRenderProviderInterfacePtr & )> LambdaImGUIProvider;
 
+    public:
         virtual void setProvider( const LambdaImGUIProvider & _provider ) = 0;
         virtual const LambdaImGUIProvider & getProvider() const = 0;
     };

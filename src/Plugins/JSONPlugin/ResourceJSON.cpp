@@ -2,7 +2,7 @@
 
 #include "Interface/ResourceServiceInterface.h"
 
-#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionNotImplemented.h"

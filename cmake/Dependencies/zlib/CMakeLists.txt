@@ -66,7 +66,7 @@ configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
 include_directories(${THIRDPARTY_CONFIG_DIR}/${PROJECT_NAME})
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
-    message("zlib. remove zconf.h form: ${CMAKE_CURRENT_SOURCE_DIR}") 
+    message("zlib remove zconf.h form: ${CMAKE_CURRENT_SOURCE_DIR}") 
     file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
 endif()
 

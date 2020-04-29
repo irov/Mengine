@@ -1,5 +1,7 @@
 #include "cURLCook.h"
 
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
+
 #include "TaskcURLHttpGet.h"
 #include "TaskcURLHttpHeaderData.h"
 #include "TaskcURLHttpPost.h"

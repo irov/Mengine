@@ -4,6 +4,8 @@
 
 #include "Kernel/Delegate.h"
 
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

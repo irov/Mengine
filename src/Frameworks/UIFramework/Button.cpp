@@ -1,5 +1,7 @@
 #include "Button.h"
 
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
+
 #include "ButtonEventReceiverInterface.h"
 
 namespace Mengine

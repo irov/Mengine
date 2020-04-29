@@ -80,7 +80,7 @@ namespace Mengine
             const Char msg[] = "invalid message :(\n";
             this->logMessage( msg, sizeof( msg ) );
 
-            size = ::sprintf( str, "%s", _format );
+            size = MENGINE_SPRINTF( str, "%s", _format );
 
             if( size < 0 )
             {

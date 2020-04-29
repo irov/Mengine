@@ -131,7 +131,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeOptionsService_()
     {
-        LPCWSTR lpCmdLine = GetCommandLineW();
+        LPCWSTR lpCmdLine = ::GetCommandLineW();
 
         if( lpCmdLine == NULL )
         {
@@ -139,7 +139,7 @@ namespace Mengine
         }
 
         int32_t pNumArgs;
-        LPWSTR * szArglist = CommandLineToArgvW( lpCmdLine, &pNumArgs );
+        LPWSTR * szArglist = ::CommandLineToArgvW( lpCmdLine, &pNumArgs );
 
         if( szArglist == NULL )
         {
@@ -179,7 +179,7 @@ namespace Mengine
             arguments->addArgument( utf_arg );
         }
 
-        LocalFree( szArglist );
+        ::LocalFree( szArglist );
 
         if( OPTIONS_SERVICE()
             ->setArguments( arguments ) == false )

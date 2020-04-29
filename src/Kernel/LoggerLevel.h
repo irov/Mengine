@@ -2,6 +2,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     enum ELoggerLevel
     {
         LM_FATAL,
@@ -12,10 +13,9 @@ namespace Mengine
         LM_WARNING,
         LM_MESSAGE,
         LM_INFO,
-
         LM_MAX
     };
-    
+    //////////////////////////////////////////////////////////////////////////        
     enum ELoggerColor
     {
         LCOLOR_NONE = 1 << 0,
@@ -23,4 +23,5 @@ namespace Mengine
         LCOLOR_BLUE = 1 << 2,
         LCOLOR_GREEN = 1 << 3
     };
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -47,7 +47,8 @@ namespace Mengine
         void clear() override;
 
     public:
-        bool pickTrap( const mt::vec2f & _point, uint32_t _touchId, float _pressure, bool _onlyPicked, VectorPickers & _pickers ) override;
+        bool pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers & _pickers ) override;
+        bool getTraps( const mt::vec2f & _point, VectorPickers & _pickers ) override;
 
     public:
         void invalidateTraps() override;
@@ -72,7 +73,8 @@ namespace Mengine
 
     protected:
         void fillStates_( VectorPickerStates & _states ) const;
-        bool proccesStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states );
+        bool pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states );
+        bool getStates_( float _x, float _y, VectorPickerStates & _states );
 
     protected:
         ArrowPtr m_arrow;
@@ -83,7 +85,6 @@ namespace Mengine
         RenderScissorInterfacePtr m_scissor;
 
         VectorPickerStates m_states;
-        //VectorPickerStates m_statesAux;
 
         bool m_block;
         bool m_handleValue;

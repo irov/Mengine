@@ -415,6 +415,21 @@ namespace Mengine
             );
         }
 
+        const Char * option_config = GET_OPTION_VALUE( "config", nullptr );
+
+        if( option_config != nullptr )
+        {
+            if( CONFIG_SERVICE()
+                ->loadDefaultConfig( defaultFileGroup, Helper::stringizeFilePath( option_config ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                LOGGER_ERROR( "invalid load config '%s'"
+                    , option_config
+                );
+
+                return false;
+            }
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -514,7 +529,7 @@ namespace Mengine
         {
             m_loggerFile = fileLog;
 
-            LOGGER_INFO( "starting log to '%s'"
+            LOGGER_INFO( "write log to '%s'"
                 , logFilename.c_str()
             );
         }

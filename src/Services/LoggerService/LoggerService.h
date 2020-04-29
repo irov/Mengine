@@ -54,6 +54,9 @@ namespace Mengine
         bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
     protected:
+        void logHistory_( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size );
+
+    protected:
         DateTimeProviderInterfacePtr m_dateTimeProvider;
 
         ELoggerLevel m_verboseLevel;
@@ -67,7 +70,6 @@ namespace Mengine
 
         uint32_t m_countMessage[LM_MAX];
 
-#ifdef MENGINE_LOGGER_HISTORY
         struct Record
         {
             ELoggerLevel level;
@@ -80,6 +82,5 @@ namespace Mengine
 
         typedef Vector<Record> VectorHistory;
         VectorHistory m_history;
-#endif
     };
 }

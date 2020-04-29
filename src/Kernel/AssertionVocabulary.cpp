@@ -5,6 +5,8 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
+#include "Config/StdIO.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -38,8 +40,8 @@ namespace Mengine
                 return;
             }
 
-            Char msg[1024];
-            sprintf( msg, "[Assert] Vocabulary '%s' not empty ['%u']"
+            Char msg[1024] = {0};
+            MENGINE_SPRINTF( msg, "[Assert] Vocabulary '%s' not empty ['%u']"
                 , _category.c_str()
                 , count
             );

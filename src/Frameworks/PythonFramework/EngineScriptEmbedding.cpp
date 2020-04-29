@@ -2734,7 +2734,6 @@ namespace Mengine
 
                 return touchpad;
             }
-
             //////////////////////////////////////////////////////////////////////////
             const RenderCameraInterfacePtr & s_getRenderCamera2D()
             {

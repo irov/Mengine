@@ -816,11 +816,6 @@ namespace Mengine
             return false;
         }
 
-        if( m_handleValue == true )
-        {
-            return true;
-        }
-
         if( m_block == true )
         {
             return true;

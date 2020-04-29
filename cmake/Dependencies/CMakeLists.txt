@@ -145,9 +145,11 @@ endif()
 #dependencies Box2D
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================Box2D================")
+    SET(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "BOX2D_BUILD_UNIT_TESTS" FORCE)
+    SET(BOX2D_BUILD_TESTBED OFF CACHE BOOL "BOX2D_BUILD_TESTBED" FORCE)
+    SET(BOX2D_BUILD_DOCS OFF CACHE BOOL "BOX2D_BUILD_DOCS" FORCE)
     
-    #Android support only 3.6 CMake (Box2D 3.8 minimal)
-    ADD_SUBDIRECTORY(box2d)
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/box2d ${CMAKE_TEMP_DIR}/box2d)
 endif()
 
 #dependencies lz4

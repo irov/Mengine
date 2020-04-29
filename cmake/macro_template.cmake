@@ -242,10 +242,20 @@ MACRO(ADD_MENGINE_SHARED)
 	ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC_FILES})
     
     if(MENGINE_EXTERNAL_PDB)
-        SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES 
-            COMPILE_PDB_NAME ${PROJECT_NAME} 
-            PDB_OUTPUT_DIRECTORY ${MENGINE_EXTERNAL_PDB_PATH}
-        )
+        if(MSVC)
+            SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES 
+                COMPILE_PDB_NAME ${PROJECT_NAME} 
+                PDB_OUTPUT_DIRECTORY ${MENGINE_EXTERNAL_PDB_PATH}
+            )
+        elseif(MINGW)
+            target_compile_options(${PROJECT_NAME} PRIVATE -gcodeview)
+            target_link_options(${PROJECT_NAME} PRIVATE -Wl,-pdb=${MENGINE_EXTERNAL_PDB_PATH}/${PROJECT_NAME}.pdb)
+        endif()
+    else()
+        if(MINGW)
+            target_compile_options(${PROJECT_NAME} PRIVATE -gcodeview)
+            target_link_options(${PROJECT_NAME} PRIVATE -Wl,-pdb=)
+        endif()
     endif()
     
 	
@@ -294,10 +304,20 @@ MACRO(ADD_MENGINE_EXECUTABLE)
     ADD_EXECUTABLE(${PROJECT_NAME} WIN32 ${SRC_FILES})
     
     if(MENGINE_EXTERNAL_PDB)
-        set_target_properties(${PROJECT_NAME} PROPERTIES
-            COMPILE_PDB_NAME ${PROJECT_NAME}
-            PDB_OUTPUT_DIRECTORY ${MENGINE_EXTERNAL_PDB_PATH}
-        )
+        if(MSVC)
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                COMPILE_PDB_NAME ${PROJECT_NAME}
+                PDB_OUTPUT_DIRECTORY ${MENGINE_EXTERNAL_PDB_PATH}
+            )
+        elseif(MINGW)
+            target_compile_options(${PROJECT_NAME} PRIVATE -gcodeview)
+            target_link_options(${PROJECT_NAME} PRIVATE -Wl,-pdb=${MENGINE_EXTERNAL_PDB_PATH}/${PROJECT_NAME}.pdb)
+        endif()
+    else()
+        if(MINGW)
+            target_compile_options(${PROJECT_NAME} PRIVATE -gcodeview)
+            target_link_options(${PROJECT_NAME} PRIVATE -Wl,-pdb=)
+        endif()
     endif()
     
     IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)

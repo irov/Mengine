@@ -1,5 +1,7 @@
 #include "FileLogger.h"
 
+#include "Interface/LoggerServiceInterface.h"
+
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -43,6 +45,9 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 
         m_stream = stream;
+
+        LOGGER_SERVICE()
+            ->writeHistory( LoggerInterfacePtr::from( this ) );
 
         return true;
     }

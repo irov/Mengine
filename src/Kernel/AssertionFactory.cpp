@@ -2,6 +2,8 @@
 
 #include "Kernel/Assertion.h"
 
+#include "Config/StdIO.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -17,8 +19,8 @@ namespace Mengine
             const Char * name = _factory->getName();
             uint32_t count = _factory->getCountObject();
 
-            Char msg[1024];
-            sprintf( msg, "[Assert] Factory '%s' not empty ['%u']"
+            Char msg[1024] = {0};
+            MENGINE_SPRINTF( msg, "[Assert] Factory '%s' not empty ['%u']"
                 , name
                 , count
             );

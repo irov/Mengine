@@ -42,6 +42,10 @@ namespace Mengine
             return true;
         }
 
+        LOGGER_MESSAGE( "Sentry: %s"
+            , SENTRY_SDK_USER_AGENT
+        );
+
         const Char * sentryDSN = CONFIG_VALUE( "Sentry", "DSN", "" );
 
         if( MENGINE_STRCMP( sentryDSN, "" ) == 0 )
@@ -53,6 +57,10 @@ namespace Mengine
 
         const Char * sentryHandler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
 
+        LOGGER_MESSAGE( "Sentry Handler: %s"
+            , sentryHandler
+        );
+
         sentry_options_t * options = sentry_options_new();
         sentry_options_set_dsn( options, sentryDSN );
         sentry_options_set_handler_path( options, sentryHandler );
@@ -61,6 +69,12 @@ namespace Mengine
         sentry_init( options );
 
         m_options = options;
+
+        const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
+
+        LOGGER_MESSAGE( "Sentry Application: %s"
+            , sentryApplication
+        );
 
         sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
 
@@ -153,6 +167,8 @@ namespace Mengine
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {
+            LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
+
             sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Test", "sentrycrash" );
 
             sentry_capture_event( event );

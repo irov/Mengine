@@ -7,6 +7,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Config/StdIO.h"
+
 #include "stdex/stack.h"
 
 #include <cstdio>
@@ -45,7 +47,7 @@ namespace Mengine
         va_start( argList, _format );
 
         char format_msg[4096] = {0};
-        vsprintf( format_msg, _format, argList );
+        MENGINE_VSPRINTF( format_msg, _format, argList );
 
         va_end( argList );
 

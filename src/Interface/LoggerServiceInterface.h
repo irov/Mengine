@@ -5,12 +5,6 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 
-#ifndef MENGINE_LOGGER_HISTORY
-#ifndef MENGINE_MASTER_RELEASE
-#define MENGINE_LOGGER_HISTORY
-#endif
-#endif
-
 namespace Mengine
 {
     class LoggerServiceInterface

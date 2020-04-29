@@ -11,6 +11,8 @@
 #include "Kernel/String.h"
 #include "Kernel/StringRegex.h"
 
+#include "Config/StdIO.h"
+
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
@@ -23,9 +25,7 @@ namespace Mengine
         : m_verboseLevel( LM_ERROR )
         , m_verboseFlag( 0 )
         , m_silent( false )
-#ifdef MENGINE_LOGGER_HISTORY
-        , m_historically( true )
-#endif
+        , m_historically( MENGINE_MASTER_ATTRIBUTE( false, true ) )
     {
         for( uint32_t i = 0; i != LM_MAX; ++i )
         {
@@ -108,6 +108,23 @@ namespace Mengine
             this->setVerboseLevel( LM_MAX );
         }
 
+        if( HAS_OPTION( "loghistory" ) == true )
+        {
+            m_historically = true;
+        }
+
+        ELoggerLevel level = this->getVerboseLevel();
+        const Char * loggerLevels[] = {"FATAL", "CRITICAL", "ERROR", "PERFOMANCE", "STATISTIC", "WARNING", "MESSAGE", "INFO", "MAX"};
+
+        const Char * loggerLevel = loggerLevels[level];
+
+        Char loggerLevelMessage[256];
+        size_t loggerLevelMessageLen = MENGINE_SPRINTF( loggerLevelMessage, "start logger with verbise level [%s]\n"
+            , loggerLevel
+        );
+
+        this->logHistory_( LM_MESSAGE, 0, LCOLOR_GREEN, loggerLevelMessage, loggerLevelMessageLen );
+
         SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
         {
             ThreadMutexInterfacePtr threadMutex = THREAD_SERVICE()
@@ -153,18 +170,13 @@ namespace Mengine
         }
 
         m_loggers.clear();
-
-#ifdef MENGINE_LOGGER_HISTORY
         m_history.clear();
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::_stopService()
     {
-#ifdef MENGINE_LOGGER_HISTORY
         m_historically = false;
         m_history.clear();
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( ELoggerLevel _level )
@@ -207,7 +219,7 @@ namespace Mengine
         PlatformDateTime dateTime;
         m_dateTimeProvider->getLocalDateTime( &dateTime );
 
-        int size = snprintf( _buffer + _offset, _capacity - _offset, "[%02u:%02u:%02u:%04u] "
+        int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, "[%02u:%02u:%02u:%04u] "
             , dateTime.hour
             , dateTime.minute
             , dateTime.second
@@ -297,7 +309,11 @@ namespace Mengine
             logger->log( _level, _flag, _color, _message, _size );
         }
 
-#ifdef MENGINE_LOGGER_HISTORY
+        this->logHistory_( _level, _flag, _color, _message, _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::logHistory_( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
+    {
         if( m_historically == true )
         {
             Record history;
@@ -308,7 +324,6 @@ namespace Mengine
 
             m_history.emplace_back( history );
         }
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t LoggerService::getCountMessage( ELoggerLevel _level )
@@ -322,7 +337,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _logger );
 
-#ifdef MENGINE_LOGGER_HISTORY
+        if( m_historically == false )
+        {
+            return;
+        }
+
         MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
 
         for( const Record & record : m_history )
@@ -332,7 +351,6 @@ namespace Mengine
 
             _logger->log( record.level, record.flag, record.color, record_message_str, record_message_size );
         }
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::registerLogger( const LoggerInterfacePtr & _logger )

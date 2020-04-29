@@ -2651,7 +2651,7 @@ namespace Mengine
             {
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->pickTrap( _point, 0, 0.f, true, pickers );
+                    ->pickTraps( _point, 0, 0.f, pickers );
 
                 pybind::list pyret( _kernel );
 
@@ -2682,7 +2682,7 @@ namespace Mengine
             {
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->pickTrap( _point, 0, 0.f, false, pickers );
+                    ->getTraps( _point, pickers );
 
                 pybind::list pyret( _kernel );
 

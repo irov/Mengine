@@ -11,6 +11,7 @@
 #include "Kernel/ThreadMutexScope.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #include <algorithm>
 
@@ -99,8 +100,8 @@ namespace Mengine
             if( f != NULL )
             {
                 Char objectleakmsg[1024];
-                int objectleakmsg_length = sprintf( objectleakmsg
-                    , "**********************************************************\n"
+                int objectleakmsg_length = MENGINE_SPRINTF( objectleakmsg,
+                    "**********************************************************\n"
                     "<<<<<                OBJECT LEAK [% .7u]           >>>>>\n"
                     "**********************************************************\n"
                     , leakcount

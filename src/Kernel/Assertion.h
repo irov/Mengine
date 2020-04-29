@@ -31,6 +31,10 @@ namespace Mengine
             const AssertionOperator & operator()() const;
             const AssertionOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const;
 
+        private:
+            const AssertionOperator & operator()( std::nullptr_t ) const = delete;
+            const AssertionOperator & operator()( bool ) const = delete;
+
         protected:
             uint32_t m_level;
             const Char * m_test;

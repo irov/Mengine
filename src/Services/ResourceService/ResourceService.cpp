@@ -96,7 +96,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( !(_name.empty() == true && _groupCache == true), nullptr );
+        MENGINE_ASSERTION_FATAL( !(_name.empty() == true && _groupCache == true) );
 
         Resource * prev_resource = nullptr;
         ResourcePtr resource = m_globalBank->createResource( _locale, _groupName, _name, _type, _keep, &prev_resource, _doc );

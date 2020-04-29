@@ -1,12 +1,21 @@
 #pragma once
 
-#include "cURLInterface.h"
+#include "Plugins/cURLPlugin/cURLInterface.h"
 
 #include "GOAP/TaskInterface.h"
 #include "GOAP/NodeInterface.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class cURLTaskReceiverInterface
+        : public ServantInterface
+    {
+    public:
+        virtual void onResponse( const GOAP::SourceInterfacePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<cURLTaskReceiverInterface> cURLTaskReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TaskcURLHttpBase
         : public GOAP::TaskInterface

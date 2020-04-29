@@ -1,7 +1,6 @@
 #pragma once
 
-#include "cURLInterface.h"
-
+#include "Plugins/cURLPlugin/cURLInterface.h"
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
 
 #include "Kernel/String.h"

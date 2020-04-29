@@ -1,9 +1,9 @@
-MENGINE_PROJECT(EngineGOAPCook)
+MENGINE_PROJECT(GOAPCook)
 
 ADD_FILTER(
 src   
-    EngineCook.h
-    EngineCook.cpp
+    GOAPCook.h
+    GOAPCook.cpp
 )
 
 ADD_FILTER(

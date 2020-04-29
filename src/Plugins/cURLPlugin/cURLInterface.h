@@ -5,8 +5,6 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Plugins/GOAPPlugin/GOAPInterface.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FactorableUnique.h"
@@ -42,15 +40,6 @@ namespace Mengine
     ************************************************************************/
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class cURLSourceInterface> cURLSourceInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class cURLTaskReceiverInterface
-        : public ServantInterface
-    {
-    public:
-        virtual void onResponse( const GOAP::SourceInterfacePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLTaskReceiverInterface> cURLTaskReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class cURLServiceInterface
         : public ServiceInterface

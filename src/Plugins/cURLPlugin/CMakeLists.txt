@@ -24,18 +24,6 @@ src
     
     cURLErrorHelper.cpp
     cURLErrorHelper.h
-    
-    cURLCook.h
-    cURLCook.cpp
-    
-    TaskcURLHttpBase.cpp
-    TaskcURLHttpBase.h
-    TaskcURLHttpGet.cpp
-    TaskcURLHttpGet.h
-    TaskcURLHttpHeaderData.cpp
-    TaskcURLHttpHeaderData.h
-    TaskcURLHttpPost.cpp
-    TaskcURLHttpPost.h
 )
     
 if(MENGINE_USE_SCRIPT_SERVICE)
@@ -88,3 +76,5 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}GOAP${MENGINE_LIB_SUFFIX})
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+
+ADD_SUBDIRECTORY(Tasks)

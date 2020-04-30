@@ -52,21 +52,21 @@ build_script:
 - mkdir cmake_downloads
 - cd cmake_downloads
 - cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\Downloads" -DCMAKE_BUILD_TYPE=%configuration% -DMENGINE_DOWNLOADS_SILENT=ON
-- cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal
+- cmake --build . --clean-first -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
 - mkdir cmake_dependencies
 - cd cmake_dependencies
 - cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_DEPENDENCIES_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
-- cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal
+- cmake --build . --clean-first -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
 - mkdir cmake_solution
 - cd cmake_solution
 - cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_SOLUTION_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
-- cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal
+- cmake --build . --clean-first -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 
 - echo "Complete!"

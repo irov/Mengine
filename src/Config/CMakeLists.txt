@@ -16,6 +16,7 @@ src
     Define.h
     Config.h
     Export.h
+    Abs.h
     StdInt.h
     StdDef.h
     StdIntTypes.h

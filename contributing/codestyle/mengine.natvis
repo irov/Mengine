@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="stdex::intrusive_ptr&lt;*, *&gt;">
+        <DisplayString Condition="m_ptr == 0">nullptr</DisplayString>
+        <DisplayString Condition="m_debug_ptr_mask__ != 2882400001">invalid</DisplayString>
+        <DisplayString Condition="m_ptr->m_destroy == true">destroy</DisplayString>
+        <DisplayString>{*m_ptr}</DisplayString>
+        
+        <Expand>
+            <Item Name="[ref]">m_ptr->m_reference</Item>
+        </Expand>        
+    </Type>
+    
+    <Type Name="Mengine::ConstString">
+        <DisplayString>{m_holder->m_data,[m_holder->m_size]na}</DisplayString>
+        
+        <Expand>
+            <Item Name="[size]">m_holder->m_size</Item>
+            <Item Name="[hash]">m_holder->m_hash</Item>
+        </Expand>
+    </Type>
+
+    <Type Name="Mengine::FilePath">
+        <DisplayString>{m_holder->m_data,[m_holder->m_size]na}</DisplayString>
+        
+        <Expand>
+            <Item Name="[size]">m_holder->m_size</Item>
+            <Item Name="[hash]">m_holder->m_hash</Item>
+        </Expand>        
+    </Type>
+</AutoVisualizer>

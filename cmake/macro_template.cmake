@@ -196,9 +196,13 @@ ENDMACRO()
 
 MACRO(ADD_MENGINE_LIBRARY)
 	ADD_PRECOMPILED_HEADER()
-
+    
 	ADD_LIBRARY(${PROJECT_NAME} STATIC ${SRC_FILES})
-	
+    
+    if(MSVC)
+        target_sources(${PROJECT_NAME} INTERFACE ${MENGINE_REPOSITORY}/contributing/codestyle/mengine.natvis)
+    endif()
+    
     IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
         ADD_DEPENDENCIES(${PROJECT_NAME} PrecompiledHeader)
         TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
@@ -238,8 +242,12 @@ ENDMACRO()
 
 MACRO(ADD_MENGINE_SHARED)
 	ADD_PRECOMPILED_HEADER()
-
+    
 	ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC_FILES})
+    
+    if(MSVC)
+        target_sources(${PROJECT_NAME} INTERFACE ${MENGINE_REPOSITORY}/contributing/codestyle/mengine.natvis)
+    endif()
     
     if(MENGINE_EXTERNAL_PDB)
         if(MSVC)
@@ -304,6 +312,10 @@ ENDMACRO()
 
 MACRO(ADD_MENGINE_EXECUTABLE)
     ADD_EXECUTABLE(${PROJECT_NAME} WIN32 ${SRC_FILES})
+    
+    if(MSVC)
+        target_sources(${PROJECT_NAME} INTERFACE ${MENGINE_REPOSITORY}/contributing/codestyle/mengine.natvis)
+    endif()
     
     if(MENGINE_EXTERNAL_PDB)
         if(MSVC)

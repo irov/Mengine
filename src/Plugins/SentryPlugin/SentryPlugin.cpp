@@ -98,7 +98,7 @@ namespace Mengine
     void SentryPlugin::_finalizePlugin()
     {
         if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true )
+            ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {
             return;
         }

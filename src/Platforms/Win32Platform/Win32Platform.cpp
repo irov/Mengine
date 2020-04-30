@@ -46,8 +46,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <functional>
-
-#include <errno.h>
+#include <cerrno>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOW_CLASSNAME

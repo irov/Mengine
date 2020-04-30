@@ -11,8 +11,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 
-#include <math.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

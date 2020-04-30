@@ -3,7 +3,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include <math.h>
+#include "Config/StdLib.h"
+#include "Config/Abs.h"
 
 namespace Mengine
 {
@@ -220,7 +221,7 @@ namespace Mengine
         double al_time = ov_time_tell( &m_oggVorbisFile );
         double al_seek = (double)(_time) * 0.001;
 
-        if( ::abs( al_time - al_seek ) < 0.001 )
+        if( MENGINE_ABS( al_time - al_seek ) < 0.001 )
         {
             return true;
         }

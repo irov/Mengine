@@ -1,0 +1,32 @@
+#pragma once
+
+#include "Config/Config.h"
+#include "Config/StdInt.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_CONSTEXPR int32_t abs( int32_t _a )
+    {
+        return _a > 0 ? _a : -_a;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_CONSTEXPR int64_t abs( int64_t _a )
+    {
+        return _a > 0 ? _a : -_a;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_CONSTEXPR float abs( float _a )
+    {
+        return _a > 0.f ? _a : -_a;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_CONSTEXPR double abs( double _a )
+    {
+        return _a > 0.0 ? _a : -_a;
+    }
+}
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ABS
+#define MENGINE_ABS(a) Mengine::abs(a)
+#endif

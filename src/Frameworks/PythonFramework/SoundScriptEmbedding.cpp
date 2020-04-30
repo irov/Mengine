@@ -25,8 +25,6 @@
 
 #include "pybind/pybind.hpp"
 
-#include <math.h>
-
 namespace Mengine
 {
     namespace

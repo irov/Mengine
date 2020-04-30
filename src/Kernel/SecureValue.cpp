@@ -4,6 +4,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"
 #include "Config/StdString.h"
+#include "Config/Abs.h"
 
 namespace Mengine
 {

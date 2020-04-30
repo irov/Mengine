@@ -13,7 +13,6 @@
 #include "Kernel/FileStreamHelper.h"
 
 #include <algorithm>
-#include <math.h>
 
 namespace Mengine
 {

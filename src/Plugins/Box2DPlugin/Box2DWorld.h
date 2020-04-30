@@ -32,7 +32,7 @@ namespace Mengine
         void finalize();
 
     protected:
-        void onTimepipe( const UpdateContext * _contet );
+        void onTimepipe( const UpdateContext * _contet ) override;
 
     public:
         void setDead();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifndef MENGINE_VSNPRINTF
 #if defined(MENGINE_TOOLCHAIN_MSVC)

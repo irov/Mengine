@@ -14,7 +14,6 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"
-#include "Kernel/ArrayString.h"
 
 #include "Config/StdString.h"
 

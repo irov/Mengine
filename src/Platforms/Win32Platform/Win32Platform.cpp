@@ -1870,7 +1870,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existDirectory( const Char * _directoryPath ) const
     {
-        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, '/' ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
+        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
 
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -1907,7 +1907,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _directoryPath )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, '/' ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
+        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
 
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -2078,8 +2078,8 @@ namespace Mengine
         Helper::pathCorrectBackslashToW( pathCorrect, unicode_path );
 
         WChar fullPath[MENGINE_MAX_PATH];
-        wcscpy( fullPath, unicode_userPath );
-        wcscat( fullPath, pathCorrect );
+        MENGINE_WCSCPY( fullPath, unicode_userPath );
+        MENGINE_WCSCAT( fullPath, pathCorrect );
 
         if( ::DeleteFile( fullPath ) == FALSE )
         {
@@ -2102,9 +2102,9 @@ namespace Mengine
     {
         {
             WChar sPath[MENGINE_MAX_PATH] = { 0 };
-            ::wcscpy( sPath, _dir );
-            ::wcscat( sPath, _path );
-            ::wcscat( sPath, _mask );
+            MENGINE_WCSCPY( sPath, _dir );
+            MENGINE_WCSCAT( sPath, _path );
+            MENGINE_WCSCAT( sPath, _mask );
 
             WIN32_FIND_DATA fdFile;
             HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
@@ -2113,8 +2113,8 @@ namespace Mengine
             {
                 do
                 {
-                    if( ::wcscmp( fdFile.cFileName, L"." ) == 0
-                        || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
+                    if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
+                        MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
                     {
                         continue;
                     }
@@ -2125,8 +2125,9 @@ namespace Mengine
                     }
 
                     WChar sPath2[MENGINE_MAX_PATH] = { 0 };
-                    ::wcscpy( sPath2, sPath );
-                    ::wcscat( sPath2, L"\0" );
+                    MENGINE_WCSCPY( sPath2, sPath );
+                    MENGINE_WCSCAT( sPath2, L"\0" );
+
                     Helper::pathCorrectForwardslashW( sPath2 );
 
                     ::PathRemoveFileSpec( sPath2 );
@@ -2145,7 +2146,7 @@ namespace Mengine
                     }
                     else
                     {
-                        wcscpy( unicode_out, unicode_filepath );
+                        MENGINE_WCSCPY( unicode_out, unicode_filepath );
                     }
 
                     Char utf8_filepath[MENGINE_MAX_PATH];
@@ -2175,9 +2176,9 @@ namespace Mengine
 
         {
             WChar sPath[MENGINE_MAX_PATH] = { 0 };
-            ::wcscpy( sPath, _dir );
-            ::wcscat( sPath, _path );
-            ::wcscat( sPath, L"*.*" );
+            MENGINE_WCSCPY( sPath, _dir );
+            MENGINE_WCSCAT( sPath, _path );
+            MENGINE_WCSCAT( sPath, L"*.*" );
 
             WIN32_FIND_DATA fdFile;
             HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
@@ -2189,8 +2190,8 @@ namespace Mengine
 
             do
             {
-                if( ::wcscmp( fdFile.cFileName, L"." ) == 0
-                    || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
+                if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0
+                    || MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
                 {
                     continue;
                 }
@@ -2203,15 +2204,15 @@ namespace Mengine
                 //WChar nextPath[2048];
                 //wsprintf( nextPath, L"%s%s\\", _path, fdFile.cFileName );
                 WChar currentPath[MENGINE_MAX_PATH] = { 0 };
-                ::wcscpy( currentPath, sPath );
-                ::wcscat( currentPath, L"\0" );
+                MENGINE_WCSCPY( currentPath, sPath );
+                MENGINE_WCSCAT( currentPath, L"\0" );
 
                 ::PathRemoveFileSpec( currentPath );
 
                 WChar nextPath[MENGINE_MAX_PATH] = { 0 };
                 ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
-                ::wcscat( nextPath, L"\\" );
+                MENGINE_WCSCAT( nextPath, L"\\" );
 
                 bool stop;
                 if( s_listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
@@ -2891,7 +2892,7 @@ namespace Mengine
 
         Helper::pathCorrectBackslashW( currentPath );
 
-        currentPath[len] = L'/';
+        currentPath[len] = MENGINE_PATH_WDELIM;
         currentPath[len + 1] = L'\0';
 
         size_t path_len;
@@ -2928,7 +2929,7 @@ namespace Mengine
 
             Helper::pathCorrectBackslashW( currentPath );
 
-            ::wcscat( currentPath, L"/User/" );
+            MENGINE_WCSCAT( currentPath, L"/User/" );
 
             size_t currentPathLen;
             if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
@@ -3016,7 +3017,7 @@ namespace Mengine
 
         Helper::pathCorrectBackslashW( roamingPath );
 
-        ::wcscat( roamingPath, L"/" );
+        MENGINE_WCSCAT( roamingPath, L"/" );
 
         size_t currentPathLen;
         if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )

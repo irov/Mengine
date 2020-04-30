@@ -176,7 +176,7 @@ namespace Mengine
         {
             if( *it == '.' )
             {
-                *it = '/';
+                *it = MENGINE_PATH_DELIM;
             }
         }
 
@@ -216,7 +216,7 @@ namespace Mengine
 
         if( this->findModule_( modulePathCache, modulePathCacheLen + _extN, _loader ) == false )
         {
-            modulePathCache[modulePathCacheLen] = '/';
+            modulePathCache[modulePathCacheLen] = MENGINE_PATH_DELIM;
             if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH, _init, _extI ) == false )
             {
                 return false;

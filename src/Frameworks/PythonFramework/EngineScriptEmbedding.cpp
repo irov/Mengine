@@ -147,9 +147,8 @@
 
 #include "pybind/stl/stl_type_cast.hpp"
 #include "stdex/xml_sax_parser.h"
-#include "utf8.h"
 
-#include <math.h>
+#include "utf8.h"
 
 namespace Mengine
 {

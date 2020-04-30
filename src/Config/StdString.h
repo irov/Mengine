@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string.h>
+#include <cstring>
 
 #ifndef MENGINE_STRLEN
 #define MENGINE_STRLEN(s) ::strlen(s)

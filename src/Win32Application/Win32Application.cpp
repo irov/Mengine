@@ -49,7 +49,7 @@
 
 #include <clocale>
 #include <memory>
-#include <errno.h>
+#include <cerrno>
 #include <ctime>
 #include <algorithm>
 #include <functional>

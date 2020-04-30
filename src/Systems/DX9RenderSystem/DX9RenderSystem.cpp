@@ -35,7 +35,6 @@
 #include "math/uv4.h"
 
 #include <algorithm>
-#include <math.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::DX9RenderSystem );

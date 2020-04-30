@@ -72,8 +72,6 @@
 #include "pybind/pickle.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
 
-#include <math.h>
-
 namespace Mengine
 {
     namespace

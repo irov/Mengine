@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdarg.h>
+#include <cstdarg>
 
 #ifndef MENGINE_VA_LIST_TYPE
 #define MENGINE_VA_LIST_TYPE va_list

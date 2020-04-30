@@ -7,7 +7,7 @@ extern "C"
 #define XMD_H
 #undef FAR
 
-#include <setjmp.h>
+#include <csetjmp>
 #include "jinclude.h"
 #include "jpeglib.h"
 #include "jerror.h"

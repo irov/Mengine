@@ -6,11 +6,11 @@
 
 #include "Kernel/Logger.h"
 
-#include <io.h>
-#include <locale.h>
-#include <fcntl.h>
-
+#include <clocale>
 #include <iostream>
+
+#include <io.h>
+#include <fcntl.h>
 
 namespace Mengine
 {

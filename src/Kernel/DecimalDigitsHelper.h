@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-#include <float.h>
+#include <cfloat>
 
 namespace Mengine
 {

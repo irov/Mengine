@@ -7,8 +7,6 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include <math.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

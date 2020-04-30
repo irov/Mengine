@@ -127,8 +127,6 @@
 #include <sstream>
 #include <iomanip>
 
-#include <math.h>
-
 #define MENGINE_DEBUG_HOTSPOTS 0x00000001
 #define MENGINE_DEBUG_PHYSICS 0x00000002
 #define MENGINE_DEBUG_NODES 0x00000004

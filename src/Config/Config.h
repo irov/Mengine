@@ -4,9 +4,17 @@
 #define MENGINE_MAX_PATH 260
 #endif
 
+#ifndef MENGINE_MAX
 #define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
+
+#ifndef MENGINE_MIN
 #define MENGINE_MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif
+
+#ifndef MENGINE_CLAMP
 #define MENGINE_CLAMP(a, b, c) MENGINE_MAX( MENGINE_MIN(b, c), a )
+#endif
 
 #define MENGINE_STRING_EMPTY ""
 

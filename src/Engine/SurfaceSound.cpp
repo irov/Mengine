@@ -11,8 +11,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EventableHelper.h"
 
-#include <math.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

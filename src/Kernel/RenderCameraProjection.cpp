@@ -2,8 +2,6 @@
 
 #include "Interface/ApplicationInterface.h"
 
-#include <math.h>
-
 namespace Mengine
 {
     ////////////////////////////////////////////////////////////////////////

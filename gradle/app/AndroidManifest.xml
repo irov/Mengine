@@ -24,7 +24,8 @@
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         tools:replace="android:label"
-        android:fullBackupContent="@xml/backup_descriptor">
+        android:fullBackupContent="@xml/backup_descriptor"
+        android:extractNativeLibs="false">
 
         <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="true"/>
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false"/>
@@ -41,7 +42,7 @@
               android:label="${app_name_gradle}"
               android:keepScreenOn="true"
               android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-              android:screenOrientation="portrait">
+              android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

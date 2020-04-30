@@ -4,6 +4,14 @@
 #define MENGINE_MAX_PATH 260
 #endif
 
+#ifndef MENGINE_PATH_DELIM
+#define MENGINE_PATH_DELIM '/'
+#endif
+
+#ifndef MENGINE_PATH_WDELIM
+#define MENGINE_PATH_WDELIM L'/'
+#endif
+
 #ifndef MENGINE_MAX
 #define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif

@@ -98,7 +98,7 @@ namespace Mengine
         account_folderPath.append( relationPath );
         account_folderPath.append( folderPath );
         account_folderPath.append( _folderPath );
-        account_folderPath.append( '/' );
+        account_folderPath.append( MENGINE_PATH_DELIM );
 
         bool result = PLATFORM_SERVICE()
             ->existDirectory( account_folderPath.c_str() );

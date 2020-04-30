@@ -8,6 +8,7 @@
 #include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
+#include "Kernel/PathString.h"
 #include "Kernel/Logger.h"
 
 #include "Config/GitSHA1.h"
@@ -37,7 +38,7 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true )
+            ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {
             return true;
         }
@@ -62,6 +63,16 @@ namespace Mengine
         );
 
         sentry_options_t * options = sentry_options_new();
+
+        Char userPath[MENGINE_MAX_PATH] = { 0 };
+        size_t userPathLen = PLATFORM_SERVICE()
+            ->getUserPath( userPath );
+
+        PathString sentryDatabasePath;
+        sentryDatabasePath.append( userPath, userPathLen );
+        sentryDatabasePath.append( ".sentry-native" );
+
+        sentry_options_set_database_path( options, sentryDatabasePath.c_str() );
         sentry_options_set_dsn( options, sentryDSN );
         sentry_options_set_handler_path( options, sentryHandler );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
@@ -87,7 +98,7 @@ namespace Mengine
     void SentryPlugin::_finalizePlugin()
     {
         if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true )
+            ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {
             return;
         }

@@ -11,6 +11,8 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 #include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,12 +89,12 @@ namespace Mengine
             return false;
         }
 
-        currentPath[len + 0] = L'/';
+        currentPath[len + 0] = MENGINE_PATH_WDELIM;
         currentPath[len + 1] = L'\0';
 
         WChar exportPath[MENGINE_MAX_PATH];
-        wcscpy( exportPath, currentPath );
-        wcscat( exportPath, L"Python3Lib/" );
+        MENGINE_WCSCPY( exportPath, currentPath );
+        MENGINE_WCSCAT( exportPath, L"Python3Lib/" );
 
         WChar shortpath_exportPath[MENGINE_MAX_PATH];
         DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
@@ -133,8 +135,8 @@ namespace Mengine
 
         {
             WChar stdPath[MENGINE_MAX_PATH];
-            wcscpy( stdPath, currentPath );
-            wcscat( stdPath, L"Python3Lib/" );
+            MENGINE_WCSCPY( stdPath, currentPath );
+            MENGINE_WCSCAT( stdPath, L"Python3Lib/" );
 
             WChar shortpath_stdPath[MENGINE_MAX_PATH];
             GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH );
@@ -144,8 +146,8 @@ namespace Mengine
 
         {
             WChar xlsxPath[MENGINE_MAX_PATH];
-            wcscpy( xlsxPath, currentPath );
-            wcscat( xlsxPath, L"XlsxExport/" );
+            MENGINE_WCSCPY( xlsxPath, currentPath );
+            MENGINE_WCSCAT( xlsxPath, L"XlsxExport/" );
 
             WChar shortpath_xlsxPath[MENGINE_MAX_PATH];
             GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH );

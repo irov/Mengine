@@ -6,10 +6,6 @@
 #define MENGINE_STRLEN(s) ::strlen(s)
 #endif
 
-#ifndef MENGINE_WCSLEN
-#define MENGINE_WCSLEN(s) ::wcslen(s)
-#endif
-
 #ifndef MENGINE_STRCMP
 #define MENGINE_STRCMP(a, b) ::strcmp(a, b)
 #endif
@@ -40,6 +36,26 @@
 
 #ifndef MENGINE_STRSTR
 #define MENGINE_STRSTR(a, b) ::strstr(a, b)
+#endif
+
+#ifndef MENGINE_WCSLEN
+#define MENGINE_WCSLEN(s) ::wcslen(s)
+#endif
+
+#ifndef MENGINE_WCSCHR
+#define MENGINE_WCSCHR(s, c) ::wcschr(s, c)
+#endif
+
+#ifndef MENGINE_WCSCPY
+#define MENGINE_WCSCPY(a, b) ::wcscpy(a, b)
+#endif
+
+#ifndef MENGINE_WCSCAT
+#define MENGINE_WCSCAT(a, b) ::wcscat(a, b)
+#endif
+
+#ifndef MENGINE_WCSCMP
+#define MENGINE_WCSCMP(a, b) ::wcscmp(a, b)
 #endif
 
 #ifndef MENGINE_MEMCPY

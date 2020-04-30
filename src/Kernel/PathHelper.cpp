@@ -107,12 +107,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashW( WChar * _filePath )
         {
-            WChar * pch = ::wcschr( _filePath, L'\\' );
+            WChar * pch = MENGINE_WCSCHR( _filePath, L'\\' );
+
             while( pch != NULL )
             {
-                *pch = L'/';
+                *pch = MENGINE_PATH_WDELIM;
 
-                pch = ::wcschr( pch, L'\\' );
+                pch = MENGINE_WCSCHR( pch, L'\\' );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -125,31 +126,32 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashToW( WChar * _out, const WChar * _in )
         {
-            ::wcscpy( _out, _in );
+            MENGINE_WCSCPY( _out, _in );
 
             pathCorrectBackslashW( _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectForwardslashW( WChar * _filePath )
         {
-            WChar * pch = ::wcschr( _filePath, L'/' );
+            WChar * pch = MENGINE_WCSCHR( _filePath, MENGINE_PATH_WDELIM );
+
             while( pch != NULL )
             {
                 *pch = L'\\';
 
-                pch = ::wcschr( pch, L'/' );
+                pch = MENGINE_WCSCHR( pch, MENGINE_PATH_WDELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectForwardslashA( Char * _filePath )
         {
-            Char * pch = MENGINE_STRCHR( _filePath, '/' );
+            Char * pch = MENGINE_STRCHR( _filePath, MENGINE_PATH_DELIM );
 
             while( pch != NULL )
             {
                 *pch = '\\';
 
-                pch = MENGINE_STRCHR( pch, '/' );
+                pch = MENGINE_STRCHR( pch, MENGINE_PATH_DELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -159,7 +161,7 @@ namespace Mengine
 
             WChar * pch = _filePath + len - 1;
 
-            if( *pch == L'/' )
+            if( *pch == MENGINE_PATH_WDELIM )
             {
                 *pch = L'\0';
             }
@@ -176,14 +178,14 @@ namespace Mengine
 
             WChar * pch = _filePath + len - 1;
 
-            if( *pch == L'/' )
+            if( *pch == MENGINE_PATH_WDELIM )
             {
                 return false;
             }
 
             pch--;
 
-            while( *pch != L'/' )
+            while( *pch != MENGINE_PATH_WDELIM )
             {
                 if( pch == _filePath )
                 {
@@ -206,7 +208,7 @@ namespace Mengine
 
             while( pch != NULL )
             {
-                *pch = '/';
+                *pch = MENGINE_PATH_DELIM;
 
                 pch = MENGINE_STRCHR( pch, '\\' );
             }
@@ -218,7 +220,7 @@ namespace Mengine
 
             Char * pch = _filePath + len - 1;
 
-            if( *pch == '/' )
+            if( *pch == MENGINE_PATH_DELIM )
             {
                 *pch = '\0';
             }
@@ -235,14 +237,14 @@ namespace Mengine
 
             Char * pch = _filePath + len - 1;
 
-            if( *pch == '/' )
+            if( *pch == MENGINE_PATH_DELIM )
             {
                 return false;
             }
 
             pch--;
 
-            while( *pch != '/' )
+            while( *pch != MENGINE_PATH_DELIM )
             {
                 if( pch == _filePath )
                 {

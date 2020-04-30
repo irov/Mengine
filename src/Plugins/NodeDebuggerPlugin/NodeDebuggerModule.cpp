@@ -1290,7 +1290,7 @@ namespace Mengine
             uint32_t uid = 0;
             while( *ptr )
             {
-                if( *ptr == '/' )
+                if( *ptr == MENGINE_PATH_DELIM )
                 {
                     _path.push_back( uid );
                     uid = 0;

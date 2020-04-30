@@ -240,7 +240,7 @@ namespace Mengine
     {
         PathString accountString;
         accountString.append( _accountID );
-        accountString.append( '/' );
+        accountString.append( MENGINE_PATH_DELIM );
 
         FilePath accountPath = Helper::stringizeFilePath( accountString );
 

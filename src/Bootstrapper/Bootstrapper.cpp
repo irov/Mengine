@@ -352,7 +352,7 @@ namespace Mengine
             );
 
             return false;
-        }        
+        }
 
         return true;
     }

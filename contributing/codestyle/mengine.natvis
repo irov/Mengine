@@ -15,6 +15,7 @@
         <DisplayString>{m_holder->m_data,[m_holder->m_size]na}</DisplayString>
         
         <Expand>
+            <Item Name="[value]">m_holder->m_data,[m_holder->m_size]na</Item>
             <Item Name="[size]">m_holder->m_size</Item>
             <Item Name="[hash]">m_holder->m_hash</Item>
         </Expand>
@@ -24,6 +25,7 @@
         <DisplayString>{m_holder->m_data,[m_holder->m_size]na}</DisplayString>
         
         <Expand>
+            <Item Name="[value]">m_holder->m_data,[m_holder->m_size]na</Item>
             <Item Name="[size]">m_holder->m_size</Item>
             <Item Name="[hash]">m_holder->m_hash</Item>
         </Expand>        

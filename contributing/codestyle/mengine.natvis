@@ -30,4 +30,19 @@
             <Item Name="[hash]">m_holder->m_hash</Item>
         </Expand>        
     </Type>
+    
+    <Type Name="jpp::object">
+        <DisplayString Condition="m_object->type == 0">object</DisplayString>
+        <DisplayString Condition="m_object->type == 1">array</DisplayString>
+        <DisplayString Condition="m_object->type == 2">{((json_string_t*)m_object)->value, [((json_string_t*)m_object)->length]na}</DisplayString>
+        <DisplayString Condition="m_object->type == 3">{((json_integer_t*)m_object)->value}</DisplayString>
+        <DisplayString Condition="m_object->type == 4">{((json_real_t*)m_object)->value}</DisplayString>
+        <DisplayString Condition="m_object->type == 5">true</DisplayString>
+        <DisplayString Condition="m_object->type == 6">false</DisplayString>
+        <DisplayString Condition="m_object->type == 7">null</DisplayString>
+        
+        <Expand>
+            <Item Name="[ref]">m_object->refcount</Item>
+        </Expand>
+    </Type>
 </AutoVisualizer>

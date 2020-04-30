@@ -2,8 +2,8 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
     <Type Name="stdex::intrusive_ptr&lt;*, *&gt;">
         <DisplayString Condition="m_ptr == 0">nullptr</DisplayString>
-        <DisplayString Condition="m_debug_ptr_mask__ != 2882400001">invalid</DisplayString>
-        <DisplayString Condition="m_ptr->m_destroy == true">destroy</DisplayString>
+        <DisplayString Condition="m_debug_ptr_mask__ != 2882400001" Optional="true">invalid</DisplayString>
+        <DisplayString Condition="m_ptr->m_reference == 0">destroy</DisplayString>
         <DisplayString>{*m_ptr}</DisplayString>
         
         <Expand>
@@ -30,10 +30,44 @@
             <Item Name="[hash]">m_holder->m_hash</Item>
         </Expand>        
     </Type>
+
+    <Type Name="json_t">
+        <DisplayString Condition="type == 0">object</DisplayString>
+        <DisplayString Condition="type == 0 &amp;&amp; ((json_object_t*)this)->hashtable.size == 0">empty object</DisplayString>
+        
+        <DisplayString Condition="type == 1 &amp;&amp; ((json_array_t*)this)->entries == 0">empty array</DisplayString>
+        <DisplayString Condition="type == 1 &amp;&amp; ((json_array_t*)this)->entries == 1">{{ {*((json_array_t*)this)->table[0]} }}</DisplayString>
+        <DisplayString Condition="type == 1 &amp;&amp; ((json_array_t*)this)->entries == 2">{{ {*((json_array_t*)this)->table[0]}, {*((json_array_t*)this)->table[1]} }}</DisplayString>
+        <DisplayString Condition="type == 1 &amp;&amp; ((json_array_t*)this)->entries == 3">{{ {*((json_array_t*)this)->table[0]}, {*((json_array_t*)this)->table[1]}, {*((json_array_t*)this)->table[2]} }}</DisplayString>
+        <DisplayString Condition="type == 1 &amp;&amp; ((json_array_t*)this)->entries == 4">{{ {*((json_array_t*)this)->table[0]}, {*((json_array_t*)this)->table[1]}, {*((json_array_t*)this)->table[2]}, {*((json_array_t*)this)->table[3]} }}</DisplayString>
+        <DisplayString Condition="type == 1 &amp;&amp; ((json_array_t*)this)->entries == 5">{{ {*((json_array_t*)this)->table[0]}, {*((json_array_t*)this)->table[1]}, {*((json_array_t*)this)->table[2]}, {*((json_array_t*)this)->table[3]}, {*((json_array_t*)this)->table[4]} }}</DisplayString>
+        <DisplayString Condition="type == 1 &amp;&amp; ((json_array_t*)this)->entries &gt; 6">{{ {*((json_array_t*)this)->table[0]}, {*((json_array_t*)this)->table[1]}, {*((json_array_t*)this)->table[2]}, {*((json_array_t*)this)->table[3]}, {*((json_array_t*)this)->table[4]}, {*((json_array_t*)this)->table[5]} ... }}</DisplayString>
+       
+        
+        <DisplayString Condition="type == 2">{((json_string_t*)this)->value, [((json_string_t*)this)->length]na}</DisplayString>
+        <DisplayString Condition="type == 3">{((json_integer_t*)this)->value}</DisplayString>
+        <DisplayString Condition="type == 4">{((json_real_t*)this)->value}</DisplayString>
+        <DisplayString Condition="type == 5">true</DisplayString>
+        <DisplayString Condition="type == 6">false</DisplayString>
+        <DisplayString Condition="type == 7">null</DisplayString>
+        
+        <Expand>
+            <Item Name="[ref]">this->refcount</Item>
+        </Expand>
+    </Type>
     
     <Type Name="jpp::object">
         <DisplayString Condition="m_object->type == 0">object</DisplayString>
-        <DisplayString Condition="m_object->type == 1">array</DisplayString>
+        <DisplayString Condition="m_object->type == 0 &amp;&amp; ((json_object_t*)m_object)->hashtable.size == 0">empty object</DisplayString>
+        
+        <DisplayString Condition="m_object->type == 1 &amp;&amp; ((json_array_t*)m_object)->entries == 0">empty array</DisplayString>
+        <DisplayString Condition="m_object->type == 1 &amp;&amp; ((json_array_t*)m_object)->entries == 1">{{ {*((json_array_t*)m_object)->table[0]} }}</DisplayString>
+        <DisplayString Condition="m_object->type == 1 &amp;&amp; ((json_array_t*)m_object)->entries == 2">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]} }}</DisplayString>
+        <DisplayString Condition="m_object->type == 1 &amp;&amp; ((json_array_t*)m_object)->entries == 3">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]} }}</DisplayString>
+        <DisplayString Condition="m_object->type == 1 &amp;&amp; ((json_array_t*)m_object)->entries == 4">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]}, {*((json_array_t*)m_object)->table[3]} }}</DisplayString>
+        <DisplayString Condition="m_object->type == 1 &amp;&amp; ((json_array_t*)m_object)->entries == 5">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]}, {*((json_array_t*)m_object)->table[3]}, {*((json_array_t*)m_object)->table[4]} }}</DisplayString>
+        <DisplayString Condition="m_object->type == 1 &amp;&amp; ((json_array_t*)m_object)->entries &gt; 6">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]}, {*((json_array_t*)m_object)->table[3]}, {*((json_array_t*)m_object)->table[4]}, {*((json_array_t*)m_object)->table[5]} ... }}</DisplayString>
+        
         <DisplayString Condition="m_object->type == 2">{((json_string_t*)m_object)->value, [((json_string_t*)m_object)->length]na}</DisplayString>
         <DisplayString Condition="m_object->type == 3">{((json_integer_t*)m_object)->value}</DisplayString>
         <DisplayString Condition="m_object->type == 4">{((json_real_t*)m_object)->value}</DisplayString>
@@ -43,6 +77,34 @@
         
         <Expand>
             <Item Name="[ref]">m_object->refcount</Item>
+            <Item Name="[type]" Condition="m_object->type == 0">"object"</Item>
+            <Item Name="[type]" Condition="m_object->type == 1">"array"</Item>
+            <Item Name="[type]" Condition="m_object->type == 2">"string"</Item>
+            <Item Name="[type]" Condition="m_object->type == 3">"integer"</Item>
+            <Item Name="[type]" Condition="m_object->type == 4">"real"</Item>
+            <Item Name="[type]" Condition="m_object->type == 5">"boolean"</Item>
+            <Item Name="[type]" Condition="m_object->type == 6">"boolean"</Item>
+            <Item Name="[type]" Condition="m_object->type == 7">"null"</Item>
         </Expand>
     </Type>
+    
+    <Type Name="jpp::array">
+        <DisplayString Condition="((json_array_t*)m_object)->entries == 0">empty array</DisplayString>
+        <DisplayString Condition="((json_array_t*)m_object)->entries == 1">{{ {*((json_array_t*)m_object)->table[0]} }}</DisplayString>
+        <DisplayString Condition="((json_array_t*)m_object)->entries == 2">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]} }}</DisplayString>
+        <DisplayString Condition="((json_array_t*)m_object)->entries == 3">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]} }}</DisplayString>
+        <DisplayString Condition="((json_array_t*)m_object)->entries == 4">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]}, {*((json_array_t*)m_object)->table[3]} }}</DisplayString>
+        <DisplayString Condition="((json_array_t*)m_object)->entries == 5">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]}, {*((json_array_t*)m_object)->table[3]}, {*((json_array_t*)m_object)->table[4]} }}</DisplayString>
+        <DisplayString Condition="((json_array_t*)m_object)->entries &gt; 6">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]}, {*((json_array_t*)m_object)->table[2]}, {*((json_array_t*)m_object)->table[3]}, {*((json_array_t*)m_object)->table[4]}, {*((json_array_t*)m_object)->table[5]} ... }}</DisplayString>
+        
+        <Expand>
+            <Item Name="[size]">((json_array_t*)m_object)->entries</Item>
+            <Item Name="[ref]">m_object->refcount</Item>
+            
+            <ArrayItems Condition="((json_array_t*)m_object)->entries != 0">
+                <Size>((json_array_t*)m_object)->entries</Size>
+                <ValuePointer>((json_array_t*)m_object)->table</ValuePointer>
+            </ArrayItems>            
+        </Expand>
+    </Type>    
 </AutoVisualizer>

@@ -69,7 +69,7 @@ namespace Mengine
             ->getUserPath( userPath );
 
         PathString sentryDatabasePath;
-        sentryDatabasePath.append( userPath, userPathLen );
+        sentryDatabasePath.append( userPath, (PathString::size_type)userPathLen );
         sentryDatabasePath.append( ".sentry-native" );
 
         sentry_options_set_database_path( options, sentryDatabasePath.c_str() );

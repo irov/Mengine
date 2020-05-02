@@ -72,7 +72,7 @@ namespace Mengine
     bool Movie1Plugin::_initializePlugin()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, []()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ), Helper::makeFactorableUnique<MovieScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
@@ -131,7 +131,7 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_WAIT( DataServiceInterface, [this]()
+        SERVICE_WAIT( DataServiceInterface, []()
         {
             DataflowInterfacePtr dataflowAEK = Helper::makeFactorableUnique<DataflowAEK>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -166,7 +166,7 @@ namespace Mengine
             VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<ResourceMovieValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
         }
 
-        SERVICE_WAIT( LoaderServiceInterface, [this]()
+        SERVICE_WAIT( LoaderServiceInterface, []()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<LoaderResourceMovie>( MENGINE_DOCUMENT_FACTORABLE ) );
 

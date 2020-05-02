@@ -17,20 +17,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/AnimationInterface.h"
 
-#include "Kernel/Reference.h"
-#include "Kernel/Eventable.h"
-#include "Kernel/ThreadTask.h"
-#include "Kernel/Scene.h"
-#include "Kernel/Arrow.h"
-#include "Kernel/NodeRenderHierarchy.h"
-#include "Kernel/MatrixProxy.h"
-#include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/UnicodeHelper.h"
-#include "Kernel/Soundable.h"
-#include "Kernel/Materialable.h"
-#include "Kernel/Surface.h"
-
 #include "Engine/ResourceImageData.h"
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceMusic.h"
@@ -56,24 +42,7 @@
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
 
-#include "Kernel/Interender.h"
-#include "Kernel/RenderViewport.h"
-#include "Kernel/RenderScissor.h"
-#include "Kernel/RenderCameraOrthogonal.h"
-#include "Kernel/RenderCameraProjection.h"
-#include "Kernel/RenderCameraOrthogonalTarget.h"
-#include "Kernel/ResourceImage.h"
-
-#include "Kernel/Shape.h"
-#include "Kernel/Entity.h"
-#include "Kernel/Logger.h"
-
 #include "Interface/RenderSystemInterface.h"
-
-#include "Kernel/Identity.h"
-#include "Kernel/Affector.h"
-#include "Kernel/AffectorHelper.h"
-#include "Kernel/ThreadTask.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
@@ -88,6 +57,41 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
+#include "Kernel/Rect.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/ValueFollower.h"
+#include "Kernel/ValueInterpolatorParabolic.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/AssertionFactory.h"
+#include "Kernel/Identity.h"
+#include "Kernel/Affector.h"
+#include "Kernel/AffectorHelper.h"
+#include "Kernel/ThreadTask.h"
+#include "Kernel/Interender.h"
+#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderScissor.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderCameraOrthogonalTarget.h"
+#include "Kernel/ResourceImage.h"
+#include "Kernel/Shape.h"
+#include "Kernel/Entity.h"
+#include "Kernel/Logger.h"
+#include "Kernel/Reference.h"
+#include "Kernel/Eventable.h"
+#include "Kernel/ThreadTask.h"
+#include "Kernel/Scene.h"
+#include "Kernel/Arrow.h"
+#include "Kernel/NodeRenderHierarchy.h"
+#include "Kernel/MatrixProxy.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/UnicodeHelper.h"
+#include "Kernel/Soundable.h"
+#include "Kernel/Materialable.h"
+#include "Kernel/Surface.h"
+
+#include "Config/StdIO.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -95,14 +99,6 @@
 #include "math/mat4.h"
 #include "math/quat.h"
 #include "math/utils.h"
-
-#include "Kernel/Rect.h"
-#include "Kernel/Polygon.h"
-#include "Kernel/ValueFollower.h"
-#include "Kernel/ValueInterpolatorParabolic.h"
-
-#include "Kernel/FactoryPool.h"
-#include "Kernel/AssertionFactory.h"
 
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"
@@ -494,12 +490,12 @@ namespace Mengine
                 return length;
             }
             //////////////////////////////////////////////////////////////////////////
-            std::string s_Node_getDebugId( Node * _node )
+            String s_Node_getDebugId( Node * _node )
             {
-                char debugId[256];
-                sprintf( debugId, "%p", _node );
+                Char debugId[256];
+                MENGINE_SPRINTF( debugId, "%p", _node );
 
-                return std::string( debugId );
+                return String( debugId );
             }
             //////////////////////////////////////////////////////////////////////////
             NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )

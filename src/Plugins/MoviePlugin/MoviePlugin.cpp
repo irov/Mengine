@@ -99,7 +99,7 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
         Char msg[4096];
-        vsprintf( msg, _format, args );
+        MENGINE_VSPRINTF( msg, _format, args );
         MENGINE_VA_LIST_END( args );
 
         LOGGER_ERROR( "error '%s' code '%d'"

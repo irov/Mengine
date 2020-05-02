@@ -165,7 +165,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_debug()
             {
-                printf( "debug!\n" );
+                LOGGER_MESSAGE_RELEASE( "debug!\n" );
 
 #if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
                 _asm int 3;
@@ -183,7 +183,7 @@ namespace Mengine
 
                 once = true;
 
-                printf( "debug once!\n" );
+                LOGGER_MESSAGE_RELEASE( "debug once!\n" );
 
 #if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
                 _asm int 3;
@@ -194,7 +194,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _node );
 
-                printf( "debug node!\n" );
+                LOGGER_MESSAGE_RELEASE( "debug node!\n" );
 
 #if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
                 _asm int 3;
@@ -330,7 +330,7 @@ namespace Mengine
                         render->calcTotalColor( color );
                     }
 
-                    printf( "%.*s%s%s [%s] (%.0f, %.0f) %.2f\n"
+                    LOGGER_MESSAGE_RELEASE( "%.*s%s%s [%s] (%.0f, %.0f) %.2f\n"
                         , _tab
                         , "                                         "
                         , child->isActivate() ? child->isEnable() ? "+" : "-" : "#"
@@ -624,7 +624,7 @@ namespace Mengine
             bool s_getOptionUInt32( const ConstString & _option )
             {
                 uint32_t value = OPTIONS_SERVICE()
-                    ->getOptionUInt32( _option.c_str() );
+                    ->getOptionUInt32( _option.c_str(), 0U );
 
                 return value;
             }
@@ -1606,7 +1606,10 @@ namespace Mengine
                 }
 
                 Char setting_value[32];
-                Helper::stringalized( _value, setting_value, 32 );
+                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                {
+                    return false;
+                }
 
                 bool result = account->changeSetting( _setting, setting_value );
 
@@ -1633,7 +1636,10 @@ namespace Mengine
                 }
 
                 Char setting_value[32];
-                Helper::stringalized( _value, setting_value, 32 );
+                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                {
+                    return false;
+                }
 
                 bool result = account->changeSetting( _setting, setting_value );
 
@@ -1660,7 +1666,10 @@ namespace Mengine
                 }
 
                 Char setting_value[32];
-                Helper::stringalized( _value, setting_value, 32 );
+                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                {
+                    return false;
+                }
 
                 bool result = account->changeSetting( _setting, setting_value );
 
@@ -1687,7 +1696,10 @@ namespace Mengine
                 }
 
                 Char setting_value[64];
-                Helper::stringalized( _value, setting_value, 64 );
+                if( Helper::stringalized( _value, setting_value, 64 ) == false )
+                {
+                    return false;
+                }
 
                 bool result = account->changeSetting( _setting, setting_value );
 

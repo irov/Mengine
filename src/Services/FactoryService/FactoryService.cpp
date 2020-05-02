@@ -115,7 +115,7 @@ namespace Mengine
                     fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
 
                     Char factorymsg[2048];
-                    int factorymsg_length = snprintf( factorymsg, 2048, "Factory '%s' [%zu]:\n"
+                    int factorymsg_length = MENGINE_SNPRINTF( factorymsg, 2048, "Factory '%s' [%zu]:\n"
                         , name.c_str()
                         , objects.size()
                     );
@@ -130,7 +130,7 @@ namespace Mengine
                         fwrite( obj_delimiter, MENGINE_STRLEN( obj_delimiter ), 1, f );
 
                         Char objmsg[16384];
-                        int objmsg_length = snprintf( objmsg, 16384, "    doc: %s\n"
+                        int objmsg_length = MENGINE_SNPRINTF( objmsg, 16384, "    doc: %s\n"
                             , MENGINE_DOCUMENT_STR( obj )
                         );
 

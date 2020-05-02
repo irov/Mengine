@@ -170,17 +170,14 @@ namespace Mengine
             m_desktop = false;
         }
 
-        if( HAS_OPTION( "platform" ) == true )
+        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
+
+        if( option_platform != nullptr )
         {
-            const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-            if( MENGINE_STRCMP( option_platform, "" ) != 0 )
-            {
-                m_platformTags.clear();
-                m_platformTags.addTag( Helper::stringizeString( option_platform ) );
-            }
+            m_platformTags.clear();
+            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
-
+        
         if( HAS_OPTION( "touchpad" ) )
         {
             m_touchpad = true;
@@ -1530,16 +1527,17 @@ namespace Mengine
 
         m_mouseEvent.initialize( m_hWnd );
 
-        const Char * option_fps = GET_OPTION_VALUE( "fps", "" );
+        const Char * option_fps = GET_OPTION_VALUE( "fps", nullptr );
 
         float activeFrameTimeDefault = 1000.f / 60.f;
 
-        if( MENGINE_STRLEN( option_fps ) != 0 )
+        if( option_fps != nullptr )
         {
             float fps;
-            Helper::stringalized( option_fps, &fps );
-
-            activeFrameTimeDefault = 1000.f / fps;
+            if( Helper::stringalized( option_fps, &fps ) == true )
+            {
+                activeFrameTimeDefault = 1000.f / fps;
+            }
         }
 
         m_activeFrameTime = CONFIG_VALUE2( "Engine", "MaxActiveFrameTime", activeFrameTimeDefault );

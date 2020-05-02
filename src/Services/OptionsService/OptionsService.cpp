@@ -1,6 +1,7 @@
 #include "OptionsService.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/StdString.h"
 
@@ -115,19 +116,10 @@ namespace Mengine
             return op.value;
         }
 
-        if( _default == nullptr )
-        {
-            LOGGER_ERROR( "option '%s' not found"
-                , _key
-            );
-
-            return nullptr;
-        }
-
         return _default;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t OptionsService::getOptionUInt32( const Char * _key ) const
+    uint32_t OptionsService::getOptionUInt32( const Char * _key, uint32_t _default ) const
     {
         for( const Option & op : m_options )
         {
@@ -137,9 +129,9 @@ namespace Mengine
             }
 
             uint32_t value_uint32;
-            if( ::sscanf( op.value, "%u", &value_uint32 ) != 1 )
+            if( Helper::stringalized( op.value, &value_uint32 ) == false )
             {
-                LOGGER_ERROR( "option '%s' not sscanf value '%s'"
+                LOGGER_ERROR( "option '%s' invalid cast to uint32_t value '%s'"
                     , _key
                     , op.value
                 );
@@ -150,11 +142,7 @@ namespace Mengine
             return value_uint32;
         }
 
-        LOGGER_ERROR( "option '%s' not found"
-            , _key
-        );
-
-        return 0;
+        return _default;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const

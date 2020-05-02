@@ -260,7 +260,7 @@ namespace Mengine
             str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
         }
 
-        int32_t size = snprintf( _buffer + _offset, _capacity - _offset, "%s[%u] "
+        int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, "%s[%u] "
             , str_function.c_str()
             , _line
         );

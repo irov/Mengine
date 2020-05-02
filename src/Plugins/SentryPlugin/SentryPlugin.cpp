@@ -153,9 +153,14 @@ namespace Mengine
             ->getProjectVersion();
 
         Char projectVersionString[32] = {0};
-        Helper::stringalized( projectVersion, projectVersionString, 32 );
-
-        sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
+        if( Helper::stringalized( projectVersion, projectVersionString, 32 ) == false )
+        {
+            sentry_set_extra( "Version", sentry_value_new_string( "Error" ) );
+        }
+        else
+        {
+            sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
+        }
 
         sentry_set_extra( "Debug", sentry_value_new_bool( MENGINE_DEBUG_ATTRIBUTE( true, false ) ) );
 

@@ -13,9 +13,11 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -201,7 +203,7 @@ namespace Mengine
 
             uint32_t width;
             uint32_t height;
-            if( sscanf( ini_value, "%u %u", &width, &height ) != 2 )
+            if( MENGINE_SSCANF( ini_value, "%u %u", &width, &height ) != 2 )
             {
                 LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse resolution"
                     , _section
@@ -231,7 +233,7 @@ namespace Mengine
             float g;
             float b;
             float a;
-            if( sscanf( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+            if( MENGINE_SSCANF( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
             {
                 LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse ColorValue"
                     , _section
@@ -264,8 +266,7 @@ namespace Mengine
             }
 
             uint32_t tmp_value;
-
-            if( sscanf( ini_value, "%" PRIu32, &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -285,7 +286,7 @@ namespace Mengine
             }
 
             int32_t tmp_value;
-            if( sscanf( ini_value, "%" PRId32, &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -305,7 +306,7 @@ namespace Mengine
             }
 
             uint32_t tmp_value;
-            if( sscanf( ini_value, "%" PRIu32, &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -325,7 +326,7 @@ namespace Mengine
             }
 
             int32_t tmp_value;
-            if( sscanf( ini_value, "%" PRId32, &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -345,7 +346,7 @@ namespace Mengine
             }
 
             uint32_t tmp_value;
-            if( sscanf( ini_value, "%" PRIu32, &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -365,7 +366,7 @@ namespace Mengine
             }
 
             uint64_t tmp_value;
-            if( sscanf( ini_value, "%" PRIu64, &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -385,7 +386,7 @@ namespace Mengine
             }
 
             float tmp_value;
-            if( sscanf( ini_value, "%f", &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -405,7 +406,7 @@ namespace Mengine
             }
 
             double tmp_value;
-            if( sscanf( ini_value, "%lf", &tmp_value ) != 1 )
+            if( Helper::stringalized( ini_value, &tmp_value ) == false )
             {
                 return false;
             }
@@ -471,7 +472,7 @@ namespace Mengine
 
                 AspectRatioViewport arv;
 
-                if( sscanf( ini_value, "%f %f %f %f %f %f"
+                if( MENGINE_SSCANF( ini_value, "%f %f %f %f %f %f"
                     , &arv.width
                     , &arv.height
                     , &arv.viewport.begin.x

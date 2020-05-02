@@ -12,7 +12,10 @@ namespace Mengine
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, uint32_t _value )
         {
             Char value_str[64];
-            Helper::stringalized( _value, value_str, 64 );
+            if( Helper::stringalized( _value, value_str, 64 ) == false )
+            {
+                return false;
+            }
 
             bool successful = Helper::writeIniSetting( _stream, _key, value_str );
 
@@ -22,7 +25,10 @@ namespace Mengine
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, float _value )
         {
             Char value_str[64];
-            Helper::stringalized( _value, value_str, 64 );
+            if( Helper::stringalized( _value, value_str, 64 ) == false )
+            {
+                return false;
+            }
 
             bool successful = Helper::writeIniSetting( _stream, _key, value_str );
 

@@ -9,8 +9,10 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #include "xmlsax/xmlsax.hpp"
 
@@ -133,8 +135,8 @@ namespace Mengine
 
                         if( MENGINE_STRCMP( key, "size" ) == 0 )
                         {
-                            float size;
-                            if( sscanf( value, "%f", &size ) != 1 )
+                            float size = 0.f;
+                            if( Helper::stringalized( value, &size ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read size '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -157,7 +159,7 @@ namespace Mengine
                         if( MENGINE_STRCMP( key, "ascender" ) == 0 )
                         {
                             float ascender = 0.f;
-                            if( sscanf( value, "%f", &ascender ) != 1 )
+                            if( Helper::stringalized( value, &ascender ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read ascender '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -171,7 +173,7 @@ namespace Mengine
                         else if( MENGINE_STRCMP( key, "height" ) == 0 )
                         {
                             uint32_t height = 0;
-                            if( sscanf( value, "%u", &height ) != 1 )
+                            if( Helper::stringalized( value, &height ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -185,7 +187,7 @@ namespace Mengine
                         else if( MENGINE_STRCMP( key, "descender" ) == 0 )
                         {
                             float descender = 0.f;
-                            if( sscanf( value, "%f", &descender ) != 1 )
+                            if( Helper::stringalized( value, &descender ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read descender '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -208,7 +210,7 @@ namespace Mengine
                         if( MENGINE_STRCMP( key, "width" ) == 0 )
                         {
                             uint32_t width = 0;
-                            if( sscanf( value, "%u", &width ) != 1 )
+                            if( Helper::stringalized( value, &width ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -224,7 +226,7 @@ namespace Mengine
                         else if( MENGINE_STRCMP( key, "height" ) == 0 )
                         {
                             uint32_t height = 0;
-                            if( sscanf( value, "%u", &height ) != 1 )
+                            if( Helper::stringalized( value, &height ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -253,7 +255,7 @@ namespace Mengine
 
                         if( MENGINE_STRCMP( key, "advance" ) == 0 )
                         {
-                            if( sscanf( value, "%f", &advance ) != 1 )
+                            if( Helper::stringalized( value, &advance ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -264,7 +266,7 @@ namespace Mengine
                         }
                         else if( MENGINE_STRCMP( key, "offset" ) == 0 )
                         {
-                            if( sscanf( value, "%f %f", &offset.x, &offset.y ) != 2 )
+                            if( Helper::stringalized( value, &offset ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read offset '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -275,7 +277,7 @@ namespace Mengine
                         }
                         else if( MENGINE_STRCMP( key, "rect" ) == 0 )
                         {
-                            if( sscanf( value, "%f %f %f %f", &rect.x, &rect.y, &rect.z, &rect.w ) != 4 )
+                            if( Helper::stringalized( value, &rect ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read rect '%s'"
                                     , m_fileGroup->getName().c_str()
@@ -326,7 +328,7 @@ namespace Mengine
 
                         if( MENGINE_STRCMP( key, "advance" ) == 0 )
                         {
-                            if( sscanf( value, "%f", &advance ) != 1 )
+                            if( Helper::stringalized( value, &advance ) == false )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read advance '%s'"
                                     , m_fileGroup->getName().c_str()

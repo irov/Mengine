@@ -18,9 +18,12 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Stringalized.h"
 
 #include "Kernel/String.h"
+
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #include "xmlsax/xmlsax.hpp"
 
@@ -202,7 +205,7 @@ namespace Mengine
                 else if( MENGINE_STRCMP( str_key, "CharOffset" ) == 0 )
                 {
                     float value = 0.f;
-                    if( sscanf( str_value, "%f", &value ) != 1 )
+                    if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' charOffset '%s'"
                             , m_fileGroup->getName().c_str()
@@ -219,7 +222,7 @@ namespace Mengine
                 else if( MENGINE_STRCMP( str_key, "LineOffset" ) == 0 )
                 {
                     float value = 0.f;
-                    if( sscanf( str_value, "%f", &value ) != 1 )
+                    if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
@@ -235,11 +238,11 @@ namespace Mengine
                 }
                 else if( MENGINE_STRCMP( str_key, "Color" ) == 0 )
                 {
-                    float r;
-                    float g;
-                    float b;
-                    float a;
-                    if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+                    float r = 1.f;
+                    float g = 1.f;
+                    float b = 1.f;
+                    float a = 1.f;
+                    if( MENGINE_SSCANF( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
                     {
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
@@ -256,7 +259,7 @@ namespace Mengine
                 else if( MENGINE_STRCMP( str_key, "MaxLength" ) == 0 )
                 {
                     float value = 0.f;
-                    if( sscanf( str_value, "%f", &value ) != 1 )
+                    if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Override '%s'"
                             , m_fileGroup->getName().c_str()
@@ -273,7 +276,7 @@ namespace Mengine
                 else if( MENGINE_STRCMP( str_key, "Override" ) == 0 )
                 {
                     uint32_t value = 0;
-                    if( sscanf( str_value, "%u", &value ) != 1 )
+                    if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Override' '%s'"
                             , m_fileGroup->getName().c_str()
@@ -348,7 +351,7 @@ namespace Mengine
                 else if( MENGINE_STRCMP( str_key, "CharScale" ) == 0 )
                 {
                     float value = 0;
-                    if( sscanf( str_value, "%f", &value ) != 1 )
+                    if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Scale '%s'"
                             , m_fileGroup->getName().c_str()
@@ -365,7 +368,7 @@ namespace Mengine
                 else if( MENGINE_STRCMP( str_key, "Empty" ) == 0 )
                 {
                     uint32_t value = 0;
-                    if( sscanf( str_value, "%u", &value ) != 1 )
+                    if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
                             , m_fileGroup->getName().c_str()

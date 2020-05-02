@@ -103,7 +103,7 @@ namespace Mengine
 
         if( HAS_OPTION( "seed" ) == true )
         {
-            uint32_t randomSeed = GET_OPTION_VALUE_UINT32( "seed" );
+            uint32_t randomSeed = GET_OPTION_VALUE_UINT32( "seed", 0U );
             m_randomizer->setSeed( randomSeed );
         }
         else

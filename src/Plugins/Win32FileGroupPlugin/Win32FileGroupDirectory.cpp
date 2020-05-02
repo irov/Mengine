@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        Char utf8_filePath[MENGINE_MAX_PATH];
+        Char utf8_filePath[MENGINE_MAX_PATH] = { '\0' };
         if( this->getFullPath( _filePath, utf8_filePath ) == false )
         {
             LOGGER_ERROR( "invlalid get fullPath '%s'"
@@ -138,7 +138,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        Char fullPathBase[MENGINE_MAX_PATH];
+        Char fullPathBase[MENGINE_MAX_PATH] = { '\0' };
         if( this->getFullPath( FilePath::none(), fullPathBase ) == false )
         {
             return false;

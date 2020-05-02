@@ -64,7 +64,7 @@ namespace Mengine
 
         sentry_options_t * options = sentry_options_new();
 
-        Char userPath[MENGINE_MAX_PATH] = { 0 };
+        Char userPath[MENGINE_MAX_PATH] = { '\0' };
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 

@@ -201,7 +201,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI )
     {
-        Char modulePathCache[MENGINE_MAX_PATH];
+        Char modulePathCache[MENGINE_MAX_PATH] = { '\0' };
 
         uint32_t modulePathCacheLen;
         if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH, _module, modulePathCacheLen ) == false )

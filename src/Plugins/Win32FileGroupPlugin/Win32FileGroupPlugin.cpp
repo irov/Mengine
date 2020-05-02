@@ -61,7 +61,7 @@ namespace Mengine
     {
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( FilePath::none() ) );
 
-        Char currentPath[MENGINE_MAX_PATH];
+        Char currentPath[MENGINE_MAX_PATH] = { '\0' };
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 

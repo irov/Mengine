@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32DynamicLibrary::load()
     {
-        WChar unicode_name[MENGINE_MAX_PATH];
+        WChar unicode_name[MENGINE_MAX_PATH] = { L'\0' };
         if( Helper::utf8ToUnicode( m_name, unicode_name, MENGINE_MAX_PATH ) == false )
         {
             return false;

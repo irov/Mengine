@@ -81,7 +81,7 @@ namespace Mengine
         //Py_NoUserSiteDirectory = 1;
         //Py_NoSiteFlag = 1;
 
-        WChar currentPath[MENGINE_MAX_PATH];
+        WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
         DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
@@ -92,11 +92,11 @@ namespace Mengine
         currentPath[len + 0] = MENGINE_PATH_WDELIM;
         currentPath[len + 1] = L'\0';
 
-        WChar exportPath[MENGINE_MAX_PATH];
+        WChar exportPath[MENGINE_MAX_PATH] = { L'\0' };
         MENGINE_WCSCPY( exportPath, currentPath );
         MENGINE_WCSCAT( exportPath, L"Python3Lib/" );
 
-        WChar shortpath_exportPath[MENGINE_MAX_PATH];
+        WChar shortpath_exportPath[MENGINE_MAX_PATH] = { L'\0' };
         DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
 
         if( ShortPathNameLen == 0 )
@@ -134,22 +134,22 @@ namespace Mengine
         pybind::list py_syspath( kernel );
 
         {
-            WChar stdPath[MENGINE_MAX_PATH];
+            WChar stdPath[MENGINE_MAX_PATH] = { L'\0' };
             MENGINE_WCSCPY( stdPath, currentPath );
             MENGINE_WCSCAT( stdPath, L"Python3Lib/" );
 
-            WChar shortpath_stdPath[MENGINE_MAX_PATH];
+            WChar shortpath_stdPath[MENGINE_MAX_PATH] = { L'\0' };
             GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH );
 
             py_syspath.append( shortpath_stdPath );
         }
 
         {
-            WChar xlsxPath[MENGINE_MAX_PATH];
+            WChar xlsxPath[MENGINE_MAX_PATH] = { L'\0' };
             MENGINE_WCSCPY( xlsxPath, currentPath );
             MENGINE_WCSCAT( xlsxPath, L"XlsxExport/" );
 
-            WChar shortpath_xlsxPath[MENGINE_MAX_PATH];
+            WChar shortpath_xlsxPath[MENGINE_MAX_PATH] = { L'\0' };
             GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH );
 
             py_syspath.append( shortpath_xlsxPath );

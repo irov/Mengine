@@ -291,7 +291,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_loadPlugin( const WString & _pluginName )
             {
-                Char utf8_pluginName[MENGINE_MAX_PATH];
+                Char utf8_pluginName[MENGINE_MAX_PATH] = { '\0' };
                 if( Helper::unicodeToUtf8( _pluginName, utf8_pluginName, MENGINE_MAX_PATH ) == false )
                 {
                     return false;

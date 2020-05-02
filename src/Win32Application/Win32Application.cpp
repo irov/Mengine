@@ -90,7 +90,7 @@ namespace Mengine
             PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
         }
 
-        Char currentPath[MENGINE_MAX_PATH];
+        Char currentPath[MENGINE_MAX_PATH] = { '\0' };
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 

@@ -32,7 +32,7 @@ namespace Mengine
         m_filePath = _filePath;
 #endif
 
-        WChar fullPath[MENGINE_MAX_PATH];
+        WChar fullPath[MENGINE_MAX_PATH] = { L'\0' };
         size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH );
 
         MENGINE_UNUSED( fullPathLen );

@@ -121,14 +121,14 @@ namespace Mengine
         {
             MENGINE_STRCPY( _out, _in );
 
-            pathCorrectBackslashA( _out );
+            Helper::pathCorrectBackslashA( _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashToW( WChar * _out, const WChar * _in )
         {
             MENGINE_WCSCPY( _out, _in );
 
-            pathCorrectBackslashW( _out );
+            Helper::pathCorrectBackslashW( _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectForwardslashW( WChar * _filePath )

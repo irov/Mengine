@@ -825,7 +825,7 @@ namespace Mengine
         {
             if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
             {
-                Char userPath[MENGINE_MAX_PATH] = {0};
+                Char userPath[MENGINE_MAX_PATH] = { '\0' };
                 PLATFORM_SERVICE()
                     ->getUserPath( userPath );
 

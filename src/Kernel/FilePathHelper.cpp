@@ -69,7 +69,7 @@ namespace Mengine
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
 
-            Char str[MENGINE_MAX_PATH] = { 0 };
+            Char str[MENGINE_MAX_PATH] = { '\0' };
             int size = MENGINE_VSNPRINTF( str, MENGINE_MAX_PATH - 1, _format, args );
 
             MENGINE_ASSERTION_FATAL( size >= 0, "invalid stringize file format '%s'"

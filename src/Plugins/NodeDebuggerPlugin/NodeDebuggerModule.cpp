@@ -15,6 +15,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
 #include "Interface/SettingsServiceInterface.h"
@@ -72,9 +73,11 @@ namespace Mengine
 
         uint32_t globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
+            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+                ->getPlatformExtention();
+
             uint32_t exitCode;
-            PLATFORM_SERVICE()
-                ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );
+            win32Platform->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_globalKeyHandlerF2 = globalKeyHandlerF2;

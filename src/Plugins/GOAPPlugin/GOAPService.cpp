@@ -17,6 +17,15 @@ namespace Mengine
     class MengineAllocator
         : public GOAP::Allocator
     {
+    public:
+        MengineAllocator()
+        {
+        }
+
+        ~MengineAllocator() override
+        {
+        }
+
     protected:
         void * allocate( size_t _size ) override
         {

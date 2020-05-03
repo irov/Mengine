@@ -2,6 +2,8 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/PlatformInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Win32FileHelper.h"
 
@@ -262,7 +264,7 @@ namespace Mengine
         DWORD bytesRead = 0;
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
-            DWORD dwError = GetLastError();
+            DWORD dwError = ::GetLastError();
 
             LOGGER_ERROR( "read %d:%d get error '%u'"
                 , _size
@@ -351,58 +353,7 @@ namespace Mengine
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::eof" );
 
         return (m_reading - m_capacity + m_carriage) == m_size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
-    {
-        uint32_t a2 = filetime->dwHighDateTime;
-        uint32_t a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
-        uint32_t a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
-
-        uint32_t carry;
-
-        if( a0 >= 32768 )
-            a0 -= 32768, carry = 0;
-        else
-            a0 += (1 << 16) - 32768, carry = 1;
-
-        if( a1 >= 54590 + carry )
-            a1 -= 54590 + carry, carry = 0;
-        else
-            a1 += (1 << 16) - 54590 - carry, carry = 1;
-
-        a2 -= 27111902 + carry;
-
-        int32_t negative = (a2 >= ((uint32_t)1) << 31);
-
-        if( negative )
-        {
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
-        }
-
-        a1 += (a2 % 10000) << 16;
-        a2 /= 10000;
-        a0 += (a1 % 10000) << 16;
-        a1 /= 10000;
-        a0 /= 10000;
-
-        a1 += (a2 % 1000) << 16;
-        a2 /= 1000;
-        a0 += (a1 % 1000) << 16;
-        a1 /= 1000;
-        a0 /= 1000;
-
-        if( negative )
-        {
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
-        }
-
-        return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::time( uint64_t * _time ) const
     {
@@ -412,7 +363,7 @@ namespace Mengine
 
         if( ::GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
         {
-            DWORD dwError = GetLastError();
+            DWORD dwError = ::GetLastError();
 
             LOGGER_ERROR( "invalid get file time '%d'"
                 , dwError
@@ -421,7 +372,10 @@ namespace Mengine
             return false;
         }
 
-        time_t time = s_FileTimeToUnixTime( &write );
+        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            ->getPlatformExtention();
+
+        time_t time = win32Platform->getFileUnixTime( &write );
 
         *_time = (uint64_t)time;
 

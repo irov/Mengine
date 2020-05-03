@@ -338,6 +338,10 @@ namespace Mengine
                     {
                     }
 
+                    ~CompileResourceVisitor() override
+                    {
+                    }
+
                 public:
                     uint32_t getCount() const
                     {
@@ -376,6 +380,10 @@ namespace Mengine
                 public:
                     CompleteThreadTaskVisitor()
                         : m_count( 0 )
+                    {
+                    }
+
+                    ~CompleteThreadTaskVisitor()
                     {
                     }
 
@@ -420,6 +428,9 @@ namespace Mengine
                     {
                     }
 
+                    ~VisitorPlayerFactoryManager()
+                    {
+                    }
 
                 public:
                     void visit( const PrototypeGeneratorInterfacePtr & _generator )
@@ -509,10 +520,12 @@ namespace Mengine
                     {
                     }
 
-                protected:
-                    void operator = ( const MyVisitorFactoryService & )
+                    ~MyVisitorFactoryService() override
                     {
                     }
+
+                protected:
+                    void operator = ( const MyVisitorFactoryService & ) = delete;
 
                 protected:
                     void visit( const Factory * _factory )

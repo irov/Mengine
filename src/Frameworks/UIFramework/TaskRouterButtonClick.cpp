@@ -21,7 +21,10 @@ namespace Mengine
             explicit TaskRouterButtonClickEventReceiver( const LambdaTaskRouterButtonClickEvent & _event )
                 : m_event( _event )
             {
+            }
 
+            ~TaskRouterButtonClickEventReceiver() override
+            {
             }
 
         protected:

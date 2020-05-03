@@ -45,7 +45,7 @@ namespace Mengine
 
         if( hInstance == NULL )
         {
-            DWORD le = GetLastError();
+            DWORD le = ::GetLastError();
 
             LOGGER_ERROR( "invalid load '%s' error code %d"
                 , m_name

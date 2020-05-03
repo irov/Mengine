@@ -75,7 +75,8 @@ namespace Mengine
             }break;
         case TIME_ZONE_ID_INVALID:
             {
-                DWORD err = GetLastError();
+                DWORD err = ::GetLastError();
+
                 LOGGER_ERROR( "GetTimeZoneInformation get error [%d]"
                     , err
                 );

@@ -21,6 +21,10 @@ namespace Mengine
                 {
                 }
 
+                ~MyTimepipe() override
+                {
+                }
+
             protected:
                 void onTimepipe( const UpdateContext * _contet ) override
                 {

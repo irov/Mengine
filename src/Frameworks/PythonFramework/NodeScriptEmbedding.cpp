@@ -456,6 +456,15 @@ namespace Mengine
                 : public SceneChangeCallbackInterface
             {
             public:
+                PythonSceneChangeCallback()
+                {
+                }
+
+                ~PythonSceneChangeCallback() override
+                {
+                }
+
+            public:
                 void initialize( const pybind::object & _cb, const pybind::args & _args )
                 {
                     m_cb = _cb;
@@ -548,6 +557,15 @@ namespace Mengine
                 , public Factorable
             {
             public:
+                PythonMeshEventReceiver()
+                {
+                }
+
+                ~PythonMeshEventReceiver() override
+                {
+                }
+
+            public:
                 void onMeshgetUpdate( const UpdateContext * _context ) override
                 {
                     m_cb.call( _context->revision, _context->current, _context->time );
@@ -573,6 +591,15 @@ namespace Mengine
                 , public ScriptHolderEventReceiverInterface
                 , public Factorable
             {
+            public:
+                PythonScriptHolderEventReceiver()
+                {
+                }
+
+                ~PythonScriptHolderEventReceiver() override
+                {
+                }
+
             public:
                 pybind::object onScriptHolderKeepScript() override
                 {

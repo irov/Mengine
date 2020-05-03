@@ -1,6 +1,7 @@
 #include "Win32UnicodeSystem.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -101,11 +102,13 @@ namespace Mengine
 
         if( (wc_size == 0 || wc_size == 0xFFFD) && _utf8Size != 0 )
         {
-            DWORD err = GetLastError();
+            DWORD err = ::GetLastError();
 
             Char wstr_err[1024];
-            PLATFORM_SERVICE()
-                ->getErrorMessage( err, wstr_err, 1024 );
+            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+                ->getPlatformExtention();
+
+            win32Platform->getErrorMessage( err, wstr_err, 1024 );
 
             LOGGER_ERROR( "invalid convert utf8 '%s' to unicode error: %s [%d]"
                 , _utf8

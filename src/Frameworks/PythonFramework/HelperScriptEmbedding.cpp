@@ -1444,15 +1444,19 @@ namespace Mengine
                 return s_changeAccountSettingStrings( accountID, _setting, _values );
             }
             //////////////////////////////////////////////////////////////////////////
-            class PyAccountSettingProvider
+            class PythonAccountSettingProvider
                 : public Factorable
                 , public AccountSettingProviderInterface
             {
             public:
-                PyAccountSettingProvider( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
+                PythonAccountSettingProvider( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
                     : m_kernel( _kernel )
                     , m_cb( _cb )
                     , m_args( _args )
+                {
+                }
+
+                ~PythonAccountSettingProvider() override
                 {
                 }
 
@@ -1473,7 +1477,7 @@ namespace Mengine
                 pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<PyAccountSettingProvider> PyAccountSettingProviderPtr;
+            typedef IntrusivePtr<PythonAccountSettingProvider> PyAccountSettingProviderPtr;
             //////////////////////////////////////////////////////////////////////////
             bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
             {
@@ -1499,7 +1503,7 @@ namespace Mengine
 
                 if( _cb.is_none() == false )
                 {
-                    provider = Helper::makeFactorableUnique<PyAccountSettingProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _cb, _args );
+                    provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _cb, _args );
                 }
 
                 const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _defaultValue );

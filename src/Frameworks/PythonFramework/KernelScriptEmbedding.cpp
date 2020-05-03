@@ -404,6 +404,15 @@ namespace Mengine
                 , public Factorable
             {
             public:
+                PythonScriptHolderEventReceiver()
+                {
+                }
+
+                ~PythonScriptHolderEventReceiver() override
+                {
+                }
+
+            public:
                 pybind::object onScriptHolderKeepScript() override
                 {
                     return m_cb.call();
@@ -597,6 +606,10 @@ namespace Mengine
                 {
                 }
 
+                ~AffectorVelocity2() override
+                {
+                }
+
             public:
                 void setNode( const NodePtr & _node )
                 {
@@ -648,7 +661,7 @@ namespace Mengine
                 {
                 }
 
-                ~FactoryAffectorVelocity2()
+                ~FactoryAffectorVelocity2() override
                 {
                 }
 
@@ -1088,6 +1101,10 @@ namespace Mengine
                 {
                 }
 
+                ~AffectorCreatorInterpolateParabolic() override
+                {
+                }
+
             public:
                 void setNode( const NodePtr & _node )
                 {
@@ -1204,7 +1221,7 @@ namespace Mengine
                 {
                 }
 
-                ~FactoryAffectorInterpolateParabolic()
+                ~FactoryAffectorInterpolateParabolic() override
                 {
                 }
 
@@ -1304,6 +1321,10 @@ namespace Mengine
                     , m_rotationSpeed( 0.f )
                     , m_rotationAcceleration( 0.f )
                     , m_rotationLimit( 0.f )
+                {
+                }
+
+                ~AffectorCreatorFollowTo() override
                 {
                 }
 
@@ -1447,7 +1468,7 @@ namespace Mengine
                 {
                 }
 
-                ~FactoryAffectorFollowTo()
+                ~FactoryAffectorFollowTo() override
                 {
                 }
 
@@ -1560,6 +1581,10 @@ namespace Mengine
                 {
                 }
 
+                ~AffectorCreatorFollowToW() override
+                {
+                }
+
             public:
                 bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
                 {
@@ -1653,7 +1678,7 @@ namespace Mengine
                 {
                 }
 
-                ~FactoryAffectorFollowToW()
+                ~FactoryAffectorFollowToW() override
                 {
                 }
 

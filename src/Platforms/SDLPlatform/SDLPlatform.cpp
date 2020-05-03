@@ -1464,46 +1464,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const
-    {
-        MENGINE_UNUSED( _messageId );
-        MENGINE_UNUSED( _out );
-        MENGINE_UNUSED( _capacity );
-
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::sleep( uint32_t _ms )
     {
         MENGINE_UNUSED( _ms );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _code )
-    {
-        MENGINE_UNUSED( _process );
-        MENGINE_UNUSED( _command );
-        MENGINE_UNUSED( _code );
-        MENGINE_UNUSED( _wait );
-
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size )
-    {
-        MENGINE_UNUSED( _path );
-        MENGINE_UNUSED( _key );
-        MENGINE_UNUSED( _value );
-        MENGINE_UNUSED( _size );
-
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::abort()

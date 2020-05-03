@@ -810,40 +810,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        //////////////////////////////////////////////////////////////////////////
-        template<class M>
-        class FFindChild
-        {
-        public:
-            FFindChild( M _method, const ConstString & _name )
-                : m_method( _method )
-                , m_name( _name )
-            {
-            }
-
-        public:
-            bool operator () ( const NodePtr & _node ) const
-            {
-                Node * node_ptr = _node.get();
-
-                return (node_ptr->*m_method)() == m_name;
-            }
-
-        private:
-            void operator = ( const FFindChild & )
-            {
-            }
-
-        protected:
-            M m_method;
-            const ConstString & m_name;
-        };
-
         template<class C, class M>
         static typename C::const_iterator s_node_find_child( const C & _child, M _method, const ConstString & _name )
         {
             typename C::const_iterator it_found =
-                stdex::helper::intrusive_find_if( _child.begin(), _child.end(), FFindChild<M>( _method, _name ) );
+                stdex::helper::intrusive_find_if( _child.begin(), _child.end(), [_method, _name]( const NodePtr & _node )
+            {
+                Node * node_ptr = _node.get();
+
+                return (node_ptr->*_method)() == _name;
+            } );
 
             return it_found;
         }

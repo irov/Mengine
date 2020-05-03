@@ -38,7 +38,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()() const
         {
-            Assertion( m_level, m_test, m_file, m_line, "" );
+            Helper::Assertion( m_level, m_test, m_file, m_line, "" );
 
             return *this;
         }
@@ -54,14 +54,14 @@ namespace Mengine
             
             MENGINE_VA_LIST_END( argList );
 
-            Assertion( m_level, m_test, m_file, m_line, str_info );
+            Helper::Assertion( m_level, m_test, m_file, m_line, str_info );
 
             return *this;
         }
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line )
         {
-            Assertion( _level, _test, _file, _line, "" );
+            Helper::Assertion( _level, _test, _file, _line, "" );
         }
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
@@ -119,9 +119,9 @@ namespace Mengine
             }
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-            if( IsDebuggerPresent() == TRUE )
+            if( ::IsDebuggerPresent() == TRUE )
             {
-                DebugBreak();
+                ::DebugBreak();
             }
 #endif
         }

@@ -22,7 +22,7 @@ namespace Mengine
 
             if( handle == INVALID_HANDLE_VALUE )
             {
-                DWORD err_code = GetLastError();
+                DWORD err_code = ::GetLastError();
 
                 LOGGER_ERROR( "invalid create file '%ls' err %d"
                     , pathCorrect

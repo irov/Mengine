@@ -86,7 +86,7 @@ namespace Mengine
 
         Char * source_buffer = _memory->getBuffer();
 
-        PyObject * py_code = m_kernel->code_compile_file( source_buffer, MENGINE_DEBUG_ATTRIBUTE( _context->filePath.c_str(), "PythonSource" ) );
+        PyObject * py_code = m_kernel->code_compile_file( source_buffer, MENGINE_DEBUG_VALUE( _context->filePath.c_str(), "PythonSource" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "invalid marshal get object" );
 

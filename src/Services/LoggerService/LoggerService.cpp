@@ -25,7 +25,7 @@ namespace Mengine
         : m_verboseLevel( LM_ERROR )
         , m_verboseFlag( 0 )
         , m_silent( false )
-        , m_historically( MENGINE_MASTER_ATTRIBUTE( false, true ) )
+        , m_historically( MENGINE_MASTER_VALUE( false, true ) )
     {
         for( uint32_t i = 0; i != LM_MAX; ++i )
         {

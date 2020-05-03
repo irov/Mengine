@@ -25,6 +25,11 @@ set CMAKE_TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
 set CMAKELIST_PATH=%CD%\..\..\cmake\Depends_Android_SDL
 set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 
+if not exist %ANDROID_SDK_MANAGER% (
+    @echo not found %ANDROID_SDK_MANAGER%. Please setup android cmdline tools
+    goto end
+)
+
 call %ANDROID_SDK_MANAGER% --install "ndk;%ANDROID_NDK_VERSION%"
 call %ANDROID_SDK_MANAGER% --install "cmake;%ANDROID_CMAKE_VERSION%"
 
@@ -108,6 +113,7 @@ call %ANDROID_SDK_MANAGER% --install "cmake;%ANDROID_CMAKE_VERSION%"
     
 @popd
 
+end:
 @echo Done
 
 @pause

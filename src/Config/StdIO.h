@@ -13,7 +13,7 @@
 #endif
 
 #ifndef MENGINE_SSCANF
-#define MENGINE_SSCANF(Buffer, ...) ::sscanf( Buffer, __VA_ARGS__ )
+#define MENGINE_SSCANF(Buffer, Format, ...) ::sscanf( Buffer, Format, __VA_ARGS__ )
 #endif
 
 #ifndef MENGINE_SPRINTF

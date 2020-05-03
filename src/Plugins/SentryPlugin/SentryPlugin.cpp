@@ -162,13 +162,13 @@ namespace Mengine
             sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
         }
 
-        sentry_set_extra( "Debug", sentry_value_new_bool( MENGINE_DEBUG_ATTRIBUTE( true, false ) ) );
+        sentry_set_extra( "Debug", sentry_value_new_bool( MENGINE_DEBUG_VALUE( true, false ) ) );
 
         bool developmentMode = HAS_OPTION( "dev" );
 
         sentry_set_extra( "Development", sentry_value_new_bool( developmentMode == true ? 1 : 0 ) );
 
-        bool masterMode = MENGINE_MASTER_ATTRIBUTE( true, false );
+        bool masterMode = MENGINE_MASTER_VALUE( true, false );
 
         sentry_set_extra( "Master", sentry_value_new_bool( masterMode ) );
 

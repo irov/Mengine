@@ -1,1 +1,0 @@
-@call %~dp0build_solution_msvc15_external_pdb.bat Debug %1

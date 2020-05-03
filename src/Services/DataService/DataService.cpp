@@ -53,7 +53,7 @@ namespace Mengine
         context.filePath = Helper::getInputStreamFilePath( _stream );
 #endif
 
-        if( _dataflow->flow( data, memory, MENGINE_DEBUG_ATTRIBUTE( &context, nullptr ), _doc ) == false )
+        if( _dataflow->flow( data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), _doc ) == false )
         {
             LOGGER_ERROR( "invalid flow data (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )

@@ -75,15 +75,21 @@
 #endif
 
 #ifdef MENGINE_DEBUG
-#define MENGINE_DEBUG_ATTRIBUTE(X, Y) (X)
+#define MENGINE_DEBUG_VALUE(X, Y) (X)
 #else
-#define MENGINE_DEBUG_ATTRIBUTE(X, Y) (Y)
+#define MENGINE_DEBUG_VALUE(X, Y) (Y)
 #endif
 
 #ifdef MENGINE_MASTER_RELEASE
-#define MENGINE_MASTER_ATTRIBUTE(X, Y) (X)
+#define MENGINE_MASTER_VALUE(X, Y) (X)
 #else
-#define MENGINE_MASTER_ATTRIBUTE(X, Y) (Y)
+#define MENGINE_MASTER_VALUE(X, Y) (Y)
+#endif
+
+#ifdef MENGINE_DEBUG
+#define MENGINE_DEBUG_ARGUMENTS(...) __VA_ARGS__
+#else
+#define MENGINE_DEBUG_ARGUMENTS(...)
 #endif
 
 #define MENGINE_CONSTEXPR constexpr

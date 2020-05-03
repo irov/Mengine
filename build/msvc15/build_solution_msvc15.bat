@@ -6,6 +6,7 @@ if ["%~1"]==[""] (
 )
 
 set "CONFIGURATION=%1"
+set "EXTERNAL_PDB_PATH=%2"
 
 @echo Starting build solution msvc %CONFIGURATION% configuration...
 
@@ -17,7 +18,7 @@ set "YEAR=2017"
 @popd
 
 @pushd %~dp0..
-@call build_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=Depends_WIN32"
+@call build_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%"
 @popd
 
 :end

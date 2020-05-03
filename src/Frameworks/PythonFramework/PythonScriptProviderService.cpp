@@ -73,7 +73,7 @@ namespace Mengine
 
         pybind::allocator_interface * allocator = Helper::newT<Detail::MyPythonAllocator>();
 
-        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, MENGINE_DEBUG_ATTRIBUTE( true, false ), false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, MENGINE_DEBUG_VALUE( true, false ), false, true );
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         _CrtSetReportMode( _CRT_WARN, crt_warn );

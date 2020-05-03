@@ -83,7 +83,7 @@ namespace Mengine
             context.filePath = Helper::getInputStreamFilePath( m_stream );
 #endif
 
-            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_ATTRIBUTE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()
@@ -112,7 +112,7 @@ namespace Mengine
             context.filePath = Helper::getInputStreamFilePath( m_stream );
 #endif
 
-            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_ATTRIBUTE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()

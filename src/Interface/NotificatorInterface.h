@@ -18,19 +18,20 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Resource> ResourcePtr;
     typedef IntrusivePtr<class Scene, class Node> ScenePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID>
     struct Notificator;
-
+    //////////////////////////////////////////////////////////////////////////
 #define MENGINE_DECLARE_BEGIN()\
     static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
-
+    //////////////////////////////////////////////////////////////////////////
 #define MENGINE_DECLARE_NOTIFICATOR(NAME, ...)\
     static constexpr uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
     template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; }
-
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_DECLARE_BEGIN();
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_OPEN_FILE, const Char *, const Char *, bool );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_CLOSE_FILE, const Char *, const Char *, bool );
@@ -93,7 +94,8 @@ namespace Mengine
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PLUGIN_INITIALIZE, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PLUGIN_FINALIZE, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_INCREF_FACTORY_GENERATION, uint32_t  );
-
+    //////////////////////////////////////////////////////////////////////////
 #undef MENGINE_DECLARE_BEGIN
 #undef MENGINE_DECLARE_NOTIFICATOR
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -30,7 +30,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, uint32_t _type, T * _values, uint32_t _size, uint32_t _count )
+        static void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, uint32_t _type, T * _values, uint32_t _size, uint32_t _count )
         {
             _variable.type = _type;
             _variable.offset = (uint32_t)_container.size();

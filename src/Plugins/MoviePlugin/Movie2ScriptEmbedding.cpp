@@ -28,6 +28,13 @@ namespace Mengine
             : public PythonAnimatableEventReceiver<Movie2EventReceiverInterface>
         {
         public:
+            PythonMovie2EventReceiver()
+            {
+            }
+
+            ~PythonMovie2EventReceiver() override
+            {
+            }
         };
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds )
@@ -154,6 +161,13 @@ namespace Mengine
             : public PythonAnimatableEventReceiver<Movie2SubCompositionEventReceiver>
         {
         public:
+            PythonMovie2SubCompositionEventReceiver()
+            {
+            }
+
+            ~PythonMovie2SubCompositionEventReceiver() override
+            {
+            }
         };
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_Movie2SubComposition_setEventListener( pybind::kernel_interface * _kernel, Movie2SubComposition * _node, PyObject * _args, PyObject * _kwds )

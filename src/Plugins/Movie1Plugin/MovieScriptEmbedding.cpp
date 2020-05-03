@@ -313,6 +313,10 @@ namespace Mengine
             {
             }
 
+            ~PythonVisitorMovieSocket() override
+            {
+            }
+
         protected:
             void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
             {
@@ -352,6 +356,10 @@ namespace Mengine
             PythonVisitorMovieSubMovie( pybind::kernel_interface * _kernel, const pybind::list & _list )
                 : m_kernel( _kernel )
                 , m_list( _list )
+            {
+            }
+
+            ~PythonVisitorMovieSubMovie() override
             {
             }
 
@@ -396,7 +404,7 @@ namespace Mengine
             {
             }
 
-            ~PyVisitorMovieLayer()
+            ~PyVisitorMovieLayer() override
             {
             }
 

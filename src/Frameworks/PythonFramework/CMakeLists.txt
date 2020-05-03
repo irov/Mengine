@@ -46,6 +46,12 @@ PythonHotSpotEventReceiver
 )
 
 ADD_FILTER(
+PythonGameEventReceiver
+    PythonGameEventReceiver.cpp
+    PythonGameEventReceiver.h
+)
+
+ADD_FILTER(
 PythonSchedule
     PythonScheduleTiming.cpp
     PythonScheduleTiming.h

@@ -480,10 +480,12 @@ namespace Mengine
         {
         }
 
-    protected:
-        void operator = ( const TextManagerUnloadSaxCallback & )
+        ~TextManagerUnloadSaxCallback()
         {
         }
+
+    protected:
+        void operator = ( const TextManagerUnloadSaxCallback & ) = delete;
 
     public:
         void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )

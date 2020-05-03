@@ -36,9 +36,7 @@ namespace Mengine
             }
 
         protected:
-            void operator = ( const PickerVisitor & )
-            {
-            }
+            void operator = ( const PickerVisitor & ) = delete;
 
         public:
             void visit( PickerInterface * _picker, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )

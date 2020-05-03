@@ -21,6 +21,15 @@ namespace Mengine
         class MyPythonAllocator
             : public pybind::allocator_interface
         {
+        public:
+            MyPythonAllocator()
+            {
+            }
+
+            ~MyPythonAllocator() override
+            {
+            }
+
         protected:
             void * malloc( size_t _size ) override
             {

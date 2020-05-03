@@ -2,6 +2,7 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -26,6 +27,9 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToOGV::convert()
     {
+        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            ->getPlatformExtention();
+
         const ConstString & folderPath = m_options.fileGroup->getFolderPath();
 
         String full_input = folderPath.c_str();
@@ -43,8 +47,7 @@ namespace Mengine
         );
 
         uint32_t exitCode;
-        if( PLATFORM_SERVICE()
-            ->createProcess( "ffmpeg.exe", buffer.c_str(), true, &exitCode ) == false )
+        if( win32Platform->createProcess( "ffmpeg.exe", buffer.c_str(), true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()

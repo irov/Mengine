@@ -135,16 +135,7 @@ namespace Mengine
         virtual bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) = 0;
 
     public:
-        virtual bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const = 0;
-
-    public:
         virtual void sleep( uint32_t _ms ) = 0;
-
-    public:
-        virtual bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) = 0;
-
-    public:
-        virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) = 0;
 
     public:
         virtual void abort() = 0;

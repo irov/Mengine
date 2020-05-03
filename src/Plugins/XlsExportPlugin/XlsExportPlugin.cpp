@@ -31,6 +31,15 @@ namespace Mengine
         class MyXlsAllocator
             : public pybind::allocator_interface
         {
+        public:
+            MyXlsAllocator()
+            {
+            }
+
+            ~MyXlsAllocator() override
+            {
+            }
+
         protected:
             void * malloc( size_t _size ) override
             {

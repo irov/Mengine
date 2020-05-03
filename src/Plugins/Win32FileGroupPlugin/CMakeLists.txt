@@ -5,7 +5,9 @@ src
     Win32FileGroupPlugin.h
     Win32FileGroupPlugin.cpp
     Win32FileGroupDirectory.cpp
-    Win32FileGroupDirectory.h        
+    Win32FileGroupDirectory.h
+    Win32FileGroupDirectoryFactory.cpp
+    Win32FileGroupDirectoryFactory.h
     Win32FileInputStream.h
     Win32FileInputStream.cpp
     Win32FileOutputStream.cpp

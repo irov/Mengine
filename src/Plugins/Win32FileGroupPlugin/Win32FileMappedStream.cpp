@@ -25,7 +25,7 @@ namespace Mengine
         {
             if( UnmapViewOfFile( m_memory ) == FALSE )
             {
-                DWORD uError = GetLastError();
+                DWORD uError = ::GetLastError();
 
                 LOGGER_ERROR( "invalid UnmapViewOfFile %p error %d"
                     , m_memory
@@ -81,7 +81,7 @@ namespace Mengine
 
         if( m_hMapping == NULL )
         {
-            DWORD error = GetLastError();
+            DWORD error = ::GetLastError();
 
             LOGGER_ERROR( "invalid create file mapping '%ls' error %d"
                 , concatenatePath
@@ -94,11 +94,11 @@ namespace Mengine
             return false;
         }
 
-        m_memory = MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
+        m_memory = ::MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
 
         if( m_memory == NULL )
         {
-            DWORD error = GetLastError();
+            DWORD error = ::GetLastError();
 
             LOGGER_ERROR( "invalid map view of file '%ls' error %d"
                 , concatenatePath

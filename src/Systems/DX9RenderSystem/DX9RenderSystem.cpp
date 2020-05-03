@@ -357,10 +357,10 @@ namespace Mengine
 
         m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-        Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getPlatformExtention();
 
-        HWND windowHandle = extension->getWindowHandle();
+        HWND windowHandle = win32Platform->getWindowHandle();
 
         m_d3dppW.hDeviceWindow = windowHandle;
 

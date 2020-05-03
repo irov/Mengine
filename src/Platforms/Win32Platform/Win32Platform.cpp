@@ -822,7 +822,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::hasPlatformTag( const ConstString & _tag ) const
     {
-        return m_platformTags.hasTag( _tag );
+        bool result = m_platformTags.hasTag( _tag );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::isDesktop() const
@@ -1043,7 +1045,7 @@ namespace Mengine
                 {
                     if( m_cursor == NULL )
                     {
-                        m_cursor = LoadCursor( NULL, IDC_ARROW );
+                        m_cursor = ::LoadCursor( NULL, IDC_ARROW );
                     }
 
                     ::SetCursor( m_cursor );
@@ -1309,8 +1311,6 @@ namespace Mengine
             }break;
         case WM_RBUTTONDOWN:
             {
-                //::SetFocus(m_hWnd);
-
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
@@ -1336,8 +1336,6 @@ namespace Mengine
             }break;
         case WM_MBUTTONDOWN:
             {
-                //::SetFocus(m_hWnd);
-
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
@@ -1494,8 +1492,6 @@ namespace Mengine
 
         m_hWnd = hWnd;
 
-        //RegisterTouchWindow( m_hWnd, 0 );
-
         HWND hWndFgnd = ::GetForegroundWindow();
 
         if( hWndFgnd != m_hWnd )
@@ -1504,9 +1500,6 @@ namespace Mengine
 
             ::ShowWindow( m_hWnd, SW_MINIMIZE );
             ::ShowWindow( m_hWnd, SW_RESTORE );
-
-            //SetWindowPos(m_hWnd,hWndFgnd,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE);
-            //SetWindowPos(hWndFgnd,m_hWnd,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
         }
         else
         {
@@ -1612,25 +1605,9 @@ namespace Mengine
                 , rc.top
                 , rc.right - rc.left
                 , rc.bottom - rc.top
-                //, SWP_FRAMECHANGED //| SWP_NOZORDER | SWP_NOACTIVATE  | SWP_FRAMECHANGED
                 , SWP_NOACTIVATE
             );
-
-
-            //::SetWindowPos(
-            //    m_hWnd
-            //    , 0
-            //    , 0
-            //    , 0
-            //    , 0
-            //    , 0
-            //    , SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
-            //    );
         }
-
-        //::UpdateWindow( m_hWnd );
-        //::ShowWindow( m_hWnd, SW_SHOW );
-        //      ::SetFocus( m_hWnd );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::notifyVsyncChanged( bool _vsync )
@@ -1859,9 +1836,6 @@ namespace Mengine
         _point.x = x / width;
         _point.y = y / height;
 
-        //_point.x = x;
-        //_point.y = y;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1969,11 +1943,11 @@ namespace Mengine
         {
             const WString & path = *it;
 
-            BOOL successful = CreateDirectory( path.c_str(), NULL );
+            BOOL successful = ::CreateDirectory( path.c_str(), NULL );
 
             if( successful == FALSE )
             {
-                DWORD err = GetLastError();
+                DWORD err = ::GetLastError();
 
                 switch( err )
                 {
@@ -2080,7 +2054,7 @@ namespace Mengine
 
         if( ::DeleteFile( fullPath ) == FALSE )
         {
-            DWORD err = GetLastError();
+            DWORD err = ::GetLastError();
 
             MENGINE_UNUSED( err );
 
@@ -2095,68 +2069,132 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * _stop )
+    namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * _stop )
         {
-            WChar sPath[MENGINE_MAX_PATH] = { L'\0' };
-            MENGINE_WCSCPY( sPath, _dir );
-            MENGINE_WCSCAT( sPath, _path );
-            MENGINE_WCSCAT( sPath, _mask );
-
-            WIN32_FIND_DATA fdFile;
-            HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
-
-            if( hFind != INVALID_HANDLE_VALUE )
             {
+                WChar sPath[MENGINE_MAX_PATH] = { L'\0' };
+                MENGINE_WCSCPY( sPath, _dir );
+                MENGINE_WCSCAT( sPath, _path );
+                MENGINE_WCSCAT( sPath, _mask );
+
+                WIN32_FIND_DATA fdFile;
+                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
+
+                if( hFind != INVALID_HANDLE_VALUE )
+                {
+                    do
+                    {
+                        if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
+                            MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
+                        {
+                            continue;
+                        }
+
+                        if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+                        {
+                            continue;
+                        }
+
+                        WChar sPath2[MENGINE_MAX_PATH] = { L'\0' };
+                        MENGINE_WCSCPY( sPath2, sPath );
+                        MENGINE_WCSCAT( sPath2, L"\0" );
+
+                        Helper::pathCorrectForwardslashW( sPath2 );
+
+                        ::PathRemoveFileSpec( sPath2 );
+
+                        WChar unicode_filepath[MENGINE_MAX_PATH] = { L'\0' };
+                        ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
+
+                        WChar unicode_out[MENGINE_MAX_PATH] = { L'\0' };
+                        if( MENGINE_WCSLEN( _dir ) != 0 )
+                        {
+                            ::PathRelativePathTo( unicode_out,
+                                _dir,
+                                FILE_ATTRIBUTE_DIRECTORY,
+                                unicode_filepath,
+                                FILE_ATTRIBUTE_NORMAL );
+                        }
+                        else
+                        {
+                            MENGINE_WCSCPY( unicode_out, unicode_filepath );
+                        }
+
+                        Char utf8_filepath[MENGINE_MAX_PATH] = { '\0' };
+                        if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                        {
+                            ::FindClose( hFind );
+
+                            return false;
+                        }
+
+                        FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+                        if( _lambda( fp ) == false )
+                        {
+                            ::FindClose( hFind );
+
+                            *_stop = true;
+
+                            return true;
+                        }
+
+                    } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
+                }
+
+                ::FindClose( hFind );
+            }
+
+            {
+                WChar sPath[MENGINE_MAX_PATH] = { L'\0' };
+                MENGINE_WCSCPY( sPath, _dir );
+                MENGINE_WCSCAT( sPath, _path );
+                MENGINE_WCSCAT( sPath, L"*.*" );
+
+                WIN32_FIND_DATA fdFile;
+                HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
+
+                if( hFind == INVALID_HANDLE_VALUE )
+                {
+                    return true;
+                }
+
                 do
                 {
-                    if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
-                        MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
+                    if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0
+                        || MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
                     {
                         continue;
                     }
 
-                    if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+                    if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
                     {
                         continue;
                     }
 
-                    WChar sPath2[MENGINE_MAX_PATH] = { L'\0' };
-                    MENGINE_WCSCPY( sPath2, sPath );
-                    MENGINE_WCSCAT( sPath2, L"\0" );
+                    WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
+                    MENGINE_WCSCPY( currentPath, sPath );
+                    MENGINE_WCSCAT( currentPath, L"\0" );
 
-                    Helper::pathCorrectForwardslashW( sPath2 );
+                    ::PathRemoveFileSpec( currentPath );
 
-                    ::PathRemoveFileSpec( sPath2 );
+                    WChar nextPath[MENGINE_MAX_PATH] = { L'\0' };
+                    ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
-                    WChar unicode_filepath[MENGINE_MAX_PATH] = { L'\0' };
-                    ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
+                    MENGINE_WCSCAT( nextPath, L"\\" );
 
-                    WChar unicode_out[MENGINE_MAX_PATH] = { L'\0' };
-                    if( MENGINE_WCSLEN( _dir ) != 0 )
-                    {
-                        ::PathRelativePathTo( unicode_out,
-                            _dir,
-                            FILE_ATTRIBUTE_DIRECTORY,
-                            unicode_filepath,
-                            FILE_ATTRIBUTE_NORMAL );
-                    }
-                    else
-                    {
-                        MENGINE_WCSCPY( unicode_out, unicode_filepath );
-                    }
-
-                    Char utf8_filepath[MENGINE_MAX_PATH] = { '\0' };
-                    if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                    bool stop;
+                    if( Detail::listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
                     {
                         ::FindClose( hFind );
 
                         return false;
                     }
 
-                    FilePath fp = Helper::stringizeFilePath( utf8_filepath );
-
-                    if( _lambda( fp ) == false )
+                    if( stop == true )
                     {
                         ::FindClose( hFind );
 
@@ -2166,74 +2204,14 @@ namespace Mengine
                     }
 
                 } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
+
+                ::FindClose( hFind );
             }
 
-            ::FindClose( hFind );
+            *_stop = false;
+
+            return true;
         }
-
-        {
-            WChar sPath[MENGINE_MAX_PATH] = { L'\0' };
-            MENGINE_WCSCPY( sPath, _dir );
-            MENGINE_WCSCAT( sPath, _path );
-            MENGINE_WCSCAT( sPath, L"*.*" );
-
-            WIN32_FIND_DATA fdFile;
-            HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
-
-            if( hFind == INVALID_HANDLE_VALUE )
-            {
-                return true;
-            }
-
-            do
-            {
-                if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0
-                    || MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
-                {
-                    continue;
-                }
-
-                if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-                {
-                    continue;
-                }
-
-                WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
-                MENGINE_WCSCPY( currentPath, sPath );
-                MENGINE_WCSCAT( currentPath, L"\0" );
-
-                ::PathRemoveFileSpec( currentPath );
-
-                WChar nextPath[MENGINE_MAX_PATH] = { L'\0' };
-                ::PathCombine( nextPath, currentPath, fdFile.cFileName );
-
-                MENGINE_WCSCAT( nextPath, L"\\" );
-
-                bool stop;
-                if( s_listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
-                {
-                    ::FindClose( hFind );
-
-                    return false;
-                }
-
-                if( stop == true )
-                {
-                    ::FindClose( hFind );
-
-                    *_stop = true;
-
-                    return true;
-                }
-
-            } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
-
-            ::FindClose( hFind );
-        }
-
-        *_stop = false;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
@@ -2260,7 +2238,7 @@ namespace Mengine
         ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         bool stop;
-        if( s_listDirectoryContents( unicode_fullbase, unicode_mask, unicode_path, _lambda, &stop ) == false )
+        if( Detail::listDirectoryContents( unicode_fullbase, unicode_mask, unicode_path, _lambda, &stop ) == false )
         {
             return false;
         }
@@ -2270,64 +2248,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
-    {
-        uint32_t a2 = filetime->dwHighDateTime;
-        uint32_t a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
-        uint32_t a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
-
-        uint32_t carry;
-
-        if( a0 >= 32768 )
-            a0 -= 32768, carry = 0;
-        else
-            a0 += (1 << 16) - 32768, carry = 1;
-
-        if( a1 >= 54590 + carry )
-            a1 -= 54590 + carry, carry = 0;
-        else
-            a1 += (1 << 16) - 54590 - carry, carry = 1;
-
-        a2 -= 27111902 + carry;
-
-        int32_t negative = (a2 >= ((uint32_t)1) << 31);
-
-        if( negative )
-        {
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
-        }
-
-        a1 += (a2 % 10000) << 16;
-        a2 /= 10000;
-        a0 += (a1 % 10000) << 16;
-        a1 /= 10000;
-        a0 /= 10000;
-
-        a1 += (a2 % 1000) << 16;
-        a2 /= 1000;
-        a0 += (a1 % 1000) << 16;
-        a1 /= 1000;
-        a0 /= 1000;
-
-        if( negative )
-        {
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
-        }
-
-        return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint64_t Win32Platform::getFileTime( const Char * _filePath ) const
     {
         WChar unicode_filePath[MENGINE_MAX_PATH] = { L'\0' };
         Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
-        HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
-            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+        HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
         FILETIME creation;
         FILETIME access;
@@ -2340,9 +2266,9 @@ namespace Mengine
             return 0U;
         }
 
-        time_t time = s_FileTimeToUnixTime( &write );
-
         ::CloseHandle( handle );
+
+        time_t time = this->getFileUnixTime( &write );
 
         return time;
     }
@@ -2385,8 +2311,7 @@ namespace Mengine
 
         ::PathAppend( szPath, fileCorrect );
 
-        HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
-            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+        HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
@@ -2556,37 +2481,33 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const
+    bool Win32Platform::getErrorMessage( DWORD _messageId, Char * _out, size_t _capacity ) const
     {
         LPTSTR errorText = NULL;
 
-        if( ::FormatMessage(
-            // use system message tables to retrieve error text
-            FORMAT_MESSAGE_FROM_SYSTEM
-            // allocate buffer on local heap for error text
-            | FORMAT_MESSAGE_ALLOCATE_BUFFER
-            // Important! will fail otherwise, since we're not 
-            // (and CANNOT) pass insertion parameters
-            | FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
-            _messageId,
-            MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US ),
-            (LPTSTR)& errorText,  // output 
-            0, // minimum size for output buffer
-            NULL ) == 0 )
+        if( ::FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS
+            , NULL
+            , _messageId
+            , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )
+            , (LPTSTR)&errorText
+            , 0
+            , NULL ) != 0 )
         {
-            _out[0] = '\0';
-
-            return false;
-        }
-        else
-        {
-            Helper::unicodeToUtf8( errorText, _out, _capacity );
+            bool successful = Helper::unicodeToUtf8( errorText, _out, _capacity );
 
             ::LocalFree( errorText );
+
+            if( successful == false )
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        return true;
+        _out[0] = '\0';
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::sleep( uint32_t _ms )
@@ -2623,7 +2544,6 @@ namespace Mengine
         }
 
         WChar unicode_value[1024] = { L'\0' };
-
         DWORD dwBufferSize = 1024;
         LONG nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
 
@@ -2709,7 +2629,7 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD le = GetLastError();
+                DWORD le = ::GetLastError();
 
                 Char message[1024] = { '\0' };
                 this->getErrorMessage( le, message, 1024 );
@@ -2730,7 +2650,6 @@ namespace Mengine
 
             ::CloseHandle( processInfo.hProcess );
             ::CloseHandle( processInfo.hThread );
-
             ::CloseHandle( hWriteTempFile );
 
             if( result == FALSE )
@@ -2760,7 +2679,7 @@ namespace Mengine
                 DWORD tempFileSizeHigh;
                 DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
 
-                Char tempFileBuffer[4096] = { 0 };
+                Char tempFileBuffer[4096] = { '\0' };
 
                 DWORD dwBytesRead;
                 DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4096 );
@@ -2779,7 +2698,7 @@ namespace Mengine
                         );
                 }
 
-                CloseHandle( hReadTempFile );
+                ::CloseHandle( hReadTempFile );
             }
 
             if( _exitCode != nullptr )
@@ -2801,7 +2720,7 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD le = GetLastError();
+                DWORD le = ::GetLastError();
 
                 Char message[1024] = { '\0' };
                 this->getErrorMessage( le, message, 1024 );
@@ -2938,35 +2857,13 @@ namespace Mengine
 
         if( hr != S_OK )
         {
-            LPTSTR errorText = NULL;
-            if( ::FormatMessage(
-                // use system message tables to retrieve error text
-                FORMAT_MESSAGE_FROM_SYSTEM
-                // allocate buffer on local heap for error text
-                | FORMAT_MESSAGE_ALLOCATE_BUFFER
-                // Important! will fail otherwise, since we're not 
-                // (and CANNOT) pass insertion parameters
-                | FORMAT_MESSAGE_IGNORE_INSERTS,
-                NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
-                hr,
-                MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-                (LPTSTR)& errorText,  // output 
-                0, // minimum size for output buffer
-                NULL ) == 0 )
-            {
-                LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%d'"
-                    , hr
-                );
-            }
-            else
-            {
-                LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%ls' '%d'"
-                    , errorText
-                    , hr
-                );
+            Char errorMessage[4096] = { '\0' };
+            this->getErrorMessage( hr, errorMessage, 4096 );
 
-                ::LocalFree( errorText );
-            }
+            LOGGER_ERROR( "SHGetSpecialFolderLocation invalid [%d]: %s"
+                , hr
+                , errorMessage
+            );
 
             return 0;
         }
@@ -3197,5 +3094,66 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( it_found != m_win32ProcessHandlers.end() );
 
         m_win32ProcessHandlers.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    time_t Win32Platform::getFileUnixTime( const FILETIME * filetime ) const
+    {
+        uint32_t a2 = filetime->dwHighDateTime;
+        uint32_t a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
+        uint32_t a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
+
+        uint32_t carry;
+
+        if( a0 >= 32768 )
+        {
+            a0 -= 32768, carry = 0;
+        }
+        else
+        {
+            a0 += (1 << 16) - 32768, carry = 1;
+        }
+
+        if( a1 >= 54590 + carry )
+        {
+            a1 -= 54590 + carry, carry = 0;
+        }
+        else
+        {
+            a1 += (1 << 16) - 54590 - carry, carry = 1;
+        }
+
+        a2 -= 27111902 + carry;
+
+        int32_t negative = (a2 >= ((uint32_t)1) << 31);
+
+        if( negative != 0 )
+        {
+            a0 = 0xffff - a0;
+            a1 = 0xffff - a1;
+            a2 = ~a2;
+        }
+
+        a1 += (a2 % 10000) << 16;
+        a2 /= 10000;
+        a0 += (a1 % 10000) << 16;
+        a1 /= 10000;
+        a0 /= 10000;
+
+        a1 += (a2 % 1000) << 16;
+        a2 /= 1000;
+        a0 += (a1 % 1000) << 16;
+        a1 /= 1000;
+        a0 /= 1000;
+
+        if( negative != 0 )
+        {
+            a0 = 0xffff - a0;
+            a1 = 0xffff - a1;
+            a2 = ~a2;
+        }
+
+        time_t time = ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
+
+        return time;
     }
 }

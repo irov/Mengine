@@ -94,7 +94,7 @@ namespace Mengine
 #endif
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T get_value( const jpp::object & _j, const Char * _key, T _default )
+        static T get_value( const jpp::object & _j, const Char * _key, T _default )
         {
             jpp::object k;
             if( _j.exist( _key, &k ) == false )

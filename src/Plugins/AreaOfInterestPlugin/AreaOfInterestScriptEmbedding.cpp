@@ -33,6 +33,15 @@ namespace Mengine
             , public Factorable
         {
         public:
+            PythonNodeAreaOfInterestTriggerEventReceiver()
+            {
+            }
+
+            ~PythonNodeAreaOfInterestTriggerEventReceiver() override
+            {
+            }
+
+        public:
             void onAreaOfInterestTriggerEnter( const AreaOfInterestActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 )
             {
                 NodeAreaOfInterestActorPtr enemy = stdex::intrusive_static_cast<NodeAreaOfInterestActorPtr>(_enemy);

@@ -19,5 +19,17 @@ namespace Mengine
         typedef Lambda<LRESULT( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )> LambdaWin32ProcessHandler;
         virtual uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda ) = 0;
         virtual void removeWin32ProcessHandler( uint32_t _id ) = 0;
+
+    public:
+        virtual time_t getFileUnixTime( const FILETIME * filetime ) const = 0;
+
+    public:
+        virtual bool getErrorMessage( DWORD _messageId, Char * _out, size_t _capacity ) const = 0;
+
+    public:
+        virtual bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) = 0;
+
+    public:
+        virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) = 0;
     };
 }

@@ -134,9 +134,6 @@ namespace Mengine
         bool createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _filePath, const void * _data, size_t _size );
 
     protected:
-        bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const override;
-
-    protected:
         void sleep( uint32_t _ms ) override;
         bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) override;
         bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) override;
@@ -170,6 +167,12 @@ namespace Mengine
     protected:
         uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda ) override;
         void removeWin32ProcessHandler( uint32_t _id ) override;
+
+    protected:
+        time_t getFileUnixTime( const FILETIME * filetime ) const override;
+
+    protected:
+        bool getErrorMessage( DWORD _messageId, Char * _out, size_t _capacity ) const override;
 
     protected:
         HINSTANCE m_hInstance;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #include <cstdio>
 
 #ifndef MENGINE_VSNPRINTF
@@ -13,15 +15,15 @@
 #endif
 
 #ifndef MENGINE_SSCANF
-#define MENGINE_SSCANF(Buffer, Format, ...) ::sscanf( Buffer, Format, __VA_ARGS__ )
+#define MENGINE_SSCANF(Buffer, ...) ::sscanf( Buffer, __VA_ARGS__ )
 #endif
 
 #ifndef MENGINE_SPRINTF
-#define MENGINE_SPRINTF(Buffer, Format, ...) ::sprintf(Buffer, Format, __VA_ARGS__ )
+#define MENGINE_SPRINTF(Buffer, ...) ::sprintf(Buffer, __VA_ARGS__ )
 #endif
 
 #ifndef MENGINE_SNPRINTF
-#define MENGINE_SNPRINTF(Buffer, Capacity, Format, ...) ::snprintf( Buffer, Capacity, Format, __VA_ARGS__ )
+#define MENGINE_SNPRINTF(Buffer, Capacity, ...) ::snprintf( Buffer, Capacity, __VA_ARGS__ )
 #endif
 
 #ifndef MENGINE_VSPRINTF

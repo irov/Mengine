@@ -7,7 +7,6 @@ namespace Mengine
 {
     class PaletteFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         PaletteFramework();

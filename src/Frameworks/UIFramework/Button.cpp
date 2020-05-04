@@ -124,7 +124,7 @@ namespace Mengine
         Cook::addWhile( source, fn );
 
         m_chain = GOAP_SERVICE()
-            ->makeChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
+            ->makeChain( source, nullptr, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
         if( m_chain->run() == false )
         {

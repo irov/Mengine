@@ -34,9 +34,9 @@ namespace Mengine
         void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
 
     protected:
-        void spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator );
-        void collapseJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry );
-        void explosiveJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry );
+        void spawnJewelry_( const GOAP::SourceInterfacePtr & _source, EJewelrySuper _super, uint32_t _iterator );
+        void collapseJewelry_( const GOAP::SourceInterfacePtr & _source, const JewelryPtr & _jewelry );
+        void explosiveJewelry_( const GOAP::SourceInterfacePtr & _source, const JewelryPtr & _jewelry );
 
     protected:
         NodePtr spawnExplosive_();
@@ -84,7 +84,7 @@ namespace Mengine
         typedef Vector<JewelryPtr> VectorJewelryHand;
         VectorJewelryHand m_jewelryHand;
 
-        GOAP::EventPtr m_eventFall;
+        GOAP::EventInterfacePtr m_eventFall;
 
         JewelryMatrixPtr m_jewelryMatrix;
 

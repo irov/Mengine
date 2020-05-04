@@ -7,7 +7,6 @@ namespace Mengine
 {
     class GraphicsFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         GraphicsFramework();

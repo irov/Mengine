@@ -139,6 +139,10 @@ namespace Mengine
             {
             }
 
+            ~MyRayCastCallback() override
+            {
+            }
+
         protected:
             float ReportFixture( b2Fixture * fixture, const b2Vec2 & b2_point, const b2Vec2 & b2_normal, float _fraction ) override
             {

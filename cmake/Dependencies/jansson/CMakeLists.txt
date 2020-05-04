@@ -131,27 +131,16 @@ check_function_exists (sched_yield HAVE_SCHED_YIELD)
 # Check for the int-type includes
 check_include_files (stdint.h HAVE_STDINT_H)
 
-message("HAVE_STDINT_H: ${HAVE_STDINT_H}")
-
 # Check our 64 bit integer sizes
 check_type_size (__int64 __INT64)
 check_type_size (int64_t INT64_T)
 check_type_size ("long long" LONG_LONG_INT)
-
-message("__INT64: ${__INT64}")
-message("INT64_T: ${INT64_T}")
-message("LONG_LONG_INT: ${LONG_LONG_INT}")
 
 # Check our 32 bit integer sizes
 check_type_size (int32_t INT32_T)
 check_type_size (__int32 __INT32)
 check_type_size ("long" LONG_INT)
 check_type_size ("int" INT)
-
-message("INT32_T: ${INT32_T}")
-message("__INT32: ${__INT32}")
-message("LONG_INT: ${LONG_INT}")
-message("INT: ${INT}")
 
 if (HAVE_INT32_T)
    set (JSON_INT32 int32_t)

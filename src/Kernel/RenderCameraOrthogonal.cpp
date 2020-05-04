@@ -14,6 +14,8 @@ namespace Mengine
         , m_cameraRightSign( 1.f )
         , m_cameraNear( -10000.f )
         , m_cameraFar( 10000.f )
+        , m_cameraScale( 1.f, 1.f )
+        , m_cameraOffset( 0.f, 0.f )
         , m_proxyViewMatrix( false )
         , m_fixedOrthogonalViewport( false )
     {
@@ -87,6 +89,28 @@ namespace Mengine
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderCameraOrthogonal::setCameraScale( const mt::vec2f & _scale )
+    {
+        m_cameraScale = _scale;
+
+        this->invalidateProjectionMatrix_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & RenderCameraOrthogonal::getCameraScale() const
+    {
+        return m_cameraScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderCameraOrthogonal::setCameraOffset( const mt::vec2f & _offset )
+    {
+        m_cameraOffset = _offset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & RenderCameraOrthogonal::getCameraOffset() const
+    {
+        return m_cameraOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonal::setOrthogonalViewport( const Viewport & _viewport )
     {
         m_orthogonalViewport = _viewport;
@@ -153,7 +177,21 @@ namespace Mengine
         Viewport renderViewport;
         this->makeViewport_( renderViewport );
 
-        mt::make_projection_ortho_lh_m4( m_projectionMatrix, renderViewport.begin.x, renderViewport.end.x, renderViewport.begin.y, renderViewport.end.y, m_cameraNear, m_cameraFar );
+        mt::vec2f rvbegin = renderViewport.begin;
+        mt::vec2f rvend = renderViewport.end;
+
+        mt::mat4f pm;
+        mt::make_projection_ortho_lh_m4( pm, rvbegin.x, rvend.x, rvbegin.y, rvend.y, m_cameraNear, m_cameraFar );
+
+        mt::mat4f pmscale;
+        mt::make_scale_m4( pmscale, m_cameraScale.x, m_cameraScale.y, 1.f );
+
+        mt::mat4f pmoffset;
+        mt::make_translation_m4( pmoffset, m_cameraOffset.x, m_cameraOffset.y, 0.f );
+
+        mt::mat4f pm0;
+        mt::mul_m4_m4( pm0, pm, pmscale );
+        mt::mul_m4_m4( m_projectionMatrix, pm0, pmoffset );
 
         mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
     }

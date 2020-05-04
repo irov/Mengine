@@ -60,6 +60,11 @@ namespace Mengine
         const AffectorablePtr & getGlobalAffectorable() const override;
 
     public:
+        const RenderCameraOrthogonalPtr & getDefaultCamera2D() const override;
+        const RenderViewportPtr & getDefaultViewport2D() const override;
+        const RenderCameraOrthogonalPtr & getDefaultArrowCamera2D() const override;
+
+    public:
         void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
         const RenderCameraInterfacePtr & getRenderCamera() const override;
 
@@ -117,9 +122,9 @@ namespace Mengine
     protected:
         ArrowPtr m_arrow;
 
-        RenderCameraOrthogonalPtr m_camera2D;
-        RenderViewportPtr m_viewport2D;
-        RenderCameraOrthogonalPtr m_arrowCamera2D;
+        RenderCameraOrthogonalPtr m_defaultCamera2D;
+        RenderViewportPtr m_defaultViewport2D;
+        RenderCameraOrthogonalPtr m_defaultArrowCamera2D;
 
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;

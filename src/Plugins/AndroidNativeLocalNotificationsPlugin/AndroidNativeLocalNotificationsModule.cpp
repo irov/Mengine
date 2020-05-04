@@ -169,9 +169,9 @@ namespace Mengine
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_localNotificationsInitializePlugin );
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_localNotificationsInitializePlugin );
 
-        return (bool)jReturnValue;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeLocalNotificationsModule::scheduleLocalNotification( int _id, const String & _title, const String & _content, int _delay )

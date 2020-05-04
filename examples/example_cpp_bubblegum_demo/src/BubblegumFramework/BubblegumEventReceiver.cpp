@@ -5,6 +5,7 @@
 #include "Interface/PlayerServiceInterface.h"
 
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"

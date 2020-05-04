@@ -7,7 +7,6 @@ namespace Mengine
 {
     class SimpleBox2DFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         SimpleBox2DFramework();

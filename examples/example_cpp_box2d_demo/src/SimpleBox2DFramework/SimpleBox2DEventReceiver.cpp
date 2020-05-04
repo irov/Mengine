@@ -8,6 +8,7 @@
 #include "Interface/ApplicationInterface.h"
 
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -269,7 +270,6 @@ namespace Mengine
         if( m_chain != nullptr )
         {
             m_chain->cancel();
-
             m_chain = nullptr;
         }
     }

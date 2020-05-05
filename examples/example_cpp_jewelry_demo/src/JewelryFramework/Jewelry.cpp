@@ -1,6 +1,7 @@
 #include "Jewelry.h"
 
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
 #include "Engine/Engine.h"
 
@@ -65,7 +66,7 @@ namespace Mengine
         return m_row;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::bomb( const GOAP::SourcePtr & _source )
+    void Jewelry::bomb( const GOAP::SourceInterfacePtr & _source )
     {
         m_super = EJSUPER_BOMB;
 
@@ -88,7 +89,7 @@ namespace Mengine
         surface->setSolidColor( jewelry_color );
 
         float width = m_size * 0.5f;
-        surface->setSolidSize( { width, width } );
+        surface->setSolidSize( {width, width} );
 
         ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -108,13 +109,13 @@ namespace Mengine
         surface->setSolidColor( jewelry_color );
 
         float full_size = m_size + 10.f;
-        surface->setSolidSize( { full_size, full_size } );
+        surface->setSolidSize( {full_size, full_size} );
 
         ShapeQuadFixedPtr shape = Helper::generateShapeQuadFixed( MENGINE_DOCUMENT_FACTORABLE );
 
         shape->setSurface( surface );
 
-        shape->setLocalOrigin( { full_size * 0.5f, full_size * 0.5f, 0.f } );
+        shape->setLocalOrigin( {full_size * 0.5f, full_size * 0.5f, 0.f} );
 
         shape->disable();
 
@@ -157,7 +158,7 @@ namespace Mengine
         m_pickerable = hotspot;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::block( const GOAP::SourcePtr & _source )
+    void Jewelry::block( const GOAP::SourceInterfacePtr & _source )
     {
         if( this->isDead() == true )
         {
@@ -175,7 +176,7 @@ namespace Mengine
         Cook::addNodeEnable( _source, m_nodeBlock );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::dead( const GOAP::SourcePtr & _source )
+    void Jewelry::dead( const GOAP::SourceInterfacePtr & _source )
     {
         if( this->isDead() == true )
         {
@@ -191,7 +192,7 @@ namespace Mengine
         Cook::addFunction( _source, this, &Jewelry::finalize );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::explosive( const GOAP::SourcePtr & _source )
+    void Jewelry::explosive( const GOAP::SourceInterfacePtr & _source )
     {
         if( this->isDead() == true )
         {
@@ -200,7 +201,7 @@ namespace Mengine
 
         m_state |= EJS_DEAD;
 
-        m_matrix->removeJewelry( JewelryPtr::from( this ) );        
+        m_matrix->removeJewelry( JewelryPtr::from( this ) );
 
         Cook::addTransformationScaleTime( _source, m_nodeBomb, m_nodeBomb, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
         Cook::addTransformationScaleTime( _source, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
@@ -242,7 +243,7 @@ namespace Mengine
         this->makeNodeBomb_();
         this->makePickerable_();
 
-        m_node->setLocalPosition( { float( _column ) * (m_size + m_stride), float( _row ) * (m_size + m_stride), 0.f } );
+        m_node->setLocalPosition( {float( _column ) * (m_size + m_stride), float( _row ) * (m_size + m_stride), 0.f} );
 
         return true;
     }
@@ -286,7 +287,7 @@ namespace Mengine
         return m_pickerable;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::move( const GOAP::SourcePtr & _source, uint32_t _row, float _time )
+    void Jewelry::move( const GOAP::SourceInterfacePtr & _source, uint32_t _row, float _time )
     {
         if( this->isDead() == true )
         {
@@ -315,7 +316,7 @@ namespace Mengine
         m_state &= ~EJS_MOVE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::pickHand( const GOAP::SourcePtr & _source )
+    void Jewelry::pickHand( const GOAP::SourceInterfacePtr & _source )
     {
         if( this->isDead() == true )
         {
@@ -325,7 +326,7 @@ namespace Mengine
         Cook::addTransformationScaleTime( _source, m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::unpickHand( const GOAP::SourcePtr & _source )
+    void Jewelry::unpickHand( const GOAP::SourceInterfacePtr & _source )
     {
         if( this->isDead() == true )
         {

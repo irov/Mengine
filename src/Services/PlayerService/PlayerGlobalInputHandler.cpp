@@ -6,6 +6,8 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
 
+#include "Config/StdIntTypes.h"
+
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
@@ -47,7 +49,7 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has [%d] hadlers"
+        MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has [%" PRIuPTR "] hadlers"
             , m_handlers.size()
         );
 

@@ -7,7 +7,6 @@ namespace Mengine
 {
     class BubblegumFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         BubblegumFramework();

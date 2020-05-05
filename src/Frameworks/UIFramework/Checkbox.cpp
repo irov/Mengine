@@ -148,7 +148,7 @@ namespace Mengine
         Cook::addWhile( source, fn );
 
         GOAP::ChainInterfacePtr chain = GOAP_SERVICE()
-            ->makeChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
+            ->makeChain( source, nullptr, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
         if( chain->run() == false )
         {

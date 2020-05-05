@@ -54,7 +54,7 @@ namespace Mengine
             
             MENGINE_VA_LIST_END( argList );
 
-            Helper::Assertion( m_level, m_test, m_file, m_line, str_info );
+            Helper::Assertion( m_level, m_test, m_file, m_line, "%s", str_info );
 
             return *this;
         }

@@ -753,7 +753,7 @@ namespace Mengine
 
             if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
             {
-                LOGGER_ERROR( "ttf font '%s' not found glyph code '%d'"
+                LOGGER_ERROR( "ttf font '%s' not found glyph code '%lu'"
                     , this->getName().c_str()
                     , ttf_code
                 );
@@ -775,7 +775,7 @@ namespace Mengine
             case FT_PIXEL_MODE_LCD:
             case FT_PIXEL_MODE_LCD_V:
                 {
-                    LOGGER_ERROR( "ttf font '%s' glyph '%d' unsupport mode '%d'"
+                    LOGGER_ERROR( "ttf font '%s' glyph '%lu' unsupport mode '%u'"
                         , this->getName().c_str()
                         , ttf_code
                         , pixel_mode
@@ -914,7 +914,7 @@ namespace Mengine
 
         if( FT_Set_Pixel_Sizes( face, 0, fe_height ) != FT_Err_Ok )
         {
-            LOGGER_ERROR( "font '%s' invalid set pixel height '%f'"
+            LOGGER_ERROR( "font '%s' invalid set pixel height '%u'"
                 , m_name.c_str()
                 , m_height
             );

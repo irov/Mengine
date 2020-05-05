@@ -21,7 +21,7 @@ namespace Mengine
 
     protected:
         GOAP::SourceInterfacePtr makeSource() override;
-        GOAP::ChainInterfacePtr makeChain( const GOAP::SourceInterfacePtr & _source, const Char * _file, uint32_t _line ) override;
+        GOAP::ChainInterfacePtr makeChain( const GOAP::SourceInterfacePtr & _source, const LambdaSourceCallback & _callback, const Char * _file, uint32_t _line ) override;
 
     protected:
         GOAP::EventInterfacePtr makeEvent() override;

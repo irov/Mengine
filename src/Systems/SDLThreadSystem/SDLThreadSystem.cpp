@@ -91,10 +91,10 @@ namespace Mengine
         return mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    ptrdiff_t SDLThreadSystem::getCurrentThreadId() const
+    uint64_t SDLThreadSystem::getCurrentThreadId() const
     {
         const SDL_threadID threadId = SDL_ThreadID();
 
-        return static_cast<ptrdiff_t>(threadId);
+        return static_cast<uint64_t>(threadId);
     }
 }

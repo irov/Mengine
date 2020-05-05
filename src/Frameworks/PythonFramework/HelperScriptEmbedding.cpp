@@ -1925,8 +1925,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
                 {
-                    LOGGER_ERROR( "currentAccount is none [%s]"
-                        );
+                    LOGGER_ERROR( "currentAccount is none");
 
                     return _kernel->ret_none();
                 }
@@ -2713,7 +2712,7 @@ namespace Mengine
                 String utf8_filePath;
                 if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
                 {
-                    LOGGER_ERROR( "invalid file '%s' convert to utf8"
+                    LOGGER_ERROR( "invalid file '%ls' convert to utf8"
                         , _filePath.c_str()
                         );
 
@@ -2741,7 +2740,7 @@ namespace Mengine
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "'%s' invalid get memory for '%d' size"
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "'%s' invalid get memory for '%zu' size"
                     , _accountID.c_str()
                     , size
                     );
@@ -2760,7 +2759,7 @@ namespace Mengine
 
                 if( account->writeBinaryFile( filePath, memory_buffer, memory_size ) == false )
                 {
-                    LOGGER_ERROR( "account '%s' invalid write file '%s'"
+                    LOGGER_ERROR( "account '%s' invalid write file '%ls'"
                         , _accountID.c_str()
                         , _filePath.c_str()
                         );
@@ -2776,7 +2775,7 @@ namespace Mengine
                 String utf8_filePath;
                 if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
                 {
-                    LOGGER_ERROR( "invalid convert file '%s' to utf8"
+                    LOGGER_ERROR( "invalid convert file '%ls' to utf8"
                         , _filePath.c_str()
                         );
 
@@ -2794,7 +2793,7 @@ namespace Mengine
 
                 MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filePath );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "account '%s' invalid load file '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "account '%s' invalid load file '%ls'"
                     , _accountID.c_str()
                     , _filePath.c_str()
                     );
@@ -2804,7 +2803,7 @@ namespace Mengine
 
                 PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( py_data, _kernel->ret_none(), "account '%s' invalid unpickle file '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( py_data, _kernel->ret_none(), "account '%s' invalid unpickle file '%ls'"
                     , _accountID.c_str()
                     , _filePath.c_str()
                     );
@@ -2854,7 +2853,7 @@ namespace Mengine
                 String utf8_filePath;
                 if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
                 {
-                    LOGGER_ERROR( "invalid convert file '%s' to utf8"
+                    LOGGER_ERROR( "invalid convert file '%ls' to utf8"
                         , _filePath.c_str()
                         );
 

@@ -5,7 +5,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/Pickerable.h"
 
-#include "GOAP/Source.h"
+#include "GOAP/SourceInterface.h"
 
 #include "JewelryMatrix.h"
 
@@ -55,14 +55,14 @@ namespace Mengine
         void makePickerable_();
 
     public:
-        void move( const GOAP::SourcePtr & _source, uint32_t _row, float _time );
+        void move( const GOAP::SourceInterfacePtr & _source, uint32_t _row, float _time );
         void stop();
-        void pickHand( const GOAP::SourcePtr & _source );
-        void unpickHand( const GOAP::SourcePtr & _source );
-        void block( const GOAP::SourcePtr & _source );
-        void dead( const GOAP::SourcePtr & _source );
-        void bomb( const GOAP::SourcePtr & _source );
-        void explosive( const GOAP::SourcePtr & _source );
+        void pickHand( const GOAP::SourceInterfacePtr & _source );
+        void unpickHand( const GOAP::SourceInterfacePtr & _source );
+        void block( const GOAP::SourceInterfacePtr & _source );
+        void dead( const GOAP::SourceInterfacePtr & _source );
+        void bomb( const GOAP::SourceInterfacePtr & _source );
+        void explosive( const GOAP::SourceInterfacePtr & _source );
 
     public:
         bool isDead() const;

@@ -110,7 +110,7 @@ namespace Mengine
 
         if( file_magic != py_magic )
         {
-            LOGGER_ERROR( "module invalid magic '%u' need '%u'"
+            LOGGER_ERROR( "module invalid magic '%ld' need '%ld'"
                 , file_magic
                 , py_magic
             );

@@ -35,11 +35,8 @@ namespace Mengine
         {
             float vx;
             float vy;
-            if( INPUT_SERVICE()
-                ->validCursorPosition( _x, _y, &vx, &vy ) == false )
-            {
-                return;
-            }
+            INPUT_SERVICE()
+                ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
             ev.button.type = IET_MOUSE_BUTTON;

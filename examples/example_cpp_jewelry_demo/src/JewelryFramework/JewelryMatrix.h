@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GOAP/Event.h"
+#include "GOAP/EventInterface.h"
 
 #include "Kernel/Vector.h"
 #include "Kernel/Factorable.h"
@@ -21,7 +21,7 @@ namespace Mengine
         ~JewelryMatrix() override;
 
     public:
-        bool initialize( const GOAP::EventPtr & _event, uint32_t _columnCount, uint32_t _rowCount );
+        bool initialize( const GOAP::EventInterfacePtr & _event, uint32_t _columnCount, uint32_t _rowCount );
         void finalize();
 
     public:
@@ -56,7 +56,7 @@ namespace Mengine
         typedef Vector<Slot> VectorSlots;
         VectorSlots m_slots;
 
-        GOAP::EventPtr m_eventSlot;
+        GOAP::EventInterfacePtr m_eventSlot;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JewelryMatrix> JewelryMatrixPtr;

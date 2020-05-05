@@ -25,6 +25,13 @@ namespace Mengine
         void setCameraFar( float _far );
 
     public:
+        void setCameraScale( const mt::vec2f & _scale );
+        const mt::vec2f & getCameraScale() const;
+
+        void setCameraOffset( const mt::vec2f & _offset );
+        const mt::vec2f & getCameraOffset() const;
+
+    public:
         void setOrthogonalViewport( const Viewport & _viewport );
         const Viewport & getOrthogonalViewport() const;
 
@@ -51,6 +58,9 @@ namespace Mengine
 
         float m_cameraNear;
         float m_cameraFar;
+
+        mt::vec2f m_cameraScale;
+        mt::vec2f m_cameraOffset;
 
         Viewport m_orthogonalViewport;
 

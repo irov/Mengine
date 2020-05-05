@@ -7,7 +7,6 @@ namespace Mengine
 {
     class OzzFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         OzzFramework();

@@ -13,7 +13,7 @@ namespace Mengine
         ~ErrorOperator();
 
     public:
-        void operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const;
+        void operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
     protected:
         const Char * m_file;
@@ -21,5 +21,5 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define MENGINE_ERROR_FATAL(Format, ...) Mengine::ErrorOperator( MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(Format, __VA_ARGS__)
+#define MENGINE_ERROR_FATAL(...) Mengine::ErrorOperator( MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(__VA_ARGS__)
 //////////////////////////////////////////////////////////////////////////

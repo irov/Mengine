@@ -277,7 +277,7 @@ namespace Mengine
             LOGGER_CRITICAL( "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
-        if( HAS_OPTION( "git" ) == true )
+        if( HAS_OPTION( "buildcommit" ) == true )
         {
             LOGGER_CRITICAL( "build commit: %s", MENGINE_GIT_SHA1 );
         }

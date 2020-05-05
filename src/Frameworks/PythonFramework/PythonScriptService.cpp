@@ -971,9 +971,9 @@ namespace Mengine
                     , m_kernel->object_repr( _kwds )
                 );
 
-                static Char traceback[4096];
+                Char traceback[4096];
                 m_kernel->get_traceback( traceback, 4096 );
-                LOGGER_STATISTIC( traceback );
+                LOGGER_STATISTIC( "%s", traceback );
             }            
         }
     }

@@ -12,6 +12,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/GitSHA1.h"
+#include "Config/BuildVersion.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
@@ -22,7 +23,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SentryPlugin::SentryPlugin()
-        : m_options( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -76,10 +76,11 @@ namespace Mengine
         sentry_options_set_dsn( options, sentryDSN );
         sentry_options_set_handler_path( options, sentryHandler );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
-        sentry_options_set_debug( options, 1 );
-        sentry_init( options );
+        sentry_options_set_debug( options, MENGINE_MASTER_VALUE( 0, 1 ) );
 
-        m_options = options;
+        sentry_options_set_release( options, MENGINE_BUILD_VERSION );
+
+        sentry_init( options );
 
         const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
 
@@ -175,11 +176,6 @@ namespace Mengine
 #ifdef MENGINE_GIT_SHA1
         sentry_set_extra( "Commit", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
 #endif
-
-        Char releaseString[256];
-        MENGINE_SNPRINTF( releaseString, 256, "%s@%u", projectName, projectVersion );
-
-        sentry_options_set_release( m_options, releaseString );
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {

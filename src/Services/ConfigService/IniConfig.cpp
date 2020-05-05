@@ -17,8 +17,8 @@ namespace Mengine
         static bool s_hasValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** _value )
         {
             ArrayString<128> platform_section;
-            platform_section.assign( _prefix );
-            platform_section.assign( _section );
+            platform_section.append( _prefix );
+            platform_section.append( _section );
 
             const VectorConstString & tags = _platform.getValues();
 
@@ -34,8 +34,8 @@ namespace Mengine
             }
 
             ArrayString<128> section;
-            section.assign( _prefix );
-            section.assign( _section );
+            section.append( _prefix );
+            section.append( _section );
 
             if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
             {

@@ -7,7 +7,6 @@ namespace Mengine
 {
     class JewelryFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         JewelryFramework();

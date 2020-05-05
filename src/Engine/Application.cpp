@@ -69,6 +69,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/List.h"
 #include "Config/StdString.h"
+#include "Config/StdIntTypes.h"
 
 // All Node type
 #include "Isometric.h"
@@ -1207,18 +1208,20 @@ namespace Mengine
         }
         else
         {
+            uint64_t tid = THREAD_SERVICE()->getCurrentThreadId();
+
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%u] open %s%s"
-                    , THREAD_SERVICE()->getCurrentThreadId()
+                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%" PRIu64 "] open %s%s"
+                    , tid
                     , _folder
                     , _filePath
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%u] open %s%s"
-                    , THREAD_SERVICE()->getCurrentThreadId()
+                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%" PRIu64 "] open %s%s"
+                    , tid
                     , _folder
                     , _filePath
                     );
@@ -1746,11 +1749,6 @@ namespace Mengine
 
             float areaWidth = ceilf( dw * rw );
             float areaHeight = ceilf( dh * rh );
-
-            LOGGER_INFO( "area [%d %d]"
-                , areaWidth
-                , areaHeight
-                );
 
             _viewport.begin.x = ceilf( (rw - areaWidth) * 0.5f );
             _viewport.begin.y = ceilf( (rh - areaHeight) * 0.5f );

@@ -95,9 +95,9 @@ namespace Mengine
         WString unicode_d3d9DLL;
         Helper::utf8ToUnicode( utf8_d3d9DLL, unicode_d3d9DLL );
 
-        m_hd3d9 = ::LoadLibrary( unicode_d3d9DLL.c_str() );
+        HMODULE hd3d9 = ::LoadLibrary( unicode_d3d9DLL.c_str() );
 
-        if( m_hd3d9 == nullptr )
+        if( hd3d9 == nullptr )
         {
             LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
                 , utf8_d3d9DLL
@@ -105,6 +105,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_hd3d9 = hd3d9;
 
         PDIRECT3DCREATE9 pDirect3DCreate9 = (PDIRECT3DCREATE9)::GetProcAddress( m_hd3d9, "Direct3DCreate9" );
 
@@ -115,10 +117,9 @@ namespace Mengine
             return false;
         }
 
-        // Init D3D
         LOGGER_INFO( "Initializing DX9RenderSystem..." );
 
-        IDirect3D9 * pD3D = pDirect3DCreate9( D3D_SDK_VERSION ); // D3D_SDK_VERSION
+        IDirect3D9 * pD3D = pDirect3DCreate9( D3D_SDK_VERSION );
 
         if( pD3D == nullptr )
         {
@@ -540,7 +541,7 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%u) BackBuffer Size %d:%d Format %d"
+            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , hr
                 , windowHandle
                 , m_d3dpp->BackBufferWidth
@@ -611,11 +612,11 @@ namespace Mengine
         float DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetX", -0.5f );
         float DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetY", -0.5f );
 
-        float offset_x = DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        float offset_y = DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
+        float perfect_x = DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        float perfect_y = DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
         mt::mat4f vmperfect;
-        mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
+        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
 
         mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
 

@@ -103,7 +103,7 @@ namespace Mengine
         size_t chunkDataSize;
         if( this->findChunkData_( chunkDataSize ) == false )
         {
-            LOGGER_ERROR( "invalid find chunk data"
+            LOGGER_ERROR( "invalid find chunk data [bps %u]"
                 , header.BitsPerSample
             );
 

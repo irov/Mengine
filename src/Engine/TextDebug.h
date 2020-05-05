@@ -15,6 +15,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const ConstString & _fontName, const Color & _color, const DocumentPtr & _doc, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... );
+        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const ConstString & _fontName, const Color & _color, const DocumentPtr & _doc, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 7, 8 );
     }
 }

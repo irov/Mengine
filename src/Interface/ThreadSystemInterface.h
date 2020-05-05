@@ -22,7 +22,7 @@ namespace Mengine
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual ptrdiff_t getCurrentThreadId() const = 0;
+        virtual uint64_t getCurrentThreadId() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -365,7 +365,7 @@ namespace Mengine
         ALsizei al_bytesWritten = (ALsizei)bytesWritten;
         IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency) )
         {
-            LOGGER_ERROR( "buffer=%d id=%d format=%d bytes=%d frequency=%d"
+            LOGGER_ERROR( "buffer=%u id=%u format=%u bytes=%zu frequency=%d"
                 , _alBufferId
                 , m_format
                 , bytesWritten

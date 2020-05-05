@@ -7,6 +7,9 @@
 #include "Interface/UpdationInterface.h"
 #include "Interface/RandomizerInterface.h"
 
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderViewport.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -48,6 +51,11 @@ namespace Mengine
     public:
         virtual SchedulerInterfacePtr createSchedulerManager( const ConstString & _name, const DocumentPtr & _doc ) = 0;
         virtual bool destroySchedulerManager( const SchedulerInterfacePtr & _scheduler ) = 0;
+
+    public:
+        virtual const RenderCameraOrthogonalPtr & getDefaultCamera2D() const = 0;
+        virtual const RenderViewportPtr & getDefaultViewport2D() const = 0;
+        virtual const RenderCameraOrthogonalPtr & getDefaultArrowCamera2D() const = 0;
 
     public:
         virtual void setRenderCamera( const RenderCameraInterfacePtr & _camera ) = 0;

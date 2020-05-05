@@ -82,7 +82,7 @@ namespace Mengine
 
         void * memory = memoryInput->newBuffer( stream_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "file '%s:%s' invalid alloc memory '%d'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "file '%s:%s' invalid alloc memory '%zu'"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
             , stream_size
@@ -90,7 +90,7 @@ namespace Mengine
 
         if( m_stream->read( memory, stream_size ) != stream_size )
         {
-            LOGGER_ERROR( "file '%s:%s' invalid read stream '%d'"
+            LOGGER_ERROR( "file '%s:%s' invalid read stream '%zu'"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
                 , stream_size

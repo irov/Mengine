@@ -82,7 +82,7 @@ namespace Mengine
         size_t mipmapsize = (size_t)dataInfo->mipmapsize;
         void * buffer = mipmap->newBuffer( mipmapsize );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "name '%s' - hit file '%s' invalid new memory '%u'"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "name '%s' - hit file '%s' invalid new memory '%zu'"
             , this->getName().c_str()
             , this->getFilePath().c_str()
             , mipmapsize
@@ -92,11 +92,11 @@ namespace Mengine
 
         if( test_mipmapsize != mipmapsize )
         {
-            LOGGER_ERROR( "name '%s' invalid decode hit '%s' size %d (%d)"
+            LOGGER_ERROR( "name '%s' invalid decode hit '%s' size %u (%zu)"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
-                , (uint32_t)m_mipmapsize
-                , (uint32_t)mipmapsize
+                , m_mipmapsize
+                , mipmapsize
             );
 
             return false;

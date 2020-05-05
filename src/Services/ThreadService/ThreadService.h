@@ -57,7 +57,7 @@ namespace Mengine
         void sleep( uint32_t _ms ) override;
 
     public:
-        ptrdiff_t getCurrentThreadId() override;
+        uint64_t getCurrentThreadId() override;
         bool isMainThread() const override;
 
     protected:
@@ -91,7 +91,7 @@ namespace Mengine
         typedef Vector<ThreadDesc> VectorThreadDescs;
         VectorThreadDescs m_threads;
 
-        ptrdiff_t m_mainThreadId;
+        uint64_t m_mainThreadId;
 
     protected:
         void tryFastProcessTask_( ThreadTaskDesc & _desc );

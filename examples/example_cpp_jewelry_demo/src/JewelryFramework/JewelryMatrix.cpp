@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JewelryMatrix::initialize( const GOAP::EventPtr & _event, uint32_t _columnCount, uint32_t _rowCount )
+    bool JewelryMatrix::initialize( const GOAP::EventInterfacePtr & _event, uint32_t _columnCount, uint32_t _rowCount )
     {
         m_eventSlot = _event;
 

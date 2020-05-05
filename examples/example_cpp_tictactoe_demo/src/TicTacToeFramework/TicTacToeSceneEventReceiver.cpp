@@ -8,6 +8,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
+
 #include "Engine/SurfaceSolidColor.h"
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/SurfaceImage.h"
@@ -308,7 +310,7 @@ namespace Mengine
 
         MENGINE_UNUSED( setupBackgroundResult );
 
-        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true, false );
+        MENGINE_ASSERTION_FATAL( setupBackgroundResult == true );
 
         return true;
     }

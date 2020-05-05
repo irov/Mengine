@@ -446,14 +446,14 @@ namespace Mengine
             ->sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    ptrdiff_t ThreadService::getCurrentThreadId()
+    uint64_t ThreadService::getCurrentThreadId()
     {
         if( this->isAvailableService() == false )
         {
             return 0U;
         }
 
-        ptrdiff_t id = THREAD_SYSTEM()
+        uint64_t id = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
         return id;
@@ -466,7 +466,7 @@ namespace Mengine
             return true;
         }
 
-        ptrdiff_t id = THREAD_SYSTEM()
+        uint64_t id = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
         if( m_mainThreadId != id )

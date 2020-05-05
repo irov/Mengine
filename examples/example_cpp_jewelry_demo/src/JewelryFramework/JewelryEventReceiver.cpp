@@ -10,6 +10,7 @@
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -229,7 +230,7 @@ namespace Mengine
         m_scene->addChild( m_textTime );
     }
     //////////////////////////////////////////////////////////////////////////
-    void JewelryEventReceiver::spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator )
+    void JewelryEventReceiver::spawnJewelry_( const GOAP::SourceInterfacePtr & _source, EJewelrySuper _super, uint32_t _iterator )
     {
         MENGINE_UNUSED( _source );
         MENGINE_UNUSED( _iterator );
@@ -254,7 +255,7 @@ namespace Mengine
 
         auto && [source_pick, source_fall] = Cook::addRace<2>( _source );
 
-        Cook::addWhile( source_pick, [this, jewelry]( const GOAP::SourcePtr & _source_pick )
+        Cook::addWhile( source_pick, [this, jewelry]( const GOAP::SourceInterfacePtr & _source_pick )
         {
             const PickerablePtr & jewelry_pickerable = jewelry->getPickerable();
 
@@ -276,7 +277,7 @@ namespace Mengine
                 return true;
             } );
 
-            Cook::addScope( _source_pick,[this, jewelry]( const GOAP::SourcePtr & _source )
+            Cook::addScope( _source_pick,[this, jewelry]( const GOAP::SourceInterfacePtr & _source )
             {
                 if( jewelry->isBlock() == true )
                 {
@@ -317,7 +318,7 @@ namespace Mengine
 
         uint32_t jewelry_matrix_row_count = m_jewelryMatrix->getRowCount();
 
-        Cook::addFor( source_fall, jewelry_matrix_row_count - 1, [this, jewelry]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
+        Cook::addFor( source_fall, jewelry_matrix_row_count - 1, [this, jewelry]( const GOAP::SourceInterfacePtr & _source, uint32_t _iterator, uint32_t _count )
         {
             MENGINE_UNUSED( _count );
 
@@ -328,7 +329,7 @@ namespace Mengine
                 return false;
             }
 
-            Cook::addTrigger( _source, m_eventFall, [this, jewelry, jewelry_next_row]( const GOAP::SourcePtr & _source )
+            Cook::addTrigger( _source, m_eventFall, [this, jewelry, jewelry_next_row]( const GOAP::SourceInterfacePtr & _source )
             {
                 if( jewelry->isDead() == true )
                 {
@@ -371,7 +372,7 @@ namespace Mengine
                 return true;
             } );
 
-            Cook::addScope( _source, [this, jewelry, jewelry_next_row]( const GOAP::SourcePtr & _source )
+            Cook::addScope( _source, [this, jewelry, jewelry_next_row]( const GOAP::SourceInterfacePtr & _source )
             {
                 jewelry->move( _source, jewelry_next_row, m_settings.m_jewelry_cell_fall_time_ms );
             } );
@@ -380,7 +381,7 @@ namespace Mengine
         } );
 
 
-        Cook::addScope( source_fall, [this, jewelry]( const GOAP::SourcePtr & _source )
+        Cook::addScope( source_fall, [this, jewelry]( const GOAP::SourceInterfacePtr & _source )
         {
             EJewelrySuper super = jewelry->getSuper();
 
@@ -407,7 +408,7 @@ namespace Mengine
         Cook::addBlock( source_fall );
     }
     //////////////////////////////////////////////////////////////////////////
-    void JewelryEventReceiver::collapseJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry )
+    void JewelryEventReceiver::collapseJewelry_( const GOAP::SourceInterfacePtr & _source, const JewelryPtr & _jewelry )
     {
         if( m_jewelryMatrix->isFall( _jewelry ) == false )
         {
@@ -447,7 +448,7 @@ namespace Mengine
             return;
         }
 
-        const GOAP::SourcePtr & source_fork = Cook::addFork( _source );
+        const GOAP::SourceInterfacePtr & source_fork = Cook::addFork( _source );
 
         for( auto && [source_jewelry, jewerly] : Cook::addParallelZip( source_fork, jewelries ) )
         {
@@ -455,7 +456,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void JewelryEventReceiver::explosiveJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry )
+    void JewelryEventReceiver::explosiveJewelry_( const GOAP::SourceInterfacePtr & _source, const JewelryPtr & _jewelry )
     {
         if( _jewelry->isDead() == true )
         {
@@ -484,7 +485,7 @@ namespace Mengine
 
             m_base->addChild( explosive );
 
-            Cook::addFor( source_left, 1, MENGINE_MIN( jewelry_column + 1, m_settings.m_jewelry_cell_explosive_count + 1 ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
+            Cook::addFor( source_left, 1, MENGINE_MIN( jewelry_column + 1, m_settings.m_jewelry_cell_explosive_count + 1 ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourceInterfacePtr & _source, uint32_t _iterator, uint32_t _count )
             {
                 MENGINE_UNUSED( _count );
 
@@ -497,7 +498,7 @@ namespace Mengine
                 explosive_position.z = 0.f;
 
                 Cook::addTransformationTranslateTime( _source, explosive, explosive, nullptr, explosive_position, m_settings.m_jewelry_cell_explosive_time_ms );
-                Cook::addScope( _source, [this, explosive_column, explosive_row]( const GOAP::SourcePtr & _source )
+                Cook::addScope( _source, [this, explosive_column, explosive_row]( const GOAP::SourceInterfacePtr & _source )
                 {
                     const JewelryPtr & jewelry = m_jewelryMatrix->getJewelry( explosive_column, explosive_row );
 
@@ -506,7 +507,7 @@ namespace Mengine
                         return;
                     }
 
-                    const GOAP::SourcePtr & source_fork = Cook::addFork( _source );
+                    const GOAP::SourceInterfacePtr & source_fork = Cook::addFork( _source );
 
                     jewelry->dead( source_fork );
                 } );
@@ -529,7 +530,7 @@ namespace Mengine
 
             m_base->addChild( explosive );
 
-            Cook::addFor( source_right, 1, MENGINE_MIN( m_settings.m_jewelry_cell_explosive_count + 1, jewelry_matrix_column_count - jewelry_column ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
+            Cook::addFor( source_right, 1, MENGINE_MIN( m_settings.m_jewelry_cell_explosive_count + 1, jewelry_matrix_column_count - jewelry_column ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourceInterfacePtr & _source, uint32_t _iterator, uint32_t _count )
             {
                 MENGINE_UNUSED( _count );
 
@@ -542,7 +543,7 @@ namespace Mengine
                 explosive_position.z = 0.f;
 
                 Cook::addTransformationTranslateTime( _source, explosive, explosive, nullptr, explosive_position, m_settings.m_jewelry_cell_explosive_time_ms );
-                Cook::addScope( _source, [this, explosive_column, explosive_row]( const GOAP::SourcePtr & _source )
+                Cook::addScope( _source, [this, explosive_column, explosive_row]( const GOAP::SourceInterfacePtr & _source )
                 {
                     const JewelryPtr & jewelry = m_jewelryMatrix->getJewelry( explosive_column, explosive_row );
 
@@ -551,7 +552,7 @@ namespace Mengine
                         return;
                     }
 
-                    const GOAP::SourcePtr & source_fork = Cook::addFork( _source );
+                    const GOAP::SourceInterfacePtr & source_fork = Cook::addFork( _source );
 
                     jewelry->dead( source_fork );
                 } );
@@ -574,7 +575,7 @@ namespace Mengine
 
             m_base->addChild( explosive );
 
-            Cook::addFor( source_down, 1, MENGINE_MIN( m_settings.m_jewelry_cell_explosive_count + 1, jewelry_matrix_row_count - jewelry_row ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
+            Cook::addFor( source_down, 1, MENGINE_MIN( m_settings.m_jewelry_cell_explosive_count + 1, jewelry_matrix_row_count - jewelry_row ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourceInterfacePtr & _source, uint32_t _iterator, uint32_t _count )
             {
                 MENGINE_UNUSED( _count );
 
@@ -587,7 +588,7 @@ namespace Mengine
                 explosive_position.z = 0.f;
 
                 Cook::addTransformationTranslateTime( _source, explosive, explosive, nullptr, explosive_position, m_settings.m_jewelry_cell_explosive_time_ms );
-                Cook::addScope( _source, [this, explosive_column, explosive_row]( const GOAP::SourcePtr & _source )
+                Cook::addScope( _source, [this, explosive_column, explosive_row]( const GOAP::SourceInterfacePtr & _source )
                 {
                     const JewelryPtr & jewelry = m_jewelryMatrix->getJewelry( explosive_column, explosive_row );
 
@@ -596,7 +597,7 @@ namespace Mengine
                         return;
                     }
 
-                    const GOAP::SourcePtr & source_fork = Cook::addFork( _source );
+                    const GOAP::SourceInterfacePtr & source_fork = Cook::addFork( _source );
 
                     jewelry->dead( source_fork );
                 } );
@@ -616,7 +617,7 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-        GOAP::TimerPtr timer = GOAP_SERVICE()
+        GOAP::TimerInterfacePtr timer = GOAP_SERVICE()
             ->makeTimer();
 
         uint32_t timepipeId = Helper::addTimepipe( [timer]( const UpdateContext * _context )
@@ -628,7 +629,7 @@ namespace Mengine
 
         m_timepipeId = timepipeId;
 
-        GOAP::SourcePtr source = GOAP_SERVICE()
+        GOAP::SourceInterfacePtr source = GOAP_SERVICE()
             ->makeSource();
 
         Cook::addGlobalDelay( source, 1000.f );
@@ -660,17 +661,17 @@ namespace Mengine
             MENGINE_UNUSED( _iterator );
 
             return m_settings.m_jewelry_spawn_time_ms;
-        }, [this]( const GOAP::SourcePtr & _source, uint32_t _iterator, float _time )
+        }, [this]( const GOAP::SourceInterfacePtr & _source, uint32_t _iterator, float _time )
         {
             MENGINE_UNUSED( _time );
 
             Cook::addScope( _source, this, &JewelryEventReceiver::spawnJewelry_, EJSUPER_NORMAL, _iterator );
         } );
 
-        Cook::addWhile( source_boom, [this]( const GOAP::SourcePtr & _source_boom )
+        Cook::addWhile( source_boom, [this]( const GOAP::SourceInterfacePtr & _source_boom )
         {
             Cook::addGlobalMouseButton( _source_boom, MC_LBUTTON, false, nullptr );
-            Cook::addScope( _source_boom, [this]( const GOAP::SourcePtr & _source )
+            Cook::addScope( _source_boom, [this]( const GOAP::SourceInterfacePtr & _source )
             {
                 VectorJewelryHand jewelryHand = std::move( m_jewelryHand );
 

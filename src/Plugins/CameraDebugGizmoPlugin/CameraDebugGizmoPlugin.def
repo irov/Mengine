@@ -1,0 +1,3 @@
+LIBRARY "CameraDebugGizmoPlugin"
+EXPORTS
+    dllCreatePlugin @1

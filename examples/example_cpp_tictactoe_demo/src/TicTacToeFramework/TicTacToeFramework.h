@@ -7,7 +7,6 @@ namespace Mengine
 {
     class TicTacToeFramework
         : public FrameworkBase
-        , public Observable
     {
     public:
         TicTacToeFramework();

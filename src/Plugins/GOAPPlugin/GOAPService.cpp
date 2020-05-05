@@ -75,9 +75,16 @@ namespace Mengine
         return source;
     }
     //////////////////////////////////////////////////////////////////////////
-    GOAP::ChainInterfacePtr GOAPService::makeChain( const GOAP::SourceInterfacePtr & _source, const Char * _file, uint32_t _line )
+    GOAP::ChainInterfacePtr GOAPService::makeChain( const GOAP::SourceInterfacePtr & _source, const LambdaSourceCallback & _callback, const Char * _file, uint32_t _line )
     {
         GOAP::ChainInterfacePtr chain = m_kernel->makeChain( _source, _file, _line );
+
+        if( _callback != nullptr )
+        {
+            GOAP::ChainProviderInterfacePtr provider = GOAP::Helper::makeChainProvider( m_allocator, _callback );
+
+            chain->setCallbackProvider( provider );
+        }
 
         return chain;
     }

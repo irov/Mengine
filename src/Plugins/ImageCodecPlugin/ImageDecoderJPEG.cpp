@@ -245,7 +245,7 @@ namespace Mengine
     {
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
-            LOGGER_ERROR( "invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
+            LOGGER_ERROR( "invalid buffer relation pitch to size bufferSize %zu - pitch %zu height %u"
                 , _bufferSize
                 , m_options.pitch
                 , m_dataInfo.height

@@ -34,7 +34,7 @@ namespace Mengine
         void sleep( uint32_t _ms ) override;
 
     public:
-        ptrdiff_t getCurrentThreadId() const override;
+        uint64_t getCurrentThreadId() const override;
 
     protected:
         FactoryPtr m_factoryWin32ThreadIdentity;

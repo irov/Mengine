@@ -110,7 +110,7 @@ namespace Mengine
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR( "seek offset %d size %d get error '%u'"
+                LOGGER_ERROR( "seek offset %zu size %zu get error '%u'"
                     , m_offset
                     , m_size
                     , dwError
@@ -303,7 +303,7 @@ namespace Mengine
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR( "seek %d:%d get error '%u'"
+                LOGGER_ERROR( "seek %zu:%zu get error '%u'"
                     , _pos
                     , m_size
                     , dwError

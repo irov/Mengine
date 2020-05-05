@@ -258,7 +258,7 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->setRenderCamera( m_arrowCamera2D );
+            m_arrow->setRenderCamera( m_defaultArrowCamera2D );
             m_arrow->setRenderViewport( m_renderViewport );
             m_arrow->setRenderScissor( m_renderScissor );
 
@@ -361,31 +361,31 @@ namespace Mengine
         contentResolution.calcSize( cr );
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
-        m_camera2D = PROTOTYPE_SERVICE()
+        m_defaultCamera2D = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_camera2D->setOrthogonalViewport( vp );
-        m_camera2D->enableForce();
+        m_defaultCamera2D->setOrthogonalViewport( vp );
+        m_defaultCamera2D->enableForce();
 
-        this->setRenderCamera( m_camera2D );
+        this->setRenderCamera( m_defaultCamera2D );
 
-        m_viewport2D = PROTOTYPE_SERVICE()
+        m_defaultViewport2D = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_viewport2D->setViewport( vp );
-        m_viewport2D->enableForce();
+        m_defaultViewport2D->setViewport( vp );
+        m_defaultViewport2D->enableForce();
 
-        this->setRenderViewport( m_viewport2D );
+        this->setRenderViewport( m_defaultViewport2D );
 
-        m_arrowCamera2D = PROTOTYPE_SERVICE()
+        m_defaultArrowCamera2D = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_arrowCamera2D->setOrthogonalViewport( vp );
-        m_arrowCamera2D->enableForce();
+        m_defaultArrowCamera2D->setOrthogonalViewport( vp );
+        m_defaultArrowCamera2D->enableForce();
 
         if( m_arrow != nullptr )
         {
-            m_arrow->setRenderCamera( m_arrowCamera2D );
+            m_arrow->setRenderCamera( m_defaultArrowCamera2D );
             m_arrow->setRenderViewport( m_renderViewport );
             m_arrow->setRenderScissor( m_renderScissor );
         }
@@ -397,22 +397,22 @@ namespace Mengine
         this->setRenderViewport( nullptr );
         this->setRenderScissor( nullptr );
 
-        if( m_camera2D != nullptr )
+        if( m_defaultCamera2D != nullptr )
         {
-            m_camera2D->disable();
-            m_camera2D = nullptr;
+            m_defaultCamera2D->disable();
+            m_defaultCamera2D = nullptr;
         }
 
-        if( m_viewport2D != nullptr )
+        if( m_defaultViewport2D != nullptr )
         {
-            m_viewport2D->disable();
-            m_viewport2D = nullptr;
+            m_defaultViewport2D->disable();
+            m_defaultViewport2D = nullptr;
         }
 
-        if( m_arrowCamera2D != nullptr )
+        if( m_defaultArrowCamera2D != nullptr )
         {
-            m_arrowCamera2D->disable();
-            m_arrowCamera2D = nullptr;
+            m_defaultArrowCamera2D->disable();
+            m_defaultArrowCamera2D = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -553,6 +553,21 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderCameraOrthogonalPtr & PlayerService::getDefaultCamera2D() const
+    {
+        return m_defaultCamera2D;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderViewportPtr & PlayerService::getDefaultViewport2D() const
+    {
+        return m_defaultViewport2D;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderCameraOrthogonalPtr & PlayerService::getDefaultArrowCamera2D() const
+    {
+        return m_defaultArrowCamera2D;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setRenderCamera( const RenderCameraInterfacePtr & _camera )

@@ -25,7 +25,7 @@ namespace Mengine
         bool getNewline() const;
 
     public:
-        const LoggerOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const;
+        const LoggerOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
     public:
         void logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const;
@@ -50,27 +50,27 @@ namespace Mengine
 #define LOGGER_VERBOSE_LEVEL( LEVEL, COLOR, FILE, LINE )\
     if( Mengine::Detail::loggerValidMessage(LEVEL, 0) == false) {} else Mengine::LoggerOperator((LEVEL), 0, (COLOR), (FILE), (LINE))
 //////////////////////////////////////////////////////////////////////////
-#define LOGGER_FATAL( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_FATAL, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( Format, __VA_ARGS__ )
-#define LOGGER_CRITICAL( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( Format, __VA_ARGS__ )
-#define LOGGER_ERROR( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( Format, __VA_ARGS__ )
-#define LOGGER_MESSAGE_RELEASE( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( Format, __VA_ARGS__ )
+#define LOGGER_FATAL( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_FATAL, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
+#define LOGGER_CRITICAL( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
+#define LOGGER_ERROR( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_RELEASE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_LOGGER_DEBUG
 //////////////////////////////////////////////////////////////////////////
-#define LOGGER_PERFORMANCE( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( Format, __VA_ARGS__ )
-#define LOGGER_STATISTIC( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, Mengine::LCOLOR_GREEN, nullptr, 0 )( Format, __VA_ARGS__ )
-#define LOGGER_WARNING( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( Format, __VA_ARGS__ )
-#define LOGGER_MESSAGE( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( Format, __VA_ARGS__ )
-#define LOGGER_MESSAGE_WN( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 ).setNewline(false)( Format, __VA_ARGS__ )
-#define LOGGER_INFO( Format, ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0 )( Format, __VA_ARGS__ )
+#   define LOGGER_PERFORMANCE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
+#   define LOGGER_STATISTIC( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, Mengine::LCOLOR_GREEN, nullptr, 0 )( __VA_ARGS__ )
+#   define LOGGER_WARNING( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
+#   define LOGGER_MESSAGE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
+#   define LOGGER_MESSAGE_WN( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 ).setNewline(false)( __VA_ARGS__ )
+#   define LOGGER_INFO( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
 #else
 //////////////////////////////////////////////////////////////////////////
-#define LOGGER_PERFORMANCE( Format, ... )
-#define LOGGER_STATISTIC( Format, ... )
-#define LOGGER_WARNING( Format, ... )
-#define LOGGER_MESSAGE( Format, ... )
-#define LOGGER_MESSAGE_WN( Format, ... )
-#define LOGGER_INFO( Format, ... )
+#   define LOGGER_PERFORMANCE( ... )
+#   define LOGGER_STATISTIC( ... )
+#   define LOGGER_WARNING( ... )
+#   define LOGGER_MESSAGE( ... )
+#   define LOGGER_MESSAGE_WN( ... )
+#   define LOGGER_INFO( ... )
 //////////////////////////////////////////////////////////////////////////
 #endif

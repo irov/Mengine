@@ -83,11 +83,11 @@ namespace Mengine
 
         if( _offset + _size > (size_t)size )
         {
-            LOGGER_ERROR( "invalid file '%s' range %d:%d size %d"
+            LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
                 , fullPath
                 , _offset
                 , _size
-                , size
+                , (size_t)size
             );
 
             return false;
@@ -108,7 +108,7 @@ namespace Mengine
             {
                 const char * sdlError = SDL_GetError();
 
-                LOGGER_ERROR( "seek offset %d size %d get error %s"
+                LOGGER_ERROR( "seek offset %zu size %zu get error: %s"
                     , m_offset
                     , m_size
                     , sdlError
@@ -261,7 +261,7 @@ namespace Mengine
         {
             const char * sdl_error = SDL_GetError();
 
-            LOGGER_ERROR( "read %d:%d get error '%s'"
+            LOGGER_ERROR( "read %zu:%zu get error: %s"
                 , _size
                 , m_size
                 , sdl_error
@@ -298,7 +298,7 @@ namespace Mengine
             {
                 const char * sdl_error = SDL_GetError();
 
-                LOGGER_ERROR( "seek %d:%d get error %s"
+                LOGGER_ERROR( "seek %zu:%zu get error: %s"
                     , _pos
                     , m_size
                     , sdl_error

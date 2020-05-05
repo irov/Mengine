@@ -167,7 +167,7 @@ namespace Mengine
 
             void * memory = Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid realloc %p memory %d to %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid realloc %p memory %zu to %zu"
                 , buffer.memory
                 , buffer.size
                 , _size
@@ -188,7 +188,7 @@ namespace Mengine
 
         uint8_t * memory = (uint8_t *)Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid malloc memory %d"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid malloc memory %zu"
             , _size
         );
 

@@ -1,0 +1,3 @@
+LIBRARY "AreaOfInterestPlugin"
+EXPORTS
+    dllCreatePlugin @1

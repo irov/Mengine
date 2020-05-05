@@ -7,6 +7,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdIntTypes.h"
+
 namespace Mengine
 {
     namespace Detail
@@ -49,7 +51,7 @@ namespace Mengine
                 return 0;
             }
 
-            LOGGER_MESSAGE( "%s, %10.10lu bytes (0x%8.8lx)",
+            LOGGER_MESSAGE( "%s, %10.10" PRIu64 " bytes (0x%8.8" PRIx64 ")",
                 text, (uint64_t)size, (uint64_t)size );
 
             LOGGER_MESSAGE( "%.*s", size, data );

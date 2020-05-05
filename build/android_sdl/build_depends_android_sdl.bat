@@ -113,7 +113,7 @@ call %ANDROID_SDK_MANAGER% --install "cmake;%ANDROID_CMAKE_VERSION%"
     
 @popd
 
-end:
+:end
 @echo Done
 
 @pause

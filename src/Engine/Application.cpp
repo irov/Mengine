@@ -1228,52 +1228,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::mouseWheel( const InputMouseWheelEvent & _event )
     {
-        bool developmentMode = HAS_OPTION( "dev" );
-
-        if( developmentMode == true && INPUT_SERVICE()->isControlDown() == true )
-        {
-            const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
-                ->getDefaultCamera2D();
-
-            const mt::vec2f & camera_offset = camera->getCameraOffset();
-            const mt::vec2f & camera_scale = camera->getCameraScale();
-
-            const mt::vec2f & pos = INPUT_SERVICE()
-                ->getCursorPosition( MC_LBUTTON );
-
-            mt::vec2f new_camera_offset = camera_offset;
-            new_camera_offset.x -= (1.f - pos.x * 2.f) * camera_scale.x;
-            new_camera_offset.y -= (1.f - (1.f - pos.y) * 2.f) * camera_scale.y;
-
-            mt::vec2f new_camera_scale = camera_scale;
-
-            float scale_step_min = 0.025f;
-
-            float scale_step = float( _event.wheel ) * scale_step_min;
-
-            if( new_camera_scale.x + scale_step > 128.f )
-            {
-                new_camera_scale.x = 128.f;
-                new_camera_scale.y = 128.f;
-            }
-            else if( new_camera_scale.x + scale_step < scale_step_min )
-            {
-                new_camera_scale.x = scale_step_min;
-                new_camera_scale.y = scale_step_min;
-            }
-            else
-            {
-                new_camera_scale.x += scale_step;
-                new_camera_scale.y += scale_step;
-            }
-
-            new_camera_offset.x += (1.f - pos.x * 2.f) * new_camera_scale.x;
-            new_camera_offset.y += (1.f - (1.f - pos.y) * 2.f) * new_camera_scale.y;
-
-            camera->setCameraOffset( new_camera_offset );
-            camera->setCameraScale( new_camera_scale );
-        }
-
         bool handle = GAME_SERVICE()
             ->handleMouseWheel( _event );
 

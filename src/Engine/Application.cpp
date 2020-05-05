@@ -225,7 +225,7 @@ namespace Mengine
         m_fixedDisplayResolution = CONFIG_VALUE( "Game", "FixedDisplayResolution", true );
 
         VectorAspectRatioViewports aspectRatioViewports;
-        CONFIG_VALUES( "Game", "AspectRatioViewport", aspectRatioViewports );
+        CONFIG_VALUES( "Game", "AspectRatioViewport", &aspectRatioViewports );
 
         for( const AspectRatioViewport & viewports : aspectRatioViewports )
         {

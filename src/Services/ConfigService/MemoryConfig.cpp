@@ -14,7 +14,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        bool s_getRecord( const VectorRecords & _records, const Char * _section, const Char * _key, const RecordDesc ** _record )
+        static bool s_getRecord( const VectorRecords & _records, const Char * _section, const Char * _key, const RecordDesc ** _record )
         {
             for( const RecordDesc & record : _records )
             {
@@ -38,7 +38,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef Vector<const RecordDesc *> VectorRecordRefs;
         //////////////////////////////////////////////////////////////////////////
-        void s_filterRecords( const VectorRecords & _records, const Char * _section, const Char * _key, VectorRecordRefs & _refs )
+        static void s_filterRecords( const VectorRecords & _records, const Char * _section, const Char * _key, VectorRecordRefs * _refs )
         {
             for( const RecordDesc & record : _records )
             {
@@ -52,7 +52,7 @@ namespace Mengine
                     continue;
                 }
 
-                _refs.emplace_back( &record );
+                _refs->emplace_back( &record );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ namespace Mengine
                 platform_section.append( tag );
 
                 const RecordDesc * tag_record;
-                if( s_getRecord( _records, platform_section.c_str(), _key, &tag_record ) == false )
+                if( Detail::s_getRecord( _records, platform_section.c_str(), _key, &tag_record ) == false )
                 {
                     continue;
                 }
@@ -86,7 +86,7 @@ namespace Mengine
             }
 
             const RecordDesc * record;
-            if( s_getRecord( _records, _section, _key, &record ) == false )
+            if( Detail::s_getRecord( _records, _section, _key, &record ) == false )
             {
                 return false;
             }
@@ -106,7 +106,7 @@ namespace Mengine
         {
             T value;
 
-            if( s_hasValueT( _records, _tags, _section, _key, &value ) == false )
+            if( Detail::s_hasValueT( _records, _tags, _section, _key, &value ) == false )
             {
                 return _default;
             }
@@ -115,7 +115,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void s_calcValuesT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, Vector<T> & _values )
+        static void s_calcValuesT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, Vector<T> * _values )
         {
             ArrayString<128> platform_section;
             platform_section.append( _section );
@@ -129,12 +129,12 @@ namespace Mengine
                 platform_section.append( '-' );
                 platform_section.append( tag );
 
-                s_filterRecords( _records, platform_section.c_str(), _key, record_refs );
+                Detail::s_filterRecords( _records, platform_section.c_str(), _key, &record_refs );
             }
 
             if( record_refs.empty() == true )
             {
-                s_filterRecords( _records, _section, _key, record_refs );
+                Detail::s_filterRecords( _records, _section, _key, &record_refs );
             }
 
             for( const RecordDesc * desc : record_refs )
@@ -147,7 +147,7 @@ namespace Mengine
                     continue;
                 }
 
-                _values.emplace_back( value );
+                _values->emplace_back( value );
             }
         }
     }
@@ -340,22 +340,22 @@ namespace Mengine
         return Detail::s_getValueT( m_records, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _values ) const
+    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * _values ) const
     {
         Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorFilePath & _values ) const
+    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorFilePath * _values ) const
     {
         Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorConstString & _values ) const
+    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorConstString * _values ) const
     {
         Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorString & _values ) const
+    void MemoryConfig::getValues( const Char * _section, const Char * _key, VectorString * _values ) const
     {
         Detail::s_calcValuesT( m_records, m_platformTags, _section, _key, _values );
     }

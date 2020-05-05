@@ -539,7 +539,7 @@ namespace Mengine
         }
 
         VectorConstString values;
-        config->getValues( "ACCOUNTS", "Account", values );
+        config->getValues( "ACCOUNTS", "Account", &values );
 
         AccountInterfacePtr validAccount = nullptr;
 

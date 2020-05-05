@@ -14,34 +14,67 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        static bool s_hasValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** _value )
+        {
+            ArrayString<128> platform_section;
+            platform_section.assign( _prefix );
+            platform_section.assign( _section );
+
+            const VectorConstString & tags = _platform.getValues();
+
+            for( const ConstString & tag : tags )
+            {
+                platform_section.append( '-' );
+                platform_section.append( tag );
+
+                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool s_hasValueString( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, const Char ** _value )
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                ArrayString<128> platform_section;
-                platform_section.append( _section );
-
-                const VectorConstString & tags = _platform.getValues();
-
-                for( const ConstString & tag : tags )
+                if( Detail::s_hasValueString2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, _value ) == true )
                 {
-                    platform_section.append( '-' );
-                    platform_section.append( tag );
-
-                    const Char * value;
-                    if( IniUtil::getIniValue( ini, platform_section.c_str(), _key, &value ) == true )
-                    {
-                        *_value = value;
-
-                        return true;
-                    }
+                    return true;
                 }
 
-                const Char * value;
-                if( IniUtil::getIniValue( ini, _section, _key, &value ) == true )
+                if( Detail::s_hasValueString2( ini, "", _platform, _section, _key, _value ) == true )
                 {
-                    *_value = value;
+                    return true;
+                }
 
+                if( IniUtil::getIniValue( ini, _section, _key, _value ) == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        static bool s_hasValueT2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
+        {
+            ArrayString<128> platform_section;
+            platform_section.append( _prefix );
+            platform_section.append( _section );
+
+            const VectorConstString & tags = _platform.getValues();
+
+            for( const ConstString & tag : tags )
+            {
+                platform_section.append( '-' );
+                platform_section.append( tag );
+
+                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                {
                     return true;
                 }
             }
@@ -54,30 +87,40 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                ArrayString<128> platform_section;
-                platform_section.append( _section );
-
-                const VectorConstString & tags = _platform.getValues();
-
-                for( const ConstString & tag : tags )
+                if( Detail::s_hasValueT2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, _value ) == true )
                 {
-                    platform_section.append( '-' );
-                    platform_section.append( tag );
-
-                    T value;
-                    if( IniUtil::getIniValue( ini, platform_section.c_str(), _key, value ) == true )
-                    {
-                        *_value = value;
-
-                        return true;
-                    }
+                    return true;
                 }
 
-                T value;
-                if( IniUtil::getIniValue( ini, _section, _key, value ) == true )
+                if( Detail::s_hasValueT2( ini, "", _platform, _section, _key, _value ) == true )
                 {
-                    *_value = value;
+                    return true;
+                }
 
+                if( IniUtil::getIniValue( ini, _section, _key, _value ) == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_getValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** _value )
+        {
+            ArrayString<128> platform_section;
+            platform_section.append( _prefix );
+            platform_section.append( _section );
+
+            const VectorConstString & tags = _platform.getValues();
+
+            for( const ConstString & tag : tags )
+            {
+                platform_section.append( '-' );
+                platform_section.append( tag );
+
+                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                {
                     return true;
                 }
             }
@@ -89,24 +132,17 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                ArrayString<128> platform_section;
-                platform_section.append( _section );
-
-                const VectorConstString & tags = _platform.getValues();
-
-                for( const ConstString & tag : tags )
+                const Char * value;
+                if( Detail::s_getValueString2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, &value ) == true )
                 {
-                    platform_section.append( '-' );
-                    platform_section.append( tag );
-
-                    const Char * value;
-                    if( IniUtil::getIniValue( ini, platform_section.c_str(), _key, &value ) == true )
-                    {
-                        return value;
-                    }
+                    return value;
                 }
 
-                const Char * value;
+                if( Detail::s_getValueString2( ini, "", _platform, _section, _key, &value ) == true )
+                {
+                    return value;
+                }
+
                 if( IniUtil::getIniValue( ini, _section, _key, &value ) == true )
                 {
                     return value;
@@ -117,29 +153,46 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
+        static bool s_getValueT2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
+        {
+            ArrayString<128> platform_section;
+            platform_section.append( _prefix );
+            platform_section.append( _section );
+
+            const VectorConstString & tags = _platform.getValues();
+
+            for( const ConstString & tag : tags )
+            {
+                platform_section.append( '-' );
+                platform_section.append( tag );
+
+                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value ) == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
         static T s_getValueT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T _default )
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                ArrayString<128> platform_section;
-                platform_section.append( _section );
+                T value;
 
-                const VectorConstString & tags = _platform.getValues();
-
-                for( const ConstString & tag : tags )
+                if( Detail::s_getValueT2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, &value ) == true )
                 {
-                    platform_section.append( '-' );
-                    platform_section.append( tag );
-
-                    T value;
-                    if( IniUtil::getIniValue( ini, platform_section.c_str(), _key, value ) == true )
-                    {
-                        return value;
-                    }
+                    return value;
                 }
 
-                T value;
-                if( IniUtil::getIniValue( ini, _section, _key, value ) == true )
+                if( Detail::s_getValueT2( ini, "", _platform, _section, _key, &value ) == true )
+                {
+                    return value;
+                }
+
+                if( IniUtil::getIniValue( ini, _section, _key, &value ) == true )
                 {
                     return value;
                 }
@@ -149,44 +202,40 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void s_calcValuesT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T & _value )
+        static void s_calcValuesT2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
         {
-            for( const IniUtil::IniStore & ini : _stores )
+            ArrayString<128> platform_section;
+            platform_section.append( _prefix );
+            platform_section.append( _section );
+
+            const VectorConstString & tags = _platform.getValues();            
+
+            for( const ConstString & tag : tags )
             {
-                ArrayString<128> platform_section;
-                platform_section.append( _section );
+                platform_section.append( '-' );
+                platform_section.append( tag );
 
-                const VectorConstString & tags = _platform.getValues();
-
-                ArrayString<128> platform_section_found;
-
-                for( const ConstString & tag : tags )
-                {
-                    platform_section.append( '-' );
-                    platform_section.append( tag );
-
-                    if( IniUtil::hasIniValue( ini, platform_section.c_str(), _key ) == false )
-                    {
-                        continue;
-                    }
-
-                    platform_section_found = platform_section;
-
-                    break;
-                }
-
-                if( platform_section_found.empty() == false )
-                {
-                    if( IniUtil::getIniValues( ini, platform_section_found.c_str(), _key, _value ) == true )
-                    {
-                        continue;
-                    }
-                }
-
-                if( IniUtil::getIniValues( ini, _section, _key, _value ) == true )
+                if( IniUtil::hasIniValue( _ini, platform_section.c_str(), _key ) == false )
                 {
                     continue;
                 }
+
+                if( IniUtil::getIniValues( _ini, platform_section.c_str(), _key, _value ) == true )
+                {
+                    break;
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        static void s_calcValuesT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
+        {
+            for( const IniUtil::IniStore & ini : _stores )
+            {
+                Detail::s_calcValuesT2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, _value );
+                Detail::s_calcValuesT2( ini, "", _platform, _section, _key, _value );
+                
+                IniUtil::getIniValues( ini, _section, _key, _value );
             }
         }
     }
@@ -395,22 +444,22 @@ namespace Mengine
         return Detail::s_getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _values ) const
+    void IniConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * _values ) const
     {
         Detail::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorFilePath & _values ) const
+    void IniConfig::getValues( const Char * _section, const Char * _key, VectorFilePath * _values ) const
     {
         Detail::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorConstString & _values ) const
+    void IniConfig::getValues( const Char * _section, const Char * _key, VectorConstString * _values ) const
     {
         Detail::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getValues( const Char * _section, const Char * _key, VectorString & _values ) const
+    void IniConfig::getValues( const Char * _section, const Char * _key, VectorString * _values ) const
     {
         Detail::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }

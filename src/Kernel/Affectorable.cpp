@@ -55,7 +55,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Affectorable::stopAffector( uint32_t _id )
+    bool Affectorable::stopAffector( AFFECTOR_ID _id )
     {
         for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
         {

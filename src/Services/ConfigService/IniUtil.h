@@ -44,24 +44,25 @@ namespace Mengine
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, const Char ** _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int8_t & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint8_t & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values );
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int8_t * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint8_t * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float * _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double * _value );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString * _values );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString * _values );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath * _values );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports * _values );
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams * _values );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

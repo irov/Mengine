@@ -622,7 +622,7 @@ namespace Mengine
         );
 
         VectorConstString fonts;
-        config->getValues( "GAME_FONTS", "Font", fonts );
+        config->getValues( "GAME_FONTS", "Font", &fonts );
 
 #ifndef MENGINE_MASTER_RELEASE
         bool developmentMode = HAS_OPTION( "dev" );
@@ -630,7 +630,7 @@ namespace Mengine
         if( developmentMode == true )
         {
             VectorConstString devfonts;
-            config->getValues( "GAME_FONTS", "FontDev", devfonts );
+            config->getValues( "GAME_FONTS", "FontDev", &devfonts );
 
             fonts.insert( fonts.end(), devfonts.begin(), devfonts.end() );
         }
@@ -730,7 +730,7 @@ namespace Mengine
         );
 
         VectorConstString fonts;
-        config->getValues( "GAME_FONTS", "Font", fonts );
+        config->getValues( "GAME_FONTS", "Font", &fonts );
 
 #ifndef MENGINE_MASTER_RELEASE
         bool developmentMode = HAS_OPTION( "dev" );
@@ -738,7 +738,7 @@ namespace Mengine
         if( developmentMode == true )
         {
             VectorConstString devfonts;
-            config->getValues( "GAME_FONTS", "FontDev", devfonts );
+            config->getValues( "GAME_FONTS", "FontDev", &devfonts );
 
             fonts.insert( fonts.end(), devfonts.begin(), devfonts.end() );
         }

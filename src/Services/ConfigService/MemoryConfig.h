@@ -66,10 +66,10 @@ namespace Mengine
         Color getValue( const Char * _section, const Char * _key, const Color & _default ) const override;
 
     public:
-        void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _values ) const override;
-        void getValues( const Char * _section, const Char * _key, VectorFilePath & _values ) const override;
-        void getValues( const Char * _section, const Char * _key, VectorConstString & _values ) const override;
-        void getValues( const Char * _section, const Char * _key, VectorString & _values ) const override;
+        void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * _values ) const override;
+        void getValues( const Char * _section, const Char * _key, VectorFilePath * _values ) const override;
+        void getValues( const Char * _section, const Char * _key, VectorConstString * _values ) const override;
+        void getValues( const Char * _section, const Char * _key, VectorString * _values ) const override;
 
     public:
         void setValue( const Char * _section, const Char * _key, const Char * _value ) override;

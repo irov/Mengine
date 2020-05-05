@@ -93,7 +93,7 @@ namespace Mengine
         );
 
         VectorString settingSettings;
-        config->getValues( "GAME_SETTINGS", "Setting", settingSettings );
+        config->getValues( "GAME_SETTINGS", "Setting", &settingSettings );
 
         for( const String & setting : settingSettings )
         {

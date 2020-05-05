@@ -62,10 +62,10 @@ namespace Mengine
         virtual Color getValue( const Char * _section, const Char * _key, const Color & _default ) const = 0;
 
     public:
-        virtual void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _values ) const = 0;
-        virtual void getValues( const Char * _section, const Char * _key, VectorFilePath & _values ) const = 0;
-        virtual void getValues( const Char * _section, const Char * _key, VectorConstString & _values ) const = 0;
-        virtual void getValues( const Char * _section, const Char * _key, VectorString & _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorFilePath * _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorConstString * _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorString * _values ) const = 0;
 
     public:
         virtual void setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;

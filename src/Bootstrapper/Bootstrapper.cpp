@@ -378,13 +378,7 @@ namespace Mengine
             );
 
             VectorFilePath configsPaths;
-            applicationConfig->getValues( "Configs", "Path", configsPaths );
-
-            VectorFilePath credentialsPaths;
-            applicationConfig->getValues( "Credentials", "Path", credentialsPaths );
-
-            applicationConfig->getValues( "Packages", "Path", m_packagesPaths );
-            applicationConfig->getValues( "Settings", "Path", m_settingsPaths );
+            applicationConfig->getValues( "Configs", "Path", &configsPaths );
 
             for( const FilePath & filePath : configsPaths )
             {
@@ -399,6 +393,9 @@ namespace Mengine
                 }
             }
 
+            VectorFilePath credentialsPaths;
+            applicationConfig->getValues( "Credentials", "Path", &credentialsPaths );
+
             for( const FilePath & filePath : credentialsPaths )
             {
                 if( CONFIG_SERVICE()
@@ -411,6 +408,9 @@ namespace Mengine
                     return false;
                 }
             }
+
+            applicationConfig->getValues( "Packages", "Path", &m_packagesPaths );
+            applicationConfig->getValues( "Settings", "Path", &m_settingsPaths );
         }
         else
         {
@@ -794,7 +794,7 @@ namespace Mengine
     bool Bootstrapper::createDynamicPlugins_()
     {
         VectorString plugins;
-        CONFIG_VALUES( "Plugins", "Name", plugins );
+        CONFIG_VALUES( "Plugins", "Name", &plugins );
 
         for( const String & pluginName : plugins )
         {
@@ -835,7 +835,7 @@ namespace Mengine
         if( devplugins == true && nodevplugins == false )
         {
             VectorString devPlugins;
-            CONFIG_VALUES( "DevPlugins", "Name", devPlugins );
+            CONFIG_VALUES( "DevPlugins", "Name", &devPlugins );
 
             for( const String & pluginName : devPlugins )
             {
@@ -855,7 +855,7 @@ namespace Mengine
     bool Bootstrapper::createDynamicPriorityPlugins_()
     {
         VectorString plugins;
-        CONFIG_VALUES( "PriorityPlugins", "Name", plugins );
+        CONFIG_VALUES( "PriorityPlugins", "Name", &plugins );
 
         for( const String & pluginName : plugins )
         {
@@ -896,7 +896,7 @@ namespace Mengine
         if( devplugins == true && nodevplugins == false )
         {
             VectorString devPlugins;
-            CONFIG_VALUES( "PriorityDevPlugins", "Name", devPlugins );
+            CONFIG_VALUES( "PriorityDevPlugins", "Name", &devPlugins );
 
             for( const String & pluginName : devPlugins )
             {
@@ -929,7 +929,7 @@ namespace Mengine
         LOGGER_MESSAGE( "run Frameworks..." );
 
         VectorConstString frameworks;
-        CONFIG_VALUES( "Frameworks", "Name", frameworks );
+        CONFIG_VALUES( "Frameworks", "Name", &frameworks );
 
         for( const ConstString & name : frameworks )
         {
@@ -952,7 +952,7 @@ namespace Mengine
         LOGGER_MESSAGE( "run Modules..." );
 
         VectorConstString modules;
-        CONFIG_VALUES( "Modules", "Name", modules );
+        CONFIG_VALUES( "Modules", "Name", &modules );
 
         for( const ConstString & name : modules )
         {
@@ -991,7 +991,7 @@ namespace Mengine
         if( devmodules == true && nodevmodules == false )
         {
             VectorConstString devModules;
-            CONFIG_VALUES( "DevModules", "Name", devModules );
+            CONFIG_VALUES( "DevModules", "Name", &devModules );
 
             for( const ConstString & name : devModules )
             {
@@ -1032,7 +1032,7 @@ namespace Mengine
     void Bootstrapper::stopModules_()
     {
         VectorConstString modules;
-        CONFIG_VALUES( "Modules", "Name", modules );
+        CONFIG_VALUES( "Modules", "Name", &modules );
 
         for( const ConstString & name : modules )
         {
@@ -1089,7 +1089,7 @@ namespace Mengine
         if( devmodules == true && nodevmodules == false )
         {
             VectorConstString devModules;
-            CONFIG_VALUES( "DevModules", "Name", devModules );
+            CONFIG_VALUES( "DevModules", "Name", &devModules );
 
             for( const ConstString & name : devModules )
             {
@@ -1127,7 +1127,7 @@ namespace Mengine
     void Bootstrapper::finalizeFrameworks_()
     {
         VectorConstString frameworks;
-        CONFIG_VALUES( "Frameworks", "Name", frameworks );
+        CONFIG_VALUES( "Frameworks", "Name", &frameworks );
 
         for( const ConstString & name : frameworks )
         {

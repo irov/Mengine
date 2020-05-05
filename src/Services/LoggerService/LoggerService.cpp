@@ -119,8 +119,10 @@ namespace Mengine
         const Char * loggerLevel = loggerLevels[level];
 
         Char loggerLevelMessage[256];
-        size_t loggerLevelMessageLen = MENGINE_SPRINTF( loggerLevelMessage, "start logger with verbise level [%s]\n"
+        size_t loggerLevelMessageLen = MENGINE_SPRINTF( loggerLevelMessage, "start logger with verbose level [%s] Debug [%s] Master [%s]\n"
             , loggerLevel
+            , MENGINE_DEBUG_VALUE( "True", "False" )
+            , MENGINE_MASTER_VALUE( "True", "False" )
         );
 
         this->logHistory_( LM_MESSAGE, 0, LCOLOR_GREEN, loggerLevelMessage, loggerLevelMessageLen );

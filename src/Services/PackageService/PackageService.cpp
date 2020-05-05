@@ -69,7 +69,7 @@ namespace Mengine
         );
 
         VectorString frameworkPacksSettings;
-        config->getValues( "GAME_PACKAGES", "FrameworkPack", frameworkPacksSettings );
+        config->getValues( "GAME_PACKAGES", "FrameworkPack", &frameworkPacksSettings );
 
         for( const String & frameworkPack : frameworkPacksSettings )
         {
@@ -117,7 +117,7 @@ namespace Mengine
         }
 
         VectorString resourcePacksSettings;
-        config->getValues( "GAME_PACKAGES", "ResourcePack", resourcePacksSettings );
+        config->getValues( "GAME_PACKAGES", "ResourcePack", &resourcePacksSettings );
 
         for( const String & resourcePack : resourcePacksSettings )
         {
@@ -166,7 +166,7 @@ namespace Mengine
         }
 
         VectorString languagePackSettings;
-        config->getValues( "GAME_PACKAGES", "LanguagePack", languagePackSettings );
+        config->getValues( "GAME_PACKAGES", "LanguagePack", &languagePackSettings );
 
         for( const String & languagePack : languagePackSettings )
         {

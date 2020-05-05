@@ -67,7 +67,7 @@ namespace Mengine
     size_t ImageDecoderACF::_decode( void * _buffer, size_t _bufferSize )
     {
         size_t dataSize;
-        if( Helper::loadStreamArchiveBufferSize( m_stream, dataSize ) == false )
+        if( Helper::loadStreamArchiveBufferSize( m_stream, &dataSize ) == false )
         {
             LOGGER_ERROR( "invalid load data size"
             );
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( dataSize > _bufferSize )
         {
-            LOGGER_ERROR( "overrlow data size %d need %d"
+            LOGGER_ERROR( "overrlow data size %zu need %zu"
                 , dataSize
                 , _bufferSize
             );

@@ -16,7 +16,6 @@ namespace Mengine
     OpenALSoundBufferMemory::OpenALSoundBufferMemory()
         : m_alBufferId( 0 )
     {
-
     }
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferMemory::~OpenALSoundBufferMemory()
@@ -67,7 +66,8 @@ namespace Mengine
 
         MemoryInterfacePtr binary_memory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, false, "invalid sound %d memory %d"
+        MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, false, "invalid sound %u [memory %zu]"
+            , m_alBufferId
             , size
         );
 
@@ -77,7 +77,8 @@ namespace Mengine
 
         if( decode_size == 0 )
         {
-            LOGGER_ERROR( "invalid sound %d decode %d"
+            LOGGER_ERROR( "invalid sound %u decode %zu"
+                , m_alBufferId
                 , size
             );
 

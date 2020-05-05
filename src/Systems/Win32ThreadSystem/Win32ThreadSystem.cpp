@@ -79,10 +79,10 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    ptrdiff_t Win32ThreadSystem::getCurrentThreadId() const
+    uint64_t Win32ThreadSystem::getCurrentThreadId() const
     {
-        DWORD id = GetCurrentThreadId();
+        DWORD id = ::GetCurrentThreadId();
 
-        return (ptrdiff_t)id;
+        return (uint64_t)id;
     }
 }

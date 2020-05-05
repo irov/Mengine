@@ -218,7 +218,7 @@ namespace Mengine
     {
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
-            LOGGER_ERROR( "invalid bufferSize %d != (%d * %d)"
+            LOGGER_ERROR( "invalid bufferSize %zu != (%zu * %u)"
                 , _bufferSize
                 , m_options.pitch
                 , m_dataInfo.height

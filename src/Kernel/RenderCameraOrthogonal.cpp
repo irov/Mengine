@@ -104,6 +104,8 @@ namespace Mengine
     void RenderCameraOrthogonal::setCameraOffset( const mt::vec2f & _offset )
     {
         m_cameraOffset = _offset;
+
+        this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & RenderCameraOrthogonal::getCameraOffset() const

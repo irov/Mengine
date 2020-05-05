@@ -4,6 +4,7 @@ ADD_FILTER(
 src
 	AreaOfInterestPlugin.h
 	AreaOfInterestPlugin.cpp   
+    AreaOfInterestPlugin.def
     
     AreaOfInterestInterface.h
 

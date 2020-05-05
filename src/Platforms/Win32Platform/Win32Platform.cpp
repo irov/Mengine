@@ -72,7 +72,8 @@ namespace Mengine
         , m_inactiveFrameTime( 100.f )
         , m_prevTime( 0 )
         , m_cursorInArea( false )
-        , m_clickOutArea( false )
+        , m_clickOutAreaLeftButton( false )
+        , m_clickOutAreaRightButton( false )
         , m_isDoubleClick( false )
         , m_cursorMode( false )
         , m_cursor( nullptr )
@@ -1168,8 +1169,13 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
-                        m_clickOutArea = true;
+                        m_clickOutAreaLeftButton = true;
                     }
+
+                    if( (::GetKeyState( VK_RBUTTON ) & 0x8000) != 0 )
+                    {
+                        m_clickOutAreaRightButton = true;
+                    }                    
                 }
 
                 handle = true;
@@ -1202,13 +1208,23 @@ namespace Mengine
                     Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
                 }
 
-                if( m_clickOutArea == true )
+                if( m_clickOutAreaLeftButton == true )
                 {
-                    m_clickOutArea = false;
+                    m_clickOutAreaLeftButton = false;
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
                         Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                    }
+                }
+
+                if( m_clickOutAreaRightButton == true )
+                {
+                    m_clickOutAreaRightButton = false;
+
+                    if( (::GetKeyState( VK_RBUTTON ) & 0x8000) == 0 )
+                    {
+                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
                     }
                 }
 

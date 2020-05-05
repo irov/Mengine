@@ -177,6 +177,10 @@ namespace Mengine
             {
             }
 
+            ~PythonUnityAdsEventHandler() override
+            {
+            }
+
         protected:
             void onUnityAdsInitialized() override
             {

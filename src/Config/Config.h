@@ -175,3 +175,13 @@
 #else
 #   define MENGINE_CHECK_FORMAT_STRING(p) p
 #endif
+
+#if defined(MENGINE_DEBUG)
+#   if defined(MENGINE_COMPILER_GCC)
+#       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args) __attribute__ (( __format__ (printf, Format, Args) ))
+#   else
+#       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args)
+#   endif
+#else
+#   define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args)
+#endif

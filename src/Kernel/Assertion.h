@@ -19,7 +19,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line );
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... );
+        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 5, 6 );
         //////////////////////////////////////////////////////////////////////////
         class AssertionOperator
         {
@@ -29,7 +29,7 @@ namespace Mengine
 
         public:
             const AssertionOperator & operator()() const;
-            const AssertionOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const;
+            const AssertionOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
         private:
             const AssertionOperator & operator()( std::nullptr_t ) const = delete;

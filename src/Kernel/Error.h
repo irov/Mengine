@@ -13,7 +13,7 @@ namespace Mengine
         ~ErrorOperator();
 
     public:
-        void operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const;
+        void operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
     protected:
         const Char * m_file;

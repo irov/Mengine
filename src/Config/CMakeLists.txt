@@ -34,6 +34,7 @@ src
     UInt32ToPointer.h
     Metaprogramming.h
     GitSHA1.h
+    BuildVersion.h
     cmake_dummy.cpp
 )
 

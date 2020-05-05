@@ -33,6 +33,15 @@ namespace Mengine
                 }
             }
 
+            ArrayString<128> section;
+            section.assign( _prefix );
+            section.assign( _section );
+
+            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            {
+                return true;
+            }
+
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -46,11 +55,6 @@ namespace Mengine
                 }
 
                 if( Detail::s_hasValueString2( ini, "", _platform, _section, _key, _value ) == true )
-                {
-                    return true;
-                }
-
-                if( IniUtil::getIniValue( ini, _section, _key, _value ) == true )
                 {
                     return true;
                 }
@@ -79,6 +83,15 @@ namespace Mengine
                 }
             }
 
+            ArrayString<128> section;
+            section.append( _prefix );
+            section.append( _section );
+
+            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            {
+                return true;
+            }
+
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -93,11 +106,6 @@ namespace Mengine
                 }
 
                 if( Detail::s_hasValueT2( ini, "", _platform, _section, _key, _value ) == true )
-                {
-                    return true;
-                }
-
-                if( IniUtil::getIniValue( ini, _section, _key, _value ) == true )
                 {
                     return true;
                 }
@@ -125,6 +133,15 @@ namespace Mengine
                 }
             }
 
+            ArrayString<128> section;
+            section.append( _prefix );
+            section.append( _section );
+
+            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            {
+                return true;
+            }
+
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -139,11 +156,6 @@ namespace Mengine
                 }
 
                 if( Detail::s_getValueString2( ini, "", _platform, _section, _key, &value ) == true )
-                {
-                    return value;
-                }
-
-                if( IniUtil::getIniValue( ini, _section, _key, &value ) == true )
                 {
                     return value;
                 }
@@ -172,6 +184,15 @@ namespace Mengine
                 }
             }
 
+            ArrayString<128> section;
+            section.append( _prefix );
+            section.append( _section );
+
+            if( IniUtil::getIniValue( _ini, section.c_str(), _key, _value ) == true )
+            {
+                return true;
+            }
+
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -188,11 +209,6 @@ namespace Mengine
                 }
 
                 if( Detail::s_getValueT2( ini, "", _platform, _section, _key, &value ) == true )
-                {
-                    return value;
-                }
-
-                if( IniUtil::getIniValue( ini, _section, _key, &value ) == true )
                 {
                     return value;
                 }
@@ -225,6 +241,12 @@ namespace Mengine
                     break;
                 }
             }
+
+            ArrayString<128> section;
+            section.append( _prefix );
+            section.append( _section );
+
+            IniUtil::getIniValues( _ini, section.c_str(), _key, _value );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -234,8 +256,6 @@ namespace Mengine
             {
                 Detail::s_calcValuesT2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, _value );
                 Detail::s_calcValuesT2( ini, "", _platform, _section, _key, _value );
-                
-                IniUtil::getIniValues( ini, _section, _key, _value );
             }
         }
     }

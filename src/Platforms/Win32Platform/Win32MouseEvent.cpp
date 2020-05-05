@@ -38,9 +38,25 @@ namespace Mengine
         ::GetCursorPos( &pt );
 
         RECT rect;
-        ::GetWindowRect( m_hWnd, &rect );
+        ::GetClientRect( m_hWnd, &rect );
 
-        if( !::PtInRect( &rect, pt ) )
+        POINT pleft;
+        pleft.x = rect.left;
+        pleft.y = rect.top;
+        ClientToScreen( m_hWnd, &pleft );
+
+        POINT pright;
+        pright.x = rect.right;
+        pright.y = rect.bottom;
+        ClientToScreen( m_hWnd, &pright );
+
+        RECT rclient;
+        rclient.left = pleft.x;
+        rclient.top = pleft.y;
+        rclient.right = pright.x;
+        rclient.bottom = pright.y;
+
+        if( !::PtInRect( &rclient, pt ) )
         {
             ::KillTimer( m_hWnd, m_uTimer );
             m_uTimer = 0;

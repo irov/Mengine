@@ -178,7 +178,7 @@ namespace Mengine
             m_platformTags.clear();
             m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
-        
+
         if( HAS_OPTION( "touchpad" ) )
         {
             m_touchpad = true;
@@ -244,7 +244,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_runService()
-    {   
+    {
 #if defined(MENGINE_DEBUG)
         {
             bool developmentMode = HAS_OPTION( "dev" );
@@ -254,7 +254,7 @@ namespace Mengine
 
             if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
             {
-                Char userPath[MENGINE_MAX_PATH] = { '\0' };
+                Char userPath[MENGINE_MAX_PATH] = {'\0'};
                 this->getUserPath( userPath );
 
                 String dumpPath;
@@ -262,7 +262,7 @@ namespace Mengine
                 dumpPath += "Dump";
                 dumpPath += "_";
 
-                DateTimeProviderInterfacePtr dateTimeProvider = 
+                DateTimeProviderInterfacePtr dateTimeProvider =
                     this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
                 PlatformDateTime dateTime;
@@ -494,7 +494,7 @@ namespace Mengine
         LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
 
         return (uint64_t)ticks;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()
     {
@@ -560,7 +560,7 @@ namespace Mengine
                     }
 
                     desc.time += desc.milliseconds;
-                     
+
                     desc.lambda();
                 }
 
@@ -685,7 +685,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath, size_t _len ) const
     {
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invalid convert path to unicode" );
@@ -693,7 +693,7 @@ namespace Mengine
             return 0;
         }
 
-        WChar unicode_shortpath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_shortpath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, (DWORD)_len );
 
         if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
@@ -707,12 +707,12 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getSystemFontPath( const Char * _fontName, Char * _fontPath ) const
-    {   
-        WChar unicode_fontName[MENGINE_MAX_PATH] = { L'\0' };
+    {
+        WChar unicode_fontName[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _fontName, unicode_fontName, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invalid convert fontName '%s' to unicode"
-                , _fontName 
+                , _fontName
             );
 
             return MENGINE_PATH_INVALID_LENGTH;
@@ -744,7 +744,7 @@ namespace Mengine
 
         DWORD valueIndex = 0;
 
-        WChar unicode_fontPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_fontPath[MENGINE_MAX_PATH] = {L'\0'};
 
         do
         {
@@ -752,8 +752,8 @@ namespace Mengine
             DWORD valueNameSize = maxValueNameSize;
 
             DWORD valueType;
-            WCHAR valueName[MENGINE_MAX_PATH] = { L'\0' };
-            BYTE valueData[MENGINE_MAX_PATH * 2] = { 0 };
+            WCHAR valueName[MENGINE_MAX_PATH] = {L'\0'};
+            BYTE valueData[MENGINE_MAX_PATH * 2] = {0};
 
             result = ::RegEnumValue( hKey, valueIndex, valueName, &valueNameSize, 0, &valueType, valueData, &valueDataSize );
 
@@ -782,10 +782,10 @@ namespace Mengine
             return MENGINE_PATH_INVALID_LENGTH;
         }
 
-        WCHAR winDir[MENGINE_MAX_PATH] = { L'\0' };
+        WCHAR winDir[MENGINE_MAX_PATH] = {L'\0'};
         ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
 
-        WCHAR fullDir[MENGINE_MAX_PATH] = { L'\0' };
+        WCHAR fullDir[MENGINE_MAX_PATH] = {L'\0'};
         ::wsprintf( fullDir, L"%s\\Fonts\\%s"
             , winDir
             , unicode_fontPath
@@ -1175,7 +1175,7 @@ namespace Mengine
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) != 0 )
                     {
                         m_clickOutAreaRightButton = true;
-                    }                    
+                    }
                 }
 
                 handle = true;
@@ -1196,18 +1196,6 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                if( m_cursorInArea == false && m_fullscreen == false )
-                {
-                    m_cursorInArea = true;
-
-                    m_mouseEvent.update();
-
-                    ::InvalidateRect( hWnd, NULL, FALSE );
-                    ::UpdateWindow( hWnd );
-
-                    Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
-                }
-
                 if( m_clickOutAreaLeftButton == true )
                 {
                     m_clickOutAreaLeftButton = false;
@@ -1226,6 +1214,18 @@ namespace Mengine
                     {
                         Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
                     }
+                }
+
+                if( m_cursorInArea == false && m_fullscreen == false )
+                {
+                    m_cursorInArea = true;
+
+                    m_mouseEvent.update();
+
+                    ::InvalidateRect( hWnd, NULL, FALSE );
+                    ::UpdateWindow( hWnd );
+
+                    Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
                 }
 
                 int32_t x = (int32_t)(int16_t)LOWORD( lParam );
@@ -1885,13 +1885,13 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
 
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar fullPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( fullPath, unicode_path );
 
         Helper::pathRemoveFileSpecW( fullPath );
@@ -1922,7 +1922,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
 
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
@@ -1937,7 +1937,7 @@ namespace Mengine
     {
         size_t unicode_pathSize = MENGINE_WCSLEN( _directoryPath );
 
-        WChar fullPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
 
         if( unicode_pathSize != 0 )
         {
@@ -2027,7 +2027,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existFile( const Char * _filePath )
     {
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
@@ -2040,7 +2040,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existFile_( const WChar * _filePath )
     {
-        WChar pathCorrect[MENGINE_MAX_PATH] = { L'\0' };
+        WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
         size_t len = MENGINE_WCSLEN( pathCorrect );
@@ -2072,25 +2072,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::removeFile( const Char * _filePath )
     {
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        Char userPath[MENGINE_MAX_PATH] = { '\0' };
+        Char userPath[MENGINE_MAX_PATH] = {'\0'};
         this->getUserPath( userPath );
 
-        WChar unicode_userPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_userPath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( userPath, unicode_userPath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar pathCorrect[MENGINE_MAX_PATH] = { L'\0' };
+        WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, unicode_path );
 
-        WChar fullPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
         MENGINE_WCSCPY( fullPath, unicode_userPath );
         MENGINE_WCSCAT( fullPath, pathCorrect );
 
@@ -2114,7 +2114,7 @@ namespace Mengine
     static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * _stop )
     {
         {
-            WChar sPath[MENGINE_MAX_PATH] = { L'\0' };
+            WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
             MENGINE_WCSCPY( sPath, _dir );
             MENGINE_WCSCAT( sPath, _path );
             MENGINE_WCSCAT( sPath, _mask );
@@ -2137,7 +2137,7 @@ namespace Mengine
                         continue;
                     }
 
-                    WChar sPath2[MENGINE_MAX_PATH] = { L'\0' };
+                    WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
                     MENGINE_WCSCPY( sPath2, sPath );
                     MENGINE_WCSCAT( sPath2, L"\0" );
 
@@ -2145,10 +2145,10 @@ namespace Mengine
 
                     ::PathRemoveFileSpec( sPath2 );
 
-                    WChar unicode_filepath[MENGINE_MAX_PATH] = { L'\0' };
+                    WChar unicode_filepath[MENGINE_MAX_PATH] = {L'\0'};
                     ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
-                    WChar unicode_out[MENGINE_MAX_PATH] = { L'\0' };
+                    WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
                     if( MENGINE_WCSLEN( _dir ) != 0 )
                     {
                         ::PathRelativePathTo( unicode_out,
@@ -2162,7 +2162,7 @@ namespace Mengine
                         MENGINE_WCSCPY( unicode_out, unicode_filepath );
                     }
 
-                    Char utf8_filepath[MENGINE_MAX_PATH] = { '\0' };
+                    Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
                     if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
                     {
                         ::FindClose( hFind );
@@ -2188,7 +2188,7 @@ namespace Mengine
         }
 
         {
-            WChar sPath[MENGINE_MAX_PATH] = { L'\0' };
+            WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
             MENGINE_WCSCPY( sPath, _dir );
             MENGINE_WCSCAT( sPath, _path );
             MENGINE_WCSCAT( sPath, L"*.*" );
@@ -2214,13 +2214,13 @@ namespace Mengine
                     continue;
                 }
 
-                WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
+                WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
                 MENGINE_WCSCPY( currentPath, sPath );
                 MENGINE_WCSCAT( currentPath, L"\0" );
 
                 ::PathRemoveFileSpec( currentPath );
 
-                WChar nextPath[MENGINE_MAX_PATH] = { L'\0' };
+                WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
                 ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
                 MENGINE_WCSCAT( nextPath, L"\\" );
@@ -2254,25 +2254,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        WChar unicode_base[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_mask[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_mask[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_fullbase[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_fullbase[MENGINE_MAX_PATH] = {L'\0'};
         ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         bool stop;
@@ -2339,7 +2339,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32Platform::getFileTime( const Char * _filePath ) const
     {
-        WChar unicode_filePath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
         Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
         HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
@@ -2374,13 +2374,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )
     {
-        WChar szPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
         ::PathAppend( szPath, _userPath );
 
-        WChar pathCorrect[MENGINE_MAX_PATH] = { L'\0' };
+        WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, _path );
 
-        WChar fileCorrect[MENGINE_MAX_PATH] = { L'\0' };
+        WChar fileCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( fileCorrect, _file );
 
         ::PathAppend( szPath, pathCorrect );
@@ -2436,19 +2436,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
-        WChar unicode_directoryPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_directoryPath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_directoryPath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_filePath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WCHAR szPath[MENGINE_MAX_PATH] = { L'\0' };
+        WCHAR szPath[MENGINE_MAX_PATH] = {L'\0'};
         if( FAILED( ::SHGetFolderPath( NULL
             , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
             , NULL
@@ -2463,12 +2463,12 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_directoryPath_correct[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_directoryPath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_directoryPath_correct, unicode_directoryPath );
 
         ::PathAppend( szPath, unicode_directoryPath_correct );
 
-        WChar unicode_filePath_correct[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_filePath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
 
         ::PathAppend( szPath, unicode_filePath_correct );
@@ -2488,19 +2488,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_file[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_file[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WCHAR szPath[MENGINE_MAX_PATH] = { L'\0' };
+        WCHAR szPath[MENGINE_MAX_PATH] = {L'\0'};
         if( FAILED( ::SHGetFolderPath( NULL
             , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
             , NULL
@@ -2531,19 +2531,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-        WChar unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_file[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_file[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WCHAR szPath[MENGINE_MAX_PATH] = { L'\0' };
+        WCHAR szPath[MENGINE_MAX_PATH] = {L'\0'};
         if( FAILED( ::SHGetFolderPath( NULL
             , CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
             , NULL
@@ -2587,7 +2587,7 @@ namespace Mengine
             NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
             _messageId,
             MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US ),
-            (LPTSTR)& errorText,  // output 
+            (LPTSTR)&errorText,  // output 
             0, // minimum size for output buffer
             NULL ) == 0 )
         {
@@ -2612,10 +2612,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size )
     {
-        WChar unicode_path[MENGINE_MAX_PATH] = { '\0' };
+        WChar unicode_path[MENGINE_MAX_PATH] = {'\0'};
         Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH );
 
-        WChar unicode_key[MENGINE_MAX_PATH] = { '\0' };
+        WChar unicode_key[MENGINE_MAX_PATH] = {'\0'};
         Helper::utf8ToUnicode( _key, unicode_key, MENGINE_MAX_PATH );
 
         HKEY hKey;
@@ -2638,7 +2638,7 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_value[1024] = { L'\0' };
+        WChar unicode_value[1024] = {L'\0'};
 
         DWORD dwBufferSize = 1024;
         LONG nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
@@ -2677,10 +2677,10 @@ namespace Mengine
             , _command
         );
 
-        WChar unicode_process[MENGINE_MAX_PATH] = { L'\0' };
+        WChar unicode_process[MENGINE_MAX_PATH] = {L'\0'};
         Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH );
 
-        WChar unicode_command[4096] = { L'\0' };
+        WChar unicode_command[4096] = {L'\0'};
         unicode_command[0] = ' ';
         Helper::utf8ToUnicode( _command, unicode_command + 1, 4095 );
 
@@ -2691,10 +2691,10 @@ namespace Mengine
             sa.lpSecurityDescriptor = NULL;
             sa.bInheritHandle = TRUE;
 
-            WChar tempPathBuffer[MENGINE_MAX_PATH] = { L'\0' };
+            WChar tempPathBuffer[MENGINE_MAX_PATH] = {L'\0'};
             ::GetTempPath( MENGINE_MAX_PATH, tempPathBuffer );
 
-            WChar tempFileNameBuffer[MENGINE_MAX_PATH] = { L'\0' };
+            WChar tempFileNameBuffer[MENGINE_MAX_PATH] = {L'\0'};
             ::GetTempFileName( tempPathBuffer,
                 L"Process",
                 0,
@@ -2708,14 +2708,14 @@ namespace Mengine
                 FILE_ATTRIBUTE_TEMPORARY,
                 NULL );
 
-            STARTUPINFO startupInfo = { 0 };
+            STARTUPINFO startupInfo = {0};
             startupInfo.cb = sizeof( STARTUPINFO );
             startupInfo.dwFlags = STARTF_USESTDHANDLES;
             startupInfo.hStdOutput = hWriteTempFile;
             startupInfo.hStdError = hWriteTempFile;
             startupInfo.hStdInput = NULL;
 
-            PROCESS_INFORMATION processInfo = { 0 };
+            PROCESS_INFORMATION processInfo = {0};
             if( ::CreateProcess( unicode_process, unicode_command
                 , NULL
                 , NULL
@@ -2727,7 +2727,7 @@ namespace Mengine
             {
                 DWORD le = GetLastError();
 
-                Char message[1024] = { '\0' };
+                Char message[1024] = {'\0'};
                 this->getErrorMessage( le, message, 1024 );
 
                 LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
@@ -2776,7 +2776,7 @@ namespace Mengine
                 DWORD tempFileSizeHigh;
                 DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
 
-                Char tempFileBuffer[4096] = { 0 };
+                Char tempFileBuffer[4096] = {0};
 
                 DWORD dwBytesRead;
                 DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4096 );
@@ -2805,9 +2805,9 @@ namespace Mengine
         }
         else
         {
-            STARTUPINFO startupInfo = { 0 };
+            STARTUPINFO startupInfo = {0};
             startupInfo.cb = sizeof( STARTUPINFO );
-            PROCESS_INFORMATION processInfo = { 0 };
+            PROCESS_INFORMATION processInfo = {0};
             if( ::CreateProcess( unicode_process, unicode_command
                 , NULL
                 , NULL
@@ -2819,7 +2819,7 @@ namespace Mengine
             {
                 DWORD le = GetLastError();
 
-                Char message[1024] = { '\0' };
+                Char message[1024] = {'\0'};
                 this->getErrorMessage( le, message, 1024 );
 
                 LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
@@ -2888,7 +2888,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getCurrentPath( Char * _currentPath ) const
     {
-        WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
@@ -2922,7 +2922,7 @@ namespace Mengine
 
         if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
-            WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
+            WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
             DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
             if( len == 0 )
@@ -2966,7 +2966,7 @@ namespace Mengine
                 NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
                 hr,
                 MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-                (LPTSTR)& errorText,  // output 
+                (LPTSTR)&errorText,  // output 
                 0, // minimum size for output buffer
                 NULL ) == 0 )
             {
@@ -2987,7 +2987,7 @@ namespace Mengine
             return 0;
         }
 
-        WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
         BOOL result = ::SHGetPathFromIDListW( itemIDList, currentPath );
 
         if( result == FALSE )
@@ -3002,13 +3002,13 @@ namespace Mengine
 
         const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
-        WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME] = { L'\0' };
+        WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME] = {L'\0'};
         if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
         {
             return 0;
         }
 
-        WChar roamingPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar roamingPath[MENGINE_MAX_PATH] = {L'\0'};
         ::PathCombine( roamingPath, currentPath, companyNameW );
 
         const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
@@ -3061,7 +3061,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setCursorPosition( const mt::vec2f & _pos )
     {
-        POINT cPos = { (int32_t)_pos.x, (int32_t)_pos.y };
+        POINT cPos = {(int32_t)_pos.x, (int32_t)_pos.y};
         ::ClientToScreen( m_hWnd, &cPos );
 
         ::SetCursorPos( cPos.x, cPos.y );

@@ -63,13 +63,15 @@
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/SecureValue.h"
-
-#include "Config/Config.h"
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/List.h"
+
+#include "Config/Config.h"
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
+#include "Config/GitSHA1.h"
+#include "Config/BuildVersion.h"
 
 // All Node type
 #include "Isometric.h"
@@ -275,12 +277,23 @@ namespace Mengine
             LOGGER_CRITICAL( "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
-#ifdef MENGINE_GIT_SHA1
         if( HAS_OPTION( "git" ) == true )
         {
-            LOGGER_CRITICAL( "Git: %s", MENGINE_GIT_SHA1 );
+            LOGGER_CRITICAL( "build commit: %s", MENGINE_GIT_SHA1 );
         }
-#endif
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "build commit: %s", MENGINE_GIT_SHA1 );
+        }
+
+        if( HAS_OPTION( "buildversion" ) == true )
+        {
+            LOGGER_CRITICAL( "build version: %s", MENGINE_BUILD_VERSION );
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "build version: %s", MENGINE_BUILD_VERSION );
+        }
 
         bool fullscreen = this->getFullscreenMode();
 

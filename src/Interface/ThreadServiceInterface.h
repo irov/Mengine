@@ -46,7 +46,7 @@ namespace Mengine
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual ptrdiff_t getCurrentThreadId() = 0;
+        virtual uint64_t getCurrentThreadId() = 0;
         virtual bool isMainThread() const = 0;
     };
 }

@@ -76,12 +76,12 @@ namespace Mengine
             uint32_t load_compress_size;
             _stream->read( &load_compress_size, sizeof( load_compress_size ) );
 
-            uint32_t binary_size = load_binary_size;
-            uint32_t compress_size = load_compress_size;
+            size_t binary_size = load_binary_size;
+            size_t compress_size = load_compress_size;
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, nullptr, "invalid get memory '%d' (compress)"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, nullptr, "invalid get memory '%zu' (compress)"
                 , compress_size
             );
 
@@ -91,7 +91,7 @@ namespace Mengine
 
             MENGINE_UNUSED( read_data );
 
-            MENGINE_ASSERTION_RETURN( read_data == (size_t)compress_size, nullptr, "invalid read data '%d' need '%d'"
+            MENGINE_ASSERTION_RETURN( read_data == (size_t)compress_size, nullptr, "invalid read data '%zu' need '%zu'"
                 , read_data
                 , compress_size
             );
@@ -114,13 +114,13 @@ namespace Mengine
             MemoryBufferInterfacePtr binaryBuffer = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "invalid create memory cache"
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "invalid create memory cache [size: %zu]"
                 , binary_size
             );
 
             void * binaryMemory = binaryBuffer->newBuffer( binary_size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binaryMemory, nullptr, "invalid get memory '%d' (binary)"
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryMemory, nullptr, "invalid get memory '%zu' (binary)"
                 , binary_size
             );
 
@@ -136,7 +136,7 @@ namespace Mengine
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "invalid decompress size '%d' need '%d'"
+                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
                     , uncompressSize
                     , binary_size
                 );
@@ -163,7 +163,7 @@ namespace Mengine
 
             if( binary_size != _size )
             {
-                LOGGER_ERROR( "invalid buffer size '%u' need '%u'"
+                LOGGER_ERROR( "invalid buffer size '%zu' need '%u'"
                     , _size
                     , binary_size
                 );
@@ -205,7 +205,7 @@ namespace Mengine
 
             if( uncompressSize != _size )
             {
-                LOGGER_ERROR( "invalid decompress size '%u' need '%u'"
+                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
                     , uncompressSize
                     , _size
                 );
@@ -216,7 +216,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t & _size )
+        bool loadStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * _size )
         {
             size_t pos = _stream->tell();
 
@@ -244,11 +244,13 @@ namespace Mengine
                 LOGGER_ERROR( "invalid rewind"
                 );
 
-
                 return false;
             }
 
-            _size = (size_t)load_binary_size;
+            if( _size != nullptr )
+            {
+                *_size = (size_t)load_binary_size;
+            }
 
             return true;
         }
@@ -295,7 +297,7 @@ namespace Mengine
 
             if( _stream->write( compressBuffer, compressSize ) == false )
             {
-                LOGGER_ERROR( "invalid write buffer '%d'"
+                LOGGER_ERROR( "invalid write buffer '%zu'"
                     , compressSize
                 );
 
@@ -348,7 +350,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%d' (compress)"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%zu' (compress)"
                 , compress_size
             );
 
@@ -358,7 +360,7 @@ namespace Mengine
 
             if( read_data != (size_t)compress_size )
             {
-                LOGGER_ERROR( "invalid read data '%d' need '%d'"
+                LOGGER_ERROR( "invalid read data '%zu' need '%zu'"
                     , read_data
                     , compress_size
                 );
@@ -384,7 +386,7 @@ namespace Mengine
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%d' (binary)"
+            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%zu' (binary)"
                 , binary_size
             );
 
@@ -401,7 +403,7 @@ namespace Mengine
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "invalid decompress size '%d' need '%d'"
+                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
                     , uncompressSize
                     , binary_size
                 );
@@ -440,7 +442,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%d' (compress)"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%zu' (compress)"
                 , compress_size
             );
 
@@ -448,9 +450,9 @@ namespace Mengine
 
             size_t read_data = _stream->read( compress_buffer, compress_size );
 
-            if( read_data != (size_t)compress_size )
+            if( read_data != compress_size )
             {
-                LOGGER_ERROR( "invalid read data '%d' need '%d'"
+                LOGGER_ERROR( "invalid read data '%zu' need '%zu'"
                     , read_data
                     , compress_size
                 );
@@ -476,7 +478,7 @@ namespace Mengine
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%d' (binary)"
+            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%zu' (binary)"
                 , binary_size
             );
 
@@ -493,7 +495,7 @@ namespace Mengine
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "invalid decompress size '%d' need '%d'"
+                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
                     , uncompressSize
                     , binary_size
                 );

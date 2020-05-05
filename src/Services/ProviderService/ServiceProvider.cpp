@@ -119,7 +119,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION( MENGINE_STRLEN( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , name
             , MENGINE_STRLEN( name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
@@ -275,7 +275,7 @@ namespace Mengine
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
     {
         MENGINE_ASSERTION( m_dependenciesCount < MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT );
-        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
             , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
@@ -290,7 +290,7 @@ namespace Mengine
     bool ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
     {
         MENGINE_ASSERTION( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT );
-        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
             , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
@@ -329,7 +329,7 @@ namespace Mengine
     bool ServiceProvider::leaveService( const Char * _name, const LambdaLeaveService & _lambda )
     {
         MENGINE_ASSERTION( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT );
-        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
             , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE

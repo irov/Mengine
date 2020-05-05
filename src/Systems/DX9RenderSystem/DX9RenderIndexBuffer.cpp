@@ -180,7 +180,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pIB, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
-            LOGGER_ERROR( "invalid lock size %u (doc '%s')"
+            LOGGER_ERROR( "invalid lock size %zu (doc '%s')"
                 , _size
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );

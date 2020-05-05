@@ -447,7 +447,7 @@ namespace Mengine
         size_t file_offset = fi.seek_pos + _offset;
         size_t file_size = _size == 0 ? fi.file_size : _size;
 
-        MENGINE_ASSERTION_FATAL_RETURN( _offset + file_size <= fi.file_size, false, "zip '%s' file '%s' invalid open range %d:%d (file size is low %d:%d)"
+        MENGINE_ASSERTION_FATAL_RETURN( _offset + file_size <= fi.file_size, false, "zip '%s' file '%s' invalid open range %zu:%zu (file size is low %zu:%zu)"
             , m_folderPath.c_str()
             , _filePath.c_str()
             , _offset
@@ -465,7 +465,7 @@ namespace Mengine
 
             if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true, _share ) == false )
             {
-                LOGGER_ERROR( "zip '%s' file '%s' invalid open range %d:%d"
+                LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
                     , m_folderPath.c_str()
                     , _filePath.c_str()
                     , fi.seek_pos
@@ -484,7 +484,7 @@ namespace Mengine
         {
             void * buffer = memory->newBuffer( fi.file_size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %zu"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 , fi.unz_size
@@ -499,7 +499,7 @@ namespace Mengine
         {
             void * buffer = memory->newBuffer( fi.unz_size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %zu"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 , fi.unz_size
@@ -507,7 +507,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "zip '%s' file '%s' failed cache memory %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "zip '%s' file '%s' failed cache memory %zu"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 , fi.file_size

@@ -541,7 +541,7 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%u) BackBuffer Size %d:%d Format %d"
+            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , hr
                 , windowHandle
                 , m_d3dpp->BackBufferWidth

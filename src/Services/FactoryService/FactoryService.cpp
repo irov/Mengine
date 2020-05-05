@@ -12,6 +12,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/StdIntTypes.h"
 
 #include <algorithm>
 
@@ -157,7 +158,7 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_ASSERTION_FATAL( m_factories.empty() == true, "detect factory leak [%d]"
+        MENGINE_ASSERTION_FATAL( m_factories.empty() == true, "detect factory leak [%" PRIuPTR "]"
             , m_factories.size()
         );
 

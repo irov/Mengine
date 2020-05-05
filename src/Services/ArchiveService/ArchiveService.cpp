@@ -25,7 +25,7 @@ namespace Mengine
     {
         MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "invalid compress buffer %d"
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "invalid compress buffer %zu"
             , _size
         );
 
@@ -70,7 +70,7 @@ namespace Mengine
 
         void * memory_buffer = memory->newBuffer( compressSize2 );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr, "invalid new memory size '%d'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr, "invalid new memory size '%zu'"
             , compressSize2
         );
 
@@ -86,7 +86,7 @@ namespace Mengine
         void * new_memory = memory->newBuffer( compressSize );
         MENGINE_UNUSED( new_memory );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( new_memory, nullptr, "invalid new memory '%d'"
+        MENGINE_ASSERTION_MEMORY_PANIC( new_memory, nullptr, "invalid new memory '%zu'"
             , compressSize
         );
 

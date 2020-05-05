@@ -10,6 +10,8 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "Config/StdIntTypes.h"
+
 #include "TextLine.h"
 
 #include "math/box2.h"
@@ -1591,7 +1593,7 @@ namespace Mengine
         String fmt;
         if( Helper::getStringFormat( fmt, textValue, textSize, m_textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "invalid string '%s:%s' format with args '%d'"
+            LOGGER_ERROR( "invalid string '%s:%s' format with args %" PRIuPTR ""
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textFormatArgs.size()

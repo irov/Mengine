@@ -51,10 +51,10 @@ namespace Mengine
                 return 0;
             }
 
-            LOGGER_MESSAGE( "%s, %10.10" PRIu64 " bytes (0x%8.8" PRIx64 ")",
-                text, (uint64_t)size, (uint64_t)size );
+            LOGGER_MESSAGE( "%s, %10.10zu bytes (0x%8.8zu)",
+                text, size, size );
 
-            LOGGER_MESSAGE( "%.*s", size, data );
+            LOGGER_MESSAGE( "%.*s", (int32_t)size, data );
 
             return 0;
         }

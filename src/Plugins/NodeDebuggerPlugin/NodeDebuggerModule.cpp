@@ -15,10 +15,13 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
 #include "Interface/SettingsServiceInterface.h"
+
+#ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
+#   include "Interface/Win32PlatformExtensionInterface.h"
+#endif
 
 #include "NodeDebuggerSerialization.h"
 
@@ -71,6 +74,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_INCREF_FACTORY_GENERATION, this, &NodeDebuggerModule::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
 
+#ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
         uint32_t globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
@@ -81,6 +85,7 @@ namespace Mengine
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
+#endif
 
         return true;
     }

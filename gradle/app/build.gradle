@@ -60,7 +60,7 @@ android {
         println versionCode
         
         print 'ANDROID_APP_NAME_VERSION = '
-        println versionName        
+        println versionName
 
         signingConfig signingConfigs.config
         targetSdkVersion 28
@@ -70,7 +70,15 @@ android {
 
     splits {
         abi {
-            enable gradle.startParameter.taskNames.any { it.contains("Release") }
+            if (findProperty("ANDROID_APP_SPLIT_ENABLE")) {
+                enable true
+            } else {
+                enable false
+            }
+            
+            print 'ANDROID_APP_SPLIT_ENABLE = '
+            println findProperty("ANDROID_APP_SPLIT_ENABLE") != null
+            
             reset()
 
             include "arm64-v8a", "armeabi-v7a"
@@ -89,10 +97,6 @@ android {
         debug {
             debuggable true
             
-            ndk {
-                abiFilters "arm64-v8a", "armeabi-v7a"
-            }
-
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-18",
@@ -110,10 +114,6 @@ android {
         }
 
         release {
-            ndk {
-                abiFilters "arm64-v8a", "armeabi-v7a"
-            }        
-        
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-18",

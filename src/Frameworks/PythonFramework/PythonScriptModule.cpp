@@ -50,7 +50,7 @@ namespace Mengine
 
         if( py_result.is_bool() == false )
         {
-            LOGGER_ERROR( "invalid call initializer '%'s need return bool [True|False] but return is '%s'"
+            LOGGER_ERROR( "invalid call initializer '%s' need return bool [True|False] but return is '%s'"
                 , _method.c_str()
                 , py_result.repr()
             );

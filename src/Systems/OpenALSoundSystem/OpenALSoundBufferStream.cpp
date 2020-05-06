@@ -367,6 +367,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "buffer=%u id=%u format=%u bytes=%zu frequency=%d"
                 , _alBufferId
+                , m_sourceId
                 , m_format
                 , bytesWritten
                 , m_frequency

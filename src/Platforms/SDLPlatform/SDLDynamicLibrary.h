@@ -16,8 +16,8 @@ namespace Mengine
         ~SDLDynamicLibrary() override;
 
     public:
-        void setName( const String & _name );
-        const String & getName() const;
+        void setName( const Char * _name );
+        const Char * getName() const;
 
     public:
         bool load() override;
@@ -26,7 +26,7 @@ namespace Mengine
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
     private:
-        String m_name;
+        Char m_name[MENGINE_MAX_PATH];
         void * m_instance;
     };
     //////////////////////////////////////////////////////////////////////////

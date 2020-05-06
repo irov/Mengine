@@ -2,6 +2,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 #include "SDL_loadso.h"
 
 namespace Mengine
@@ -21,24 +23,24 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLDynamicLibrary::setName( const String & _name )
+    void SDLDynamicLibrary::setName( const Char * _name )
     {
-        m_name = _name;
+        MENGINE_STRCPY( m_name, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & SDLDynamicLibrary::getName() const
+    const Char * SDLDynamicLibrary::getName() const
     {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLDynamicLibrary::load()
     {
-        m_instance = SDL_LoadObject( m_name.c_str() );
+        m_instance = SDL_LoadObject( m_name );
 
         if( m_instance == nullptr )
         {
-            LOGGER_ERROR( "'%ls' failed"
-                , m_name.c_str()
+            LOGGER_ERROR( "'%s' failed"
+                , m_name
             );
 
             return false;

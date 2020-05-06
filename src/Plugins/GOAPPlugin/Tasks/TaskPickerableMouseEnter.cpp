@@ -34,7 +34,7 @@ namespace Mengine
         protected:
             bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
             {
-                bool handle = false;
+                bool handle = true;
 
                 if( m_filter != nullptr )
                 {

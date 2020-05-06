@@ -52,7 +52,7 @@ namespace Mengine
                     return false;
                 }
 
-                bool handle = false;
+                bool handle = true;
 
                 if( m_filter != nullptr )
                 {

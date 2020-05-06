@@ -11,14 +11,14 @@
 
 namespace Mengine
 {
-    // already running policy
+    //////////////////////////////////////////////////////////////////////////
     enum EAlreadyRunningPolicy
     {
         EARP_NONE,
         EARP_SETFOCUS,
         EARP_SHOWMESSAGE
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class Win32AlreadyRunningMonitor
         : public Factorable
     {

@@ -61,8 +61,9 @@ namespace Mengine
         {
             const char * sdl_error = SDL_GetError();
 
-            LOGGER_ERROR( "invalid %d error '%s'"
+            LOGGER_ERROR( "invalid write %zu [written %zu] error '%s'"
                 , _size
+                , written
                 , sdl_error
             );
 

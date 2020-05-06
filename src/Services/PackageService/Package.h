@@ -74,9 +74,6 @@ namespace Mengine
         bool loadPackage_();
 
     protected:
-        void addModulePath_( const String & _filePath );
-
-    protected:
         void addResource_( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored );
         void addTextPath_( const FilePath & _filePath, const Tags & _platform );
         void addScriptPackage_( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );

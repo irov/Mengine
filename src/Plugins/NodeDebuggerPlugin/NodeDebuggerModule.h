@@ -72,9 +72,6 @@ namespace Mengine
         void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:
-        bool absorbBoundingBox( const NodePtr & node, mt::box2f & _bb ) const;
-
-    protected:
         bool privateInit();
         void recreateServer();
         void compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );

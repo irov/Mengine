@@ -65,7 +65,6 @@ namespace Mengine
         
 
     private:
-        void apply_( uint32_t _source );
         void unloadBuffer_();
     };
 

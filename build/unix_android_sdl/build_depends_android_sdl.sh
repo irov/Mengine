@@ -13,13 +13,14 @@ CMAKE_PATH=$ANDROID_SDK/cmake/$ANDROID_CMAKE_VERSION/bin
 MAKE_PROGRAM=$CMAKE_PATH/ninja
 TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
 CMAKE_EXE=$CMAKE_PATH/cmake
+CMAKE_GENERATOR="Ninja"
 CMAKELIST_PATH=$PWD/../../cmake/Depends_Android_SDL
 SOLUTION_DIR=$PWD/../../solutions/dependencies_android_sdl
 
 mkdir -p $SOLUTION_DIR/$BUILD_TYPE/armeabi-v7a
 pushd $SOLUTION_DIR/$BUILD_TYPE/armeabi-v7a
 
-$CMAKE_EXE -G "Android Gradle - Ninja" \
+$CMAKE_EXE -G $CMAKE_GENERATOR \
     -DANDROID_PLATFORM=$ANDROID_PLATFORM \
     -DANDROID_ARM_NEON=TRUE \
     -DANDROID_ABI=armeabi-v7a \
@@ -39,7 +40,7 @@ popd
 mkdir -p $SOLUTION_DIR/$BUILD_TYPE/arm64-v8a
 pushd $SOLUTION_DIR/$BUILD_TYPE/arm64-v8a
 
-$CMAKE_EXE -G "Android Gradle - Ninja" \
+$CMAKE_EXE -G $CMAKE_GENERATOR \
     -DANDROID_PLATFORM=$ANDROID_PLATFORM \
     -DANDROID_ARM_NEON=TRUE \
     -DANDROID_ABI=arm64-v8a \

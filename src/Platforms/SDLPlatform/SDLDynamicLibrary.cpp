@@ -1,6 +1,7 @@
 #include "SDLDynamicLibrary.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
 
@@ -35,9 +36,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLDynamicLibrary::load()
     {
-        m_instance = SDL_LoadObject( m_name );
+        void * instance = SDL_LoadObject( m_name );
 
-        if( m_instance == nullptr )
+        if( instance == nullptr )
         {
             LOGGER_ERROR( "'%s' failed"
                 , m_name
@@ -46,15 +47,14 @@ namespace Mengine
             return false;
         }
 
+        m_instance = instance;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     TDynamicLibraryFunction SDLDynamicLibrary::getSymbol( const Char * _name ) const
     {
-        if( m_instance == nullptr )
-        {
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_instance, nullptr );
 
         void * proc = ::SDL_LoadFunction( m_instance, _name );
 

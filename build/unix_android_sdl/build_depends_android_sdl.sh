@@ -1,3 +1,5 @@
+#! /bin/bash
+
 BUILD_TYPE=$1
 
 echo Starting dependencies build $BUILD_TYPE configuration...

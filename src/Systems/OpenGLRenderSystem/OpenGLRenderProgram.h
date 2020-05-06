@@ -56,7 +56,6 @@ namespace Mengine
         void disable() const;
 
         void bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const;
-        void bindTextureMask( const mt::uv4f * _textureMasks ) const;
         bool bindTexture( uint32_t _textureInd ) const;
 
     protected:

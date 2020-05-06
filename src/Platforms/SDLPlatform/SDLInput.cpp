@@ -199,6 +199,8 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, false );
             }
             break;
+        default:
+            break;
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -57,8 +57,5 @@ namespace Mengine
 
         typedef Vector<RenderTextureGraveEntry> VectorTextureGrave;
         VectorTextureGrave m_textures;
-
-    protected:
-        void updateTexture_( RenderTextureGraveEntry * _entry, float _timing );
     };
 }

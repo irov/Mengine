@@ -1676,6 +1676,8 @@ namespace Mengine
                                     ->setFullscreenMode( !fullscreen );
                             }
                         }break;
+                    default:
+                        break;
                     }
                 }break;
             case SDL_WINDOWEVENT:
@@ -1714,6 +1716,8 @@ namespace Mengine
                 {
                     return true;
                 }break;
+            default:
+                break;
             }
         }
 

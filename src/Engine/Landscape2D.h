@@ -69,9 +69,6 @@ namespace Mengine
         MENGINE_INLINE const VectorLandscape2DElements & getElementWM() const;
 
     protected:
-        bool compileResources_();
-
-    protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:

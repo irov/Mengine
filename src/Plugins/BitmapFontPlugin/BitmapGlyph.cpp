@@ -104,8 +104,8 @@ namespace Mengine
             }
 
         protected:
-            BitmapGlyphSaxCallback( const BitmapGlyphSaxCallback & );
-            void operator = ( const BitmapGlyphSaxCallback & );
+            BitmapGlyphSaxCallback( const BitmapGlyphSaxCallback & ) = delete;
+            void operator = ( const BitmapGlyphSaxCallback & ) = delete;
 
         public:
             void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )

@@ -53,6 +53,8 @@ namespace Mengine
             {
                 SDL_SetThreadPriority( SDL_THREAD_PRIORITY_TIME_CRITICAL );
             }break;
+        default:
+            break;
         }
 
         thread->main();

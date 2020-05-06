@@ -32,33 +32,6 @@ namespace Mengine
         const ConstString & getResourceType( const ConstString & _name ) const override;
 
         bool hasResource( const ConstString & _name, ResourcePtr * _resource ) const override;
-
-        template<class T>
-        bool hasResourceT( const ConstString & _name, T * _resource ) const
-        {
-            ResourcePtr resource;
-            if( this->hasResource( _name, &resource ) == false )
-            {
-                return false;
-            }
-
-#ifdef MENGINE_DEBUG
-            if( resource == nullptr )
-            {
-                return false;
-            }
-
-            if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
-            {
-                throw;
-            }
-#endif
-
-            * _resource = stdex::intrusive_static_cast<T>(resource);
-
-            return true;
-        }
-
         bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const override;
 
     protected:        

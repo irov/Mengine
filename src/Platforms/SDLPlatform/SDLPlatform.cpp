@@ -52,12 +52,16 @@
 
 #include <sys/stat.h>
 
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
+#define MENGINE_DEVELOPMENT_USER_FOLDER_NAME "User"
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_IOS)
 #   ifndef SDL_IPHONE_MAX_GFORCE
 #   define SDL_IPHONE_MAX_GFORCE 5.0f
 #   endif
 #endif
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::SDLPlatform );
 //////////////////////////////////////////////////////////////////////////
@@ -138,7 +142,7 @@ namespace Mengine
             }
 
             MENGINE_STRCPY( _userPath, currentPath );
-            MENGINE_STRCAT( _userPath, "User" );
+            MENGINE_STRCAT( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
             MENGINE_STRCAT( _userPath, "/" );
 
             size_t pathLen = MENGINE_STRLEN( _userPath );
@@ -146,10 +150,10 @@ namespace Mengine
             return pathLen;
         }
 
-        String Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
-        String Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        char * sdl_prefPath = SDL_GetPrefPath( Project_Company.c_str(), Project_Name.c_str() );
+        char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
 
         size_t sdl_prefPathLen = MENGINE_STRLEN( sdl_prefPath );
 
@@ -210,7 +214,9 @@ namespace Mengine
         MENGINE_UNUSED( _fontName );
         MENGINE_UNUSED( _fontPath );
 
-        return ~0U;
+        _fontPath[0] = '\0';
+
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
@@ -452,7 +458,7 @@ namespace Mengine
         // Search accelerometer device among joysticks
         int numJoysticks = SDL_NumJoysticks();
 
-        for( int deviceIndex = 0; deviceIndex < numJoysticks; deviceIndex++ )
+        for( int deviceIndex = 0; deviceIndex != numJoysticks; ++deviceIndex )
         {
             SDL_Joystick * joystick = SDL_JoystickOpen( deviceIndex );
 
@@ -974,115 +980,119 @@ namespace Mengine
         MENGINE_UNUSED( _params );
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_createDurectoryFullpath( const Char * _fullpath )
+    namespace Detail
     {
-#if defined(MENGINE_PLATFORM_IOS)
-        int status = mkdir( _fullpath, 0700 );
-
-        if( status != 0 )
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_createDurectoryFullpath( const Char * _fullpath )
         {
-            LOGGER_WARNING( "'%s' alredy exists"
-                , _fullpath
-            );
+#if defined(MENGINE_PLATFORM_IOS)
+            int status = mkdir( _fullpath, 0700 );
 
-            return false;
-        }
+            if( status != 0 )
+            {
+                LOGGER_WARNING( "'%s' alredy exists"
+                    , _fullpath
+                );
+
+                return false;
+            }
 
 #elif defined(MENGINE_PLATFORM_OSX)
-        int status = mkdir( _fullpath, 0700 );
+            int status = mkdir( _fullpath, 0700 );
 
-        if( status != 0 )
-        {
-            LOGGER_WARNING( "'%s' alredy exists"
-                , _fullpath
-            );
+            if( status != 0 )
+            {
+                LOGGER_WARNING( "'%s' alredy exists"
+                    , _fullpath
+                );
 
-            return false;
-        }
+                return false;
+            }
 #elif defined(MENGINE_PLATFORM_LINUX)
-        int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, 0700 );
 
-        if( status != 0 )
-        {
-            LOGGER_WARNING( "'%s' alredy exists"
-                , _fullpath
-            );
+            if( status != 0 )
+            {
+                LOGGER_WARNING( "'%s' alredy exists"
+                    , _fullpath
+                );
 
-            return false;
-        }
+                return false;
+            }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        int status = ::mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, 0700 );
 
-        if( status != 0 )
-        {
-            LOGGER_WARNING( "'%s' alredy exists"
-                , _fullpath
-            );
+            if( status != 0 )
+            {
+                LOGGER_WARNING( "'%s' alredy exists"
+                    , _fullpath
+                );
 
-            return false;
-        }
+                return false;
+            }
 
 #elif defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_fullpath[MENGINE_MAX_PATH];
-        Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH );
+            WChar unicode_fullpath[MENGINE_MAX_PATH];
+            Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH );
 
-        BOOL successful = ::CreateDirectoryW( unicode_fullpath, NULL );
+            BOOL successful = ::CreateDirectoryW( unicode_fullpath, NULL );
 
-        if( successful == FALSE )
-        {
-            DWORD err = GetLastError();
-
-            switch( err )
+            if( successful == FALSE )
             {
-            case ERROR_ALREADY_EXISTS:
-                {
-                    LOGGER_WARNING( "'%s' alredy exists"
-                        , _fullpath
-                    );
+                DWORD err = GetLastError();
 
-                    return false;
-                }break;
-            case ERROR_PATH_NOT_FOUND:
+                switch( err )
                 {
-                    LOGGER_WARNING( "'%s' not found"
-                        , _fullpath
-                    );
+                case ERROR_ALREADY_EXISTS:
+                    {
+                        LOGGER_WARNING( "'%s' alredy exists"
+                            , _fullpath
+                        );
 
-                    return false;
-                }break;
-            default:
-                {
-                    LOGGER_WARNING( "'%s' unknown error %d"
-                        , _fullpath
-                        , err
-                    );
-                }break;
+                        return false;
+                    }break;
+                case ERROR_PATH_NOT_FOUND:
+                    {
+                        LOGGER_WARNING( "'%s' not found"
+                            , _fullpath
+                        );
+
+                        return false;
+                    }break;
+                default:
+                    {
+                        LOGGER_WARNING( "'%s' unknown error %d"
+                            , _fullpath
+                            , err
+                        );
+                    }break;
+                }
+
+                return false;
+            }
+#endif
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_isDirectoryFullpath( const Char * _fullpath )
+        {
+            struct stat sb;
+            int err = stat( _fullpath, &sb );
+
+            if( err != 0 )
+            {
+                return false;
+            }
+
+            if( (sb.st_mode & S_IFMT) == S_IFDIR )
+            {
+                return true;
             }
 
             return false;
         }
-#endif
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_isDirectoryFullpath( const Char * _fullpath )
-    {
-        struct stat sb;
-        int err = stat( _fullpath, &sb );
-
-        if( err != 0 )
-        {
-            return false;
-        }
-
-        if( (sb.st_mode & S_IFMT) == S_IFDIR )
-        {
-            return true;
-        }
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::existDirectory( const Char * _path ) const
@@ -1104,7 +1114,7 @@ namespace Mengine
             return true;	// let it be
         }
 
-        bool exist = s_isDirectoryFullpath( fullPath );
+        bool exist = Detail::s_isDirectoryFullpath( fullPath );
 
         return exist;
     }
@@ -1116,7 +1126,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( fullPath );
 
-        if( s_isDirectoryFullpath( fullPath ) == true )
+        if( Detail::s_isDirectoryFullpath( fullPath ) == true )
         {
             return true;
         }
@@ -1136,7 +1146,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslashA( fullPath );
 
-            if( s_isDirectoryFullpath( fullPath ) == true )
+            if( Detail::s_isDirectoryFullpath( fullPath ) == true )
             {
                 break;
             }
@@ -1150,7 +1160,7 @@ namespace Mengine
         {
             const String & path = *it;
 
-            if( s_createDurectoryFullpath( path.c_str() ) == false )
+            if( Detail::s_createDurectoryFullpath( path.c_str() ) == false )
             {
                 return false;
             }

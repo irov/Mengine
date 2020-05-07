@@ -1084,6 +1084,7 @@ namespace Mengine
 
         //Empty
     }
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onWindowChangeFullscreen( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );

@@ -49,8 +49,12 @@
 #include <cerrno>
 
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
+#define MENGINE_DEVELOPMENT_USER_FOLDER_NAME L"User"
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOW_CLASSNAME
-#define MENGINE_WINDOW_CLASSNAME (L"MengineWindow")
+#define MENGINE_WINDOW_CLASSNAME L"MengineWindow"
 #endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
@@ -222,7 +226,7 @@ namespace Mengine
         {
             if( ::UnregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance ) == FALSE )
             {
-                LOGGER_ERROR( "invalid UnregisterClass '%s'"
+                LOGGER_ERROR( "invalid UnregisterClass '%ls'"
                     , MENGINE_WINDOW_CLASSNAME
                 );
             }
@@ -1471,15 +1475,13 @@ namespace Mengine
         HBRUSH black_brush = (HBRUSH)::GetStockObject( BLACK_BRUSH );
 
         // Register the window class
-        ATOM result = this->registerClass_(
-            s_wndProc,
-            0,
-            0,
-            m_hInstance,
-            m_icon,
-            black_brush,
-            MENGINE_WINDOW_CLASSNAME
-        );
+        ATOM result = this->registerClass_( &s_wndProc
+            , 0
+            , 0
+            , m_hInstance
+            , m_icon
+            , black_brush
+            , MENGINE_WINDOW_CLASSNAME );
 
         if( result == FALSE )
         {
@@ -1530,8 +1532,8 @@ namespace Mengine
             this->notifyWindowModeChanged( desktopResolution, true );
         }
 
-        ::SetForegroundWindow( m_hWnd );          // Slightly Higher Priority
-        ::SetFocus( m_hWnd );                     // Sets Keyboard Focus To The Window
+        ::SetForegroundWindow( m_hWnd );
+        ::SetFocus( m_hWnd );
         ::UpdateWindow( m_hWnd );
 
         m_mouseEvent.initialize( m_hWnd );
@@ -1593,9 +1595,6 @@ namespace Mengine
 
         if( m_fullscreen == false )
         {
-            // When switching back to windowed mode, need to reset window size 
-            // after device has been restored
-
             ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
             ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
@@ -2856,7 +2855,9 @@ namespace Mengine
 
             Helper::pathCorrectBackslashW( currentPath );
 
-            MENGINE_WCSCAT( currentPath, L"/User/" );
+            MENGINE_WCSCAT( currentPath, L"/" );
+            MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+            MENGINE_WCSCAT( currentPath, L"/" );
 
             size_t currentPathLen;
             if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )

@@ -6,7 +6,6 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -18,6 +17,7 @@
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AllocatorHelper.h"
 
 #include "zlib.h"
 
@@ -334,8 +334,7 @@ namespace Mengine
 
         uInt total = _items * _size;
 
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( total, "FileGroupZip" );
+        void * p = Helper::allocateMemory( total, "FileGroupZip" );
 
         return p;
     }
@@ -344,8 +343,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _opaque );
 
-        ALLOCATOR_SERVICE()
-            ->free( _address, "FileGroupZip" );
+        Helper::deallocateMemory( _address, "FileGroupZip" );
     }
     //////////////////////////////////////////////////////////////////////////
     static bool s_inflate_memory( void * _buffer, size_t _capacity, const void * _src, size_t _size )

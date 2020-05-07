@@ -18,7 +18,6 @@
 #endif
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 
 #include "ImGUIRender.h"
@@ -27,6 +26,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
@@ -62,8 +62,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( user_data );
 
-            void * p = ALLOCATOR_SERVICE()
-                ->malloc( sz, "imgui" );
+            void * p = Helper::allocateMemory( sz, "imgui" );
 
             return p;
         }
@@ -72,8 +71,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( user_data );
 
-            ALLOCATOR_SERVICE()
-                ->free( ptr, "imgui" );
+            Helper::deallocateMemory( ptr, "imgui" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,6 @@
 #include "ImageDecoderJPEG.h"
 
-#include "Interface/AllocatorServiceInterface.h"
-
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdArg.h"
@@ -176,8 +175,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ud );
 
-            void * p = ALLOCATOR_SERVICE()
-                ->malloc( _size, "jpeg" );
+            void * p = Helper::allocateMemory( _size, "jpeg" );
 
             return p;
         }
@@ -186,8 +184,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ud );
 
-            ALLOCATOR_SERVICE()
-                ->free( _ptr, "jpeg" );
+            Helper::deallocateMemory( _ptr, "jpeg" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

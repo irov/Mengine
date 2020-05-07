@@ -1,6 +1,5 @@
 #include "cURLService.h"
 
-#include "Interface/AllocatorServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
@@ -12,6 +11,7 @@
 #include "cURLGetAssetThreadTask.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
@@ -31,22 +31,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void * stdex_curl_malloc_callback( size_t _size )
     {
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( _size, "curl" );
+        void * p = Helper::allocateMemory( _size, "curl" );
 
         return p;
     }
     //////////////////////////////////////////////////////////////////////////
     static void stdex_curl_free_callback( void * _ptr )
     {
-        ALLOCATOR_SERVICE()
-            ->free( _ptr, "curl" );
+        Helper::deallocateMemory( _ptr, "curl" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void * stdex_curl_realloc_callback( void * _ptr, size_t _size )
     {
-        void * p = ALLOCATOR_SERVICE()
-            ->realloc( _ptr, _size, "curl" );
+        void * p = Helper::reallocateMemory( _ptr, _size, "curl" );
 
         return p;
     }
@@ -55,9 +52,8 @@ namespace Mengine
     {
         size_t len = MENGINE_STRLEN( str ) + 1;
         
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( len, "curl" );
-        
+        void * p = Helper::allocateMemory( len, "curl" );
+
         if( p == nullptr )
         {
             return nullptr;
@@ -68,8 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void * stdex_curl_calloc_callback( size_t _nmemb, size_t _size )
     { 
-        void * p = ALLOCATOR_SERVICE()
-            ->calloc( _nmemb, _size, "curl" );
+        void * p = Helper::callocateMemory( _nmemb, _size, "curl" );
 
         return p;
     }

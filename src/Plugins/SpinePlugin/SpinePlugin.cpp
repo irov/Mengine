@@ -4,7 +4,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "SpineScriptEmbedding.h"
@@ -20,6 +19,7 @@
 #include "LoaderResourceSpineAtlasTexturepacker.h"
 #include "LoaderResourceSpineSkeleton.h"
 
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
@@ -36,8 +36,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void * my_spine_malloc( size_t size )
         {
-            void * p = ALLOCATOR_SERVICE()
-                ->malloc( size, "spine" );
+            void * p = Helper::allocateMemory( size, "spine" );
 
             return p;
         }
@@ -47,24 +46,21 @@ namespace Mengine
             MENGINE_UNUSED( file );
             MENGINE_UNUSED( line );
 
-            void * p = ALLOCATOR_SERVICE()
-                ->malloc( size, "spine" );
+            void * p = Helper::allocateMemory( size, "spine" );
 
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
         static void * my_spine_realloc( void * ptr, size_t size )
         {
-            void * p = ALLOCATOR_SERVICE()
-                ->realloc( ptr, size, "spine" );
+            void * p = Helper::reallocateMemory( ptr, size, "spine" );
 
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
         static void my_spine_free( void * ptr )
         {
-            ALLOCATOR_SERVICE()
-                ->free( ptr, "spine" );
+            Helper::deallocateMemory( ptr, "spine" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

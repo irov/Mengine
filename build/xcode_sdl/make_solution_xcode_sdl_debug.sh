@@ -1,8 +1,3 @@
 #! /bin/bash
 
-CONFIGURATION=Debug
-
-mkdir -p ../../solutions/solution_xcode_sdl/$CONFIGURATION
-pushd ../../solutions/solution_xcode_sdl/$CONFIGURATION
-/Applications/CMake.app/Contents/bin/cmake -G"Xcode" "$PWD/../../../cmake/Xcode_SDL" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9
-popd
+sh ./make_solution_xcode_sdl.sh Debug

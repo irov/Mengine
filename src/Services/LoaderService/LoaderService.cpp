@@ -5,7 +5,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FilePath.h"
@@ -15,6 +14,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/AllocatorHelper.h"
 
 #include "metabuf/Metadata.hpp"
 #include "Metacode/Metacode.h"
@@ -36,20 +36,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void * metabuf_malloc( size_t _size, void * _ud )
     {
-        (void)_ud;
+        MENGINE_UNUSED( _ud );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( _size, "metabuf" );
+        void * p = Helper::allocateMemory( _size, "metabuf" );
 
         return p;
     }
     //////////////////////////////////////////////////////////////////////////
     static void metabuf_free( void * _ptr, void * _ud )
     {
-        (void)_ud;
+        MENGINE_UNUSED( _ud );
 
-        ALLOCATOR_SERVICE()
-            ->free( _ptr, "metabuf" );
+        Helper::deallocateMemory( _ptr, "metabuf" );
     }
     //////////////////////////////////////////////////////////////////////////
     LoaderService::LoaderService()

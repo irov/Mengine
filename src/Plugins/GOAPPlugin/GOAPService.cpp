@@ -1,8 +1,7 @@
 #include "GOAPService.h"
 
-#include "Interface/AllocatorServiceInterface.h"
-
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/AllocatorHelper.h"
 
 #include "GOAP/GOAP.h"
 
@@ -29,16 +28,14 @@ namespace Mengine
     protected:
         void * allocate( size_t _size ) override
         {
-            void * p = ALLOCATOR_SERVICE()
-                ->malloc( _size, "metabuf" );
+            void * p = Helper::allocateMemory( _size, "metabuf" );
 
             return p;
         }
 
         void deallocate( void * _ptr ) override
         {
-            ALLOCATOR_SERVICE()
-                ->free( _ptr, "metabuf" );
+            Helper::deallocateMemory( _ptr, "metabuf" );
         }
     };
     //////////////////////////////////////////////////////////////////////////

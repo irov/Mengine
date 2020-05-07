@@ -4,13 +4,12 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
-
-#include "Kernel/PixelFormat.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/PixelFormat.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AllocatorHelper.h"
 
 #include "TTFPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"
@@ -23,16 +22,14 @@
 //////////////////////////////////////////////////////////////////////////
 void * _fe_alloc( size_t _size )
 {
-    void * p = ALLOCATOR_SERVICE()
-        ->malloc( _size, "fe" );
+    void * p = Mengine::Helper::allocateMemory( _size, "fe" );
 
     return p;
 }
 //////////////////////////////////////////////////////////////////////////
 void _fe_free( void * _ptr )
 {
-    ALLOCATOR_SERVICE()
-        ->free( _ptr, "fe" );
+    Mengine::Helper::deallocateMemory( _ptr, "fe" );
 }
 //////////////////////////////////////////////////////////////////////////
 void _debug_image_created( fe_image * )

@@ -1,8 +1,7 @@
 #include "ImageEncoderPNG.h"
 
-#include "Interface/AllocatorServiceInterface.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 
@@ -49,8 +48,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( _size, "png encoder" );
+        void * p = Helper::allocateMemory( _size, "png encoder" );
 
         return p;
     }
@@ -59,8 +57,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        ALLOCATOR_SERVICE()
-            ->free( _ptr, "png encoder" );
+        Helper::deallocateMemory( _ptr, "png encoder" );
     }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderPNG::ImageEncoderPNG()

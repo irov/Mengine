@@ -1,8 +1,7 @@
 #include "ArchivatorZip.h"
 
-#include "Interface/AllocatorServiceInterface.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/AllocatorHelper.h"
 
 #include "zlib.h"
 
@@ -72,8 +71,7 @@ namespace Mengine
 
         uInt total = _items * _size;
 
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( total, "ArchivatorZip" );
+        void * p = Helper::allocateMemory( total, "ArchivatorZip" );
 
         return p;
     }
@@ -82,8 +80,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _opaque );
 
-        ALLOCATOR_SERVICE()
-            ->free( _address, "ArchivatorZip" );
+        Helper::deallocateMemory( _address, "ArchivatorZip" );
     }
     //////////////////////////////////////////////////////////////////////////
     static int32_t my_uncompress( Bytef * _dest, uLong * _destLen, const Bytef * _source, uLong _sourceLen )

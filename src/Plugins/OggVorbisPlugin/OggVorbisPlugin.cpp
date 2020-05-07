@@ -1,10 +1,10 @@
 #include "OggVorbisPlugin.h"
 
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/AllocatorServiceInterface.h"
 
 #include "SoundDecoderOGGVorbis.h"
 
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -18,8 +18,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _ud );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( _size, "ogg" );
+        void * p = Helper::allocateMemory( _size, "ogg" );
 
         return p;
     }
@@ -28,8 +27,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _ud );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->calloc( _num, _size, "ogg" );
+        void * p = Helper::callocateMemory( _num, _size, "ogg" );
 
         return p;
     }
@@ -38,8 +36,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _ud );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->realloc( _ptr, _size, "ogg" );
+        void * p = Helper::reallocateMemory( _ptr, _size, "ogg" );
 
         return p;
     }
@@ -48,8 +45,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _ud );
 
-        ALLOCATOR_SERVICE()
-            ->free( _ptr, "ogg" );
+        Helper::deallocateMemory( _ptr, "ogg" );
     }
     //////////////////////////////////////////////////////////////////////////
     OggVorbisPlugin::OggVorbisPlugin()

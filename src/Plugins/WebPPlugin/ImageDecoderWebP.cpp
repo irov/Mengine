@@ -40,7 +40,7 @@ namespace Mengine
 
                 uint8_t * featuresMemory = buffer->getBuffer();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( featuresMemory, false, "invalid get memory %d"
+                MENGINE_ASSERTION_MEMORY_PANIC( featuresMemory, false, "invalid get memory %zu"
                     , featuresBufferSize
                 );
 

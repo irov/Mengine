@@ -349,7 +349,7 @@ namespace Mengine
                     }
 
                 protected:
-                    void accept( Resource * _resource )
+                    void accept( Resource * _resource ) override
                     {
                         if( _resource->isCompile() == false )
                         {
@@ -394,7 +394,7 @@ namespace Mengine
                     }
 
                 protected:
-                    void accept( ThreadTask * _task )
+                    void accept( ThreadTask * _task ) override 
                     {
                         if( _task->isComplete() == false )
                         {
@@ -528,7 +528,7 @@ namespace Mengine
                     void operator = ( const MyVisitorFactoryService & ) = delete;
 
                 protected:
-                    void visit( const Factory * _factory )
+                    void visit( const Factory * _factory ) override
                     {
                         uint32_t count = _factory->getCountObject();
 

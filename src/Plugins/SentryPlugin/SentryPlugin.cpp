@@ -82,14 +82,6 @@ namespace Mengine
 
         sentry_init( options );
 
-        const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
-
-        LOGGER_MESSAGE( "Sentry Application: %s"
-            , sentryApplication
-        );
-
-        sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
-
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, this, &SentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ASSERTION, this, &SentryPlugin::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -132,9 +124,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyCreateApplication_()
     {
+        const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
+
+        LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
+            , sentryApplication
+        );
+
+        sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
+
         Char companyName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {0};
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
+
+        LOGGER_MESSAGE( "Sentry set extra [Company: %s]"
+            , companyName
+        );
 
         sentry_set_extra( "Company", sentry_value_new_string( companyName ) );
 
@@ -142,11 +146,19 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
+        LOGGER_MESSAGE( "Sentry set extra [Project: %s]"
+            , projectName
+        );
+
         sentry_set_extra( "Project", sentry_value_new_string( projectName ) );
 
         Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {0};
         PLATFORM_SERVICE()
             ->getUserName( userName );
+
+        LOGGER_MESSAGE( "Sentry set extra [User: %s]"
+            , userName
+        );
 
         sentry_set_extra( "User", sentry_value_new_string( userName ) );
 
@@ -156,25 +168,53 @@ namespace Mengine
         Char projectVersionString[32] = {0};
         if( Helper::stringalized( projectVersion, projectVersionString, 32 ) == false )
         {
+            LOGGER_MESSAGE( "Sentry set extra [Version: %s]"
+                , "Error"
+            );
+
             sentry_set_extra( "Version", sentry_value_new_string( "Error" ) );
         }
         else
         {
+            LOGGER_MESSAGE( "Sentry set extra [Version: %s]"
+                , projectVersionString
+            );
+
             sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
         }
 
-        sentry_set_extra( "Debug", sentry_value_new_bool( MENGINE_DEBUG_VALUE( true, false ) ) );
+        bool debugMode = MENGINE_DEBUG_VALUE( true, false );
+
+        LOGGER_MESSAGE( "Sentry set extra [Debug: %d]"
+            , debugMode
+        );
+
+        sentry_set_extra( "Debug", sentry_value_new_bool( debugMode ) );
 
         bool developmentMode = HAS_OPTION( "dev" );
 
-        sentry_set_extra( "Development", sentry_value_new_bool( developmentMode == true ? 1 : 0 ) );
+        LOGGER_MESSAGE( "Sentry set extra [Development: %d]"
+            , developmentMode
+        );
+
+        sentry_set_extra( "Development", sentry_value_new_bool( developmentMode ) );
 
         bool masterMode = MENGINE_MASTER_VALUE( true, false );
 
+        LOGGER_MESSAGE( "Sentry set extra [Master: %d]"
+            , masterMode
+        );
+
         sentry_set_extra( "Master", sentry_value_new_bool( masterMode ) );
 
+        const Char * GIT_SHA1 = MENGINE_GIT_SHA1;
+
+        LOGGER_MESSAGE( "Sentry set extra [Commit: %s]"
+            , GIT_SHA1
+        );
+
 #ifdef MENGINE_GIT_SHA1
-        sentry_set_extra( "Commit", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
+        sentry_set_extra( "Commit", sentry_value_new_string( GIT_SHA1 ) );
 #endif
 
         if( HAS_OPTION( "sentrycrash" ) == true )

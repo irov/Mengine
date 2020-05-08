@@ -197,18 +197,6 @@ namespace Mengine
         return axis;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getShortPathName( const Char * _path, Char * _short, size_t _len ) const
-    {
-        size_t pathSize = MENGINE_STRLEN( _path );
-
-        if( _len == pathSize )
-        {
-            MENGINE_STRCPY( _short, _path );
-        }
-
-        return pathSize;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getSystemFontPath( const Char * _fontName, Char * _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );
@@ -696,9 +684,13 @@ namespace Mengine
         MENGINE_STRCPY( m_projectTitle, _projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::getProjectTitle( Char * _projectTitle ) const
+    size_t SDLPlatform::getProjectTitle( Char * _projectTitle ) const
     {
         MENGINE_STRCPY( _projectTitle, m_projectTitle );
+
+        size_t len = MENGINE_STRLEN( m_projectTitle );
+
+        return len;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )

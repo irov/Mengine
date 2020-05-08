@@ -1588,7 +1588,7 @@ namespace Mengine
         const Char * textValue = textEntry->getValue( &textSize );
 
         TEXT_SERVICE()
-            ->getTextAliasArguments( m_aliasEnvironment, m_textId, m_textFormatArgs );
+            ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_textFormatArgs );
 
         String fmt;
         if( Helper::getStringFormat( fmt, textValue, textSize, m_textFormatArgs ) == false )

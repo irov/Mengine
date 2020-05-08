@@ -73,7 +73,7 @@ namespace Mengine
         m_poolHolderStringMemory.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
+    void StringizeService::stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr )
     {
         MENGINE_ASSERTION_FATAL( _str != nullptr );
 
@@ -86,7 +86,7 @@ namespace Mengine
 
         if( _size == 0 )
         {
-            _cstr = ConstString::none();
+            *_cstr = ConstString::none();
 
             return;
         }
@@ -98,14 +98,14 @@ namespace Mengine
 
         const ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
-        _cstr = ConstString( holder );
+        *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
+    void StringizeService::stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr )
     {
         if( _size == 0 )
         {
-            _cstr = ConstString::none();
+            *_cstr = ConstString::none();
 
             return;
         }
@@ -125,7 +125,7 @@ namespace Mengine
 
             if( inter.str == _str )
             {
-                _cstr = ConstString( inter.holder );
+                *_cstr = ConstString( inter.holder );
 
                 return;
             }
@@ -140,21 +140,21 @@ namespace Mengine
             inter.str = _str;
             inter.holder = holder;
 
-            _cstr = ConstString( holder );
+            *_cstr = ConstString( holder );
 
             return;
         }
 
         const ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
-        _cstr = ConstString( holder );
+        *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
+    void StringizeService::stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr )
     {
         if( _size == 0 )
         {
-            _cstr = ConstString::none();
+            *_cstr = ConstString::none();
 
             return;
         }
@@ -169,7 +169,7 @@ namespace Mengine
 
             if( inter.str == _str )
             {
-                _cstr = ConstString( inter.holder );
+                *_cstr = ConstString( inter.holder );
 
                 return;
             }
@@ -184,17 +184,17 @@ namespace Mengine
             inter.str = _str;
             inter.holder = holder;
 
-            _cstr = ConstString( holder );
+            *_cstr = ConstString( holder );
 
             return;
         }
 
         const ConstStringHolder * holder = this->stringizeHolderUnique_( _str, _size, _hash );
 
-        _cstr = ConstString( holder );
+        *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool StringizeService::stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr )
+    bool StringizeService::stringizeExternal( ConstStringHolder * _holder, ConstString * _cstr )
     {
         const ConstStringHolder::value_type * holder_str = _holder->c_str();
         ConstStringHolder::size_type holder_size = _holder->size();
@@ -202,7 +202,7 @@ namespace Mengine
 
         if( holder_size == 0 )
         {
-            _cstr = ConstString::none();
+            *_cstr = ConstString::none();
 
             return false;
         }
@@ -221,7 +221,7 @@ namespace Mengine
 
         if( test != nullptr )
         {
-            _cstr = ConstString( test );
+            *_cstr = ConstString( test );
 
             return false;
         }
@@ -230,7 +230,7 @@ namespace Mengine
 
         this->addHolder_( _holder, holder_hash );
 
-        _cstr = ConstString( _holder );
+        *_cstr = ConstString( _holder );
 
         return true;
     }

@@ -306,7 +306,7 @@ namespace Mengine
             return false;
         }
 
-        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY );
+        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY, MENGINE_DOCUMENT_FACTORABLE );
 
         DataflowPYZPtr dataflowPYZ = Helper::makeFactorableUnique<DataflowPYZ>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -323,7 +323,7 @@ namespace Mengine
             return false;
         }
 
-        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ), dataflowPYZ );
+        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ), dataflowPYZ, MENGINE_DOCUMENT_FACTORABLE );
 
         SERVICE_LEAVE( DataServiceInterface, []()
         {
@@ -868,7 +868,7 @@ namespace Mengine
         pybind::dict_remove_t( m_kernel, dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptService::stringize( PyObject * _object, ConstString & _cstr )
+    bool PythonScriptService::stringize( PyObject * _object, ConstString * _cstr )
     {
 #ifdef MENGINE_DEBUG
         if( m_kernel->string_check( _object ) == false )
@@ -883,7 +883,7 @@ namespace Mengine
 
         if( m_kernel->string_size( _object ) == 0 )
         {
-            _cstr = ConstString::none();
+            *_cstr = ConstString::none();
 
             return true;
         }

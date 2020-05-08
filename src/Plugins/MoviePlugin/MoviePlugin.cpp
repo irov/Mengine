@@ -181,7 +181,7 @@ namespace Mengine
                 return false;
             }
 
-            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
+            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
@@ -202,7 +202,7 @@ namespace Mengine
         {
             ResourcePrefetcherInterfacePtr resourcePrefetcherDataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
 
-            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcherDataflow );
+            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcherDataflow, MENGINE_DOCUMENT_FACTORABLE );
         }
 
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
@@ -222,14 +222,14 @@ namespace Mengine
             movie2Validator->setMovieInstance( m_movieInstance );
             movie2Validator->setArchivator( archivator );
 
-            VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator );
+            VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
         SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
-            VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<LoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ) );
+            VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<LoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
@@ -241,7 +241,7 @@ namespace Mengine
 
         MODULE_WAIT( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" ), [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
-            VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ) );
+            VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         } );
 
         MODULE_LEAVE( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" ), []()

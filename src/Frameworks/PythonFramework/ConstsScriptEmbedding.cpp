@@ -68,7 +68,7 @@ namespace Mengine
         MENGINE_UNUSED( _kernel );
         MENGINE_UNUSED( _user );
 
-        ConstString & cstr = *(ConstString*)_place;
+        ConstString * cstr = (ConstString *)_place;
 
         if( _kernel->string_check( _obj ) == true )
         {
@@ -82,7 +82,7 @@ namespace Mengine
         }
         else if( _kernel->is_none( _obj ) == true )
         {
-            cstr = ConstString::none();
+            *cstr = ConstString::none();
 
             return true;
         }
@@ -150,7 +150,7 @@ namespace Mengine
         MENGINE_UNUSED( _kernel );
         MENGINE_UNUSED( _user );
 
-        FilePath & cstr = *(FilePath*)_place;
+        FilePath * cstr = (FilePath *)_place;
 
         if( _kernel->string_check( _obj ) == true )
         {
@@ -164,7 +164,7 @@ namespace Mengine
         }
         else if( _kernel->is_none( _obj ) == true )
         {
-            cstr = FilePath( ConstString::none() );
+            *cstr = FilePath::none();
 
             return true;
         }

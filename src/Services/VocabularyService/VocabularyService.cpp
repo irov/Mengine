@@ -43,8 +43,10 @@ namespace Mengine
         m_mixins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable )
+    bool VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable, const DocumentPtr & _document )
     {
+        MENGINE_UNUSED( _document );
+
         m_mixins.emplace( _category, _type, _factorable );
 
         LOGGER_INFO( "add vocabulary '%s:%s'"

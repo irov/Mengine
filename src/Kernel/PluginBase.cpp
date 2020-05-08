@@ -215,9 +215,9 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory )
+    bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory, const DocumentPtr & _doc )
     {
-        VOCABULARY_SET( ModuleFactoryInterface, STRINGIZE_STRING_LOCAL( "Module" ), _name, _factory );
+        VOCABULARY_SET( ModuleFactoryInterface, STRINGIZE_STRING_LOCAL( "Module" ), _name, _factory, _doc );
 
         m_moduleFactories.emplace_back( _name );
 

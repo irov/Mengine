@@ -78,7 +78,7 @@ namespace Mengine
 
         void endRenderPass( const RenderTargetInterfacePtr & _target ) override;
 
-        void renderPrimitives( RenderPrimitive * _primitives, uint32_t _count ) override;
+        void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) override;
 
     public:
         void onWindowClose() override;
@@ -105,7 +105,7 @@ namespace Mengine
         void restoreRenderSystemStates_();
         void restoreRenderFrameStates_();
         
-        void renderPrimitive_( RenderPrimitive * _renderObject );
+        void renderPrimitive_( const RenderPrimitive * _renderObject );
 
     protected:
         void calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const;
@@ -124,7 +124,7 @@ namespace Mengine
 
     protected:
         void updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture );
-        void updateMaterial_( RenderMaterialInterface * _material );
+        void updateMaterial_( const RenderMaterialInterface * _material );
         void updateStage_( const RenderMaterialStage * _stage );
 
     protected:

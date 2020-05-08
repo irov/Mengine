@@ -682,12 +682,15 @@ namespace Mengine
         Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::getProjectTitle( Char * _projectTitle ) const
+    size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
     {
-        Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        size_t utf8Size;
+        Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, &utf8Size );
+
+        return utf8Size;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath, size_t _len ) const
+    size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath ) const
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -698,7 +701,7 @@ namespace Mengine
         }
 
         WChar unicode_shortpath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, (DWORD)_len );
+        DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, MENGINE_MAX_PATH );
 
         if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
         {

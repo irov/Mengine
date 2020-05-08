@@ -70,7 +70,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            VOCABULARY_SET( DecoderFactoryInterface, STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type, factory );
+            VOCABULARY_SET( DecoderFactoryInterface, STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type, factory, _doc );
 
             return factory;
         }

@@ -43,10 +43,10 @@ namespace Mengine
         uint32_t getIcon() const override;
 
         void setProjectTitle( const Char * _projectTitle ) override;
-        void getProjectTitle( Char * _projectTitle ) const override;
+        size_t getProjectTitle( Char * _projectTitle ) const override;
 
     public:
-        bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;        
+        bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
 
     protected:
         ATOM registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
@@ -93,7 +93,7 @@ namespace Mengine
         float getJoystickAxis( uint32_t _index ) const override;
 
     public:
-        size_t getShortPathName( const Char * _path, Char * _short, size_t _len ) const override;
+        size_t getShortPathName( const Char * _path, Char * _short ) const override;
         size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const override;
 
     public:

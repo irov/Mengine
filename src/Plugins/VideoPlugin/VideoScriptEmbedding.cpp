@@ -60,8 +60,8 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceVideo> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<SurfaceVideo> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceVideo> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<SurfaceVideo> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

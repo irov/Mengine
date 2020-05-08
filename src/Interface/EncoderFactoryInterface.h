@@ -6,8 +6,7 @@
 #include "Interface/EncoderInterface.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class EncoderFactoryInterface
         : public CodecFactoryInterface
     {

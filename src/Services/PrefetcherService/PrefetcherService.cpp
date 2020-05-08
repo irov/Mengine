@@ -311,7 +311,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
+    bool PrefetcherService::getData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr * _data )
     {
         if( this->isAvailableService() == false )
         {
@@ -333,12 +333,12 @@ namespace Mengine
             return false;
         }
 
-        _data = prefetch_data;
+        *_data = prefetch_data;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::popData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
+    bool PrefetcherService::popData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr * _data )
     {
         if( this->isAvailableService() == false )
         {
@@ -360,7 +360,7 @@ namespace Mengine
             return false;
         }
 
-        _data = prefetch_data;
+        *_data = prefetch_data;
 
         return true;
     }
@@ -414,7 +414,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr & _memory )
+    bool PrefetcherService::getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr * _memory )
     {
         if( this->isAvailableService() == false )
         {
@@ -436,7 +436,7 @@ namespace Mengine
             return false;
         }
 
-        _memory = prefetch_memory;
+        *_memory = prefetch_memory;
 
         return true;
     }

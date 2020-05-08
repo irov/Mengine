@@ -77,14 +77,14 @@ namespace Mengine
         void quit() override;
 
     public:
-        void calcWindowResolution( Resolution & _windowResolution ) const override;
+        void calcWindowResolution( Resolution * _windowResolution ) const override;
 
         const Resolution & getCurrentResolution() const override;
 
         const Viewport & getRenderViewport() const override;
         const Resolution & getContentResolution() const override;
 
-        void getGameViewport( float & _aspect, Viewport & _viewport ) const override;
+        void getGameViewport( float * _aspect, Viewport * _viewport ) const override;
 
     public:
         bool render() override;
@@ -169,10 +169,10 @@ namespace Mengine
         void debugPause( bool _pause ) override;
 
     protected:
-        bool findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const;
+        bool findBestAspectViewport_( float _aspect, float * _bestAspect, Viewport * _viewport ) const;
 
     protected:
-        void calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport );
+        void calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport );
         void invalidateWindow_();
 
     protected:

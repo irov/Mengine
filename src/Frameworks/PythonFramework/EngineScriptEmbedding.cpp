@@ -2650,7 +2650,7 @@ namespace Mengine
             {
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->pickTraps( _point, 0, 0.f, pickers );
+                    ->pickTraps( _point, 0, 0.f, &pickers );
 
                 pybind::list pyret( _kernel );
 
@@ -2681,7 +2681,7 @@ namespace Mengine
             {
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->getTraps( _point, pickers );
+                    ->getTraps( _point, &pickers );
 
                 pybind::list pyret( _kernel );
 
@@ -3289,7 +3289,7 @@ namespace Mengine
                 Viewport viewport;
 
                 APPLICATION_SERVICE()
-                    ->getGameViewport( aspect, viewport );
+                    ->getGameViewport( &aspect, &viewport );
 
                 return aspect;
             }
@@ -3300,7 +3300,7 @@ namespace Mengine
                 Viewport viewport;
 
                 APPLICATION_SERVICE()
-                    ->getGameViewport( aspect, viewport );
+                    ->getGameViewport( &aspect, &viewport );
 
                 return viewport;
             }
@@ -3897,8 +3897,8 @@ namespace Mengine
 
         m_implement = nodeScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >( MENGINE_DOCUMENT_FACTORABLE ) ) == false )

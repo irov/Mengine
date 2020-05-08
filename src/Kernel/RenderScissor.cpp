@@ -63,7 +63,7 @@ namespace Mengine
         Viewport gameViewport;
 
         APPLICATION_SERVICE()
-            ->getGameViewport( gameViewportAspect, gameViewport );
+            ->getGameViewport( &gameViewportAspect, &gameViewport );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();

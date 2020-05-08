@@ -67,7 +67,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            VOCABULARY_SET( EncoderFactoryInterface, STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type, factory );
+            VOCABULARY_SET( EncoderFactoryInterface, STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type, factory, _doc );
 
             return factory;
         }

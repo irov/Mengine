@@ -252,9 +252,9 @@ namespace Mengine
 
         uint8_t * binary_memory = binary_buffer->getBuffer();
 
-        size_t uncompress_size = 0;
+        size_t uncompress_size;
         if( ARCHIVE_SERVICE()
-            ->decompressStream( m_archivator, _stream, compress_size, binary_memory, bin_size, uncompress_size ) == false )
+            ->decompressStream( m_archivator, _stream, compress_size, binary_memory, bin_size, &uncompress_size ) == false )
         {
             if( _reimport == nullptr )
             {
@@ -301,7 +301,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( stringBuffer, false, "invlid read string (error)" );
 
             STRINGIZE_SERVICE()
-                ->stringize( stringBuffer, stringSize, stringHash, cstr );
+                ->stringize( stringBuffer, stringSize, stringHash, &cstr );
 
             ++index;
         }

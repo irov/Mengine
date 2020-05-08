@@ -39,7 +39,7 @@ namespace Mengine
     bool MetabufLoaderPlugin::_initializePlugin()
     {
 #define DECLARE_LOADER(T)\
-        VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ), Helper::makeFactorableUnique<Loader##T>(MENGINE_DOCUMENT_FACTORABLE) )
+        VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ), Helper::makeFactorableUnique<Loader##T>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
 
         DECLARE_LOADER( ResourceCursorICO );
         DECLARE_LOADER( ResourceCursorSystem );

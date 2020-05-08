@@ -54,7 +54,7 @@ namespace Mengine
             .def( "clear", &Graphics::clear )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Graphics" ), Helper::makeFactorableUnique<PythonScriptWrapper<Graphics> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Graphics" ), Helper::makeFactorableUnique<PythonScriptWrapper<Graphics> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

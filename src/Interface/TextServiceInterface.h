@@ -27,7 +27,7 @@ namespace Mengine
     public:
         virtual TextEntryInterfacePtr createTextEntry( const ConstString & _key
             , const Char * _text
-            , const size_t _size
+            , size_t _size
             , const Tags & _tags
             , const ConstString & _font
             , const Color & _colorFont
@@ -77,7 +77,7 @@ namespace Mengine
     public:
         virtual void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) = 0;
         virtual void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) = 0;
-        virtual bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const = 0;
+        virtual bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * _arguments ) const = 0;
 
     public:
         typedef Lambda<void( const TextFontInterfacePtr & )> LambdaTextFont;

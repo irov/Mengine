@@ -26,7 +26,7 @@ namespace Mengine
         return total_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorLZ4::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize, EArchivatorCompress _compress )
+    bool ArchivatorLZ4::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _compressSize, EArchivatorCompress _compress )
     {
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
@@ -60,12 +60,12 @@ namespace Mengine
             return false;
         }
 
-        _compressSize = (size_t)compressSize;
+        *_compressSize = (size_t)compressSize;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorLZ4::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _decompressSize )
+    bool ArchivatorLZ4::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _decompressSize )
     {
         MENGINE_UNUSED( _sourceSize );
 
@@ -83,7 +83,7 @@ namespace Mengine
             return false;
         }
 
-        _decompressSize = _bufferSize;
+        *_decompressSize = _bufferSize;
 
         return true;
     }

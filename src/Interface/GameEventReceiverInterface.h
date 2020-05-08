@@ -135,4 +135,5 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CLOSE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_OVER_FILLRATE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FRAME_END );
+    //////////////////////////////////////////////////////////////////////////
 }

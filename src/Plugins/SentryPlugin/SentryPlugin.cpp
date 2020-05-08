@@ -8,6 +8,7 @@
 #include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/Logger.h"
 
@@ -64,7 +65,7 @@ namespace Mengine
 
         sentry_options_t * options = sentry_options_new();
 
-        Char userPath[MENGINE_MAX_PATH] = { '\0' };
+        Char userPath[MENGINE_MAX_PATH] = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -72,9 +73,25 @@ namespace Mengine
         sentryDatabasePath.append( userPath, (PathString::size_type)userPathLen );
         sentryDatabasePath.append( ".sentry-native" );
 
-        sentry_options_set_database_path( options, sentryDatabasePath.c_str() );
-        sentry_options_set_dsn( options, sentryDSN );
+#ifdef MENGINE_PLATFORM_WINDOWS
+        WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH] = {L'\0'};
+        Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH, nullptr );
+
+        sentry_options_set_database_pathw( options, unicode_sentryDatabasePath );
+#else
+        sentry_options_set_database_path( options, sentryDatabasePath );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+        WChar unicode_sentryHandler[MENGINE_MAX_PATH] = {L'\0'};
+        Helper::utf8ToUnicode( sentryHandler, unicode_sentryHandler, MENGINE_MAX_PATH, nullptr );
+
+        sentry_options_set_handler_pathw( options, unicode_sentryHandler );
+#else
         sentry_options_set_handler_path( options, sentryHandler );
+#endif
+
+        sentry_options_set_dsn( options, sentryDSN );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, MENGINE_MASTER_VALUE( 0, 1 ) );
 

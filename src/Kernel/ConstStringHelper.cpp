@@ -16,7 +16,7 @@ namespace Mengine
         {
             ConstString cstr;
             STRINGIZE_SERVICE()
-                ->stringize( _value, _size, _hash, cstr );
+                ->stringize( _value, _size, _hash, &cstr );
 
             return cstr;
         }
@@ -73,7 +73,7 @@ namespace Mengine
         {
             ConstString constString;
             STRINGIZE_SERVICE()
-                ->stringizeInternal( _value, _size, MENGINE_STRINGIZE_UNKNOWN_HASH, constString );
+                ->stringizeInternal( _value, _size, MENGINE_STRINGIZE_UNKNOWN_HASH, &constString );
 
             return constString;
         }
@@ -82,7 +82,7 @@ namespace Mengine
         {
             ConstString constString;
             STRINGIZE_SERVICE()
-                ->stringizeInternal( _value, _size, _hash, constString );
+                ->stringizeInternal( _value, _size, _hash, &constString );
 
             return constString;
         }
@@ -91,7 +91,7 @@ namespace Mengine
         {
             ConstString constString;
             STRINGIZE_SERVICE()
-                ->stringizeUnique( _value, _size, _hash, constString );
+                ->stringizeUnique( _value, _size, _hash, &constString );
 
             return constString;
         }

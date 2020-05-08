@@ -68,11 +68,11 @@ namespace Mengine
         float gameViewportAspect;
         Viewport gameViewport;
 
+        APPLICATION_SERVICE()
+            ->getGameViewport( &gameViewportAspect, &gameViewport );
+
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
-
-        APPLICATION_SERVICE()
-            ->getGameViewport( gameViewportAspect, gameViewport );
 
         mt::vec2f contentResolutionSize;
         contentResolution.calcSize( contentResolutionSize );

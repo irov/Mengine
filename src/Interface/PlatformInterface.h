@@ -51,7 +51,7 @@ namespace Mengine
         virtual uint32_t getIcon() const = 0;
 
         virtual void setProjectTitle( const Char * _projectTitle ) = 0;
-        virtual void getProjectTitle( Char * _projectTitle ) const = 0;
+        virtual size_t getProjectTitle( Char * _projectTitle ) const = 0;
 
     public:
         virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;
@@ -101,7 +101,7 @@ namespace Mengine
         virtual float getJoystickAxis( uint32_t _index ) const = 0;
 
     public:
-        virtual size_t getShortPathName( const Char * _filePath, Char * _shortFilePath, size_t _len ) const = 0;
+        virtual size_t getShortPathName( const Char * _filePath, Char * _shortFilePath ) const = 0;
         virtual size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const = 0;
 
     public:

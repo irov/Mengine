@@ -307,7 +307,7 @@ namespace Mengine
         }
         else
         {
-            this->calcWindowResolution( m_currentResolution );
+            this->calcWindowResolution( &m_currentResolution );
         }
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
@@ -700,7 +700,7 @@ namespace Mengine
             , fullscreen ? "Fullscreen" : "Window"
             );
 
-        this->calcRenderViewport_( m_currentResolution, m_renderViewport );
+        this->calcRenderViewport_( m_currentResolution, &m_renderViewport );
 
         LOGGER_MESSAGE( "render viewport %f %f - %f %f"
             , m_renderViewport.begin.x
@@ -743,7 +743,7 @@ namespace Mengine
         float gameViewportAspect;
         Viewport gameViewport;
 
-        this->getGameViewport( gameViewportAspect, gameViewport );
+        this->getGameViewport( &gameViewportAspect, &gameViewport );
 
         GAME_SERVICE()
             ->setGameViewport( gameViewport, gameViewportAspect );
@@ -1618,7 +1618,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::calcWindowResolution( Resolution & _windowResolution ) const
+    void Application::calcWindowResolution( Resolution * _windowResolution ) const
     {
         Resolution dres;
         PLATFORM_SERVICE()
@@ -1653,8 +1653,8 @@ namespace Mengine
                 new_height = static_cast<uint32_t>(float( dresWidth ) / aspect + 0.5f);
             }
 
-            _windowResolution.setWidth( new_witdh );
-            _windowResolution.setHeight( new_height );
+            _windowResolution->setWidth( new_witdh );
+            _windowResolution->setHeight( new_height );
         }
         else if( resWidth > dresWidth )
         {
@@ -1667,12 +1667,12 @@ namespace Mengine
                 new_height = dresHeight;
             }
 
-            _windowResolution.setWidth( new_witdh );
-            _windowResolution.setHeight( new_height );
+            _windowResolution->setWidth( new_witdh );
+            _windowResolution->setHeight( new_height );
         }
         else
         {
-            _windowResolution = m_windowResolution;
+            *_windowResolution = m_windowResolution;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1681,7 +1681,7 @@ namespace Mengine
         return m_currentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const
+    bool Application::findBestAspectViewport_( float _aspect, float * _bestAspect, Viewport * _viewport ) const
     {
         LOGGER_INFO( "find aspect %f"
             , _aspect
@@ -1694,45 +1694,42 @@ namespace Mengine
 
         float minimal_aspect = 100.f;
 
-        for( MapAspectRatioViewports::const_iterator
-            it = m_aspectRatioViewports.begin(),
-            it_found = m_aspectRatioViewports.end();
-            it != it_found;
-            ++it )
+        for( auto && [aspect, viewport] : m_aspectRatioViewports )
         {
-            float aspect = it->first;
-
             float deltha_aspect = fabsf( _aspect - aspect );
 
             if( deltha_aspect < minimal_aspect )
             {
                 minimal_aspect = deltha_aspect;
 
-                _bestAspect = it->first;
-                _viewport = it->second;
+                *_bestAspect = aspect;
+                *_viewport = viewport;
             }
         }
 
         LOGGER_INFO( "best aspect %f viewport [%f, %f, %f, %f]"
-            , _bestAspect
-            , _viewport.begin.x
-            , _viewport.begin.y
-            , _viewport.end.x
-            , _viewport.end.y
+            , *_bestAspect
+            , _viewport->begin.x
+            , _viewport->begin.y
+            , _viewport->end.x
+            , _viewport->end.y
             );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport )
+    void Application::calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport )
     {
-        LOGGER_INFO( "resolution [%d %d]"
-            , _resolution.getWidth()
-            , _resolution.getHeight()
+        uint32_t width = _resolution.getWidth();
+        uint32_t height = _resolution.getHeight();
+
+        LOGGER_INFO( "resolution [%u %u]"
+            , width
+            , height
             );
 
-        float rw = (float)_resolution.getWidth();
-        float rh = (float)_resolution.getHeight();
+        float rw = (float)width;
+        float rh = (float)height;
 
         float r_aspect = _resolution.getAspectRatio();
 
@@ -1743,7 +1740,7 @@ namespace Mengine
             Viewport dummy_aspectRatioViewport;
             float contentAspect;
 
-            if( this->findBestAspectViewport_( r_aspect, contentAspect, dummy_aspectRatioViewport ) == false )
+            if( this->findBestAspectViewport_( r_aspect, &contentAspect, &dummy_aspectRatioViewport ) == false )
             {
                 contentAspect = c_aspect;
             }
@@ -1760,21 +1757,20 @@ namespace Mengine
                 dw = rh * contentAspect * one_div_width;
             }
 
-            float areaWidth = ceilf( dw * rw );
-            float areaHeight = ceilf( dh * rh );
+            float areaWidth = MT_ceilf( dw * rw );
+            float areaHeight = MT_ceilf( dh * rh );
 
-            _viewport.begin.x = ceilf( (rw - areaWidth) * 0.5f );
-            _viewport.begin.y = ceilf( (rh - areaHeight) * 0.5f );
-            _viewport.end.x = _viewport.begin.x + areaWidth;
-            _viewport.end.y = _viewport.begin.y + areaHeight;
+            _viewport->begin.x = MT_ceilf( (rw - areaWidth) * 0.5f );
+            _viewport->begin.y = MT_ceilf( (rh - areaHeight) * 0.5f );
+            _viewport->end.x = _viewport->begin.x + areaWidth;
+            _viewport->end.y = _viewport->begin.y + areaHeight;
         }
         else
         {
-            _viewport.begin.x = 0.f;
-            _viewport.begin.y = 0.f;
-
-            _viewport.end.x = rw;
-            _viewport.end.y = rh;
+            _viewport->begin.x = 0.f;
+            _viewport->begin.y = 0.f;
+            _viewport->end.x = rw;
+            _viewport->end.y = rh;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1788,9 +1784,9 @@ namespace Mengine
         }
 
         Resolution windowResolution;
-        this->calcWindowResolution( windowResolution );
+        this->calcWindowResolution( &windowResolution );
 
-        LOGGER_INFO( "resolution %d:%d\n"
+        LOGGER_INFO( "resolution %u:%u\n"
             , windowResolution.getWidth()
             , windowResolution.getHeight()
             );
@@ -1800,7 +1796,7 @@ namespace Mengine
         Viewport aspectRatioViewport;
         float bestAspect;
 
-        if( this->findBestAspectViewport_( aspect, bestAspect, aspectRatioViewport ) == true )
+        if( this->findBestAspectViewport_( aspect, &bestAspect, &aspectRatioViewport ) == true )
         {
             LOGGER_INFO( "viewport (1) %f:%f\n"
                 , aspectRatioViewport.getWidth()
@@ -1815,7 +1811,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_INFO( "viewport (2) %d:%d\n"
+            LOGGER_INFO( "viewport (2) %u:%u\n"
                 , m_contentResolution.getWidth()
                 , m_contentResolution.getHeight()
                 );
@@ -1900,10 +1896,10 @@ namespace Mengine
         }
         else
         {
-            this->calcWindowResolution( m_currentResolution );
+            this->calcWindowResolution( &m_currentResolution );
         }
 
-        LOGGER_MESSAGE( "%d Current Resolution %d %d"
+        LOGGER_MESSAGE( "%d Current Resolution [%u %u]"
             , fullscreen
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
@@ -1917,9 +1913,9 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->notifyWindowModeChanged( m_currentResolution, fullscreen );
 
-        this->calcRenderViewport_( m_currentResolution, m_renderViewport );
+        this->calcRenderViewport_( m_currentResolution, &m_renderViewport );
 
-        LOGGER_MESSAGE( "Render Viewport %f %f - %f %f"
+        LOGGER_MESSAGE( "Render Viewport [%f %f - %f %f]"
             , m_renderViewport.begin.x
             , m_renderViewport.begin.y
             , m_renderViewport.getWidth()
@@ -1940,12 +1936,12 @@ namespace Mengine
             Viewport gameViewport;
 
             APPLICATION_SERVICE()
-                ->getGameViewport( gameViewportAspect, gameViewport );
+                ->getGameViewport( &gameViewportAspect, &gameViewport );
 
             GAME_SERVICE()
                 ->setGameViewport( gameViewport, gameViewportAspect );
 
-            LOGGER_MESSAGE( "Game Viewport %f %f - %f %f Aspect %f"
+            LOGGER_MESSAGE( "Game Viewport [%f %f - %f %f] Aspect [%f]"
                 , gameViewport.begin.x
                 , gameViewport.begin.y
                 , gameViewport.end.x
@@ -2118,38 +2114,42 @@ namespace Mengine
         return m_fixedDisplayResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::getGameViewport( float & _aspect, Viewport & _viewport ) const
+    void Application::getGameViewport( float * _aspect, Viewport * _viewport ) const
     {
         float aspect = m_currentResolution.getAspectRatio();
 
+        uint32_t width = m_contentResolution.getWidth();
+        uint32_t height = m_contentResolution.getHeight();
+
         if( m_fixedContentResolution == false )
         {
-            _aspect = aspect;
+            *_aspect = aspect;
 
-            _viewport.begin.x = 0.f;
-            _viewport.begin.y = 0.f;
-            _viewport.end.x = (float)m_contentResolution.getWidth();
-            _viewport.end.y = (float)m_contentResolution.getHeight();
+            _viewport->begin.x = 0.f;
+            _viewport->begin.y = 0.f;
+            _viewport->end.x = (float)width;
+            _viewport->end.y = (float)height;
 
             return;
         }
 
-        Viewport aspectRatioViewport;
         float bestAspect;
+        Viewport aspectRatioViewport;
 
-        if( this->findBestAspectViewport_( aspect, bestAspect, aspectRatioViewport ) == true )
+        if( this->findBestAspectViewport_( aspect, &bestAspect, &aspectRatioViewport ) == true )
         {
-            _aspect = bestAspect;
-            _viewport = aspectRatioViewport;
+            *_aspect = bestAspect;
+
+            *_viewport = aspectRatioViewport;
         }
         else
         {
-            _aspect = aspect;
+            *_aspect = aspect;
 
-            _viewport.begin.x = 0.f;
-            _viewport.begin.y = 0.f;
-            _viewport.end.x = (float)m_contentResolution.getWidth();
-            _viewport.end.y = (float)m_contentResolution.getHeight();
+            _viewport->begin.x = 0.f;
+            _viewport->begin.y = 0.f;
+            _viewport->end.x = (float)width;
+            _viewport->end.y = (float)height;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2228,8 +2228,7 @@ namespace Mengine
         {
             const ConstString & name = m_cursorResource->getName();
             const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
-
-            ContentInterface * content = m_cursorResource->getContent();
+            const ContentInterface * content = m_cursorResource->getContent();
 
             PLATFORM_SERVICE()
                 ->notifyCursorIconSetup( name, content, buffer );
@@ -2248,6 +2247,7 @@ namespace Mengine
         if( m_cursorResource != nullptr )
         {
             m_cursorResource->release();
+            m_cursorResource = nullptr;
         }
 
         const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()
@@ -2266,8 +2266,7 @@ namespace Mengine
 
         const ConstString & name = m_cursorResource->getName();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
-
-        ContentInterface * content = m_cursorResource->getContent();
+        const ContentInterface * content = m_cursorResource->getContent();
 
         PLATFORM_SERVICE()
             ->notifyCursorIconSetup( name, content, buffer );

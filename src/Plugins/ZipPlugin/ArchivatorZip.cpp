@@ -24,7 +24,7 @@ namespace Mengine
         return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize, EArchivatorCompress _compress )
+    bool ArchivatorZip::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _compressSize, EArchivatorCompress _compress )
     {
         uLong compressSize = (uLong)_bufferSize;
 
@@ -60,7 +60,7 @@ namespace Mengine
             return false;
         }
 
-        _compressSize = compressSize;
+        *_compressSize = (size_t)compressSize;
 
         return true;
     }
@@ -118,7 +118,7 @@ namespace Mengine
         return err;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _decompressSize )
+    bool ArchivatorZip::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _decompressSize )
     {
         uLong destLen = (uLong)_bufferSize;
 
@@ -136,7 +136,7 @@ namespace Mengine
             return false;
         }
 
-        _decompressSize = destLen;
+        *_decompressSize = (size_t)destLen;
 
         return true;
     }

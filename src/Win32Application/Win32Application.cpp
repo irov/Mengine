@@ -290,7 +290,7 @@ namespace Mengine
 
         Resolution windowResolution;
         APPLICATION_SERVICE()
-            ->calcWindowResolution( windowResolution );
+            ->calcWindowResolution( &windowResolution );
 
         PLATFORM_SERVICE()
             ->setIcon( IDI_MENGINE );

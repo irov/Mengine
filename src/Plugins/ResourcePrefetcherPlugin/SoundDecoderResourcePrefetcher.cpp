@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoderResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
-        ContentInterface * content = _resource->getContent();
+        const ContentInterface * content = _resource->getContent();
 
         MENGINE_ASSERTION_FATAL( content != nullptr, "resource '%s' is not contentable"
             , _resource->getType().c_str()

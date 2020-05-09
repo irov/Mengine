@@ -185,6 +185,25 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mNextNativeState = NativeState.INIT;
         mCurrentNativeState = NativeState.INIT;
     }
+    
+    protected void brokenLoadLibraries(String msg) {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+        dlgAlert.setMessage("An error occurred while trying to start the application. Please try again and/or reinstall."
+              + System.getProperty("line.separator")
+              + System.getProperty("line.separator")
+              + "Error: " + msg);
+        dlgAlert.setTitle("SDL Error");
+        dlgAlert.setPositiveButton("Exit",
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog,int id) {
+                    // if this button is clicked, close current activity
+                    SDLActivity.mSingleton.finish();
+                }
+            });
+       dlgAlert.setCancelable(false);
+       dlgAlert.create().show();
+    }    
 
     // Setup
     @Override
@@ -217,22 +236,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         if (mBrokenLibraries)
         {
             mSingleton = this;
-            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-            dlgAlert.setMessage("An error occurred while trying to start the application. Please try again and/or reinstall."
-                  + System.getProperty("line.separator")
-                  + System.getProperty("line.separator")
-                  + "Error: " + errorMsgBrokenLib);
-            dlgAlert.setTitle("SDL Error");
-            dlgAlert.setPositiveButton("Exit",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, close current activity
-                        SDLActivity.mSingleton.finish();
-                    }
-                });
-           dlgAlert.setCancelable(false);
-           dlgAlert.create().show();
+            SDLActivity.mSingleton.brokenLoadLibraries(errorMsgBrokenLib);
 
            return;
         }

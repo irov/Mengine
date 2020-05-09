@@ -79,8 +79,4 @@
             android:exported="true"/>
         <receiver android:name="org.Mengine.Build.LocalNotifications.NotificationPublisher" />
     </application>
-    
-    <application>
-
-    </application>    
 </manifest>

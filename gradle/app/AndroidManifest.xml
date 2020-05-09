@@ -33,6 +33,7 @@
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false"/>
         <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false"/>
         <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false"/>
+        <meta-data android:name="io.sentry.dsn" android:value="https://1c3035a5383e4853b3072fdd59a101da@o352587.ingest.sentry.io/5230978"/>
 
         <activity
             android:name="MengineActivity"
@@ -78,4 +79,8 @@
             android:exported="true"/>
         <receiver android:name="org.Mengine.Build.LocalNotifications.NotificationPublisher" />
     </application>
+    
+    <application>
+
+    </application>    
 </manifest>

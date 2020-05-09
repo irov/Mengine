@@ -22,7 +22,7 @@ namespace Mengine
     bool AndroidNativeDevToDevPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidDevToDev" )
-            , Helper::makeModuleFactory<AndroidNativeDevToDevModule>( MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<AndroidNativeDevToDevModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -60,6 +60,8 @@ namespace Mengine
         template<class T, class ... Args>
         FactoryPtr makeFactory( const DocumentPtr & _doc, Args && ... _args )
         {
+            MENGINE_UNUSED( _doc );
+
             Factory * factory = Helper::newT<T>( std::forward<Args>( _args ) ... );
 
 #ifdef MENGINE_DEBUG

@@ -68,6 +68,8 @@ android {
         
         print 'ANDROID_APP_NAME_VERSION = '
         println versionName
+        
+        signingConfig signingConfigs.config
 
         multiDexEnabled true
         
@@ -193,9 +195,10 @@ android {
 }
 
 sentry {
-     uploadNativeSymbols true
-
-     includeNativeSources true
+    autoProguardConfig true
+    autoUpload true
+    uploadNativeSymbols true
+    includeNativeSources true
 }
 
 task openal_copy_bsinc_inc(type: Copy) {

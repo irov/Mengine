@@ -22,7 +22,7 @@ namespace Mengine
     bool AndroidNativeFacebookPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidFacebook" )
-            , Helper::makeModuleFactory<AndroidNativeFacebookModule>( MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<AndroidNativeFacebookModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

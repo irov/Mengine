@@ -4,6 +4,10 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'io.sentry.android.gradle'
 
 android {
+    buildToolsVersion '29.0.3'
+    compileSdkVersion 28
+
+
     signingConfigs {
         config {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
@@ -24,10 +28,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-    
-    buildToolsVersion '29.0.3'
-    compileSdkVersion 28
+    }   
     
     defaultConfig {
         if (findProperty("ANDROID_APP_ID")) {

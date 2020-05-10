@@ -310,11 +310,11 @@ set (JANSSON_INITIAL_HASHTABLE_ORDER 3 CACHE STRING "Number of buckets new objec
 
 # configure the public config file
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake/jansson_config.h.cmake
-                ${CMAKE_CURRENT_BINARY_DIR}/include/jansson_config.h)
+                ${THIRDPARTY_CONFIG_DIR}/jansson/include/jansson_config.h)
 
 # Copy the jansson.h file to the public include folder
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/jansson.h
-           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+           DESTINATION ${THIRDPARTY_CONFIG_DIR}/jansson/include/)
 
 add_definitions(-DJANSSON_USING_CMAKE)
 
@@ -325,7 +325,7 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake/jansson_private_config.h.cmake
 # and tell the source code to include it
 add_definitions(-DHAVE_CONFIG_H)
 
-include_directories (${CMAKE_CURRENT_BINARY_DIR}/include)
+include_directories (${THIRDPARTY_CONFIG_DIR}/jansson/include)
 include_directories (${CMAKE_CURRENT_BINARY_DIR}/private_include)
 
 # Add the lib sources.
@@ -339,7 +339,7 @@ set(JANSSON_HDR_PRIVATE
    ${CMAKE_CURRENT_BINARY_DIR}/private_include/jansson_private_config.h)
 
 set(JANSSON_HDR_PUBLIC
-   ${CMAKE_CURRENT_BINARY_DIR}/include/jansson_config.h
+   ${THIRDPARTY_CONFIG_DIR}/jansson/include/jansson_config.h
    ${CMAKE_CURRENT_SOURCE_DIR}/src/jansson.h)
 
 source_group("Library Sources" FILES ${JANSSON_SRC})
@@ -619,7 +619,7 @@ endforeach()
 # Generate the config file for the build-tree.
 set(JANSSON__INCLUDE_DIRS
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    "${CMAKE_CURRENT_BINARY_DIR}/include")
+    "${THIRDPARTY_CONFIG_DIR}/jansson/include")
 set(JANSSON_INCLUDE_DIRS ${JANSSON__INCLUDE_DIRS} CACHE PATH "Jansson include directories")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/janssonConfig.cmake.in
                ${CMAKE_CURRENT_BINARY_DIR}/janssonConfig.cmake

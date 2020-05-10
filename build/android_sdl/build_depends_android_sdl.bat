@@ -14,7 +14,6 @@ set ANDROID_CMAKE_VERSION=3.10.2.4988404
 
 set ANDROID_PLATFORM=android-18
 set ANDROID_SDK=%LOCALAPPDATA%\Android\sdk
-set ANDROID_SDK_MANAGER=%ANDROID_SDK%\cmdline-tools\latest\bin\sdkmanager.bat
 set ANDROID_NDK=%ANDROID_SDK%\ndk\%ANDROID_NDK_VERSION%
 set CMAKE_GENERATOR="Ninja"
 set CMAKE_PATH=%ANDROID_SDK%\cmake\%ANDROID_CMAKE_VERSION%
@@ -24,14 +23,6 @@ set CMAKE_TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
 
 set CMAKELIST_PATH=%CD%\..\..\cmake\Depends_Android_SDL
 set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
-
-if not exist %ANDROID_SDK_MANAGER% (
-    @echo not found %ANDROID_SDK_MANAGER%. Please setup android cmdline tools
-    goto end
-)
-
-call %ANDROID_SDK_MANAGER% --install "ndk;%ANDROID_NDK_VERSION%"
-call %ANDROID_SDK_MANAGER% --install "cmake;%ANDROID_CMAKE_VERSION%"
 
 @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\x86
 @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\x86

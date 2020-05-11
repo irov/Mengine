@@ -57,6 +57,7 @@ namespace Mengine
 #   define LOGGER_STATISTIC( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, Mengine::LCOLOR_GREEN, nullptr, 0 )( __VA_ARGS__ )
 #   define LOGGER_WARNING( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
 #   define LOGGER_MESSAGE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
+#   define LOGGER_MESSAGE_ERROR( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED, nullptr, 0 )( __VA_ARGS__ )
 #   define LOGGER_MESSAGE_WN( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 ).setNewline(false)( __VA_ARGS__ )
 #   define LOGGER_INFO( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
@@ -66,6 +67,7 @@ namespace Mengine
 #   define LOGGER_STATISTIC( ... )
 #   define LOGGER_WARNING( ... )
 #   define LOGGER_MESSAGE( ... )
+#   define LOGGER_MESSAGE_ERROR( ... )
 #   define LOGGER_MESSAGE_WN( ... )
 #   define LOGGER_INFO( ... )
 //////////////////////////////////////////////////////////////////////////

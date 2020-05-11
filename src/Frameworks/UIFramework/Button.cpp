@@ -269,7 +269,7 @@ namespace Mengine
         Cook::addFunction( source_leave_movie, this, &Button::__setState, EBS_IDLE );
 
         Cook::addPickerableMouseEnter( source_leave_enter, m_pickerable, nullptr );
-        Cook::addFunction( source_leave_enter, this, &Button::__setState, EBS_OVER );
+        Cook::addFunction( source_leave_enter, this, &Button::__setState, EBS_ENTER );
 
         Cook::addNodeDisable( _source, _nodeLeave );
     }

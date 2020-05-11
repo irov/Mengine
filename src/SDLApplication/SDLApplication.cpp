@@ -38,7 +38,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-#include <cstdio>
 #include <clocale>
 
 #include "Kernel/FactorableUnique.h"

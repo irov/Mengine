@@ -40,7 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct NodeDebuggerPacket
     {
-        Vector<uint8_t> payload;
+        Blobject payload;
     };
     //////////////////////////////////////////////////////////////////////////
     class NodeDebuggerModule
@@ -116,7 +116,7 @@ namespace Mengine
         ENodeDebuggerServerState m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
-        Vector<uint8_t> m_receivedData;
+        Blobject m_receivedData;
         VectorNodePath m_selectedNodePath;
         ArchivatorInterfacePtr m_archivator;
     };

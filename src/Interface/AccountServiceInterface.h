@@ -30,7 +30,7 @@ namespace Mengine
 
     public:
         virtual AccountInterfacePtr createAccount( const DocumentPtr & _doc ) = 0;
-        virtual AccountInterfacePtr createGlobalAccount( const DocumentPtr & ) = 0;
+        virtual AccountInterfacePtr createGlobalAccount( const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool hasAccount( const ConstString & _accountID ) const = 0;

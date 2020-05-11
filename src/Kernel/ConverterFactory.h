@@ -59,7 +59,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            VOCABULARY_SET( ConverterFactoryInterface, STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ), converter );
+            VOCABULARY_SET( ConverterFactoryInterface, STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ), converter, _doc );
 
             return converter;
         }

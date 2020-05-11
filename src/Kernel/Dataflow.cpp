@@ -18,7 +18,7 @@ namespace Mengine
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()
-                ->getData( _fileGroup, _filePath, prefetch_data ) == true )
+                ->getData( _fileGroup, _filePath, &prefetch_data ) == true )
             {
                 return prefetch_data;
             }
@@ -45,7 +45,7 @@ namespace Mengine
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()
-                ->popData( _fileGroup, _filePath, prefetch_data ) == true )
+                ->popData( _fileGroup, _filePath, &prefetch_data ) == true )
             {
                 return prefetch_data;
             }

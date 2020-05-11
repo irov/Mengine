@@ -953,7 +953,7 @@ bool run()
 
     pybind::allocator_interface * allocator = Mengine::Helper::newT<Detail::MyAllocator>();
 
-    pybind::kernel_interface * kernel = pybind::initialize( allocator, szPythonPath, MENGINE_DEBUG_ATTRIBUTE( true, false ), true, false );
+    pybind::kernel_interface * kernel = pybind::initialize( allocator, szPythonPath, MENGINE_DEBUG_VALUE( true, false ), true, false );
 
     if( kernel == nullptr )
     {

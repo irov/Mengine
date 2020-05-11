@@ -1127,7 +1127,7 @@ namespace Mengine
         }
 
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class>>(MENGINE_DOCUMENT_FACTORABLE, _kernel))
+    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class>>(MENGINE_DOCUMENT_FACTORABLE, _kernel), MENGINE_DOCUMENT_FACTORABLE)
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );

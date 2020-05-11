@@ -27,7 +27,7 @@ namespace Mengine
     bool CameraDebugGizmoPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleCameraDebugGizmo" )
-            , Helper::makeModuleFactory<ModuleCameraDebugGizmo>( MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<ModuleCameraDebugGizmo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

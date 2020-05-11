@@ -6,6 +6,7 @@
 #include "Kernel/MixinPointer.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
 
@@ -17,7 +18,7 @@ namespace Mengine
         SERVICE_DECLARE( "VocabularyService" )
 
     public:
-        virtual bool setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable ) = 0;
+        virtual bool setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable, const DocumentPtr & _doc ) = 0;
         virtual MixinPointer removeFactorable( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
         virtual bool hasFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
@@ -31,8 +32,8 @@ namespace Mengine
 #define VOCABULARY_SERVICE()\
     ((Mengine::VocabularyServiceInterface *)SERVICE_GET(Mengine::VocabularyServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define VOCABULARY_SET(Interface, Category, Prototype, Factorable)\
-    VOCABULARY_SERVICE()->setFactorable(Category, Prototype, IntrusivePtr<Interface>(Factorable))
+#define VOCABULARY_SET(Interface, Category, Prototype, Factorable, Document)\
+    VOCABULARY_SERVICE()->setFactorable(Category, Prototype, IntrusivePtr<Interface>(Factorable), Document)
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_REMOVE(Category, Prototype)\
     VOCABULARY_SERVICE()->removeFactorable(Category, Prototype)

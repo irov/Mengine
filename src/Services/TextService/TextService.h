@@ -62,7 +62,7 @@ namespace Mengine
     public:
         void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) override;
         void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) override;
-        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const override;
+        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * _arguments ) const override;
 
     public:
         void foreachFonts( const LambdaTextFont & _lambda ) override;
@@ -146,6 +146,6 @@ namespace Mengine
         class TextManagerLoadSaxCallback;
         class TextManagerUnloadSaxCallback;
 
-        void createLocalString_( const Char * _text, ConstString::size_type _size, ConstString & _cstr );
+        void createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * _cstr );
     };
 }

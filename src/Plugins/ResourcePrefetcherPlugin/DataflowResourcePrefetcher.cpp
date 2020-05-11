@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
-        ContentInterface * content = _resource->getContent();
+        const ContentInterface * content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
             , _resource->getType().c_str()
@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     bool DataflowResourcePrefetcher::_unfetch( const ResourcePtr & _resource ) const
     {
-        ContentInterface * content = _resource->getContent();
+        const ContentInterface * content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
             , _resource->getType().c_str()

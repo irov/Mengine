@@ -31,7 +31,7 @@ namespace Mengine
         SERVICE_CREATE( AstralaxService, MENGINE_DOCUMENT_FACTORABLE );
 
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralax" )
-            , Helper::makeModuleFactory<AstralaxModule>( MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<AstralaxModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

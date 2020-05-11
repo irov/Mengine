@@ -102,7 +102,7 @@ namespace Mengine
         if( m_options.pitch == m_dataInfo.width * m_dataInfo.channels )
         {
             size_t decompressSize;
-            if( m_archivator->decompress( _dest, _capacityDest, _source, _sourceSize, decompressSize ) == false )
+            if( m_archivator->decompress( _dest, _capacityDest, _source, _sourceSize, &decompressSize ) == false )
             {
                 return 0;
             }
@@ -118,7 +118,7 @@ namespace Mengine
             void * cache_buffer = buffer->getBuffer();
 
             size_t decompressSize;
-            if( m_archivator->decompress( cache_buffer, _capacityDest, _source, _sourceSize, decompressSize ) == false )
+            if( m_archivator->decompress( cache_buffer, _capacityDest, _source, _sourceSize, &decompressSize ) == false )
             {
                 return 0;
             }

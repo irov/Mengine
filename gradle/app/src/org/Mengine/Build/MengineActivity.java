@@ -62,6 +62,16 @@ public class MengineActivity extends SDLActivity {
         AndroidNativeLinking_setupLinkingJNI();
         AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
     }
+    
+    @Override
+    protected void brokenLoadLibraries(String msg) {
+        Log.e(TAG, "An error occurred while trying to start the application. Please try again and/or reinstall."
+            + System.getProperty("line.separator")
+            + System.getProperty("line.separator")
+            + "Error: " + msg);
+        
+        throw new UnsatisfiedLinkError(msg);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -56,7 +56,7 @@ namespace Mengine
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), Helper::makeFactorableUnique<NodePrototypeGenerator<NodeAreaOfInterestActor, 32>>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAreaOfInterest" )
-            , Helper::makeModuleFactory<ModuleAreaOfInterest>( MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<ModuleAreaOfInterest>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -34,7 +34,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory;
         if( PREFETCHER_SERVICE()
-            ->getStream( _fileGroup, _filePath, memory ) == false )
+            ->getStream( _fileGroup, _filePath, &memory ) == false )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 

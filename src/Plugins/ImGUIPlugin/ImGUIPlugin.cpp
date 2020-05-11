@@ -23,7 +23,7 @@ namespace Mengine
     bool ImGUIPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleImGUI" )
-            , Helper::makeModuleFactory<ImGUIModule>( MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<ImGUIModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

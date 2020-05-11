@@ -30,7 +30,7 @@ Win32Application
 if(MENGINE_TOOLCHAIN_MINGW)
     # resource compilation for mingw
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o
-                       COMMAND ${MINGW_ROOT}/bin/windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
+                       COMMAND ${MINGW_ROOT}/bin/windres.exe -I ${CMAKE_CURRENT_SOURCE_DIR}
                                            -i ${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
                                            -o ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
     

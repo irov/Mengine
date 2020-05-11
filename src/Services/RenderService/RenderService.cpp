@@ -558,7 +558,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::updateMaterial_( RenderMaterialInterface * _material )
+    void RenderService::updateMaterial_( const RenderMaterialInterface * _material )
     {
         uint32_t materialId = _material->getId();
 
@@ -600,17 +600,19 @@ namespace Mengine
         this->updateStage_( stage );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderPrimitive_( RenderPrimitive * _renderPrimitive )
+    void RenderService::renderPrimitive_( const RenderPrimitive * _renderPrimitive )
     {
+        RenderMaterialInterface * material = _renderPrimitive->material;
+
         if( _renderPrimitive->indexCount == 0 )
         {
-            IntrusivePtrBase::intrusive_ptr_release( _renderPrimitive->material );
-            _renderPrimitive->material = nullptr;
+            if( material != nullptr )
+            {
+                IntrusivePtrBase::intrusive_ptr_dec_ref( material );
+            }
 
             return;
-        }
-
-        RenderMaterialInterface * material = _renderPrimitive->material;
+        }        
 
         this->updateMaterial_( material );
 
@@ -636,8 +638,10 @@ namespace Mengine
             _renderPrimitive->indexCount
         );
 
-        IntrusivePtrBase::intrusive_ptr_release( _renderPrimitive->material );
-        _renderPrimitive->material = nullptr;
+        if( material != nullptr )
+        {
+            IntrusivePtrBase::intrusive_ptr_dec_ref( material );
+        }
 
         ++m_debugInfo.dips;
     }
@@ -995,11 +999,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderPrimitives( RenderPrimitive * _primitives, uint32_t _count )
+    void RenderService::renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count )
     {
         for( uint32_t index = 0; index != _count; ++index )
         {
-            RenderPrimitive * renderPrimitive = _primitives + index;
+            const RenderPrimitive * renderPrimitive = _primitives + index;
 
             this->renderPrimitive_( renderPrimitive );
         }

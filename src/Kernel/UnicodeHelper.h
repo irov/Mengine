@@ -26,7 +26,9 @@ namespace Mengine
         bool utf8ToUnicode( const String & _utf8, WString & _unicode );
         bool utf8ToUnicode( const String & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize = nullptr );
         bool utf8ToUnicode( const ConstString & _utf8, WString & _unicode );
+        bool utf8ToUnicode( const ConstString & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize = nullptr );
         bool utf8ToUnicode( const PathString & _utf8, WString & _unicode );
+        bool utf8ToUnicode( const PathString & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize = nullptr );
         bool utf8ToUnicode( const FilePath & _utf8, WString & _unicode );
         bool utf8ToUnicode( const FilePath & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize = nullptr );
     }

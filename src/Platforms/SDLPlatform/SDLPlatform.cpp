@@ -289,6 +289,10 @@ namespace Mengine
     {
         if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 )
         {
+            LOGGER_ERROR("SDL invalid initialize %s"
+                , SDL_GetError()
+            );            
+            
             return false;
         }
 

@@ -5,6 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
+#include "Kernel/Blobject.h"
 
 #include "Config/Lambda.h"
 #include "Config/Char.h"
@@ -29,7 +30,7 @@ namespace Mengine
 
     namespace Detail
     {
-        MENGINE_INLINE void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
+        MENGINE_INLINE void InsertPacketHeader( Blobject & _payload, const PacketHeader & _hdr )
         {
             const uint8_t * begin = reinterpret_cast<const uint8_t *>(&_hdr);
             const uint8_t * end = begin + sizeof( PacketHeader );
@@ -301,7 +302,7 @@ namespace Mengine
         MyXMLWriter( const MyXMLWriter & ) = delete;
         ~MyXMLWriter() = default;
 
-        MyXMLWriter( Vector<uint8_t> & _buffer )
+        MyXMLWriter( Blobject & _buffer )
             : m_buffer( _buffer )
         {
         }
@@ -315,7 +316,7 @@ namespace Mengine
         }
 
     private:
-        Vector<uint8_t> & m_buffer;
+        Blobject & m_buffer;
 
         String m_debug;
     };

@@ -349,7 +349,7 @@ namespace Mengine
                     }
 
                 protected:
-                    void accept( Resource * _resource )
+                    void accept( Resource * _resource ) override
                     {
                         if( _resource->isCompile() == false )
                         {
@@ -394,7 +394,7 @@ namespace Mengine
                     }
 
                 protected:
-                    void accept( ThreadTask * _task )
+                    void accept( ThreadTask * _task ) override 
                     {
                         if( _task->isComplete() == false )
                         {
@@ -528,7 +528,7 @@ namespace Mengine
                     void operator = ( const MyVisitorFactoryService & ) = delete;
 
                 protected:
-                    void visit( const Factory * _factory )
+                    void visit( const Factory * _factory ) override
                     {
                         uint32_t count = _factory->getCountObject();
 
@@ -640,17 +640,11 @@ namespace Mengine
 
             String text = ss.str();
 
-            //VectorString args;
-            //args.emplace_back( text );
-            //m_debugText->setTextFormatArgs( args );
-
             float gameViewportAspect;
             Viewport gameViewport;
 
             APPLICATION_SERVICE()
-                ->getGameViewport( gameViewportAspect, gameViewport );
-
-            //m_debugText->setLocalPosition( mt::vec3f( gameViewport.begin, 0.f ) );
+                ->getGameViewport( &gameViewportAspect, &gameViewport );
 
             const Resolution & resolution = APPLICATION_SERVICE()
                 ->getCurrentResolution();
@@ -660,10 +654,6 @@ namespace Mengine
 
             mt::vec2f scale;
             content.calcScale( resolution, scale );
-
-            //m_debugText->setLocalScale( mt::vec3f( scale, 1.f ) );
-
-            //m_debugText->render( _context );
 
             Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FORWARD, "%s"
                 , text.c_str()

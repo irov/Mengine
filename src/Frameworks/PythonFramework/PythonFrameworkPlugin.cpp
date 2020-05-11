@@ -32,7 +32,7 @@ namespace Mengine
         SERVICE_CREATE( ScriptProviderService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( ScriptService, MENGINE_DOCUMENT_FACTORABLE );
 
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PythonFramework" ), Helper::makeFrameworkFactory<PythonFramework>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PythonFramework" ), Helper::makeFrameworkFactory<PythonFramework>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

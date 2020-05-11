@@ -184,10 +184,10 @@ namespace Mengine
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_MESSAGE( "VendorId: %u", AdID.VendorId );
-        LOGGER_MESSAGE( "DeviceId: %u", AdID.DeviceId );
-        LOGGER_MESSAGE( "SubSysId: %u", AdID.SubSysId );
-        LOGGER_MESSAGE( "Revision: %u", AdID.Revision );
+        LOGGER_MESSAGE( "VendorId: %lu", AdID.VendorId );
+        LOGGER_MESSAGE( "DeviceId: %lu", AdID.DeviceId );
+        LOGGER_MESSAGE( "SubSysId: %lu", AdID.SubSysId );
+        LOGGER_MESSAGE( "Revision: %lu", AdID.Revision );
 
         IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_caps) )
         {
@@ -468,7 +468,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%lu) Try another"
                     , hr
                 );
 
@@ -480,7 +480,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%lu) Try another"
                     , hr
                 );
 
@@ -492,7 +492,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%lu) Try another"
                     , hr
                 );
 
@@ -504,7 +504,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%lu) Try another"
                     , hr
                 );
 
@@ -516,7 +516,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%lu) Try another"
                     , hr
                 );
 
@@ -528,7 +528,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%lu) Try another"
                     , hr
                 );
 
@@ -541,7 +541,7 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%p) BackBuffer Size %u:%u Format %u"
+            LOGGER_ERROR( "Can't create D3D device (hr:%lu, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , hr
                 , windowHandle
                 , m_d3dpp->BackBufferWidth
@@ -839,7 +839,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "invalid TestCooperativeLevel %d"
+            LOGGER_ERROR( "invalid TestCooperativeLevel %lu"
                 , hr
             );
 
@@ -887,7 +887,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "failed to swap buffers %x"
+            LOGGER_ERROR( "failed to swap buffers %lu"
                 , hr
             );
         }
@@ -981,7 +981,7 @@ namespace Mengine
 
         IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
         {
-            LOGGER_ERROR( "failed viewport (%d, %d, %d, %d)"
+            LOGGER_ERROR( "failed viewport (%u, %u, %u, %u)"
                 , VP.X
                 , VP.Y
                 , VP.X + VP.Width
@@ -1236,7 +1236,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) == true )
         {
-            LOGGER_ERROR( "failed to reset device (hr:%p)"
+            LOGGER_ERROR( "failed to reset device (hr:%lu)"
                 , hr
             );
 

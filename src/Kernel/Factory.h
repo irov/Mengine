@@ -8,6 +8,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/Document.h"
 #include "Kernel/Pointer.h"
 
 #include "stdex/thread_guard.h"
@@ -57,9 +58,17 @@ namespace Mengine
     namespace Helper
     {
         template<class T, class ... Args>
-        FactoryPtr makeFactory( Args && ... _args )
+        FactoryPtr makeFactory( const DocumentPtr & _doc, Args && ... _args )
         {
-            return FactoryPtr( Helper::newT<T>( std::forward<Args>( _args ) ... ) );
+            MENGINE_UNUSED( _doc );
+
+            Factory * factory = Helper::newT<T>( std::forward<Args>( _args ) ... );
+
+#ifdef MENGINE_DEBUG
+            factory->setDocument( _doc );
+#endif
+
+            return FactoryPtr::from( factory );
         }
     }
 }

@@ -21,6 +21,9 @@ namespace Mengine
         virtual void removeWin32ProcessHandler( uint32_t _id ) = 0;
 
     public:
+        virtual size_t getShortPathName( const Char * _filePath, Char * _shortFilePath ) const = 0;
+
+    public:
         virtual time_t getFileUnixTime( const FILETIME * filetime ) const = 0;
 
     public:

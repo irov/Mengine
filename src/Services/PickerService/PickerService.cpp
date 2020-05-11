@@ -166,7 +166,7 @@ namespace Mengine
         this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers & _pickers )
+    bool PickerService::pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers * _pickers )
     {
         VectorPickerStates statesAux;
         if( this->pickStates_( _point.x, _point.y, _touchId, _pressure, statesAux ) == false )
@@ -189,13 +189,13 @@ namespace Mengine
                 continue;
             }
 
-            _pickers.emplace_back( picker );
+            _pickers->emplace_back( picker );
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::getTraps( const mt::vec2f & _point, VectorPickers & _pickers )
+    bool PickerService::getTraps( const mt::vec2f & _point, VectorPickers * _pickers )
     {
         VectorPickerStates statesAux;
         if( this->getStates_( _point.x, _point.y, statesAux ) == false )
@@ -207,7 +207,7 @@ namespace Mengine
         {
             const PickerInterface * picker = desc.picker;
 
-            _pickers.emplace_back( picker );
+            _pickers->emplace_back( picker );
         }
 
         return true;

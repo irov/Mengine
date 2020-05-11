@@ -125,7 +125,7 @@ namespace Mengine
             );
 
             size_t uncompressSize = 0;
-            if( _archivator->decompress( binaryMemory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
+            if( _archivator->decompress( binaryMemory, binary_size, compress_memory, compress_size, &uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress doc '%s'"
                     , MENGINE_DOCUMENT_STR( _doc )
@@ -195,7 +195,7 @@ namespace Mengine
             }
 
             size_t uncompressSize = 0;
-            if( _archivator->decompress( _data, _size, compress_memory, compress_size, uncompressSize ) == false )
+            if( _archivator->decompress( _data, _size, compress_memory, compress_size, &uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress"
                 );
@@ -393,7 +393,7 @@ namespace Mengine
             void * binary_buffer = binary_memory->newBuffer( binary_size );
 
             size_t uncompressSize = 0;
-            if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )
+            if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, &uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress"
                 );
@@ -485,7 +485,7 @@ namespace Mengine
             void * binary_buffer = binary_memory->newBuffer( binary_size );
 
             size_t uncompressSize = 0;
-            if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )
+            if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, &uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress"
                 );

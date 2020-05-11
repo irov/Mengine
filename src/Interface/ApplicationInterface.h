@@ -99,13 +99,13 @@ namespace Mengine
         virtual bool isValidWindowMode() const = 0;
 
     public:
-        virtual void calcWindowResolution( Resolution & _windowResolution ) const = 0;
+        virtual void calcWindowResolution( Resolution * _windowResolution ) const = 0;
 
         virtual const Resolution & getCurrentResolution() const = 0;
         virtual const Viewport & getRenderViewport() const = 0;
 
         virtual const Resolution & getContentResolution() const = 0;
-        virtual void getGameViewport( float & _aspect, Viewport & _viewport ) const = 0;
+        virtual void getGameViewport( float * _aspect, Viewport * _viewport ) const = 0;
 
     public:
         virtual bool createRenderWindow() = 0;

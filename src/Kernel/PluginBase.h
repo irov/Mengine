@@ -5,6 +5,7 @@
 #include "Interface/ModuleFactoryInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Observable.h"
 #include "Kernel/Vector.h"
@@ -48,7 +49,7 @@ namespace Mengine
         virtual bool _systemPlugin() const;
 
     protected:
-        bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory );
+        bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory, const DocumentPtr & _doc );
 
     protected:
         uint32_t m_uid;

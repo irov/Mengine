@@ -266,7 +266,7 @@ namespace Mengine
 
         Resolution windowResolution;
         APPLICATION_SERVICE()
-            ->calcWindowResolution( windowResolution );
+            ->calcWindowResolution( &windowResolution );
 
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();

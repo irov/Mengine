@@ -163,7 +163,7 @@ namespace Mengine
 
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, text_key );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &text_key );
                 }
                 else if( MENGINE_STRCMP( str_key, "Value" ) == 0 )
                 {
@@ -198,7 +198,7 @@ namespace Mengine
                 }
                 else if( MENGINE_STRCMP( str_key, "Font" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, fontName );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &fontName );
 
                     params |= EFP_FONT;
                 }
@@ -504,7 +504,7 @@ namespace Mengine
 
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, text_key );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &text_key );
                     //text_key = Helper::stringizeString( str_value, (size_t)-1 );
                 }
             }
@@ -1030,7 +1030,7 @@ namespace Mengine
         m_aliasesArguments.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const
+    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * _arguments ) const
     {
         PairAliasKey key = std::make_pair( _environment, _alias );
 
@@ -1043,7 +1043,7 @@ namespace Mengine
 
         const VectorString & arguments = it_found->second;
 
-        _arguments = arguments;
+        *_arguments = arguments;
 
         return true;
     }
@@ -1124,7 +1124,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::createLocalString_( const Char * _text, ConstString::size_type _size, ConstString & _cstr )
+    void TextService::createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * _cstr )
     {
         ConstStringHolderLocalString * holder = m_poolLocalString.createT();
 

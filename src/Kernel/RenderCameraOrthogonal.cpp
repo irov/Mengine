@@ -206,7 +206,7 @@ namespace Mengine
             Viewport gameViewport;
 
             APPLICATION_SERVICE()
-                ->getGameViewport( gameViewportAspect, gameViewport );
+                ->getGameViewport( &gameViewportAspect, &gameViewport );
 
             Viewport renderViewportWM;
 

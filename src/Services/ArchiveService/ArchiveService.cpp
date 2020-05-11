@@ -21,7 +21,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
+    bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t * _uncompress )
     {
         MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -32,7 +32,7 @@ namespace Mengine
         const void * compress_memory = compress_buffer->getBuffer();
 
         size_t uncompressSize = 0;
-        if( _archivator->decompress( _memory, _capacity, compress_memory, _size, uncompressSize ) == false )
+        if( _archivator->decompress( _memory, _capacity, compress_memory, _size, &uncompressSize ) == false )
         {
             LOGGER_ERROR( "invalid decompress"
             );
@@ -40,7 +40,7 @@ namespace Mengine
             return false;
         }
 
-        _uncompress = uncompressSize;
+        *_uncompress = uncompressSize;
 
         return true;
     }
@@ -75,7 +75,7 @@ namespace Mengine
         );
 
         size_t compressSize;
-        if( _archivator->compress( memory_buffer, compressSize2, _buffer, _size, compressSize, _compress ) == false )
+        if( _archivator->compress( memory_buffer, compressSize2, _buffer, _size, &compressSize, _compress ) == false )
         {
             LOGGER_ERROR( "invalid compress"
             );

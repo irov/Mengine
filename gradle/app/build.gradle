@@ -1,8 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'io.sentry.android.gradle'
 
 android {
+    buildToolsVersion '29.0.3'
+    compileSdkVersion 28
+
+
     signingConfigs {
         config {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
@@ -19,9 +24,11 @@ android {
             }
         }
     }
-    
-    buildToolsVersion '28.0.3'
-    compileSdkVersion 28
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }   
     
     defaultConfig {
         if (findProperty("ANDROID_APP_ID")) {
@@ -38,6 +45,7 @@ android {
         println applicationId
 
         minSdkVersion 18
+        targetSdkVersion 28
 
         if (findProperty("ANDROID_APP_CODE_VERSION")) {
             versionCode ANDROID_APP_CODE_VERSION as Integer
@@ -61,9 +69,8 @@ android {
         
         print 'ANDROID_APP_NAME_VERSION = '
         println versionName
-
+        
         signingConfig signingConfigs.config
-        targetSdkVersion 28
 
         multiDexEnabled true
         
@@ -118,6 +125,8 @@ android {
         }
 
         release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            
             externalNativeBuild {
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-18",
@@ -186,6 +195,13 @@ android {
     }
 }
 
+sentry {
+    autoProguardConfig true
+    autoUpload true
+    uploadNativeSymbols true
+    includeNativeSources true
+}
+
 task openal_copy_bsinc_inc(type: Copy) {
     from "../../cmake/Dependencies/openal-soft/bsinc_inc.h"
     into "../../dependencies/openal-soft"
@@ -228,14 +244,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.google.firebase:firebase-core:17.4.0'
-    implementation 'com.google.firebase:firebase-analytics:17.4.0'
+    implementation 'com.google.firebase:firebase-core:17.4.1'
+    implementation 'com.google.firebase:firebase-analytics:17.4.1'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
     implementation 'com.google.firebase:firebase-crashlytics-ndk:17.0.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'io.sentry:sentry-android:2.0.0'
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')

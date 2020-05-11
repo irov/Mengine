@@ -22,7 +22,7 @@ namespace Mengine
     bool AndroidNativeLinkingPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidLinking" )
-            , Helper::makeModuleFactory<AndroidNativeLinkingModule>( MENGINE_DOCUMENT_FACTORABLE ) );
+            , Helper::makeModuleFactory<AndroidNativeLinkingModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -186,9 +186,23 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool utf8ToUnicode( const ConstString & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        {
+            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const PathString & _utf8, WString & _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool utf8ToUnicode( const PathString & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        {
+            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }

@@ -679,7 +679,7 @@ namespace Mengine
 
             if( external == nullptr )
             {
-                RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
+                const RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
 
                 RENDER_SERVICE()
                     ->renderPrimitives( renderPrimitives + renderPass->beginRenderObject, renderPass->countRenderObject );                

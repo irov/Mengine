@@ -399,7 +399,7 @@ if(MENGINE_DEPENDENCE_FREETYPE)
 endif()
 
 #dependencies openssl
-if(MENGINE_DEPENDENCE_OPENSSL)
+if(MENGINE_DEPENDENCE_OPENSSL AND NOT MENGINE_TARGET_IOS)
     message("================openssl================")
     set(WITH_APPS OFF CACHE BOOL "WITH_APPS" FORCE)    
     

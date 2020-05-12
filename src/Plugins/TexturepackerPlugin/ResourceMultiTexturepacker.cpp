@@ -46,9 +46,9 @@ namespace Mengine
 
         for( const ResourcePtr & resource : m_resourceTexturepackers )
         {
-            UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = resource->getUnknown();
+            UnknownResourceTexturepackerGetterInterface * unknownResourceTexturepacker = resource->getUnknown();
 
-            if( unknownResourceTexturepacker->hasFrame( _name, &resourceImage ) == false )
+            if( unknownResourceTexturepacker->findFrame( _name, &resourceImage ) == false )
             {
                 continue;
             }

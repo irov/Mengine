@@ -65,6 +65,7 @@
 #include "Kernel/SecureValue.h"
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/ViewportHelper.h"
 #include "Kernel/List.h"
 
 #include "Config/Config.h"
@@ -1683,43 +1684,6 @@ namespace Mengine
         return m_currentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::findBestAspectViewport_( float _aspect, float * _bestAspect, Viewport * _viewport ) const
-    {
-        LOGGER_INFO( "find aspect %f"
-            , _aspect
-            );
-
-        if( m_aspectRatioViewports.empty() == true )
-        {
-            return false;
-        }
-
-        float minimal_aspect = 100.f;
-
-        for( auto && [aspect, viewport] : m_aspectRatioViewports )
-        {
-            float deltha_aspect = fabsf( _aspect - aspect );
-
-            if( deltha_aspect < minimal_aspect )
-            {
-                minimal_aspect = deltha_aspect;
-
-                *_bestAspect = aspect;
-                *_viewport = viewport;
-            }
-        }
-
-        LOGGER_INFO( "best aspect %f viewport [%f, %f, %f, %f]"
-            , *_bestAspect
-            , _viewport->begin.x
-            , _viewport->begin.y
-            , _viewport->end.x
-            , _viewport->end.y
-            );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Application::calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport )
     {
         uint32_t width = _resolution.getWidth();
@@ -1742,7 +1706,7 @@ namespace Mengine
             Viewport dummy_aspectRatioViewport;
             float contentAspect;
 
-            if( this->findBestAspectViewport_( r_aspect, &contentAspect, &dummy_aspectRatioViewport ) == false )
+            if( Helper::findBestAspectViewport( m_aspectRatioViewports, r_aspect, &contentAspect, &dummy_aspectRatioViewport ) == false )
             {
                 contentAspect = c_aspect;
             }
@@ -1798,7 +1762,7 @@ namespace Mengine
         Viewport aspectRatioViewport;
         float bestAspect;
 
-        if( this->findBestAspectViewport_( aspect, &bestAspect, &aspectRatioViewport ) == true )
+        if( Helper::findBestAspectViewport( m_aspectRatioViewports, aspect, &bestAspect, &aspectRatioViewport ) == true )
         {
             LOGGER_INFO( "viewport (1) %f:%f\n"
                 , aspectRatioViewport.getWidth()
@@ -2146,7 +2110,7 @@ namespace Mengine
         float bestAspect;
         Viewport aspectRatioViewport;
 
-        if( this->findBestAspectViewport_( aspect, &bestAspect, &aspectRatioViewport ) == true )
+        if( Helper::findBestAspectViewport( m_aspectRatioViewports, aspect, &bestAspect, &aspectRatioViewport ) == true )
         {
             *_aspect = bestAspect;
 

@@ -394,6 +394,11 @@ Core
     
     Viewport.h
     Viewport.cpp
+    
+    ViewportHelper.h
+    ViewportHelper.cpp
+    
+    MapAspectRatioViewports.h
 
     Resolution.h
     Resolution.cpp

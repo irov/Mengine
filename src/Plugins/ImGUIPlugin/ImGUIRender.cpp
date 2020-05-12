@@ -123,7 +123,7 @@ namespace Mengine
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
         DX9RenderImageExtensionInterface * extension = image->getRenderImageExtention();
 
-        LPDIRECT3DTEXTURE9 pD3DTexture = extension->getD3DTexture();
+        IDirect3DTexture9 * pD3DTexture = extension->getD3DTexture();
 
         return (ImTextureID)pD3DTexture;
 #endif

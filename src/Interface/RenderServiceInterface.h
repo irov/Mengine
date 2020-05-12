@@ -67,8 +67,8 @@ namespace Mengine
         virtual VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) = 0;
 
     public:
-        virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-            int32_t _FSAAType, int32_t _FSAAQuality ) = 0;
+        virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen
+            , int32_t _FSAAType, int32_t _FSAAQuality ) = 0;
 
         virtual void destroyRenderWindow() = 0;
 

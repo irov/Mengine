@@ -260,6 +260,8 @@ namespace Mengine
         m_bits = CONFIG_VALUE( "Window", "Bits", 32U );
         m_fullscreen = CONFIG_VALUE( "Window", "Fullscreen", true );
         m_nofullscreen = CONFIG_VALUE( "Window", "NoFullscreen", false );
+        m_FSAAType = CONFIG_VALUE( "Window", "FSAAType", 0 );
+        m_FSAAQuality = CONFIG_VALUE( "Window", "FSAAQuality", 0 );
         m_vsync = CONFIG_VALUE( "Window", "VSync", true );
 
         if( HAS_OPTION( "novsync" ) == true )
@@ -2019,14 +2021,22 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::getCompanyName( Char * _companyName ) const
+    size_t Application::getCompanyName( Char * _companyName ) const
     {
         MENGINE_STRCPY( _companyName, m_companyName );
+
+        size_t companyNameLen = MENGINE_STRLEN( m_companyName );
+
+        return companyNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::getProjectName( Char * _projectName ) const
+    size_t Application::getProjectName( Char * _projectName ) const
     {
         MENGINE_STRCPY( _projectName, m_projectName );
+
+        size_t projectNameLen = MENGINE_STRLEN( m_projectName );
+
+        return projectNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getProjectCodename() const

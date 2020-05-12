@@ -26,8 +26,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImageTarget::bind( uint32_t _stage )
     {
-        LPDIRECT3DDEVICE9 pD3DDevice = m_target->getDirect3dDevice9();
-        LPDIRECT3DTEXTURE9 pD3DTexture = m_target->getDirect3dTexture9();
+        IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
+        IDirect3DTexture9 * pD3DTexture = m_target->getDirect3dTexture9();
 
 #ifdef MENGINE_DEBUG
         DWORD fillmode;
@@ -70,16 +70,16 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DDEVICE9 DX9RenderImageTarget::getD3DDevice() const
+    IDirect3DDevice9 * DX9RenderImageTarget::getD3DDevice() const
     {
-        LPDIRECT3DDEVICE9 pD3DDevice = m_target->getDirect3dDevice9();
+        IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
 
         return pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderImageTarget::getD3DTexture() const
+    IDirect3DTexture9 * DX9RenderImageTarget::getD3DTexture() const
     {
-        LPDIRECT3DTEXTURE9 pD3DTexture = m_target->getDirect3dTexture9();
+        IDirect3DTexture9 * pD3DTexture = m_target->getDirect3dTexture9();
 
         return pD3DTexture;
     }

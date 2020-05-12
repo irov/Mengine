@@ -12,7 +12,7 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        virtual LPDIRECT3DDEVICE9 getD3DDevice() const = 0;
-        virtual LPDIRECT3DTEXTURE9 getD3DTexture() const = 0;
+        virtual IDirect3DDevice9 * getD3DDevice() const = 0;
+        virtual IDirect3DTexture9 * getD3DTexture() const = 0;
     };
 }

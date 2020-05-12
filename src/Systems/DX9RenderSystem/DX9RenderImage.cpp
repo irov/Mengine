@@ -24,7 +24,7 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( IDirect3DDevice9 * _pD3DDevice, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
     {
         m_pD3DDevice = _pD3DDevice;
         m_pD3DTexture = _d3dInterface;
@@ -117,12 +117,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DDEVICE9 DX9RenderImage::getD3DDevice() const
+    IDirect3DDevice9 * DX9RenderImage::getD3DDevice() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderImage::getD3DTexture() const
+    IDirect3DTexture9 * DX9RenderImage::getD3DTexture() const
     {
         return m_pD3DTexture;
     }

@@ -30,7 +30,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        static void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, uint32_t _type, T * _values, uint32_t _size, uint32_t _count )
+        static void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, EProgramVariableType _type, const T * _values, uint32_t _size, uint32_t _count )
         {
             _variable.type = _type;
             _variable.offset = (uint32_t)_container.size();
@@ -41,85 +41,85 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataFloats, 0, _values, _size, _count );
+        Detail::makeVariableData( v, m_dataFloats, EPVT_FLOAT, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataIntegers, 1, _values, _size, _count );
+        Detail::makeVariableData( v, m_dataIntegers, EPVT_INTEGER, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataBooleans, 2, _values, _size, _count );
+        Detail::makeVariableData( v, m_dataBooleans, EPVT_BOOLEAN, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataFloats, 0, _values, _size, _count );
+        Detail::makeVariableData( v, m_pixelFloats, EPVT_FLOAT, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataIntegers, 1, _values, _size, _count );
+        Detail::makeVariableData( v, m_pixelIntegers, EPVT_INTEGER, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataBooleans, 2, _values, _size, _count );
+        Detail::makeVariableData( v, m_pixelBooleans, EPVT_BOOLEAN, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::updatePixelVariableFloats( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
-        ProgramVariableDesc & v = m_pixelVariables[_index];
+        const ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = &m_dataFloats[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
-        ProgramVariableDesc & v = m_pixelVariables[_index];
+        const ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataIntegers[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void DX9RenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
-        ProgramVariableDesc & v = m_pixelVariables[_index];
+        const ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataBooleans[v.offset];
         std::copy( _values, _values + _size * _count, values );
@@ -134,17 +134,17 @@ namespace Mengine
         {
             switch( v.type )
             {
-            case 0:
+            case EPVT_FLOAT:
                 {
                     const float * buff = &m_dataFloats[v.offset];
                     DXCALL( _pD3DDevice, SetVertexShaderConstantF, (vertexEnumerator, buff, v.count) );
                 }break;
-            case 1:
+            case EPVT_INTEGER:
                 {
                     const int32_t * buff = &m_dataIntegers[v.offset];
                     DXCALL( _pD3DDevice, SetVertexShaderConstantI, (vertexEnumerator, buff, v.count) );
                 }break;
-            case 2:
+            case EPVT_BOOLEAN:
                 {
                     const int32_t * buff = &m_dataBooleans[v.offset];
                     DXCALL( _pD3DDevice, SetVertexShaderConstantB, (vertexEnumerator, buff, v.count) );
@@ -163,19 +163,19 @@ namespace Mengine
         {
             switch( v.type )
             {
-            case 0:
+            case EPVT_FLOAT:
                 {
-                    const float * buff = &m_dataFloats[v.offset];
+                    const float * buff = &m_pixelFloats[v.offset];
                     DXCALL( _pD3DDevice, SetPixelShaderConstantF, (pixelEnumerator, buff, v.count) );
                 }break;
-            case 1:
+            case EPVT_INTEGER:
                 {
-                    const int32_t * buff = &m_dataIntegers[v.offset];
+                    const int32_t * buff = &m_pixelIntegers[v.offset];
                     DXCALL( _pD3DDevice, SetPixelShaderConstantI, (pixelEnumerator, buff, v.count) );
                 }break;
-            case 2:
+            case EPVT_BOOLEAN:
                 {
-                    const int32_t * buff = &m_dataBooleans[v.offset];
+                    const int32_t * buff = &m_pixelBooleans[v.offset];
                     DXCALL( _pD3DDevice, SetPixelShaderConstantB, (pixelEnumerator, buff, v.count) );
                 }break;
             default:

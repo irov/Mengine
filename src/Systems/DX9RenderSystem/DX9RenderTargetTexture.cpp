@@ -37,7 +37,7 @@ namespace Mengine
 
         D3DFORMAT d3dformat = s_toD3DFormat( m_format );
 
-        LPDIRECT3DTEXTURE9 renderTexture;
+        IDirect3DTexture9 * renderTexture;
         IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
         {
             return false;
@@ -129,7 +129,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::begin()
     {
-        LPDIRECT3DSURFACE9 pD3DSurface;
+        IDirect3DSurface9 * pD3DSurface;
         DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
 
         if( pD3DSurface == nullptr )
@@ -137,7 +137,7 @@ namespace Mengine
             return false;
         }
 
-        LPDIRECT3DSURFACE9 pD3DSurfaceOld;
+        IDirect3DSurface9 * pD3DSurfaceOld;
         DXCALL( m_pD3DDevice, GetRenderTarget, (0, &pD3DSurfaceOld) );
 
         DXCALL( m_pD3DDevice, SetRenderTarget, (0, pD3DSurface) );
@@ -170,12 +170,12 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DDEVICE9 DX9RenderTargetTexture::getDirect3dDevice9() const
+    IDirect3DDevice9 * DX9RenderTargetTexture::getDirect3dDevice9() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderTargetTexture::getDirect3dTexture9() const
+    IDirect3DTexture9 * DX9RenderTargetTexture::getDirect3dTexture9() const
     {
         return m_pD3DTexture;
     }
@@ -189,7 +189,7 @@ namespace Mengine
     {
         D3DFORMAT d3dformat = s_toD3DFormat( m_format );
 
-        LPDIRECT3DTEXTURE9 renderTexture;
+        IDirect3DTexture9 * renderTexture;
         IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, nullptr) )
         {
             return false;

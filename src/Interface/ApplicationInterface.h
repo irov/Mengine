@@ -64,8 +64,8 @@ namespace Mengine
         virtual void finalizeGame() = 0;
 
     public:
-        virtual void getCompanyName( Char * _companyName ) const = 0;
-        virtual void getProjectName( Char * _projectName ) const = 0;
+        virtual size_t getCompanyName( Char * _companyName ) const = 0;
+        virtual size_t getProjectName( Char * _projectName ) const = 0;
 
     public:
         virtual const ConstString & getProjectCodename() const = 0;

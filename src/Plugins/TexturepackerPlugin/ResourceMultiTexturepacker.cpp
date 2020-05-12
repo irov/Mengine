@@ -22,6 +22,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceMultiTexturepacker::ResourceMultiTexturepacker()
+        : m_needStripFrameNameExtension( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -66,6 +67,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceMultiTexturepacker::setStripFrameNameExtension( bool _value )
+    {
+        m_needStripFrameNameExtension = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceMultiTexturepacker::getStripFrameNameExtension() const
+    {
+        return m_needStripFrameNameExtension;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceMultiTexturepacker::_compile()
     {
         ResourceBankInterface * resourceBank = this->getResourceBank();
@@ -79,6 +90,10 @@ namespace Mengine
                 , this->getGroupName().c_str()
                 , resourceTexturepackerName.c_str()
             );
+
+            UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = resourceTexturepacker->getUnknown();
+
+            unknownResourceTexturepacker->setStripFrameNameExtension( m_needStripFrameNameExtension );
 
             if( resourceTexturepacker->compile() == false )
             {

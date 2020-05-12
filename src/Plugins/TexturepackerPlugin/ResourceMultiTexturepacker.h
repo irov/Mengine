@@ -26,6 +26,10 @@ namespace Mengine
     public:
         bool findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const override;
 
+    public:
+        void setStripFrameNameExtension( bool _value ) override;
+        bool getStripFrameNameExtension() const override;
+
     protected:
         bool _compile() override;
         void _release() override;
@@ -35,6 +39,8 @@ namespace Mengine
 
         typedef Vector<ResourcePtr> VectorResourceTexturepackers;
         VectorResourceTexturepackers m_resourceTexturepackers;
+
+        bool m_needStripFrameNameExtension;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceMultiTexturepacker> ResourceMultiTexturepackerPtr;

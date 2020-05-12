@@ -86,7 +86,8 @@ namespace Mengine
         void onDeviceLostRestore() override;
 
     public:
-        const Viewport & getRenderViewport() const;
+        void setRenderViewport( const Viewport & _renderViewport ) override;
+        const Viewport & getRenderViewport() const override;
 
     public:
         bool isWindowCreated() const override;

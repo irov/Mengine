@@ -40,6 +40,9 @@ namespace Mengine
         const ResourceImagePtr & getAtlasImage() const override;
 
     public:
+        bool hasFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const override;
+
+    public:
         const ResourceImagePtr & getFrame( const ConstString & _name ) const override;
 
     public:
@@ -47,6 +50,7 @@ namespace Mengine
 
     public:
         void setStripFrameNameExtension( bool _value ) override;
+        bool getStripFrameNameExtension() const override;
 
     protected:
         bool _compile() override;

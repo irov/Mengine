@@ -53,5 +53,9 @@ namespace Mengine
 
     public:
         virtual bool findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const = 0;
+
+    public:
+        virtual void setStripFrameNameExtension( bool _value ) = 0;
+        virtual bool getStripFrameNameExtension() const = 0;
     };
 }

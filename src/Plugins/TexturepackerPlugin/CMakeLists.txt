@@ -10,6 +10,8 @@ src
     
     ResourceTexturepacker.cpp
     ResourceTexturepacker.h
+    ResourceMultiTexturepacker.cpp
+    ResourceMultiTexturepacker.h
 
     LoaderResourceTexturepacker.cpp
     LoaderResourceTexturepacker.h

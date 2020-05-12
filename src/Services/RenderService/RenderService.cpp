@@ -1149,6 +1149,11 @@ namespace Mengine
         return m_vsync;
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderService::setRenderViewport( const Viewport & _renderViewport )
+    {
+        m_renderViewport = _renderViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Viewport & RenderService::getRenderViewport() const
     {
         return m_renderViewport;

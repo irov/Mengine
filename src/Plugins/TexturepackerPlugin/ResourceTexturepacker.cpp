@@ -79,9 +79,25 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ResourceTexturepacker::hasFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const
+    {
+        const ResourceImagePtr & image = m_hashtableFrames.find( _name );
+
+        if( image == nullptr )
+        {
+            return false;
+        }
+
+        *_resourceImage = image;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceTexturepacker::getFrame( const ConstString & _name ) const
     {
         const ResourceImagePtr & image = m_hashtableFrames.find( _name );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( image, ResourceImagePtr::none() );
 
         return image;
     }
@@ -94,6 +110,11 @@ namespace Mengine
     void ResourceTexturepacker::setStripFrameNameExtension( bool _value )
     {
         m_needStripFrameNameExtension = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceTexturepacker::getStripFrameNameExtension() const
+    {
+        return m_needStripFrameNameExtension;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
@@ -192,7 +213,10 @@ namespace Mengine
             resource->setMaxSize( atlasSize );
             resource->setSize( atlasSize );
 
-            resource->compile();
+            if( resource->compile() == false )
+            {
+                return false;
+            }
 
             m_resourceImage = resource;
         }
@@ -324,7 +348,10 @@ namespace Mengine
             image->setPremultiply( atlasIsPremultiply );
             image->setPow2( atlasIsPow2 );
 
-            image->compile();
+            if( image->compile() == false )
+            {
+                return false;
+            }
 
             m_hashtableFrames.emplace( c_name, image );
             m_frames.push_back( image );

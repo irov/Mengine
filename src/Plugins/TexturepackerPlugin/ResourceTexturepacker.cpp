@@ -79,7 +79,7 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceTexturepacker::hasFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const
+    bool ResourceTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const
     {
         const ResourceImagePtr & image = m_hashtableFrames.find( _name );
 
@@ -88,18 +88,12 @@ namespace Mengine
             return false;
         }
 
-        *_resourceImage = image;
+        if( _resourceImage != nullptr )
+        {
+            *_resourceImage = image;
+        }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceTexturepacker::getFrame( const ConstString & _name ) const
-    {
-        const ResourceImagePtr & image = m_hashtableFrames.find( _name );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( image, ResourceImagePtr::none() );
-
-        return image;
     }
     //////////////////////////////////////////////////////////////////////////
     const VectorResourceImages & ResourceTexturepacker::getFrames() const

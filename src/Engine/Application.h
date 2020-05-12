@@ -8,6 +8,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Resource.h"
+#include "Kernel/MapAspectRatioViewports.h"
 
 #include "math/vec4.h"
 
@@ -169,9 +170,6 @@ namespace Mengine
         void debugPause( bool _pause ) override;
 
     protected:
-        bool findBestAspectViewport_( float _aspect, float * _bestAspect, Viewport * _viewport ) const;
-
-    protected:
         void calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport );
         void invalidateWindow_();
 
@@ -206,7 +204,6 @@ namespace Mengine
 
         Resolution m_contentResolution;
 
-        typedef Map<float, Viewport> MapAspectRatioViewports;
         MapAspectRatioViewports m_aspectRatioViewports;
 
         uint32_t m_updateRevision;

@@ -103,6 +103,7 @@ namespace Mengine
         bool keyEvent( const InputKeyEvent & _event ) override;
         bool textEvent( const InputTextEvent & _event ) override;
 
+    public:
         bool mouseButtonEvent( const InputMouseButtonEvent & _event ) override;
         bool mouseMove( const InputMouseMoveEvent & _event ) override;
         bool mouseWheel( const InputMouseWheelEvent & _event ) override;

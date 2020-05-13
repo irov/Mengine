@@ -842,14 +842,14 @@ namespace Mengine
         m_debugInfo.frameCount = 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer,
-        const RenderIndexBufferInterfacePtr & _indexBuffer,
-        const RenderViewportInterfacePtr & _viewport,
-        const RenderCameraInterfacePtr & _camera,
-        const RenderTransformationInterfacePtr & _transformation,
-        const RenderScissorInterfacePtr & _scissor,
-        const RenderTargetInterfacePtr & _target,
-        const RenderProgramVariableInterfacePtr & _programVariable )
+    bool RenderService::beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
+        , const RenderIndexBufferInterfacePtr & _indexBuffer
+        , const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderProgramVariableInterfacePtr & _programVariable )
     {
         if( m_currentRenderVertexBuffer != _vertexBuffer )
         {

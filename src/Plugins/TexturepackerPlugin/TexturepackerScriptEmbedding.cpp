@@ -19,6 +19,25 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        ResourceImagePtr ResourceTexturepacker_getFrame( ResourceTexturepacker * _texturepacker, const ConstString & _name )
+        {
+            ResourceImagePtr resource;
+            if( _texturepacker->findFrame( _name, &resource ) == false )
+            {
+                LOGGER_ERROR( "ResourceTexturepacker '%s' not found frame '%s'"
+                    , _texturepacker->getName().c_str()
+                    , _name.c_str()
+                );
+
+                return nullptr;
+            }
+
+            return resource;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     TexturepackerScriptEmbedding::TexturepackerScriptEmbedding()
     {
     }
@@ -30,7 +49,7 @@ namespace Mengine
     bool TexturepackerScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<ResourceTexturepacker, pybind::bases<Resource> >( _kernel, "ResourceTexturepacker", false )
-            .def( "getFrame", &ResourceTexturepacker::getFrame )
+            .def_static( "getFrame", &Detail::ResourceTexturepacker_getFrame )
             .def( "getFrames", &ResourceTexturepacker::getFrames )
             ;
 

@@ -21,6 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         ResourceImagePtr ResourceTexturepacker_getFrame( ResourceTexturepacker * _texturepacker, const ConstString & _name )
         {
             ResourceImagePtr resource;

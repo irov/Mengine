@@ -6,12 +6,12 @@ namespace Mengine
 {
     class Entity;
 
-    class Component
+    class ComponentInterface
         : public Factorable
     {
     public:
-        Component();
-        ~Component() override;
+        ComponentInterface();
+        ~ComponentInterface() override;
 
     public:
         virtual uint32_t getComponentId() const = 0;
@@ -22,18 +22,17 @@ namespace Mengine
 
     public:
         virtual bool compile( Entity * _entity ) = 0;
-        virtual void release( Entity * _entity ) = 0;
-    
+        virtual void release( Entity * _entity ) = 0;    
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Component> ComponentPtr;
+    typedef IntrusivePtr<ComponentInterface> ComponentInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define COMPONENT_DECLARE(T)\
         uint32_t getComponentId() const override\
         {\
-            static uint32_t id = COMPONENT_SERVICE()->getComponentId<decltype(self)>();\
+            static uint32_t id = COMPONENT_SERVICE()->getComponentId<decltype(this)>();\
             return id;\
         }
 //////////////////////////////////////////////////////////////////////////

@@ -30,7 +30,7 @@ namespace Mengine
             return 0U;
         }
 
-        std::uniform_int_distribution<int32_t> uid( 0, _max - 1 );
+        std::uniform_int_distribution<uint32_t> uid( 0, _max - 1 );
 
         uint32_t rand_value = uid( m_engineRandomize );
 
@@ -49,9 +49,32 @@ namespace Mengine
             return _max - 1;
         }
 
-        std::uniform_int_distribution<int32_t> uid( _min, _max - 1 );
+        std::uniform_int_distribution<uint32_t> uid( _min, _max - 1 );
 
         uint32_t rand_value = uid( m_engineRandomize );
+
+        return rand_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t MT19937Randomizer::getRandomi( int32_t _max ) const
+    {
+        std::uniform_int_distribution<int32_t> uid( _max > 0 ? 0 : _max, _max > 0 ? _max : 0 );
+
+        int32_t rand_value = uid( m_engineRandomize );
+
+        return rand_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t MT19937Randomizer::getRandomRangei( int32_t _min, int32_t _max ) const
+    {
+        if( _min >= _max )
+        {
+            return _max - 1;
+        }
+
+        std::uniform_int_distribution<int32_t> uid( _min, _max - 1 );
+
+        int32_t rand_value = uid( m_engineRandomize );
 
         return rand_value;
     }

@@ -54,7 +54,8 @@ namespace Mengine
 
         if( identity->initialize( _name, _priority, mutex, _doc ) == false )
         {
-            LOGGER_ERROR( "invalid identity initialize"
+            LOGGER_ERROR( "invalid identity initialize (doc: %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -69,7 +70,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create mutex" );
 
-        mutex->initialize( _doc );
+        if( mutex->initialize( _doc ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize mutex (doc %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
 
         return mutex;
     }

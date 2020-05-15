@@ -20,7 +20,7 @@ namespace Mengine
         ~Win32ThreadMutex() override;
 
     public:
-        void initialize( const DocumentPtr & _doc );
+        bool initialize( const DocumentPtr & _doc );
 
     protected:
         void lock() override;

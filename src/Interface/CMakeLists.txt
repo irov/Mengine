@@ -118,8 +118,10 @@ src
     ResourceBankInterface.h
     SettingInterface.h
     SettingsServiceInterface.h
-    DocumentServiceInterface.h
+    DocumentServiceInterface.h    
     ComponentServiceInterface.h
+    ComponentHubInterface.h
+    ComponentInterface.h
 )
 
 ADD_FILTER(

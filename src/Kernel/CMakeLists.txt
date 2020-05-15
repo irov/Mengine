@@ -573,10 +573,10 @@ Core
     
     Range.h
     
-    Component.h
-    Component.cpp
     Componentable.h
-    Componentable.cpp
+    
+    BaseComponentHub.h
+    BaseComponentHub.cpp
     
     Hashgen.h
     Hashtable.h

@@ -766,12 +766,22 @@ namespace Mengine
                 return new_id;
             }
             //////////////////////////////////////////////////////////////////////////
-            int32_t mt_rand( int32_t a )
+            uint32_t mt_rand( uint32_t a )
             {
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                int32_t value = randomizer->getRandom( a );
+                uint32_t value = randomizer->getRandom( a );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            int32_t mt_randi( int32_t a )
+            {
+                const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                    ->getRandomizer();
+
+                uint32_t value = randomizer->getRandomi( a );
 
                 return value;
             }
@@ -786,12 +796,22 @@ namespace Mengine
                 return value;
             }
             //////////////////////////////////////////////////////////////////////////
-            int32_t mt_range_rand( int32_t a, int32_t b )
+            uint32_t mt_range_rand( uint32_t a, uint32_t b )
             {
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                int32_t value = randomizer->getRandomRange( a, b );
+                uint32_t value = randomizer->getRandomRange( a, b );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            int32_t mt_range_randi( int32_t a, int32_t b )
+            {
+                const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                    ->getRandomizer();
+
+                int32_t value = randomizer->getRandomRangei( a, b );
 
                 return value;
             }
@@ -3437,8 +3457,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
         pybind::def_functor( _kernel, "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
+        pybind::def_functor( _kernel, "randi", helperScriptMethod, &HelperScriptMethod::mt_randi );
         pybind::def_functor( _kernel, "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
         pybind::def_functor( _kernel, "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
+        pybind::def_functor( _kernel, "range_randi", helperScriptMethod, &HelperScriptMethod::mt_range_randi );
         pybind::def_functor( _kernel, "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
         pybind::def_functor( _kernel, "around_randf", helperScriptMethod, &HelperScriptMethod::mt_around_randf );
         pybind::def_functor( _kernel, "radius_randf", helperScriptMethod, &HelperScriptMethod::mt_radius_randf );

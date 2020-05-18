@@ -1798,8 +1798,8 @@ namespace Mengine
         if( m_pixelsnap == true )
         {
             mt::mat4f wm = this->getWorldMatrix();
-            wm.v3.x = ::floorf( wm.v3.x + 0.5f );
-            wm.v3.y = ::floorf( wm.v3.y + 0.5f );
+            wm.v3.x = MT_floorf( wm.v3.x + 0.5f );
+            wm.v3.y = MT_floorf( wm.v3.y + 0.5f );
 
             for( ; it != it_end; ++it, ++it_w )
             {

@@ -173,7 +173,7 @@ namespace Mengine
 
         if( m_playing == true && m_sourceId != 0 )
         {
-            ALfloat gain = ::powf( m_volume, 2.f );
+            ALfloat gain = MT_powf( m_volume, 2.f );
             OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
         }
     }
@@ -238,7 +238,7 @@ namespace Mengine
         }
 
         //timing dont assign to zero when m_soundBuffer is stopped!
-        if( fabsf( posms ) < 0.0001f && fabsf( m_time ) > 0.0001f )
+        if( MT_fabsf( posms ) < 0.0001f && MT_fabsf( m_time ) > 0.0001f )
         {
             posms = m_time;
         }
@@ -248,7 +248,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::setPosition( float _posMs )
     {
-        if( ::fabsf( m_time - _posMs ) < 0.01f )
+        if( MT_fabsf( m_time - _posMs ) < 0.01f )
         {
             return true;
         }
@@ -358,7 +358,7 @@ namespace Mengine
         OPENAL_CALL( alSourcef, (_source, AL_MAX_GAIN, 1.f) );
         OPENAL_CALL( alSourcef, (_source, AL_PITCH, 1.f) );
 
-        ALfloat gain = ::powf( m_volume, 2.f );
+        ALfloat gain = MT_powf( m_volume, 2.f );
         OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
     }
     //////////////////////////////////////////////////////////////////////////

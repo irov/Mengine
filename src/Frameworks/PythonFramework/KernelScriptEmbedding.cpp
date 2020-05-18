@@ -1822,7 +1822,7 @@ namespace Mengine
                 }
 
                 float invTime = 1.f / _time;
-                float angularSpeed = fabsf( correct_angle_from - correct_angle_to ) * invTime;
+                float angularSpeed = MT_fabsf( correct_angle_from - correct_angle_to ) * invTime;
 
                 _node->setAngularSpeed( angularSpeed );
                 AFFECTOR_ID id = _node->addAffector( affector );

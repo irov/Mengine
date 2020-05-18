@@ -480,12 +480,12 @@ namespace Mengine
 
         if( background.initialSize.x > 0.001f )
         {
-            clSize.x = ::ceilf( clSize.x / background.initialSize.x ) * background.initialSize.x;
+            clSize.x = MT_ceilf( clSize.x / background.initialSize.x ) * background.initialSize.x;
         }
 
         if( background.initialSize.y > 0.001f )
         {
-            clSize.y = ::ceilf( clSize.y / background.initialSize.y ) * background.initialSize.y;
+            clSize.y = MT_ceilf( clSize.y / background.initialSize.y ) * background.initialSize.y;
         }
 
         this->setClientSize( clSize );

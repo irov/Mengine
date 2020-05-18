@@ -967,14 +967,14 @@ namespace Mengine
 
         D3DVIEWPORT9 VP;
 
-        VP.X = (DWORD)::floorf( _viewport.begin.x + 0.5f );
-        VP.Y = (DWORD)::floorf( _viewport.begin.y + 0.5f );
+        VP.X = (DWORD)MT_floorf( _viewport.begin.x + 0.5f );
+        VP.Y = (DWORD)MT_floorf( _viewport.begin.y + 0.5f );
 
         float width = _viewport.getWidth();
         float height = _viewport.getHeight();
 
-        VP.Width = (DWORD)::floorf( width + 0.5f );
-        VP.Height = (DWORD)::floorf( height + 0.5f );
+        VP.Width = (DWORD)MT_floorf( width + 0.5f );
+        VP.Height = (DWORD)MT_floorf( height + 0.5f );
 
         VP.MinZ = 0.f;
         VP.MaxZ = 1.f;

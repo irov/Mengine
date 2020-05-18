@@ -3,7 +3,6 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/Logger.h"
 
 namespace Mengine
 {

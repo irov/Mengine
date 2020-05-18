@@ -3,6 +3,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -63,9 +64,44 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool exist_value( const jpp::object & _j, const Char * _key )
         {
-            bool result = _j.exist( _key, nullptr );
+            jpp::object k;
+            if( _j.exist( _key, &k ) == false )
+            {
+                return false;
+            }
+
+            bool result = k.exist( "value", nullptr );
 
             return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool exist_value_attribute( const jpp::object & _j, const Char * _key, const Char * _attribute )
+        {
+            jpp::object k;
+            if( _j.exist( _key, &k ) == false )
+            {
+                return false;
+            }
+
+            jpp::object v;
+            if( k.exist( "value", &v ) == false )
+            {
+                return false;
+            }
+
+            jpp::e_type vt = v.type();
+
+            if( vt != jpp::e_type::JPP_OBJECT )
+            {
+                return false;
+            }
+
+            if( v.exist( _attribute, nullptr ) == false )
+            {
+                return false;
+            }
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool test_value( const jpp::object & _j, const Char * _key, jpp::e_type _type )
@@ -83,6 +119,43 @@ namespace Mengine
             }
 
             jpp::e_type t = v.type();
+
+            if( t != _type )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool test_value_attribute( const jpp::object & _j, const Char * _key, const Char * _attribute, jpp::e_type _type )
+        {
+            jpp::object k;
+            if( _j.exist( _key, &k ) == false )
+            {
+                return true;
+            }
+
+            jpp::object v;
+            if( k.exist( "value", &v ) == false )
+            {
+                return false;
+            }
+
+            jpp::e_type vt = v.type();
+
+            if( vt != jpp::e_type::JPP_OBJECT )
+            {
+                return false;
+            }
+
+            jpp::object a;
+            if( v.exist( _attribute, &a ) == false )
+            {
+                return false;
+            }
+
+            jpp::e_type t = a.type();
 
             if( t != _type )
             {
@@ -185,14 +258,13 @@ namespace Mengine
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( k, "value" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( j, _key ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "x" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "y" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "x", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "y", jpp::e_type::JPP_REAL ) == true );
 
-        jpp::object jv2 = k["value"];
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jv2, "x", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jv2, "y", jpp::e_type::JPP_REAL ) == true );
-
-        mt::vec2f value( jv2["x"], jv2["y"] );
+        mt::vec2f value = k["value"];
 
         return value;
     }
@@ -211,15 +283,15 @@ namespace Mengine
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( k, "value" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( j, _key ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "x" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "y" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "z" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "x", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "y", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "z", jpp::e_type::JPP_REAL ) == true );
 
-        jpp::object jv3 = k["value"];
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jv3, "x", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jv3, "y", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jv3, "z", jpp::e_type::JPP_REAL ) == true );
-
-        mt::vec3f value( jv3["x"], jv3["y"], jv3["z"] );
+        mt::vec3f value = k["value"];
 
         return value;
     }
@@ -238,16 +310,15 @@ namespace Mengine
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( k, "value" ) == true );
-
-        jpp::object jc = k["value"];
-
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jc, "r", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jc, "g", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jc, "b", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value( jc, "a", jpp::e_type::JPP_REAL ) == true );
-
-        Color value( jc["r"], jc["g"], jc["b"], jc.get( "a", 1.f ) );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( j, _key ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "r" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "g" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( j, _key, "b" ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "r", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "g", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "b", jpp::e_type::JPP_REAL ) == true );
+        
+        Color value = k["value"];
 
         return value;
     }

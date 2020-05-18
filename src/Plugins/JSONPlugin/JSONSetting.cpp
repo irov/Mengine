@@ -263,7 +263,10 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "x", jpp::e_type::JPP_REAL ) == true );
         MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "y", jpp::e_type::JPP_REAL ) == true );
 
-        mt::vec2f value = k["value"];
+        jpp::object jv2 = k["value"];
+
+
+        mt::vec2f value( jv2["x"], jv2["y"] );
 
         return value;
     }
@@ -290,7 +293,10 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "y", jpp::e_type::JPP_REAL ) == true );
         MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "z", jpp::e_type::JPP_REAL ) == true );
 
-        mt::vec3f value = k["value"];
+        jpp::object jv3 = k["value"];
+
+
+        mt::vec3f value( jv3["x"], jv3["y"], jv3["z"] );
 
         return value;
     }
@@ -317,7 +323,9 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "g", jpp::e_type::JPP_REAL ) == true );
         MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "b", jpp::e_type::JPP_REAL ) == true );
         
-        Color value = k["value"];
+        jpp::object jc = k["value"];
+
+        Color value( jc["r"], jc["g"], jc["b"], jc.get( "a", 1.f ) );
 
         return value;
     }

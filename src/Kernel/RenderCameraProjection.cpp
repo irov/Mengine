@@ -169,7 +169,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraProjection::makeViewport_( Viewport & _viewport ) const
     {
-        float tangent = ::tanf( m_cameraFov * 0.5f );
+        float tangent = MT_tanf( m_cameraFov * 0.5f );
         float height = 2.f * 1.f * tangent;
         float width = height * m_cameraAspect;
 

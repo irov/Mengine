@@ -454,7 +454,7 @@ namespace Mengine
             frameTime = 1000.f / frameRate;
         }
 
-        if( ::fabsf( m_time - _time ) < frameTime )
+        if( MT_fabsf( m_time - _time ) < frameTime )
         {
             return;
         }

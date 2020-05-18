@@ -749,12 +749,12 @@ namespace Mengine
 
                 for( float v : l )
                 {
-                    s += ::powf( v, inv_pow );
+                    s += MT_powf( v, inv_pow );
                 }
 
                 s /= (float)l.size();
 
-                s = ::powf( s, _pow );
+                s = MT_powf( s, _pow );
 
                 return s;
             }
@@ -844,7 +844,7 @@ namespace Mengine
                 float rp = randomizer->getRandomf( mt::constant::two_pi );
                 float rr = randomizer->getRandomf( 1.f );
 
-                float rr2 = sqrtf( rr ) * _radius;
+                float rr2 = MT_sqrtf( rr ) * _radius;
 
                 float x = MT_cosf( rp );
                 float y = MT_sinf( rp );
@@ -865,7 +865,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_roundingf( float _value, float _round )
             {
-                float floor_value = floorf( _value / _round );
+                float floor_value = MT_floorf( _value / _round );
                 float round_value = floor_value * _round;
 
                 return round_value;
@@ -893,12 +893,12 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_powf( float a, float b )
             {
-                return ::powf( a, b );
+                return MT_powf( a, b );
             }
             //////////////////////////////////////////////////////////////////////////
             float mt_absf( float a )
             {
-                return ::fabsf( a );
+                return MT_fabsf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float mt_cosf( float a )
@@ -938,7 +938,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_logf( float _x )
             {
-                return ::logf( _x );
+                return MT_logf( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             float mt_log10f( float _x )
@@ -1113,7 +1113,7 @@ namespace Mengine
 
                 float cos_v = mt::dot_v2_v2( v1_norm, v2_norm );
 
-                float angle = acosf( cos_v );
+                float angle = MT_acosf( cos_v );
 
                 return angle;
             }

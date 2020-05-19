@@ -265,7 +265,6 @@ namespace Mengine
 
         jpp::object jv2 = k["value"];
 
-
         mt::vec2f value( jv2["x"], jv2["y"] );
 
         return value;
@@ -294,7 +293,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( j, _key, "z", jpp::e_type::JPP_REAL ) == true );
 
         jpp::object jv3 = k["value"];
-
 
         mt::vec3f value( jv3["x"], jv3["y"], jv3["z"] );
 

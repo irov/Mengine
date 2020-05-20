@@ -114,7 +114,9 @@ namespace Mengine
 
         affector->setEasing( m_easing );
 
-        AFFECTOR_ID id = m_affectorable->addAffector( affector );
+        const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+        AFFECTOR_ID id = affectorHub->addAffector( affector );
 
         if( id == 0 )
         {
@@ -130,7 +132,9 @@ namespace Mengine
     {
         if( m_id != 0 )
         {
-            m_affectorable->stopAffector( m_id );
+            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+            affectorHub->stopAffector( m_id );
             m_id = 0;
         }
 
@@ -141,7 +145,9 @@ namespace Mengine
     {
         if( m_id != 0 )
         {
-            m_affectorable->stopAffector( m_id );
+            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+            affectorHub->stopAffector( m_id );
             m_id = 0;
         }
 

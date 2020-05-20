@@ -398,6 +398,47 @@ namespace Mengine
                 _animation->resume( time );
             }
             //////////////////////////////////////////////////////////////////////////
+            AFFECTOR_ID s_Affectorable_addAffector( Affectorable * _affectorable, const AffectorPtr & _affector )
+            {
+                const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( _affector );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_Affectorable_stopAffector( Affectorable * _affectorable, AFFECTOR_ID _id )
+            {
+                const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
+
+                bool result = affectorHub->stopAffector( _id );
+
+                return result;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Affectorable_stopAllAffectors( Affectorable * _affectorable )
+            {
+                const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
+
+                affectorHub->stopAllAffectors();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_Affectorable_setLinearSpeed( Affectorable * _affectorable, const mt::vec3f & _linearSpeed )
+            {
+                const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
+
+                affectorHub->setLinearSpeed( _linearSpeed );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const mt::vec3f & s_Affectorable_getLinearSpeed( Affectorable * _affectorable )
+            {
+                const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
+
+                const mt::vec3f & linearSpeed = affectorHub->getLinearSpeed();
+
+                return linearSpeed;
+            }
+            //////////////////////////////////////////////////////////////////////////
             class PythonScriptHolderEventReceiver
                 : public PythonEventReceiver
                 , public ScriptHolderEventReceiverInterface
@@ -545,8 +586,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_Node_moveStop( Node * _node )
             {
-                _node->stopAffectors( ETA_POSITION );
-                _node->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                affectorHub->stopAffectors( ETA_POSITION );
+
+                affectorHub->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
@@ -588,9 +632,12 @@ namespace Mengine
                 }
 
                 mt::vec3f linearSpeed = _dir * _speed;
-                _node->setLinearSpeed( linearSpeed );
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                affectorHub->setLinearSpeed( linearSpeed );
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -735,9 +782,11 @@ namespace Mengine
                     return 0;
                 }
 
-                _node->setLinearSpeed( _velocity );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                affectorHub->setLinearSpeed( _velocity );
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -785,9 +834,11 @@ namespace Mengine
                 const mt::vec3f & pos = _node->getLocalPosition();
                 mt::vec3f linearSpeed = (_point - pos) * invTime;
 
-                _node->setLinearSpeed( linearSpeed );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                affectorHub->setLinearSpeed( linearSpeed );
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -808,7 +859,9 @@ namespace Mengine
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                const mt::vec3f & linearSpeed = _node->getLinearSpeed();
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                const mt::vec3f & linearSpeed = affectorHub->getLinearSpeed();
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
@@ -832,7 +885,7 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -895,7 +948,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -960,7 +1015,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1023,7 +1080,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1087,7 +1146,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1302,7 +1363,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1563,7 +1626,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1767,15 +1832,19 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Node_angleStop( Node * _node )
             {
-                _node->stopAffectors( ETA_ANGLE );
-                _node->setAngularSpeed( 0.f );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                affectorHub->stopAffectors( ETA_ANGLE );
+                affectorHub->setAngularSpeed( 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
@@ -1824,8 +1893,10 @@ namespace Mengine
                 float invTime = 1.f / _time;
                 float angularSpeed = MT_fabsf( correct_angle_from - correct_angle_to ) * invTime;
 
-                _node->setAngularSpeed( angularSpeed );
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                affectorHub->setAngularSpeed( angularSpeed );
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1844,7 +1915,8 @@ namespace Mengine
                     return 0;
                 }
 
-                float angularSpeed = _node->getAngularSpeed();
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+                float angularSpeed = affectorHub->getAngularSpeed();
 
                 float angle = _node->getLocalOrientationX();
 
@@ -1877,14 +1949,16 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Node_scaleStop( Node * _node )
             {
-                _node->stopAffectors( ETA_SCALE );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                affectorHub->stopAffectors( ETA_SCALE );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Node_scaleTo( Node * _node, float _time, const mt::vec3f & _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
@@ -1923,14 +1997,18 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Node_colorStop( Node * _node )
             {
-                _node->stopAffectors( ETA_COLOR );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                affectorHub->stopAffectors( ETA_COLOR );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>> m_nodeAffectorCreatorInterpolateLinearColor;
@@ -1999,7 +2077,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 if( id == 0 )
                 {
@@ -2079,7 +2159,9 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = _node->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 if( id == 0 )
                 {
@@ -2360,11 +2442,11 @@ namespace Mengine
             ;
 
         pybind::interface_<Affectorable, pybind::bases<Mixin>>( _kernel, "Affectorable" )
-            .def( "addAffector", &Affectorable::addAffector )
-            .def( "stopAffector", &Affectorable::stopAffector )
-            .def( "stopAllAffectors", &Affectorable::stopAllAffectors )
-            .def( "setLinearSpeed", &Affectorable::setLinearSpeed )
-            .def( "getLinearSpeed", &Affectorable::getLinearSpeed )
+            .def_proxy_static( "addAffector", scriptMethod, &KernelScriptMethod::s_Affectorable_addAffector )
+            .def_proxy_static( "stopAffector", scriptMethod, &KernelScriptMethod::s_Affectorable_stopAffector )
+            .def_proxy_static( "stopAllAffectors", scriptMethod, &KernelScriptMethod::s_Affectorable_stopAllAffectors )
+            .def_proxy_static( "setLinearSpeed", scriptMethod, &KernelScriptMethod::s_Affectorable_setLinearSpeed )
+            .def_proxy_static( "getLinearSpeed", scriptMethod, &KernelScriptMethod::s_Affectorable_getLinearSpeed )
             ;
 
         pybind::interface_<Materialable, pybind::bases<Mixin>>( _kernel, "Materialable" )

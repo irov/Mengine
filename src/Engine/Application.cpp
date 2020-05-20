@@ -63,6 +63,7 @@
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/SecureValue.h"
+#include "Kernel/BaseAffectorHub.h"
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/ViewportHelper.h"
@@ -423,6 +424,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<BaseAffectorHub, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -438,6 +445,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none() );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()

@@ -136,6 +136,8 @@ BaseRender
 
 ADD_FILTER(
 Affector
+    BaseAffectorHub.h
+    BaseAffectorHub.cpp
     Affector.h
     Affector.cpp
     BaseAffector.h

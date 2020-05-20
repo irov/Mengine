@@ -427,10 +427,10 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                affectorable->addAffector( affector );
+                affectorHub->addAffector( affector );
             }
             //////////////////////////////////////////////////////////////////////////
             SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
@@ -469,10 +469,10 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                affectorable->addAffector( affector );
+                affectorHub->addAffector( affector );
 
                 return soundIdentity;
             }
@@ -496,10 +496,10 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                affectorable->addAffector( affector );
+                affectorHub->addAffector( affector );
             }
             //////////////////////////////////////////////////////////////////////////
             SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
@@ -541,10 +541,10 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                affectorable->addAffector( affector );
+                affectorHub->addAffector( affector );
 
                 return soundIdentity;
             }

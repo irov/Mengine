@@ -1,15 +1,14 @@
-#include "Kernel/Affectorable.h"
+#include "Affectorable.h"
 
-#include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
-#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Affectorable::Affectorable()
-        : m_angularSpeed( 0.f )
-        , m_linearSpeed( 0.f, 0.f, 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -17,111 +16,29 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AFFECTOR_ID Affectorable::addAffector( const AffectorPtr & _affector )
+    bool Affectorable::availableAffectorHub() const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _affector, INVALID_AFFECTOR_ID, "affector is nullptr" );
-
-        AFFECTOR_ID id = GENERATE_UNIQUE_IDENTITY();
-
-        _affector->setId( id );
-
-        EUpdateMode updatableMode = this->getAffectorableUpdatableMode();
-        uint32_t updatableDeep = this->getAffectorableUpdatableLeafDeep();
-
-        if( _affector->prepare( updatableMode, updatableDeep ) == false )
+        return m_affectorHub != nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Affectorable::clearAffectorHub()
+    {
+        m_affectorHub = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AffectorHubInterfacePtr & Affectorable::getAffectorHub() const
+    {
+        if( m_affectorHub == nullptr )
         {
-            return INVALID_AFFECTOR_ID;
+            AffectorHubInterfacePtr affectorHub = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+            const AffectorHubProviderInterface * provider = this->getAffectorHubProvider();
+
+            affectorHub->setAffectorHubProvider( provider );
+
+            m_affectorHub = affectorHub;
         }
 
-        m_affectors.push_back( _affector );
-
-        return id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Affectorable::hasAffector( AFFECTOR_ID _id ) const
-    {
-        for( const AffectorPtr & affector : m_affectors )
-        {
-            AFFECTOR_ID id = affector->getId();
-
-            if( id != _id )
-            {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Affectorable::stopAffector( AFFECTOR_ID _id )
-    {
-        for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
-        {
-            AffectorPtr affector( *it );
-
-            it.next_shuffle();
-
-            AFFECTOR_ID id = affector->getId();
-
-            if( id != _id )
-            {
-                continue;
-            }
-
-            affector->stop();
-
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Affectorable::stopAffectors( EAffectorType _type )
-    {
-        for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
-        {
-            AffectorPtr affector( *it );
-
-            it.next_shuffle();
-
-            if( affector->getAffectorType() == _type )
-            {
-                affector->stop();
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Affectorable::stopAllAffectors()
-    {
-        for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
-        {
-            AffectorPtr affector( *it );
-
-            it.next_shuffle();
-
-            affector->stop();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Affectorable::setAngularSpeed( float _angular )
-    {
-        m_angularSpeed = _angular;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Affectorable::getAngularSpeed() const
-    {
-        return m_angularSpeed;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Affectorable::setLinearSpeed( const mt::vec3f & _linearSpeed )
-    {
-        m_linearSpeed = _linearSpeed;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const mt::vec3f & Affectorable::getLinearSpeed() const
-    {
-        return m_linearSpeed;
+        return m_affectorHub;
     }
 }

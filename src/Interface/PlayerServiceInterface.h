@@ -80,8 +80,8 @@ namespace Mengine
         virtual const RandomizerInterfacePtr & getRandomizer() const = 0;
 
     public:
-        virtual const AffectorablePtr & getAffectorable() const = 0;
-        virtual const AffectorablePtr & getGlobalAffectorable() const = 0;
+        virtual const AffectorHubInterfacePtr & getAffectorHub() const = 0;
+        virtual const AffectorHubInterfacePtr & getGlobalAffectorHub() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

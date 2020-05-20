@@ -231,16 +231,18 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
                 
                 affectorHub->stopAllAffectors();
+                m_affectorable->clearAffectorHub();
             }            
         }
 
         if( m_affectorableGlobal != nullptr )
         {
-            if( m_affectorable->availableAffectorHub() == true )
+            if( m_affectorableGlobal->availableAffectorHub() == true )
             {
-                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+                const AffectorHubInterfacePtr & affectorHub = m_affectorableGlobal->getAffectorHub();
 
                 affectorHub->stopAllAffectors();
+                m_affectorableGlobal->clearAffectorHub();
             }
         }
     }

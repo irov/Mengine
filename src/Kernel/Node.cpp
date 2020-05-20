@@ -1014,7 +1014,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_freeze( bool _value )
     {
-        if( m_children.empty() != true )
+        if( m_children.empty() == false )
         {
             IntrusivePtrScope ankh( this );
 
@@ -1104,6 +1104,7 @@ namespace Mengine
             const AffectorHubInterfacePtr & affectorHub = this->getAffectorHub();
 
             affectorHub->stopAllAffectors();
+            this->clearAffectorHub();
         }
     }
     //////////////////////////////////////////////////////////////////////////

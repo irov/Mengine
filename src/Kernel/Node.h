@@ -40,6 +40,7 @@ namespace Mengine
         , public Renderable
         , public Transformation
         , public Affectorable
+        , public AffectorHubProviderInterface
         , public Visitable
         , public Scriptable
         , public Animatable
@@ -198,6 +199,9 @@ namespace Mengine
     public:
         void setSpeedFactor( float _speedFactor );
         float getSpeedFactor() const;
+
+    protected:
+        const AffectorHubProviderInterface * getAffectorHubProvider() const override;
 
     protected:
         EUpdateMode getAffectorableUpdatableMode() const override;

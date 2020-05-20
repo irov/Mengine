@@ -98,7 +98,9 @@ namespace Mengine
 
         AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_transformation, deltha, m_to, m_speed );
 
-        AFFECTOR_ID id = m_affectorable->addAffector( affector );
+        const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+        AFFECTOR_ID id = affectorHub->addAffector( affector );
 
         if( id == 0 )
         {
@@ -114,7 +116,9 @@ namespace Mengine
     {
         if( m_id != 0 )
         {
-            m_affectorable->stopAffector( m_id );
+            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+            affectorHub->stopAffector( m_id );
             m_id = 0;
         }
 
@@ -125,7 +129,9 @@ namespace Mengine
     {
         if( m_id != 0 )
         {
-            m_affectorable->stopAffector( m_id );
+            const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+            affectorHub->stopAffector( m_id );
             m_id = 0;
         }
 

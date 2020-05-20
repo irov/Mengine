@@ -122,6 +122,7 @@ src
     ComponentServiceInterface.h
     ComponentHubInterface.h
     ComponentInterface.h
+    AffectorHubInterface.h
 )
 
 ADD_FILTER(

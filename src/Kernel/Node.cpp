@@ -1099,7 +1099,12 @@ namespace Mengine
             picker->setPickerEnable( false );
         }
 
-        Affectorable::stopAllAffectors();
+        if( this->availableAffectorHub() == true )
+        {
+            const AffectorHubInterfacePtr & affectorHub = this->getAffectorHub();
+
+            affectorHub->stopAllAffectors();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_afterDeactivate()
@@ -1183,6 +1188,11 @@ namespace Mengine
         {
             render->invalidateBoundingBox();
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AffectorHubProviderInterface * Node::getAffectorHubProvider() const
+    {
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     EUpdateMode Node::getAffectorableUpdatableMode() const

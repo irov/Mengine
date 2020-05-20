@@ -2530,7 +2530,10 @@ namespace Mengine
                 PythonValueFollowerAccelerationPtr follower = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_PYBIND );
 
-                follower->initialize( _value, _speed, _acceleration, _cb, _args );
+                if( follower->initialize( _value, _speed, _acceleration, _cb, _args ) == false )
+                {
+                    return nullptr;
+                }
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();

@@ -63,8 +63,10 @@
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/SecureValue.h"
+#include "Kernel/BaseAffectorHub.h"
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/ViewportHelper.h"
 #include "Kernel/List.h"
 
 #include "Config/Config.h"
@@ -260,6 +262,8 @@ namespace Mengine
         m_bits = CONFIG_VALUE( "Window", "Bits", 32U );
         m_fullscreen = CONFIG_VALUE( "Window", "Fullscreen", true );
         m_nofullscreen = CONFIG_VALUE( "Window", "NoFullscreen", false );
+        m_FSAAType = CONFIG_VALUE( "Window", "FSAAType", 0 );
+        m_FSAAQuality = CONFIG_VALUE( "Window", "FSAAQuality", 0 );
         m_vsync = CONFIG_VALUE( "Window", "VSync", true );
 
         if( HAS_OPTION( "novsync" ) == true )
@@ -420,6 +424,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<BaseAffectorHub, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -435,6 +445,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none() );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
@@ -1681,43 +1694,6 @@ namespace Mengine
         return m_currentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::findBestAspectViewport_( float _aspect, float * _bestAspect, Viewport * _viewport ) const
-    {
-        LOGGER_INFO( "find aspect %f"
-            , _aspect
-            );
-
-        if( m_aspectRatioViewports.empty() == true )
-        {
-            return false;
-        }
-
-        float minimal_aspect = 100.f;
-
-        for( auto && [aspect, viewport] : m_aspectRatioViewports )
-        {
-            float deltha_aspect = fabsf( _aspect - aspect );
-
-            if( deltha_aspect < minimal_aspect )
-            {
-                minimal_aspect = deltha_aspect;
-
-                *_bestAspect = aspect;
-                *_viewport = viewport;
-            }
-        }
-
-        LOGGER_INFO( "best aspect %f viewport [%f, %f, %f, %f]"
-            , *_bestAspect
-            , _viewport->begin.x
-            , _viewport->begin.y
-            , _viewport->end.x
-            , _viewport->end.y
-            );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Application::calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport )
     {
         uint32_t width = _resolution.getWidth();
@@ -1740,7 +1716,7 @@ namespace Mengine
             Viewport dummy_aspectRatioViewport;
             float contentAspect;
 
-            if( this->findBestAspectViewport_( r_aspect, &contentAspect, &dummy_aspectRatioViewport ) == false )
+            if( Helper::findBestAspectViewport( m_aspectRatioViewports, r_aspect, &contentAspect, &dummy_aspectRatioViewport ) == false )
             {
                 contentAspect = c_aspect;
             }
@@ -1796,7 +1772,7 @@ namespace Mengine
         Viewport aspectRatioViewport;
         float bestAspect;
 
-        if( this->findBestAspectViewport_( aspect, &bestAspect, &aspectRatioViewport ) == true )
+        if( Helper::findBestAspectViewport( m_aspectRatioViewports, aspect, &bestAspect, &aspectRatioViewport ) == true )
         {
             LOGGER_INFO( "viewport (1) %f:%f\n"
                 , aspectRatioViewport.getWidth()
@@ -2019,14 +1995,22 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::getCompanyName( Char * _companyName ) const
+    size_t Application::getCompanyName( Char * _companyName ) const
     {
         MENGINE_STRCPY( _companyName, m_companyName );
+
+        size_t companyNameLen = MENGINE_STRLEN( m_companyName );
+
+        return companyNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::getProjectName( Char * _projectName ) const
+    size_t Application::getProjectName( Char * _projectName ) const
     {
         MENGINE_STRCPY( _projectName, m_projectName );
+
+        size_t projectNameLen = MENGINE_STRLEN( m_projectName );
+
+        return projectNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getProjectCodename() const
@@ -2136,7 +2120,7 @@ namespace Mengine
         float bestAspect;
         Viewport aspectRatioViewport;
 
-        if( this->findBestAspectViewport_( aspect, &bestAspect, &aspectRatioViewport ) == true )
+        if( Helper::findBestAspectViewport( m_aspectRatioViewports, aspect, &bestAspect, &aspectRatioViewport ) == true )
         {
             *_aspect = bestAspect;
 

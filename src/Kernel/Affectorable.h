@@ -1,13 +1,8 @@
 #pragma once
 
-#include "Kernel/Affector.h"
-#include "Kernel/AffectorType.h"
-#include "Kernel/Mixin.h"
-#include "Kernel/UpdateContext.h"
-#include "Kernel/IntrusiveSlugList.h"
-#include "Kernel/IntrusiveSlugIterator.h"
+#include "Interface/AffectorHubInterface.h"
 
-#include "math/vec3.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -20,35 +15,17 @@ namespace Mengine
         ~Affectorable() override;
 
     public:
-        AFFECTOR_ID addAffector( const AffectorPtr & _affector );
-        bool hasAffector( AFFECTOR_ID _id ) const;
-        bool stopAffector( AFFECTOR_ID _id );
+        bool availableAffectorHub() const;
+        void clearAffectorHub();
 
     public:
-        void stopAffectors( EAffectorType _type );
-
-    public:
-        void stopAllAffectors();
-
-    public:
-        void setAngularSpeed( float _angular );
-        float getAngularSpeed() const;
-
-        void setLinearSpeed( const mt::vec3f & _linearSpeed );
-        const mt::vec3f & getLinearSpeed() const;
-
-    public:
-        virtual EUpdateMode getAffectorableUpdatableMode() const = 0;
-        virtual uint32_t getAffectorableUpdatableLeafDeep() const = 0;
+        const AffectorHubInterfacePtr & getAffectorHub() const;
 
     protected:
-        typedef IntrusiveSlugList<Affector> IntrusiveSlugListAffector;
-        typedef IntrusiveSlugIterator<IntrusiveSlugListAffector> IntrusiveSlugAffector;
+        virtual AffectorHubProviderInterface * getAffectorHubProvider() = 0;
 
-        IntrusiveSlugListAffector m_affectors;
-
-        float m_angularSpeed;
-        mt::vec3f m_linearSpeed;
+    public:
+        mutable AffectorHubInterfacePtr m_affectorHub;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Affectorable> AffectorablePtr;

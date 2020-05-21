@@ -50,8 +50,8 @@ namespace Mengine
         bool getData( void * _buffer, size_t _pitch ) override;
 
     public:
-        LPDIRECT3DDEVICE9 getDirect3dDevice9() const;
-        LPDIRECT3DTEXTURE9 getDirect3dTexture9() const;
+        IDirect3DDevice9 * getDirect3dDevice9() const;
+        IDirect3DTexture9 * getDirect3dTexture9() const;
 
     protected:
         void onRenderReset() override;
@@ -69,10 +69,10 @@ namespace Mengine
         float m_hwWidthInv;
         float m_hwHeightInv;
 
-        LPDIRECT3DDEVICE9 m_pD3DDevice;
-        LPDIRECT3DTEXTURE9 m_pD3DTexture;
-        LPDIRECT3DSURFACE9 m_pD3DSurface;
-        LPDIRECT3DSURFACE9 m_pD3DSurfaceOld;
+        IDirect3DDevice9 * m_pD3DDevice;
+        IDirect3DTexture9 * m_pD3DTexture;
+        IDirect3DSurface9 * m_pD3DSurface;
+        IDirect3DSurface9 * m_pD3DSurfaceOld;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderTargetTexture> DX9RenderTargetTexturePtr;

@@ -207,7 +207,8 @@ namespace Mengine
 
                 if( layerFrame.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_SCALE || layerFrame.immutable == true )
                 {
-                    if( ::fabsf( layerFrame.source.scale.x ) < MovieImageScale || ::fabsf( layerFrame.source.scale.y ) < MovieImageScale )
+                    if( MT_fabsf( layerFrame.source.scale.x ) < MovieImageScale ||
+                        MT_fabsf( layerFrame.source.scale.y ) < MovieImageScale )
                     {
                         LOGGER_ERROR( "'%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()
@@ -231,14 +232,14 @@ namespace Mengine
 
                     for( uint32_t i = 0; i != layerFrame.count; ++i )
                     {
-                        if( ::fabsf( layerFrame.scale[i].x ) > scale_max_x )
+                        if( MT_fabsf( layerFrame.scale[i].x ) > scale_max_x )
                         {
-                            scale_max_x = ::fabsf( layerFrame.scale[i].x );
+                            scale_max_x = MT_fabsf( layerFrame.scale[i].x );
                         }
 
-                        if( ::fabsf( layerFrame.scale[i].y ) > scale_max_y )
+                        if( MT_fabsf( layerFrame.scale[i].y ) > scale_max_y )
                         {
-                            scale_max_y = ::fabsf( layerFrame.scale[i].y );
+                            scale_max_y = MT_fabsf( layerFrame.scale[i].y );
                         }
                     }
 

@@ -41,8 +41,8 @@ namespace Mengine
         bool emptyChildren() const override;
 
     public:
-        HierarchyInterfacePtr findChild( const ConstString & _name, bool _recursion ) const override;
-        bool hasChild( const ConstString & _name, bool _recursive ) const override;
+        bool hasChild( const LambdaFindChild & _lambda, bool _recursive ) const override;
+        HierarchyInterfacePtr findChild( const LambdaFindChild & _lambda, bool _recursive ) const override;
 
     protected:
         uint32_t getLeafDeep() const override;

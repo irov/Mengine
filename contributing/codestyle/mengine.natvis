@@ -12,6 +12,7 @@
     </Type>
     
     <Type Name="Mengine::ConstString">
+        <DisplayString Condition="m_holder == 0">empty</DisplayString>
         <DisplayString>{m_holder->m_data,[m_holder->m_size]na}</DisplayString>
         
         <Expand>
@@ -22,6 +23,7 @@
     </Type>
 
     <Type Name="Mengine::FilePath">
+        <DisplayString Condition="m_holder == 0">empty</DisplayString>
         <DisplayString>{m_holder->m_data,[m_holder->m_size]na}</DisplayString>
         
         <Expand>
@@ -57,6 +59,7 @@
     </Type>
     
     <Type Name="jpp::object">
+        <DisplayString Condition="m_object == 0">invalid</DisplayString>
         <DisplayString Condition="m_object->type == 0">object</DisplayString>
         <DisplayString Condition="m_object->type == 0 &amp;&amp; ((json_object_t*)m_object)->hashtable.size == 0">empty object</DisplayString>
         
@@ -89,6 +92,7 @@
     </Type>
     
     <Type Name="jpp::array">
+        <DisplayString Condition="m_object == 0">invalid</DisplayString>
         <DisplayString Condition="((json_array_t*)m_object)->entries == 0">empty array</DisplayString>
         <DisplayString Condition="((json_array_t*)m_object)->entries == 1">{{ {*((json_array_t*)m_object)->table[0]} }}</DisplayString>
         <DisplayString Condition="((json_array_t*)m_object)->entries == 2">{{ {*((json_array_t*)m_object)->table[0]}, {*((json_array_t*)m_object)->table[1]} }}</DisplayString>

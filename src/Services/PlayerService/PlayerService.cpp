@@ -116,7 +116,7 @@ namespace Mengine
             m_randomizer->setSeed( randomSeed );
         }
 
-        m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
+        m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE ); 
         m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy, MENGINE_DOCUMENT_FACTORABLE );
@@ -226,12 +226,24 @@ namespace Mengine
 
         if( m_affectorable != nullptr )
         {
-            m_affectorable->stopAllAffectors();
+            if( m_affectorable->availableAffectorHub() == true )
+            {
+                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+                
+                affectorHub->stopAllAffectors();
+                m_affectorable->clearAffectorHub();
+            }            
         }
 
         if( m_affectorableGlobal != nullptr )
         {
-            m_affectorableGlobal->stopAllAffectors();
+            if( m_affectorableGlobal->availableAffectorHub() == true )
+            {
+                const AffectorHubInterfacePtr & affectorHub = m_affectorableGlobal->getAffectorHub();
+
+                affectorHub->stopAllAffectors();
+                m_affectorableGlobal->clearAffectorHub();
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -342,14 +354,18 @@ namespace Mengine
         return m_randomizer;
     }
     //////////////////////////////////////////////////////////////////////////
-    const AffectorablePtr & PlayerService::getAffectorable() const
+    const AffectorHubInterfacePtr & PlayerService::getAffectorHub() const
     {
-        return m_affectorable;
+        const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+        return affectorHub;
     }
     //////////////////////////////////////////////////////////////////////////
-    const AffectorablePtr & PlayerService::getGlobalAffectorable() const
+    const AffectorHubInterfacePtr & PlayerService::getGlobalAffectorHub() const
     {
-        return m_affectorableGlobal;
+        const AffectorHubInterfacePtr & affectorHub = m_affectorableGlobal->getAffectorHub();
+
+        return affectorHub;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::initializeRenderResources()
@@ -768,8 +784,20 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        m_scheduler->removeAll();
-        m_affectorable->stopAllAffectors();
+        if( m_scheduler != nullptr )
+        {
+            m_scheduler->removeAll();
+        }
+
+        if( m_affectorable != nullptr )
+        {
+            if( m_affectorable->availableAffectorHub() == true )
+            {
+                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+                affectorHub->stopAllAffectors();
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyChangeSceneDestroy( const ScenePtr & _scene )
@@ -820,8 +848,20 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        m_scheduler->removeAll();
-        m_affectorable->stopAllAffectors();
+        if( m_scheduler != nullptr )
+        {
+            m_scheduler->removeAll();
+        }
+
+        if( m_affectorable != nullptr )
+        {
+            if( m_affectorable->availableAffectorHub() == true )
+            {
+                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+                affectorHub->stopAllAffectors();
+            }
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyRestartSceneDisable( const ScenePtr & _scene )
@@ -855,8 +895,20 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        m_scheduler->removeAll();
-        m_affectorable->stopAllAffectors();
+        if( m_scheduler != nullptr )
+        {
+            m_scheduler->removeAll();
+        }
+
+        if( m_affectorable != nullptr )
+        {
+            if( m_affectorable->availableAffectorHub() == true )
+            {
+                const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+                affectorHub->stopAllAffectors();
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyRemoveSceneDestroy()

@@ -184,10 +184,10 @@ namespace Mengine
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_MESSAGE( "VendorId: %lu", AdID.VendorId );
-        LOGGER_MESSAGE( "DeviceId: %lu", AdID.DeviceId );
-        LOGGER_MESSAGE( "SubSysId: %lu", AdID.SubSysId );
-        LOGGER_MESSAGE( "Revision: %lu", AdID.Revision );
+        LOGGER_MESSAGE( "VendorId: %u", AdID.VendorId );
+        LOGGER_MESSAGE( "DeviceId: %u", AdID.DeviceId );
+        LOGGER_MESSAGE( "SubSysId: %u", AdID.SubSysId );
+        LOGGER_MESSAGE( "Revision: %u", AdID.Revision );
 
         IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_caps) )
         {
@@ -468,7 +468,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%lu) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
                     , hr
                 );
 
@@ -480,7 +480,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%lu) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
                     , hr
                 );
 
@@ -492,7 +492,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%lu) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
                     , hr
                 );
 
@@ -504,7 +504,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%lu) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
                     , hr
                 );
 
@@ -516,7 +516,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%lu) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
                     , hr
                 );
 
@@ -528,7 +528,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%lu) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
                     , hr
                 );
 
@@ -541,7 +541,7 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "Can't create D3D device (hr:%lu, hwnd:%p) BackBuffer Size %u:%u Format %u"
+            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , hr
                 , windowHandle
                 , m_d3dpp->BackBufferWidth
@@ -839,7 +839,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "invalid TestCooperativeLevel %lu"
+            LOGGER_ERROR( "invalid TestCooperativeLevel %d"
                 , hr
             );
 
@@ -887,7 +887,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "failed to swap buffers %lu"
+            LOGGER_ERROR( "failed to swap buffers %x"
                 , hr
             );
         }
@@ -967,21 +967,21 @@ namespace Mengine
 
         D3DVIEWPORT9 VP;
 
-        VP.X = (DWORD)::floorf( _viewport.begin.x + 0.5f );
-        VP.Y = (DWORD)::floorf( _viewport.begin.y + 0.5f );
+        VP.X = (DWORD)MT_floorf( _viewport.begin.x + 0.5f );
+        VP.Y = (DWORD)MT_floorf( _viewport.begin.y + 0.5f );
 
         float width = _viewport.getWidth();
         float height = _viewport.getHeight();
 
-        VP.Width = (DWORD)::floorf( width + 0.5f );
-        VP.Height = (DWORD)::floorf( height + 0.5f );
+        VP.Width = (DWORD)MT_floorf( width + 0.5f );
+        VP.Height = (DWORD)MT_floorf( height + 0.5f );
 
         VP.MinZ = 0.f;
         VP.MaxZ = 1.f;
 
         IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
         {
-            LOGGER_ERROR( "failed viewport (%u, %u, %u, %u)"
+            LOGGER_ERROR( "failed viewport (%d, %d, %d, %d)"
                 , VP.X
                 , VP.Y
                 , VP.X + VP.Width
@@ -1102,7 +1102,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, EPixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture )
+    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, EPixelFormat Format, D3DPOOL Pool, IDirect3DTexture9 ** _ppD3DTexture )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, false, "device not created" );
 
@@ -1236,7 +1236,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) == true )
         {
-            LOGGER_ERROR( "failed to reset device (hr:%lu)"
+            LOGGER_ERROR( "failed to reset device (hr:%p)"
                 , hr
             );
 
@@ -1804,7 +1804,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
+    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( IDirect3DTexture9 * _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
     {
 #ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );

@@ -1,26 +1,31 @@
 #pragma once
 
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/Factorable.h"
+#include "Interface/AffectorHubInterface.h"
 
 #include "Kernel/Affectorable.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PlayerGlobalAffectorable
         : public Affectorable
+        , public AffectorHubProviderInterface
         , public Factorable
     {
     public:
         PlayerGlobalAffectorable();
         ~PlayerGlobalAffectorable() override;
 
+    public:
+        AffectorHubProviderInterface * getAffectorHubProvider() override;
+
     protected:
         EUpdateMode getAffectorableUpdatableMode() const override;
         uint32_t getAffectorableUpdatableLeafDeep() const override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PlayerGlobalAffectorable, Affectorable> PlayerGlobalAffectorablePtr;
+    typedef IntrusivePtr<PlayerGlobalAffectorable, AffectorHubInterface> PlayerGlobalAffectorablePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -6,6 +6,41 @@
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static const ConstString & getHierarchyReceiverName( const HierarchyInterface * _hierarchy )
+        {
+            HierarchyReceiverInterface * hierarchyReceiver = _hierarchy->getHierarchyReceiver();
+
+            Identity * identity = dynamic_cast<Identity *>(hierarchyReceiver);
+
+            if( identity == nullptr )
+            {
+                return ConstString::none();
+            }
+
+            const ConstString & name = identity->getName();
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const ConstString & getHierarchyReceiverName( const HierarchyInterfacePtr & _hierarchy )
+        {
+            HierarchyReceiverInterface * hierarchyReceiver = _hierarchy->getHierarchyReceiver();
+
+            Identity * identity = dynamic_cast<Identity *>(hierarchyReceiver);
+
+            if( identity == nullptr )
+            {
+                return ConstString::none();
+            }
+
+            const ConstString & name = identity->getName();
+
+            return name;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     BaseHierarchy::BaseHierarchy()
         : m_parent( nullptr )
@@ -19,11 +54,11 @@ namespace Mengine
     void BaseHierarchy::addChild( const HierarchyInterfacePtr & _hierarchy )
     {
         MENGINE_ASSERTION( _hierarchy != nullptr, "node '%s' invalid add child NULL node"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         MENGINE_ASSERTION( _hierarchy != this, "node '%s' invalid self child node"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         this->addChild_( m_children.end(), _hierarchy );
@@ -32,11 +67,11 @@ namespace Mengine
     void BaseHierarchy::addChildFront( const HierarchyInterfacePtr & _hierarchy )
     {
         MENGINE_ASSERTION( _hierarchy != nullptr, "node '%s' invalid add front child NULL node"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         MENGINE_ASSERTION( _hierarchy != this, "node '%s' invalid self child node"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         this->addChild_( m_children.begin(), _hierarchy );
@@ -45,21 +80,21 @@ namespace Mengine
     bool BaseHierarchy::addChildAfter( const HierarchyInterfacePtr & _hierarchy, const HierarchyInterfacePtr & _after )
     {
         MENGINE_ASSERTION( _hierarchy != nullptr, "node '%s' invalid add child NULL node (node)"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         MENGINE_ASSERTION( _after != nullptr, "node '%s' invalid add after NULL node (node)"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         MENGINE_ASSERTION( _hierarchy != _after, "node '%s' invalid add child '%s' is equal after '%s' (node)"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
-            , _hierarchy->getHierarchyReceiver()->getHierarchyName().c_str()
-            , _after->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
+            , Detail::getHierarchyReceiverName( _hierarchy ).c_str()
+            , Detail::getHierarchyReceiverName( _after ).c_str()
         );
 
         MENGINE_ASSERTION( stdex::helper::intrusive_find( m_children.begin(), m_children.end(), BaseHierarchyPtr::from( _after ) ) != m_children.end(), "node '%s' after is not child"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         IntrusiveSlugListHierarchyChild::iterator it_after( BaseHierarchyPtr::from( _after ) );
@@ -102,11 +137,11 @@ namespace Mengine
             this->insertChild_( _insert, _child );
 
             _child->setParent_( this );
-
-            HierarchyReceiverInterface * receiver = this->getHierarchyReceiver();
-
-            receiver->onHierarchyAddChild( _child );
         }
+
+        HierarchyReceiverInterface * receiver = this->getHierarchyReceiver();
+
+        receiver->onHierarchyAddChild( _child );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseHierarchy::insertChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const BaseHierarchyPtr & _node )
@@ -175,12 +210,12 @@ namespace Mengine
     bool BaseHierarchy::removeChild( const HierarchyInterfacePtr & _hierarchy )
     {
         MENGINE_ASSERTION_RETURN( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), BaseHierarchyPtr::from( _hierarchy ) ) == true, false, "node '%s' not found children '%s'"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
-            , _hierarchy->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
+            , Detail::getHierarchyReceiverName( _hierarchy ).c_str()
         );
 
         MENGINE_ASSERTION_RETURN( _hierarchy != this, false, "node '%s' invalid self child node"
-            , this->getHierarchyReceiver()->getHierarchyName().c_str()
+            , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
         HierarchyReceiverInterface * receiver = _hierarchy->getHierarchyReceiver();
@@ -195,7 +230,7 @@ namespace Mengine
             return false;
         }
 
-        receiver->onHierarchyRemoveChild( _hierarchy );
+        this->removeChild_( _hierarchy );
 
         return true;
     }
@@ -211,6 +246,30 @@ namespace Mengine
         this->eraseChild_( _hierarchy );
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseHierarchy::removeParent_()
+    {
+        HierarchyReceiverInterface * receiver = this->getHierarchyReceiver();
+
+        receiver->onHierarchyRemoveParent( m_parent );
+
+        BaseHierarchy * oldparent = m_parent;
+        m_parent = nullptr;
+
+        receiver->onHierarchyChangeParent( oldparent, nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHierarchy::setParent_( BaseHierarchy * _parent )
+    {
+        HierarchyReceiverInterface * receiver = this->getHierarchyReceiver();
+
+        receiver->onHierarchySetParent( _parent );
+
+        BaseHierarchy * oldparent = m_parent;
+        m_parent = _parent;
+
+        receiver->onHierarchyChangeParent( oldparent, _parent );
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t BaseHierarchy::getChildrenRecursiveCount() const
     {
         IntrusiveSlugListHierarchyChild::size_type size = m_children.size();
@@ -223,66 +282,58 @@ namespace Mengine
         return size;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
+    bool BaseHierarchy::hasChild( const LambdaFindChild & _lambda, bool _recursive ) const
     {
-        //////////////////////////////////////////////////////////////////////////
-        static IntrusiveSlugListHierarchyChild::const_iterator s_hierarchy_find_child( const IntrusiveSlugListHierarchyChild & _child, const ConstString & _name )
+        for( const BaseHierarchyPtr & hierarchy : m_children )
         {
-            typename IntrusiveSlugListHierarchyChild::const_iterator it_found =
-                stdex::helper::intrusive_find_if( _child.begin(), _child.end(), [_name]( const BaseHierarchyPtr & _hierarchy )
+            if( _lambda( hierarchy ) == true )
             {
-                BaseHierarchy * hierarchy_ptr = _hierarchy.get();
-
-                HierarchyReceiverInterface * receiver = hierarchy_ptr->getHierarchyReceiver();
-
-                const ConstString & receiver_name = receiver->getHierarchyName();
-
-                return receiver_name == _name;
-            } );
-
-            return it_found;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    HierarchyInterfacePtr BaseHierarchy::findChild( const ConstString & _name, bool _recursion ) const
-    {
-        IntrusiveSlugListHierarchyChild::const_iterator it_found =
-            Detail::s_hierarchy_find_child( m_children, _name );
-
-        if( it_found != m_children.end() )
-        {
-            BaseHierarchyPtr children = *it_found;
-
-            return children;
+                return true;
+            }
         }
 
-        if( _recursion == true )
+        if( _recursive == true )
         {
             for( const BaseHierarchyPtr & children : m_children )
             {
-                BaseHierarchyPtr node = children->findChild( _name, true );
-
-                if( node == nullptr )
+                if( children->hasChild( _lambda, true ) == false )
                 {
                     continue;
                 }
 
-                return node;
+                return true;
             }
         }
-        else
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HierarchyInterfacePtr BaseHierarchy::findChild( const LambdaFindChild & _lambda, bool _recursive ) const
+    {
+        for( const BaseHierarchyPtr & hierarchy : m_children )
         {
-            HierarchyReceiverInterface * receiver = this->getHierarchyReceiver();
-
-            HierarchyInterfacePtr node = receiver->onHierarchyFindChild( _name, _recursion );
-
-            if( node != nullptr )
+            if( _lambda( hierarchy ) == true )
             {
-                return node;
+                return hierarchy;
             }
         }
 
-        return nullptr;
+        if( _recursive == true )
+        {
+            for( const BaseHierarchyPtr & children : m_children )
+            {
+                const HierarchyInterfacePtr & child = children->findChild( _lambda, true );
+
+                if( child == nullptr )
+                {
+                    continue;
+                }
+
+                return child;
+            }
+        }
+
+        return HierarchyInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
     HierarchyInterfacePtr BaseHierarchy::getSiblingPrev() const
@@ -291,7 +342,7 @@ namespace Mengine
 
         if( parent == nullptr )
         {
-            return nullptr;
+            return HierarchyInterfacePtr::none();
         }
 
         IntrusiveSlugListHierarchyChild & parent_children = parent->getChildren_();
@@ -306,7 +357,7 @@ namespace Mengine
 
         --it_found;
 
-        HierarchyInterfacePtr prev_hierarchy = *it_found;
+        const HierarchyInterfacePtr & prev_hierarchy = *it_found;
 
         return prev_hierarchy;
     }
@@ -317,7 +368,7 @@ namespace Mengine
 
         if( parent == nullptr )
         {
-            return nullptr;
+            return HierarchyInterfacePtr::none();
         }
 
         IntrusiveSlugListHierarchyChild & parent_children = parent->getChildren_();
@@ -337,39 +388,10 @@ namespace Mengine
         return next_node;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHierarchy::hasChild( const ConstString & _name, bool _recursive ) const
-    {
-        IntrusiveSlugListHierarchyChild::const_iterator it_found =
-            Detail::s_hierarchy_find_child( m_children, _name );
-
-        if( it_found != m_children.end() )
-        {
-            return true;
-        }
-
-        if( _recursive == true )
-        {
-            for( const HierarchyInterfacePtr & children : m_children )
-            {
-                if( children->hasChild( _name, true ) == true )
-                {
-                    return true;
-                }
-            }
-        }
-
-        HierarchyReceiverInterface * receiver = this->getHierarchyReceiver();
-
-        if( receiver->onHierarchyHasChild( _name, _recursive ) == true )
-        {
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool BaseHierarchy::emptyChildren() const
     {
-        return m_children.empty();
+        bool result = m_children.empty();
+
+        return result;
     }
 }

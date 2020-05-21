@@ -1,18 +1,18 @@
-#include "Componentable.h"
+#include "BaseComponentHub.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Componentable::Componentable()
+    BaseComponentHub::BaseComponentHub()
         : m_componentFamily( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Componentable::~Componentable()
+    BaseComponentHub::~BaseComponentHub()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Componentable::addComponent( const ComponentPtr & _component )
+    void BaseComponentHub::addComponent( const ComponentInterfacePtr & _component )
     {
         uint32_t id = _component->getComponentId();
 
@@ -21,7 +21,7 @@ namespace Mengine
         m_componentFamily |= 1 << id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Componentable::removeComponentId( uint32_t id )
+    void BaseComponentHub::removeComponentById( uint32_t id )
     {
         m_components[id] = nullptr;
 

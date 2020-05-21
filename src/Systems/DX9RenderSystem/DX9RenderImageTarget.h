@@ -57,8 +57,8 @@ namespace Mengine
         UnknownPointer getRenderImageExtention() override;
 
     public:
-        LPDIRECT3DDEVICE9 getD3DDevice() const override;
-        LPDIRECT3DTEXTURE9 getD3DTexture() const override;
+        IDirect3DDevice9 * getD3DDevice() const override;
+        IDirect3DTexture9 * getD3DTexture() const override;
 
     protected:
         DX9RenderTargetTexturePtr m_target;

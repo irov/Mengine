@@ -36,10 +36,12 @@ namespace Mengine
         , public Identity
         , public Compilable
         , public Hierarchyable
+        , public HierarchyReceiverInterface
         , public Updatable
         , public Renderable
         , public Transformation
         , public Affectorable
+        , public AffectorHubProviderInterface
         , public Visitable
         , public Scriptable
         , public Animatable
@@ -91,15 +93,10 @@ namespace Mengine
         uint32_t getLeafDeep() const;
 
     protected:
-        void removeChild_( const NodePtr & _node );
         void removeParent_();
         void setParent_( Node * _parent );
         void refreshRenderRelation_( Node * _parent );
         void refreshPickerRelation_( Node * _parent );
-
-    protected:
-        virtual bool _hasChild( const ConstString & _name, bool _recursive ) const;
-        virtual NodePtr _findChild( const ConstString & _name, bool _recursion ) const;
 
     protected:
         virtual void _changeParent( Node * _oldParent, Node * _newParent );
@@ -198,6 +195,23 @@ namespace Mengine
     public:
         void setSpeedFactor( float _speedFactor );
         float getSpeedFactor() const;
+
+    protected:
+        HierarchyReceiverInterface * getHierarchyableReceiver() override;
+
+    public:
+        void onHierarchySetParent( HierarchyInterface * _newParent ) override;
+        void onHierarchyRemoveParent( HierarchyInterface * _oldParent ) override;
+        void onHierarchyChangeParent( HierarchyInterface * _oldParent, HierarchyInterface * _newParent ) override;
+        void onHierarchyRefreshChild( const HierarchyInterfacePtr & _hierarchy ) override;
+        void onHierarchyAddChild( const HierarchyInterfacePtr & _hierarchy ) override;
+        void onHierarchyRemoveChild( const HierarchyInterfacePtr & _hierarchy ) override;
+
+    public:
+        void onHierarchyDeactivate() override;
+
+    protected:
+        AffectorHubProviderInterface * getAffectorHubProvider() override;
 
     protected:
         EUpdateMode getAffectorableUpdatableMode() const override;

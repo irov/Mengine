@@ -1,13 +1,13 @@
-#include "Component.h"
+#include "ComponentInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Component::Component()
+    ComponentInterface::ComponentInterface()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Component::~Component()
+    ComponentInterface::~ComponentInterface()
     {
     }
 }

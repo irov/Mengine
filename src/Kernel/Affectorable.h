@@ -22,7 +22,7 @@ namespace Mengine
         const AffectorHubInterfacePtr & getAffectorHub() const;
 
     protected:
-        virtual const AffectorHubProviderInterface * getAffectorHubProvider() const = 0;
+        virtual AffectorHubProviderInterface * getAffectorHubProvider() = 0;
 
     public:
         mutable AffectorHubInterfacePtr m_affectorHub;

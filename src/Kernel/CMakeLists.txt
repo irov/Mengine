@@ -69,6 +69,7 @@ Mixin\\\\Updatable
 
 ADD_FILTER(
 Mixin\\\\Hierarchyable
+    Hierarchyable.cpp
     Hierarchyable.h
 )
 

@@ -1,34 +1,33 @@
 #pragma once
 
+#include "Interface/HierarchyInterface.h"
+
 #include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class HierarchyInterface;
-    //////////////////////////////////////////////////////////////////////////
     class Hierarchyable
         : public Mixin
     {
     public:
-        virtual HierarchyInterface * getHierarchy()
-        {
-            return nullptr;
-        }
+        Hierarchyable();
+        ~Hierarchyable() override;
 
-        virtual const HierarchyInterface * getHierarchy() const
-        {
-            return nullptr;
-        }
+    public:
+        bool availableHierarchyable() const;
+        void clearHierarchyable();
+
+    public:
+        const HierarchyInterfacePtr & getHierarchyable() const;
+
+    protected:
+        virtual HierarchyReceiverInterface * getHierarchyableReceiver() = 0;
+
+    public:
+        mutable HierarchyInterfacePtr m_hierarchy;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Hierarchyable> HierarchyablePtr;
     //////////////////////////////////////////////////////////////////////////
 }
-//////////////////////////////////////////////////////////////////////////
-#define DECLARE_HIERARCHY()\
-public:\
-    Mengine::HierarchyInterface * getHierarchy() override{ return this; }\
-    const Mengine::HierarchyInterface * getHierarchy() const override{ return this; }\
-protected:
-//////////////////////////////////////////////////////////////////////////

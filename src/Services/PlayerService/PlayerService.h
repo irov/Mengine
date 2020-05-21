@@ -13,10 +13,9 @@
 #include "Kernel/Resolution.h"
 #include "Kernel/Observable.h"
 #include "Kernel/Factory.h"
+#include "Kernel/Affectorable.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderViewport.h"
-
-#include "math/vec3.h"
 
 namespace Mengine
 {
@@ -56,8 +55,8 @@ namespace Mengine
         const RandomizerInterfacePtr & getRandomizer() const override;
 
     public:
-        const AffectorablePtr & getAffectorable() const override;
-        const AffectorablePtr & getGlobalAffectorable() const override;
+        const AffectorHubInterfacePtr & getAffectorHub() const override;
+        const AffectorHubInterfacePtr & getGlobalAffectorHub() const override;
 
     public:
         const RenderCameraOrthogonalPtr & getDefaultCamera2D() const override;

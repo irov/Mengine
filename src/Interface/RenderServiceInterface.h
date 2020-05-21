@@ -67,12 +67,17 @@ namespace Mengine
         virtual VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) = 0;
 
     public:
-        virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-            int32_t _FSAAType, int32_t _FSAAQuality ) = 0;
+        virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen
+            , int32_t _FSAAType, int32_t _FSAAQuality ) = 0;
 
         virtual void destroyRenderWindow() = 0;
 
+    public:
         virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
+
+    public:
+        virtual void setRenderViewport( const Viewport & _renderViewport ) = 0;
+        virtual const Viewport & getRenderViewport() const = 0;
 
     public:
         virtual const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc ) = 0;

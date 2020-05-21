@@ -69,6 +69,7 @@ Mixin\\\\Updatable
 
 ADD_FILTER(
 Mixin\\\\Hierarchyable
+    Hierarchyable.cpp
     Hierarchyable.h
 )
 
@@ -136,6 +137,8 @@ BaseRender
 
 ADD_FILTER(
 Affector
+    BaseAffectorHub.h
+    BaseAffectorHub.cpp
     Affector.h
     Affector.cpp
     BaseAffector.h
@@ -394,6 +397,11 @@ Core
     
     Viewport.h
     Viewport.cpp
+    
+    ViewportHelper.h
+    ViewportHelper.cpp
+    
+    MapAspectRatioViewports.h
 
     Resolution.h
     Resolution.cpp
@@ -568,10 +576,10 @@ Core
     
     Range.h
     
-    Component.h
-    Component.cpp
     Componentable.h
-    Componentable.cpp
+    
+    BaseComponentHub.h
+    BaseComponentHub.cpp
     
     Hashgen.h
     Hashtable.h

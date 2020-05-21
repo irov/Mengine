@@ -52,23 +52,24 @@ namespace Mengine
 
         m_updataterId = INVALID_UPDATABLE_ID;
 
+#ifdef MENGINE_DEBUG
+        m_schedulers.insert( m_schedulers.end(), m_schedulersAdd.begin(), m_schedulersAdd.end() );
+        m_schedulersAdd.clear();
+        
         m_schedulers.erase( std::remove_if( m_schedulers.begin(), m_schedulers.end(), []( const SchedulerEventDesc & _desc )
         {
             return _desc.dead;
         } ), m_schedulers.end() );
 
-        m_schedulersAdd.erase( std::remove_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), []( const SchedulerEventDesc & _desc )
+        for( const SchedulerEventDesc & desc : m_schedulers )
         {
-            return _desc.dead;
-        } ), m_schedulersAdd.end() );
-
-        MENGINE_ASSERTION( m_schedulers.empty() == true, "finalized scheduler '%s' has event"
-            , this->getName().c_str() 
-        );
-
-        MENGINE_ASSERTION( m_schedulersAdd.empty() == true, "finalized scheduler '%s' has add event"
-            , this->getName().c_str()
-        );
+            LOGGER_ERROR( "Forgot remove event '%u' from scheduler '%s' (doc: %s)"
+                , desc.id
+                , this->getName().c_str()
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
 
         m_schedulers.clear();
         m_schedulersAdd.clear();

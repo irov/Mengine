@@ -67,14 +67,14 @@ namespace Mengine
         void swapBuffers() override;
 
     public:
-        bool beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer, 
-            const RenderIndexBufferInterfacePtr & _indexBuffer, 
-            const RenderViewportInterfacePtr & _viewport,
-            const RenderCameraInterfacePtr & _camera,
-            const RenderTransformationInterfacePtr & _transformation,
-            const RenderScissorInterfacePtr & _scissor,
-            const RenderTargetInterfacePtr & _target,
-            const RenderProgramVariableInterfacePtr & _programVariable ) override;
+        bool beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
+            , const RenderIndexBufferInterfacePtr & _indexBuffer
+            , const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderProgramVariableInterfacePtr & _programVariable ) override;
 
         void endRenderPass( const RenderTargetInterfacePtr & _target ) override;
 
@@ -86,7 +86,8 @@ namespace Mengine
         void onDeviceLostRestore() override;
 
     public:
-        const Viewport & getRenderViewport() const;
+        void setRenderViewport( const Viewport & _renderViewport ) override;
+        const Viewport & getRenderViewport() const override;
 
     public:
         bool isWindowCreated() const override;

@@ -36,7 +36,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, uint32_t _type, T * _values, uint32_t _size, uint32_t _count )
+        static void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, EProgramVariableType _type, const T * _values, uint32_t _size, uint32_t _count )
         {
             MENGINE_STRCPY( _variable.uniform, _uniform );
             _variable.type = _type;
@@ -48,75 +48,75 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataFloats, _uniform, 0, _values, _size, _count );
+        Detail::makeVariableData( v, m_dataFloats, _uniform, EPVT_FLOAT, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataIntegers, _uniform, 1, _values, _size, _count );
+        Detail::makeVariableData( v, m_dataIntegers, _uniform, EPVT_INTEGER, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataBooleans, _uniform, 2, _values, _size, _count );
+        Detail::makeVariableData( v, m_dataBooleans, _uniform, EPVT_BOOLEAN, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataFloats, _uniform, 0, _values, _size, _count );
+        Detail::makeVariableData( v, m_pixelFloats, _uniform, EPVT_FLOAT, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataIntegers, _uniform, 1, _values, _size, _count );
+        Detail::makeVariableData( v, m_pixelIntegers, _uniform, EPVT_INTEGER, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataBooleans, _uniform, 2, _values, _size, _count );
+        Detail::makeVariableData( v, m_pixelBooleans, _uniform, EPVT_BOOLEAN, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::updatePixelVariableFloats( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        float * values = &m_dataFloats[v.offset];
+        float * values = &m_pixelFloats[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        int32_t * values = &m_dataIntegers[v.offset];
+        int32_t * values = &m_pixelIntegers[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    void OpenGLRenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        int32_t * values = &m_dataBooleans[v.offset];
+        int32_t * values = &m_pixelBooleans[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ namespace Mengine
 
             switch( v.type )
             {
-            case 0:
+            case EPVT_FLOAT:
                 {
                     const float * buff = &m_dataFloats[v.offset];
 
@@ -170,7 +170,7 @@ namespace Mengine
                         return false;
                     }
                 }break;
-            case 1:
+            case EPVT_INTEGER:
                 {
                     const int32_t * buff = &m_dataIntegers[v.offset];
 
@@ -196,7 +196,7 @@ namespace Mengine
                         return false;
                     }
                 }break;
-            case 2:
+            case EPVT_BOOLEAN:
                 {
                     const int32_t * buff = &m_dataBooleans[v.offset];
 
@@ -249,9 +249,9 @@ namespace Mengine
 
             switch( v.type )
             {
-            case 0:
+            case EPVT_FLOAT:
                 {
-                    const float * buff = &m_dataFloats[v.offset];
+                    const float * buff = &m_pixelFloats[v.offset];
 
                     switch( v.size )
                     {
@@ -275,9 +275,9 @@ namespace Mengine
                         return false;
                     }
                 }break;
-            case 1:
+            case EPVT_INTEGER:
                 {
-                    const int32_t * buff = &m_dataIntegers[v.offset];
+                    const int32_t * buff = &m_pixelIntegers[v.offset];
 
                     switch( v.size )
                     {
@@ -301,9 +301,9 @@ namespace Mengine
                         return false;
                     }
                 }break;
-            case 2:
+            case EPVT_BOOLEAN:
                 {
-                    const int32_t * buff = &m_dataBooleans[v.offset];
+                    const int32_t * buff = &m_pixelBooleans[v.offset];
 
                     switch( v.size )
                     {

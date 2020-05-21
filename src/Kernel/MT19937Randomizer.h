@@ -20,6 +20,9 @@ namespace Mengine
         uint32_t getRandom( uint32_t _max ) const override;
         uint32_t getRandomRange( uint32_t _min, uint32_t _max ) const override;
 
+        int32_t getRandomi( int32_t _max ) const override;
+        int32_t getRandomRangei( int32_t _min, int32_t _max ) const override;
+
         float getRandomf( float _max ) const override;
         float getRandomRangef( float _min, float _max ) const override;
 

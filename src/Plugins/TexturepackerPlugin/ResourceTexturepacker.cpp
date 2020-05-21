@@ -79,11 +79,21 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceTexturepacker::getFrame( const ConstString & _name ) const
+    bool ResourceTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const
     {
         const ResourceImagePtr & image = m_hashtableFrames.find( _name );
 
-        return image;
+        if( image == nullptr )
+        {
+            return false;
+        }
+
+        if( _resourceImage != nullptr )
+        {
+            *_resourceImage = image;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const VectorResourceImages & ResourceTexturepacker::getFrames() const
@@ -94,6 +104,11 @@ namespace Mengine
     void ResourceTexturepacker::setStripFrameNameExtension( bool _value )
     {
         m_needStripFrameNameExtension = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceTexturepacker::getStripFrameNameExtension() const
+    {
+        return m_needStripFrameNameExtension;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
@@ -192,7 +207,10 @@ namespace Mengine
             resource->setMaxSize( atlasSize );
             resource->setSize( atlasSize );
 
-            resource->compile();
+            if( resource->compile() == false )
+            {
+                return false;
+            }
 
             m_resourceImage = resource;
         }
@@ -324,7 +342,10 @@ namespace Mengine
             image->setPremultiply( atlasIsPremultiply );
             image->setPow2( atlasIsPow2 );
 
-            image->compile();
+            if( image->compile() == false )
+            {
+                return false;
+            }
 
             m_hashtableFrames.emplace( c_name, image );
             m_frames.push_back( image );

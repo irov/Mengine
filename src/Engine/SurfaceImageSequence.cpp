@@ -266,9 +266,9 @@ namespace Mengine
 
         if( _time >= duration )
         {
-            _time -= ::floorf( _time / duration ) * duration;
+            _time -= MT_floorf( _time / duration ) * duration;
 
-            if( ::fabsf( _time ) < 0.0001f )
+            if( MT_fabsf( _time ) < 0.0001f )
             {
                 _deltaTime = 0.f;
 

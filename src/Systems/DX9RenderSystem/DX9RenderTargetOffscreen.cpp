@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetOffscreen::_initialize()
     {
-        LPDIRECT3DSURFACE9 surfacePlain;
+        IDirect3DSurface9 * surfacePlain;
         IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) )
         {
             return false;

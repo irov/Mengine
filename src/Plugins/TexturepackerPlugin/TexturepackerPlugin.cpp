@@ -7,6 +7,7 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "ResourceTexturepacker.h"
+#include "ResourceMultiTexturepacker.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "TexturepackerScriptEmbedding.h"
@@ -51,6 +52,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceMultiTexturepacker, 64>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         SERVICE_WAIT( LoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<LoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
@@ -75,5 +82,8 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ) );
     }
 }

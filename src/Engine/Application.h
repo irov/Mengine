@@ -8,6 +8,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Resource.h"
+#include "Kernel/MapAspectRatioViewports.h"
 
 #include "math/vec4.h"
 
@@ -102,6 +103,7 @@ namespace Mengine
         bool keyEvent( const InputKeyEvent & _event ) override;
         bool textEvent( const InputTextEvent & _event ) override;
 
+    public:
         bool mouseButtonEvent( const InputMouseButtonEvent & _event ) override;
         bool mouseMove( const InputMouseMoveEvent & _event ) override;
         bool mouseWheel( const InputMouseWheelEvent & _event ) override;
@@ -132,8 +134,8 @@ namespace Mengine
         uint32_t getDebugMask() const override;
 
     public:
-        void getCompanyName( Char * _companyName ) const override;
-        void getProjectName( Char * _projectName ) const override;
+        size_t getCompanyName( Char * _companyName ) const override;
+        size_t getProjectName( Char * _projectName ) const override;
 
     public:
         const ConstString & getProjectCodename() const override;
@@ -167,9 +169,6 @@ namespace Mengine
 
     public:
         void debugPause( bool _pause ) override;
-
-    protected:
-        bool findBestAspectViewport_( float _aspect, float * _bestAspect, Viewport * _viewport ) const;
 
     protected:
         void calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport );
@@ -206,7 +205,6 @@ namespace Mengine
 
         Resolution m_contentResolution;
 
-        typedef Map<float, Viewport> MapAspectRatioViewports;
         MapAspectRatioViewports m_aspectRatioViewports;
 
         uint32_t m_updateRevision;
@@ -221,8 +219,8 @@ namespace Mengine
 
         ResourceCursorPtr m_cursorResource;
 
-        Char m_companyName[MENGINE_APPLICATION_COMPANY_MAXNAME];
-        Char m_projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+        Char m_companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+        Char m_projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
 
         ConstString m_locale;
 

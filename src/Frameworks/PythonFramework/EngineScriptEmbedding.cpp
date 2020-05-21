@@ -1729,7 +1729,7 @@ namespace Mengine
 
                     float angle_length = mt::angle_length( isometric_angle, dir_angle );
 
-                    float abs_angle_length = ::fabsf( angle_length );
+                    float abs_angle_length = MT_fabsf( angle_length );
 
                     if( abs_angle_length < min_angle )
                     {
@@ -2118,7 +2118,7 @@ namespace Mengine
 
                                 float cv_a = cv.getA();
 
-                                float pos_distance = sqrtf( pos_sqrdistance );
+                                float pos_distance = MT_sqrtf( pos_sqrdistance );
 
                                 float a0 = (pos_distance - radius) / penumbra;
 
@@ -2169,7 +2169,9 @@ namespace Mengine
 
                 affector->initialize( _grid, _pos, _time, _radius, _ellipse, _penumbra, _cb );
 
-                uint32_t id = _grid->addAffector( affector );
+                const AffectorHubInterfacePtr & affectorHub = _grid->getAffectorHub();
+
+                uint32_t id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -2226,20 +2228,20 @@ namespace Mengine
                     return 0;
                 }
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                AFFECTOR_ID id = affectorable->addAffector( affector );
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_removeAffector( AFFECTOR_ID _id )
             {
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                bool successful = affectorable->stopAffector( _id );
+                bool successful = affectorHub->stopAffector( _id );
 
                 return successful;
             }
@@ -2289,7 +2291,9 @@ namespace Mengine
                 {
                     AFFECTOR_ID id = this->getId();
 
-                    m_affectorable->stopAffector( id );
+                    const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
+
+                    affectorHub->stopAffector( id );
                 }
 
             protected:
@@ -2401,7 +2405,9 @@ namespace Mengine
                         return nullptr;
                     }
 
-                    if( _affectorable->addAffector( affector ) == INVALID_AFFECTOR_ID )
+                    const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
+
+                    if( affectorHub->addAffector( affector ) == INVALID_AFFECTOR_ID )
                     {
                         return nullptr;
                     }
@@ -2506,12 +2512,15 @@ namespace Mengine
                 PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_PYBIND );
 
-                follower->initialize( _value, _speed, _cb, _args );
+                if( follower->initialize( _value, _speed, _cb, _args ) == false )
+                {
+                    return nullptr;
+                }
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                affectorable->addAffector( follower );
+                affectorHub->addAffector( follower );
 
                 return follower;
             }
@@ -2521,12 +2530,15 @@ namespace Mengine
                 PythonValueFollowerAccelerationPtr follower = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_PYBIND );
 
-                follower->initialize( _value, _speed, _acceleration, _cb, _args );
+                if( follower->initialize( _value, _speed, _acceleration, _cb, _args ) == false )
+                {
+                    return nullptr;
+                }
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                affectorable->addAffector( follower );
+                affectorHub->addAffector( follower );
 
                 return follower;
             }
@@ -2535,10 +2547,10 @@ namespace Mengine
             {
                 AFFECTOR_ID id = _follower->getId();
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
-                affectorable->stopAffector( id );
+                affectorHub->stopAffector( id );
             }
             //////////////////////////////////////////////////////////////////////////
             pybind::tuple s_SecureValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureValue * _secure )

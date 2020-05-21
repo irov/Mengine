@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadMutex::initialize( const DocumentPtr & _doc )
+    bool Win32ThreadMutex::initialize( const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -20,6 +20,8 @@ namespace Mengine
 #endif
 
         InitializeCriticalSection( &m_cs );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::lock()

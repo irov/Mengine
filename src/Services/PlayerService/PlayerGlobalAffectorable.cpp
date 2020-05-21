@@ -11,6 +11,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    AffectorHubProviderInterface * PlayerGlobalAffectorable::getAffectorHubProvider()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     EUpdateMode PlayerGlobalAffectorable::getAffectorableUpdatableMode() const
     {
         return EUM_SERVICE_BEFORE;

@@ -271,18 +271,18 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
                 if( m_affectorMusicID != 0 )
                 {
-                    if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                    if( affectorHub->hasAffector( m_affectorMusicID ) == true )
                     {
-                        affectorable->stopAffector( m_affectorMusicID );
+                        affectorHub->stopAffector( m_affectorMusicID );
                     }
                 }
 
-                AFFECTOR_ID id = affectorable->addAffector( affector );
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 m_affectorMusicID = id;
 
@@ -326,18 +326,18 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                    ->getGlobalAffectorable();
+                const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
+                    ->getGlobalAffectorHub();
 
                 if( m_affectorMusicID != 0 )
                 {
-                    if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                    if( affectorHub->hasAffector( m_affectorMusicID ) == true )
                     {
-                        affectorable->stopAffector( m_affectorMusicID );
+                        affectorHub->stopAffector( m_affectorMusicID );
                     }
                 }
 
-                AFFECTOR_ID id = affectorable->addAffector( affector );
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 m_affectorMusicID = id;
 

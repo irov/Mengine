@@ -1,52 +1,25 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
-#include "Kernel/Component.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class ComponentHubInterface;
+    //////////////////////////////////////////////////////////////////////////
     class Componentable
         : public Mixin
     {
     public:
-        Componentable();
-        ~Componentable() override;
-
-    public:
-        void addComponent( const ComponentPtr & _component );
-
-        template<class T>
-        void removeComponent()
+        virtual ComponentHubInterface * getComponentHub()
         {
-            uint32_t id = T::getComponentId();
-
-            this->removeComponentId( id );
+            return nullptr;
         }
 
-        template<class T>
-        T * getComponent() const
+        virtual ComponentHubInterface * getComponentHub() const
         {
-            uint32_t id = T::getComponentId();
-
-            const ComponentPtr & component = this->getComponentId( id );
-
-            T * t = component.getT<T *>();
-
-            return t;
+            return nullptr;
         }
-
-    protected:
-        void removeComponentId( uint32_t id );
-        MENGINE_INLINE const ComponentPtr & getComponentId( uint32_t id ) const;
-
-    protected:
-        uint32_t m_componentFamily;
-
-        ComponentPtr m_components[32];
     };
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const ComponentPtr & Componentable::getComponentId( uint32_t id ) const
-    {
-        return m_components[id];
-    }
 }

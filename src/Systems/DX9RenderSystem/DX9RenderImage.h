@@ -22,7 +22,7 @@ namespace Mengine
         ~DX9RenderImage() override;
 
     public:
-        void initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat );
+        void initialize( IDirect3DDevice9 * _pD3DDevice, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat );
         void finalize();
 
     public:
@@ -60,12 +60,12 @@ namespace Mengine
         UnknownPointer getRenderImageExtention() override;
 
     public:
-        LPDIRECT3DDEVICE9 getD3DDevice() const override;
-        LPDIRECT3DTEXTURE9 getD3DTexture() const override;
+        IDirect3DDevice9 * getD3DDevice() const override;
+        IDirect3DTexture9 * getD3DTexture() const override;
 
     protected:
-        LPDIRECT3DDEVICE9 m_pD3DDevice;
-        LPDIRECT3DTEXTURE9 m_pD3DTexture;
+        IDirect3DDevice9 * m_pD3DDevice;
+        IDirect3DTexture9 * m_pD3DTexture;
 
         RenderImageProviderInterfacePtr m_renderImageProvider;
 

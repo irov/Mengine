@@ -180,9 +180,9 @@ namespace Mengine
         //void createSyncTargets_();
 
         bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels
-            , DWORD Usage, EPixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture );
+            , DWORD Usage, EPixelFormat Format, D3DPOOL Pool, IDirect3DTexture9 ** _ppD3DTexture );
 
-        DX9RenderImagePtr createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode
+        DX9RenderImagePtr createDX9RenderImage_( IDirect3DTexture9 * _pD3DTexture, ERenderImageMode _mode
             , uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc );
 
     protected:

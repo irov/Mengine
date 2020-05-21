@@ -254,7 +254,7 @@ namespace Mengine
         }
         else
         {
-            return MT_powf( 2.f, -10.f * _t ) * sinf( (_t - 0.3f * 0.25f) * mt::constant::two_pi / 0.3f ) * 0.5f + 1.f;
+            return MT_powf( 2.f, -10.f * _t ) * MT_sinf( (_t - 0.3f * 0.25f) * mt::constant::two_pi / 0.3f ) * 0.5f + 1.f;
         }
     }
     //////////////////////////////////////////////////////////////////////////

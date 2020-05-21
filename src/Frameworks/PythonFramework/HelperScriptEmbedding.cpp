@@ -749,12 +749,12 @@ namespace Mengine
 
                 for( float v : l )
                 {
-                    s += ::powf( v, inv_pow );
+                    s += MT_powf( v, inv_pow );
                 }
 
                 s /= (float)l.size();
 
-                s = ::powf( s, _pow );
+                s = MT_powf( s, _pow );
 
                 return s;
             }
@@ -766,12 +766,22 @@ namespace Mengine
                 return new_id;
             }
             //////////////////////////////////////////////////////////////////////////
-            int32_t mt_rand( int32_t a )
+            uint32_t mt_rand( uint32_t a )
             {
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                int32_t value = randomizer->getRandom( a );
+                uint32_t value = randomizer->getRandom( a );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            int32_t mt_randi( int32_t a )
+            {
+                const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                    ->getRandomizer();
+
+                uint32_t value = randomizer->getRandomi( a );
 
                 return value;
             }
@@ -786,12 +796,22 @@ namespace Mengine
                 return value;
             }
             //////////////////////////////////////////////////////////////////////////
-            int32_t mt_range_rand( int32_t a, int32_t b )
+            uint32_t mt_range_rand( uint32_t a, uint32_t b )
             {
                 const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                     ->getRandomizer();
 
-                int32_t value = randomizer->getRandomRange( a, b );
+                uint32_t value = randomizer->getRandomRange( a, b );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            int32_t mt_range_randi( int32_t a, int32_t b )
+            {
+                const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                    ->getRandomizer();
+
+                int32_t value = randomizer->getRandomRangei( a, b );
 
                 return value;
             }
@@ -824,7 +844,7 @@ namespace Mengine
                 float rp = randomizer->getRandomf( mt::constant::two_pi );
                 float rr = randomizer->getRandomf( 1.f );
 
-                float rr2 = sqrtf( rr ) * _radius;
+                float rr2 = MT_sqrtf( rr ) * _radius;
 
                 float x = MT_cosf( rp );
                 float y = MT_sinf( rp );
@@ -845,7 +865,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_roundingf( float _value, float _round )
             {
-                float floor_value = floorf( _value / _round );
+                float floor_value = MT_floorf( _value / _round );
                 float round_value = floor_value * _round;
 
                 return round_value;
@@ -873,12 +893,12 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_powf( float a, float b )
             {
-                return ::powf( a, b );
+                return MT_powf( a, b );
             }
             //////////////////////////////////////////////////////////////////////////
             float mt_absf( float a )
             {
-                return ::fabsf( a );
+                return MT_fabsf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float mt_cosf( float a )
@@ -918,7 +938,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_logf( float _x )
             {
-                return ::logf( _x );
+                return MT_logf( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             float mt_log10f( float _x )
@@ -1093,7 +1113,7 @@ namespace Mengine
 
                 float cos_v = mt::dot_v2_v2( v1_norm, v2_norm );
 
-                float angle = acosf( cos_v );
+                float angle = MT_acosf( cos_v );
 
                 return angle;
             }
@@ -3437,8 +3457,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
         pybind::def_functor( _kernel, "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
+        pybind::def_functor( _kernel, "randi", helperScriptMethod, &HelperScriptMethod::mt_randi );
         pybind::def_functor( _kernel, "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
         pybind::def_functor( _kernel, "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
+        pybind::def_functor( _kernel, "range_randi", helperScriptMethod, &HelperScriptMethod::mt_range_randi );
         pybind::def_functor( _kernel, "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
         pybind::def_functor( _kernel, "around_randf", helperScriptMethod, &HelperScriptMethod::mt_around_randf );
         pybind::def_functor( _kernel, "radius_randf", helperScriptMethod, &HelperScriptMethod::mt_radius_randf );

@@ -438,21 +438,25 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
-                _shape->stopAffectors( ETA_VISIBILITY );
+                const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
+
+                affectorHub->stopAffectors( ETA_VISIBILITY );
 
                 if( _shape->isActivate() == false )
                 {
                     return 0;
                 }
 
-                AFFECTOR_ID id = _shape->addAffector( affector );
+                AFFECTOR_ID id = affectorHub->addAffector( affector );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
             {
-                _shape->stopAffectors( ETA_VISIBILITY );
+                const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
+
+                affectorHub->stopAffectors( ETA_VISIBILITY );
             }
             //////////////////////////////////////////////////////////////////////////
             class PythonSceneChangeCallback

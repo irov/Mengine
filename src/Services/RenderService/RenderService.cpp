@@ -780,16 +780,16 @@ namespace Mengine
         renderViewport.begin += m_renderViewport.begin;
         renderViewport.end += m_renderViewport.begin;
 
-        float vp_x = ::floorf( renderViewport.begin.x + 0.5f );
-        float vp_y = ::floorf( renderViewport.begin.y + 0.5f );
+        float vp_x = MT_floorf( renderViewport.begin.x + 0.5f );
+        float vp_y = MT_floorf( renderViewport.begin.y + 0.5f );
         //float vp_x = renderViewport.begin.x;
         //float vp_y = renderViewport.begin.y;
 
         float width = renderViewport.getWidth();
         float height = renderViewport.getHeight();
 
-        float vp_width = ::floorf( width + 0.5f );
-        float vp_height = ::floorf( height + 0.5f );
+        float vp_width = MT_floorf( width + 0.5f );
+        float vp_height = MT_floorf( height + 0.5f );
         //float vp_width = width;
         //float vp_height = height;
 
@@ -842,14 +842,14 @@ namespace Mengine
         m_debugInfo.frameCount = 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer,
-        const RenderIndexBufferInterfacePtr & _indexBuffer,
-        const RenderViewportInterfacePtr & _viewport,
-        const RenderCameraInterfacePtr & _camera,
-        const RenderTransformationInterfacePtr & _transformation,
-        const RenderScissorInterfacePtr & _scissor,
-        const RenderTargetInterfacePtr & _target,
-        const RenderProgramVariableInterfacePtr & _programVariable )
+    bool RenderService::beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
+        , const RenderIndexBufferInterfacePtr & _indexBuffer
+        , const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderProgramVariableInterfacePtr & _programVariable )
     {
         if( m_currentRenderVertexBuffer != _vertexBuffer )
         {
@@ -1147,6 +1147,11 @@ namespace Mengine
     bool RenderService::getVSync() const
     {
         return m_vsync;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::setRenderViewport( const Viewport & _renderViewport )
+    {
+        m_renderViewport = _renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     const Viewport & RenderService::getRenderViewport() const

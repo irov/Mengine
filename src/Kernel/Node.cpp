@@ -782,18 +782,13 @@ namespace Mengine
             return false;
         }
 
-        this->removeChild_( _node );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::removeChild_( const NodePtr & _node )
-    {
         this->_removeChild( _node );
 
         _node->removeParent_();
 
         this->eraseChild_( _node );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getChildrenRecursiveCount() const
@@ -857,23 +852,6 @@ namespace Mengine
                 return node;
             }
         }
-        else
-        {
-            NodePtr node = this->_findChild( _name, _recursion );
-
-            if( node != nullptr )
-            {
-                return node;
-            }
-        }
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    NodePtr Node::_findChild( const ConstString & _name, bool _recursion ) const
-    {
-        MENGINE_UNUSED( _name );
-        MENGINE_UNUSED( _recursion );
 
         return nullptr;
     }
@@ -957,19 +935,6 @@ namespace Mengine
             }
         }
 
-        if( this->_hasChild( _name, _recursive ) == true )
-        {
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::_hasChild( const ConstString & _name, bool _recursive ) const
-    {
-        MENGINE_UNUSED( _name );
-        MENGINE_UNUSED( _recursive );
-
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1014,7 +979,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_freeze( bool _value )
     {
-        if( m_children.empty() != true )
+        if( m_children.empty() == false )
         {
             IntrusivePtrScope ankh( this );
 
@@ -1099,7 +1064,13 @@ namespace Mengine
             picker->setPickerEnable( false );
         }
 
-        Affectorable::stopAllAffectors();
+        if( this->availableAffectorHub() == true )
+        {
+            const AffectorHubInterfacePtr & affectorHub = this->getAffectorHub();
+
+            affectorHub->stopAllAffectors();
+            this->clearAffectorHub();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_afterDeactivate()
@@ -1183,6 +1154,103 @@ namespace Mengine
         {
             render->invalidateBoundingBox();
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HierarchyReceiverInterface * Node::getHierarchyableReceiver()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::onHierarchySetParent( HierarchyInterface * _newParent )
+    {
+        HierarchyReceiverInterface * hierarchyReceiver = _newParent->getHierarchyReceiver();
+
+        Node * newParentNode = static_cast<Node *>(hierarchyReceiver);
+
+        this->setRelationTransformation( newParentNode );
+
+        this->refreshRenderRelation_( newParentNode );
+        this->refreshPickerRelation_( newParentNode );
+
+        UpdationInterface * updation = this->getUpdation();
+
+        if( _newParent != nullptr && updation != nullptr )
+        {
+            uint32_t deep = this->getLeafDeep();
+
+            updation->replace( deep );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::onHierarchyRemoveParent( HierarchyInterface * _oldParent )
+    {
+        MENGINE_UNUSED( _oldParent );
+
+        this->removeRelationTransformation();
+        this->removeRelationRender_();
+        this->removeRelationPicker_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::onHierarchyChangeParent( HierarchyInterface * _oldParent, HierarchyInterface * _newParent )
+    {
+        Node * oldParentNode = _oldParent == nullptr ? nullptr : static_cast<Node *>(_oldParent->getHierarchyReceiver());
+        Node * newParentNode = _newParent == nullptr ? nullptr : static_cast<Node *>(_newParent->getHierarchyReceiver());
+
+        this->_changeParent( oldParentNode, newParentNode );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::onHierarchyRefreshChild( const HierarchyInterfacePtr & _hierarchy )
+    {
+        MENGINE_UNUSED( _hierarchy );
+
+        this->refreshRenderRelation_( this );
+        this->refreshPickerRelation_( this );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::onHierarchyAddChild( const HierarchyInterfacePtr & _hierarchy )
+    {
+        HierarchyReceiverInterface * hierarchyReceiver = _hierarchy->getHierarchyReceiver();
+
+        Node * node = static_cast<Node *>(hierarchyReceiver);
+
+        if( this->isFreeze() == false && node->isFreeze() == true )
+        {
+            node->freeze( false );
+        }
+        else if( this->isFreeze() == true && node->isFreeze() == false )
+        {
+            node->freeze( true );
+        }
+
+        if( this->isActivate() == false && node->isActivate() == true )
+        {
+            node->deactivate();
+        }
+        else if( this->isActivate() == true && node->isActivate() == false )
+        {
+            node->activate();
+        }
+
+        node->invalidateWorldMatrix();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::onHierarchyRemoveChild( const HierarchyInterfacePtr & _hierarchy )
+    {
+        HierarchyReceiverInterface * hierarchyReceiver = _hierarchy->getHierarchyReceiver();
+
+        Node * node = static_cast<Node *>(hierarchyReceiver);
+
+        this->_removeChild( NodePtr::from( node ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::onHierarchyDeactivate()
+    {
+        this->deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AffectorHubProviderInterface * Node::getAffectorHubProvider()
+    {
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     EUpdateMode Node::getAffectorableUpdatableMode() const

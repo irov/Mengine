@@ -499,6 +499,7 @@ Core
     ConstStringHolder.cpp
     ConstStringHolderLocalString.h
     ConstStringHolderLocalString.cpp
+    ConstStringProxy.h
     VectorConstString.h
     
     VectorResourceImages.h

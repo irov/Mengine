@@ -420,6 +420,7 @@ Core
    
     FilePath.h
     FilePath.cpp
+    FilePathProxy.h
     FilePathHelper.h
     FilePathHelper.cpp
     VectorFilePath.h

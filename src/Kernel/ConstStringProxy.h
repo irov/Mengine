@@ -8,7 +8,7 @@ namespace Mengine
     class ConstStringProxy
     {
     public:
-        ConstStringProxy( const Char * _string, ConstStringHolder::size_type _size )
+        ConstStringProxy( const Char * _string, ConstString::size_type _size )
             : m_string( _string )
             , m_size( _size )
         {
@@ -22,6 +22,13 @@ namespace Mengine
             return cstr;
         }
 
+        const Char * c_str() const
+        {
+            const ConstString & cstr = this->c_cstr();
+
+            return cstr.c_str();
+        }
+
         operator const ConstString & () const
         {
             return this->c_cstr();
@@ -29,6 +36,6 @@ namespace Mengine
 
     protected:
         const Char * m_string;
-        ConstStringHolder::size_type m_size;
+        ConstString::size_type m_size;
     };
 }

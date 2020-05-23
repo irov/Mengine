@@ -20,7 +20,6 @@ public class AdMobInteractionLayer {
 
     private static final String TAG = "AdMob";
 
-    private final String _admobAppId;
     private final String _interAdUnitId;
     private final String _videoAdUnitId;
 
@@ -44,12 +43,9 @@ public class AdMobInteractionLayer {
     static native void AndroidNativeAdMob_onRewardedVideoAdFailedToLoad(int errorCode);
     static native void AndroidNativeAdMob_onRewardedVideoCompleted();
 
-    public AdMobInteractionLayer(Activity activity, String admobAppId, String interAdUnitId, String videoAdUnitId) {
-        _admobAppId = admobAppId;
+    public AdMobInteractionLayer(Activity activity, String interAdUnitId, String videoAdUnitId) {
         _interAdUnitId = interAdUnitId;
         _videoAdUnitId = videoAdUnitId;
-
-        MobileAds.initialize(activity, _admobAppId);
 
         _interstitialAd = new InterstitialAd(activity);
         _interstitialAd.setAdUnitId(_interAdUnitId);

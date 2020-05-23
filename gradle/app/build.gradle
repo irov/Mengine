@@ -38,7 +38,7 @@ android {
             applicationId System.getenv('MENGINE_ANDROID_APP_ID')
             print 'MENGINE_ANDROID_APP_ID = '
         } else {
-            applicationId "org.Mengine.EvilMonkey"
+            applicationId "org.Wonderland.EvilMonkey"
             print 'HARDCODE ANDROID_APP_ID = '
         }
         

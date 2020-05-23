@@ -1,9 +1,5 @@
 #include "SDLStdioLogger.h"
 
-#include "Config/Config.h"
-
-#include "SDL_log.h"
-
 #include <iostream>
 
 namespace Mengine

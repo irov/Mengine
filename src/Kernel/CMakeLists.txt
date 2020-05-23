@@ -420,6 +420,7 @@ Core
    
     FilePath.h
     FilePath.cpp
+    FilePathProxy.h
     FilePathHelper.h
     FilePathHelper.cpp
     VectorFilePath.h
@@ -499,6 +500,7 @@ Core
     ConstStringHolder.cpp
     ConstStringHolderLocalString.h
     ConstStringHolderLocalString.cpp
+    ConstStringProxy.h
     VectorConstString.h
     
     VectorResourceImages.h

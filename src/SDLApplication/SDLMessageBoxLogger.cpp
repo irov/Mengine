@@ -1,10 +1,6 @@
 #include "SDLMessageBoxLogger.h"
 
-#include "Config/Config.h"
-
 #include "SDL_messagebox.h"
-
-#include <cstdio>
 
 namespace Mengine
 {

@@ -36,7 +36,7 @@ namespace Mengine
         void setEventHandler( const AdMobEventHandlerPtr & _handler );
 
     public:
-        bool initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId );
+        bool initializeSDK( const String & _interAdUnitId, const String & _videoAdUnitId );
 
     public:
         bool setupInterstitialAd();

@@ -261,12 +261,12 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //AdMob Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void admobInitializePlugin(final String admobAppId, final String interAdUnitId, final String videoAdUnitId) {
+    public static void admobInitializePlugin(final String interAdUnitId, final String videoAdUnitId) {
         ThreadUtil.performOnMainThread(new Runnable() {
             @Override
             public void run() {
                 if (_instance != null && _instance.adMobInteractionLayer == null) {
-                    _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, admobAppId, interAdUnitId, videoAdUnitId);
+                    _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, interAdUnitId, videoAdUnitId);
                     AndroidNativeAdMob_onSDKInitialized();
                 }
             }

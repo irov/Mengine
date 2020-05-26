@@ -36,7 +36,7 @@ namespace Mengine
             return String( str, size );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split( VectorString & _outStrings, const String & _str, bool _trimDelims, const String & _delim )
+        void split( VectorString * _outStrings, const String & _str, bool _trimDelims, const String & _delim )
         {
             uint32_t numSplits = 0;
             String::size_type start = 0;
@@ -48,12 +48,14 @@ namespace Mengine
 
                 if( pos == String::npos )
                 {
-                    _outStrings.emplace_back( _str.substr( start ) );
+                    _outStrings->emplace_back( _str.substr( start ) );
+
                     break;
                 }
                 else
                 {
-                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    _outStrings->emplace_back( _str.substr( start, pos - start ) );
+
                     start = pos + 1;
                 }
 
@@ -68,7 +70,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C = Vector<T> >
-        static void t_split2( C & _outStrings, const T & _str, bool _trimDelims, const C & _delims )
+        static void t_split2( C * _outStrings, const T & _str, bool _trimDelims, const C & _delims )
         {
             typename T::size_type start = 0;
             typename T::size_type pos = 0;
@@ -95,12 +97,14 @@ namespace Mengine
 
                 if( pos == T::npos )
                 {
-                    _outStrings.emplace_back( _str.substr( start ) );
+                    _outStrings->emplace_back( _str.substr( start ) );
+
                     break;
                 }
                 else
                 {
-                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    _outStrings->emplace_back( _str.substr( start, pos - start ) );
+
                     start = pos + 1;
                 }
 
@@ -129,18 +133,18 @@ namespace Mengine
             } while( pos != T::npos );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split2( VectorString & _outStrings, const String & _str, bool _trimDelims, const VectorString & _delims )
+        void split2( VectorString * _outStrings, const String & _str, bool _trimDelims, const VectorString & _delims )
         {
             t_split2( _outStrings, _str, _trimDelims, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
-        void u32split2( VectorU32String & _outStrings, const U32String & _str, bool _trimDelims, const VectorU32String & _delims )
+        void u32split2( VectorU32String * _outStrings, const U32String & _str, bool _trimDelims, const VectorU32String & _delims )
         {
             t_split2( _outStrings, _str, _trimDelims, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C = Vector<T> >
-        static bool t_split3( C & _outStrings, const T & _str, const C & _delims )
+        static bool t_split3( C * _outStrings, const T & _str, const C & _delims )
         {
             typename T::size_type start = 0;
             typename T::size_type pos = 0;
@@ -171,7 +175,7 @@ namespace Mengine
                     {
                         if( start != _str.size() )
                         {
-                            _outStrings.emplace_back( _str.substr( start ) );
+                            _outStrings->emplace_back( _str.substr( start ) );
                         }
 
                         return true;
@@ -183,7 +187,8 @@ namespace Mengine
                 }
                 else
                 {
-                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    _outStrings->emplace_back( _str.substr( start, pos - start ) );
+
                     start = pos + 1;
                 }
             } while( pos != T::npos );
@@ -191,12 +196,12 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool u32split3( VectorU32String & _outStrings, const U32String & _str, const VectorU32String & _delims )
+        bool u32split3( VectorU32String * _outStrings, const U32String & _str, const VectorU32String & _delims )
         {
             return t_split3( _outStrings, _str, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
-        void wsplit( VectorWString & _outStrings, const WString & _str, bool _trimDelims, const WString & _delims )
+        void wsplit( VectorWString * _outStrings, const WString & _str, bool _trimDelims, const WString & _delims )
         {
             uint32_t numSplits = 0;
             WString::size_type start = 0;
@@ -208,12 +213,14 @@ namespace Mengine
 
                 if( pos == WString::npos )
                 {
-                    _outStrings.emplace_back( _str.substr( start ) );
+                    _outStrings->emplace_back( _str.substr( start ) );
+
                     break;
                 }
                 else
                 {
-                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    _outStrings->emplace_back( _str.substr( start, pos - start ) );
+
                     start = pos + 1;
                 }
 
@@ -227,17 +234,18 @@ namespace Mengine
             } while( pos != WString::npos );
         }
         //////////////////////////////////////////////////////////////////////////
-        void join( const String & _delim, const VectorString & _stringArray, String & _outString )
+        void join( const String & _delim, const VectorString & _stringArray, String * _outString )
         {
             if( _stringArray.empty() == true )
             {
-                _outString.clear();
+                _outString->clear();
+
                 return;
             }
 
             VectorString::const_iterator it = _stringArray.begin();
 
-            _outString = *it;
+            *_outString = *it;
 
             ++it;
 
@@ -245,23 +253,23 @@ namespace Mengine
                 it != it_end;
                 ++it )
             {
-                _outString += _delim;
-                _outString += (*it);
+                *_outString += _delim;
+                *_outString += (*it);
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void trim( String & str, bool left/* = true*/, bool right/* = true */ )
+        void trim( String * _str, bool _left, bool _right )
         {
-            static const Char * delims = " \t\r";
+            const Char * delims = " \t\r";
 
-            if( right )
+            if( _right == true )
             {
-                str.erase( str.find_last_not_of( delims ) + 1 ); // trim right
+                _str->erase( _str->find_last_not_of( delims ) + 1 );
             }
 
-            if( left )
+            if( _left == true )
             {
-                str.erase( 0, str.find_first_not_of( delims ) ); // trim left
+                _str->erase( 0, _str->find_first_not_of( delims ) );
             }
         }
     }

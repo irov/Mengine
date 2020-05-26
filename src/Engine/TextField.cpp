@@ -155,9 +155,9 @@ namespace Mengine
         this->invalidateVerticesWM_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D & _vertexData ) const
+    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * _vertexData ) const
     {
-        _vertexData.clear();
+        _vertexData->clear();
         m_chunks.clear();
 
         const VectorTextLinesLayout & layouts = this->getTextLayots();
@@ -289,7 +289,7 @@ namespace Mengine
                     {
                         if( cd.texture == nullptr )
                         {
-                            line.advanceCharOffset( cd, charScale * m_autoScaleFactor, offset2 );
+                            line.advanceCharOffset( cd, charScale * m_autoScaleFactor, &offset2 );
 
                             continue;
                         }
@@ -300,15 +300,15 @@ namespace Mengine
                         {
                             RenderVertex2D v;
 
-                            line.calcCharPosition( cd, offset2, charScale * m_autoScaleFactor, i, v.position );
+                            line.calcCharPosition( cd, offset2, charScale * m_autoScaleFactor, i, &v.position );
 
                             v.color = argb;
                             v.uv[0] = cd.uv[i];
 
-                            _vertexData.emplace_back( v );
+                            _vertexData->emplace_back( v );
                         }
 
-                        line.advanceCharOffset( cd, charScale * m_autoScaleFactor, offset2 );
+                        line.advanceCharOffset( cd, charScale * m_autoScaleFactor, &offset2 );
 
                         RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -572,15 +572,15 @@ namespace Mengine
         return m_textSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::calcTextViewport( Viewport & _viewport ) const
+    bool TextField::calcTextViewport( Viewport * _viewport ) const
     {
         if( m_textId.empty() == true )
         {
             mt::box2f box;
             mt::insideout_box( box );
 
-            _viewport.begin = box.minimum;
-            _viewport.end = box.maximum;
+            _viewport->begin = box.minimum;
+            _viewport->end = box.maximum;
 
             return false;
         }
@@ -592,8 +592,8 @@ namespace Mengine
             mt::box2f box;
             mt::insideout_box( box );
 
-            _viewport.begin = box.minimum;
-            _viewport.end = box.maximum;
+            _viewport->begin = box.minimum;
+            _viewport->end = box.maximum;
 
             return false;
         }
@@ -604,13 +604,13 @@ namespace Mengine
 
         const mt::vec2f & size = this->getTextSize();
 
-        _viewport.begin = mt::vec2f( 0.f, linesOffset ) - size;
-        _viewport.end = mt::vec2f( 0.f, linesOffset );
+        _viewport->begin = mt::vec2f( 0.f, linesOffset ) - size;
+        _viewport->end = mt::vec2f( 0.f, linesOffset );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesWrap_( VectorTextLineChunks2 & _textLines ) const
+    void TextField::updateTextLinesWrap_( VectorTextLineChunks2 * _textLines ) const
     {
         if( m_wrap == false )
         {
@@ -628,7 +628,7 @@ namespace Mengine
         space_delims.emplace_back( U"\r" );
 
         VectorTextLineChunks2 new_textLines;
-        for( const VectorTextLineChunks & textChunks : _textLines )
+        for( const VectorTextLineChunks & textChunks : *_textLines )
         {
             float length = 0.f;
 
@@ -641,7 +641,7 @@ namespace Mengine
                 const TextFontInterfacePtr & font = cache.font;
 
                 VectorU32String words;
-                Helper::u32split2( words, text, false, space_delims );
+                Helper::u32split2( &words, text, false, space_delims );
 
                 TextLineChunk new_textChunk;
                 new_textChunk.fontId = textChunk.fontId;
@@ -714,10 +714,10 @@ namespace Mengine
             new_textLines.emplace_back( new_textChunks );
         }
 
-        _textLines.swap( new_textLines );
+        _textLines->swap( new_textLines );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 & _textLines ) const
+    void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 * _textLines ) const
     {
         if( m_maxCharCount == MENGINE_UNKNOWN_SIZE )
         {
@@ -726,8 +726,8 @@ namespace Mengine
 
         uint32_t charIterator = 0;
         for( VectorTextLineChunks2::iterator
-            it_lines = _textLines.begin(),
-            it_lines_end = _textLines.end();
+            it_lines = _textLines->begin(),
+            it_lines_end = _textLines->end();
             it_lines != it_lines_end;
             ++it_lines )
         {
@@ -760,7 +760,7 @@ namespace Mengine
                 VectorTextLineChunks2::iterator it_lines_erase = it_lines;
                 std::advance( it_lines_erase, 1 );
 
-                _textLines.erase( it_lines_erase, _textLines.end() );
+                _textLines->erase( it_lines_erase, _textLines->end() );
 
                 return;
             }
@@ -880,7 +880,7 @@ namespace Mengine
         }
 
         U32String cacheText;
-        if( this->updateTextCache_( cacheText ) == false )
+        if( this->updateTextCache_( &cacheText ) == false )
         {
             LOGGER_ERROR( "font '%s' invalid update text cache '%s'"
                 , this->getName().c_str()
@@ -905,7 +905,7 @@ namespace Mengine
         m_cacheFonts.emplace_back( baseCacheFont );
 
         VectorTextLineChunks textChars;
-        Helper::test( textChars, cacheText, &m_cacheFonts, 0 );
+        Helper::test( &textChars, cacheText, &m_cacheFonts, 0 );
 
         for( const CacheFont & cache : m_cacheFonts )
         {
@@ -936,13 +936,13 @@ namespace Mengine
         line_delims.emplace_back( U"\n\r\t" );
 
         VectorTextLineChunks2 textLines;
-        Helper::split( textLines, textChars, line_delims );
+        Helper::split( &textLines, textChars, line_delims );
 
         MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != ~0U)), "text '%s' invalid enable together attributes 'wrap' and 'scaleFactor'"
             , this->getName().c_str()
         );
 
-        this->updateTextLinesWrap_( textLines );
+        this->updateTextLinesWrap_( &textLines );
 
         if( this->updateTextLinesDimension_( baseFont, textLines, &m_textSize, &m_charCount, &m_layoutCount ) == false )
         {
@@ -959,7 +959,7 @@ namespace Mengine
             }
         }
 
-        this->updateTextLinesMaxCount_( textLines );
+        this->updateTextLinesMaxCount_( &textLines );
 
         //if( m_debugMode == true )
         //{
@@ -1375,7 +1375,7 @@ namespace Mengine
         return offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void TextField::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         //mt::vec2f offset = mt::zero_v2;
 
@@ -1568,7 +1568,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextCache_( U32String & _cacheText ) const
+    bool TextField::updateTextCache_( U32String * _cacheText ) const
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
@@ -1591,7 +1591,7 @@ namespace Mengine
             ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_textFormatArgs );
 
         String fmt;
-        if( Helper::getStringFormat( fmt, textValue, textSize, m_textFormatArgs ) == false )
+        if( Helper::getStringFormat( &fmt, textValue, textSize, m_textFormatArgs ) == false )
         {
             LOGGER_ERROR( "invalid string '%s:%s' format with args %" PRIuPTR ""
                 , this->getName().c_str()
@@ -1602,7 +1602,7 @@ namespace Mengine
             return false;
         }
 
-        _cacheText = font->prepareText( fmt.c_str(), fmt.size() );
+        *_cacheText = font->prepareText( fmt.c_str(), fmt.size() );
 
         return true;
     }
@@ -1783,17 +1783,17 @@ namespace Mengine
             this->updateVertices_( _font );
         }
 
-        this->updateVertexDataWM_( m_vertexDataTextWM, m_vertexDataText );
+        this->updateVertexDataWM_( &m_vertexDataTextWM, m_vertexDataText );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexDataWM_( VectorRenderVertex2D & _outVertex, const VectorRenderVertex2D & _fromVertex ) const
+    void TextField::updateVertexDataWM_( VectorRenderVertex2D * _outVertex, const VectorRenderVertex2D & _fromVertex ) const
     {
-        _outVertex.assign( _fromVertex.begin(), _fromVertex.end() );
+        _outVertex->assign( _fromVertex.begin(), _fromVertex.end() );
 
         VectorRenderVertex2D::const_iterator it = _fromVertex.begin();
         VectorRenderVertex2D::const_iterator it_end = _fromVertex.end();
 
-        VectorRenderVertex2D::iterator it_w = _outVertex.begin();
+        VectorRenderVertex2D::iterator it_w = _outVertex->begin();
 
         if( m_pixelsnap == true )
         {
@@ -1830,9 +1830,9 @@ namespace Mengine
         m_invalidateVertices = false;
 
         Color colorNode;
-        this->calcTotalColor( colorNode );
+        this->calcTotalColor( &colorNode );
 
-        this->updateVertexData_( _font, colorNode, m_vertexDataText );
+        this->updateVertexData_( _font, colorNode, &m_vertexDataText );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr TextField::_updateMaterial() const

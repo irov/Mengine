@@ -564,22 +564,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             pybind::list s_Node_getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
             {
-                IntrusiveSlugListNodeChild & children = _node->getChildren();
-
-                IntrusiveSlugListNodeChild::size_type size = children.size();
+                uint32_t size = _node->getChildrenCount();
 
                 pybind::list py_children( _kernel, size );
 
                 uint32_t index = 0;
 
-                for( IntrusiveSlugChild it( children ); it.eof() == false; )
+                _node->foreachChildrenSlug( [&py_children, &index]( const NodePtr & _node )
                 {
-                    NodePtr child( *it );
-
-                    it.next_shuffle();
-
-                    py_children[index++] = child;
-                }
+                    py_children[index++] = _node;
+                } );
 
                 return py_children;
             }
@@ -588,9 +582,9 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                affectorHub->stopAffectors( ETA_POSITION );
+                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
 
-                affectorHub->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
+                affectorHub->stopAffectors( ETA_POSITION );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
@@ -1843,8 +1837,9 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                affectorHub->stopAffectors( ETA_ANGLE );
-                affectorHub->setAngularSpeed( 0.f );
+                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
+
+                affectorHub->stopAffectors( ETA_ANGLE );                
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
@@ -1958,6 +1953,8 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
+                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
+
                 affectorHub->stopAffectors( ETA_SCALE );
             }
             //////////////////////////////////////////////////////////////////////////
@@ -2007,6 +2004,8 @@ namespace Mengine
             void s_Node_colorStop( Node * _node )
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
+
+                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
 
                 affectorHub->stopAffectors( ETA_COLOR );
             }
@@ -2458,7 +2457,20 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Eventable, Animatable, Identity, Transformation, Compilable, Renderable, Pickerable, Affectorable>>( _kernel, "Node", false )
+        pybind::interface_<Hierarchy, pybind::bases<Mixin>>( _kernel, "Hierarchy" )
+            .def( "addChildren", &Hierarchy::addChild )
+            .def( "addChildrenFront", &Hierarchy::addChildFront )
+            .def( "addChildrenAfter", &Hierarchy::addChildAfter )
+            .def( "findChildren", &Hierarchy::findChild )
+            .def( "getSiblingPrev", &Hierarchy::getSiblingPrev )
+            .def( "getSiblingNext", &Hierarchy::getSiblingNext )
+            .def( "emptyChild", &Hierarchy::emptyChildren )
+            .def( "hasChildren", &Hierarchy::hasChild )
+            .def( "getParent", &Hierarchy::getParent )
+            .def( "hasParent", &Hierarchy::hasParent )
+            ;
+
+        pybind::interface_<Node, pybind::bases<Scriptable, Eventable, Animatable, Identity, Transformation, Compilable, Renderable, Pickerable, Affectorable, Hierarchy>>( _kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -2467,25 +2479,11 @@ namespace Mengine
             .def( "isFreeze", &Node::isFreeze )
             .def( "getUniqueIdentity", &Node::getUniqueIdentity )
             .def( "findUniqueChild", &Node::findUniqueChild )
-            .def_deprecated( "setSpeedFactor", &Node::setSpeedFactor, "don't work, use getAnimation" )
-            .def_deprecated( "getSpeedFactor", &Node::getSpeedFactor, "don't work, use getAnimation" )
-            .def( "addChildren", &Node::addChild )
-            .def( "addChildrenFront", &Node::addChildFront )
-            .def( "addChildrenAfter", &Node::addChildAfter )
             .def_proxy_static( "removeChildren", scriptMethod, &KernelScriptMethod::s_Node_removeChild )
             .def_proxy_static( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeAllChild )
             .def_proxy_static( "removeFromParent", scriptMethod, &KernelScriptMethod::s_Node_removeFromParent )
             .def_proxy_static( "destroyAllChild", scriptMethod, &KernelScriptMethod::s_Node_destroyAllChild )
-            //.def( "isHomeless", &Node::isHomeless )
             .def_proxy_static( "isHomeless", scriptMethod, &KernelScriptMethod::s_Node_isHomeless )
-            //.def_static( "getChild", &ScriptMethod::s_getChild )
-            .def( "findChildren", &Node::findChild )
-            .def( "getSiblingPrev", &Node::getSiblingPrev )
-            .def( "getSiblingNext", &Node::getSiblingNext )
-            .def( "emptyChild", &Node::emptyChildren )
-            .def( "hasChildren", &Node::hasChild )
-            .def( "getParent", &Node::getParent )
-            .def( "hasParent", &Node::hasParent )
 
             .def( "getWorldPosition", &Node::getWorldPosition )
             .def( "setWorldPosition", &Node::setWorldPosition )

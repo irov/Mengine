@@ -26,7 +26,7 @@ namespace Mengine
     {
         ImageDecoderInterfacePtr decoder;
         if( PREFETCHER_SERVICE()
-            ->getImageDecoder( _fileGroup, _filePath, decoder ) == false )
+            ->getImageDecoder( _fileGroup, _filePath, &decoder ) == false )
         {
             decoder = this->createImageDecoder_( _fileGroup, _filePath, _codecType );
 

@@ -374,7 +374,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f cr;
-        contentResolution.calcSize( cr );
+        contentResolution.calcSize( &cr );
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
         m_defaultCamera2D = PROTOTYPE_SERVICE()

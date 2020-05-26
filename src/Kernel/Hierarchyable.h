@@ -11,21 +11,15 @@ namespace Mengine
         : public Mixin
     {
     public:
-        Hierarchyable();
-        ~Hierarchyable() override;
+        virtual HierarchyInterface * getHierarchyable()
+        {
+            return nullptr;
+        }
 
-    public:
-        bool availableHierarchyable() const;
-        void clearHierarchyable();
-
-    public:
-        const HierarchyInterfacePtr & getHierarchyable() const;
-
-    protected:
-        virtual HierarchyReceiverInterface * getHierarchyableReceiver() = 0;
-
-    public:
-        mutable HierarchyInterfacePtr m_hierarchy;
+        virtual const HierarchyInterface * getHierarchyable() const
+        {
+            return nullptr;
+        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Hierarchyable> HierarchyablePtr;

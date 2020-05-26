@@ -514,7 +514,7 @@ namespace Mengine
         if( _streamable == false )
         {
             if( PREFETCHER_SERVICE()
-                ->getSoundDecoder( _fileGroup, _filePath, soundDecoder ) == false )
+                ->getSoundDecoder( _fileGroup, _filePath, &soundDecoder ) == false )
             {
                 soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, false, _doc );
             }

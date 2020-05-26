@@ -71,25 +71,26 @@ namespace Mengine
         m_points.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::mul_wm( Polygon & _out, const mt::mat4f & _wm ) const
+    void Polygon::mul_wm( Polygon * _out, const mt::mat4f & _wm ) const
     {
         Polygon::size_type points_size = this->size();
 
-        _out.reserve( points_size );
+        _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_wm;
             mt::mul_v2_v2_m4( v_wm, v, _wm );
-            _out.append( v_wm );
+
+            _out->append( v_wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::mul_wm_and_transpose( Polygon & _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const
+    void Polygon::mul_wm_and_transpose( Polygon * _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const
     {
         Polygon::size_type points_size = this->size();
 
-        _out.reserve( points_size );
+        _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
         {
@@ -97,30 +98,30 @@ namespace Mengine
             mt::mul_v2_v2_m4( v_wm, v, _wm );
             v_wm += _pos;
 
-            _out.append( v_wm );
+            _out->append( v_wm );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::transpose( Polygon & _out, const mt::vec2f & _pos ) const
+    void Polygon::transpose( Polygon * _out, const mt::vec2f & _pos ) const
     {
         Polygon::size_type points_size = this->size();
 
-        _out.reserve( points_size );
+        _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
         {
             mt::vec2f v_transpose;
             mt::add_v2_v2( v_transpose, v, _pos );
 
-            _out.append( v_transpose );
+            _out->append( v_transpose );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::transpose_and_scale( Polygon & _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const
+    void Polygon::transpose_and_scale( Polygon * _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const
     {
         Polygon::size_type points_size = this->size();
 
-        _out.reserve( points_size );
+        _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
         {
@@ -130,11 +131,11 @@ namespace Mengine
             mt::vec2f v_transpose_scale;
             mt::mul_v2_v2( v_transpose_scale, v_transpose, _scale );
 
-            _out.append( v_transpose_scale );
+            _out->append( v_transpose_scale );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Polygon::to_box2f( mt::box2f & _box2f ) const
+    bool Polygon::to_box2f( mt::box2f * _box2f ) const
     {
         if( this->empty() == true )
         {
@@ -143,11 +144,11 @@ namespace Mengine
 
         const mt::vec2f & base_v = m_points.front();
 
-        mt::reset( _box2f, base_v );
+        mt::reset( *_box2f, base_v );
 
         for( const mt::vec2f & v : m_points )
         {
-            mt::add_internal_point( _box2f, v );
+            mt::add_internal_point( *_box2f, v );
         }
 
         return true;

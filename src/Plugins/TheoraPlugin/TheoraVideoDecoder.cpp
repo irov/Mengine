@@ -310,7 +310,7 @@ namespace Mengine
         if( m_readyFrame == false )
         {
             float time;
-            if( this->readNextFrame( 0.f, time ) == VDRS_FAILURE )
+            if( this->readNextFrame( 0.f, &time ) == VDRS_FAILURE )
             {
                 return 0;
             }
@@ -648,7 +648,7 @@ namespace Mengine
         return bytes;
     }
     //////////////////////////////////////////////////////////////////////////
-    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float & _pts )
+    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float * _pts )
     {
         MENGINE_UNUSED( _request );
         MENGINE_UNUSED( _pts );
@@ -693,7 +693,7 @@ namespace Mengine
 
         m_time = (float)(time * 1000.0);
 
-        _pts = m_time;
+        *_pts = m_time;
 
         return state;
     }

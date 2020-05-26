@@ -65,7 +65,7 @@ namespace Mengine
         DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
 
     public:
-        bool getDesktopResolution( Resolution & _resolution ) const override;
+        bool getDesktopResolution( Resolution * _resolution ) const override;
 
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
@@ -97,7 +97,7 @@ namespace Mengine
         size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const override;
 
     public:
-        void getMaxClientResolution( Resolution & _resolution ) const override;
+        void getMaxClientResolution( Resolution * _resolution ) const override;
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
@@ -148,7 +148,7 @@ namespace Mengine
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-        bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result );
+        bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * _result );
 
     protected:
         bool calcCursorPosition_( mt::vec2f & _point ) const;

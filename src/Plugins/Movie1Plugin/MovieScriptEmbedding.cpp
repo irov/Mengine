@@ -76,7 +76,7 @@ namespace Mengine
         static PyObject * Movie_getEnableMovieLayer( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
         {
             bool enable;
-            if( _movie->getEnableMovieLayer( _name, enable ) == false )
+            if( _movie->getEnableMovieLayer( _name, &enable ) == false )
             {
                 return _kernel->ret_none();
             }
@@ -257,7 +257,7 @@ namespace Mengine
             , public Factorable
         {
         public:
-            PythonVisitorMovieSlot( pybind::kernel_interface * _kernel, pybind::list & _list )
+            PythonVisitorMovieSlot( pybind::kernel_interface * _kernel, pybind::list * _list )
                 : m_kernel( _kernel )
                 , m_list( _list )
             {
@@ -280,12 +280,12 @@ namespace Mengine
                 const ConstString & name = slot->getName();
 
                 pybind::tuple py_value = pybind::make_tuple_t( m_kernel, _movie, name, slot );
-                m_list.append( py_value );
+                m_list->append( py_value );
             }
 
         protected:
             pybind::kernel_interface * m_kernel;
-            pybind::list & m_list;
+            pybind::list * m_list;
 
         private:
             PythonVisitorMovieSlot( const PythonVisitorMovieSlot & );
@@ -296,7 +296,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSlot>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSlot>( MENGINE_DOCUMENT_PYBIND, _kernel, &py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), visitor );
 
             return py_list;
@@ -505,7 +505,7 @@ namespace Mengine
             const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
             MovieFrameSource start_frame;
-            if( framePack->getLayerFrame( layer->index, 0, start_frame ) == false )
+            if( framePack->getLayerFrame( layer->index, 0, &start_frame ) == false )
             {
                 LOGGER_ERROR( "'%s' invalid get layer '%s' frame %d"
                     , _movie->getName().c_str()
@@ -522,7 +522,7 @@ namespace Mengine
             for( uint32_t i = 1; i != indexCount; ++i )
             {
                 MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
+                framePack->getLayerFrame( layer->index, i, &frame );
 
                 len += mt::length_v3_v3( pos, frame.position );
                 pos = frame.position;
@@ -571,7 +571,7 @@ namespace Mengine
             for( uint32_t i = 0; i != indexCount; ++i )
             {
                 MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
+                framePack->getLayerFrame( layer->index, i, &frame );
 
                 py_path[i] = frame.position;
             }
@@ -619,7 +619,7 @@ namespace Mengine
             for( uint32_t i = 0; i != indexCount; ++i )
             {
                 MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
+                framePack->getLayerFrame( layer->index, i, &frame );
 
                 mt::vec2f pos;
                 pos.x = frame.position.x;
@@ -680,7 +680,7 @@ namespace Mengine
             for( uint32_t i = 0; i != indexCount; ++i )
             {
                 MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
+                framePack->getLayerFrame( layer->index, i, &frame );
 
                 mt::vec3f pos;
                 mt::mul_v3_v3_m4( pos, frame.position, wm );
@@ -742,7 +742,7 @@ namespace Mengine
             for( uint32_t i = 0; i != indexCount; ++i )
             {
                 MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
+                framePack->getLayerFrame( layer->index, i, &frame );
 
                 mt::vec3f pos;
                 mt::mul_v3_v3_m4( pos, frame.position, wm );
@@ -1217,7 +1217,7 @@ namespace Mengine
                 for( uint32_t i = 0; i != frames.count; ++i )
                 {
                     MovieFrameSource frame_source;
-                    _framePack->getLayerFrame( _layer.index, i, frame_source );
+                    _framePack->getLayerFrame( _layer.index, i, &frame_source );
 
                     pybind::dict py_dict_frame( _kernel );
 

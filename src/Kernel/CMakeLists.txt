@@ -68,12 +68,6 @@ Mixin\\\\Updatable
 )
 
 ADD_FILTER(
-Mixin\\\\Hierarchyable
-    Hierarchyable.cpp
-    Hierarchyable.h
-)
-
-ADD_FILTER(
 Mixin\\\\Renderable
     Renderable.h
     RenderContext.h
@@ -105,12 +99,6 @@ Mixin\\\\Observable
 ADD_FILTER(
 Mixin\\\\Pickerable
     Pickerable.h
-)
-
-ADD_FILTER(
-BaseHierarchy    
-    BaseHierarchy.cpp
-    BaseHierarchy.h
 )
 
 ADD_FILTER(
@@ -246,6 +234,12 @@ ADD_FILTER(
 Transformation
     Transformation.cpp
     Transformation.h
+)
+
+ADD_FILTER(
+Hierarchy
+    Hierarchy.cpp
+    Hierarchy.h
 )
 
 ADD_FILTER(

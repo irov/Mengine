@@ -35,7 +35,7 @@ namespace Mengine
             line_delims.emplace_back( U"\n\r\t" );
 
             VectorU32String drawTexts;
-            if( Helper::u32split3( drawTexts, cacheText, line_delims ) == false )
+            if( Helper::u32split3( &drawTexts, cacheText, line_delims ) == false )
             {
                 return;
             }
@@ -72,7 +72,7 @@ namespace Mengine
                 {
                     if( cd.texture == nullptr )
                     {
-                        tl.advanceCharOffset( cd, 1.f, offset );
+                        tl.advanceCharOffset( cd, 1.f, &offset );
 
                         continue;
                     }
@@ -81,7 +81,7 @@ namespace Mengine
                     {
                         RenderVertex2D v;
 
-                        tl.calcCharPosition( cd, offset, 1.f, i, v.position );
+                        tl.calcCharPosition( cd, offset, 1.f, i, &v.position );
 
                         v.position.x += _pos.x;
                         v.position.y += _pos.y;
@@ -91,7 +91,7 @@ namespace Mengine
                         vertexData.emplace_back( v );
                     }
 
-                    tl.advanceCharOffset( cd, 1.f, offset );
+                    tl.advanceCharOffset( cd, 1.f, &offset );
 
                     RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
                         ->getMaterial3( EM_TEXTURE_BLEND, PT_TRIANGLELIST, 1, &cd.texture, _doc );

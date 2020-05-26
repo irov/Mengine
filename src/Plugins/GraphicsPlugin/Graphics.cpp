@@ -304,7 +304,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = false;
 
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         gp_mesh_t mesh;
         GP_CALL( gp_calculate_mesh_size, (m_canvas, &mesh) );

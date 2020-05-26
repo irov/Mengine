@@ -207,7 +207,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
+    void SDLPlatform::getMaxClientResolution( Resolution * _resolution ) const
     {
         SDL_Rect rect;
         SDL_GetDisplayUsableBounds( 0, &rect );
@@ -217,7 +217,7 @@ namespace Mengine
             , rect.h
         );
 
-        _resolution = Resolution( (uint32_t)rect.w, (uint32_t)rect.h );
+        *_resolution = Resolution( (uint32_t)rect.w, (uint32_t)rect.h );
     }
     //////////////////////////////////////////////////////////////////////////
     static void MySDL_LogOutputFunction( void * _userdata, int _category, SDL_LogPriority _priority, const char * _message )
@@ -790,7 +790,7 @@ namespace Mengine
         return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::getDesktopResolution( Resolution & _resolution ) const
+    bool SDLPlatform::getDesktopResolution( Resolution * _resolution ) const
     {
 #if defined(MENGINE_PLATFORM_IOS)
         if( m_window == nullptr )
@@ -802,8 +802,9 @@ namespace Mengine
         int dh;
         SDL_GL_GetDrawableSize( m_window, &dw, &dh );
 
-        _resolution.setWidth( static_cast<uint32_t>(dw) );
-        _resolution.setHeight( static_cast<uint32_t>(dh) );
+        _resolution->setWidth( static_cast<uint32_t>(dw) );
+        _resolution->setHeight( static_cast<uint32_t>(dh) );
+
 #elif defined(MENGINE_PLATFORM_ANDROID)
         if( m_window == nullptr )
         {
@@ -814,8 +815,8 @@ namespace Mengine
         int dh;
         SDL_GL_GetDrawableSize( m_window, &dw, &dh );
 
-        _resolution.setWidth( static_cast<uint32_t>(dw) );
-        _resolution.setHeight( static_cast<uint32_t>(dh) );
+        _resolution->setWidth( static_cast<uint32_t>(dw) );
+        _resolution->setHeight( static_cast<uint32_t>(dh) );
 #else
         SDL_DisplayMode dm;
         if( SDL_GetDesktopDisplayMode( 0, &dm ) != 0 )
@@ -827,8 +828,8 @@ namespace Mengine
             return false;
         }
 
-        _resolution.setWidth( static_cast<uint32_t>(dm.w) );
-        _resolution.setHeight( static_cast<uint32_t>(dm.h) );
+        _resolution->setWidth( static_cast<uint32_t>(dm.w) );
+        _resolution->setHeight( static_cast<uint32_t>(dm.h) );
 #endif
 
         return true;
@@ -891,7 +892,7 @@ namespace Mengine
     void SDLPlatform::setCursorPosition( const mt::vec2f & _pos )
     {
         Resolution resolution;
-        if( this->getDesktopResolution( resolution ) == false )
+        if( this->getDesktopResolution( &resolution ) == false )
         {
             return;
         }

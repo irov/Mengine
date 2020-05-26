@@ -14,7 +14,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static constexpr VectorTextLineChunks::size_type TextChunkNPos = MENGINE_UNKNOWN_SIZE;
         //////////////////////////////////////////////////////////////////////////
-        static bool test2( VectorTextLineChunks & _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
+        static bool test2( VectorTextLineChunks * _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
         {
             if( _offset == _size )
             {
@@ -29,7 +29,7 @@ namespace Mengine
                 c.value = _in.substr( _offset, _size - _offset );
                 c.fontId = _font;
 
-                _out.emplace_back( c );
+                _out->emplace_back( c );
 
                 return true;
             }
@@ -40,7 +40,7 @@ namespace Mengine
                 c.value = _in.substr( _offset, found_pre - _offset );
                 c.fontId = _font;
 
-                _out.emplace_back( c );
+                _out->emplace_back( c );
             }
 
             U32String::size_type found_post = _in.find( _post, found_pre );
@@ -106,7 +106,7 @@ namespace Mengine
                     _cacheFonts->emplace_back( cache );
                 }
 
-                _out.emplace_back( c );
+                _out->emplace_back( c );
             }
 
             U32String::size_type end_size = _end.size();
@@ -119,7 +119,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool test( VectorTextLineChunks & _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font )
+        bool test( VectorTextLineChunks * _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font )
         {
             U32String tag_pre = U"{{font=";
             U32String tag_post = U"}}";
@@ -132,7 +132,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        void substr( VectorTextLineChunks & _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size )
+        void substr( VectorTextLineChunks * _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size )
         {
             VectorTextLineChunks::const_iterator it_offset = _str.begin();
             std::advance( it_offset, _offset );
@@ -148,17 +148,17 @@ namespace Mengine
                 std::advance( it_size, _offset + _size );
             }
 
-            _out.insert( _out.begin(), it_offset, it_size );
+            _out->insert( _out->begin(), it_offset, it_size );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split( VectorTextLineChunks2 & _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims )
+        void split( VectorTextLineChunks2 * _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims )
         {
             VectorTextLineChunks collect;
 
             for( const TextLineChunk & chunk : _chunks )
             {
                 VectorU32String outStrings;
-                if( Helper::u32split3( outStrings, chunk.value, _delims ) == false )
+                if( Helper::u32split3( &outStrings, chunk.value, _delims ) == false )
                 {
                     collect.emplace_back( chunk );
 
@@ -189,7 +189,7 @@ namespace Mengine
                     next_chunk.value = next_value;
                     next_chunk.fontId = chunk.fontId;
 
-                    _lines.emplace_back( collect );
+                    _lines->emplace_back( collect );
                     collect.clear();
 
                     collect.emplace_back( next_chunk );
@@ -198,7 +198,7 @@ namespace Mengine
 
             if( collect.empty() == false )
             {
-                _lines.emplace_back( collect );
+                _lines->emplace_back( collect );
             }
         }
     }

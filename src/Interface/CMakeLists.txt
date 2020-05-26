@@ -100,7 +100,6 @@ src
     EventReceiverInterface.h
     UnknownInterface.h
     UnknownNodeInterface.h
-    HierarchyInterface.h
     RenderInterface.h
     UpdateServiceInterface.h
     UpdationInterface.h

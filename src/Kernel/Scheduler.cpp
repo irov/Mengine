@@ -209,7 +209,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->removeScheduler_( *desc ) == false )
+        if( this->removeScheduler_( desc ) == false )
         {
             LOGGER_ERROR( "not alredy remove or complete '%d'"
                 , _id
@@ -229,7 +229,7 @@ namespace Mengine
 
             for( SchedulerEventDesc & event : schedules )
             {
-                this->removeScheduler_( event );
+                this->removeScheduler_( &event );
             }
         }
 
@@ -239,41 +239,41 @@ namespace Mengine
 
             for( SchedulerEventDesc & event : schedulesAdd )
             {
-                this->removeScheduler_( event );
+                this->removeScheduler_( &event );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::removeScheduler_( SchedulerEventDesc & _event )
+    bool Scheduler::removeScheduler_( SchedulerEventDesc * _event )
     {
-        if( _event.dead == true )
+        if( _event->dead == true )
         {
             return false;
         }
 
-        _event.dead = true;
+        _event->dead = true;
 
-        switch( _event.type )
+        switch( _event->type )
         {
         case EST_EVENT:
             {
-                SchedulerEventInterfacePtr event = _event.event;
+                SchedulerEventInterfacePtr event = _event->event;
 
-                _event.event = nullptr;
+                _event->event = nullptr;
 
-                event->onSchedulerStop( _event.id );
+                event->onSchedulerStop( _event->id );
             }break;
         case EST_TIMING:
             {
-                SchedulerEventInterfacePtr event = _event.event;
+                SchedulerEventInterfacePtr event = _event->event;
 
-                _event.event = nullptr;
-                _event.timer = nullptr;
-                _event.pipe = nullptr;
+                _event->event = nullptr;
+                _event->timer = nullptr;
+                _event->pipe = nullptr;
 
                 if( event != nullptr )
                 {
-                    event->onSchedulerStop( _event.id );
+                    event->onSchedulerStop( _event->id );
                 }
             }break;
         }

@@ -543,7 +543,7 @@ namespace Mengine
                 VectorGeolygon output;
                 if( subtract == false )
                 {
-                    if( Helper::intersection( polygon, imagePolygon, output ) == false )
+                    if( Helper::intersection( polygon, imagePolygon, &output ) == false )
                     {
                         LOGGER_ERROR( "layer %d shapes invalid"
                             , layerIndex
@@ -554,7 +554,7 @@ namespace Mengine
                 }
                 else
                 {
-                    if( Helper::difference( imagePolygon, polygon, output ) == false )
+                    if( Helper::difference( imagePolygon, polygon, &output ) == false )
                     {
                         LOGGER_ERROR( "layer %d shapes invalid"
                             , layerIndex

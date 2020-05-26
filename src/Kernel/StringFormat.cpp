@@ -49,7 +49,7 @@ namespace Mengine
             return num_argumetns;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getStringFormat( String & _out, const Char * _format, size_t _size, const VectorString & _arguments )
+        bool getStringFormat( String * _out, const Char * _format, size_t _size, const VectorString & _arguments )
         {
             uint32_t num_argumetns = 0;
 
@@ -65,11 +65,12 @@ namespace Mengine
                         ++index;
 
                         const Char ch1 = _format[index];
+
                         switch( ch1 )
                         {
                         case '%':
                             {
-                                _out += '%';
+                                *_out += '%';
                             }break;
                         case 's':
                             {
@@ -78,7 +79,7 @@ namespace Mengine
                                     return false;
                                 }
 
-                                _out += _arguments[num_argumetns++];
+                                *_out += _arguments[num_argumetns++];
                             }break;
                         default:
                             {
@@ -88,7 +89,7 @@ namespace Mengine
                     }break;
                 default:
                     {
-                        _out += ch;
+                        *_out += ch;
                     }break;
                 }
             }

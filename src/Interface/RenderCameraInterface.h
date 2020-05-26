@@ -11,7 +11,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f & _screenPosition ) const = 0;
+        virtual void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * _screenPosition ) const = 0;
 
     public:
         virtual const mt::mat4f & getCameraViewMatrix() const = 0;

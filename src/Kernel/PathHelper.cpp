@@ -27,7 +27,7 @@ namespace Mengine
             return FilePath( c_path );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath & _fullPath )
+        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath * _fullPath )
         {
             FileGroupInterfacePtr group;
 
@@ -45,7 +45,7 @@ namespace Mengine
 
             FilePath fullPath = Helper::concatenationFilePath( groupPath, _filePath );
 
-            _fullPath = fullPath;
+            *_fullPath = fullPath;
 
             return true;
         }
@@ -95,7 +95,7 @@ namespace Mengine
         FilePath unicodeToFilePath( const WString & _unicode )
         {
             String utf8;
-            if( Helper::unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), utf8 ) == false )
+            if( Helper::unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), &utf8 ) == false )
             {
                 return FilePath::none();
             }

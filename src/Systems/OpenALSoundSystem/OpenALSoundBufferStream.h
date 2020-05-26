@@ -39,13 +39,13 @@ namespace Mengine
 
     public:
         bool setTimePos( ALuint _source, float _pos ) const override;
-        bool getTimePos( ALuint _source, float & _pos ) const override;
+        bool getTimePos( ALuint _source, float * _pos ) const override;
 
     public:
         bool update() override;
 
     protected:
-        bool bufferData_( ALuint _alBufferId, size_t & _bytes );
+        bool bufferData_( ALuint _alBufferId, size_t * _bytes );
 
         void removeBuffers_();
 

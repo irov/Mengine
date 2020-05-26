@@ -24,14 +24,14 @@ namespace Mengine
         void setCameraFar( float _far );
 
     protected:
-        void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f & _screenPosition ) const override;
+        void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * _screenPosition ) const override;
 
     protected:
         void _updateViewMatrix() const override;
         void _updateProjectionMatrix() const override;
 
     protected:
-        void makeViewport_( Viewport & _viewport ) const;
+        void makeViewport_( Viewport * _viewport ) const;
 
     protected:
         mt::vec3f m_cameraPosition;

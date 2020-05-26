@@ -93,7 +93,7 @@ namespace Mengine
         const Char * utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", "d3d9.dll" );
 
         WString unicode_d3d9DLL;
-        Helper::utf8ToUnicode( utf8_d3d9DLL, unicode_d3d9DLL );
+        Helper::utf8ToUnicode( utf8_d3d9DLL, &unicode_d3d9DLL );
 
         HMODULE hd3d9 = ::LoadLibrary( unicode_d3d9DLL.c_str() );
 
@@ -336,7 +336,7 @@ namespace Mengine
         m_windowResolution = _resolution;
 
         mt::vec2f windowSize;
-        m_windowResolution.calcSize( windowSize );
+        m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
         m_fullscreen = _fullscreen;
@@ -1002,7 +1002,7 @@ namespace Mengine
         m_windowResolution = _resolution;
 
         mt::vec2f windowSize;
-        m_windowResolution.calcSize( windowSize );
+        m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
         m_d3dpp = _fullscreen ? &m_d3dppFS : &m_d3dppW;

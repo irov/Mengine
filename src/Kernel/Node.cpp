@@ -20,7 +20,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Node::Node()
         : m_uniqueIdentity( 0 )
-        , m_parent( nullptr )
         , m_active( false )
         , m_deactivating( false )
         , m_afterActive( false )
@@ -69,35 +68,21 @@ namespace Mengine
 
         m_active = true;
 
-        if( m_children.empty() == false )
+        if( this->foreachChildrenSlugBreak( [this]( const NodePtr & _hierarchy )
         {
-            NodePtr single = m_children.single();
+            NodePtr child = _hierarchy;
 
-            if( single != nullptr )
+            if( child->activate() == false )
             {
-                if( single->activate() == false )
-                {
-                    m_active = false;
+                m_active = false;
 
-                    return false;
-                }
+                return false;
             }
-            else
-            {
-                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-                {
-                    NodePtr children( *it );
 
-                    it.next_shuffle();
-
-                    if( children->activate() == false )
-                    {
-                        m_active = false;
-
-                        return false;
-                    }
-                }
-            }
+            return true;
+        } ) == false )
+        {
+            return false;
         }
 
         if( m_active == true )
@@ -143,26 +128,12 @@ namespace Mengine
 
         this->_deactivate();
 
-        if( m_children.empty() == false )
+        this->foreachChildrenSlug( []( const NodePtr & _hierarchy )
         {
-            NodePtr single = m_children.single();
+            NodePtr child = _hierarchy;
 
-            if( single != nullptr )
-            {
-                single->deactivate();
-            }
-            else
-            {
-                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-                {
-                    NodePtr children( *it );
-
-                    it.next_shuffle();
-
-                    children->deactivate();
-                }
-            }
-        }
+            child->deactivate();
+        } );
 
         m_active = false;
         m_deactivating = false;
@@ -179,9 +150,11 @@ namespace Mengine
 
         m_enable = true;
 
-        if( m_parent != nullptr )
+        Node * parent = this->getParent();
+
+        if( parent != nullptr )
         {
-            if( m_parent->isActivate() == false )
+            if( parent->isActivate() == false )
             {
                 return true;
             }
@@ -217,9 +190,11 @@ namespace Mengine
 
         m_enable = true;
 
-        if( m_parent != nullptr )
+        Node * parent = this->getParent();
+
+        if( parent != nullptr )
         {
-            if( m_parent->isActivate() == false )
+            if( parent->isActivate() == false )
             {
                 return true;
             }
@@ -251,22 +226,6 @@ namespace Mengine
         m_enable = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Node::getLeafDeep() const
-    {
-        uint32_t deep = 0;
-
-        Node * parent = m_parent;
-
-        while( parent != nullptr )
-        {
-            ++deep;
-
-            parent = parent->getParent();
-        }
-
-        return deep;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Node::removeRelationRender_()
     {
         RenderInterface * render = this->getRender();
@@ -277,7 +236,9 @@ namespace Mengine
         }
         else
         {
-            if( Helper::hasNodeRenderInheritance( m_parent ) == true )
+            Node * parent = this->getParent();
+
+            if( Helper::hasNodeRenderInheritance( parent ) == true )
             {
                 this->foreachRenderCloseChildren_( []( RenderInterface * _render )
                 {
@@ -285,18 +246,6 @@ namespace Mengine
                 } );
             }
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::removeParent_()
-    {
-        this->removeRelationTransformation();
-        this->removeRelationRender_();
-        this->removeRelationPicker_();
-
-        Node * oldparent = m_parent;
-        m_parent = nullptr;
-
-        this->_changeParent( oldparent, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::refreshRenderRelation_( Node * _parent )
@@ -329,109 +278,7 @@ namespace Mengine
                 _picker->setRelationPicker( pickerParent );
             } );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setParent_( Node * _parent )
-    {
-        this->setRelationTransformation( _parent );
-
-        this->refreshRenderRelation_( _parent );
-        this->refreshPickerRelation_( _parent );
-
-        UpdationInterface * updation = this->getUpdation();
-
-        if( _parent != nullptr && updation != nullptr )
-        {
-            uint32_t deep = this->getLeafDeep();
-
-            updation->replace( deep );
-        }
-
-        Node * oldparent = m_parent;
-        m_parent = _parent;
-
-        this->_changeParent( oldparent, _parent );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::destroyChildren( const LambdaDestroyChildren & _lambda )
-    {
-        if( m_children.empty() == true )
-        {
-            return;
-        }
-
-        for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-        {
-            NodePtr node( *it );
-
-            IntrusiveSlugListNodeChild::iterator it_node( node );
-
-            it.next_shuffle();
-
-            node->deactivate();
-
-            Node * parent = node->getParent();
-
-            if( parent != this )
-            {
-                continue;
-            }
-
-            node->release();
-
-            node->removeParent_();
-
-            m_children.erase( it_node );
-
-            _lambda( node );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::removeChildren( const LambdaRemoveChildren & _lambda )
-    {
-        if( m_children.empty() == true )
-        {
-            return;
-        }
-
-        for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-        {
-            NodePtr node( *it );
-
-            IntrusiveSlugListNodeChild::iterator it_node( node );
-
-            it.next_shuffle();
-
-            node->deactivate();
-
-            Node * parent = node->getParent();
-
-            if( parent != this )
-            {
-                continue;
-            }
-
-            node->release();
-
-            node->removeParent_();
-
-            m_children.erase( it_node );
-
-            _lambda( node );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::removeFromParent()
-    {
-        if( m_parent == nullptr )
-        {
-            return true;
-        }
-
-        bool result = m_parent->removeChild( NodePtr::from( this ) );
-
-        return result;
-    }
+    }        
     //////////////////////////////////////////////////////////////////////////
     void Node::setUniqueIdentity( uint32_t _uniqueIdentity )
     {
@@ -443,204 +290,25 @@ namespace Mengine
         return m_uniqueIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::addChild( const NodePtr & _node )
-    {
-        MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add child NULL node"
-            , this->getName().c_str()
-        );
-
-        MENGINE_ASSERTION_FATAL( _node != this, "node '%s' invalid self child node"
-            , this->getName().c_str()
-        );
-
-        this->addChild_( m_children.end(), _node );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::addChildFront( const NodePtr & _node )
-    {
-        MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add front child NULL node"
-            , this->getName().c_str()
-        );
-
-        MENGINE_ASSERTION_FATAL( _node != this, "node '%s' invalid self child node"
-            , this->getName().c_str()
-        );
-
-        this->addChild_( m_children.begin(), _node );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
-    {
-        MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add child NULL node (node)"
-            , this->getName().c_str()
-        );
-
-        MENGINE_ASSERTION_FATAL( _after != nullptr, "node '%s' invalid add after NULL node (node)"
-            , this->getName().c_str()
-        );
-
-        MENGINE_ASSERTION_FATAL( _node != _after, "node '%s' invalid add child '%s' is equal after '%s' (node)"
-            , this->getName().c_str()
-            , _node->getName().c_str()
-            , _after->getName().c_str()
-        );
-
-        MENGINE_ASSERTION_FATAL( stdex::helper::intrusive_find( m_children.begin(), m_children.end(), _after ) != m_children.end(), "node '%s' after is not child"
-            , this->getName().c_str()
-        );
-
-        IntrusiveSlugListNodeChild::iterator it_after( _after );
-
-        this->addChild_( it_after, _node );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _child )
-    {
-        IntrusivePtrScope ankh( this );
-
-        Node * child_parent = _child->getParent();
-
-        if( child_parent == this )
-        {
-            if( *_insert == _child )
-            {
-                return;
-            }
-
-            child_parent->eraseChild_( _child );
-
-            this->insertChild_( _insert, _child );
-
-            this->refreshRenderRelation_( this );
-            this->refreshPickerRelation_( this );
-        }
-        else
-        {
-            if( child_parent != nullptr )
-            {
-                child_parent->eraseChild_( _child );
-            }
-
-            this->insertChild_( _insert, _child );
-
-            _child->setParent_( this );
-        }
-
-        this->_addChild( _child );
-
-        if( this->isFreeze() == false && _child->isFreeze() == true )
-        {
-            _child->freeze( false );
-        }
-        else if( this->isFreeze() == true && _child->isFreeze() == false )
-        {
-            _child->freeze( true );
-        }
-
-        if( this->isActivate() == false && _child->isActivate() == true )
-        {
-            _child->deactivate();
-        }
-        else if( this->isActivate() == true && _child->isActivate() == false )
-        {
-            _child->activate();
-        }
-
-        _child->invalidateWorldMatrix();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node )
-    {
-        m_children.insert( _insert, _node );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::eraseChild_( const NodePtr & _node )
-    {
-        m_children.remove( _node );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::foreachChildren( const LambdaNode & _lambda ) const
-    {
-        for( IntrusiveSlugListNodeChild::const_iterator
-            it = m_children.begin(),
-            it_end = m_children.end();
-            it != it_end;
-            ++it )
-        {
-            NodePtr child( *it );
-
-            _lambda( child );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::foreachChildrenUnslug( const LambdaNode & _lambda ) const
-    {
-        for( IntrusiveSlugListNodeChild::unslug_const_iterator
-            it = m_children.ubegin(),
-            it_end = m_children.uend();
-            it != it_end;
-            ++it )
-        {
-            NodePtr child( *it );
-
-            _lambda( child );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::foreachChildrenReverse( const LambdaNode & _lambda ) const
-    {
-        for( IntrusiveSlugListNodeChild::const_reverse_iterator
-            it = m_children.rbegin(),
-            it_end = m_children.rend();
-            it != it_end;
-            ++it )
-        {
-            NodePtr child( *it );
-
-            _lambda( child );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const
-    {
-        for( IntrusiveSlugListNodeChild::unslug_const_iterator
-            it = m_children.ubegin(),
-            it_end = m_children.uend();
-            it != it_end;
-            ++it )
-        {
-            NodePtr child( *it );
-
-            if( _lambda( child ) == false )
-            {
-                break;
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     NodePtr Node::findUniqueChild( uint32_t _uniqueIdentity ) const
     {
-        for( IntrusiveSlugListNodeChild::unslug_const_iterator
-            it = m_children.ubegin(),
-            it_end = m_children.uend();
-            it != it_end;
-            ++it )
-        {
-            NodePtr child( *it );
+        NodePtr found;
 
-            uint32_t childUID = child->getUniqueIdentity();
+        this->foreachChildrenUnslugBreak( [&found, _uniqueIdentity]( const NodePtr & _child )
+        {
+            uint32_t childUID = _child->getUniqueIdentity();
 
             if( childUID != _uniqueIdentity )
             {
-                continue;
+                return true;
             }
 
-            return child;
-        }
+            found = _child;
 
-        return nullptr;
+            return false;
+        } );
+
+        return found;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachRenderCloseChildren_( const LambdaRenderCloseChildren & _lambda )
@@ -687,7 +355,9 @@ namespace Mengine
         }
         else
         {
-            if( Helper::hasNodePickerInheritance( m_parent ) == true )
+            Node * parent = this->getParent();
+
+            if( Helper::hasNodePickerInheritance( parent ) == true )
             {
                 this->foreachPickerCloseChildren_( []( PickerInterface * _childPicker )
                 {
@@ -735,234 +405,12 @@ namespace Mengine
     {
         this->visit( _visitor );
 
-        if( m_children.empty() == true )
-        {
-            return;
-        }
-
         IntrusivePtrScope ankh( this );
 
-        NodePtr single_child = m_children.single();
-
-        if( single_child != nullptr )
+        this->foreachChildrenSlug( [_visitor]( const NodePtr & _child )
         {
-            single_child->visitChildren( _visitor );
-        }
-        else
-        {
-            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-            {
-                NodePtr children( *it );
-
-                it.next_shuffle();
-
-                children->visitChildren( _visitor );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::removeChild( const NodePtr & _node )
-    {
-        MENGINE_ASSERTION_FATAL_RETURN( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), _node ) == true, false, "node '%s' not found children '%s'"
-            , this->getName().c_str()
-            , _node->getName().c_str()
-        );
-
-        MENGINE_ASSERTION_FATAL_RETURN( _node != this, false, "node '%s' invalid self child node"
-            , this->getName().c_str()
-        );
-
-        _node->deactivate();
-
-        //check if deactivate remove from parent!
-        Node * parent = _node->getParent();
-
-        if( parent != this )
-        {
-            return false;
-        }
-
-        this->_removeChild( _node );
-
-        _node->removeParent_();
-
-        this->eraseChild_( _node );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Node::getChildrenRecursiveCount() const
-    {
-        uint32_t size = m_children.size();
-
-        this->foreachChildren( [&size]( const NodePtr & _child )
-        {
-            size += _child->getChildrenRecursiveCount();
+            _child->visitChildren( _visitor );
         } );
-
-        return size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        template<class C, class M>
-        static typename C::const_iterator s_node_find_child( const C & _child, M _method, const ConstString & _name )
-        {
-            typename C::const_iterator it_found =
-                stdex::helper::intrusive_find_if( _child.begin(), _child.end(), [_method, _name]( const NodePtr & _node )
-            {
-                Node * node_ptr = _node.get();
-
-                return (node_ptr->*_method)() == _name;
-            } );
-
-            return it_found;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    NodePtr Node::findChild( const ConstString & _name, bool _recursion ) const
-    {
-        IntrusiveSlugListNodeChild::const_iterator it_found =
-            Detail::s_node_find_child( m_children, &Identity::getName, _name );
-
-        if( it_found != m_children.end() )
-        {
-            NodePtr children = *it_found;
-
-            return children;
-        }
-
-        if( _recursion == true )
-        {
-            for( IntrusiveSlugListNodeChild::const_iterator
-                it = m_children.begin(),
-                it_end = m_children.end();
-                it != it_end;
-                ++it )
-            {
-                const NodePtr & children = (*it);
-
-                NodePtr node = children->findChild( _name, true );
-
-                if( node == nullptr )
-                {
-                    continue;
-                }
-
-                return node;
-            }
-        }
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    NodePtr Node::getSiblingPrev() const
-    {
-        Node * parent = this->getParent();
-
-        if( parent == nullptr )
-        {
-            return nullptr;
-        }
-
-        IntrusiveSlugListNodeChild & parent_children = parent->getChildren();
-
-        IntrusiveSlugListNodeChild::iterator it_found =
-            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), NodePtr( this ) );
-
-        if( it_found == parent_children.begin() )
-        {
-            return nullptr;
-        }
-
-        --it_found;
-
-        NodePtr prev_node = *it_found;
-
-        return prev_node;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    NodePtr Node::getSiblingNext() const
-    {
-        Node * parent = this->getParent();
-
-        if( parent == nullptr )
-        {
-            return nullptr;
-        }
-
-        IntrusiveSlugListNodeChild & parent_children = parent->getChildren();
-
-        IntrusiveSlugListNodeChild::iterator it_found =
-            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), NodePtr( this ) );
-
-        ++it_found;
-
-        if( it_found == parent_children.end() )
-        {
-            return nullptr;
-        }
-
-        NodePtr next_node = *it_found;
-
-        return next_node;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::hasChild( const ConstString & _name, bool _recursive ) const
-    {
-        IntrusiveSlugListNodeChild::const_iterator it_found =
-            Detail::s_node_find_child( m_children, &Identity::getName, _name );
-
-        if( it_found != m_children.end() )
-        {
-            return true;
-        }
-
-        if( _recursive == true )
-        {
-            for( IntrusiveSlugListNodeChild::const_iterator
-                it = m_children.begin(),
-                it_end = m_children.end();
-                it != it_end;
-                ++it )
-            {
-                NodePtr children = (*it);
-
-                if( children->hasChild( _name, true ) == true )
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::emptyChildren() const
-    {
-        return m_children.empty();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_changeParent( Node * _oldParent, Node * _newParent )
-    {
-        MENGINE_UNUSED( _oldParent );
-        MENGINE_UNUSED( _newParent );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_addChild( const NodePtr & _node )
-    {
-        MENGINE_UNUSED( _node );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_removeChild( const NodePtr & _node )
-    {
-        MENGINE_UNUSED( _node );
-
-        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::freeze( bool _value )
@@ -979,19 +427,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_freeze( bool _value )
     {
-        if( m_children.empty() == false )
+        IntrusivePtrScope ankh( this );
+
+        this->foreachChildrenSlug( [_value]( const NodePtr & _child )
         {
-            IntrusivePtrScope ankh( this );
-
-            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-            {
-                NodePtr node( *it );
-
-                it.next_shuffle();
-
-                node->freeze( _value );
-            }
-        }
+            _child->freeze( _value );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::setSpeedFactor( float _speedFactor )
@@ -1092,26 +533,10 @@ namespace Mengine
             this->deactivate();
         }
 
-        if( m_children.empty() == false )
+        this->foreachChildrenSlug( []( const NodePtr & _child )
         {
-            NodePtr single = m_children.single();
-
-            if( single != nullptr )
-            {
-                single->release();
-            }
-            else
-            {
-                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-                {
-                    NodePtr node( *it );
-
-                    it.next_shuffle();
-
-                    node->release();
-                }
-            }
-        }
+            _child->release();
+        } );
 
         Compilable::release();
     }
@@ -1156,21 +581,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    HierarchyReceiverInterface * Node::getHierarchyableReceiver()
+    void Node::onHierarchySetParent( Node * _newParent )
     {
-        return this;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchySetParent( HierarchyInterface * _newParent )
-    {
-        HierarchyReceiverInterface * hierarchyReceiver = _newParent->getHierarchyReceiver();
+        this->setRelationTransformation( _newParent );
 
-        Node * newParentNode = static_cast<Node *>(hierarchyReceiver);
-
-        this->setRelationTransformation( newParentNode );
-
-        this->refreshRenderRelation_( newParentNode );
-        this->refreshPickerRelation_( newParentNode );
+        this->refreshRenderRelation_( _newParent );
+        this->refreshPickerRelation_( _newParent );
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -1182,7 +598,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyRemoveParent( HierarchyInterface * _oldParent )
+    void Node::onHierarchyRemoveParent( Node * _oldParent )
     {
         MENGINE_UNUSED( _oldParent );
 
@@ -1191,61 +607,63 @@ namespace Mengine
         this->removeRelationPicker_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyChangeParent( HierarchyInterface * _oldParent, HierarchyInterface * _newParent )
+    void Node::onHierarchyChangeParent( Node * _oldParent, Node * _newParent )
     {
-        Node * oldParentNode = _oldParent == nullptr ? nullptr : static_cast<Node *>(_oldParent->getHierarchyReceiver());
-        Node * newParentNode = _newParent == nullptr ? nullptr : static_cast<Node *>(_newParent->getHierarchyReceiver());
-
-        this->_changeParent( oldParentNode, newParentNode );
+        this->_changeParent( _oldParent, _newParent );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyRefreshChild( const HierarchyInterfacePtr & _hierarchy )
+    void Node::onHierarchyRefreshChild( const NodePtr & _node )
     {
-        MENGINE_UNUSED( _hierarchy );
+        MENGINE_UNUSED( _node );
 
         this->refreshRenderRelation_( this );
         this->refreshPickerRelation_( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyAddChild( const HierarchyInterfacePtr & _hierarchy )
+    void Node::onHierarchyAddChild( const NodePtr & _node )
     {
-        HierarchyReceiverInterface * hierarchyReceiver = _hierarchy->getHierarchyReceiver();
-
-        Node * node = static_cast<Node *>(hierarchyReceiver);
-
-        if( this->isFreeze() == false && node->isFreeze() == true )
+        if( this->isFreeze() == false && _node->isFreeze() == true )
         {
-            node->freeze( false );
+            _node->freeze( false );
         }
-        else if( this->isFreeze() == true && node->isFreeze() == false )
+        else if( this->isFreeze() == true && _node->isFreeze() == false )
         {
-            node->freeze( true );
+            _node->freeze( true );
         }
 
-        if( this->isActivate() == false && node->isActivate() == true )
+        if( this->isActivate() == false && _node->isActivate() == true )
         {
-            node->deactivate();
+            _node->deactivate();
         }
-        else if( this->isActivate() == true && node->isActivate() == false )
+        else if( this->isActivate() == true && _node->isActivate() == false )
         {
-            node->activate();
+            _node->activate();
         }
 
-        node->invalidateWorldMatrix();
+        _node->invalidateWorldMatrix();
+
+        this->_addChild( _node );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyRemoveChild( const HierarchyInterfacePtr & _hierarchy )
+    void Node::onHierarchyRemoveChild( const NodePtr & _node )
     {
-        HierarchyReceiverInterface * hierarchyReceiver = _hierarchy->getHierarchyReceiver();
-
-        Node * node = static_cast<Node *>(hierarchyReceiver);
-
-        this->_removeChild( NodePtr::from( node ) );
+        this->_removeChild( _node );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyDeactivate()
+    void Node::_changeParent( Node * _oldParent, Node * _newParent )
     {
-        this->deactivate();
+        MENGINE_UNUSED( _oldParent );
+        MENGINE_UNUSED( _newParent );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_addChild( const NodePtr & _node )
+    {
+        MENGINE_UNUSED( _node );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_removeChild( const NodePtr & _node )
+    {
+        MENGINE_UNUSED( _node );
     }
     //////////////////////////////////////////////////////////////////////////
     AffectorHubProviderInterface * Node::getAffectorHubProvider()

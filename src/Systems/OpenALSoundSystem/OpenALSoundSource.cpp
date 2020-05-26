@@ -227,7 +227,7 @@ namespace Mengine
         }
 
         float posms = 0.f;
-        if( m_soundBuffer->getTimePos( m_sourceId, posms ) == false )
+        if( m_soundBuffer->getTimePos( m_sourceId, &posms ) == false )
         {
             LOGGER_ERROR( "invalid get time pos %d (play %d)"
                 , m_sourceId

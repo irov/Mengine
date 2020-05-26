@@ -144,10 +144,10 @@ namespace Mengine
             return m_outward;
         }
 
-        _polygon.transpose( m_polygonTemp, _point );
+        _polygon.transpose( &m_polygonTemp, _point );
 
         mt::box2f bb_polygon;
-        m_polygonTemp.to_box2f( bb_polygon );
+        m_polygonTemp.to_box2f( &bb_polygon );
 
         mt::box2f bb_screen;
         this->getScreenPolygon( _camera, _viewport, _contentResolution, &bb_screen, &m_polygonScreen );
@@ -193,7 +193,7 @@ namespace Mengine
         vp.calcSize( vp_size );
 
         mt::vec2f contentResolutionInvSize;
-        _contentResolution.calcInvSize( contentResolutionInvSize );
+        _contentResolution.calcInvSize( &contentResolutionInvSize );
 
         const Polygon & polygon = this->getPolygon();
 

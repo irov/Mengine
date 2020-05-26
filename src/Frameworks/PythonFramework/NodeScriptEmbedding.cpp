@@ -206,7 +206,7 @@ namespace Mengine
                         }
 
                         String utf8_arg;
-                        Helper::unicodeToUtf8( key, utf8_arg );
+                        Helper::unicodeToUtf8( key, &utf8_arg );
 
                         cs_args.emplace_back( utf8_arg );
                     }
@@ -245,7 +245,7 @@ namespace Mengine
                 for( const String & str_arg : str_args )
                 {
                     WString unicode;
-                    Helper::utf8ToUnicode( str_arg, unicode );
+                    Helper::utf8ToUnicode( str_arg, &unicode );
 
                     ws_args.emplace_back( unicode );
                 }
@@ -292,7 +292,7 @@ namespace Mengine
                 const Polygon & polygon = _hs->getPolygon();
 
                 mt::box2f bb;
-                polygon.to_box2f( bb );
+                polygon.to_box2f( &bb );
 
                 mt::vec2f c;
                 mt::get_center_box( bb, c );
@@ -355,7 +355,7 @@ namespace Mengine
                 const mt::mat4f & wm = _hs->getWorldMatrix();
 
                 Polygon pwm;
-                polygon.mul_wm( pwm, wm );
+                polygon.mul_wm( &pwm, wm );
 
                 return pwm;
             }
@@ -455,6 +455,8 @@ namespace Mengine
             void s_ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
             {
                 const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
+
+                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
 
                 affectorHub->stopAffectors( ETA_VISIBILITY );
             }

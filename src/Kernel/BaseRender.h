@@ -88,7 +88,7 @@ namespace Mengine
 
     protected:
         const Color & getWorldColor() const override;
-        void calcTotalColor( Color & _color ) const override;
+        void calcTotalColor( Color * _color ) const override;
         bool isSolidColor() const override;
 
     protected:

@@ -116,7 +116,7 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void MovieMesh2D::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         if( m_vertexCount == 0 )
         {
@@ -127,14 +127,14 @@ namespace Mengine
 
         const RenderVertex2D * vertices = this->getVerticesWM();
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t i = 1; i != m_vertexCount; ++i )
         {
-            mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
+            mt::add_internal_point( *_boundingBox, vertices[i].position.x, vertices[i].position.y );
         }
 
-        *_boundingBoxCurrent = &_boundingBox;
+        *_boundingBoxCurrent = _boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieMesh2D::_invalidateWorldMatrix() const
@@ -195,7 +195,7 @@ namespace Mengine
         m_invalidateVerticesColor = false;
 
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         const Color & textureColor = m_resourceImage->getColor();
         color *= textureColor;

@@ -12,21 +12,21 @@ namespace Mengine
             selfRender->renderWithChildren( _renderPipeline, _context, _external );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool hasNodeRenderInheritance( Node * _node )
+        bool hasNodeRenderInheritance( const Node * _node )
         {
             if( _node == nullptr )
             {
                 return false;
             }
 
-            RenderInterface * render = _node->getRender();
+            const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
                 return true;
             }
 
-            Node * parent = _node->getParent();
+            const Node * parent = _node->getParent();
 
             bool successful = Helper::hasNodeRenderInheritance( parent );
 
@@ -56,7 +56,7 @@ namespace Mengine
             return render_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderViewportInterfacePtr & getRenderViewportInheritance( RenderInterface * _render )
+        const RenderViewportInterfacePtr & getRenderViewportInheritance( const RenderInterface * _render )
         {
             const RenderViewportInterfacePtr & viewport = _render->getRenderViewport();
 
@@ -65,7 +65,7 @@ namespace Mengine
                 return viewport;
             }
 
-            RenderInterface * relationRender = _render->getRelationRender();
+            const RenderInterface * relationRender = _render->getRelationRender();
 
             if( relationRender == nullptr )
             {
@@ -77,7 +77,7 @@ namespace Mengine
             return relation_viewport;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderCameraInterfacePtr & getRenderCameraInheritance( RenderInterface * _render )
+        const RenderCameraInterfacePtr & getRenderCameraInheritance( const RenderInterface * _render )
         {
             const RenderCameraInterfacePtr & camera = _render->getRenderCamera();
 
@@ -98,7 +98,7 @@ namespace Mengine
             return relation_camera;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderTransformationInterfacePtr & getRenderTransformationInheritance( RenderInterface * _render )
+        const RenderTransformationInterfacePtr & getRenderTransformationInheritance( const RenderInterface * _render )
         {
             const RenderTransformationInterfacePtr & transformation = _render->getRenderTransformation();
 
@@ -119,7 +119,7 @@ namespace Mengine
             return relation_transformation;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderScissorInterfacePtr & getRenderScissorInheritance( RenderInterface * _render )
+        const RenderScissorInterfacePtr & getRenderScissorInheritance( const RenderInterface * _render )
         {
             const RenderScissorInterfacePtr & scissor = _render->getRenderScissor();
 
@@ -140,7 +140,7 @@ namespace Mengine
             return relation_scissor;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderTargetInterfacePtr & getRenderTargetInheritance( RenderInterface * _render )
+        const RenderTargetInterfacePtr & getRenderTargetInheritance( const RenderInterface * _render )
         {
             const RenderTargetInterfacePtr & target = _render->getRenderTarget();
 
@@ -163,46 +163,47 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void getNodeRenderContext( const NodePtr & _node, RenderContext * _context )
         {
-            const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _node.get() );
+            const Node * node_ptr = _node.get();
+
+            const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( node_ptr );
 
             if( viewport != nullptr )
             {
                 _context->viewport = viewport.get();
             }
 
-            const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _node.get() );
+            const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( node_ptr );
 
             if( camera != nullptr )
             {
                 _context->camera = camera.get();
             }
 
-            const RenderTransformationInterfacePtr & transformation = Helper::getNodeRenderTransformationInheritance( _node.get() );
+            const RenderTransformationInterfacePtr & transformation = Helper::getNodeRenderTransformationInheritance( node_ptr );
 
             if( transformation != nullptr )
             {
                 _context->transformation = transformation.get();
             }
 
-            const RenderScissorInterfacePtr & scissor = Helper::getNodeRenderScissorInheritance( _node.get() );
+            const RenderScissorInterfacePtr & scissor = Helper::getNodeRenderScissorInheritance( node_ptr );
 
             if( camera != nullptr )
             {
                 _context->scissor = scissor.get();
             }
 
-            const RenderTargetInterfacePtr & target = Helper::getNodeRenderTargetInheritance( _node.get() );
+            const RenderTargetInterfacePtr & target = Helper::getNodeRenderTargetInheritance( node_ptr );
 
             if( camera != nullptr )
             {
                 _context->target = target.get();
             }
-
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( Node * _node )
+        const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( const Node * _node )
         {
-            RenderInterface * render = _node->getRender();
+            const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -223,9 +224,9 @@ namespace Mengine
             return viewport_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( Node * _node )
+        const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( const Node * _node )
         {
-            RenderInterface * render = _node->getRender();
+            const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -246,9 +247,9 @@ namespace Mengine
             return camera_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderTransformationInterfacePtr & getNodeRenderTransformationInheritance( Node * _node )
+        const RenderTransformationInterfacePtr & getNodeRenderTransformationInheritance( const Node * _node )
         {
-            RenderInterface * render = _node->getRender();
+            const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -269,9 +270,9 @@ namespace Mengine
             return camera_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( Node * _node )
+        const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( const Node * _node )
         {
-            RenderInterface * render = _node->getRender();
+            const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -292,9 +293,9 @@ namespace Mengine
             return scissor_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderTargetInterfacePtr & getNodeRenderTargetInheritance( Node * _node )
+        const RenderTargetInterfacePtr & getNodeRenderTargetInheritance( const Node * _node )
         {
-            RenderInterface * render = _node->getRender();
+            const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {

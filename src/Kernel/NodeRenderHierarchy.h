@@ -14,18 +14,18 @@ namespace Mengine
     namespace Helper
     {
         void nodeRenderChildren( const Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external );
-        bool hasNodeRenderInheritance( Node * _node );
+        bool hasNodeRenderInheritance( const Node * _node );
         RenderInterface * getNodeRenderInheritance( Node * _node, Node ** _nodeRender );
-        const RenderViewportInterfacePtr & getRenderViewportInheritance( RenderInterface * _render );
-        const RenderCameraInterfacePtr & getRenderCameraInheritance( RenderInterface * _render );
-        const RenderTransformationInterfacePtr & getRenderTransformationInheritance( RenderInterface * _render );
-        const RenderScissorInterfacePtr & getRenderScissorInheritance( RenderInterface * _render );
-        const RenderTargetInterfacePtr & getRenderTargetInheritance( RenderInterface * _render );
+        const RenderViewportInterfacePtr & getRenderViewportInheritance( const RenderInterface * _render );
+        const RenderCameraInterfacePtr & getRenderCameraInheritance( const RenderInterface * _render );
+        const RenderTransformationInterfacePtr & getRenderTransformationInheritance( const RenderInterface * _render );
+        const RenderScissorInterfacePtr & getRenderScissorInheritance( const RenderInterface * _render );
+        const RenderTargetInterfacePtr & getRenderTargetInheritance( const RenderInterface * _render );
         void getNodeRenderContext( const NodePtr & _node, RenderContext * _context );
-        const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( Node * _node );
-        const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( Node * _node );
-        const RenderTransformationInterfacePtr & getNodeRenderTransformationInheritance( Node * _node );
-        const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( Node * _node );
-        const RenderTargetInterfacePtr & getNodeRenderTargetInheritance( Node * _node );
+        const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( const Node * _node );
+        const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( const Node * _node );
+        const RenderTransformationInterfacePtr & getNodeRenderTransformationInheritance( const Node * _node );
+        const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( const Node * _node );
+        const RenderTargetInterfacePtr & getNodeRenderTargetInheritance( const Node * _node );
     }
 }

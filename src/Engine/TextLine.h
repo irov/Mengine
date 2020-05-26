@@ -53,8 +53,8 @@ namespace Mengine
         uint32_t getCharsDataSize() const;
 
     public:
-        void calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f & _pos ) const;
-        void advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f & _offset ) const;
+        void calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * _pos ) const;
+        void advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f * _offset ) const;
 
     private:
         uint32_t m_layout;

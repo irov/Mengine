@@ -72,9 +72,9 @@ namespace Mengine
         void updateTraps_();
 
     protected:
-        void fillStates_( VectorPickerStates & _states ) const;
-        bool pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states );
-        bool getStates_( float _x, float _y, VectorPickerStates & _states );
+        void fillStates_( VectorPickerStates * _states ) const;
+        bool pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates * _states );
+        bool getStates_( float _x, float _y, VectorPickerStates * _states );
 
     protected:
         ArrowPtr m_arrow;

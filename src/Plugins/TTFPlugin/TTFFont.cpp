@@ -639,7 +639,7 @@ namespace Mengine
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv, _doc );
+                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, &uv, _doc );
 
                         fe_image_free( &bgra_image );
 
@@ -660,7 +660,7 @@ namespace Mengine
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv, _doc );
+                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, &uv, _doc );
 
                         fe_image_free( &bgra_image );
 
@@ -688,7 +688,7 @@ namespace Mengine
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                ->makeTextureGlyph( glyph_bitmap.width + 2, glyph_bitmap.rows + 2, 1, bitmap_channel, &provider, uv, _doc );
+                ->makeTextureGlyph( glyph_bitmap.width + 2, glyph_bitmap.rows + 2, 1, bitmap_channel, &provider, &uv, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( texture, false );
 

@@ -23,7 +23,7 @@ namespace Mengine
         if( m_propagateEnable == true )
         {
             uint8_t propagateTransformationFlag;
-            m_propagate->getTransformation( propagateTransformationFlag, m_position, m_origin, m_scale, m_skew, m_rotation );
+            m_propagate->getTransformation( &propagateTransformationFlag, &m_position, &m_origin, &m_scale, &m_skew, &m_rotation );
 
             mt::vec3f position;
             mt::vec3f origin;
@@ -33,7 +33,7 @@ namespace Mengine
             mt::vec3f rotation;
 
             uint8_t localeTransformationFlag;
-            this->getTransformation( localeTransformationFlag, position, origin, scale, skew, rotation );
+            this->getTransformation( &localeTransformationFlag, &position, &origin, &scale, &skew, &rotation );
 
             m_propagate->setTransformation( TRANSFORMATION_INVALIDATE_UNKNOWN, position, origin, scale, skew, rotation );
         }
@@ -99,7 +99,7 @@ namespace Mengine
         mt::vec2f skew;
         mt::vec3f rotation;
 
-        this->getTransformation( transformationFlag, position, origin, scale, skew, rotation );
+        this->getTransformation( &transformationFlag, &position, &origin, &scale, &skew, &rotation );
 
         m_propagate->setTransformation( transformationFlag, position, origin, scale, skew, rotation );
     }

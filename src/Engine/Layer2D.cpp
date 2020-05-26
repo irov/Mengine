@@ -284,7 +284,7 @@ namespace Mengine
     void Layer2D::updateVerticesImageMaskColor() const
     {
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         uint32_t argb = color.getAsARGB();
 

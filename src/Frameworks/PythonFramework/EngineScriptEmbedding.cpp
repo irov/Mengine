@@ -254,7 +254,7 @@ namespace Mengine
                 const mt::mat4f & wm = _node->getWorldMatrix();
 
                 Polygon polygon;
-                _polygon.mul_wm( polygon, wm );
+                _polygon.mul_wm( &polygon, wm );
 
                 return polygon;
             }
@@ -262,7 +262,7 @@ namespace Mengine
             Polygon s_polygon_anchor( const Polygon & _polygon, const mt::vec2f & _anchor )
             {
                 Polygon polygon;
-                _polygon.transpose( polygon, _anchor );
+                _polygon.transpose( &polygon, _anchor );
 
                 return polygon;
             }
@@ -279,10 +279,10 @@ namespace Mengine
                 const mt::mat4f & right_wm = _right->getWorldMatrix();
 
                 Polygon left_polygon_wm;
-                left_poligon.mul_wm( left_polygon_wm, left_wm );
+                left_poligon.mul_wm( &left_polygon_wm, left_wm );
 
                 Polygon right_polygon_wm;
-                right_poligon.mul_wm( right_polygon_wm, right_wm );
+                right_poligon.mul_wm( &right_polygon_wm, right_wm );
 
                 bool result = Helper::intersects( left_polygon_wm, right_polygon_wm );
 
@@ -1759,7 +1759,7 @@ namespace Mengine
                     const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
 
                     VectorGeolygon output;
-                    Helper::intersection( correct_polygon, overlap_polygon, output );
+                    Helper::intersection( correct_polygon, overlap_polygon, &output );
 
                     if( output.empty() == true )
                     {
@@ -2114,7 +2114,7 @@ namespace Mengine
                             else if( pos_sqrdistance < (radius + penumbra) * (radius + penumbra) )
                             {
                                 Color cv;
-                                m_grid->getGridColor( i, j, cv );
+                                m_grid->getGridColor( i, j, &cv );
 
                                 float cv_a = cv.getA();
 
@@ -3406,9 +3406,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_visitChild( Node * _node, const pybind::object & _cb )
             {
-                IntrusiveSlugListNodeChild & child = _node->getChildren();
-
-                pybind::foreach_t( _cb, child.begin(), child.end() );
+                _node->foreachChildrenSlug( [_cb]( const NodePtr & _node )
+                {
+                    _cb.call( _node );
+                } );
             }
             //////////////////////////////////////////////////////////////////////////
             class ResourceVisitorGetAlreadyCompiled

@@ -109,13 +109,13 @@ namespace Mengine
         virtual const MovieLayerFrame & getLayer( uint32_t _layerIndex ) const = 0;
 
     public:
-        virtual bool getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource & _frame ) const = 0;
-        virtual bool getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource & _frame ) const = 0;
+        virtual bool getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource * _frame ) const = 0;
+        virtual bool getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource * _frame ) const = 0;
 
     public:
-        virtual bool getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float & _time ) const = 0;
+        virtual bool getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float * _time ) const = 0;
         virtual bool getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
-        virtual bool getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const = 0;
+        virtual bool getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t * _vertexCount ) const = 0;
 
     public:
         virtual bool isLayerPermanentlyHide( uint32_t _layerIndex ) const = 0;

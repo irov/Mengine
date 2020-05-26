@@ -3,6 +3,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/IntrusivePtrScope.h"
 
 namespace Mengine
 {
@@ -68,6 +69,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BaseAffectorHub::stopAffector( AFFECTOR_ID _id )
     {
+        IntrusivePtrScope ankh( this );
+
         for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
         {
             AffectorPtr affector( *it );
@@ -91,6 +94,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseAffectorHub::stopAffectors( EAffectorType _type )
     {
+        IntrusivePtrScope ankh( this );
+
         for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
         {
             AffectorPtr affector( *it );
@@ -102,10 +107,26 @@ namespace Mengine
                 affector->stop();
             }
         }
+
+        switch( _type )
+        {
+        case ETA_POSITION:
+            {
+                this->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
+            }break;
+        case ETA_ANGLE:
+            {
+                this->setAngularSpeed( 0.f );
+            }break;
+        default:
+            break;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseAffectorHub::stopAllAffectors()
     {
+        IntrusivePtrScope ankh( this );
+
         for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
         {
             AffectorPtr affector( *it );

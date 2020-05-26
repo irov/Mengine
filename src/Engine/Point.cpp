@@ -6,8 +6,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Point::Point()
-        : m_linked( nullptr )
-        , m_owner( false )
+        : m_owner( false )
         , m_width( 1.f )
     {
     }
@@ -16,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Point::setLinkedPoint( Point * _linked )
+    void Point::setLinkedPoint( const PointPtr & _linked )
     {
         if( m_linked != nullptr )
         {
@@ -44,7 +43,7 @@ namespace Mengine
         m_owner = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    Point * Point::getLinkedPoint() const
+    const PointPtr & Point::getLinkedPoint() const
     {
         return m_linked;
     }
@@ -120,7 +119,7 @@ namespace Mengine
         m_vertices[3].position.z = fromWM.z;
 
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         uint32_t argb = color.getAsARGB();
 

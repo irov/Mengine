@@ -360,7 +360,7 @@ namespace Mengine
         while( m_time >= frameTime || m_updateFirstFrame == true )
         {
             float pts;
-            EVideoDecoderReadState state = m_videoDecoder->readNextFrame( m_time, pts );
+            EVideoDecoderReadState state = m_videoDecoder->readNextFrame( m_time, &pts );
 
             needUpdate = true;
 

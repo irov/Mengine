@@ -760,7 +760,7 @@ namespace Mengine
         m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const
+    void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport * _renderViewport ) const
     {
         float renderWidth = m_renderViewport.getWidth();
         float renderHeight = m_renderViewport.getHeight();
@@ -794,7 +794,7 @@ namespace Mengine
         //float vp_height = height;
 
         mt::vec2f windowSize;
-        m_windowResolution.calcSize( windowSize );
+        m_windowResolution.calcSize( &windowSize );
 
         if( vp_x >= windowSize.x ||
             vp_y >= windowSize.y ||
@@ -829,7 +829,7 @@ namespace Mengine
             }
         }
 
-        _renderViewport = renderViewport;
+        *_renderViewport = renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderServiceDebugInfo & RenderService::getDebugInfo() const
@@ -872,7 +872,7 @@ namespace Mengine
                 const Viewport & viewport = _viewport->getViewport();
 
                 Viewport renderViewport;
-                this->calcRenderViewport_( viewport, renderViewport );
+                this->calcRenderViewport_( viewport, &renderViewport );
 
                 m_renderSystem->setViewport( renderViewport );
 

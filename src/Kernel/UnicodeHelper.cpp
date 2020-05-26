@@ -10,7 +10,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, String & _utf8 )
+        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, String * _utf8 )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -22,16 +22,16 @@ namespace Mengine
 
             if( utf8Size == 0 )
             {
-                _utf8.clear();
+                _utf8->clear();
 
                 return true;
             }
 
-            _utf8.resize( utf8Size );
+            _utf8->resize( utf8Size );
 
-            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, _utf8.data(), utf8Size, nullptr ) == false )
+            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, _utf8->data(), utf8Size, nullptr ) == false )
             {
-                _utf8.clear();
+                _utf8->clear();
 
                 return false;
             }
@@ -39,7 +39,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8( const WString & _unicode, String & _utf8 )
+        bool unicodeToUtf8( const WString & _unicode, String * _utf8 )
         {
             bool result = unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), _utf8 );
 
@@ -98,7 +98,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const Char * _utf8, WString & _unicode )
+        bool utf8ToUnicode( const Char * _utf8, WString * _unicode )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -110,16 +110,16 @@ namespace Mengine
 
             if( unicodeSize == 0 )
             {
-                _unicode.clear();
+                _unicode->clear();
 
                 return true;
             }
 
-            _unicode.resize( unicodeSize );
+            _unicode->resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, _unicode.data(), unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, _unicode->data(), unicodeSize, nullptr ) == false )
             {
-                _unicode.clear();
+                _unicode->clear();
 
                 return false;
             }
@@ -136,7 +136,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WString & _unicode )
+        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WString * _unicode )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -148,16 +148,16 @@ namespace Mengine
 
             if( unicodeSize == 0 )
             {
-                _unicode.clear();
+                _unicode->clear();
 
                 return true;
             }
 
-            _unicode.resize( unicodeSize );
+            _unicode->resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode.data(), unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode->data(), unicodeSize, nullptr ) == false )
             {
-                _unicode.clear();
+                _unicode->clear();
 
                 return false;
             }
@@ -165,7 +165,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const String & _utf8, WString & _unicode )
+        bool utf8ToUnicode( const String & _utf8, WString * _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
@@ -179,7 +179,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const ConstString & _utf8, WString & _unicode )
+        bool utf8ToUnicode( const ConstString & _utf8, WString * _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
@@ -193,7 +193,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const PathString & _utf8, WString & _unicode )
+        bool utf8ToUnicode( const PathString & _utf8, WString * _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
@@ -207,7 +207,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const FilePath & _utf8, WString & _unicode )
+        bool utf8ToUnicode( const FilePath & _utf8, WString * _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 

@@ -117,7 +117,7 @@ namespace Mengine
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f & _screenPosition ) const
+    void RenderCameraProjection::fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * _screenPosition ) const
     {
         const mt::mat4f & vpm = this->getCameraViewProjectionMatrix();
 
@@ -132,11 +132,11 @@ namespace Mengine
         v_wvpn.y = (1.f - v_clip.y) * 0.5f;
 
         Viewport vp;
-        this->makeViewport_( vp );
+        this->makeViewport_( &vp );
 
         mt::vec2f vpSize = (vp.end - vp.begin);
 
-        _screenPosition = vp.begin + vpSize * v_wvpn;
+        *_screenPosition = vp.begin + vpSize * v_wvpn;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraProjection::_updateViewMatrix() const
@@ -160,14 +160,14 @@ namespace Mengine
     void RenderCameraProjection::_updateProjectionMatrix() const
     {
         Viewport projectViewport;
-        this->makeViewport_( projectViewport );
+        this->makeViewport_( &projectViewport );
 
         mt::make_projection_frustum_m4( m_projectionMatrix, projectViewport.begin.x, projectViewport.end.x, projectViewport.begin.y, projectViewport.end.y, m_cameraNear, m_cameraFar );
 
         mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::makeViewport_( Viewport & _viewport ) const
+    void RenderCameraProjection::makeViewport_( Viewport * _viewport ) const
     {
         float tangent = MT_tanf( m_cameraFov * 0.5f );
         float height = 2.f * 1.f * tangent;
@@ -197,6 +197,6 @@ namespace Mengine
         projectViewport.end.x *= projection_factor_x;
         projectViewport.end.y *= projection_factor_y;
 
-        _viewport = projectViewport;
+        *_viewport = projectViewport;
     }
 }

@@ -28,7 +28,7 @@ namespace Mengine
 
         void _update( float _dt, T * _out ) override
         {
-            Helper::calculateBezierPosition<T, N>( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v, _dt );
+            Helper::calculateBezierPosition<T, N>( _out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v, _dt );
         }
 
     protected:

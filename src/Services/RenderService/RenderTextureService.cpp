@@ -138,7 +138,7 @@ namespace Mengine
 
         EPixelFormat HWFormat = _format;
 
-        this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
+        this->updateImageParams_( &HWWidth, &HWHeight, &HWChannels, &HWDepth, &HWFormat );
 
         RenderImageInterfacePtr image = RENDER_SYSTEM()
             ->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
@@ -166,7 +166,7 @@ namespace Mengine
         uint32_t HWDepth = _depth;
         EPixelFormat HWFormat = _format;
 
-        this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
+        this->updateImageParams_( &HWWidth, &HWHeight, &HWChannels, &HWDepth, &HWFormat );
 
         RenderImageInterfacePtr image = RENDER_SYSTEM()
             ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
@@ -374,68 +374,68 @@ namespace Mengine
         uint32_t HWDepth = _depth;
         EPixelFormat HWFormat = _format;
 
-        this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
+        this->updateImageParams_( &HWWidth, &HWHeight, &HWChannels, &HWDepth, &HWFormat );
 
         size_t memoryUse = Helper::getTextureMemorySize( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
         return memoryUse;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, EPixelFormat & _format ) const
+    void RenderTextureService::updateImageParams_( uint32_t * _width, uint32_t * _height, uint32_t * _channels, uint32_t * _depth, EPixelFormat * _format ) const
     {
-        if( ((_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
+        if( ((*_width & (*_width - 1)) != 0 || (*_height & (*_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
         {
-            _width = Helper::getTexturePOW2( _width );
-            _height = Helper::getTexturePOW2( _height );
+            *_width = Helper::getTexturePOW2( *_width );
+            *_height = Helper::getTexturePOW2( *_height );
         }
 
-        switch( _format )
+        switch( *_format )
         {
         case PF_UNKNOWN:
             {
-                if( _channels == 1 )
+                if( *_channels == 1 )
                 {
                     if( m_supportA8 == true )
                     {
-                        _format = PF_A8;
+                        *_format = PF_A8;
                     }
                     else
                     {
-                        _format = PF_A8R8G8B8;
+                        *_format = PF_A8R8G8B8;
 
-                        _channels = 4;
+                        *_channels = 4;
                     }
                 }
-                else if( _channels == 3 )
+                else if( *_channels == 3 )
                 {
                     if( m_supportR8G8B8 == true )
                     {
-                        _format = PF_R8G8B8;
+                        *_format = PF_R8G8B8;
                     }
                     else
                     {
-                        _format = PF_X8R8G8B8;
-                        _channels = 4;
+                        *_format = PF_X8R8G8B8;
+                        *_channels = 4;
                     }
                 }
-                else if( _channels == 4 )
+                else if( *_channels == 4 )
                 {
-                    _format = PF_A8R8G8B8;
+                    *_format = PF_A8R8G8B8;
                 }
             }break;
         case PF_A8:
             {
-                if( _channels == 1 )
+                if( *_channels == 1 )
                 {
                     if( m_supportA8 == true )
                     {
-                        _format = PF_A8;
+                        *_format = PF_A8;
                     }
                     else
                     {
-                        _format = PF_A8R8G8B8;
+                        *_format = PF_A8R8G8B8;
 
-                        _channels = 4;
+                        *_channels = 4;
                     }
                 }
             }break;
@@ -444,30 +444,30 @@ namespace Mengine
             }break;
         }
 
-        if( _channels == 0 )
+        if( *_channels == 0 )
         {
-            switch( _format )
+            switch( *_format )
             {
             case PF_A8:
                 {
                     if( m_supportA8 == true )
                     {
-                        _channels = 1;
+                        *_channels = 1;
                     }
                     else
                     {
-                        _format = PF_A8R8G8B8;
+                        *_format = PF_A8R8G8B8;
 
-                        _channels = 4;
+                        *_channels = 4;
                     }
                 }break;
             case PF_A8B8G8R8:
                 {
-                    _channels = 4;
+                    *_channels = 4;
                 }break;
             case PF_A8R8G8B8:
                 {
-                    _channels = 4;
+                    *_channels = 4;
                 }break;
             default:
                 {

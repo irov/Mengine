@@ -16,7 +16,7 @@ namespace Mengine
     void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node )
     {
         Viewport viewport;
-        if( _node->calcTextViewport( viewport ) == false )
+        if( _node->calcTextViewport( &viewport ) == false )
         {
             return;
         }

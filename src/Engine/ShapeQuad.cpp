@@ -28,23 +28,23 @@ namespace Mengine
         _renderPipeline->addRenderQuad( _context, material, vertices, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeQuad::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void ShapeQuad::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
 
-        mt::add_internal_point( _boundingBox, vertices[1].position.x, vertices[1].position.y );
-        mt::add_internal_point( _boundingBox, vertices[2].position.x, vertices[2].position.y );
-        mt::add_internal_point( _boundingBox, vertices[3].position.x, vertices[3].position.y );
+        mt::add_internal_point( *_boundingBox, vertices[1].position.x, vertices[1].position.y );
+        mt::add_internal_point( *_boundingBox, vertices[2].position.x, vertices[2].position.y );
+        mt::add_internal_point( *_boundingBox, vertices[3].position.x, vertices[3].position.y );
 
-        *_boundingBoxCurrent = &_boundingBox;
+        *_boundingBoxCurrent = _boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::updateVerticesColor() const
     {
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         const Color & surfaceColor = m_surface->getColor();
 

@@ -141,7 +141,7 @@ namespace Mengine
         const Viewport & vp = _viewport->getViewport();
 
         mt::vec2f contentResolutionSize;
-        _contentResolution.calcSize( contentResolutionSize );
+        _contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f point_vp;
         point_vp = _point * contentResolutionSize;
@@ -199,7 +199,7 @@ namespace Mengine
         const Viewport & vp = _viewport->getViewport();
 
         mt::vec2f contentResolutionSize;
-        _contentResolution.calcSize( contentResolutionSize );
+        _contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f point_vp;
         point_vp = _point * contentResolutionSize;
@@ -254,10 +254,10 @@ namespace Mengine
         this->getScreenBoundingBox( _camera, _viewport, _contentResolution, &bb_screen );
 
         mt::box2f bb_polygon;
-        _polygon.to_box2f( bb_polygon );
+        _polygon.to_box2f( &bb_polygon );
 
         mt::box2f bb_polygon_screen;
-        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb_polygon, bb_polygon_screen );
+        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb_polygon, &bb_polygon_screen );
 
         transpose_box( bb_polygon_screen, _point );
 
@@ -297,7 +297,7 @@ namespace Mengine
         this->getWorldBoundingBox( &bb );
 
         mt::box2f bb_screen;
-        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb, bb_screen );
+        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb, &bb_screen );
 
         *_bb = bb_screen;
     }

@@ -22,10 +22,10 @@ namespace Mengine
     {
         m_invalidateBoundingBox = false;
 
-        this->_updateBoundingBox( m_boundingBox, &m_boundingBoxCurrent );
+        this->_updateBoundingBox( &m_boundingBox, &m_boundingBoxCurrent );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BoundingBox::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void BoundingBox::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         MENGINE_UNUSED( _boundingBox );
         MENGINE_UNUSED( _boundingBoxCurrent );

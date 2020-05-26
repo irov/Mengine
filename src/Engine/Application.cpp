@@ -305,7 +305,7 @@ namespace Mengine
         {
             Resolution desktopResolution;
             PLATFORM_SERVICE()
-                ->getDesktopResolution( desktopResolution );
+                ->getDesktopResolution( &desktopResolution );
 
             m_currentResolution = desktopResolution;
         }
@@ -1635,7 +1635,7 @@ namespace Mengine
     {
         Resolution dres;
         PLATFORM_SERVICE()
-            ->getMaxClientResolution( dres );
+            ->getMaxClientResolution( &dres );
 
         LOGGER_MESSAGE( "Max Client Resolution %u %u"
             , dres.getWidth()
@@ -1866,7 +1866,7 @@ namespace Mengine
         {
             Resolution desktopResolution;
             PLATFORM_SERVICE()
-                ->getDesktopResolution( desktopResolution );
+                ->getDesktopResolution( &desktopResolution );
 
             m_currentResolution = desktopResolution;
         }

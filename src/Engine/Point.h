@@ -8,6 +8,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<class Point> PointPtr;
+    //////////////////////////////////////////////////////////////////////////
     class Point
         : public Node
         , public BaseRender
@@ -21,9 +24,9 @@ namespace Mengine
         ~Point() override;
 
     public:
-        void setLinkedPoint( Point * _linked );
+        void setLinkedPoint( const PointPtr & _linked );
         void removeLinkedPoint();
-        Point * getLinkedPoint() const;
+        const PointPtr & getLinkedPoint() const;
 
     public:
         void setWidth( float _width );
@@ -39,11 +42,14 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        Point * m_linked;
+        PointPtr m_linked;
         bool m_owner;
 
         float m_width;
 
         mutable RenderVertex2D m_vertices[4];
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<Point> PointPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

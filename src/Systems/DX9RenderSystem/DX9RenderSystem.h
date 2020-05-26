@@ -145,7 +145,7 @@ namespace Mengine
         void updateViewport_( const Viewport & _viewport );
 
     protected:
-        void fixNPOTSupport_( uint32_t & _width, uint32_t & _height ) const;
+        void fixNPOTSupport_( uint32_t * _width, uint32_t * _height ) const;
 
     private:
         ConstString m_renderPlatformName;

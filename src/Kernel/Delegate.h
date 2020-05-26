@@ -60,12 +60,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         template<class P, class M, class ... Forwards>
         Delegate<P, M, Tuple<std::remove_reference_t<Forwards> ...>> delegate( P * _ptr, M _method, Forwards && ... _args )
         {
             return Delegate<P, M, Tuple<std::remove_reference_t<Forwards> ...>>( _ptr, _method, std::forward_as_tuple( std::forward<Forwards &&>( _args ) ... ) );
         }
-
+        //////////////////////////////////////////////////////////////////////////
         template<class P, class D, class M, class ... Forwards>
         DelegatePtr<P, D, M, Tuple<std::remove_reference_t<Forwards> ...>> delegate( const IntrusivePtr<P, D> & _ptr, M _method, Forwards && ... _args )
         {

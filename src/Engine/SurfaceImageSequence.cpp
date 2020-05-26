@@ -103,7 +103,7 @@ namespace Mengine
                         float adaptFrameTiming = this->getAdaptTime( m_frameTime );
 
                         float newFrameTiming;
-                        m_currentFrame = this->getFrame_( adaptFrameTiming, newFrameTiming );
+                        m_currentFrame = this->getFrame_( adaptFrameTiming, &newFrameTiming );
                         m_frameTime = newFrameTiming;
                     }
                 }
@@ -253,11 +253,11 @@ namespace Mengine
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SurfaceImageSequence::getFrame_( float _time, float & _deltaTime ) const
+    uint32_t SurfaceImageSequence::getFrame_( float _time, float * _deltaTime ) const
     {
         if( _time <= 0.f )
         {
-            _deltaTime = _time;
+            *_deltaTime = _time;
 
             return 0;
         }
@@ -270,7 +270,7 @@ namespace Mengine
 
             if( MT_fabsf( _time ) < 0.0001f )
             {
-                _deltaTime = 0.f;
+                *_deltaTime = 0.f;
 
                 return 0;
             }
@@ -286,7 +286,7 @@ namespace Mengine
 
             if( _time < 0.f )
             {
-                _deltaTime = _time + delay;
+                *_deltaTime = _time + delay;
 
                 return frame;
             }
@@ -544,7 +544,7 @@ namespace Mengine
             m_playIterator -= skipIterator;
         }
 
-        m_currentFrame = this->getFrame_( _timing, m_frameTime );
+        m_currentFrame = this->getFrame_( _timing, &m_frameTime );
 
         this->invalidateMaterial();
     }

@@ -45,6 +45,18 @@ namespace Mengine
         template<class U>
         operator U * () const
         {
+#ifdef MENGINE_DEBUG
+            if( m_pointer == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
+            {
+                throw;
+            }
+#endif
+
             U * t = static_cast<U *>(m_pointer);
 
             return t;
@@ -90,7 +102,133 @@ namespace Mengine
         template<class U>
         operator const U * () const
         {
+#ifdef MENGINE_DEBUG
+            if( m_pointer == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::mpl::is_dynamic_cast<const U *>::test( m_pointer ) == false )
+            {
+                throw;
+            }
+#endif
+
             const U * t = static_cast<const U *>(m_pointer);
+
+            return t;
+        }
+
+    protected:
+        const T * m_pointer;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    class DynamicPointerT
+    {
+    public:
+        DynamicPointerT( std::nullptr_t )
+            : m_pointer( nullptr )
+        {
+        }
+
+        DynamicPointerT( T * _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        DynamicPointerT( const DynamicPointerT & _pointer )
+            : m_pointer( _pointer.m_pointer )
+        {
+        }
+
+    public:
+        DynamicPointerT & operator = ( const DynamicPointerT & _pointer )
+        {
+            this->m_pointer = _pointer.m_pointer;
+
+            return *this;
+        }
+
+    public:
+        operator T * () const
+        {
+            return m_pointer;
+        }
+
+        template<class U>
+        operator U * () const
+        {
+#ifdef MENGINE_DEBUG
+            if( m_pointer == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
+            {
+                throw;
+            }
+#endif
+
+            U * t = dynamic_cast<U *>(m_pointer);
+
+            return t;
+        }
+
+    protected:
+        T * m_pointer;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    class DynamicConstPointerT
+    {
+    public:
+        DynamicConstPointerT( std::nullptr_t )
+            : m_pointer( nullptr )
+        {
+        }
+
+        DynamicConstPointerT( const T * _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        DynamicConstPointerT( const DynamicConstPointerT & _pointer )
+            : m_pointer( _pointer.m_pointer )
+        {
+        }
+
+    public:
+        DynamicConstPointerT & operator = ( const DynamicConstPointerT & _pointer )
+        {
+            this->m_pointer = _pointer.m_pointer;
+
+            return *this;
+        }
+
+    public:
+        operator const T * () const
+        {
+            return m_pointer;
+        }
+
+        template<class U>
+        operator const U * () const
+        {
+#ifdef MENGINE_DEBUG
+            if( m_pointer == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::mpl::is_dynamic_cast<const U *>::test( m_pointer ) == false )
+            {
+                throw;
+            }
+#endif
+
+            const U * t = dynamic_cast<const U *>(m_pointer);
 
             return t;
         }

@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.SystemClock;
 
+import androidx.core.app.NotificationCompat;
+
 import org.Mengine.Build.MengineActivity;
 import org.Mengine.Build.R;
 
@@ -63,16 +65,14 @@ public class LocalNotificationsInteractionLayer {
         intent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
         PendingIntent pendingIntent = PendingIntent.getActivity(_currentContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification.Builder builder = new Notification.Builder(_currentContext);
-        builder.setContentTitle(title);
-        builder.setContentText(content);
-        builder.setSmallIcon(R.mipmap.ic_notification);
-        builder.setDefaults(Notification.DEFAULT_ALL);
-        builder.setContentIntent(pendingIntent);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(channelId);
-        }
-        builder.setPriority(Notification.PRIORITY_MAX);
-        return builder.build();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(_currentContext, channelId);
+
+        return builder.setContentTitle(title)
+                .setContentText(content)
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .build();
     }
 }

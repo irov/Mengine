@@ -186,7 +186,7 @@ namespace Mengine
         const Char * content_str = _content.c_str();
         jstring jcontent = env->NewStringUTF( content_str );
 
-        jint jdelay = static_cast<jint>(_delay);
+        jint jdelay = static_cast<jint>(_delay * 1000);
 
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_scheduleLocalNotification, jid, jtitle, jcontent, jdelay );
 

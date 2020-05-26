@@ -1,5 +1,11 @@
 #! /bin/bash
 
+if [ $1 -eq 0 ]; then
+    echo "invalid arguments, please select configuration"
+    
+    exit 1
+fi
+
 BUILD_TYPE=$1
 
 echo Starting dependencies build $BUILD_TYPE configuration...

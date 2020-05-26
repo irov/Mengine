@@ -33,7 +33,7 @@ extern "C" {
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
-        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "admobInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
+        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "admobInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;)V" );
         jmethodID_setupInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobSetupInterstitialAd", "()Z" );
         jmethodID_showInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobShowInterstitialAd", "()Z" );
         jmethodID_setupRewardedVideoAd = env->GetStaticMethodID( mActivityClass, "admobSetupRewardedVideoAd", "()Z" );
@@ -439,20 +439,17 @@ namespace Mengine
         m_eventation.addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobModule::initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId )
+    bool AndroidNativeAdMobModule::initializeSDK( const String & _interAdUnitId, const String & _videoAdUnitId )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        const Char * admobAppId_str = _admobAppId.c_str();
-        jstring jadmobAppId = env->NewStringUTF( admobAppId_str );
         const Char * interAdUnitId_str = _interAdUnitId.c_str();
         jstring jinterAdUnitId = env->NewStringUTF( interAdUnitId_str );
         const Char * videoAdUnitId_str = _videoAdUnitId.c_str();
         jstring jvideoAdUnitId = env->NewStringUTF( videoAdUnitId_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jadmobAppId, jinterAdUnitId, jvideoAdUnitId );
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jinterAdUnitId, jvideoAdUnitId );
 
-        env->DeleteLocalRef( jadmobAppId );
         env->DeleteLocalRef( jinterAdUnitId );
         env->DeleteLocalRef( jvideoAdUnitId );
 

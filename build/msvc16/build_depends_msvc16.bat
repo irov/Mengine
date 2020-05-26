@@ -20,7 +20,17 @@ set "YEAR=2019"
 @call build_depends.bat "SOLUTION_NAME=dependencies_msvc%VERSION%" "SOURCE_DIRECTORY=%CD%\..\cmake\Depends_WIN32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "VERBOSITY=minimal" "ARCHITECTURE=Win32"
 @popd
 
+if errorlevel 1 (
+    @echo *****************************************
+    @echo ***************  Failure  ***************
+    @echo *****************************************
+) else (
+    @echo =========================================
+    @echo =============  Successful  ==============
+    @echo =========================================
+)
+
 :end
-@echo Done
 
 @pause
+@exit /b %errorlevel%

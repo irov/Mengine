@@ -37,8 +37,18 @@ CMake -G "%GENERATOR%" %CMAKE_PLATFORM_TOOLSET% %CMAKE_ARCHITECTURE% -S "%SOURCE
 
 @popd
 
+if errorlevel 1 (
+    echo Failure Generate CMake is %errorlevel%
+    exit /b %errorlevel%
+)
+
 @pushd "%BUILD_TEMP_DIR%"
 
 CMake --build .\ -j 8 --config %CONFIGURATION% %CMAKE_VERBOSITY%
 
 @popd
+
+if errorlevel 1 (
+    echo Failure Build CMake is %errorlevel%
+    exit /b %errorlevel%
+)

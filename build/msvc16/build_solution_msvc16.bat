@@ -22,7 +22,17 @@ set "YEAR=2019"
 @call build_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=Win32" "EXTERNAL_PDB_PATH=%EXTERNAL_PDB_PATH%" "BUILD_VERSION=%BUILD_VERSION%"
 @popd
 
+if errorlevel 1 (
+    @echo *****************************************
+    @echo ***************  Failure  ***************
+    @echo *****************************************
+) else (
+    @echo =========================================
+    @echo =============  Successful  ==============
+    @echo =========================================
+)
+
 :end
-@echo Done
 
 @pause
+@exit /b %errorlevel%

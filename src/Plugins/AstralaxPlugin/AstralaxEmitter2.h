@@ -52,11 +52,11 @@ namespace Mengine
     public:
         bool is3d() const override;
 
-        bool getCamera( AstralaxCamera & _camera ) const override;
+        bool getCamera( AstralaxCamera * _camera ) const override;
 
     public:
-        bool prepareParticles( AstralaxEmitterRenderFlush & _flush ) override;
-        bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush & _flush ) override;
+        bool prepareParticles( AstralaxEmitterRenderFlush * _flush ) override;
+        bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush * _flush ) override;
 
     public:
         const mt::box2f & getBoundingBox() const override;

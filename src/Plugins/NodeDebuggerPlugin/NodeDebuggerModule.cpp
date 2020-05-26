@@ -246,7 +246,7 @@ namespace Mengine
                         const size_t dataSizeWithHeader = hdr->compressedSize + sizeof( PacketHeader );
 
                         NodeDebuggerPacket packet;
-                        uncompressPacket( packet, *hdr, m_receivedData.data() + sizeof( PacketHeader ) );
+                        this->uncompressPacket( packet, *hdr, m_receivedData.data() + sizeof( PacketHeader ) );
 
                         m_incomingPackets.emplace_back( packet );
 
@@ -335,7 +335,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_absorbBoundingBox( const NodePtr & _node, mt::box2f & _bb )
+    static bool s_absorbBoundingBox( const NodePtr & _node, mt::box2f * _bb )
     {
         if( _node->isEnable() == false )
         {
@@ -381,7 +381,7 @@ namespace Mengine
         _node->foreachChildren( [&absorb_bb, &successul]( const NodePtr & _child )
         {
             mt::box2f child_bb;
-            if( s_absorbBoundingBox( _child, child_bb ) == true )
+            if( s_absorbBoundingBox( _child, &child_bb ) == true )
             {
                 mt::merge_box( absorb_bb, child_bb );
 
@@ -389,7 +389,7 @@ namespace Mengine
             }
         } );
 
-        _bb = absorb_bb;
+        *_bb = absorb_bb;
 
         return successul;
     }
@@ -412,7 +412,7 @@ namespace Mengine
         Helper::getNodeRenderContext( node, &node_context );
 
         mt::box2f bbox;
-        if( s_absorbBoundingBox( node, bbox ) == false )
+        if( s_absorbBoundingBox( node, &bbox ) == false )
         {
             return;
         }
@@ -672,7 +672,7 @@ namespace Mengine
                 ->getTextAliasArguments( textAliasEnvironment, textID, &textFormatArgs );
 
             String fmt;
-            Helper::getStringFormat( fmt, textValue, textSize, textFormatArgs );
+            Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs );
 
             Detail::serializeNodeProp( fmt, "Text", xmlNode );
 
@@ -1067,7 +1067,7 @@ namespace Mengine
 
                 if( valueAttr )
                 {
-                    this->stringToPath( valueAttr.value(), m_selectedNodePath );
+                    this->stringToPath( valueAttr.value(), &m_selectedNodePath );
                 }
             }
         }
@@ -1091,7 +1091,7 @@ namespace Mengine
         String pathStr = _xmlNode.attribute( "path" ).value();
 
         VectorNodePath path;
-        this->stringToPath( pathStr, path );
+        this->stringToPath( pathStr, &path );
 
         NodePtr node = Helper::findUniqueNode( m_scene, path );
 
@@ -1291,7 +1291,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::stringToPath( const String & _str, VectorNodePath & _path ) const
+    void NodeDebuggerModule::stringToPath( const String & _str, VectorNodePath * _path ) const
     {
         if( _str.empty() == false && _str[0] != '-' )
         {
@@ -1302,7 +1302,7 @@ namespace Mengine
             {
                 if( *ptr == MENGINE_PATH_DELIM )
                 {
-                    _path.push_back( uid );
+                    _path->push_back( uid );
                     uid = 0;
                 }
                 else

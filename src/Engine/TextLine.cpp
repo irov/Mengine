@@ -93,7 +93,7 @@ namespace Mengine
         return m_charsData;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextLine::calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f & _pos ) const
+    void TextLine::calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * _pos ) const
     {
         mt::vec2f size = _cd.size * _charScale;
 
@@ -105,14 +105,14 @@ namespace Mengine
         float size_x = size_xi[_index];
         float size_y = size_yi[_index];
 
-        _pos.x = offset.x + size_x;
-        _pos.y = offset.y + size_y;
-        _pos.z = 0.f;
+        _pos->x = offset.x + size_x;
+        _pos->y = offset.y + size_y;
+        _pos->z = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextLine::advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f & _offset ) const
+    void TextLine::advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f * _offset ) const
     {
-        _offset.x += (_cd.advance + m_charOffset) * _charScale;
+        _offset->x += (_cd.advance + m_charOffset) * _charScale;
     }
     //////////////////////////////////////////////////////////////////////////
 }

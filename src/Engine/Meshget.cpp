@@ -123,7 +123,7 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void Meshget::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         if( m_positions.empty() == true )
         {
@@ -134,7 +134,7 @@ namespace Mengine
 
         const VectorRenderVertex2D & vertices = this->getVerticesWM();
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         VectorPositions::size_type vertexCount = m_positions.size();
 
@@ -142,10 +142,10 @@ namespace Mengine
         {
             const mt::vec3f & v = m_positions[i];
 
-            mt::add_internal_point( _boundingBox, v.x, v.y );
+            mt::add_internal_point( *_boundingBox, v.x, v.y );
         }
 
-        *_boundingBoxCurrent = &_boundingBox;
+        *_boundingBoxCurrent = _boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meshget::_invalidateWorldMatrix() const
@@ -177,7 +177,7 @@ namespace Mengine
         m_invalidateVerticesColor = false;
 
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         const Color & textureColor = m_surface->getColor();
         color *= textureColor;

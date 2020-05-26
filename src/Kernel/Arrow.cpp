@@ -189,7 +189,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( contentResolutionSize );
+        contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f viewportSize;
         viewport.calcSize( viewportSize );
@@ -289,7 +289,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( contentResolutionSize );
+        contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f viewportSize;
         viewport.calcSize( viewportSize );
@@ -318,7 +318,7 @@ namespace Mengine
         renderViewport.calcSize( renderViewportSize );
 
         mt::vec2f currentResolutionSize;
-        currentResolution.calcSize( currentResolutionSize );
+        currentResolution.calcSize( &currentResolutionSize );
 
         mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
         mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
@@ -338,7 +338,7 @@ namespace Mengine
         renderViewport.calcSize( renderViewportSize );
 
         mt::vec2f currentResolutionSize;
-        currentResolution.calcSize( currentResolutionSize );
+        currentResolution.calcSize( &currentResolutionSize );
 
         mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
 
@@ -357,7 +357,7 @@ namespace Mengine
         renderViewport.calcSize( renderViewportSize );
 
         mt::vec2f currentResolutionSize;
-        currentResolution.calcSize( currentResolutionSize );
+        currentResolution.calcSize( &currentResolutionSize );
 
         mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
         mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;

@@ -94,7 +94,7 @@ namespace Mengine
     void ShapeCircle::updateVerticesColor() const
     {
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         const Color & surfaceColor = m_surface->getColor();
 
@@ -125,21 +125,21 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, material, nullptr, vertices, vertexCount, indices, indexCount, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeCircle::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void ShapeCircle::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         uint32_t vertexCount;
         const RenderVertex2D * vertices = this->getVerticesWM( &vertexCount );
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t index = 1; index != vertexCount; ++index )
         {
             const RenderVertex2D & v = vertices[index];
 
-            mt::add_internal_point( _boundingBox, v.position.x, v.position.y );
+            mt::add_internal_point( *_boundingBox, v.position.x, v.position.y );
         }
 
-        *_boundingBoxCurrent = &_boundingBox;
+        *_boundingBoxCurrent = _boundingBox;
     }
 
 }

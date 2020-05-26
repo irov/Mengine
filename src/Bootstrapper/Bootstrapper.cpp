@@ -485,7 +485,7 @@ namespace Mengine
         String str_date = ss_date.str();
 
         WString unicode_date;
-        Helper::utf8ToUnicode( str_date, unicode_date );
+        Helper::utf8ToUnicode( str_date, &unicode_date );
 
         WString unicode_logFilename;
         unicode_logFilename += L"Game";
@@ -503,7 +503,7 @@ namespace Mengine
         unicode_logFilename += L".log";
 
         String utf8_logFilename;
-        if( Helper::unicodeToUtf8( unicode_logFilename, utf8_logFilename ) == false )
+        if( Helper::unicodeToUtf8( unicode_logFilename, &utf8_logFilename ) == false )
         {
             LOGGER_ERROR( "failed log directory '%ls' convert to ut8f"
                 , unicode_logFilename.c_str()

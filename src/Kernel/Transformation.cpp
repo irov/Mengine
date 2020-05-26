@@ -381,24 +381,24 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::getTransformation( uint8_t & _transformationFlag, mt::vec3f & _position, mt::vec3f & _origin, mt::vec3f & _scale, mt::vec2f & _skew, mt::vec3f & _orientation ) const
-    {
-        _transformationFlag = m_transformationFlag;
-        _position = m_position;
-        _origin = m_origin;
-        _scale = m_scale;
-        _skew = m_skew;
-        _orientation = m_orientation;
+    void Transformation::getTransformation( uint8_t * _transformationFlag, mt::vec3f * _position, mt::vec3f * _origin, mt::vec3f * _scale, mt::vec2f * _skew, mt::vec3f * _orientation ) const
+    {   
+        *_transformationFlag = m_transformationFlag;
+        *_position = m_position;
+        *_origin = m_origin;
+        *_scale = m_scale;
+        *_skew = m_skew;
+        *_orientation = m_orientation;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const
+    void Transformation::calcWorldMatrix( mt::mat4f * _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const
     {
         mt::mat4f localMatrix;
         Transformation::makeLocalMatrix_( localMatrix, _transformationFlag, _position, _origin, _scale, _skew, _orientation );
 
         if( m_relationTransformation == nullptr )
         {
-            _wm = localMatrix;
+            *_wm = localMatrix;
         }
         else
         {
@@ -410,22 +410,22 @@ namespace Mengine
 
                 if( _transformationFlag != 0 )
                 {
-                    mt::mul_m4_m4_r( _wm, localMatrix, relationMatrix );
+                    mt::mul_m4_m4_r( *_wm, localMatrix, relationMatrix );
                 }
                 else
                 {
-                    _wm = relationMatrix;
+                    *_wm = relationMatrix;
                 }
             }
             else
             {
                 if( _transformationFlag != 0 )
                 {
-                    _wm = localMatrix;
+                    *_wm = localMatrix;
                 }
                 else
                 {
-                    mt::ident_m4( _wm );
+                    mt::ident_m4( *_wm );
                 }
             }
         }

@@ -1089,17 +1089,17 @@ namespace Mengine
         {
             MENGINE_UNUSED( _movie2 );
 
-            Node * nodeParent = _node->getParent();
+            Node * parent = _node->getParent();
 
-            MENGINE_ASSERTION_NODE( nodeParent, MatrixProxy *, "Movie2 '%s' node '%s' type '%s' invalid parent '%s' type '%s' not MatrixProxy"
+            MENGINE_ASSERTION_NODE( parent, MatrixProxy *, "Movie2 '%s' node '%s' type '%s' invalid parent '%s' type '%s' not MatrixProxy"
                 , _movie2->getName().c_str()
                 , _node->getName().c_str()
                 , _node->getType().c_str()
-                , nodeParent->getName().c_str()
-                , nodeParent->getType().c_str()
+                , parent->getName().c_str()
+                , parent->getType().c_str()
             );
 
-            MatrixProxy * matrixProxy = Helper::staticNodeCast<MatrixProxy *>( nodeParent );
+            MatrixProxy * matrixProxy = Helper::staticNodeCast<MatrixProxy *>( parent );
 
             if( _immutable_matrix == AE_FALSE )
             {
@@ -2440,7 +2440,7 @@ namespace Mengine
         const mt::mat4f & wm = this->getWorldMatrix();
 
         Color total_color;
-        this->calcTotalColor( total_color );
+        this->calcTotalColor( &total_color );
 
         float total_color_r = total_color.getR();
         float total_color_g = total_color.getG();

@@ -73,7 +73,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void onProviderEmitterPosition( mt::vec3f & _position ) = 0;
+        virtual void onProviderEmitterPosition( mt::vec3f * _position ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxPositionProviderInterface> AstralaxPositionProviderInterfacePtr;
@@ -82,7 +82,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) = 0;
+        virtual void onProviderEmitterCamera( bool * _orthogonality, mt::vec3f * _position, mt::vec3f * _direction ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxCameraProviderInterface> AstralaxCameraProviderInterfacePtr;
@@ -110,11 +110,11 @@ namespace Mengine
     public:
         virtual bool is3d() const = 0;
 
-        virtual bool getCamera( AstralaxCamera & _camera ) const = 0;
+        virtual bool getCamera( AstralaxCamera * _camera ) const = 0;
 
     public:
-        virtual bool prepareParticles( AstralaxEmitterRenderFlush & _flush ) = 0;
-        virtual bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush & _flush ) = 0;
+        virtual bool prepareParticles( AstralaxEmitterRenderFlush * _flush ) = 0;
+        virtual bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush * _flush ) = 0;
 
     public:
         virtual const mt::box2f & getBoundingBox() const = 0;

@@ -35,7 +35,9 @@ namespace Mengine
 
         if( _attach == true )
         {
-            this->addChild( _pickerable );
+            NodePtr node = _pickerable;
+
+            this->addChild( node );
         }
     }
     //////////////////////////////////////////////////////////////////////////

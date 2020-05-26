@@ -172,7 +172,7 @@ namespace Mengine
         return polygon;
     }
     ///////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource & _frame ) const
+    bool MovieFramePack::getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource * _frame ) const
     {
         if( (_layerIndex - 1) >= m_sizeLayers )
         {
@@ -188,7 +188,7 @@ namespace Mengine
 
         if( layer.immutable == true )
         {
-            _frame = layer.source;
+            *_frame = layer.source;
 
             return true;
         }
@@ -196,11 +196,11 @@ namespace Mengine
 #define MOVIE_FRAME_SETUP( Member1, Member2, Mask )\
         if( layer.immutable_mask & Mask ) \
         { \
-            _frame.Member1 = layer.source.Member1; \
+            _frame->Member1 = layer.source.Member1; \
         } \
         else \
         { \
-            _frame.Member1 = layer.Member2[_frameIndex]; \
+            _frame->Member1 = layer.Member2[_frameIndex]; \
         }
 
         MOVIE_FRAME_SETUP( anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
@@ -217,7 +217,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource & _frame ) const
+    bool MovieFramePack::getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource * _frame ) const
     {
         if( (_layerIndex - 1) >= m_sizeLayers )
         {
@@ -233,7 +233,7 @@ namespace Mengine
 
         if( layer.immutable == true )
         {
-            _frame = layer.source;
+            *_frame = layer.source;
 
             return true;
         }
@@ -241,13 +241,13 @@ namespace Mengine
 #define MOVIE_FRAME_SETUP_F3( Member, Mask )\
         if( layer.immutable_mask & Mask ) \
         { \
-            _frame.Member = layer.source.Member; \
+            _frame->Member = layer.source.Member; \
         } \
         else \
         { \
             const mt::vec3f & value0 = layer.Member[ _frameIndex + 0 ]; \
             const mt::vec3f & value1 = layer.Member[ _frameIndex + 1 ]; \
-            mt::linerp_v3( _frame.Member, value0, value1, _t ); \
+            mt::linerp_v3( _frame->Member, value0, value1, _t ); \
         }
 
         MOVIE_FRAME_SETUP_F3( anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
@@ -260,13 +260,13 @@ namespace Mengine
 #define MOVIE_FRAME_SETUP_F1( Member, Mask )\
         if( layer.immutable_mask & Mask ) \
         { \
-            _frame.Member = layer.source.Member; \
+            _frame->Member = layer.source.Member; \
         } \
         else \
         { \
             float value0 = layer.Member[ _frameIndex + 0 ]; \
             float value1 = layer.Member[ _frameIndex + 1 ]; \
-            _frame.Member = mt::linerp_f1( value0, value1, _t ); \
+            _frame->Member = mt::linerp_f1( value0, value1, _t ); \
         }
 
         MOVIE_FRAME_SETUP_F1( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
@@ -274,7 +274,7 @@ namespace Mengine
 
         if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X )
         {
-            _frame.rotation.x = layer.source.rotation.x;
+            _frame->rotation.x = layer.source.rotation.x;
         }
         else
         {
@@ -285,12 +285,12 @@ namespace Mengine
             float correct_rotate_to;
             mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-            _frame.rotation.x = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
+            _frame->rotation.x = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
         }
 
         if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y )
         {
-            _frame.rotation.y = layer.source.rotation.y;
+            _frame->rotation.y = layer.source.rotation.y;
         }
         else
         {
@@ -301,12 +301,12 @@ namespace Mengine
             float correct_rotate_to;
             mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-            _frame.rotation.y = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
+            _frame->rotation.y = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
         }
 
         if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z )
         {
-            _frame.rotation.z = layer.source.rotation.z;
+            _frame->rotation.z = layer.source.rotation.z;
         }
         else
         {
@@ -317,13 +317,13 @@ namespace Mengine
             float correct_rotate_to;
             mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-            _frame.rotation.z = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
+            _frame->rotation.z = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float & _time ) const
+    bool MovieFramePack::getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float * _time ) const
     {
         for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
         {
@@ -336,7 +336,7 @@ namespace Mengine
 
             float time = timeremap.times[_frameIndex];
 
-            _time = time;
+            *_time = time;
 
             return true;
         }
@@ -365,7 +365,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const
+    bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t * _vertexCount ) const
     {
         for( uint32_t index = 0; index != m_sizePolygons; ++index )
         {
@@ -377,7 +377,7 @@ namespace Mengine
             }
 
             *_polygon = polygon.polygon;
-            _vertexCount = polygon.vertexCount;
+            *_vertexCount = polygon.vertexCount;
 
             return true;
         }

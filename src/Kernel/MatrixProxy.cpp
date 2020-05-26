@@ -24,7 +24,7 @@ namespace Mengine
         m_invalidateLocalMatrix = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MatrixProxy::calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const
+    void MatrixProxy::calcWorldMatrix( mt::mat4f * _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const
     {
         MENGINE_UNUSED( _transformationFlag );
         MENGINE_UNUSED( _position );
@@ -35,7 +35,7 @@ namespace Mengine
 
         if( m_relationTransformation == nullptr )
         {
-            _wm = m_localMatrix;
+            *_wm = m_localMatrix;
         }
         else
         {
@@ -45,11 +45,11 @@ namespace Mengine
             {
                 const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
 
-                mt::mul_m4_m4( _wm, m_localMatrix, relationMatrix );
+                mt::mul_m4_m4( *_wm, m_localMatrix, relationMatrix );
             }
             else
             {
-                _wm = m_localMatrix;
+                *_wm = m_localMatrix;
             }
         }
     }

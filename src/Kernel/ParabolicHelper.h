@@ -6,13 +6,13 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        void calculateParabolicPosition( T & _out, const T & _begin, const T & _end, const T & _height, float _time )
+        void calculateParabolicPosition( T * _out, const T & _begin, const T & _end, const T & _height, float _time )
         {
             T a = 2.f * _end - 4.f * _height + 2.f * _begin;
             T b = 4.f * _height - _end - 3.f * _begin;
             T c = _begin;
 
-            _out = a * _time * _time + b * _time + c;
+            *_out = a * _time * _time + b * _time + c;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class LENGTH>

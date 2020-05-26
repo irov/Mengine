@@ -34,7 +34,7 @@ namespace Mengine
         }
 
         template<class T>
-        static bool s_concreteVisitIf( T * _visited, const VisitorPtr & _visitor, bool & _result )
+        static bool s_concreteVisitIf( T * _visited, const VisitorPtr & _visitor, bool * _result )
         {
             typedef ConcreteVisitorR<T, bool> TConcreteVisitorR;
 
@@ -47,7 +47,7 @@ namespace Mengine
                 return false;
             }
 
-            _result = ptr->accept( _visited );
+            *_result = ptr->accept( _visited );
 
             return true;
         }
@@ -58,12 +58,12 @@ namespace Mengine
 #define DECLARE_VISITABLE_BASE() \
 public:\
     void visit( const VisitorPtr & _visitor ) override { Visitable::s_concreteVisit(this, _visitor); }\
-    bool visitIf( const VisitorPtr & _visitor ) override { bool result = true; Visitable::s_concreteVisitIf(this, _visitor, result); return result;}\
+    bool visitIf( const VisitorPtr & _visitor ) override { bool result = true; Visitable::s_concreteVisitIf(this, _visitor, &result); return result;}\
 protected:
     //////////////////////////////////////////////////////////////////////////
 #define DECLARE_VISITABLE( Base ) \
 public:\
     void visit( const VisitorPtr & _visitor ) override { if( Visitable::s_concreteVisit(this, _visitor) == false ){ Base::visit(_visitor); } }\
-    bool visitIf( const VisitorPtr & _visitor ) override { bool result = true; if( Visitable::s_concreteVisitIf(this, _visitor, result) == false ){ result = Base::visitIf(_visitor); } return result;}\
+    bool visitIf( const VisitorPtr & _visitor ) override { bool result = true; if( Visitable::s_concreteVisitIf(this, _visitor, &result) == false ){ result = Base::visitIf(_visitor); } return result;}\
 protected:
 }

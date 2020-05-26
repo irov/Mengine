@@ -421,7 +421,7 @@ namespace Mengine
         }
 
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         uint32_t argb = color.getAsARGB();
 
@@ -437,18 +437,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void Window::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVertices();
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( *_boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t i = 1; i != 4; ++i )
         {
-            mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
+            mt::add_internal_point( *_boundingBox, vertices[i].position.x, vertices[i].position.y );
         }
 
-        *_boundingBoxCurrent = &_boundingBox;
+        *_boundingBoxCurrent = _boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void Window::_invalidateWorldMatrix() const

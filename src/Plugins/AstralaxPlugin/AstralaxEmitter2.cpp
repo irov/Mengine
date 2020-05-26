@@ -141,7 +141,7 @@ namespace Mengine
             Magic_SetEmitterPositionMode( m_emitterId, true );
 
             mt::vec3f pos;
-            m_positionProvider->onProviderEmitterPosition( pos );
+            m_positionProvider->onProviderEmitterPosition( &pos );
 
             MAGIC_POSITION mp;
             mp.x = pos.x;
@@ -190,7 +190,7 @@ namespace Mengine
         return m_is3d;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::getCamera( AstralaxCamera & _camera ) const
+    bool AstralaxEmitter2::getCamera( AstralaxCamera * _camera ) const
     {
         MAGIC_VIEW view;
         if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
@@ -198,25 +198,25 @@ namespace Mengine
             return false;
         }
 
-        _camera.pos.x = view.pos.x;
-        _camera.pos.y = view.pos.y;
-        _camera.pos.z = view.pos.z;
+        _camera->pos.x = view.pos.x;
+        _camera->pos.y = view.pos.y;
+        _camera->pos.z = view.pos.z;
 
-        _camera.dir.x = view.dir.x;
-        _camera.dir.y = view.dir.y;
-        _camera.dir.z = view.dir.z;
+        _camera->dir.x = view.dir.x;
+        _camera->dir.y = view.dir.y;
+        _camera->dir.z = view.dir.z;
 
-        _camera.up.x = view.up.x;
-        _camera.up.y = view.up.y;
-        _camera.up.z = view.up.z;
+        _camera->up.x = view.up.x;
+        _camera->up.y = view.up.y;
+        _camera->up.z = view.up.z;
 
-        _camera.fov = view.fov;
-        _camera.aspect = view.aspect_ratio;
-        _camera.znear = view.znear;
-        _camera.zfar = view.zfar;
+        _camera->fov = view.fov;
+        _camera->aspect = view.aspect_ratio;
+        _camera->znear = view.znear;
+        _camera->zfar = view.zfar;
 
-        _camera.width = (float)view.viewport_width;
-        _camera.height = (float)view.viewport_height;
+        _camera->width = (float)view.viewport_width;
+        _camera->height = (float)view.viewport_height;
 
         return true;
     }
@@ -253,7 +253,7 @@ namespace Mengine
             mt::vec3f position;
             mt::vec3f direction;
 
-            m_cameraProvider->onProviderEmitterCamera( orthogonality, position, direction );
+            m_cameraProvider->onProviderEmitterCamera( &orthogonality, &position, &direction );
 
             MAGIC_CAMERA camera;
 
@@ -318,7 +318,7 @@ namespace Mengine
         if( m_positionProvider != nullptr )
         {
             mt::vec3f pos;
-            m_positionProvider->onProviderEmitterPosition( pos );
+            m_positionProvider->onProviderEmitterPosition( &pos );
 
             MAGIC_POSITION mp;
             mp.x = pos.x;
@@ -512,13 +512,13 @@ namespace Mengine
         return mode;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::prepareParticles( AstralaxEmitterRenderFlush & _flush )
+    bool AstralaxEmitter2::prepareParticles( AstralaxEmitterRenderFlush * _flush )
     {
-        _flush.meshCount = 0;
-        _flush.vertexCount = 0;
-        _flush.indexCount = 0;
-        _flush.arrays = 0;
-        _flush.context = nullptr;
+        _flush->meshCount = 0;
+        _flush->vertexCount = 0;
+        _flush->indexCount = 0;
+        _flush->arrays = 0;
+        _flush->context = nullptr;
 
         if( this->inInterval() == false )
         {
@@ -545,40 +545,40 @@ namespace Mengine
             return false;
         }
 
-        _flush.vertexCount = start.vertices;
-        _flush.indexCount = start.indexes;
-        _flush.arrays = start.arrays;
-        _flush.context = context;
+        _flush->vertexCount = start.vertices;
+        _flush->indexCount = start.indexes;
+        _flush->arrays = start.arrays;
+        _flush->context = context;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush & _flush )
+    bool AstralaxEmitter2::flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush * _flush )
     {
-        for( uint32_t i = 0; i != _flush.arrays; ++i )
+        for( uint32_t i = 0; i != _flush->arrays; ++i )
         {
             MAGIC_ARRAY_INFO array_info;
-            Magic_GetRenderArrayData( _flush.context, i, &array_info );
+            Magic_GetRenderArrayData( _flush->context, i, &array_info );
 
             switch( array_info.type )
             {
             case MAGIC_VERTEX_FORMAT_INDEX:
                 {
-                    if( Magic_SetRenderArrayData( _flush.context, i, _indices, 0, sizeof( RenderIndex ) ) == MAGIC_ERROR )
+                    if( Magic_SetRenderArrayData( _flush->context, i, _indices, 0, sizeof( RenderIndex ) ) == MAGIC_ERROR )
                     {
                         return false;
                     }
                 }break;
             case MAGIC_VERTEX_FORMAT_POSITION:
                 {
-                    if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, position ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
+                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, offsetof( RenderVertex2D, position ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
                     {
                         return false;
                     }
                 }break;
             case MAGIC_VERTEX_FORMAT_COLOR:
                 {
-                    if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, color ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
+                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, offsetof( RenderVertex2D, color ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
                     {
                         return false;
                     }
@@ -590,7 +590,7 @@ namespace Mengine
                         return false;
                     }
 
-                    if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * array_info.index, sizeof( RenderVertex2D ) ) == false )
+                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * array_info.index, sizeof( RenderVertex2D ) ) == false )
                     {
                         return false;
                     }
@@ -610,17 +610,17 @@ namespace Mengine
             }
         }
 
-        Magic_FillRenderArrays( _flush.context );
+        Magic_FillRenderArrays( _flush->context );
 
         MAGIC_RENDER_VERTICES vrts;
-        while( Magic_GetVertices( _flush.context, &vrts ) == MAGIC_SUCCESS )
+        while( Magic_GetVertices( _flush->context, &vrts ) == MAGIC_SUCCESS )
         {
-            if( _flush.meshCount >= _meshLimit )
+            if( _flush->meshCount >= _meshLimit )
             {
                 return false;
             }
 
-            AstralaxMesh & mesh = _meshes[_flush.meshCount];
+            AstralaxMesh & mesh = _meshes[_flush->meshCount];
 
             mesh.vertexOffset = vrts.starting_index * 4 / 6;
             mesh.vertexCount = vrts.indexes_count * 4 / 6;
@@ -642,7 +642,7 @@ namespace Mengine
             }
 
             MAGIC_RENDER_STATE state;
-            while( Magic_GetNextRenderState( _flush.context, &state ) == MAGIC_SUCCESS )
+            while( Magic_GetNextRenderState( _flush->context, &state ) == MAGIC_SUCCESS )
             {
                 if( state.state != MAGIC_RENDER_STATE_TEXTURE )
                 {
@@ -667,7 +667,7 @@ namespace Mengine
 
             mesh.textures = m.textures;
 
-            _flush.meshCount++;
+            _flush->meshCount++;
         }
 
         if( m_positionProvider == nullptr )
@@ -677,7 +677,7 @@ namespace Mengine
             if( m_is3d == true )
             {
                 AstralaxCamera pc;
-                if( this->getCamera( pc ) == false )
+                if( this->getCamera( &pc ) == false )
                 {
                     return false;
                 }
@@ -705,7 +705,7 @@ namespace Mengine
             float half_height = (m_rect.w - m_rect.y) * 0.5f;
 
             RenderVertex2D * vertices_iterator = _vertices;
-            RenderVertex2D * vertices_end = _vertices + _flush.vertexCount;
+            RenderVertex2D * vertices_end = _vertices + _flush->vertexCount;
 
             for( ; vertices_iterator != vertices_end; ++vertices_iterator )
             {

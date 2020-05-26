@@ -63,7 +63,7 @@ namespace Mengine
 
     public:
         virtual const Color & getWorldColor() const = 0;
-        virtual void calcTotalColor( Color & _color ) const = 0;
+        virtual void calcTotalColor( Color * _color ) const = 0;
         virtual bool isSolidColor() const = 0;
 
     protected:

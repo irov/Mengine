@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Identity.h"
-#include "Kernel/Hierarchyable.h"
+#include "Kernel/Hierarchy.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Pickerable.h"
 #include "Kernel/Eventable.h"
@@ -14,8 +14,6 @@
 #include "Kernel/Animatable.h"
 #include "Kernel/Unknowable.h"
 #include "Kernel/Factorable.h"
-#include "Kernel/IntrusiveSlugListSize.h"
-#include "Kernel/IntrusiveSlugIterator.h"
 #include "Kernel/Viewport.h"
 
 #ifdef MENGINE_DEBUG
@@ -27,16 +25,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveSlugListSize<Node> IntrusiveSlugListNodeChild;
-    typedef IntrusiveSlugIterator<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
-    //////////////////////////////////////////////////////////////////////////
     class Node
-        : public stdex::intrusive_slug_linked_ptr<Node, void, IntrusivePtr, IntrusivePtrBase>
-        , public Factorable
+        : public Factorable
         , public Identity
         , public Compilable
-        , public Hierarchyable
-        , public HierarchyReceiverInterface
+        , public Hierarchy
         , public Updatable
         , public Renderable
         , public Transformation
@@ -59,77 +52,14 @@ namespace Mengine
         void setUniqueIdentity( uint32_t _uniqueIdentity );
         uint32_t getUniqueIdentity() const;
 
+    public:
+        NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
+
     protected:
         uint32_t m_uniqueIdentity;
 
-    public:
-        MENGINE_INLINE Node * getParent() const;
-        MENGINE_INLINE bool hasParent() const;
-
-    public:
-        void addChild( const NodePtr & _node );
-        void addChildFront( const NodePtr & _node );
-        bool addChildAfter( const NodePtr & _node, const NodePtr & _after );
-        bool removeChild( const NodePtr & _node );
-
-        typedef Lambda<void( const NodePtr & node )> LambdaRemoveChildren;
-        void removeChildren( const LambdaRemoveChildren & _lambda );
-        bool removeFromParent();
-
-        typedef Lambda<void( const NodePtr & node )> LambdaDestroyChildren;
-        void destroyChildren( const LambdaDestroyChildren & _lambda );
-
-        MENGINE_INLINE IntrusiveSlugListNodeChild & getChildren();
-        MENGINE_INLINE const IntrusiveSlugListNodeChild & getChildren() const;
-        uint32_t getChildrenRecursiveCount() const;
-
-        NodePtr findChild( const ConstString & _name, bool _recursion ) const;
-        NodePtr getSiblingPrev() const;
-        NodePtr getSiblingNext() const;
-        bool hasChild( const ConstString & _name, bool _recursive ) const;
-        bool emptyChildren() const;
-
     protected:
-        uint32_t getLeafDeep() const;
-
-    protected:
-        void removeParent_();
-        void setParent_( Node * _parent );
         void refreshRenderRelation_( Node * _parent );
-        void refreshPickerRelation_( Node * _parent );
-
-    protected:
-        virtual void _changeParent( Node * _oldParent, Node * _newParent );
-        virtual void _addChild( const NodePtr & _node );
-        virtual void _removeChild( const NodePtr & _node );
-
-    protected:
-        Node * m_parent;
-
-        IntrusiveSlugListNodeChild m_children;
-
-    protected:
-        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
-
-    protected:
-        void insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
-        void eraseChild_( const NodePtr & _node );
-
-    public:
-        typedef Lambda<void( const NodePtr & )> LambdaNode;
-        void foreachChildren( const LambdaNode & _lambda ) const;
-        void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
-        void foreachChildrenReverse( const LambdaNode & _lambda ) const;
-
-        typedef Lambda<bool( const NodePtr & )> LambdaNodeBreak;
-        void foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const;
-
-        NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
-
-    public:
-        void visitChildren( const VisitorPtr & _visitor );
-
-    protected:
         void removeRelationRender_();
 
     protected:
@@ -138,12 +68,16 @@ namespace Mengine
         void foreachRenderReverseCloseChildren_( const LambdaRenderCloseChildren & _lambda );
 
     protected:
+        void refreshPickerRelation_( Node * _parent );
         void removeRelationPicker_();
 
     protected:
         typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
         void foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda );
         void foreachPickerReverseCloseChildren_( const LambdaPickerCloseChildren & _lambda );
+
+    protected:
+        void visitChildren( const VisitorPtr & _visitor );
 
     protected:
         void _destroy() override;
@@ -196,19 +130,18 @@ namespace Mengine
         void setSpeedFactor( float _speedFactor );
         float getSpeedFactor() const;
 
+    public:
+        void onHierarchySetParent( Node * _newParent ) override;
+        void onHierarchyRemoveParent( Node * _oldParent ) override;
+        void onHierarchyChangeParent( Node * _oldParent, Node * _newParent ) override;
+        void onHierarchyRefreshChild( const NodePtr & _node ) override;
+        void onHierarchyAddChild( const NodePtr & _node ) override;
+        void onHierarchyRemoveChild( const NodePtr & _node ) override;
+
     protected:
-        HierarchyReceiverInterface * getHierarchyableReceiver() override;
-
-    public:
-        void onHierarchySetParent( HierarchyInterface * _newParent ) override;
-        void onHierarchyRemoveParent( HierarchyInterface * _oldParent ) override;
-        void onHierarchyChangeParent( HierarchyInterface * _oldParent, HierarchyInterface * _newParent ) override;
-        void onHierarchyRefreshChild( const HierarchyInterfacePtr & _hierarchy ) override;
-        void onHierarchyAddChild( const HierarchyInterfacePtr & _hierarchy ) override;
-        void onHierarchyRemoveChild( const HierarchyInterfacePtr & _hierarchy ) override;
-
-    public:
-        void onHierarchyDeactivate() override;
+        virtual void _changeParent( Node * _oldParent, Node * _newParent );
+        virtual void _addChild( const NodePtr & _node );
+        virtual void _removeChild( const NodePtr & _node );
 
     protected:
         AffectorHubProviderInterface * getAffectorHubProvider() override;
@@ -224,6 +157,9 @@ namespace Mengine
         bool m_enable;
 
         bool m_freeze;
+
+    protected:
+        friend class Hierarchy;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Node> NodePtr;
@@ -251,26 +187,6 @@ namespace Mengine
     MENGINE_INLINE bool Node::isEnable() const
     {
         return m_enable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE Node * Node::getParent() const
-    {
-        return m_parent;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool Node::hasParent() const
-    {
-        return m_parent != nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE IntrusiveSlugListNodeChild & Node::getChildren()
-    {
-        return m_children;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const IntrusiveSlugListNodeChild & Node::getChildren() const
-    {
-        return m_children;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

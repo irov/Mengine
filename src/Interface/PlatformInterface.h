@@ -68,7 +68,7 @@ namespace Mengine
         virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool getDesktopResolution( Resolution & _resolution ) const = 0;
+        virtual bool getDesktopResolution( Resolution * _resolution ) const = 0;
 
         virtual bool getNoFullscreen() const = 0;
         virtual bool getAlwaysFullscreen() const = 0;
@@ -104,7 +104,7 @@ namespace Mengine
         virtual size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const = 0;
 
     public:
-        virtual void getMaxClientResolution( Resolution & _resolution ) const = 0;
+        virtual void getMaxClientResolution( Resolution * _resolution ) const = 0;
 
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;

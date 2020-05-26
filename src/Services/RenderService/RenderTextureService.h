@@ -50,7 +50,7 @@ namespace Mengine
         bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
 
     protected:
-        void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, EPixelFormat & _format ) const;
+        void updateImageParams_( uint32_t * _width, uint32_t * _height, uint32_t * _channels, uint32_t * _depth, EPixelFormat * _format ) const;
 
     protected:
         typedef Hashtable2<ConstString, FilePath, RenderTextureInterface *> MapRenderTextureEntry;

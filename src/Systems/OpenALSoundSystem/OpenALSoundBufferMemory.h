@@ -29,7 +29,7 @@ namespace Mengine
 
     public:
         bool setTimePos( ALuint _source, float _pos ) const override;
-        bool getTimePos( ALuint _source, float & _pos ) const override;
+        bool getTimePos( ALuint _source, float * _pos ) const override;
 
     protected:
         ALuint m_alBufferId;

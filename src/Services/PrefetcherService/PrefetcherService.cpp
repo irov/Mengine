@@ -159,7 +159,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder )
+    bool PrefetcherService::getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr * _decoder )
     {
         if( this->isAvailableService() == false )
         {
@@ -181,7 +181,7 @@ namespace Mengine
             return false;
         }
 
-        _decoder = prefetch_decoder;
+        *_decoder = prefetch_decoder;
 
         return true;
     }
@@ -232,7 +232,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder )
+    bool PrefetcherService::getSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr * _decoder )
     {
         if( this->isAvailableService() == false )
         {
@@ -254,7 +254,7 @@ namespace Mengine
             return false;
         }
 
-        _decoder = prefetch_decoder;
+        *_decoder = prefetch_decoder;
 
         return true;
     }

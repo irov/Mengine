@@ -161,7 +161,7 @@ namespace Metabuf
         static Mengine::String utf8;
         archive_read( ar, utf8, _userData );
 
-        Mengine::Helper::utf8ToUnicode( utf8, _value );
+        Mengine::Helper::utf8ToUnicode( utf8, &_value );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Color & _value, void * _userData )

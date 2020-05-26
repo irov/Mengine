@@ -28,12 +28,12 @@ namespace Mengine
 
             float t_time = _timing / ValueInterpolator<T>::m_duration;
 
-            Helper::calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
+            Helper::calculateParabolicPosition( _out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
         }
 
         void _update( float _dt, T * _out ) override
         {
-            Helper::calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, _dt );
+            Helper::calculateParabolicPosition( _out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, _dt );
         }
 
     protected:

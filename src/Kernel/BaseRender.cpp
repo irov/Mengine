@@ -295,13 +295,13 @@ namespace Mengine
         return relationColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::calcTotalColor( Color & _color ) const
+    void BaseRender::calcTotalColor( Color * _color ) const
     {
         const Color & worldColor = this->getWorldColor();
-        _color = worldColor;
+        *_color = worldColor;
 
         const Color & personalColor = this->getPersonalColor();
-        _color *= personalColor;
+        *_color *= personalColor;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::isSolidColor() const

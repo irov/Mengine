@@ -66,7 +66,7 @@ namespace Mengine
         v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
         mt::vec2f contentResolutionSize;
-        _contentResolution.calcSize( contentResolutionSize );
+        _contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
 
@@ -112,7 +112,7 @@ namespace Mengine
         v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
         mt::vec2f contentResolutionSize;
-        _contentResolution.calcSize( contentResolutionSize );
+        _contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
 

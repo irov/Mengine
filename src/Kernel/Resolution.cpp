@@ -39,32 +39,32 @@ namespace Mengine
         return aspect;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resolution::calcSize( mt::vec2f & _size ) const
+    void Resolution::calcSize( mt::vec2f * _size ) const
     {
         float width = this->getWidthF();
         float height = this->getHeightF();
 
-        _size.x = width;
-        _size.y = height;
+        _size->x = width;
+        _size->y = height;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resolution::calcInvSize( mt::vec2f & _size ) const
+    void Resolution::calcInvSize( mt::vec2f * _size ) const
     {
         float width = this->getWidthF();
         float height = this->getHeightF();
 
-        _size.x = 1.f / width;
-        _size.y = 1.f / height;
+        _size->x = 1.f / width;
+        _size->y = 1.f / height;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resolution::calcScale( const Resolution & _resolution, mt::vec2f & _scale ) const
+    void Resolution::calcScale( const Resolution & _resolution, mt::vec2f * _scale ) const
     {
         mt::vec2f self_size;
-        this->calcSize( self_size );
+        this->calcSize( &self_size );
 
         mt::vec2f other_size;
-        _resolution.calcSize( other_size );
+        _resolution.calcSize( &other_size );
 
-        _scale = self_size / other_size;
+        *_scale = self_size / other_size;
     }
 }

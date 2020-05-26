@@ -861,7 +861,7 @@ namespace Mengine
         float attachment_vertices[MENGINE_SPINE_MAX_VERTICES * 2];
 
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         float nr = color.getR();
         float ng = color.getG();

@@ -118,7 +118,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, Color & _value ) const
+    bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, Color * _value ) const
     {
         if( _i >= m_countX || _j >= m_countY )
         {
@@ -127,7 +127,7 @@ namespace Mengine
 
         uint32_t index = _i + _j * m_countX;
 
-        _value.setAsARGB( m_vertices[index].color );
+        _value->setAsARGB( m_vertices[index].color );
 
         return true;
     }
@@ -262,7 +262,7 @@ namespace Mengine
         VectorRenderVertex2D::iterator it_w = m_verticesWM.begin();
 
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         if( m_resourceImage != nullptr )
         {
@@ -298,7 +298,7 @@ namespace Mengine
         m_invalidateVerticesWM = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void Grid2D::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -311,8 +311,8 @@ namespace Mengine
         mt::vec2f maximal_wm;
         mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
 
-        mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
+        mt::set_box_from_two_point( *_boundingBox, minimal_wm, maximal_wm );
 
-        *_boundingBoxCurrent = &_boundingBox;
+        *_boundingBoxCurrent = _boundingBox;
     }
 }

@@ -50,7 +50,7 @@ namespace Mengine
         uint32_t getCountY() const;
 
         bool setGridColor( uint32_t _i, uint32_t _j, const Color & _value );
-        bool getGridColor( uint32_t _i, uint32_t _j, Color & _value ) const;
+        bool getGridColor( uint32_t _i, uint32_t _j, Color * _value ) const;
 
     protected:
         bool _compile() override;
@@ -62,7 +62,7 @@ namespace Mengine
     protected:
         void _invalidateWorldMatrix() const override;
 
-        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
+        void _updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
         void updateVerticesWM_() const;

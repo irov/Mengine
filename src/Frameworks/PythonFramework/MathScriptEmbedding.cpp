@@ -518,7 +518,7 @@ namespace Mengine
                 begin.y = 0.f;
 
                 mt::vec2f end;
-                r.calcSize( end );
+                r.calcSize( &end );
 
                 _place->setRectangle( begin, end );
 

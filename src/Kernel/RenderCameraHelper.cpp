@@ -41,7 +41,7 @@ namespace Mengine
             *_worldDeltha = p_pm_deltha;
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenPosition( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f & _screenPosition )
+        void worldToScreenPosition( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f * _screenPosition )
         {
             const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
             const Viewport & vp = _renderViewport->getViewport();
@@ -50,15 +50,15 @@ namespace Mengine
             vp.calcSize( vp_size );
 
             mt::vec2f contentResolutionInvSize;
-            _contentResolution.calcInvSize( contentResolutionInvSize );
+            _contentResolution.calcInvSize( &contentResolutionInvSize );
 
             mt::vec2f v_screen;
             mt::mul_v2_v2_m4_homogenize( v_screen, _worldPosition, vpm );
 
-            _screenPosition = (vp.begin + v_screen * vp_size) * contentResolutionInvSize;
+            *_screenPosition = (vp.begin + v_screen * vp_size) * contentResolutionInvSize;
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenDelta( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldDelta, mt::vec2f & _screenDelta )
+        void worldToScreenDelta( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldDelta, mt::vec2f * _screenDelta )
         {
             const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
             const Viewport & vp = _renderViewport->getViewport();
@@ -67,7 +67,7 @@ namespace Mengine
             vp.calcSize( vp_size );
 
             mt::vec2f contentResolutionInvSize;
-            _contentResolution.calcInvSize( contentResolutionInvSize );
+            _contentResolution.calcInvSize( &contentResolutionInvSize );
 
             mt::vec2f v_screen0;
             mt::mul_v2_v2z_m4_homogenize( v_screen0, vpm );
@@ -85,10 +85,10 @@ namespace Mengine
 
             v_screen *= mt::vec2f( 0.5f, 0.5f );
 
-            _screenDelta = (v_screen - v_screen0) * vp_size * contentResolutionInvSize;
+            *_screenDelta = (v_screen - v_screen0) * vp_size * contentResolutionInvSize;
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenBox( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f & _screenBox )
+        void worldToScreenBox( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f * _screenBox )
         {
             const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
             const Viewport & vp = _renderViewport->getViewport();
@@ -97,7 +97,7 @@ namespace Mengine
             vp.calcSize( vp_size );
 
             mt::vec2f contentResolutionInvSize;
-            _contentResolution.calcInvSize( contentResolutionInvSize );
+            _contentResolution.calcInvSize( &contentResolutionInvSize );
 
             mt::box2f bb_screen;
             mt::set_box_homogenize( bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
@@ -106,7 +106,7 @@ namespace Mengine
             mt::transpose_box( bb_screen, vp.begin );
             mt::scale_box( bb_screen, contentResolutionInvSize );
 
-            _screenBox = bb_screen;
+            *_screenBox = bb_screen;
         }
     }
 }

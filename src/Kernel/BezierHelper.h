@@ -10,14 +10,14 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t N>
-        MENGINE_CONSTEXPR void calculateBezierPosition( T & _out, const T & _begin, const T & _end, const T * _v, float _dt )
+        MENGINE_CONSTEXPR void calculateBezierPosition( T * _out, const T & _begin, const T & _end, const T * _v, float _dt )
         {
             uint32_t n = N + 1;
 
             float t0 = mt::integral_powf( 1.f - _dt, n );
             float tn = mt::integral_powf( _dt, n );
 
-            _out = t0 * _begin + tn * _end;
+            *_out = t0 * _begin + tn * _end;
 
             float f_count = mt::factorialf( n );
 
@@ -28,7 +28,7 @@ namespace Mengine
 
                 const T & v = _v[i - 1];
 
-                _out += c * t * v;
+                *_out += c * t * v;
             }
         }
         //////////////////////////////////////////////////////////////////////////

@@ -216,14 +216,14 @@ namespace Mengine
         proxy.state = EUS_REMOVE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable & _leaf, const UpdateContext * _context )
+    void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable * _leaf, const UpdateContext * _context )
     {
-        _leaf.indecies.insert( _leaf.indecies.end(), _leaf.indeciesAdd.begin(), _leaf.indeciesAdd.end() );
-        _leaf.indeciesAdd.clear();
+        _leaf->indecies.insert( _leaf->indecies.end(), _leaf->indeciesAdd.begin(), _leaf->indeciesAdd.end() );
+        _leaf->indeciesAdd.clear();
 
         for( VectorUpdatableIndecies::iterator
-            it = _leaf.indecies.begin(),
-            it_end = _leaf.indecies.end();
+            it = _leaf->indecies.begin(),
+            it_end = _leaf->indecies.end();
             it != it_end;)
         {
             uint32_t id = *it;
@@ -234,15 +234,16 @@ namespace Mengine
             {
                 if( it + 1 == it_end )
                 {
-                    _leaf.indecies.pop_back();
+                    _leaf->indecies.pop_back();
+
                     break;
                 }
                 else
                 {
-                    *it = _leaf.indecies.back();
-                    _leaf.indecies.pop_back();
+                    *it = _leaf->indecies.back();
+                    _leaf->indecies.pop_back();
 
-                    it_end = _leaf.indecies.end();
+                    it_end = _leaf->indecies.end();
                 }
 
                 continue;
@@ -253,15 +254,16 @@ namespace Mengine
 
                 if( it + 1 == it_end )
                 {
-                    _leaf.indecies.pop_back();
+                    _leaf->indecies.pop_back();
+
                     break;
                 }
                 else
                 {
-                    *it = _leaf.indecies.back();
-                    _leaf.indecies.pop_back();
+                    *it = _leaf->indecies.back();
+                    _leaf->indecies.pop_back();
 
-                    it_end = _leaf.indecies.end();
+                    it_end = _leaf->indecies.end();
                 }
 
                 continue;
@@ -284,7 +286,7 @@ namespace Mengine
         uint32_t enumerateBeforeDeep = 0U;
         for( LeafUpdatable & leaf : m_beforeLeaf )
         {
-            this->updateLeaf_( enumerateBeforeDeep, leaf, &context );
+            this->updateLeaf_( enumerateBeforeDeep, &leaf, &context );
 
             ++enumerateBeforeDeep;
         }
@@ -292,7 +294,7 @@ namespace Mengine
         uint32_t enumerateDeep = 0U;
         for( LeafUpdatable & leaf : m_leafs )
         {
-            this->updateLeaf_( enumerateDeep, leaf, &context );
+            this->updateLeaf_( enumerateDeep, &leaf, &context );
 
             ++enumerateDeep;
         }
@@ -300,7 +302,7 @@ namespace Mengine
         uint32_t enumerateAfterDeep = 0U;
         for( LeafUpdatable & leaf : m_afterLeaf )
         {
-            this->updateLeaf_( enumerateAfterDeep, leaf, &context );
+            this->updateLeaf_( enumerateAfterDeep, &leaf, &context );
 
             ++enumerateAfterDeep;
         }

@@ -101,7 +101,7 @@ namespace Mengine
 
     public:
         bool setEnableMovieLayer( const ConstString & _name, bool _enable );
-        bool getEnableMovieLayer( const ConstString & _name, bool & _enable );
+        bool getEnableMovieLayer( const ConstString & _name, bool * _enable );
 
     public:
         void setEnableMovieLayers( const ConstString & _name, bool _enable );
@@ -218,7 +218,7 @@ namespace Mengine
         MENGINE_INLINE const NodePtr & getLayerParent_( const MovieLayer & _layer ) const;
 
     protected:
-        void getFrameTime_( float _time, uint32_t & _frame, float & _timing ) const;
+        void getFrameTime_( float _time, uint32_t * _frame, float * _timing ) const;
 
     protected:
         void updateTime_();

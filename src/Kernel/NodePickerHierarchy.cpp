@@ -4,21 +4,22 @@ namespace Mengine
 {
     namespace Helper
     {
-        bool hasNodePickerInheritance( Node * _node )
+        //////////////////////////////////////////////////////////////////////////
+        bool hasNodePickerInheritance( const Node * _node )
         {
             if( _node == nullptr )
             {
                 return false;
             }
 
-            PickerInterface * picker = _node->getPicker();
+            const PickerInterface * picker = _node->getPicker();
 
             if( picker != nullptr )
             {
                 return true;
             }
 
-            Node * parent = _node->getParent();
+            const Node * parent = _node->getParent();
 
             bool successful = Helper::hasNodePickerInheritance( parent );
 

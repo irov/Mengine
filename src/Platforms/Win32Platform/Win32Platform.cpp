@@ -378,7 +378,7 @@ namespace Mengine
         }
 
         WString unicode_processDumpPath;
-        Helper::utf8ToUnicode( _dumpPath, unicode_processDumpPath );
+        Helper::utf8ToUnicode( _dumpPath, &unicode_processDumpPath );
 
         HANDLE hFile = ::CreateFile( unicode_processDumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
 
@@ -809,7 +809,7 @@ namespace Mengine
         return utf8_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::getMaxClientResolution( Resolution & _resolution ) const
+    void Win32Platform::getMaxClientResolution( Resolution * _resolution ) const
     {
         RECT workArea;
         ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 );
@@ -819,8 +819,8 @@ namespace Mengine
         uint32_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
         uint32_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
 
-        _resolution.setWidth( maxClientWidth );
-        _resolution.setHeight( maxClientHeight );
+        _resolution->setWidth( maxClientWidth );
+        _resolution->setHeight( maxClientHeight );
     }
     //////////////////////////////////////////////////////////////////////////
     const Tags & Win32Platform::getPlatformTags() const
@@ -1068,7 +1068,7 @@ namespace Mengine
         }
 
         LRESULT input_result;
-        if( this->wndProcInput( hWnd, uMsg, wParam, lParam, input_result ) == true )
+        if( this->wndProcInput( hWnd, uMsg, wParam, lParam, &input_result ) == true )
         {
             return input_result;
         }
@@ -1145,7 +1145,7 @@ namespace Mengine
     //    return false;
     //}
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result )
+    bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * _result )
     {
         MENGINE_UNUSED( hWnd );
 
@@ -1408,7 +1408,7 @@ namespace Mengine
         case WM_UNICHAR:
             if( wParam == UNICODE_NOCHAR )
             {
-                _result = TRUE;
+                *_result = TRUE;
 
             }break;
         case WM_CHAR:
@@ -1530,7 +1530,7 @@ namespace Mengine
         if( _fullscreen == true )
         {
             Resolution desktopResolution;
-            this->getDesktopResolution( desktopResolution );
+            this->getDesktopResolution( &desktopResolution );
 
             this->notifyWindowModeChanged( desktopResolution, true );
         }
@@ -1728,7 +1728,7 @@ namespace Mengine
             icoFullFile += icoFile;
 
             WString unicode_icoFullFile;
-            if( Helper::utf8ToUnicode( icoFullFile, unicode_icoFullFile ) == false )
+            if( Helper::utf8ToUnicode( icoFullFile, &unicode_icoFullFile ) == false )
             {
                 LOGGER_ERROR( "name '%s' path '%s' can't file name '%s' to unicode"
                     , _name.c_str()
@@ -2786,13 +2786,13 @@ namespace Mengine
         return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getDesktopResolution( Resolution & _resolution ) const
+    bool Win32Platform::getDesktopResolution( Resolution * _resolution ) const
     {
         int32_t cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
         int32_t cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
 
-        _resolution.setWidth( cxscreen );
-        _resolution.setHeight( cyscreen );
+        _resolution->setWidth( cxscreen );
+        _resolution->setHeight( cyscreen );
 
         return true;
     }

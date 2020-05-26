@@ -335,7 +335,7 @@ namespace Mengine
         }
 
         AstralaxEmitterRenderFlush flush;
-        if( m_emitter->prepareParticles( flush ) == false )
+        if( m_emitter->prepareParticles( &flush ) == false )
         {
             return;
         }
@@ -355,8 +355,7 @@ namespace Mengine
         }
 
         AstralaxMesh meshes[MENGINE_PARTICLE_MAX_MESH];
-
-        if( m_emitter->flushParticles( meshes, MENGINE_PARTICLE_MAX_MESH, m_renderVertices, m_renderIndicies, flush ) == false )
+        if( m_emitter->flushParticles( meshes, MENGINE_PARTICLE_MAX_MESH, m_renderVertices, m_renderIndicies, &flush ) == false )
         {
             return;
         }
@@ -415,7 +414,7 @@ namespace Mengine
     void AstralaxEmitter::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const
     {
         Color color;
-        this->calcTotalColor( color );
+        this->calcTotalColor( &color );
 
         if( color.isIdentity() == true )
         {
@@ -684,7 +683,7 @@ namespace Mengine
         }
 
         VectorPoints points;
-        if( Helper::triangulate( m_polygon, points ) == false )
+        if( Helper::triangulate( m_polygon, &points ) == false )
         {
             LOGGER_ERROR( "emitter '%s' wrong polygon"
                 , this->getName().c_str()
@@ -729,13 +728,13 @@ namespace Mengine
         m_emitter->changeEmitterModel( nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void AstralaxEmitter::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const mt::box2f & bb = m_emitter->getBoundingBox();
 
-        _boundingBox = bb;
+        *_boundingBox = bb;
 
-        *_boundingBoxCurrent = &_boundingBox;
+        *_boundingBoxCurrent = _boundingBox;
     }
     /////////////////////////////////////////////////////////////////////////
     float AstralaxEmitter::_getDuration() const
@@ -771,7 +770,7 @@ namespace Mengine
         return m_randomMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::onProviderEmitterPosition( mt::vec3f & _position )
+    void AstralaxEmitter::onProviderEmitterPosition( mt::vec3f * _position )
     {
         uint8_t transformationFlag;
         mt::vec3f position;
@@ -779,15 +778,15 @@ namespace Mengine
         mt::vec3f scale;
         mt::vec2f skew;
         mt::vec3f orientation;
-        this->getTransformation( transformationFlag, position, origin, scale, skew, orientation );
+        this->getTransformation( &transformationFlag, &position, &origin, &scale, &skew, &orientation );
 
         mt::mat4f wm;
-        this->calcWorldMatrix( wm, transformationFlag | TRANSFORMATION_INVALIDATE_ORIGIN, position, origin + m_positionProviderOriginOffset, scale, skew, orientation );
+        this->calcWorldMatrix( &wm, transformationFlag | TRANSFORMATION_INVALIDATE_ORIGIN, position, origin + m_positionProviderOriginOffset, scale, skew, orientation );
 
-        _position = wm.v3.to_vec3f();
+        *_position = wm.v3.to_vec3f();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
+    void AstralaxEmitter::onProviderEmitterCamera( bool * _orthogonality, mt::vec3f * _position, mt::vec3f * _direction )
     {
         RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( this );
 
@@ -797,11 +796,11 @@ namespace Mengine
                 ->getRenderCamera();
         }
 
-        _orthogonality = true;
+        *_orthogonality = true;
 
         const mt::mat4f & vmi = camera->getCameraViewMatrixInv();
 
-        _position = vmi.v3.to_vec3f();
-        _direction = vmi.v0.to_vec3f();
+        *_position = vmi.v3.to_vec3f();
+        *_direction = vmi.v0.to_vec3f();
     }
 }

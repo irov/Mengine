@@ -75,7 +75,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f contentResolutionSize;
-        contentResolution.calcSize( contentResolutionSize );
+        contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f gameViewportSize;
         gameViewport.calcSize( gameViewportSize );

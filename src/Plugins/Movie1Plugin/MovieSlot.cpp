@@ -23,24 +23,16 @@ namespace Mengine
     void MovieSlot::_destroy()
     {
 #ifdef MENGINE_DEBUG
-        IntrusiveSlugListNodeChild & child = this->getChildren();
-
-        for( IntrusiveSlugListNodeChild::iterator
-            it = child.begin(),
-            it_end = child.end();
-            it != it_end;
-            ++it )
+        this->foreachChildrenSlug( [this]( const NodePtr & _child )
         {
-            NodePtr node = *it;
-
             LOGGER_ERROR( "slot '%s:%s' has children '%s:%s'!! (please remove, before release movie '%s')"
                 , this->getName().c_str()
                 , this->getType().c_str()
-                , node->getName().c_str()
-                , node->getType().c_str()
+                , _child->getName().c_str()
+                , _child->getType().c_str()
                 , m_movieName.c_str()
             );
-        }
+        } );
 #endif
 
         Node::_destroy();

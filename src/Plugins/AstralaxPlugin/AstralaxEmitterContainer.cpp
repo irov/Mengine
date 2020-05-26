@@ -52,7 +52,7 @@ namespace Mengine
         size_t binary_size = memory->getSize();
 
         HM_FILE mf;
-        if( this->loadContainer_( binary_memory, binary_size, mf ) == false )
+        if( this->loadContainer_( binary_memory, binary_size, &mf ) == false )
         {
             return false;
         }
@@ -149,7 +149,7 @@ namespace Mengine
         return ResourceImagePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const
+    bool AstralaxEmitterContainer::loadContainer_( const void * _buffer, size_t _size, HM_FILE * _mf ) const
     {
         MENGINE_UNUSED( _size );
 
@@ -171,7 +171,7 @@ namespace Mengine
             return false;
         }
 
-        _mf = mf;
+        *_mf = mf;
 
         return true;
     }

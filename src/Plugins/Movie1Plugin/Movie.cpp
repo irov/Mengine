@@ -123,7 +123,7 @@ namespace Mengine
         return m_parentMovie;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::getFrameTime_( float _time, uint32_t & _frame, float & _delthaTime ) const
+    void Movie::getFrameTime_( float _time, uint32_t * _frame, float * _delthaTime ) const
     {
         float duration = m_resourceMovie->getDuration();
 
@@ -139,25 +139,25 @@ namespace Mengine
 
         if( frameCount == 0 )
         {
-            _frame = 0;
-            _delthaTime = 0.f;
+            *_frame = 0;
+            *_delthaTime = 0.f;
         }
         else if( loop == true )
         {
-            _frame = frame % frameCount;
-            _delthaTime = crop_timing - _frame * frameDuration;
+            *_frame = frame % frameCount;
+            *_delthaTime = crop_timing - *_frame * frameDuration;
         }
         else
         {
             if( frame >= frameCount )
             {
-                _frame = frameCount - 1;
-                _delthaTime = 0.f;
+                *_frame = frameCount - 1;
+                *_delthaTime = 0.f;
             }
             else
             {
-                _frame = frame;
-                _delthaTime = crop_timing - _frame * frameDuration;
+                *_frame = frame;
+                *_delthaTime = crop_timing - *_frame * frameDuration;
             }
         }
     }
@@ -175,7 +175,7 @@ namespace Mengine
 
         uint32_t frame;
         float frameTime;
-        this->getFrameTime_( _time, frame, frameTime );
+        this->getFrameTime_( _time, &frame, &frameTime );
 
         m_currentFrame = frame;
         m_frameTime = frameTime;
@@ -344,14 +344,14 @@ namespace Mengine
 
             float t = m_frameTime / frameDuration;
 
-            if( framePack->getLayerFrameInterpolate( _layer.index, _frameId, t, frame ) == false )
+            if( framePack->getLayerFrameInterpolate( _layer.index, _frameId, t, &frame ) == false )
             {
                 return false;
             }
         }
         else
         {
-            if( framePack->getLayerFrame( _layer.index, _frameId, frame ) == false )
+            if( framePack->getLayerFrame( _layer.index, _frameId, &frame ) == false )
             {
                 return false;
             }
@@ -812,7 +812,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::getEnableMovieLayer( const ConstString & _name, bool & _enable )
+    bool Movie::getEnableMovieLayer( const ConstString & _name, bool * _enable )
     {
         if( m_resourceMovie == nullptr )
         {
@@ -828,7 +828,7 @@ namespace Mengine
         const MovieLayer * exist_layer;
         if( m_resourceMovie->hasMovieLayer( _name, &exist_layer ) == true )
         {
-            _enable = this->getEnableLayer_( *exist_layer );
+            *_enable = this->getEnableLayer_( *exist_layer );
 
             return true;
         }
@@ -1768,7 +1768,7 @@ namespace Mengine
 
         uint8_t vertexCount;
         const mt::vec2f * polygon;
-        if( framePack->getLayerPolygon( _layer.index, &polygon, vertexCount ) == false )
+        if( framePack->getLayerPolygon( _layer.index, &polygon, &vertexCount ) == false )
         {
             return false;
         }
@@ -2490,7 +2490,7 @@ namespace Mengine
                     const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
                     float timing;
-                    if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
+                    if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, &timing ) == false )
                     {
                         return;
                     }
@@ -2536,7 +2536,7 @@ namespace Mengine
                         const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
                         float timing;
-                        if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
+                        if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, &timing ) == false )
                         {
                             return;
                         }
@@ -2569,7 +2569,7 @@ namespace Mengine
                         const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
                         float timing;
-                        if( framePack->getLayerTimeRemap( _layer.index, indexOut - indexIn, timing ) == false )
+                        if( framePack->getLayerTimeRemap( _layer.index, indexOut - indexIn, &timing ) == false )
                         {
                             return;
                         }
@@ -2596,7 +2596,7 @@ namespace Mengine
                         const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
                         float timing;
-                        if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
+                        if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, &timing ) == false )
                         {
                             return;
                         }
@@ -2673,7 +2673,7 @@ namespace Mengine
                         const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
                         float time;
-                        if( framePack->getLayerTimeRemap( layer.index, m_currentFrame - indexIn, time ) == false )
+                        if( framePack->getLayerTimeRemap( layer.index, m_currentFrame - indexIn, &time ) == false )
                         {
                             continue;
                         }
@@ -2760,7 +2760,7 @@ namespace Mengine
                         const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
                         float timing;
-                        if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
+                        if( framePack->getLayerTimeRemap( layer.index, frameId, &timing ) == false )
                         {
                             continue;
                         }
@@ -2795,7 +2795,7 @@ namespace Mengine
                         const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
                         float timing;
-                        if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
+                        if( framePack->getLayerTimeRemap( layer.index, frameId, &timing ) == false )
                         {
                             continue;
                         }

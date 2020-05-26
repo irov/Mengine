@@ -358,7 +358,7 @@ namespace Mengine
             }
             else
             {
-                Helper::makeRenderBoundingBox( bb, _vertices, _vertexCount );
+                Helper::makeRenderBoundingBox( &bb, _vertices, _vertexCount );
             }
 
             const RenderCameraInterfacePtr & camera = renderPass->camera;

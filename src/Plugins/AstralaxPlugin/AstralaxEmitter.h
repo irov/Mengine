@@ -100,7 +100,7 @@ namespace Mengine
         void update( const UpdateContext * _context ) override;
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
-        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
+        void _updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     private:
         bool compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter );
@@ -111,8 +111,8 @@ namespace Mengine
         void updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const;
 
     protected:
-        void onProviderEmitterPosition( mt::vec3f & _position ) override;
-        void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) override;
+        void onProviderEmitterPosition( mt::vec3f * _position ) override;
+        void onProviderEmitterCamera( bool * _orthogonality, mt::vec3f * _position, mt::vec3f * _direction ) override;
 
     protected:
         ResourceAstralaxPtr m_resourceAstralax;

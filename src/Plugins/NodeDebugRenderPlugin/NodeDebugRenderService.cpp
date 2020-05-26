@@ -653,7 +653,7 @@ namespace Mengine
                 ->getContentResolution();
 
             mt::vec2f scale;
-            content.calcScale( resolution, scale );
+            content.calcScale( resolution, &scale );
 
             Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FORWARD, "%s"
                 , text.c_str()

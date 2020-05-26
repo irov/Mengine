@@ -105,7 +105,7 @@ namespace Mengine
         uint32_t height = dataInfo->height;
 
         uint32_t mimmap_level;
-        uint32_t mimmap_size = this->calcMimMapBufferLevelAndSize_( width, height, mimmap_level );
+        uint32_t mimmap_size = this->calcMimMapBufferLevelAndSize_( width, height, &mimmap_level );
 
         uint32_t bufferSize = width * height + mimmap_size;
 
@@ -167,7 +167,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t & _level )
+    uint32_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t * _level )
     {
         uint32_t mipmap_pow_width = (uint32_t)(MT_logf( (float)_width ) / MT_logf( 2.f ));
         uint32_t mipmap_pow_height = (uint32_t)(MT_logf( (float)_height ) / MT_logf( 2.f ));
@@ -181,7 +181,7 @@ namespace Mengine
             bufferOffset += offset;
         }
 
-        _level = mipmap_level;
+        *_level = mipmap_level;
 
         return bufferOffset;
     }

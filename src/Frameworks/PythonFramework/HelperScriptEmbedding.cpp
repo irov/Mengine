@@ -150,7 +150,7 @@ namespace Mengine
             WString s_utf8ToUnicode( const String & _utf8 )
             {
                 WString unicode;
-                Helper::utf8ToUnicode( _utf8, unicode );
+                Helper::utf8ToUnicode( _utf8, &unicode );
 
                 return unicode;
             }
@@ -158,7 +158,7 @@ namespace Mengine
             String s_unicodeToUtf8( const WString & _unicode )
             {
                 String utf8;
-                Helper::unicodeToUtf8( _unicode, utf8 );
+                Helper::unicodeToUtf8( _unicode, &utf8 );
 
                 return utf8;
             }
@@ -314,35 +314,29 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_printChildren2( const NodePtr & _node, uint32_t _tab )
             {
-                IntrusiveSlugListNodeChild & children = _node->getChildren();
-
-                for( IntrusiveSlugChild it( children ); it.eof() == false; )
+                _node->foreachChildrenSlug( [this, _tab]( const NodePtr & _child )
                 {
-                    NodePtr child( *it );
-
-                    it.next_shuffle();
-
                     Color color;
 
                     Node * nodeRender;
-                    if( RenderInterface * render = Helper::getNodeRenderInheritance( child.get(), &nodeRender ) )
+                    if( RenderInterface * render = Helper::getNodeRenderInheritance( _child.get(), &nodeRender ) )
                     {
-                        render->calcTotalColor( color );
+                        render->calcTotalColor( &color );
                     }
 
                     LOGGER_MESSAGE_RELEASE( "%.*s%s%s [%s] (%.0f, %.0f) %.2f\n"
                         , _tab
                         , "                                         "
-                        , child->isActivate() ? child->isEnable() ? "+" : "-" : "#"
-                        , child->getName().c_str()
-                        , child->getType().c_str()
-                        , child->getWorldPosition().x
-                        , child->getWorldPosition().y
+                        , _child->isActivate() ? _child->isEnable() ? "+" : "-" : "#"
+                        , _child->getName().c_str()
+                        , _child->getType().c_str()
+                        , _child->getWorldPosition().x
+                        , _child->getWorldPosition().y
                         , color.getA()
-                        );
+                    );
 
-                    s_printChildren2( child, _tab + 1 );
-                }
+                    s_printChildren2( _child, _tab + 1 );
+                } );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_printChildren( const NodePtr & _node )
@@ -520,7 +514,7 @@ namespace Mengine
                         WString key = py_obj.extract();
 
                         String utf8_arg;
-                        Helper::unicodeToUtf8( key, utf8_arg );
+                        Helper::unicodeToUtf8( key, &utf8_arg );
 
                         arguments.emplace_back( utf8_arg );
                     }
@@ -1130,7 +1124,7 @@ namespace Mengine
             const Polygon & s_intersectionPolygons( const Polygon & _p1, const Polygon & _p2 )
             {
                 VectorGeolygon output;
-                Helper::difference( _p1, _p2, output );
+                Helper::difference( _p1, _p2, &output );
 
                 if( output.empty() == true )
                 {
@@ -1152,10 +1146,10 @@ namespace Mengine
             bool s_intersectsPolygonsWM( const mt::mat4f & _wm1, const Polygon & _p1, const mt::mat4f & _wm2, Polygon _p2 )
             {
                 Polygon p1wm;
-                _p1.mul_wm( p1wm, _wm1 );
+                _p1.mul_wm( &p1wm, _wm1 );
 
                 Polygon p2wm;
-                _p2.mul_wm( p2wm, _wm2 );
+                _p2.mul_wm( &p2wm, _wm2 );
 
                 bool intersect = Helper::intersects( p1wm, p2wm );
 
@@ -1165,10 +1159,10 @@ namespace Mengine
             bool s_intersectsPolygonsWMP( const mt::vec3f & _wm1, const Polygon & _p1, const mt::vec3f & _wm2, Polygon _p2 )
             {
                 Polygon p1wm;
-                _p1.transpose( p1wm, _wm1.to_vec2f() );
+                _p1.transpose( &p1wm, _wm1.to_vec2f() );
 
                 Polygon p2wm;
-                _p2.transpose( p2wm, _wm2.to_vec2f() );
+                _p2.transpose( &p2wm, _wm2.to_vec2f() );
 
                 bool intersect = Helper::intersects( p1wm, p2wm );
 
@@ -1759,7 +1753,7 @@ namespace Mengine
                     }
 
                     String utf8_value;
-                    Helper::unicodeToUtf8( value, utf8_value );
+                    Helper::unicodeToUtf8( value, &utf8_value );
 
                     setting_value += utf8_value;
                 }
@@ -2378,7 +2372,7 @@ namespace Mengine
                 Helper::utf8ToUnicode( setting_value, setting_valueW, MENGINE_ACCOUNT_SETTING_MAXVALUE );
 
                 VectorWString strings;
-                Helper::wsplit( strings, setting_valueW, true, L" ,,, " );
+                Helper::wsplit( &strings, setting_valueW, true, L" ,,, " );
 
                 pybind::list l = pybind::make_list_container_t( _kernel, strings );
 
@@ -2730,7 +2724,7 @@ namespace Mengine
             bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _filePath, PyObject * _data, PyObject * _pickleTypes )
             {
                 String utf8_filePath;
-                if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
+                if( Helper::unicodeToUtf8( _filePath, &utf8_filePath ) == false )
                 {
                     LOGGER_ERROR( "invalid file '%ls' convert to utf8"
                         , _filePath.c_str()
@@ -2793,7 +2787,7 @@ namespace Mengine
             PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _filePath, PyObject * _pickleTypes )
             {
                 String utf8_filePath;
-                if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
+                if( Helper::unicodeToUtf8( _filePath, &utf8_filePath ) == false )
                 {
                     LOGGER_ERROR( "invalid convert file '%ls' to utf8"
                         , _filePath.c_str()
@@ -2871,7 +2865,7 @@ namespace Mengine
                 }
 
                 String utf8_filePath;
-                if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
+                if( Helper::unicodeToUtf8( _filePath, &utf8_filePath ) == false )
                 {
                     LOGGER_ERROR( "invalid convert file '%ls' to utf8"
                         , _filePath.c_str()
@@ -2908,7 +2902,7 @@ namespace Mengine
                 const mt::mat4f & wm = _node->getWorldMatrix();
 
                 mt::vec2f screen;
-                camera->fromWorldToScreenPosition( wm, screen );
+                camera->fromWorldToScreenPosition( wm, &screen );
 
                 return screen;
             }
@@ -2936,7 +2930,7 @@ namespace Mengine
                 const Char * text = entry->getValue( &text_size );
 
                 WString unicode;
-                if( Helper::utf8ToUnicodeSize( text, text_size, unicode ) == false )
+                if( Helper::utf8ToUnicodeSize( text, text_size, &unicode ) == false )
                 {
                     pybind::throw_exception( "invalid text key '%s' convert '%s' to unicode"
                         , _key.c_str()

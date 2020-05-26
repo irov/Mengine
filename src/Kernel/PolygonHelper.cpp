@@ -153,14 +153,14 @@ namespace Mengine
         typedef boost::geometry::model::box<mt::vec2f> BoostBox;
         typedef boost::geometry::model::segment<mt::vec2f> BoostSegment;
         //////////////////////////////////////////////////////////////////////////
-        static void makeBoostPolygon( BoostPolygon & _bp, const Polygon & _p )
+        static void makeBoostPolygon( BoostPolygon * _bp, const Polygon & _p )
         {
             for( const mt::vec2f & v : _p )
             {
-                boost::geometry::append( _bp, v );
+                boost::geometry::append( *_bp, v );
             }
 
-            boost::geometry::correct( _bp );
+            boost::geometry::correct( *_bp );
         }
         ////////////////////////////////////////////////////////////////////////////
         //static void makeMenginePolygon( Polygon & _p, const BoostPolygon & _bp )
@@ -176,7 +176,7 @@ namespace Mengine
         //    }
         //}
         //////////////////////////////////////////////////////////////////////////
-        static void makeMengineGeolygon( Geolygon & _mg, const BoostPolygon & _bp )
+        static void makeMengineGeolygon( Geolygon * _mg, const BoostPolygon & _bp )
         {
             const BoostPolygon::ring_type & ring = _bp.outer();
             BoostPolygon::ring_type::size_type ring_size = ring.size();
@@ -207,7 +207,7 @@ namespace Mengine
                 inners_polygon.emplace_back( inner_polygon );
             }
 
-            _mg = Geolygon( outer_polygon, inners_polygon );
+            *_mg = Geolygon( outer_polygon, inners_polygon );
         }
         //////////////////////////////////////////////////////////////////////////
         bool intersects( const Polygon & _polygon, const mt::vec2f & _point )
@@ -288,7 +288,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        void centroid( const Polygon & _polygon, mt::vec2f & _point )
+        void centroid( const Polygon & _polygon, mt::vec2f * _point )
         {
             mt::vec2f centroid_point( 0.f, 0.f );
             float centroid_area = 0.f;
@@ -335,10 +335,10 @@ namespace Mengine
             centroid_point.x *= centroid_area_inv6;
             centroid_point.y *= centroid_area_inv6;
 
-            _point = centroid_point;
+            *_point = centroid_point;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool triangulate( const Polygon & _polygon, VectorPoints & _result )
+        bool triangulate( const Polygon & _polygon, VectorPoints * _result )
         {
             /* allocate and initialize list of Vertices in polygon */
             const VectorPoints & polygon_points = _polygon.getPoints();
@@ -411,9 +411,9 @@ namespace Mengine
                     const mt::vec2f & Cb = polygon_points[b];
                     const mt::vec2f & Cc = polygon_points[c];
 
-                    _result.emplace_back( Ca );
-                    _result.emplace_back( Cb );
-                    _result.emplace_back( Cc );
+                    _result->emplace_back( Ca );
+                    _result->emplace_back( Cb );
+                    _result->emplace_back( Cc );
 
                     for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
                     {
@@ -431,7 +431,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices & _result )
+        bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices * _result )
         {
             /* allocate and initialize list of Vertices in polygon */
             const VectorPoints & polygon_points = _polygon.getPoints();
@@ -500,9 +500,9 @@ namespace Mengine
                     uint32_t b = V[v];
                     uint32_t c = V[w];
 
-                    _result.emplace_back( (VectorPolygonIndices::value_type)a );
-                    _result.emplace_back( (VectorPolygonIndices::value_type)b );
-                    _result.emplace_back( (VectorPolygonIndices::value_type)c );
+                    _result->emplace_back( (VectorPolygonIndices::value_type)a );
+                    _result->emplace_back( (VectorPolygonIndices::value_type)b );
+                    _result->emplace_back( (VectorPolygonIndices::value_type)c );
 
                     for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
                     {
@@ -523,7 +523,7 @@ namespace Mengine
         bool intersects( const Polygon & _polygon, const mt::vec2f & _p0, const mt::vec2f & _p1 )
         {
             BoostPolygon bpolygon;
-            makeBoostPolygon( bpolygon, _polygon );
+            makeBoostPolygon( &bpolygon, _polygon );
 
             BoostSegment boost_segment( _p0, _p1 );
 
@@ -535,10 +535,10 @@ namespace Mengine
         bool intersects( const Polygon & _lhs, const Polygon & _rhs )
         {
             BoostPolygon blhs;
-            makeBoostPolygon( blhs, _lhs );
+            makeBoostPolygon( &blhs, _lhs );
 
             BoostPolygon brhs;
-            makeBoostPolygon( brhs, _rhs );
+            makeBoostPolygon( &brhs, _rhs );
 
             bool successful = boost::geometry::intersects( blhs, brhs );
 
@@ -548,7 +548,7 @@ namespace Mengine
         bool intersects( const Polygon & _lhs, const mt::box2f & _rhs )
         {
             BoostPolygon blhs;
-            makeBoostPolygon( blhs, _lhs );
+            makeBoostPolygon( &blhs, _lhs );
 
             BoostBox boost_box( _rhs.minimum, _rhs.maximum );
 
@@ -557,13 +557,13 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool intersection( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon & _out )
+        bool intersection( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * _out )
         {
             BoostPolygon blhs;
-            makeBoostPolygon( blhs, _lhs );
+            makeBoostPolygon( &blhs, _lhs );
 
             BoostPolygon brhs;
-            makeBoostPolygon( brhs, _rhs );
+            makeBoostPolygon( &brhs, _rhs );
 
             Deque<BoostPolygon> output;
 
@@ -579,21 +579,21 @@ namespace Mengine
             for( const BoostPolygon & bp : output )
             {
                 Geolygon mg;
-                makeMengineGeolygon( mg, bp );
+                makeMengineGeolygon( &mg, bp );
 
-                _out.emplace_back( mg );
+                _out->emplace_back( mg );
             }
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool difference( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon & _out )
+        bool difference( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * _out )
         {
             BoostPolygon blhs;
-            makeBoostPolygon( blhs, _lhs );
+            makeBoostPolygon( &blhs, _lhs );
 
             BoostPolygon brhs;
-            makeBoostPolygon( brhs, _rhs );
+            makeBoostPolygon( &brhs, _rhs );
 
             Deque<BoostPolygon> output;
 
@@ -609,9 +609,9 @@ namespace Mengine
             for( const BoostPolygon & bp : output )
             {
                 Geolygon mg;
-                makeMengineGeolygon( mg, bp );
+                makeMengineGeolygon( &mg, bp );
 
-                _out.emplace_back( mg );
+                _out->emplace_back( mg );
             }
 
             return true;

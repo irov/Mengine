@@ -24,17 +24,15 @@ namespace Mengine
 
         if( handle == false )
         {
-            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+            this->foreachChildrenSlug( []( const NodePtr & _hierarchy )
             {
-                Scene * subScene = dynamic_cast<Scene *>(*it);
-
-                it.next_shuffle();
+                Scene * subScene = stdex::intrusive_dynamic_get<Scene *>( _hierarchy );
 
                 if( subScene != nullptr )
                 {
                     subScene->onAppMouseLeave();
                 }
-            }
+            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,17 +43,15 @@ namespace Mengine
 
         if( handle == false )
         {
-            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+            this->foreachChildrenSlug( []( const NodePtr & _hierarchy )
             {
-                Scene * subScene = dynamic_cast<Scene *>(*it);
-
-                it.next_shuffle();
+                Scene * subScene = stdex::intrusive_dynamic_get<Scene *>( _hierarchy );
 
                 if( subScene != nullptr )
                 {
                     subScene->onAppMouseEnter();
                 }
-            }
+            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -66,19 +62,15 @@ namespace Mengine
 
         if( handle == false )
         {
-            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+            this->foreachChildrenSlug( [_focus]( const NodePtr & _hierarchy )
             {
-                NodePtr children( *it );
-
-                it.next_shuffle();
-
-                Scene * subScene = dynamic_cast<Scene *>(children.get());
+                Scene * subScene = stdex::intrusive_dynamic_get<Scene *>( _hierarchy );
 
                 if( subScene != nullptr )
                 {
                     subScene->onFocus( _focus );
                 }
-            }
+            } );
         }
     }
 }

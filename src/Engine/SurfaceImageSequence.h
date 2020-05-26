@@ -89,7 +89,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        uint32_t getFrame_( float _time, float & _deltaTime ) const;
+        uint32_t getFrame_( float _time, float * _deltaTime ) const;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;

@@ -197,7 +197,7 @@ namespace Mengine
             ALuint bufferId = m_alBuffersId[i];
 
             size_t bytesWritten;
-            if( this->bufferData_( bufferId, bytesWritten ) == false )
+            if( this->bufferData_( bufferId, &bytesWritten ) == false )
             {
                 return false;
             }
@@ -266,7 +266,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::getTimePos( ALuint _source, float & _pos ) const
+    bool OpenALSoundBufferStream::getTimePos( ALuint _source, float * _pos ) const
     {
         MENGINE_UNUSED( _source );
 
@@ -282,7 +282,7 @@ namespace Mengine
             return false;
         }
 
-        _pos = timeTell;
+        *_pos = timeTell;
 
         return true;
     }
@@ -310,7 +310,7 @@ namespace Mengine
             OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, 1, &bufferId) );
 
             size_t bytesWritten;
-            this->bufferData_( bufferId, bytesWritten );
+            this->bufferData_( bufferId, &bytesWritten );
 
             if( bytesWritten == 0 )
             {
@@ -342,7 +342,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t & _bytes )
+    bool OpenALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t * _bytes )
     {
         uint8_t dataBuffer[MENGINE_OPENAL_STREAM_BUFFER_SIZE];
         size_t bytesWritten = m_soundDecoder->decode( dataBuffer, MENGINE_OPENAL_STREAM_BUFFER_SIZE );
@@ -376,7 +376,7 @@ namespace Mengine
             return false;
         }
 
-        _bytes = bytesWritten;
+        *_bytes = bytesWritten;
 
         return true;
     }

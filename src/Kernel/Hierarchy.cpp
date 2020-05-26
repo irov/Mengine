@@ -105,7 +105,7 @@ namespace Mengine
 
             this->insertChild_( _insert, _child );
 
-            this->onHierarchyRefreshChild( _child );
+            this->_hierarchyRefreshChild( _child );
         }
         else
         {
@@ -121,7 +121,29 @@ namespace Mengine
             _child->setParent_( parentNode );
         }
 
-        this->onHierarchyAddChild( _child );
+        Node * self = static_cast<Node *>(this);
+
+        if( self->isFreeze() == false && _child->isFreeze() == true )
+        {
+            _child->freeze( false );
+        }
+        else if( self->isFreeze() == true && _child->isFreeze() == false )
+        {
+            _child->freeze( true );
+        }
+
+        if( self->isActivate() == false && _child->isActivate() == true )
+        {
+            _child->deactivate();
+        }
+        else if( self->isActivate() == true && _child->isActivate() == false )
+        {
+            _child->activate();
+        }
+
+        _child->invalidateWorldMatrix();
+
+        this->_hierarchyAddChild( _child );
     }
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::insertChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _node )
@@ -275,7 +297,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::removeChild_( const NodePtr & _node )
     {
-        this->onHierarchyRemoveChild( _node );
+        this->_hierarchyRemoveChild( _node );
 
         _node->removeParent_();
 
@@ -364,22 +386,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::removeParent_()
     {
-        this->onHierarchyRemoveParent( m_parent );
+        this->_hierarchyRemoveParent( m_parent );
 
         Node * oldparent = m_parent;
         m_parent = nullptr;
 
-        this->onHierarchyChangeParent( oldparent, nullptr );
+        this->_hierarchyChangeParent( oldparent, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::setParent_( Node * _parent )
     {
-        this->onHierarchySetParent( _parent );
+        this->_hierarchySetParent( _parent );
 
         Node * oldparent = m_parent;
         m_parent = _parent;
 
-        this->onHierarchyChangeParent( oldparent, _parent );
+        this->_hierarchyChangeParent( oldparent, _parent );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Hierarchy::getChildrenCount() const

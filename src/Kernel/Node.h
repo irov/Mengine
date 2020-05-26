@@ -131,17 +131,12 @@ namespace Mengine
         float getSpeedFactor() const;
 
     public:
-        void onHierarchySetParent( Node * _newParent ) override;
-        void onHierarchyRemoveParent( Node * _oldParent ) override;
-        void onHierarchyChangeParent( Node * _oldParent, Node * _newParent ) override;
-        void onHierarchyRefreshChild( const NodePtr & _node ) override;
-        void onHierarchyAddChild( const NodePtr & _node ) override;
-        void onHierarchyRemoveChild( const NodePtr & _node ) override;
-
-    protected:
-        virtual void _changeParent( Node * _oldParent, Node * _newParent );
-        virtual void _addChild( const NodePtr & _node );
-        virtual void _removeChild( const NodePtr & _node );
+        void _hierarchySetParent( Node * _newParent ) override;
+        void _hierarchyRemoveParent( Node * _oldParent ) override;
+        void _hierarchyChangeParent( Node * _oldParent, Node * _newParent ) override;
+        void _hierarchyRefreshChild( const NodePtr & _node ) override;
+        void _hierarchyAddChild( const NodePtr & _node ) override;
+        void _hierarchyRemoveChild( const NodePtr & _node ) override;
 
     protected:
         AffectorHubProviderInterface * getAffectorHubProvider() override;

@@ -2274,20 +2274,20 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_changeParent( Node * _oldParent, Node * _newParent )
+    void Movie2::_hierarchyChangeParent( Node * _oldParent, Node * _newParent )
     {
         MENGINE_UNUSED( _oldParent );
         MENGINE_UNUSED( _newParent );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_addChild( const NodePtr & _node )
+    void Movie2::_hierarchyAddChild( const NodePtr & _node )
     {
         MENGINE_UNUSED( _node );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_removeChild( const NodePtr & _node )
+    void Movie2::_hierarchyRemoveChild( const NodePtr & _node )
     {
         MENGINE_UNUSED( _node );
 

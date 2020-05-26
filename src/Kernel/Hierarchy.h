@@ -84,12 +84,12 @@ namespace Mengine
         bool foreachChildrenUnslugBreak( const LambdaHierarchyBreak & _lambda ) const;
 
     protected:
-        virtual void onHierarchySetParent( Node * _newParent ) = 0;
-        virtual void onHierarchyRemoveParent( Node * _oldParent ) = 0;
-        virtual void onHierarchyChangeParent( Node * _oldParent, Node * _newParent ) = 0;
-        virtual void onHierarchyRefreshChild( const NodePtr & _hierarchy ) = 0;
-        virtual void onHierarchyAddChild( const NodePtr & _hierarchy ) = 0;
-        virtual void onHierarchyRemoveChild( const NodePtr & _hierarchy ) = 0;
+        virtual void _hierarchySetParent( Node * _newParent ) = 0;
+        virtual void _hierarchyRemoveParent( Node * _oldParent ) = 0;
+        virtual void _hierarchyChangeParent( Node * _oldParent, Node * _newParent ) = 0;
+        virtual void _hierarchyRefreshChild( const NodePtr & _hierarchy ) = 0;
+        virtual void _hierarchyAddChild( const NodePtr & _hierarchy ) = 0;
+        virtual void _hierarchyRemoveChild( const NodePtr & _hierarchy ) = 0;
 
     protected:
         Node * m_parent;

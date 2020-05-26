@@ -28,7 +28,7 @@ namespace Mengine
         void _setPersonalAlpha( float _alpha ) override;
 
     protected:
-        void _changeParent( Node * _oldParent, Node * _newParent ) override;
+        void _hierarchyChangeParent( Node * _oldParent, Node * _newParent ) override;
 
     protected:
         ConstString m_movieName;

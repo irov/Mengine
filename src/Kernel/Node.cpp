@@ -581,7 +581,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchySetParent( Node * _newParent )
+    void Node::_hierarchySetParent( Node * _newParent )
     {
         this->setRelationTransformation( _newParent );
 
@@ -598,7 +598,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyRemoveParent( Node * _oldParent )
+    void Node::_hierarchyRemoveParent( Node * _oldParent )
     {
         MENGINE_UNUSED( _oldParent );
 
@@ -607,12 +607,7 @@ namespace Mengine
         this->removeRelationPicker_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyChangeParent( Node * _oldParent, Node * _newParent )
-    {
-        this->_changeParent( _oldParent, _newParent );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyRefreshChild( const NodePtr & _node )
+    void Node::_hierarchyRefreshChild( const NodePtr & _node )
     {
         MENGINE_UNUSED( _node );
 
@@ -620,50 +615,26 @@ namespace Mengine
         this->refreshPickerRelation_( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyAddChild( const NodePtr & _node )
-    {
-        if( this->isFreeze() == false && _node->isFreeze() == true )
-        {
-            _node->freeze( false );
-        }
-        else if( this->isFreeze() == true && _node->isFreeze() == false )
-        {
-            _node->freeze( true );
-        }
-
-        if( this->isActivate() == false && _node->isActivate() == true )
-        {
-            _node->deactivate();
-        }
-        else if( this->isActivate() == true && _node->isActivate() == false )
-        {
-            _node->activate();
-        }
-
-        _node->invalidateWorldMatrix();
-
-        this->_addChild( _node );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::onHierarchyRemoveChild( const NodePtr & _node )
-    {
-        this->_removeChild( _node );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_changeParent( Node * _oldParent, Node * _newParent )
+    void Node::_hierarchyChangeParent( Node * _oldParent, Node * _newParent )
     {
         MENGINE_UNUSED( _oldParent );
         MENGINE_UNUSED( _newParent );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_addChild( const NodePtr & _node )
+    void Node::_hierarchyAddChild( const NodePtr & _node )
     {
         MENGINE_UNUSED( _node );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_removeChild( const NodePtr & _node )
+    void Node::_hierarchyRemoveChild( const NodePtr & _node )
     {
         MENGINE_UNUSED( _node );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     AffectorHubProviderInterface * Node::getAffectorHubProvider()

@@ -116,8 +116,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetAssetThreadTask::_onComplete( bool _successful )
     {
-        m_stream->flush();
-        m_stream = nullptr;
+        if( m_stream != nullptr )
+        {
+            m_stream->flush();
+            m_stream = nullptr;
+        }
 
         cURLThreadTask::_onComplete( _successful );
     }

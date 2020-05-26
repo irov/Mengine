@@ -131,9 +131,9 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        void _changeParent( Node * _oldParent, Node * _newParent ) override;
-        void _addChild( const NodePtr & _node ) override;
-        void _removeChild( const NodePtr & _node ) override;
+        void _hierarchyChangeParent( Node * _oldParent, Node * _newParent ) override;
+        void _hierarchyAddChild( const NodePtr & _node ) override;
+        void _hierarchyRemoveChild( const NodePtr & _node ) override;
 
     public:
         void addSurface_( const SurfacePtr & _surface, bool _compile );

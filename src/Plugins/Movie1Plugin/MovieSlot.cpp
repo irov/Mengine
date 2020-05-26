@@ -53,7 +53,7 @@ namespace Mengine
         this->setLocalAlpha( _alpha );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSlot::_changeParent( Node * _oldParent, Node * _newParent )
+    void MovieSlot::_hierarchyChangeParent( Node * _oldParent, Node * _newParent )
     {
         MENGINE_UNUSED( _newParent );
 

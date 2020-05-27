@@ -1605,7 +1605,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_IOS)
         SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, "1" );
 
-        m_window = SDL_CreateWindow( m_projectTitle
+        SDL_Window * window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1
@@ -1613,7 +1613,7 @@ namespace Mengine
             , windowFlags );
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        m_window = SDL_CreateWindow( m_projectTitle
+        SDL_Window * window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1
@@ -1624,7 +1624,7 @@ namespace Mengine
         int width = static_cast<int>(_resolution.getWidth());
         int height = static_cast<int>(_resolution.getHeight());
 
-        m_window = SDL_CreateWindow( m_projectTitle
+        SDL_Window * window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_CENTERED
             , SDL_WINDOWPOS_CENTERED
             , width
@@ -1633,10 +1633,12 @@ namespace Mengine
         );
 #endif
 
-        if( m_window == nullptr )
+        if( window == nullptr )
         {
             return false;
         }
+
+        m_window = window;
 
         return true;
     }

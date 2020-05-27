@@ -375,15 +375,19 @@ namespace Mengine
         return returnValue;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * AndroidNativeFacebookModule::getAccessToken() const
+    String AndroidNativeFacebookModule::getAccessToken() const
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
         jstring jReturnValue = (jstring)env->CallStaticObjectMethod( mActivityClass, jmethodID_getAccessToken );
 
-        const Char * returnValue = env->GetStringUTFChars( jReturnValue, 0 );
+        const Char * jStringValue = env->GetStringUTFChars( jReturnValue, 0 );
 
-        return returnValue;
+        String stringValue = jStringValue;
+
+        env->ReleaseStringUTFChars( jReturnValue, jStringValue );
+
+        return stringValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::performLogin( const VectorString & _permissions )

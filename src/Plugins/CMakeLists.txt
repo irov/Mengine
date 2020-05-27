@@ -54,6 +54,10 @@ if(MENGINE_PLUGIN_OZZ_ANIMATION)
     ADD_SUBDIRECTORY(OzzAnimationPlugin)
 endif()
 
+if(MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL)
+    ADD_SUBDIRECTORY(AndroidNativeKernelPlugin)
+endif()    
+
 if(MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK)
     ADD_SUBDIRECTORY(AndroidNativeFacebookPlugin)
 endif()

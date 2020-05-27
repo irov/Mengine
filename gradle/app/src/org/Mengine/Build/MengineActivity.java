@@ -6,16 +6,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.provider.Settings.Secure;
 
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
+import org.Mengine.Build.Kernel.KernelInteractionLayer;
 import org.Mengine.Build.AdMob.AdMobInteractionLayer;
 import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
 import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
 import org.Mengine.Build.LocalNotifications.NotificationPublisher;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
+
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
@@ -32,6 +35,7 @@ public class MengineActivity extends SDLActivity {
 
     private static MengineActivity _instance;
 
+    private static native void AndroidNativeKernel_setupKernelJNI();
     private static native void AndroidNativeFacebook_setupFacebookJNI();
     private static native void AndroidNativeFacebook_onSDKInitialized();
     private static native void AndroidNativeUnity_setupUnityJNI();
@@ -56,6 +60,8 @@ public class MengineActivity extends SDLActivity {
     protected void initPlugins() {
         AppEventsLogger.activateApp(getApplication());
 
+        AndroidNativeKernel_setupKernelJNI();
+        
         AndroidNativeFacebook_setupFacebookJNI();
         AndroidNativeUnity_setupUnityJNI();
         AndroidNativeAdMob_setupAdMobJNI();
@@ -152,6 +158,14 @@ public class MengineActivity extends SDLActivity {
         return new MengineSurface(context);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Kernel Methods    
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static String kernelGetAndroidId() {
+        String android_id = Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID);
+
+        return android_id;
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////

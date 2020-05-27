@@ -3,6 +3,7 @@ package org.Mengine.Build;
 import android.app.Notification;
 import android.content.*;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -19,7 +20,7 @@ import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
 public class MengineActivity extends SDLActivity {
-    private static final String TAG = "MENGINE";
+    public static final String TAG = "MENGINE";
 
     public FacebookInteractionLayer facebookInteractionLayer;
     public UnityAdsInteractionLayer unityAdsInteractionLayer;
@@ -276,7 +277,7 @@ public class MengineActivity extends SDLActivity {
     public static boolean admobSetupInterstitialAd() {
         if (_instance != null && _instance.adMobInteractionLayer != null) {
             _instance.adMobInteractionLayer.setupInterstitialAd();
-            
+
             return true;
         }
         
@@ -286,7 +287,7 @@ public class MengineActivity extends SDLActivity {
     public static boolean admobShowInterstitialAd() {
         if (_instance != null && _instance.adMobInteractionLayer != null) {
             _instance.adMobInteractionLayer.showInterstitialAd();
-            
+
             return true;
         }
         
@@ -440,9 +441,12 @@ public class MengineActivity extends SDLActivity {
     
     public static boolean scheduleLocalNotification(int id, String title, String content, int delay) {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
-            _instance.localNotificationsInteractionLayer.scheduleNotification(notification, id, delay);
-            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                _instance.localNotificationsInteractionLayer.scheduleJobServiceNotification(id, title, content, delay);
+            }else {
+                Notification notification = LocalNotificationsInteractionLayer.getNotification(_instance, id, title, content);
+                _instance.localNotificationsInteractionLayer.scheduleNotification(notification, id, delay);
+            }
             return true;
         }
 
@@ -451,7 +455,7 @@ public class MengineActivity extends SDLActivity {
 
     public static boolean instantlyPresentLocalNotification(int id, String title, String content) {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
+            Notification notification = LocalNotificationsInteractionLayer.getNotification(_instance, id, title, content);
             _instance.localNotificationsInteractionLayer.instantlyPresentNotification(notification, id);
             
             return true;

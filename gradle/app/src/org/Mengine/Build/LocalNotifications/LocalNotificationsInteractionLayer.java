@@ -5,12 +5,18 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import org.Mengine.Build.MengineActivity;
@@ -37,6 +43,11 @@ public class LocalNotificationsInteractionLayer {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void scheduleJobServiceNotification(int id, String title, String content, int delay){
+        scheduleJobNotification(delay, NotificationJobService.notificationBundle(id, title, content));
+    }
+
     public void scheduleNotification(Notification notification, int id, int delay) {
         Intent notificationIntent = new Intent(_currentContext, NotificationPublisher.class);
 
@@ -57,15 +68,15 @@ public class LocalNotificationsInteractionLayer {
     public void cancelAll() {
         NotificationManager notificationManager = (NotificationManager)_currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
-    }    
+    }
 
-    public Notification getNotification(int id, String title, String content) {
-        Intent intent = new Intent(_currentContext, MengineActivity.class);
+    public static Notification getNotification(Context context, int id, String title, String content) {
+        Intent intent = new Intent(context, MengineActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
-        PendingIntent pendingIntent = PendingIntent.getActivity(_currentContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(_currentContext, channelId);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
 
         return builder.setContentTitle(title)
                 .setContentText(content)
@@ -74,5 +85,19 @@ public class LocalNotificationsInteractionLayer {
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .build();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleJobNotification(int delayMillis, PersistableBundle bundle){
+        Log.d(MengineActivity.TAG, "Schedule notification with delay " + delayMillis);
+
+        JobInfo.Builder builder = new JobInfo.Builder((int)SystemClock.elapsedRealtime(), new ComponentName(_currentContext, NotificationJobService.class));
+        JobInfo jobInfo = builder
+                .setMinimumLatency(delayMillis)
+                .setOverrideDeadline(delayMillis + 10000)
+                .setExtras(bundle)
+                .build();
+        JobScheduler jobScheduler = (JobScheduler) _currentContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobInfo);
     }
 }

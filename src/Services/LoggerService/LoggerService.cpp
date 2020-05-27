@@ -135,14 +135,14 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( threadMutex, false );
 
-            m_threadMutex = threadMutex;
+            m_mutex = threadMutex;
 
             return true;
         } );
 
         SERVICE_LEAVE( Mengine::ThreadServiceInterface, [this]()
         {
-            m_threadMutex = nullptr;
+            m_mutex = nullptr;
         } );
 
         SERVICE_WAIT( Mengine::PlatformInterface, [this]()
@@ -174,6 +174,7 @@ namespace Mengine
 
         m_loggers.clear();
         m_history.clear();
+        m_errors.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::_stopService()
@@ -298,7 +299,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logMessage( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         ++m_countMessage[_level];
 
@@ -313,6 +314,11 @@ namespace Mengine
         }
 
         this->logHistory_( _level, _flag, _color, _message, _size );
+
+        if( _level <= LM_ERROR )
+        {
+            this->logErrors_( _message, _size );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logHistory_( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
@@ -327,6 +333,13 @@ namespace Mengine
 
             m_history.emplace_back( history );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::logErrors_( const Char * _message, size_t _size )
+    {
+        String message( _message, _size );
+
+        m_errors.emplace_back( message );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t LoggerService::getCountMessage( ELoggerLevel _level )
@@ -345,7 +358,7 @@ namespace Mengine
             return;
         }
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( const Record & record : m_history )
         {
@@ -353,6 +366,18 @@ namespace Mengine
             String::size_type record_message_size = record.message.size();
 
             _logger->log( record.level, record.flag, record.color, record_message_str, record_message_size );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::writeErrors( const LambdaErrors & _lambda ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        for( const String & msg : m_errors )
+        {
+            const Char * msg_str = msg.c_str();
+
+            _lambda( msg_str );
         }
     }
     //////////////////////////////////////////////////////////////////////////

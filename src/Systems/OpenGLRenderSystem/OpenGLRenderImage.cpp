@@ -41,6 +41,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
+        MENGINE_ASSERTION_FATAL( _width != 0 );
+        MENGINE_ASSERTION_FATAL( _height != 0 );
+
         switch( _internalFormat )
         {
         case GL_ETC1_RGB8_OES:

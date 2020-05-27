@@ -2,6 +2,10 @@
 
 #include "Config/Config.h"
 
+#ifndef MENGINE_PLATFORM_WINDOWS
+#error "include only for 'Windows' platform"
+#endif
+
 #include <sdkddkver.h>
 
 #ifndef MENGINE_WINDOWS_VERSION

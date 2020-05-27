@@ -496,7 +496,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _program );
 
-        //Empty
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )
@@ -653,6 +653,8 @@ namespace Mengine
     void OpenGLRenderSystem::setTextureFactor( uint32_t _color )
     {
         MENGINE_UNUSED( _color );
+
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
@@ -865,10 +867,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::endScene()
     {
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::swapBuffers()
     {
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
@@ -940,12 +944,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onWindowMovedOrResized()
     {
-
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onWindowClose()
     {
-
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
@@ -1002,7 +1006,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _vSync );
 
-        //Empty
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )

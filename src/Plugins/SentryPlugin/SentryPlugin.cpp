@@ -101,6 +101,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, this, &SentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ASSERTION, this, &SentryPlugin::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ERROR, this, &SentryPlugin::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -115,6 +116,7 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
 
         sentry_shutdown();
     }
@@ -135,6 +137,17 @@ namespace Mengine
         sentry_set_extra( "Assetion Line", sentry_value_new_int32( _line ) );
 
         sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Assertion", _message );
+
+        sentry_capture_event( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SentryPlugin::notifyError_( uint32_t _level, const Char * _file, int32_t _line, const Char * _message )
+    {
+        sentry_set_extra( "Error Level", sentry_value_new_int32( _level ) );
+        sentry_set_extra( "Error Function", sentry_value_new_string( _file ) );
+        sentry_set_extra( "Error Line", sentry_value_new_int32( _line ) );
+
+        sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Error", _message );
 
         sentry_capture_event( event );
     }

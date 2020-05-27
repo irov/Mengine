@@ -5,6 +5,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Error.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -148,7 +149,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->createProcessDump( processDumpPath.c_str(), nullptr, true );
 
-        LOGGER_ERROR( "Antifreeze monitor detect freeze process for %u seconds, and create dump '%s'!"
+        MENGINE_ERROR_MESSAGE( "Antifreeze monitor detect freeze process for %u seconds, and create dump '%s'"
             , m_seconds
             , processDumpPath.c_str()
         );

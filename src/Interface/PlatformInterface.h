@@ -138,6 +138,7 @@ namespace Mengine
 
     public:
         virtual void abort() = 0;
+        virtual void debugBreak() = 0;
 
     public:
         virtual UnknownPointer getPlatformExtention() = 0;

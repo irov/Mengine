@@ -146,6 +146,7 @@ namespace Mengine
     public:
         void sleep( uint32_t _ms ) override;
         void abort() override;
+        void debugBreak() override;
 
     public:
         UnknownPointer getPlatformExtention() override;

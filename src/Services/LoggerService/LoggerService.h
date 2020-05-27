@@ -50,11 +50,15 @@ namespace Mengine
         void writeHistory( const LoggerInterfacePtr & _logger ) const override;
 
     public:
+        void writeErrors( const LambdaErrors & _lambda ) const override;
+
+    public:
         bool registerLogger( const LoggerInterfacePtr & _logger ) override;
         bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
     protected:
         void logHistory_( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size );
+        void logErrors_( const Char * _message, size_t _size );
 
     protected:
         DateTimeProviderInterfacePtr m_dateTimeProvider;
@@ -66,7 +70,7 @@ namespace Mengine
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
 
-        ThreadMutexInterfacePtr m_threadMutex;
+        ThreadMutexInterfacePtr m_mutex;
 
         uint32_t m_countMessage[LM_MAX];
 
@@ -82,5 +86,8 @@ namespace Mengine
 
         typedef Vector<Record> VectorHistory;
         VectorHistory m_history;
+
+        typedef Vector<String> VectorErrors;
+        VectorErrors m_errors;
     };
 }

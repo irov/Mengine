@@ -1,6 +1,7 @@
 #include "RenderTexture.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -21,6 +22,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::initialize( uint32_t _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
     {
+        MENGINE_ASSERTION_FATAL( _image != nullptr );
+        MENGINE_ASSERTION_FATAL( _width != 0 );
+        MENGINE_ASSERTION_FATAL( _height != 0 );
+
         m_id = _id;
 
         m_image = _image;

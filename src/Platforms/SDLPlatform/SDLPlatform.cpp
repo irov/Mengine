@@ -1483,6 +1483,16 @@ namespace Mengine
         ::abort();
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::debugBreak()
+    {
+#ifdef MENGINE_PLATFORM_WINDOWS
+        if( ::IsDebuggerPresent() == TRUE )
+        {
+            ::DebugBreak();
+        }
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
     UnknownPointer SDLPlatform::getPlatformExtention()
     {
         return this;

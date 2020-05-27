@@ -2761,6 +2761,14 @@ namespace Mengine
         ::abort();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::debugBreak()
+    {
+        if( ::IsDebuggerPresent() == TRUE )
+        {
+            ::DebugBreak();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32Platform::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "load dynamic library '%s'"

@@ -138,6 +138,7 @@ namespace Mengine
         bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) override;
         bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) override;
         void abort() override;
+        void debugBreak() override;
 
     protected:
         bool setProcessDPIAware() override;

@@ -5,9 +5,11 @@
 
 #include "Kernel/ThreadJob.h"
 #include "Kernel/Factorable.h"
-
-#include "Config/Typedef.h"
 #include "Kernel/String.h"
+
+#include "Config/Atomic.h"
+#include "Config/Typedef.h"
+
 
 namespace Mengine
 {
@@ -38,7 +40,7 @@ namespace Mengine
         uint32_t m_seconds;
         uint32_t m_workerId;
 
-        uint32_t m_refalive;
+        Atomic<uint32_t> m_refalive;
         uint32_t m_oldrefalive;
     };
     //////////////////////////////////////////////////////////////////////////

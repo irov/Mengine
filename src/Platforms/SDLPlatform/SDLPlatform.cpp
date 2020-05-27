@@ -1586,6 +1586,7 @@ namespace Mengine
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
         windowFlags |= SDL_WINDOW_FULLSCREEN;
+        windowFlags |= SDL_WINDOW_BORDERLESS;
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );

@@ -33,13 +33,13 @@ namespace Mengine
     static bool s_writeBin( const WString & _protocolPath, const WString & _xmlPath, const WString & _binPath )
     {
         String utf8_protocolPath;
-        Helper::unicodeToUtf8( _protocolPath, utf8_protocolPath );
+        Helper::unicodeToUtf8( _protocolPath, &utf8_protocolPath );
 
         String utf8_xmlPath;
-        Helper::unicodeToUtf8( _xmlPath, utf8_xmlPath );
+        Helper::unicodeToUtf8( _xmlPath, &utf8_xmlPath );
 
         String utf8_binPath;
-        Helper::unicodeToUtf8( _binPath, utf8_binPath );
+        Helper::unicodeToUtf8( _binPath, &utf8_binPath );
 
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );

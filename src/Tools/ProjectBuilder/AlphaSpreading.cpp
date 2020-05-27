@@ -29,10 +29,10 @@ namespace Mengine
         LOGGER_INFO( "spreadingPngAlpha\n" );
 
         String utf8_inputFileName;
-        Helper::unicodeToUtf8( pngPathIn, utf8_inputFileName );
+        Helper::unicodeToUtf8( pngPathIn, &utf8_inputFileName );
 
         String utf8_outputFileName;
-        Helper::unicodeToUtf8( pngPathOut, utf8_outputFileName );
+        Helper::unicodeToUtf8( pngPathOut, &utf8_outputFileName );
 
         FilePath inputFileName = Helper::stringizeFilePath( utf8_inputFileName );
         FilePath outputFileName = Helper::stringizeFilePath( utf8_outputFileName );

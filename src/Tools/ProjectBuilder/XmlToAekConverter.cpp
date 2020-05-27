@@ -34,13 +34,13 @@ namespace Mengine
     static bool s_writeAek( const WString & _protocolPath, const WString & _xmlPath, const WString & _aekPath )
     {
         String utf8_protocolPath;
-        Helper::unicodeToUtf8( _protocolPath, utf8_protocolPath );
+        Helper::unicodeToUtf8( _protocolPath, &utf8_protocolPath );
 
         String utf8_xmlPath;
-        Helper::unicodeToUtf8( _xmlPath, utf8_xmlPath );
+        Helper::unicodeToUtf8( _xmlPath, &utf8_xmlPath );
 
         String utf8_aekPath;
-        Helper::unicodeToUtf8( _aekPath, utf8_aekPath );
+        Helper::unicodeToUtf8( _aekPath, &utf8_aekPath );
 
         FilePath fp_protocolPath = Helper::stringizeFilePath( utf8_protocolPath );
 

@@ -8,6 +8,7 @@ namespace Mengine
 {
     namespace Detail
     {
+#ifdef MENGINE_ASSERTION_DEBUG
         //////////////////////////////////////////////////////////////////////////
         static const ConstString & getHierarchyReceiverName( const Hierarchy * _hierarchy )
         {
@@ -22,6 +23,7 @@ namespace Mengine
 
             return name;
         }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     Hierarchy::Hierarchy()

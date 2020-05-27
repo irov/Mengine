@@ -6,10 +6,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Hashtable2.h"
 
-#ifndef MENGINE_MASTER_RELEASE
-#   include "Kernel/Map.h"
-#endif
-
 namespace Mengine
 {
     class VocabularyService

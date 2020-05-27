@@ -20,7 +20,7 @@ src
     Typedef.h
     Atomic.h
     Lambda.h
-    Define.h
+    Defines.h
     Config.h
     Export.h
     Abs.h

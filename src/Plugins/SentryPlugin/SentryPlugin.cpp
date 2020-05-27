@@ -93,7 +93,7 @@ namespace Mengine
 
         sentry_options_set_dsn( options, sentryDSN );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
-        sentry_options_set_debug( options, MENGINE_MASTER_VALUE( 0, 1 ) );
+        sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 0, 1 ) );
 
         sentry_options_set_release( options, MENGINE_BUILD_VERSION );
 
@@ -223,6 +223,14 @@ namespace Mengine
         );
 
         sentry_set_extra( "Master", sentry_value_new_bool( masterMode ) );
+
+        bool publishMode = MENGINE_PUBLISH_VALUE( true, false );
+
+        LOGGER_MESSAGE( "Sentry set extra [Publish: %d]"
+            , publishMode
+        );
+
+        sentry_set_extra( "Publish", sentry_value_new_bool( publishMode ) );
 
         const Char * GIT_SHA1 = MENGINE_GIT_SHA1;
 

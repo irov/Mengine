@@ -49,7 +49,14 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                if( Detail::s_hasValueString2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, _value ) == true )
+#ifdef MENGINE_BUILD_PUBLISH
+                if( Detail::s_hasValueString2( ini, "Publish-", _platform, _section, _key, _value ) == true )
+                {
+                    return true;
+                }
+#endif
+
+                if( Detail::s_hasValueString2( ini, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value ) == true )
                 {
                     return true;
                 }
@@ -100,7 +107,14 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                if( Detail::s_hasValueT2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, _value ) == true )
+#ifdef MENGINE_BUILD_PUBLISH
+                if( Detail::s_hasValueT2( ini, "Publish-", _platform, _section, _key, _value ) == true )
+                {
+                    return true;
+                }
+#endif
+
+                if( Detail::s_hasValueT2( ini, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value ) == true )
                 {
                     return true;
                 }
@@ -150,7 +164,15 @@ namespace Mengine
             for( const IniUtil::IniStore & ini : _stores )
             {
                 const Char * value;
-                if( Detail::s_getValueString2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, &value ) == true )
+
+#ifdef MENGINE_BUILD_PUBLISH
+                if( Detail::s_getValueString2( ini, "Publish-", _platform, _section, _key, &value ) == true )
+                {
+                    return value;
+                }
+#endif
+
+                if( Detail::s_getValueString2( ini, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, &value ) == true )
                 {
                     return value;
                 }
@@ -203,7 +225,14 @@ namespace Mengine
             {
                 T value;
 
-                if( Detail::s_getValueT2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, &value ) == true )
+#ifdef MENGINE_BUILD_PUBLISH
+                if( Detail::s_getValueT2( ini, "Publish-", _platform, _section, _key, &value ) == true )
+                {
+                    return value;
+                }
+#endif
+
+                if( Detail::s_getValueT2( ini, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, &value ) == true )
                 {
                     return value;
                 }
@@ -254,7 +283,12 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                Detail::s_calcValuesT2( ini, MENGINE_MASTER_VALUE( "Master-", "Develop-" ), _platform, _section, _key, _value );
+#ifdef MENGINE_BUILD_PUBLISH
+                Detail::s_calcValuesT2( ini, "Publish-", _platform, _section, _key, _value );
+#endif
+
+                Detail::s_calcValuesT2( ini, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value );
+               
                 Detail::s_calcValuesT2( ini, "", _platform, _section, _key, _value );
             }
         }

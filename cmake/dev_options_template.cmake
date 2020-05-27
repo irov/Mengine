@@ -1,5 +1,6 @@
 OPTION(MENGINE_BUILD_ONLY_EXECUTABLE_MODULE "Mengine build only executable module" OFF)
 OPTION(MENGINE_BUILD_MENGINE_MASTER_RELEASE "Mengine build master release" OFF)
+OPTION(MENGINE_BUILD_MENGINE_BUILD_PUBLISH "Mengine build publish" OFF)
 OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 OPTION(MENGINE_USE_SCRIPT_SERVICE "Mengine use script" ON)
 OPTION(MENGINE_EXTERNAL_PDB "Mengine external pdb" OFF)

@@ -25,7 +25,7 @@ namespace Mengine
         : m_verboseLevel( LM_ERROR )
         , m_verboseFlag( 0 )
         , m_silent( false )
-        , m_historically( MENGINE_MASTER_VALUE( false, true ) )
+        , m_historically( MENGINE_PUBLISH_VALUE( false, true ) )
     {
         for( uint32_t i = 0; i != LM_MAX; ++i )
         {
@@ -119,10 +119,11 @@ namespace Mengine
         const Char * loggerLevel = loggerLevels[level];
 
         Char loggerLevelMessage[256];
-        size_t loggerLevelMessageLen = MENGINE_SPRINTF( loggerLevelMessage, "start logger with verbose level [%s] Debug [%s] Master [%s]\n"
+        size_t loggerLevelMessageLen = MENGINE_SPRINTF( loggerLevelMessage, "start logger with verbose level [%s] Debug [%s] Master [%s] Publish [%s]\n"
             , loggerLevel
             , MENGINE_DEBUG_VALUE( "True", "False" )
             , MENGINE_MASTER_VALUE( "True", "False" )
+            , MENGINE_PUBLISH_VALUE( "True", "False" )
         );
 
         this->logHistory_( LM_MESSAGE, 0, LCOLOR_GREEN, loggerLevelMessage, loggerLevelMessageLen );

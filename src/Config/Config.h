@@ -86,6 +86,12 @@
 #define MENGINE_MASTER_VALUE(X, Y) (Y)
 #endif
 
+#ifdef MENGINE_BUILD_PUBLISH
+#define MENGINE_PUBLISH_VALUE(X, Y) (X)
+#else
+#define MENGINE_PUBLISH_VALUE(X, Y) (Y)
+#endif
+
 #ifdef MENGINE_DEBUG
 #define MENGINE_DEBUG_ARGUMENTS(...) __VA_ARGS__
 #else

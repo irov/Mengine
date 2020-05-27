@@ -46,7 +46,7 @@ namespace Mengine
             }
         }
 
-#ifndef MENGINE_MASTER_RELEASE
+#ifdef MENGINE_DEBUG
         for( const ResourceBank::HashtableResources::value_type & value : m_resources )
         {
             const ResourcePtr & resource = value.element;

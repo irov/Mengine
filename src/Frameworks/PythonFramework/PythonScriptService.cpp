@@ -421,6 +421,12 @@ namespace Mengine
         this->addGlobalModuleT( "_MASTER_RELEASE", false );
 #endif
 
+#if defined(MENGINE_BUILD_PUBLISH)
+        this->addGlobalModuleT( "_BUILD_PUBLISH", true );
+#else
+        this->addGlobalModuleT( "_BUILD_PUBLISH", false );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

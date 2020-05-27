@@ -123,7 +123,7 @@ namespace Mengine
     static bool trimImage( const WString & in_path, const WString & out_path, const WString & result_path, bool flag_border, bool flag_trim, bool flag_premultiplied )
     {
         String utf8_in;
-        Helper::unicodeToUtf8( in_path, utf8_in );
+        Helper::unicodeToUtf8( in_path, &utf8_in );
 
         FilePath c_in = Helper::stringizeFilePath( utf8_in );
 
@@ -533,7 +533,7 @@ namespace Mengine
             }
 
             String utf8_out;
-            Helper::unicodeToUtf8( out_path, utf8_out );
+            Helper::unicodeToUtf8( out_path, &utf8_out );
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
             

@@ -238,13 +238,13 @@ namespace Mengine
         MENGINE_UNUSED( _params );
 
         String utf8_fromPath;
-        Helper::unicodeToUtf8( _fromPath, utf8_fromPath );
+        Helper::unicodeToUtf8( _fromPath, &utf8_fromPath );
 
         String utf8_toPath;
-        Helper::unicodeToUtf8( _toPath, utf8_toPath );
+        Helper::unicodeToUtf8( _toPath, &utf8_toPath );
 
         String utf8_convertType;
-        Helper::unicodeToUtf8( _convertType, utf8_convertType );
+        Helper::unicodeToUtf8( _convertType, &utf8_convertType );
 
         ConverterOptions options;
 
@@ -304,7 +304,7 @@ namespace Mengine
     static PyObject * isAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
     {
         String utf8_path;
-        if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
+        if( Helper::unicodeToUtf8( _path, &utf8_path ) == false )
         {
             _kernel->error_message( "invalid get utf8 path from '%ls'"
                 , _path
@@ -364,7 +364,7 @@ namespace Mengine
     static PyObject * isUselessAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
     {
         String utf8_path;
-        if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
+        if( Helper::unicodeToUtf8( _path, &utf8_path ) == false )
         {
             LOGGER_ERROR( "isUselessAlphaInImageFile %ls invalid unicodeToUtf8"
                 , _path
@@ -399,7 +399,7 @@ namespace Mengine
     static ImagePtr loadImage( const wchar_t * _path )
     {
         String utf8_path;
-        if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
+        if( Helper::unicodeToUtf8( _path, &utf8_path ) == false )
         {
             return nullptr;
         }
@@ -419,7 +419,7 @@ namespace Mengine
     static bool saveImage( const ImagePtr & _image, const wchar_t * _path )
     {
         String utf8_path;
-        if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
+        if( Helper::unicodeToUtf8( _path, &utf8_path ) == false )
         {
             return false;
         }
@@ -495,7 +495,7 @@ namespace Mengine
     WString pathSHA1( const WChar * _path )
     {
         String utf8_path;
-        if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
+        if( Helper::unicodeToUtf8( _path, &utf8_path ) == false )
         {
             return WString();
         }
@@ -1063,12 +1063,12 @@ bool run()
     PWSTR szModuleName = szArglist[1];
 
     Mengine::String utf8_ModuleName;
-    Mengine::Helper::unicodeToUtf8( szModuleName, utf8_ModuleName );
+    Mengine::Helper::unicodeToUtf8( szModuleName, &utf8_ModuleName );
 
     PWSTR szFunctionName = szArglist[2];
 
     Mengine::String utf8_FunctionName;
-    Mengine::Helper::unicodeToUtf8( szFunctionName, utf8_FunctionName );
+    Mengine::Helper::unicodeToUtf8( szFunctionName, &utf8_FunctionName );
 
     LOGGER_ERROR( "Module '%s' Function '%s'"
         , utf8_ModuleName.c_str()

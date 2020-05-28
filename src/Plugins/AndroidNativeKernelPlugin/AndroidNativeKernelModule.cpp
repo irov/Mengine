@@ -24,7 +24,7 @@ extern "C" {
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
-        jmethodID_getAndroidId = env->GetStaticMethodID( mActivityClass, "getAndroidId", "()Ljava/lang/String;" );
+        jmethodID_getAndroidId = env->GetStaticMethodID( mActivityClass, "kernelGetAndroidId", "()Ljava/lang/String;" );
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

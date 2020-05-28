@@ -3,9 +3,10 @@
 
 #include "Interface/FactoryServiceInterface.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+
 #ifdef MENGINE_DEBUG
 #   include "Interface/NotificationServiceInterface.h"
-#   include "Kernel/Logger.h"
 #endif
 
 namespace Mengine
@@ -53,12 +54,7 @@ namespace Mengine
 
         Factorable * object = this->_createObject();
 
-#ifdef MENGINE_DEBUG
-        if( object == nullptr )
-        {
-            return nullptr;
-        }
-#endif
+        MENGINE_ASSERTION_MEMORY_PANIC( object, nullptr );
 
         ++m_count;
         IntrusivePtrBase::intrusive_ptr_add_ref( this );

@@ -5,6 +5,9 @@ src
     SentryPlugin.h
     SentryPlugin.def
     SentryPlugin.cpp
+    
+    SentryLoggerCapture.h
+    SentryLoggerCapture.cpp
 )
 
 add_definitions(-DSENTRY_BUILD_STATIC)

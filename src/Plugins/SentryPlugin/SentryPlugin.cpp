@@ -6,16 +6,20 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/Logger.h"
+#include "Kernel/UID.h"
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildVersion.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+
+#include "sentry.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
@@ -103,6 +107,15 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ASSERTION, this, &SentryPlugin::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ERROR, this, &SentryPlugin::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
+        SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
+
+        loggerCapture->setVerboseLevel( LM_ERROR );
+
+        LOGGER_SERVICE()
+            ->registerLogger( loggerCapture );
+
+        m_loggerCapture = loggerCapture;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -117,6 +130,11 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
+
+        LOGGER_SERVICE()
+            ->unregisterLogger( m_loggerCapture );
+
+        m_loggerCapture = nullptr;
 
         sentry_shutdown();
     }
@@ -154,6 +172,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::notifyCreateApplication_()
     {
+        sentry_value_t screen = sentry_value_new_object();
+        sentry_value_set_by_key( screen, "width", sentry_value_new_int32( 1920 ) );
+        sentry_value_set_by_key( screen, "height", sentry_value_new_int32( 1080 ) );
+        sentry_set_extra( "screen_size", screen );
+
+
         const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
@@ -258,6 +282,14 @@ namespace Mengine
         if( HAS_OPTION( "sentrycrash" ) == true )
         {
             LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
+
+            LOGGER_ERROR( "!!!test sentry crash!!!" );
+
+            Char message_uid[21];
+            Helper::makeUID( 20, message_uid );
+            message_uid[20] = '\0';
+            LOGGER_ERROR( "uid: %s", message_uid );
+            LOGGER_ERROR( "!!!test sentry crash!!!" );
 
             sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Test", "sentrycrash" );
 

@@ -38,10 +38,6 @@ namespace Mengine
         virtual void writeHistory( const LoggerInterfacePtr & _logger ) const = 0;
 
     public:
-        typedef Lambda<void( const Char * _message )> LambdaErrors;
-        virtual void writeErrors( const LambdaErrors & _lambda ) const = 0;
-
-    public:
         virtual bool registerLogger( const LoggerInterfacePtr & _logger ) = 0;
         virtual bool unregisterLogger( const LoggerInterfacePtr & _logger ) = 0;
     };

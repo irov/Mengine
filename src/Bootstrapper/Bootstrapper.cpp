@@ -226,6 +226,10 @@ PLUGIN_EXPORT( ImGUI );
 PLUGIN_EXPORT( CameraDebugGizmo );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC
+PLUGIN_EXPORT( AndroidNativeKernel );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
@@ -762,6 +766,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( CameraDebugGizmo, "initialize Plugin CameraDebugGizmo...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeKernel, "initialize Android Kernel Native...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -959,9 +967,11 @@ namespace Mengine
             if( MODULE_SERVICE()
                 ->runModule( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "failed to run module '%s'"
+                LOGGER_ERROR( "failed to run module '%s'"
                     , name.c_str()
                 );
+
+                return false;
             }
         }
 

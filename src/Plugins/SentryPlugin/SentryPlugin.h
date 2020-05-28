@@ -2,7 +2,7 @@
 
 #include "Kernel/PluginBase.h"
 
-#include "sentry.h"
+#include "SentryLoggerCapture.h"
 
 namespace Mengine
 {
@@ -25,5 +25,8 @@ namespace Mengine
         void notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message );
         void notifyError_( uint32_t _level, const Char * _file, int32_t _line, const Char * _message );
         void notifyCreateApplication_();
+
+    protected:
+        SentryLoggerCapturePtr m_loggerCapture;
     };
 }

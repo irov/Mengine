@@ -297,16 +297,6 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::def_function_proxy_args( kernel, "androidFacebookSetEventHandler", &Detail::androidFacebookSetEventHandler, this );
-                
-        pybind::def_functor( kernel, "androidFacebookInitialize", this, &AndroidNativeFacebookModule::initializeSDK );
-        pybind::def_functor( kernel, "androidFacebookIsLoggedIn", this, &AndroidNativeFacebookModule::isLoggedIn );
-        pybind::def_functor( kernel, "androidFacebookGetAccessToken", this, &AndroidNativeFacebookModule::getAccessToken );
-        pybind::def_functor( kernel, "androidFacebookPerformLogin", this, &AndroidNativeFacebookModule::performLogin );
-        pybind::def_functor( kernel, "androidFacebookGetUser", this, &AndroidNativeFacebookModule::getUser );
-        pybind::def_functor( kernel, "androidFacebookShareLink", this, &AndroidNativeFacebookModule::shareLink );
-        pybind::def_functor( kernel, "androidFacebookGetProfilePictureLink", this, &AndroidNativeFacebookModule::getProfilePictureLink );
-
         pybind::enum_<EnumFacebookEventHandler>(kernel, "EnumFacebookEventHandler")
                 .def("FACEBOOK_INITIALIZE", FACEBOOK_INITIALIZE)
                 .def("FACEBOOK_LOGIN_SUCCESS", FACEBOOK_LOGIN_SUCCESS)
@@ -317,6 +307,16 @@ namespace Mengine
                 .def("FACEBOOK_USER_FETCH_SUCCESS", FACEBOOK_USER_FETCH_SUCCESS)
                 .def("FACEBOOK_PROFILE_PICTURE_LINK_GET", FACEBOOK_PROFILE_PICTURE_LINK_GET)
                 ;
+
+        pybind::def_function_proxy_args( kernel, "androidFacebookSetEventHandler", &Detail::androidFacebookSetEventHandler, this );
+                
+        pybind::def_functor( kernel, "androidFacebookInitialize", this, &AndroidNativeFacebookModule::initializeSDK );
+        pybind::def_functor( kernel, "androidFacebookIsLoggedIn", this, &AndroidNativeFacebookModule::isLoggedIn );
+        pybind::def_functor( kernel, "androidFacebookGetAccessToken", this, &AndroidNativeFacebookModule::getAccessToken );
+        pybind::def_functor( kernel, "androidFacebookPerformLogin", this, &AndroidNativeFacebookModule::performLogin );
+        pybind::def_functor( kernel, "androidFacebookGetUser", this, &AndroidNativeFacebookModule::getUser );
+        pybind::def_functor( kernel, "androidFacebookShareLink", this, &AndroidNativeFacebookModule::shareLink );
+        pybind::def_functor( kernel, "androidFacebookGetProfilePictureLink", this, &AndroidNativeFacebookModule::getProfilePictureLink );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );

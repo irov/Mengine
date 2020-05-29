@@ -398,6 +398,25 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        pybind::enum_<EnumAdMobEventHandler>( kernel, "EnumAdMobEventHandler" )
+                .def( "ADMOB_INITIALIZE", ADMOB_INITIALIZE )
+                .def( "ADMOB_INTERSTITIALAD_LOADED", ADMOB_INTERSTITIALAD_LOADED )
+                .def( "ADMOB_INTERSTITIALAD_FAILED_TO_LOAD", ADMOB_INTERSTITIALAD_FAILED_TO_LOAD )
+                .def( "ADMOB_INTERSTITIALAD_OPENED", ADMOB_INTERSTITIALAD_OPENED )
+                .def( "ADMOB_INTERSTITIALAD_FAILED_TO_OPENED", ADMOB_INTERSTITIALAD_FAILED_TO_OPENED )
+                .def( "ADMOB_INTERSTITIALAD_LEFT_APPLICATION", ADMOB_INTERSTITIALAD_LEFT_APPLICATION )
+                .def( "ADMOB_INTERSTITIALAD_CLOSED", ADMOB_INTERSTITIALAD_CLOSED )
+                .def( "ADMOB_REWARDEDVIDEOAD_LOADED", ADMOB_REWARDEDVIDEOAD_LOADED )
+                .def( "ADMOB_REWARDEDVIDEOAD_OPENED", ADMOB_REWARDEDVIDEOAD_OPENED )
+                .def( "ADMOB_REWARDEDVIDEOAD_FAILED_TO_OPENED", ADMOB_REWARDEDVIDEOAD_FAILED_TO_OPENED )
+                .def( "ADMOB_REWARDEDVIDEOAD_STARTED", ADMOB_REWARDEDVIDEOAD_STARTED )
+                .def( "ADMOB_REWARDEDVIDEOAD_CLOSED", ADMOB_REWARDEDVIDEOAD_CLOSED )
+                .def( "ADMOB_REWARDEDVIDEOAD_REWARDED", ADMOB_REWARDEDVIDEOAD_REWARDED )
+                .def( "ADMOB_REWARDEDVIDEOAD_LEFT_APPLICATION", ADMOB_REWARDEDVIDEOAD_LEFT_APPLICATION )
+                .def( "ADMOB_REWARDEDVIDEOAD_FAILED_TO_LOAD", ADMOB_REWARDEDVIDEOAD_FAILED_TO_LOAD )
+                .def( "ADMOB_REWARDEDVIDEOAD_COMPLETED", ADMOB_REWARDEDVIDEOAD_COMPLETED )
+                ;
+
         pybind::def_function_proxy_args( kernel, "androidAdMobSetEventHandler", &Detail::androidAdMobSetEventHandler, this );
         pybind::def_functor( kernel, "androidAdMobInitialize", this, &AndroidNativeAdMobModule::initializeSDK );
 

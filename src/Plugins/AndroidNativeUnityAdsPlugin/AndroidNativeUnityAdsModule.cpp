@@ -256,6 +256,16 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        pybind::enum_<EnumUnityAdsEventHandler>( kernel, "EnumUnityAdsEventHandler" )
+                .def( "UNITYADS_INITIALIZE", UNITYADS_INITIALIZE )
+                .def( "UNITYADS_READY", UNITYADS_READY )
+                .def( "UNITYADS_CLICK", UNITYADS_CLICK )
+                .def( "UNITYADS_PLACEMENT_STATE_CHANGED", UNITYADS_PLACEMENT_STATE_CHANGED )
+                .def( "UNITYADS_START", UNITYADS_START )
+                .def( "UNITYADS_FINISH", UNITYADS_FINISH )
+                .def( "UNITYADS_ERROR", UNITYADS_ERROR )
+                ;
+
         pybind::def_function_proxy_args( kernel, "androidUnitySetAdsEventHandler", &Detail::androidUnitySetAdsEventHandler, this );
 
         pybind::def_functor( kernel, "androidUnityInitialize", this, &AndroidNativeUnityAdsModule::initializeSDK );

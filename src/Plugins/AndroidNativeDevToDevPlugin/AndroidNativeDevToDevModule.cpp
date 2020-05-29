@@ -106,6 +106,10 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        pybind::enum_<EnumDevToDevEventHandler>( kernel, "EnumDevToDevEventHandler" )
+                .def( "DEVTODEV_INITIALIZE", DEVTODEV_INITIALIZE )
+                ;
+
         pybind::def_function_proxy_args( kernel, "androidDevToDevSetEventHandler", &Detail::androidDevToDevSetEventHandler, this );
         pybind::def_functor( kernel, "androidDevToDevInitialize", this, &AndroidNativeDevToDevModule::initializeSDK );
         pybind::def_functor( kernel, "androidDevToDevSetTutorialEvent", this, &AndroidNativeDevToDevModule::onTutorialEvent );

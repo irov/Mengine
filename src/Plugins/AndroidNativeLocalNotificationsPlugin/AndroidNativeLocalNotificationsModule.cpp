@@ -121,6 +121,11 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        pybind::enum_<EnumLocalNotificationsEventHandler>( kernel, "EnumLocalNotificationsEventHandler" )
+                .def( "LOCAL_NOTIFICATIONS_INITIALIZE", LOCAL_NOTIFICATIONS_INITIALIZE )
+                .def( "LOCAL_NOTIFICATIONS_PRESS", LOCAL_NOTIFICATIONS_PRESS )
+                ;
+
         pybind::def_function_proxy_args( kernel, "androidLocalNotificationsSetEventHandler", &Detail::androidLocalNotificationsSetEventHandler, this );
         pybind::def_functor( kernel, "androidInitializeLocalNotifications", this, &AndroidNativeLocalNotificationsModule::initializeLocalNotifications );
 

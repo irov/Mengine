@@ -8,12 +8,13 @@
 #include "Kernel/Factory.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Resolution.h"
+#include "Kernel/LoggerLevel.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
 #ifndef MENGINE_NOTIFICATOR_MAX_COUNT
-#define MENGINE_NOTIFICATOR_MAX_COUNT 64
+#define MENGINE_NOTIFICATOR_MAX_COUNT 256
 #endif
 
 namespace Mengine
@@ -95,6 +96,8 @@ namespace Mengine
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PLUGIN_INITIALIZE, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_PLUGIN_FINALIZE, const Char * );
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_INCREF_FACTORY_GENERATION, uint32_t  );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_LOGGER_BEGIN, ELoggerLevel );
+    MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_LOGGER_END, ELoggerLevel );
     //////////////////////////////////////////////////////////////////////////
 #undef MENGINE_DECLARE_BEGIN
 #undef MENGINE_DECLARE_NOTIFICATOR

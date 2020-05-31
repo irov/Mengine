@@ -3,6 +3,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -300,6 +301,8 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level );
+
         ++m_countMessage[_level];
 
         for( const LoggerInterfacePtr & logger : m_loggers )
@@ -311,6 +314,8 @@ namespace Mengine
 
             logger->log( _level, _flag, _color, _message, _size );
         }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level );
 
         this->logHistory_( _level, _flag, _color, _message, _size );
     }

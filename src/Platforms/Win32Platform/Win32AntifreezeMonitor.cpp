@@ -3,6 +3,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -24,6 +25,7 @@ namespace Mengine
         : m_seconds( 0 )
         , m_workerId( 0 )
         , m_refalive( 0 )
+        , m_reflogger( 0 )
         , m_oldrefalive( 0 )
     {
     }
@@ -73,6 +75,9 @@ namespace Mengine
 
         m_dateTimeProvider = dateTimeProvider;
 
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_BEGIN, this, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_END, this, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -86,6 +91,9 @@ namespace Mengine
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
+
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_BEGIN );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_END );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
@@ -111,6 +119,11 @@ namespace Mengine
         }
 
         if( oldrefalive != m_refalive )
+        {
+            return true;
+        }
+
+        if( m_reflogger != 0 )
         {
             return true;
         }
@@ -162,5 +175,19 @@ namespace Mengine
         MENGINE_UNUSED( _id );
 
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level )
+    {
+        MENGINE_UNUSED( _level );
+
+        ++m_reflogger;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::notifyLoggerEnd( ELoggerLevel _level )
+    {
+        MENGINE_UNUSED( _level );
+
+        --m_reflogger;
     }
 }

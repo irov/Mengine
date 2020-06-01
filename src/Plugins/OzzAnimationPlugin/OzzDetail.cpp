@@ -49,28 +49,6 @@ namespace Mengine
 
             return vertex_count;
         }
-        //////////////////////////////////////////////////////////////////////////
-        ScratchBuffer::ScratchBuffer()
-            : m_buffer( nullptr )
-            , m_size( 0 )
-        {
-        }
-        //////////////////////////////////////////////////////////////////////////
-        ScratchBuffer::~ScratchBuffer()
-        {
-            ozz::memory::default_allocator()->Deallocate( m_buffer );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void * ScratchBuffer::Resize( size_t _size )
-        {
-            if( _size > m_size )
-            {
-                m_size = _size;
-                m_buffer = ozz::memory::default_allocator()->Reallocate( m_buffer, _size, 16 );
-            }
-
-            return m_buffer;
-        }
     }
 }
 

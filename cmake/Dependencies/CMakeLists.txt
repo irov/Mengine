@@ -270,12 +270,9 @@ endif()
 #dependencies ozz
 if(MENGINE_DEPENDENCE_OZZ)
 message("================ozz================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ozz/base_io_stream.cc ${THIRDPARTY_DIR}/ozz/src/base/io/stream.cc COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ozz/import2ozz_skel.cc ${THIRDPARTY_DIR}/ozz/src/animation/offline/tools/import2ozz_skel.cc COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ozz/dump2ozz_CMakeLists.txt ${THIRDPARTY_DIR}/ozz/src/animation/offline/tools/CMakeLists.txt COPYONLY)    
-    
     set(ozz_build_tools OFF CACHE BOOL "ozz_build_tools" FORCE)
     set(ozz_build_fbx OFF CACHE BOOL "ozz_build_fbx" FORCE)
+    set(ozz_build_gltf OFF CACHE BOOL "ozz_build_gltf" FORCE)
     set(ozz_build_data OFF CACHE BOOL "ozz_build_data" FORCE)
     set(ozz_build_samples OFF CACHE BOOL "ozz_build_samples" FORCE)
     set(ozz_build_howtos OFF CACHE BOOL "ozz_build_howtos" FORCE)

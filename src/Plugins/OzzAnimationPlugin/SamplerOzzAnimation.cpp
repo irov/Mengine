@@ -13,8 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SamplerOzzAnimation::SamplerOzzAnimation()
-        : m_cache( nullptr )
-        , m_weight( 1.f )
+        : m_weight( 1.f )
         , m_time( 0.f )
     {
     }
@@ -53,7 +52,7 @@ namespace Mengine
         return m_weight;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ozz::Range<ozz::math::SoaTransform> & SamplerOzzAnimation::getLocals() const
+    const ozz::vector<ozz::math::SoaTransform> & SamplerOzzAnimation::getLocals() const
     {
         return m_locals;
     }
@@ -96,10 +95,8 @@ namespace Mengine
         int32_t num_soa_joints = skeleton.num_soa_joints();
         int32_t num_joints = skeleton.num_joints();
 
-        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
-
-        m_locals = Detail::AllocateRange<ozz::math::SoaTransform>( allocator, num_soa_joints );
-        m_cache = OZZ_NEW( allocator, ozz::animation::SamplingCache )(num_joints);
+        m_locals.resize( num_soa_joints );
+        m_cache.Resize( num_joints );
 
         this->updateAnimation_();
 
@@ -108,10 +105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::_release()
     {
-        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
-
-        Detail::DeallocateRange( allocator, m_locals );
-        OZZ_DELETE( allocator, m_cache );
+        m_locals.clear();
 
         m_resourceOzzAnimation->release();
         m_resourceOzzSkeleton->release();
@@ -160,15 +154,15 @@ namespace Mengine
         // Setup sampling job.
         ozz::animation::SamplingJob sampling_job;
         sampling_job.animation = &ozz_animation;
-        sampling_job.cache = m_cache;
+        sampling_job.cache = &m_cache;
 
         float duration = ozz_animation.duration() * 1000.f;
         float ratio = m_time / duration;
         sampling_job.ratio = ratio;
-        sampling_job.output = m_locals;
+        sampling_job.output = make_span( m_locals );
 
         // Samples animation.
-        if( !sampling_job.Run() )
+        if( sampling_job.Run() == false )
         {
             return;
         }

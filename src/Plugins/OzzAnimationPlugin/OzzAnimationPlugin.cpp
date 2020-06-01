@@ -55,19 +55,19 @@ namespace Mengine
         {
             // Allocates enough memory to store the header + required alignment space.
             const size_t to_allocate = _size + sizeof( Header ) + _alignment - 1;
-            char * unaligned = reinterpret_cast<char *>(ALLOCATOR_SERVICE()
-                ->malloc( to_allocate, "ozz" ));
+            char * unaligned = reinterpret_cast<char *>(Helper::allocateMemory( to_allocate, "ozz" ));
             if( !unaligned )
             {
-                return NULL;
+                return nullptr;
             }
-            char * aligned = ozz::math::Align( unaligned + sizeof( Header ), _alignment );
+            char * aligned = ozz::Align( unaligned + sizeof( Header ), _alignment );
             assert( aligned + _size <= unaligned + to_allocate );  // Don't overrun.
             // Set the header
             Header * header = reinterpret_cast<Header *>(aligned - sizeof( Header ));
             assert( reinterpret_cast<char *>(header) >= unaligned );
             header->unaligned = unaligned;
             header->size = _size;
+            // Allocation's succeeded.
             return aligned;
         }
 
@@ -77,24 +77,9 @@ namespace Mengine
             {
                 Header * header = reinterpret_cast<Header *>(
                     reinterpret_cast<char *>(_block) - sizeof( Header ));
-                ALLOCATOR_SERVICE()
-                    ->free( header->unaligned, "ozz" );
+                Helper::deallocateMemory( header->unaligned, "ozz" );
+                // Deallocation completed.
             }
-        }
-
-        void * Reallocate( void * _block, size_t _size, size_t _alignment ) override
-        {
-            void * new_block = this->Allocate( _size, _alignment );
-            // Copies and deallocate the old memory block.
-            if( _block )
-            {
-                Header * old_header = reinterpret_cast<Header *>(
-                    reinterpret_cast<char *>(_block) - sizeof( Header ));
-                MENGINE_MEMCPY( new_block, _block, old_header->size );
-                ALLOCATOR_SERVICE()
-                    ->free( old_header->unaligned, "ozz" );
-            }
-            return new_block;
         }
     };
     //////////////////////////////////////////////////////////////////////////

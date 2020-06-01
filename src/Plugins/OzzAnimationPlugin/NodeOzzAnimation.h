@@ -83,12 +83,12 @@ namespace Mengine
         typedef Vector<SamplerOzzAnimationPtr> VectorSamplerOzzAnimations;
         VectorSamplerOzzAnimations m_samplerOzzAnimations;
 
-        ozz::Range<ozz::math::SoaTransform> m_blendedLocals;
+        ozz::vector<ozz::math::SoaTransform> m_blendedLocals;
 
-        ozz::Range<ozz::math::Float4x4> m_models;
-        ozz::Range<ozz::math::Float4x4> m_skinningMatrices;
+        ozz::vector<ozz::math::Float4x4> m_models;
+        ozz::vector<ozz::math::Float4x4> m_skinningMatrices;
 
-        ozz::Range<ozz::math::SimdFloat4> m_upperBodyJointWeights;
+        ozz::vector<ozz::math::SimdFloat4> m_upperBodyJointWeights;
 
         int32_t m_upperBodyRoot;
 

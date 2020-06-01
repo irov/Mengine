@@ -6,6 +6,7 @@
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseEventation.h"
 
+#include "OzzDetail.h"
 #include "ResourceOzzAnimation.h"
 #include "ResourceOzzSkeleton.h"
 
@@ -37,7 +38,7 @@ namespace Mengine
         float getWeight() const override;
 
     public:
-        const ozz::Range<ozz::math::SoaTransform> & getLocals() const;
+        const ozz::vector<ozz::math::SoaTransform> & getLocals() const;
 
     public:
         void update( const UpdateContext * _context ) override;
@@ -66,8 +67,8 @@ namespace Mengine
         ResourceOzzAnimationPtr m_resourceOzzAnimation;
         ResourceOzzSkeletonPtr m_resourceOzzSkeleton;
 
-        ozz::animation::SamplingCache * m_cache;
-        ozz::Range<ozz::math::SoaTransform> m_locals;
+        ozz::animation::SamplingCache m_cache;
+        ozz::vector<ozz::math::SoaTransform> m_locals;
 
         float m_weight;
         float m_time;

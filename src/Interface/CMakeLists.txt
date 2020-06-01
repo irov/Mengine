@@ -31,7 +31,7 @@ src
     MemoryServiceInterface.h
     PlatformInterface.h
     Win32PlatformExtensionInterface.h
-    SDLPlatformExtensionInterface
+    SDLPlatformExtensionInterface.h
     ImageCodecInterface.h
     PickCodecInterface.h
     SoundCodecInterface.h
@@ -87,7 +87,7 @@ src
     FactoryServiceInterface.h
     ResourceServiceInterface.h
     UnicodeSystemInterface.h
-    NotificatorInterface.h    
+    NotificatorInterface.h
     LoadableInterface.h
     LoaderInterface.h
     LoaderServiceInterface.h
@@ -117,7 +117,7 @@ src
     ResourceBankInterface.h
     SettingInterface.h
     SettingsServiceInterface.h
-    DocumentServiceInterface.h    
+    DocumentServiceInterface.h
     ComponentServiceInterface.h
     ComponentHubInterface.h
     ComponentInterface.h
@@ -186,9 +186,4 @@ Render
     RenderPipelineInterface.h
 )
 
-ADD_FILTER(
-dummy
-    dummy.cpp
-)
-
-ADD_MENGINE_LIBRARY()
+ADD_MENGINE_INTERFACE()

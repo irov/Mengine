@@ -5,9 +5,4 @@ src
     OpenGLRenderIncluder.h
 )
 
-ADD_FILTER(
-dummy
-    dummy.cpp
-)
-
-ADD_MENGINE_LIBRARY(Environment)
+ADD_MENGINE_INTERFACE(Environment)

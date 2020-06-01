@@ -205,20 +205,18 @@ namespace Mengine
             return false;
         }
 
-        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
-
         const ozz::animation::Skeleton & skeleton = m_resourceSkeleton->getOzzSkeleton();
 
         int32_t num_soa_joints = skeleton.num_soa_joints();
         int32_t num_joints = skeleton.num_joints();
 
-        m_models = Detail::AllocateRange<ozz::math::Float4x4>( allocator, num_joints );
-        m_skinningMatrices = Detail::AllocateRange<ozz::math::Float4x4>( allocator, num_joints );
-        m_upperBodyJointWeights = Detail::AllocateRange<ozz::math::SimdFloat4>( allocator, num_soa_joints );
-        m_blendedLocals = Detail::AllocateRange<ozz::math::SoaTransform>( allocator, num_soa_joints );
+        m_models.resize( num_joints );
+        m_skinningMatrices.resize( num_joints );
+        m_upperBodyJointWeights.resize( num_soa_joints );
+        m_blendedLocals.resize( num_soa_joints );
 
         // Finds the "Spine1" joint in the joint hierarchy.
-        const ozz::Range<const char * const> & joint_names = skeleton.joint_names();
+        const ozz::span<const char * const> & joint_names = skeleton.joint_names();
 
         for( int32_t i = 0; i < num_joints; ++i )
         {
@@ -296,12 +294,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::_release()
     {
-        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
-
-        Detail::DeallocateRange( allocator, m_models );
-        Detail::DeallocateRange( allocator, m_skinningMatrices );
-        Detail::DeallocateRange( allocator, m_upperBodyJointWeights );
-        Detail::DeallocateRange( allocator, m_blendedLocals );
+        m_models.clear();
+        m_skinningMatrices.clear();
+        m_upperBodyJointWeights.clear();
+        m_blendedLocals.clear();
 
         m_vertexMemory = nullptr;
         
@@ -353,8 +349,11 @@ namespace Mengine
                 continue;
             }
 
-            layers[layers_iterator].transform = sampler->getLocals();
-            layers[layers_iterator].weight = sampler->getWeight();
+            const ozz::vector<ozz::math::SoaTransform> & locals = sampler->getLocals();
+            float weight = sampler->getWeight();
+
+            layers[layers_iterator].transform = make_span( locals );
+            layers[layers_iterator].weight = weight;
 
             layers_iterator++;
         }
@@ -365,9 +364,9 @@ namespace Mengine
 
         ozz::animation::BlendingJob blend_job;
         blend_job.threshold = threshold;
-        blend_job.layers = ozz::Range<ozz::animation::BlendingJob::Layer>( layers, layers_iterator );
+        blend_job.layers = layers;
         blend_job.bind_pose = ozz_skeleton.joint_bind_poses();
-        blend_job.output = m_blendedLocals;
+        blend_job.output = make_span( m_blendedLocals );
 
         // Blends.
         if( !blend_job.Run() )
@@ -378,8 +377,8 @@ namespace Mengine
         // Setup local-to-model conversion job.
         ozz::animation::LocalToModelJob ltm_job;
         ltm_job.skeleton = &ozz_skeleton;
-        ltm_job.input = m_blendedLocals;
-        ltm_job.output = m_models;
+        ltm_job.input = make_span( m_blendedLocals );
+        ltm_job.output = make_span( m_models );
 
         // Run ltm job.
         if( !ltm_job.Run() )
@@ -438,30 +437,33 @@ namespace Mengine
 
             // Setup skinning matrices, that came from the animation stage before being
             // multiplied by inverse model-space bind-pose.
-            skinning_job.joint_matrices = m_skinningMatrices;
+            skinning_job.joint_matrices = make_span( m_skinningMatrices );
 
             // Setup joint's indices.
-            skinning_job.joint_indices = ozz::make_range( part.joint_indices );
+            skinning_job.joint_indices = make_span( part.joint_indices );
             skinning_job.joint_indices_stride = sizeof( uint16_t ) * part_influences_count;
 
             // Setup joint's weights.
             if( part_influences_count > 1 )
             {
-                skinning_job.joint_weights = ozz::make_range( part.joint_weights );
+                skinning_job.joint_weights = make_span( part.joint_weights );
                 skinning_job.joint_weights_stride = sizeof( float ) * (part_influences_count - 1);
             }
 
             // Setup input positions, coming from the loaded mesh.
-            skinning_job.in_positions = ozz::make_range( part.positions );
+            skinning_job.in_positions = make_span( part.positions );
             skinning_job.in_positions_stride = sizeof( float ) * Detail::Part::kPositionsCpnts;
 
             // Setup output positions, coming from the rendering output mesh buffers.
             // We need to offset the buffer every loop.
-            skinning_job.out_positions.begin = reinterpret_cast<float *>(
+            float * out_positions_begin = reinterpret_cast<float *>(
                 ozz::PointerStride( vbo_map, ozz_positions_offset + processed_vertex_count *
                     ozz_vertex_stride ));
-            skinning_job.out_positions.end = ozz::PointerStride(
-                skinning_job.out_positions.begin, part_vertex_count * ozz_vertex_stride );
+
+            float * out_positions_end = ozz::PointerStride(
+                out_positions_begin, part_vertex_count * ozz_vertex_stride );
+
+            skinning_job.out_positions = {out_positions_begin, out_positions_end};
             skinning_job.out_positions_stride = ozz_vertex_stride;
 
             // Setup normals if input are provided.

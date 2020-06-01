@@ -7,28 +7,12 @@
 #include "ozz/base/maths/simd_math.h"
 #include "ozz/base/maths/simd_math_archive.h"
 #include "ozz/animation/runtime/skeleton.h"
-#include "ozz/base/containers/std_allocator.h"
+#include "ozz/base/containers/vector.h"
 
 namespace Mengine
 {
     namespace Detail
     {
-        template<class T>
-        ozz::Range<T> AllocateRange( ozz::memory::Allocator * _allocator, int32_t _num )
-        {
-            void * memory = _allocator->Allocate( sizeof( T ) * _num, OZZ_ALIGN_OF( T ) );
-            T * t = reinterpret_cast<T *>(memory);
-            
-            return ozz::Range<T>( t, t + _num );
-        }
-
-        template<class T>
-        void DeallocateRange( ozz::memory::Allocator * _allocator, ozz::Range<T> & _range )
-        {
-            OZZ_DELETE( _allocator, _range.begin );
-            _range.Clear();
-        }
-
         const size_t ozz_normals_size = sizeof( float ) * 3;
         const size_t ozz_tangents_size = sizeof( float ) * 6;
         const size_t ozz_positions_size = sizeof( float ) * 9;
@@ -39,80 +23,64 @@ namespace Mengine
 
         struct Part
         {
-            typedef Vector<float> VectorPositions;
+            typedef ozz::vector<float> VectorPositions;
             VectorPositions positions;
             enum
             {
                 kPositionsCpnts = 3
             };  // x, y, z components
 
-            typedef Vector<float> VectorNormals;
+            typedef ozz::vector<float> VectorNormals;
             VectorNormals normals;
             enum
             {
                 kNormalsCpnts = 3
             };  // x, y, z components
 
-            typedef Vector<float> VectorTangents;
+            typedef ozz::vector<float> VectorTangents;
             VectorTangents tangents;
             enum
             {
                 kTangentsCpnts = 4
             };  // x, y, z, right or left handed.
 
-            typedef Vector<float> VectorUVs;
+            typedef ozz::vector<float> VectorUVs;
             VectorUVs uvs;  // u, v components
             enum
             {
                 kUVsCpnts = 2
             };
 
-            typedef Vector<uint8_t> VectorColors;
+            typedef ozz::vector<uint8_t> VectorColors;
             VectorColors colors;
             enum
             {
                 kColorsCpnts = 4
             };  // r, g, b, a components
 
-            typedef Vector<uint16_t> VectorJointIndices;
+            typedef ozz::vector<uint16_t> VectorJointIndices;
             VectorJointIndices joint_indices;  // Stride equals influences_count
 
-            typedef Vector<float> VectorJointWeights;
+            typedef ozz::vector<float> VectorJointWeights;
             VectorJointWeights joint_weights;  // Stride equals influences_count - 1
         };
 
         struct Mesh
         {
-            typedef Vector<Part> VectorParts;
+            typedef ozz::vector<Part> VectorParts;
             VectorParts parts;
 
             // Triangles indices. Indices are shared across all parts.
-            typedef Vector<uint16_t> VectorTriangleIndices;
+            typedef ozz::vector<uint16_t> VectorTriangleIndices;
             VectorTriangleIndices triangle_indices;
 
-            typedef Vector<uint16_t> VectorJointRemaps;
+            typedef ozz::vector<uint16_t> VectorJointRemaps;
             VectorJointRemaps joint_remaps;
 
             // Inverse bind-pose matrices. These are only available for skinned meshes.
-            typedef ozz::StdAllocator<ozz::math::Float4x4> OzzAllocatorFloat4x4;
-            typedef Vector<ozz::math::Float4x4, OzzAllocatorFloat4x4> VectorInversBindPoses;
+            typedef ozz::vector<ozz::math::Float4x4> VectorInversBindPoses;
             VectorInversBindPoses inverse_bind_poses;
         };
-
-        class ScratchBuffer
-        {
-        public:
-            ScratchBuffer();
-            ~ScratchBuffer();
-
-            // Resizes the buffer to the new size and return the memory address.
-            void * Resize( size_t _size );
-
-        private:
-            void * m_buffer;
-            size_t m_size;
-        };
-
 
         uint32_t getPartVertexCount( const Part & _part );
         uint32_t getPartInfluencesCount( const Part & _part );

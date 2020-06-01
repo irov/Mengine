@@ -208,6 +208,41 @@ MACRO(ADD_PRECOMPILED_HEADER)
   ENDIF()
 ENDMACRO()
 
+MACRO(ADD_MENGINE_INTERFACE)
+    ADD_LIBRARY(${PROJECT_NAME} INTERFACE)
+    
+    add_custom_target(${PROJECT_NAME}.headers SOURCES ${SRC_FILES})
+    
+    set(extra_macro_args ${ARGN})
+    list(LENGTH extra_macro_args num_extra_args)
+    
+    set(USE_SUBFOLDER ON)
+    if(${num_extra_args} EQUAL 1)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+    elseif(${num_extra_args} EQUAL 2)
+        list(GET extra_macro_args 0 FILTER_FOLDER)
+        list(GET extra_macro_args 1 USE_SUBFOLDER)
+    endif()
+
+    if(MENGINE_USE_SUBFOLDER AND USE_SUBFOLDER)
+        if(${num_extra_args} GREATER 0)
+            set_target_properties (${PROJECT_NAME}.headers PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
+            )
+        else()
+            set_target_properties (${PROJECT_NAME}.headers PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}
+            )
+        endif()
+    else()
+        if(${num_extra_args} GREATER 0)
+            set_target_properties (${PROJECT_NAME}.headers PROPERTIES
+                FOLDER ${FILTER_FOLDER}
+            )
+        endif()
+    endif()
+ENDMACRO()
+
 MACRO(ADD_MENGINE_LIBRARY)
 	ADD_PRECOMPILED_HEADER()
     

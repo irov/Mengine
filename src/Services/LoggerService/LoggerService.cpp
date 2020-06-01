@@ -301,7 +301,10 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level );
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level );
+        }
 
         ++m_countMessage[_level];
 
@@ -315,7 +318,10 @@ namespace Mengine
             logger->log( _level, _flag, _color, _message, _size );
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level );
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level );
+        }
 
         this->logHistory_( _level, _flag, _color, _message, _size );
     }

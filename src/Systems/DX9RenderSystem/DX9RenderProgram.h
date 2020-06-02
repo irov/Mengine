@@ -1,12 +1,15 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderProgramInterface.h"
 
 #include "DX9RenderVertexShader.h"
 #include "DX9RenderFragmentShader.h"
 #include "DX9RenderVertexAttribute.h"
 
 #include "d3d9.h"
+
+#include "math/uv4.h"
+#include "math/mat4.h"
 
 namespace Mengine
 {
@@ -28,6 +31,7 @@ namespace Mengine
 
     public:
         bool initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute );
+        void finalize();
 
     public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );
@@ -48,4 +52,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderProgram> DX9RenderProgramPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

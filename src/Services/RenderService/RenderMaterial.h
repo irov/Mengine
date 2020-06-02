@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderMaterialInterface.h"
 
 #include "stdex/intrusive_linked.h"
 

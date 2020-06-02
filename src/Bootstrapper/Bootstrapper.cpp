@@ -57,6 +57,7 @@ SERVICE_EXTERN( SettingsService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( ThreadSystem );
+SERVICE_EXTERN( MockupRenderSystem );
 SERVICE_EXTERN( RenderSystem );
 SERVICE_EXTERN( SoundService );
 SERVICE_EXTERN( SoundSystem );
@@ -589,15 +590,34 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( RenderSystem, MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_CREATE_SAFE( SoundSystem, MENGINE_DOCUMENT_FACTORABLE );
+        bool norenderMode = HAS_OPTION( "norender" );
+
+        if( norenderMode == true )
+        {
+            SERVICE_CREATE( MockupRenderSystem, MENGINE_DOCUMENT_FACTORABLE );
+        }
+        else
+        {
+            SERVICE_CREATE( RenderSystem, MENGINE_DOCUMENT_FACTORABLE );
+        }
+
+        SERVICE_CREATE( RenderService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( RenderMaterialService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( RenderTextureService, MENGINE_DOCUMENT_FACTORABLE );
 
         bool muteMode = HAS_OPTION( "mute" );
 
-        if( muteMode == true || SERVICE_EXIST( Mengine::SoundSystemInterface ) == false )
+        if( muteMode == true )
         {
             SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
+        }
+        else
+        {
+            if( SERVICE_CREATE_SAFE( SoundSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
+            }
         }
 
         SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
@@ -613,9 +633,6 @@ namespace Mengine
         SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( UpdateService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( RenderService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( RenderMaterialService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( RenderTextureService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( SceneService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( ResourceService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TextService, MENGINE_DOCUMENT_FACTORABLE );

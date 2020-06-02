@@ -1,5 +1,8 @@
 #include "Win32Application.h"
 
+#include "Interface/PlatformInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/GameServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"

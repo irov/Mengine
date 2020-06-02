@@ -2,7 +2,6 @@
 
 #include "TTFInterface.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"

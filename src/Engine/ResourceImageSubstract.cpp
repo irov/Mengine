@@ -1,7 +1,7 @@
 #include "ResourceImageSubstract.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/RenderEnumInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Mixin.h"

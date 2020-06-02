@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderIndexBufferInterface.h"
 
 #include "DX9RenderResourceHandler.h"
 

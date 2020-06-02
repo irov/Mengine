@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
 #include "RenderBatch.h"

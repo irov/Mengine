@@ -1,6 +1,5 @@
 #include "ResourceImageSequence.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 

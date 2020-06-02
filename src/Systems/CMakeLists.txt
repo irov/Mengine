@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY(SilentSoundSystem)
+ADD_SUBDIRECTORY(MockupRenderSystem)
 
 if(MENGINE_PLATFORM_WIN32)
     ADD_SUBDIRECTORY(OpenALSoundSystem)

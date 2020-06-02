@@ -1,0 +1,31 @@
+MENGINE_PROJECT(MockupRenderSystem)
+
+ADD_FILTER(
+src
+    MockupRenderSystem.h
+    MockupRenderSystem.cpp
+    MockupRenderImage.h
+    MockupRenderImage.cpp
+    MockupRenderImageTarget.h
+    MockupRenderImageTarget.cpp
+    MockupRenderTargetTexture.h
+    MockupRenderTargetTexture.cpp
+    MockupRenderTargetOffscreen.h
+    MockupRenderTargetOffscreen.cpp
+    MockupRenderVertexBuffer.h
+    MockupRenderVertexBuffer.cpp
+    MockupRenderVertexAttribute.h
+    MockupRenderVertexAttribute.cpp
+    MockupRenderIndexBuffer.h
+    MockupRenderIndexBuffer.cpp    
+    MockupRenderFragmentShader.h
+    MockupRenderFragmentShader.cpp
+    MockupRenderVertexShader.h
+    MockupRenderVertexShader.cpp
+    MockupRenderProgram.h
+    MockupRenderProgram.cpp
+    MockupRenderProgramVariable.h
+    MockupRenderProgramVariable.cpp
+)
+
+ADD_MENGINE_LIBRARY(Systems)

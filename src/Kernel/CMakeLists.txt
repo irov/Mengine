@@ -485,6 +485,9 @@ Core
     Stream.cpp
     
     Pointer.h
+    
+    Wrapper.h
+    VectorBool.h
 
     ConstString.h
     ConstString.cpp

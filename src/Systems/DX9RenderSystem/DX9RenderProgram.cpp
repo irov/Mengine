@@ -46,6 +46,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgram::finalize()
+    {
+        m_vertexShader = nullptr;
+        m_fragmentShader = nullptr;
+        m_vertexAttribute = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
     {
         MENGINE_UNUSED( _pD3DDevice );

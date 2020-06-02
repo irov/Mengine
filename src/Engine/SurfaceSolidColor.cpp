@@ -1,7 +1,5 @@
 #include "SurfaceSolidColor.h"
 
-#include "Interface/RenderSystemInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"

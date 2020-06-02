@@ -1,7 +1,6 @@
 #include "PickerService.h"
 
 #include "Interface/InputServiceInterface.h"
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 

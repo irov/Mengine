@@ -32,6 +32,7 @@ namespace Mengine
     public:
         void setBuffer( const void * _ptr, size_t _size ) override;
         Pointer newBuffer( size_t _size ) override;
+        void clearBuffer() override;
 
     public:
         MENGINE_INLINE Pointer getBuffer() const override;

@@ -28,6 +28,7 @@ namespace Mengine
     public:
         virtual void setBuffer( const void * _ptr, size_t _size ) = 0;
         virtual Pointer newBuffer( size_t _size ) = 0;
+        virtual void clearBuffer() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryBufferInterface> MemoryBufferInterfacePtr;

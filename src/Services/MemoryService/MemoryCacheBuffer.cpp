@@ -32,6 +32,7 @@ namespace Mengine
         if( m_bufferId != 0 )
         {
             m_memoryManager->unlockBuffer( m_bufferId );
+            m_bufferId = INVALID_CACHE_BUFFER_ID;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -60,5 +61,13 @@ namespace Mengine
         m_size = _size;
 
         return m_data;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MemoryCacheBuffer::clearBuffer()
+    {
+        this->uncache_();
+
+        m_data = nullptr;
+        m_size = 0;
     }
 }

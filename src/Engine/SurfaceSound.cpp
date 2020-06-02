@@ -1,6 +1,5 @@
 #include "SurfaceSound.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 

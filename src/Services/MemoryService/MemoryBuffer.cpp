@@ -45,4 +45,12 @@ namespace Mengine
 
         return m_memory;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void MemoryBuffer::clearBuffer()
+    {
+        Helper::deallocateMemory( m_memory, MENGINE_DOCUMENTABLE_STR( this, "MemoryBuffer" ) );
+
+        m_memory = nullptr;
+        m_size = 0;
+    }
 }

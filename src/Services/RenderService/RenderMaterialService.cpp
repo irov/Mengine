@@ -2,6 +2,7 @@
 
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FactoryPool.h"
@@ -11,8 +12,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
-
-#include "stdex/hash.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderMaterialService, Mengine::RenderMaterialService );

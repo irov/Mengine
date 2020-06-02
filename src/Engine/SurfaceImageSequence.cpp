@@ -1,6 +1,5 @@
 #include "SurfaceImageSequence.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
 #include "ResourceImageSequence.h"

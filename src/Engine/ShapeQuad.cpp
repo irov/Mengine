@@ -1,7 +1,5 @@
 #include "ShapeQuad.h"
 
-#include "Interface/RenderSystemInterface.h"
-
 #include "Kernel/Surface.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"

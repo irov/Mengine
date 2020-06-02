@@ -1458,9 +1458,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
-        bool alreadyRunning = CONFIG_VALUE( "Game", "AlreadyRunning", true );
+        m_windowResolution = _resolution;
 
-        if( alreadyRunning == true )
+        bool Platform_AlreadyRunning = CONFIG_VALUE( "Platform", "AlreadyRunning", true );
+
+        if( Platform_AlreadyRunning == true )
         {
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1473,7 +1475,43 @@ namespace Mengine
             }
         }
 
-        m_windowResolution = _resolution;
+        const Char * option_fps = GET_OPTION_VALUE( "fps", nullptr );
+
+        float activeFrameTimeDefault = 1000.f / 60.f;
+
+        if( option_fps != nullptr )
+        {
+            float fps;
+            if( Helper::stringalized( option_fps, &fps ) == true )
+            {
+                activeFrameTimeDefault = 1000.f / fps;
+            }
+        }
+
+        m_activeFrameTime = CONFIG_VALUE2( "Engine", "MaxActiveFrameTime", activeFrameTimeDefault );
+
+        bool vsync = APPLICATION_SERVICE()
+            ->getVSync();
+
+        bool maxfps = HAS_OPTION( "maxfps" );
+
+        if( maxfps == false && vsync == false )
+        {
+            m_fpsMonitor = Helper::makeFactorableUnique<Win32FPSMonitor>( MENGINE_DOCUMENT_FACTORABLE );
+            m_fpsMonitor->initialize();
+
+            m_fpsMonitor->setActive( true );
+            m_fpsMonitor->setFrameTime( m_activeFrameTime );
+        }
+
+        bool Platform_WithoutWindow = CONFIG_VALUE( "Platform", "WithoutWindow", false );
+
+        if( Platform_WithoutWindow == true || HAS_OPTION( "norender" ) == true )
+        {
+            LOGGER_MESSAGE( "platform without window" );
+
+            return true;
+        }
 
         HBRUSH black_brush = (HBRUSH)::GetStockObject( BLACK_BRUSH );
 
@@ -1486,9 +1524,13 @@ namespace Mengine
             , black_brush
             , MENGINE_WINDOW_CLASSNAME );
 
-        if( result == FALSE )
+        if( result == 0 )
         {
-            LOGGER_ERROR( "Can't register window class" );
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "Can't register window class [error: %u]"
+                , error
+            );
 
             return false;
         }
@@ -1540,35 +1582,6 @@ namespace Mengine
         ::UpdateWindow( m_hWnd );
 
         m_mouseEvent.initialize( m_hWnd );
-
-        const Char * option_fps = GET_OPTION_VALUE( "fps", nullptr );
-
-        float activeFrameTimeDefault = 1000.f / 60.f;
-
-        if( option_fps != nullptr )
-        {
-            float fps;
-            if( Helper::stringalized( option_fps, &fps ) == true )
-            {
-                activeFrameTimeDefault = 1000.f / fps;
-            }
-        }
-
-        m_activeFrameTime = CONFIG_VALUE2( "Engine", "MaxActiveFrameTime", activeFrameTimeDefault );
-
-        bool vsync = APPLICATION_SERVICE()
-            ->getVSync();
-
-        bool maxfps = HAS_OPTION( "maxfps" );
-
-        if( maxfps == false && vsync == false )
-        {
-            m_fpsMonitor = Helper::makeFactorableUnique<Win32FPSMonitor>( MENGINE_DOCUMENT_FACTORABLE );
-            m_fpsMonitor->initialize();
-
-            m_fpsMonitor->setActive( true );
-            m_fpsMonitor->setFrameTime( m_activeFrameTime );
-        }
 
         return true;
     }

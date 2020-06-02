@@ -2,7 +2,7 @@
 
 #include "Interface/CodecServiceInterface.h"
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
 #include "Interface/FileGroupInterface.h"

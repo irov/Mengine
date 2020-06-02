@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
 
 #include "RenderMaterial.h"
 

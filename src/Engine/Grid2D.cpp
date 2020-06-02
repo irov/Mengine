@@ -1,6 +1,5 @@
 #include "Grid2D.h" 
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"

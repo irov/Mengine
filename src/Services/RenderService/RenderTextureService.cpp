@@ -7,6 +7,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"

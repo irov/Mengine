@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
 #include "Kernel/ServiceBase.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderFragmentShaderInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Factorable.h"

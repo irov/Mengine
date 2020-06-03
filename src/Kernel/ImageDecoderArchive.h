@@ -24,7 +24,7 @@ namespace Mengine
 
     protected:
         size_t decodeData_( void * _buffer, size_t _bufferSize ) const;
-        size_t decompressData_( const void * _source, size_t _sourceSize, void * _dest, size_t _capacityDest ) const;
+        size_t decompressData_( const void * _source, size_t _sourceSize, void * const _dest, size_t _capacityDest ) const;
 
     protected:
         ArchivatorInterfacePtr m_archivator;

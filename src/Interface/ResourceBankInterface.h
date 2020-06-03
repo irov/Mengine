@@ -48,10 +48,10 @@ namespace Mengine
         virtual const ConstString & getResourceType( const ConstString & _name ) const = 0;
 
     public:
-        virtual bool hasResource( const ConstString & _name, ResourcePtr * _resource ) const = 0;
+        virtual bool hasResource( const ConstString & _name, ResourcePtr * const _resource ) const = 0;
 
         template<class T>
-        bool hasResourceT( const ConstString & _name, T * _resource ) const
+        bool hasResourceT( const ConstString & _name, T * const _resource ) const
         {
             ResourcePtr resource;
             if( this->hasResource( _name, &resource ) == false )
@@ -76,7 +76,7 @@ namespace Mengine
             return true;
         }
 
-        virtual bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const = 0;
+        virtual bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const = 0;
 
     public:
         typedef Lambda<void( const ResourcePtrView & )> LambdaResourceView;

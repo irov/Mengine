@@ -123,7 +123,7 @@ namespace Mengine
         return m_parentMovie;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::getFrameTime_( float _time, uint32_t * _frame, float * _delthaTime ) const
+    void Movie::getFrameTime_( float _time, uint32_t * const _frame, float * const _delthaTime ) const
     {
         float duration = m_resourceMovie->getDuration();
 
@@ -543,7 +543,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * _node, MoviePtr * _movie )
+    bool Movie::getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * const _node, MoviePtr * const _movie ) const
     {
         if( m_resourceMovie == nullptr )
         {
@@ -599,7 +599,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * _node, MoviePtr * _movie )
+    bool Movie::hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * const _node, MoviePtr * const _movie ) const
     {
         if( m_resourceMovie == nullptr )
         {
@@ -689,7 +689,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::getMovieScissor( const ConstString & _name, RenderScissorPtr * _scissor )
+    bool Movie::getMovieScissor( const ConstString & _name, RenderScissorPtr * const _scissor ) const
     {
         for( const RenderScissorPtr & scissor : m_scissors )
         {
@@ -812,7 +812,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::getEnableMovieLayer( const ConstString & _name, bool * _enable )
+    bool Movie::getEnableMovieLayer( const ConstString & _name, bool * const _enable ) const
     {
         if( m_resourceMovie == nullptr )
         {
@@ -861,7 +861,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * _movie )
+    bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * const _movie ) const
     {
         if( m_resourceMovie == nullptr )
         {

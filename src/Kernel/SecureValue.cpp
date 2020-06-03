@@ -172,7 +172,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::cmpSecureValue( const SecureValuePtr & _value, int32_t * _result ) const
+    bool SecureValue::cmpSecureValue( const SecureValuePtr & _value, int32_t * const _result ) const
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )

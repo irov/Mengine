@@ -338,7 +338,7 @@ namespace Mengine
             *_point = centroid_point;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool triangulate( const Polygon & _polygon, VectorPoints * _result )
+        bool triangulate( const Polygon & _polygon, VectorPoints * const _result )
         {
             /* allocate and initialize list of Vertices in polygon */
             const VectorPoints & polygon_points = _polygon.getPoints();
@@ -431,7 +431,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices * _result )
+        bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices * const _result )
         {
             /* allocate and initialize list of Vertices in polygon */
             const VectorPoints & polygon_points = _polygon.getPoints();
@@ -557,7 +557,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool intersection( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * _out )
+        bool intersection( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * const _out )
         {
             BoostPolygon blhs;
             makeBoostPolygon( &blhs, _lhs );
@@ -587,7 +587,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool difference( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * _out )
+        bool difference( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * const _out )
         {
             BoostPolygon blhs;
             makeBoostPolygon( &blhs, _lhs );

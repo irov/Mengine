@@ -160,7 +160,7 @@ namespace Mengine
 
         MENGINE_INLINE const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font ) const;
 
-        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * _vertexData ) const;
+        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const;
 
     protected:
         void invalidateTextLines() const;
@@ -170,7 +170,7 @@ namespace Mengine
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * _textLines ) const;
-        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
+        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _size, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
 
     public:
         MENGINE_INLINE const TextEntryInterfacePtr & getTotalTextEntry() const;

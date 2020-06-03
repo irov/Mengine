@@ -93,8 +93,8 @@ namespace Mengine
         float getJoystickAxis( uint32_t _index ) const override;
 
     public:
-        size_t getShortPathName( const Char * _path, Char * _short ) const override;
-        size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const override;
+        size_t getShortPathName( const Char * _path, Char * const _short ) const override;
+        size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
         void getMaxClientResolution( Resolution * _resolution ) const override;
@@ -135,8 +135,8 @@ namespace Mengine
 
     protected:
         void sleep( uint32_t _ms ) override;
-        bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) override;
-        bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) override;
+        bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size ) override;
+        bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode ) override;
         void abort() override;
         void debugBreak() override;
 
@@ -145,11 +145,11 @@ namespace Mengine
 
     public:
         bool isDebuggerPresent() const override;
-        bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
+        bool createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full ) override;
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-        bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * _result );
+        bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result );
 
     protected:
         bool calcCursorPosition_( mt::vec2f & _point ) const;
@@ -173,7 +173,7 @@ namespace Mengine
         time_t getFileUnixTime( const FILETIME * filetime ) const override;
 
     protected:
-        bool getErrorMessage( DWORD _messageId, Char * _out, size_t _capacity ) const override;
+        bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const override;
 
     protected:
         HINSTANCE m_hInstance;

@@ -340,7 +340,7 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * _buffer, size_t _size )
+    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _size )
     {
         MENGINE_UNUSED( _size );
 
@@ -648,7 +648,7 @@ namespace Mengine
         return bytes;
     }
     //////////////////////////////////////////////////////////////////////////
-    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float * _pts )
+    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float * const _pts )
     {
         MENGINE_UNUSED( _request );
         MENGINE_UNUSED( _pts );

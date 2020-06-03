@@ -32,7 +32,7 @@ namespace Mengine
         float _tell() const override;
 
     public:
-        EVideoDecoderReadState readNextFrame( float _request, float * _pts ) override;
+        EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) override;
 
     public:
         void setPitch( size_t _pitch ) override;
@@ -57,7 +57,7 @@ namespace Mengine
     private:
         bool readHeader_();
         size_t read_buffer_data_();
-        bool decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * _buffer, size_t _pitch );
+        bool decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _pitch );
         int32_t readFrame_();
     };
 }

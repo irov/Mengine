@@ -16,7 +16,7 @@ namespace Mengine
         }
 
     protected:
-        bool _affect( const UpdateContext * _context, float * _used ) override
+        bool _affect( const UpdateContext * _context, float * const _used ) override
         {
             const EasingInterfacePtr & easing = this->getEasing();
 

@@ -76,7 +76,7 @@ namespace Mengine
         virtual bool setProcessDPIAware() = 0;
 
         virtual bool isDebuggerPresent() const = 0;
-        virtual bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) = 0;
+        virtual bool createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full ) = 0;
 
         virtual size_t getCurrentPath( Char * _filePath ) const = 0;
         virtual size_t getUserPath( Char * _filePath ) const = 0;
@@ -101,7 +101,7 @@ namespace Mengine
         virtual float getJoystickAxis( uint32_t _index ) const = 0;
 
     public:
-        virtual size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const = 0;
+        virtual size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const = 0;
 
     public:
         virtual void getMaxClientResolution( Resolution * _resolution ) const = 0;

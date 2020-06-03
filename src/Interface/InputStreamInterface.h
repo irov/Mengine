@@ -21,7 +21,7 @@ namespace Mengine
         virtual bool time( uint64_t * _time ) const = 0;
 
     public:
-        virtual bool memory( void ** _memory, size_t * _size ) = 0;
+        virtual bool memory( void ** _memory, size_t * const _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<InputStreamInterface> InputStreamInterfacePtr;

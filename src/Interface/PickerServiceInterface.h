@@ -36,8 +36,8 @@ namespace Mengine
         virtual void clear() = 0;
 
     public:
-        virtual bool pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers * _pickers ) = 0;
-        virtual bool getTraps( const mt::vec2f & _point, VectorPickers * _pickers ) = 0;
+        virtual bool pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers * const _pickers ) = 0;
+        virtual bool getTraps( const mt::vec2f & _point, VectorPickers * const _pickers ) = 0;
 
     public:
         virtual void invalidateTraps() = 0;

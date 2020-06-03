@@ -105,7 +105,7 @@ namespace Mengine
         virtual const Viewport & getRenderViewport() const = 0;
 
         virtual const Resolution & getContentResolution() const = 0;
-        virtual void getGameViewport( float * _aspect, Viewport * _viewport ) const = 0;
+        virtual void getGameViewport( float * const _aspect, Viewport * const _viewport ) const = 0;
 
     public:
         virtual bool createRenderWindow() = 0;

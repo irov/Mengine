@@ -27,7 +27,7 @@ namespace Mengine
             return FilePath( c_path );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath * _fullPath )
+        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath * const _fullPath )
         {
             FileGroupInterfacePtr group;
 

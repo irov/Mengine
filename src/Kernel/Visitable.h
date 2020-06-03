@@ -34,7 +34,7 @@ namespace Mengine
         }
 
         template<class T>
-        static bool s_concreteVisitIf( T * _visited, const VisitorPtr & _visitor, bool * _result )
+        static bool s_concreteVisitIf( T * _visited, const VisitorPtr & _visitor, bool * const _result )
         {
             typedef ConcreteVisitorR<T, bool> TConcreteVisitorR;
 

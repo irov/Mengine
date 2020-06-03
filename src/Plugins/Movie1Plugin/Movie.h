@@ -88,20 +88,20 @@ namespace Mengine
         bool visitMovieLayer( const ConstString & _type, const VisitorMovieNodeInterfacePtr & _visitor );
 
     public:
-        bool getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * _node, MoviePtr * _movie );
-        bool hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * _node, MoviePtr * _movie );
+        bool getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * const _node, MoviePtr * const _movie ) const;
+        bool hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * const _node, MoviePtr * const _movie ) const;
 
     public:
-        bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * _movie );
+        bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * const _movie ) const;
         bool hasMovieLayer( const ConstString & _name ) const;
 
     public:
-        bool getMovieScissor( const ConstString & _name, RenderScissorPtr * _scissor );
+        bool getMovieScissor( const ConstString & _name, RenderScissorPtr * const _scissor ) const;
         bool hasMovieScissor( const ConstString & _name );
 
     public:
         bool setEnableMovieLayer( const ConstString & _name, bool _enable );
-        bool getEnableMovieLayer( const ConstString & _name, bool * _enable );
+        bool getEnableMovieLayer( const ConstString & _name, bool * const _enable ) const;
 
     public:
         void setEnableMovieLayers( const ConstString & _name, bool _enable );

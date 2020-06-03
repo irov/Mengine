@@ -56,7 +56,7 @@ namespace Mengine
         void destroyEmitterId( HM_EMITTER _id );
 
     protected:
-        bool loadContainer_( const void * _buffer, size_t _size, HM_FILE * _mf ) const;
+        bool loadContainer_( const void * _buffer, size_t _size, HM_FILE * const _mf ) const;
 
     protected:
         HM_FILE m_mf;

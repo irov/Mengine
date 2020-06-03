@@ -28,7 +28,7 @@ namespace Mengine
 
         bool additive2SecureValue( const SecureValuePtr & _add, const SecureValuePtr & _pow );
 
-        bool cmpSecureValue( const SecureValuePtr & _value, int32_t * _result ) const;
+        bool cmpSecureValue( const SecureValuePtr & _value, int32_t * const _result ) const;
 
     public:
         uint32_t m_value;

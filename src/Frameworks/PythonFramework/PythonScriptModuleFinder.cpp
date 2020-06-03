@@ -156,7 +156,7 @@ namespace Mengine
         return py_code;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptModuleFinder::convertDotToSlash_( pybind::kernel_interface * _kernel, Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t * _modulePathCacheLen )
+    bool PythonScriptModuleFinder::convertDotToSlash_( pybind::kernel_interface * _kernel, Char * const _cache, uint32_t _cacheSize, PyObject * _module, uint32_t * const _modulePathCacheLen )
     {
         uint32_t module_size;
         const char * module_str = _kernel->string_to_char_and_size( _module, module_size );

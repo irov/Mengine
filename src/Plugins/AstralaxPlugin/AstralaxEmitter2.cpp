@@ -553,7 +553,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush * _flush )
+    bool AstralaxEmitter2::flushParticles( AstralaxMesh * const _meshes, uint32_t _meshLimit, RenderVertex2D * const _vertices, RenderIndex * const _indices, AstralaxEmitterRenderFlush * const _flush )
     {
         for( uint32_t i = 0; i != _flush->arrays; ++i )
         {

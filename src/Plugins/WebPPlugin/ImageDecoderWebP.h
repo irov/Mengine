@@ -25,6 +25,6 @@ namespace Mengine
         size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
     protected:
-        bool decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * _buffer, size_t _bufferSize );
+        bool decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * const _buffer, size_t _bufferSize );
     };
 }

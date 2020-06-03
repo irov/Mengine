@@ -24,7 +24,7 @@ namespace Mengine
             ValueAccumulator<T>::m_started = true;
         }
 
-        bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used ) override
+        bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * const _out, float * const _used ) override
         {
             MENGINE_UNUSED( _easing );
 

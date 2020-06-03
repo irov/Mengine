@@ -127,7 +127,7 @@ namespace Mengine
         UnknownPointer getRenderSystemExtention() override;
 
     private:
-        ConstString m_renderPlatformName;
+        ConstString m_renderSystemName;
 
         Resolution m_windowResolution;
         Viewport m_windowViewport;

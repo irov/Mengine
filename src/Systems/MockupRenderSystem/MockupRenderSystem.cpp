@@ -72,7 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & MockupRenderSystem::getRenderPlatformName() const
     {
-        return m_renderPlatformName;
+        return m_renderSystemName;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::_initializeService()
@@ -83,7 +83,7 @@ namespace Mengine
 
         m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 
-        m_renderPlatformName = STRINGIZE_STRING_LOCAL( "Mockup" );
+        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX9" ) );
 
         m_factoryRenderVertexAttribute = Helper::makeFactoryPool<MockupRenderVertexAttribute, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPool<MockupRenderVertexShader, 16>( MENGINE_DOCUMENT_FACTORABLE );

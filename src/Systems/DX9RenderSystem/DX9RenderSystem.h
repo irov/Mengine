@@ -148,7 +148,7 @@ namespace Mengine
         void fixNPOTSupport_( uint32_t * _width, uint32_t * _height ) const;
 
     private:
-        ConstString m_renderPlatformName;
+        ConstString m_renderSystemName;
 
         HMODULE m_hd3d9;
 

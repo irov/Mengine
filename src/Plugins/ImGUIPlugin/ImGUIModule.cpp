@@ -224,10 +224,13 @@ namespace Mengine
         DX9RenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getRenderSystemExtention();
 
-        IDirect3DDevice9 * d3dDevice = extension->getDirect3DDevice9();
+        if( extension != nullptr )
+        {
+            IDirect3DDevice9 * d3dDevice = extension->getDirect3DDevice9();
 
-        ImGui_ImplDX9_Init( d3dDevice );
-        ImGui_ImplDX9_CreateDeviceObjects();
+            ImGui_ImplDX9_Init( d3dDevice );
+            ImGui_ImplDX9_CreateDeviceObjects();
+        }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

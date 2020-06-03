@@ -4,6 +4,7 @@
 
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Logger.h"
@@ -37,6 +38,15 @@ namespace Mengine
 
         m_mutexUpdating = mutexUpdating;
 
+        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+
+        memory->newBuffer( MENGINE_OPENAL_STREAM_BUFFER_SIZE );
+
+        m_memory = memory;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,6 +55,7 @@ namespace Mengine
         this->removeBuffers_();
 
         m_mutexUpdating = nullptr;
+        m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::removeBuffers_()
@@ -342,9 +353,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t * _bytes )
+    bool OpenALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t * const _bytes )
     {
-        uint8_t dataBuffer[MENGINE_OPENAL_STREAM_BUFFER_SIZE];
+        uint8_t * dataBuffer = m_memory->getBuffer();
+
         size_t bytesWritten = m_soundDecoder->decode( dataBuffer, MENGINE_OPENAL_STREAM_BUFFER_SIZE );
 
         if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE && m_looped == true )
@@ -357,7 +369,7 @@ namespace Mengine
         }
         else if( bytesWritten == 0 )
         {
-            _bytes = 0;
+            *_bytes = 0;
 
             return true;
         }

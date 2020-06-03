@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #include "OpenALSoundBufferMemory.h"
 
@@ -45,12 +46,12 @@ namespace Mengine
         bool update() override;
 
     protected:
-        bool bufferData_( ALuint _alBufferId, size_t * _bytes );
+        bool bufferData_( ALuint _alBufferId, size_t * const _bytes );
 
         void removeBuffers_();
 
     protected:
-        ALuint m_alBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT];
+        ALuint m_alBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT] = { 0 };
 
         ALuint m_sourceId;
 
@@ -58,6 +59,7 @@ namespace Mengine
         AtomicBool m_updating;
 
         ThreadMutexInterfacePtr m_mutexUpdating;
+        MemoryInterfacePtr m_memory;
 
     protected:
         void setUpdating_( bool _updating );

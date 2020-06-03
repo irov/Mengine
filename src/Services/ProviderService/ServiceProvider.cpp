@@ -189,10 +189,12 @@ namespace Mengine
                 continue;
             }
 
-            desc.lambda();
+            LambdaLeaveService lambda = desc.lambda;
 
             desc.lambda = nullptr;
             desc.name[0] = '\0';
+
+            lambda();
         }
 
         for( uint32_t index = 0; index != m_dependenciesCount; ++index )
@@ -287,7 +289,7 @@ namespace Mengine
         MENGINE_STRCPY( desc.dependency, _dependency );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
+    bool ServiceProvider::waitService( const Char * _owner, const Char * _name, const LambdaWaitService & _lambda )
     {
         MENGINE_ASSERTION( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT );
         MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
@@ -320,13 +322,14 @@ namespace Mengine
 
         WaitDesc & desc = m_waits[m_waitsCount++];
 
+        MENGINE_STRCPY( desc.owner, _owner );
         MENGINE_STRCPY( desc.name, _name );
         desc.lambda = _lambda;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::leaveService( const Char * _name, const LambdaLeaveService & _lambda )
+    bool ServiceProvider::leaveService( const Char * _owner, const Char * _name, const LambdaLeaveService & _lambda )
     {
         MENGINE_ASSERTION( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT );
         MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
@@ -337,10 +340,41 @@ namespace Mengine
 
         LeaveDesc & desc = m_leaving[m_leaveCount++];
 
+        MENGINE_STRCPY( desc.owner, _owner );
         MENGINE_STRCPY( desc.name, _name );
         desc.lambda = _lambda;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::unlinkService( const Char * _owner )
+    {
+        for( uint32_t index = 0; index != m_waitsCount; ++index )
+        {
+            WaitDesc & desc = m_waits[index];
+
+            if( MENGINE_STRCMP( desc.owner, _owner ) != 0 )
+            {
+                continue;
+            }
+
+            desc.lambda = nullptr;
+            desc.owner[0] = '\0';
+        }
+
+        for( uint32_t index = 0; index != m_leaveCount; ++index )
+        {
+            LeaveDesc & desc = m_leaving[index];
+
+            if( MENGINE_STRCMP( desc.owner, _owner ) != 0 )
+            {
+                continue;
+            }
+
+            desc.lambda = nullptr;
+            desc.name[0] = '\0';
+            desc.owner[0] = '\0';
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::removeDependency_( const Char * _name )
@@ -383,15 +417,17 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.lambda() == false )
-            {
-                return false;
-            }
+            LambdaWaitService lambda = desc.lambda;
 
             WaitDesc & last_desc = m_waits[--m_waitsCount];
 
             MENGINE_STRCPY( desc.name, last_desc.name );
             desc.lambda = last_desc.lambda;
+
+            if( lambda() == false )
+            {
+                return false;
+            }
         }
 
         return true;
@@ -523,13 +559,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::destroy()
     {
-        for( uint32_t index = 0; index != m_waitsCount; ++index )
-        {
-            WaitDesc & desc = m_waits[index];
-
-            desc.lambda = nullptr;
-        }
-
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
@@ -590,14 +619,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::stopServices()
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_MAX_WAIT; ++index )
-        {
-            WaitDesc & desc = m_waits[index];
-
-            desc.lambda = nullptr;
-            desc.name[0] = '\0';
-        }
-
         for( uint32_t index = m_servicesCount; index != 0; --index )
         {
             ServiceDesc & desc = m_services[index - 1];

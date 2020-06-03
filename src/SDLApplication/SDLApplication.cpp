@@ -178,6 +178,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLApplication::finalizeLoggerService_()
+    {
+        if( m_loggerStdio != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerStdio );
+
+            m_loggerStdio = nullptr;
+        }
+
+        if( m_loggerMessageBox != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerMessageBox );
+
+            m_loggerMessageBox = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize( int32_t _argc, Char ** _argv )
     {
         ::setlocale( LC_ALL, "C" );
@@ -195,7 +214,7 @@ namespace Mengine
         SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
-        SERVICE_PROVIDER_GET()->waitService( OptionsServiceInterface::getStaticServiceID(), [this, _argc, _argv]()
+        SERVICE_PROVIDER_GET()->waitService( "SDLApplication", OptionsServiceInterface::getStaticServiceID(), [this, _argc, _argv]()
         {
             if( this->initializeOptionsService_( _argc, _argv ) == false )
             {
@@ -205,7 +224,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_WAIT( LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_WAIT( SDLApplication, LoggerServiceInterface, [this]()
         {
             if( this->initializeLoggerService_() == false )
             {
@@ -215,7 +234,13 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_WAIT( FileServiceInterface, [this]()
+        UNKNOWN_SERVICE_LEAVE( SDLApplication, LoggerServiceInterface, [this]()
+        {
+            this->finalizeLoggerService_();
+        } );
+
+
+        UNKNOWN_SERVICE_WAIT( SDLApplication, FileServiceInterface, [this]()
         {
             if( this->initializeFileService_() == false )
             {
@@ -302,25 +327,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        SERVICE_LEAVE( LoggerServiceInterface, [this]()
-        {
-            if( m_loggerStdio != nullptr )
-            {
-                LOGGER_SERVICE()
-                    ->unregisterLogger( m_loggerStdio );
-
-                m_loggerStdio = nullptr;
-            }
-
-            if( m_loggerMessageBox != nullptr )
-            {
-                LOGGER_SERVICE()
-                    ->unregisterLogger( m_loggerMessageBox );
-
-                m_loggerMessageBox = nullptr;
-            }
-        } );
-
         BOOTSTRAPPER_SERVICE()
             ->stop();
 

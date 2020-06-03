@@ -163,7 +163,7 @@ namespace Mengine
         }
 #endif
 
-        SERVICE_WAIT( DataServiceInterface, [this]()
+        PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {
             ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
@@ -186,7 +186,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( DataServiceInterface, []()
+        PLUGIN_SERVICE_LEAVE( DataServiceInterface, []()
         {
             DataflowInterfacePtr dataflow = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ) );
             dataflow->finalize();
@@ -211,7 +211,7 @@ namespace Mengine
                 ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
         }
 
-        SERVICE_WAIT( ResourceValidateServiceInterface, [this]()
+        PLUGIN_SERVICE_WAIT( ResourceValidateServiceInterface, [this]()
         {
             ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
@@ -227,14 +227,14 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
+        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<LoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
 
-        SERVICE_LEAVE( LoaderServiceInterface, []()
+        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         } );

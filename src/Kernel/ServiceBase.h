@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/ServiceProviderInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -49,6 +51,11 @@ namespace Mengine
             {
                 return;
             }
+
+            const Char * serviceID = this->getServiceID();
+
+            SERVICE_PROVIDER_GET()
+                ->unlinkService( serviceID );
 
             m_initializeService = false;
 

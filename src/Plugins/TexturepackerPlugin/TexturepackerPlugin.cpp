@@ -58,7 +58,7 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_WAIT( LoaderServiceInterface, [this]()
+        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<LoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 

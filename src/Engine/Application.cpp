@@ -1694,7 +1694,7 @@ namespace Mengine
         return m_currentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport )
+    void Application::calcRenderViewport_( const Resolution & _resolution, Viewport * const _viewport )
     {
         uint32_t width = _resolution.getWidth();
         uint32_t height = _resolution.getHeight();
@@ -2098,7 +2098,7 @@ namespace Mengine
         return m_fixedDisplayResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::getGameViewport( float * _aspect, Viewport * _viewport ) const
+    void Application::getGameViewport( float * _aspect, Viewport * const _viewport ) const
     {
         float aspect = m_currentResolution.getAspectRatio();
 

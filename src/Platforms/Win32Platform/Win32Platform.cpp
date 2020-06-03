@@ -365,7 +365,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
+    bool Win32Platform::createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full )
     {
         MENGINE_UNUSED( _dumpPath );
         MENGINE_UNUSED( _pExceptionPointers );
@@ -690,7 +690,7 @@ namespace Mengine
         return utf8Size;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath ) const
+    size_t Win32Platform::getShortPathName( const Char * _path, Char * const _shortpath ) const
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -713,7 +713,7 @@ namespace Mengine
         return (size_t)len;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getSystemFontPath( const Char * _fontName, Char * _fontPath ) const
+    size_t Win32Platform::getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const
     {
         WChar unicode_fontName[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _fontName, unicode_fontName, MENGINE_MAX_PATH ) == false )
@@ -1078,7 +1078,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_sonvertUTF32toUTF8( UINT32 _utf32, Char * _utf8 )
+    static bool s_sonvertUTF32toUTF8( UINT32 _utf32, Char * const _utf8 )
     {
         if( _utf32 <= 0x7F )
         {
@@ -1145,7 +1145,7 @@ namespace Mengine
     //    return false;
     //}
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * _result )
+    bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result )
     {
         MENGINE_UNUSED( hWnd );
 
@@ -2103,7 +2103,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * _stop )
+        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
         {
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
@@ -2512,7 +2512,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getErrorMessage( DWORD _messageId, Char * _out, size_t _capacity ) const
+    bool Win32Platform::getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const
     {
         LPTSTR errorText = NULL;
 
@@ -2546,7 +2546,7 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size )
+    bool Win32Platform::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size )
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {'\0'};
         Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH );
@@ -2595,7 +2595,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode )
+    bool Win32Platform::createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode )
     {
         if( _command == nullptr )
         {

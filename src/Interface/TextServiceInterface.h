@@ -61,11 +61,11 @@ namespace Mengine
         virtual void removeTextEntries( const Tags & _tag ) = 0;
 
     public:
-        virtual bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const = 0;
+        virtual bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * const _entry ) const = 0;
         virtual const TextEntryInterfacePtr & getTextEntry( const ConstString & _key ) const = 0;
 
     public:
-        virtual bool existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const = 0;
+        virtual bool existFont( const ConstString & _name, TextFontInterfacePtr * const _font ) const = 0;
         virtual const TextFontInterfacePtr & getFont( const ConstString & _name ) const = 0;
 
     public:
@@ -77,7 +77,7 @@ namespace Mengine
     public:
         virtual void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) = 0;
         virtual void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) = 0;
-        virtual bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * _arguments ) const = 0;
+        virtual bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const = 0;
 
     public:
         typedef Lambda<void( const TextFontInterfacePtr & )> LambdaTextFont;

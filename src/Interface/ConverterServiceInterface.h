@@ -18,7 +18,7 @@ namespace Mengine
         virtual ConverterInterfacePtr createConverter( const ConstString & _type, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * _out, const DocumentPtr & _doc ) = 0;
+        virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentPtr & _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

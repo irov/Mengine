@@ -72,7 +72,7 @@ namespace Mengine
         bool initializeModule_( const ScriptModulePackage & _pack );
 
     public:
-        bool stringize( PyObject * _object, ConstString * _str ) override;
+        bool stringize( PyObject * _object, ConstString * const _str ) override;
 
 #ifdef MENGINE_DEBUG
     public:

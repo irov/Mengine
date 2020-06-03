@@ -108,7 +108,7 @@ namespace Mengine
         m_glyph = _glyph;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
+    bool BitmapFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const
     {
         MENGINE_UNUSED( _layout );
 

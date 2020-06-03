@@ -155,7 +155,7 @@ namespace Mengine
         this->invalidateVerticesWM_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * _vertexData ) const
+    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const
     {
         _vertexData->clear();
         m_chunks.clear();
@@ -767,7 +767,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
+    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
     {
         float fontHeight = _font->getFontAscent();
 

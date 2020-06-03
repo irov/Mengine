@@ -18,7 +18,7 @@ namespace Mengine
         ~Box2DBody() override;
 
     public:
-        bool initialize( const Box2DScaler & _scaler, b2World * _world, b2BodyDef * _bodyDef );
+        bool initialize( const Box2DScaler & _scaler, b2World * _world, const b2BodyDef * _bodyDef );
 
     public:
         void setEventable( const EventablePtr & _eventable );

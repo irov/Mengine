@@ -75,7 +75,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerPythonEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
+        void registerPythonEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * const _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
             EventationInterface * event = _eventable->getEventation();
 
@@ -110,7 +110,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerPythonEventReceiverModule( pybind::kernel_interface * _kernel, const pybind::module & _module, Eventable * _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
+        void registerPythonEventReceiverModule( pybind::kernel_interface * _kernel, const pybind::module & _module, Eventable * const _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
             EventationInterface * event = _eventable->getEventation();
 
@@ -141,7 +141,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerPythonEventReceiverMethod( pybind::kernel_interface * _kernel, const pybind::object & _obj, Eventable * _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
+        void registerPythonEventReceiverMethod( pybind::kernel_interface * _kernel, const pybind::object & _obj, Eventable * const _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
             EventationInterface * event = _eventable->getEventation();
 

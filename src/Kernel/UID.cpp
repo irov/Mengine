@@ -24,7 +24,7 @@ namespace Mengine
             'v', 'w', 'x', 'y', 'z'
         };
         //////////////////////////////////////////////////////////////////////////
-        void makeUID( uint32_t _length, Char * _uid )
+        void makeUID( uint32_t _length, Char * const _uid )
         {
             std::default_random_engine rng( std::random_device{}() );
 

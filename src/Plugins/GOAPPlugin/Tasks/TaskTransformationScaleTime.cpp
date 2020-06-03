@@ -29,7 +29,7 @@ namespace Mengine
             }
 
         public:
-            bool _affect( const UpdateContext * _context, float * _used ) override
+            bool _affect( const UpdateContext * _context, float * const _used ) override
             {
                 float time = _context->time;
 

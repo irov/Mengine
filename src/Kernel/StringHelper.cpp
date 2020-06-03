@@ -234,7 +234,7 @@ namespace Mengine
             } while( pos != WString::npos );
         }
         //////////////////////////////////////////////////////////////////////////
-        void join( const String & _delim, const VectorString & _stringArray, String * _outString )
+        void join( const String & _delim, const VectorString & _stringArray, String * const _outString )
         {
             if( _stringArray.empty() == true )
             {

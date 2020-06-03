@@ -252,7 +252,7 @@ namespace Mengine
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SurfaceImageSequence::getFrame_( float _time, float * _deltaTime ) const
+    uint32_t SurfaceImageSequence::getFrame_( float _time, float * const _deltaTime ) const
     {
         if( _time <= 0.f )
         {

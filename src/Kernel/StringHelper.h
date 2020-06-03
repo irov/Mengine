@@ -18,7 +18,7 @@ namespace Mengine
 
         bool u32split3( VectorU32String * _outStrings, const U32String & _str, const VectorU32String & _delims );
 
-        void join( const String & _delim, const VectorString & _stringArray, String * _outString );
+        void join( const String & _delim, const VectorString & _stringArray, String * const _outString );
         void trim( String * str, bool left = true, bool right = true );
     }
 };

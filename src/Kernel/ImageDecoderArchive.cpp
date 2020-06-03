@@ -95,7 +95,7 @@ namespace Mengine
         return decodyByte;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderArchive::decompressData_( const void * _source, size_t _sourceSize, void * _dest, size_t _capacityDest ) const
+    size_t ImageDecoderArchive::decompressData_( const void * _source, size_t _sourceSize, void * const _dest, size_t _capacityDest ) const
     {
         size_t read_byte = 0;
 

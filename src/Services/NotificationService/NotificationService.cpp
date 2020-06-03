@@ -125,6 +125,11 @@ namespace Mengine
 
         const VectorObservers & observers = m_mapObserves[_id];
 
+        if( observers.empty() == true )
+        {
+            return true;
+        }
+
         bool successful = true;
 
         ++m_visiting;

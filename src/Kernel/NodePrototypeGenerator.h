@@ -42,11 +42,12 @@ namespace Mengine
             node->setUniqueIdentity( uniqueIdentity );
 
 #ifdef MENGINE_DEBUG
-            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node '%s' type '%s' create '%s'"
+            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node '%s' type '%s'"
                 , node->getName().c_str()
                 , node->getType().c_str()
-                , MENGINE_DOCUMENT_STR( _doc ) 
             );
+
+            doc->setParent( _doc );
 
             node->setDocument( doc );
 #endif

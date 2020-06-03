@@ -86,3 +86,9 @@ namespace Mengine
         extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, uint32_t _uid, bool _dynamic );\
     }
 //////////////////////////////////////////////////////////////////////////
+#define PLUGIN_SERVICE_WAIT( Type, Lambda )\
+    SERVICE_PROVIDER_GET()->waitService(this->getPluginName(), Type::getStaticServiceID(), Lambda)
+//////////////////////////////////////////////////////////////////////////
+#define PLUGIN_SERVICE_LEAVE( Type, Lambda )\
+    SERVICE_PROVIDER_GET()->leaveService(this->getPluginName(), Type::getStaticServiceID(), Lambda)
+//////////////////////////////////////////////////////////////////////////

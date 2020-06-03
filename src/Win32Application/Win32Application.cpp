@@ -213,6 +213,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Application::finalizeLoggerService_()
+    {
+        if( m_loggerMessageBox != nullptr )
+        {
+            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerMessageBox );
+            }
+
+            m_loggerMessageBox = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()
     {
         ::setlocale( LC_ALL, MENGINE_SETLOCALE );
@@ -230,7 +244,7 @@ namespace Mengine
         SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
-        SERVICE_WAIT( OptionsServiceInterface, [this]()
+        UNKNOWN_SERVICE_WAIT( Win32Application, OptionsServiceInterface, [this]()
         {
             if( this->initializeOptionsService_() == false )
             {
@@ -240,7 +254,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_WAIT( LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_WAIT( Win32Application, LoggerServiceInterface, [this]()
         {
             if( this->initializeLoggerService_() == false )
             {
@@ -250,7 +264,12 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_WAIT( FileServiceInterface, [this]()
+        UNKNOWN_SERVICE_LEAVE( Win32Application, LoggerServiceInterface, [this]()
+        {
+            this->finalizeLoggerService_();
+        } );
+
+        UNKNOWN_SERVICE_WAIT( Win32Application, FileServiceInterface, [this]()
         {
             if( this->initializeFileService_() == false )
             {
@@ -344,22 +363,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()
     {
-        SERVICE_LEAVE( LoggerServiceInterface, [this]()
-        {
-            if( m_loggerMessageBox != nullptr )
-            {
-                if( SERVICE_EXIST( LoggerServiceInterface ) == true )
-                {
-                    LOGGER_SERVICE()
-                        ->unregisterLogger( m_loggerMessageBox );
-                }
-
-                m_loggerMessageBox = nullptr;
-            }
-        } );
-
         BOOTSTRAPPER_SERVICE()
             ->stop();
+
+        UNKNOWN_SERVICE_UNLINK( Win32Application );
 
         SERVICE_FINALIZE( Bootstrapper );
         SERVICE_DESTROY( Bootstrapper );

@@ -131,7 +131,7 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_WAIT( DataServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
+        PLUGIN_SERVICE_WAIT( DataServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
             DataflowInterfacePtr dataflowAEK = Helper::makeFactorableUnique<DataflowAEK>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -145,7 +145,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( DataServiceInterface, []()
+        PLUGIN_SERVICE_LEAVE( DataServiceInterface, []()
         {
             DataflowInterfacePtr dataflow = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
             dataflow->finalize();
@@ -166,7 +166,7 @@ namespace Mengine
             VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<ResourceMovieValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         }
 
-        SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
+        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<LoaderResourceMovie>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 

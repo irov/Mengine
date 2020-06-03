@@ -28,6 +28,9 @@ namespace Mengine
         bool initializeArchiveService_();
 
     protected:
+        void finalizeLoggerService_();
+
+    protected:
         ServiceProviderInterface * m_serviceProvider;
 
         LoggerInterfacePtr m_loggerMessageBox;

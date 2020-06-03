@@ -90,7 +90,7 @@ namespace Mengine
         m_ftMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_WAIT( DataServiceInterface, [this]()
+        PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {
             TTFDataflowPtr dataflowTTF = Helper::makeFactorableUnique<TTFDataflow>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -117,7 +117,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_LEAVE( DataServiceInterface, []()
+        PLUGIN_SERVICE_LEAVE( DataServiceInterface, []()
         {
             DataflowInterfacePtr dataflowTTF = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
             dataflowTTF->finalize();

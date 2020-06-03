@@ -47,10 +47,12 @@ namespace Mengine
 
     public:
         typedef Lambda<bool()> LambdaWaitService;
-        virtual bool waitService( const Char * _name, const LambdaWaitService & _lambda ) = 0;
+        virtual bool waitService( const Char * _owner, const Char * _name, const LambdaWaitService & _lambda ) = 0;
 
         typedef Lambda<void()> LambdaLeaveService;
-        virtual bool leaveService( const Char * _name, const LambdaLeaveService & _lambda ) = 0;
+        virtual bool leaveService( const Char * _owner, const Char * _name, const LambdaLeaveService & _lambda ) = 0;
+
+        virtual void unlinkService( const Char * _owner ) = 0;
 
     public:
         virtual void stopServices() = 0;

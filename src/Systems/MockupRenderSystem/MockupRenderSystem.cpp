@@ -4,7 +4,6 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "MockupRenderImage.h"
 #include "MockupRenderImageTarget.h"

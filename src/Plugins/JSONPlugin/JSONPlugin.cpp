@@ -65,7 +65,7 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_WAIT( LoaderServiceInterface, [this]()
+        PLUGIN_SERVICE_WAIT( LoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<LoaderResourceJSON>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 

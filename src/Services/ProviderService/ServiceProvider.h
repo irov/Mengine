@@ -47,8 +47,9 @@ namespace Mengine
 
     public:
         void dependencyService( const Char * _name, const Char * _dependency ) override;
-        bool waitService( const Char * _name, const LambdaWaitService & _lambda ) override;
-        bool leaveService( const Char * _name, const LambdaLeaveService & _lambda ) override;
+        bool waitService( const Char * _owner, const Char * _name, const LambdaWaitService & _lambda ) override;
+        bool leaveService( const Char * _owner, const Char * _name, const LambdaLeaveService & _lambda ) override;
+        void unlinkService( const Char * _owner ) override;
 
     protected:
         void stopServices() override;
@@ -87,6 +88,7 @@ namespace Mengine
 
         struct LeaveDesc
         {
+            Char owner[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
             Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
             LambdaLeaveService lambda;
         };
@@ -97,6 +99,7 @@ namespace Mengine
 
         struct WaitDesc
         {
+            Char owner[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
             Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
             LambdaWaitService lambda;
         };

@@ -102,6 +102,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::finalizePlugin()
     {
+        const Char * pluginName = this->getPluginName();
+
+        SERVICE_PROVIDER_GET()
+            ->unlinkService( pluginName );
+
         if( m_initializePlugin == false )
         {
             return;
@@ -109,7 +114,7 @@ namespace Mengine
 
         m_initializePlugin = false;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_FINALIZE, this->getPluginName() );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_FINALIZE, pluginName );
 
         this->_finalizePlugin();
 

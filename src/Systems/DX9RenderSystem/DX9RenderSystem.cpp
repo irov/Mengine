@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderSystem::getRenderPlatformName() const
     {
-        return m_renderPlatformName;
+        return m_renderSystemName;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::_initializeService()
@@ -201,7 +201,7 @@ namespace Mengine
             m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
         }
 
-        m_renderPlatformName = STRINGIZE_STRING_LOCAL( "DX9" );
+        m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 
         m_factoryRenderVertexAttribute = Helper::makeFactoryPool<DX9RenderVertexAttribute, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPool<DX9RenderVertexShader, 16>( MENGINE_DOCUMENT_FACTORABLE );

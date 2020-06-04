@@ -356,6 +356,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceTexturepacker::_release()
     {
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
         if( m_resourceJSON != nullptr )
         {
             m_resourceJSON->release();
@@ -365,6 +367,9 @@ namespace Mengine
         if( m_resourceImage != nullptr )
         {
             m_resourceImage->release();
+
+            resourceBank->removeResource( m_resourceImage );
+
             m_resourceImage = nullptr;
         }
 
@@ -373,6 +378,8 @@ namespace Mengine
         for( const ResourceImagePtr & frame : m_frames )
         {
             frame->release();
+
+            resourceBank->removeResource( frame );
         }
 
         m_frames.clear();

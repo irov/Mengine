@@ -161,6 +161,12 @@ namespace Mengine
             , _codecType.c_str()
         );
 
+        MENGINE_ASSERTION_FATAL_RETURN( stream->size() != 0, nullptr, "empty stream '%s:%s' codec '%s'"
+            , _fileGroup->getName().c_str()
+            , _filePath.c_str()
+            , _codecType.c_str()
+        );
+
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FACTORABLE );
 

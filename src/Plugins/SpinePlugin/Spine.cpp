@@ -509,6 +509,9 @@ namespace Mengine
             spAnimationState_update( animationState, spTiming );
             spAnimationState_apply( animationState, m_skeleton );
 
+            spSkeleton_updateCache( m_skeleton );
+            spSkeleton_updateWorldTransform( m_skeleton );
+
             m_animations.emplace_back( desc );
         }
         else
@@ -554,14 +557,19 @@ namespace Mengine
 
         spSkeletonData * skeletonData = m_resourceSpineSkeleton->getSkeletonData();
 
-        spSkeleton * skeleton = spSkeleton_create( skeletonData );
-
-        spSkeleton_setToSetupPose( skeleton );
-
         spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
 
-        m_skeleton = skeleton;
+        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData, false );
+
         m_animationStateData = animationStateData;
+
+        spSkeleton * skeleton = spSkeleton_create( skeletonData );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( skeleton, false );
+
+        m_skeleton = skeleton;
+
+        spSkeleton_setToSetupPose( m_skeleton );
 
         for( AnimationDesc & desc : m_animations )
         {
@@ -593,8 +601,8 @@ namespace Mengine
             spAnimationState_apply( animationState, m_skeleton );
         }
 
-        spSkeleton_updateCache( skeleton );
-        spSkeleton_updateWorldTransform( skeleton );
+        spSkeleton_updateCache( m_skeleton );
+        spSkeleton_updateWorldTransform( m_skeleton );
 
         int slotCount = m_skeleton->slotsCount;
 

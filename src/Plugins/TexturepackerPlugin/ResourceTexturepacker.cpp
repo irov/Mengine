@@ -302,16 +302,27 @@ namespace Mengine
                 int32_t spriteSourceSize_w = spriteSourceSize["w"];
                 int32_t spriteSourceSize_h = spriteSourceSize["h"];
 
-                if( sourceSize_h > spriteSourceSize_h )
+                mt::vec2f offset;
+
+                if( sourceSize_w > spriteSourceSize_w )
                 {
-                    mt::vec2f offset( (float)spriteSourceSize_x, (float)sourceSize_h - spriteSourceSize_h - spriteSourceSize_y );
-                    image->setOffset( offset );
+                    offset.x = -(float)(sourceSize_w - spriteSourceSize_w - spriteSourceSize_x);
                 }
                 else
                 {
-                    mt::vec2f offset( (float)spriteSourceSize_x, (float)spriteSourceSize_y );
-                    image->setOffset( offset );
+                    offset.x = (float)spriteSourceSize_x;
                 }
+
+                if( sourceSize_h > spriteSourceSize_h )
+                {
+                    offset.y = (float)(sourceSize_h - spriteSourceSize_h - spriteSourceSize_y);
+                }
+                else
+                {
+                    offset.y = (float)spriteSourceSize_y;
+                }
+
+                image->setOffset( offset );
 
                 mt::vec2f size( (float)spriteSourceSize_w, (float)spriteSourceSize_h );
                 image->setSize( size );

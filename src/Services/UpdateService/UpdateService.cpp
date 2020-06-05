@@ -218,8 +218,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable * _leaf, const UpdateContext * _context )
     {
-        _leaf->indecies.insert( _leaf->indecies.end(), _leaf->indeciesAdd.begin(), _leaf->indeciesAdd.end() );
-        _leaf->indeciesAdd.clear();
+        if( _leaf->indeciesAdd.empty() == false )
+        {
+            _leaf->indecies.insert( _leaf->indecies.end(), _leaf->indeciesAdd.begin(), _leaf->indeciesAdd.end() );
+            _leaf->indeciesAdd.clear();
+        }
 
         for( VectorUpdatableIndecies::iterator
             it = _leaf->indecies.begin(),

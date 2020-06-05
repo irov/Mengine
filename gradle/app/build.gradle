@@ -124,7 +124,7 @@ android {
                         "-DANDROID_STL=c++_shared", 
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
-                        "-DMENGINE_BUILD_PUBLISH=" + property_buildPublish,
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + property_buildPublish,
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
                 }
                 
@@ -144,7 +144,7 @@ android {
                         "-DANDROID_STL=c++_shared",
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
-                        "-DMENGINE_BUILD_PUBLISH=" + property_buildPublish,
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + property_buildPublish,
                         "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
                 

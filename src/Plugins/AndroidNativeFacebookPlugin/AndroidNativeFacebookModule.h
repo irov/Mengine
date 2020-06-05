@@ -46,7 +46,7 @@ namespace Mengine
         String getAccessToken() const;
         bool performLogin( const VectorString & _permissions );
         bool getUser();
-        bool shareLink( const String & _link );
+        bool shareLink( const String & _link, const String & _picture, const String & _message );
         bool getProfilePictureLink( const String & _typeParameter );
 
     protected:

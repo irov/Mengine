@@ -217,9 +217,9 @@ public class MengineActivity extends SDLActivity {
         return false;
     }
 
-    public static boolean facebookShareLink(String link) {
+    public static boolean facebookShareLink(String link, String picture, String message) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
-            _instance.facebookInteractionLayer.shareLink(_instance, link);
+            _instance.facebookInteractionLayer.shareLink(_instance, link, picture, message);
             
             return true;
         }

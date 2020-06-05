@@ -430,16 +430,22 @@ namespace Mengine
         return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeFacebookModule::shareLink( const String & _link )
+    bool AndroidNativeFacebookModule::shareLink( const String & _link, const String & _picture, const String & _message )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
         const Char * link_str = _link.c_str();
         jstring jlink = env->NewStringUTF( link_str );
+        const Char * picture_str = _picture.c_str();
+        jstring jpicture = env->NewStringUTF( picture_str );
+        const Char * message_str = _message.c_str();
+        jstring jmessage = env->NewStringUTF( message_str );
 
-        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_shareLink, jlink );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_shareLink, jlink, jpicture, jmessage );
         
         env->DeleteLocalRef( jlink );
+        env->DeleteLocalRef( jpicture );
+        env->DeleteLocalRef( jmessage );
 
         return (bool)jReturnValue;
     }

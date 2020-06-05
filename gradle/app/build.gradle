@@ -64,7 +64,7 @@ android {
         }
         
         if (findProperty("ANDROID_BUILD_PUBLISH")) {
-            property_buildPublish = ANDROID_BUILD_PUBLISH
+            property_buildPublish = "TRUE"
         }
 
         print 'manifestPlaceholders = '
@@ -168,12 +168,13 @@ android {
                 println MANIFEST_SRC_FILE
             
                 manifest.srcFile MANIFEST_SRC_FILE
-            } else if (findProperty("MANIFEST_PUBLISH")) {
-                print 'MANIFEST_PUBLISH = '
-                println MANIFEST_PUBLISH
+            } else if (findProperty("ANDROID_BUILD_PUBLISH")) {
+                println 'MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
             
                 manifest.srcFile 'AndroidManifestPublish.xml'
             } else {
+                println 'MANIFEST_SRC_FILE = AndroidManifest.xml'
+                
                 manifest.srcFile 'AndroidManifest.xml'
             }
             

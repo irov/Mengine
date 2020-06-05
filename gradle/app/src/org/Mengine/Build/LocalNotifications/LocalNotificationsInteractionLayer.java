@@ -68,6 +68,10 @@ public class LocalNotificationsInteractionLayer {
     public void cancelAll() {
         NotificationManager notificationManager = (NotificationManager)_currentContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            JobScheduler jobScheduler = (JobScheduler) _currentContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.cancelAll();
+        }
     }
 
     public static Notification getNotification(Context context, int id, String title, String content) {

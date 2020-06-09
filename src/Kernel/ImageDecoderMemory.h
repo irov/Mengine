@@ -9,6 +9,7 @@ namespace Mengine
     {
     public:
         ImageDecoderMemory();
+        ~ImageDecoderMemory() override;
 
     protected:
         size_t _decode( void * _buffer, size_t _bufferSize ) override;

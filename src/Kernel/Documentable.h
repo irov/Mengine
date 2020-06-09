@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
         Documentable();
-        ~Documentable();
+        ~Documentable() override;
 
 #ifdef MENGINE_DEBUG
     public:

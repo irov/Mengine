@@ -41,29 +41,6 @@ namespace Mengine
     protected:
         typedef Vector<ResourceCacherDesc> VectorResourceCacherDesc;
         VectorResourceCacherDesc m_cachers;
-
-        class FEraseCacher;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    class ResourceCacher<T>::FEraseCacher
-    {
-    public:
-        bool operator () ( ResourceCacher<T>::ResourceCacherDesc & _desc ) const
-        {
-            _desc.lock = false;
-
-            if( _desc.use == true )
-            {
-                return false;
-            }
-
-            _desc.use = false;
-
-            _desc.value = nullptr;
-
-            return true;
-        }
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
@@ -117,9 +94,21 @@ namespace Mengine
     template<class T>
     void ResourceCacher<T>::unlock()
     {
-        m_cachers.erase(
-            std::remove_if( m_cachers.begin(), m_cachers.end(), FEraseCacher() ), m_cachers.end()
-        );
+        m_cachers.erase( std::remove_if( m_cachers.begin(), m_cachers.end(), []( ResourceCacher<T>::ResourceCacherDesc & _desc )
+        {
+            _desc.lock = false;
+
+            if( _desc.use == true )
+            {
+                return false;
+            }
+
+            _desc.use = false;
+
+            _desc.value = nullptr;
+
+            return true;
+        } ), m_cachers.end() );
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>

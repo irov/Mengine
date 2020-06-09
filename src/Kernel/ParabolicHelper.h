@@ -33,7 +33,7 @@ namespace Mengine
                 t += dt;
 
                 T nextPoint;
-                calculateParabolicPosition( nextPoint, _begin, _end, _height, t );
+                Helper::calculateParabolicPosition( nextPoint, _begin, _end, _height, t );
 
                 float length = _length( nextPoint, prevPoint );
 

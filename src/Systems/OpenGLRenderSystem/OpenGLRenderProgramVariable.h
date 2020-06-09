@@ -10,22 +10,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EProgramVariableType
-    {
-        EPVT_FLOAT,
-        EPVT_INTEGER,
-        EPVT_BOOLEAN
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct ProgramVariableDesc
-    {
-        Char uniform[32];
-        EProgramVariableType type;
-        uint32_t offset;
-        uint32_t size;
-        uint32_t count;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderProgramVariable
         : public RenderProgramVariableInterface
         , public Factorable
@@ -68,6 +52,22 @@ namespace Mengine
         VectorDataFloats m_pixelFloats;
         VectorDataIntegers m_pixelIntegers;
         VectorDataBooleans m_pixelBooleans;
+
+        enum EProgramVariableType
+        {
+            EPVT_FLOAT,
+            EPVT_INTEGER,
+            EPVT_BOOLEAN
+        };
+
+        struct ProgramVariableDesc
+        {
+            Char uniform[32];
+            EProgramVariableType type;
+            uint32_t offset;
+            uint32_t size;
+            uint32_t count;
+        };
 
         typedef Vector<ProgramVariableDesc> VectorVariables;
         VectorVariables m_vertexVariables;

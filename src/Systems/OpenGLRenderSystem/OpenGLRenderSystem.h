@@ -132,7 +132,6 @@ namespace Mengine
         void onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader );
         void onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader );
         void onRenderProgramDestroy_( OpenGLRenderProgram * _program );
-        void onRenderProgramVariableDestroy_( OpenGLRenderProgramVariable * _variable );
 
     protected:
         void updatePMWMatrix_();
@@ -201,9 +200,6 @@ namespace Mengine
 
         typedef Vector<OpenGLRenderProgram *> VectorCacheRenderPrograms;
         VectorCacheRenderPrograms m_cacheRenderPrograms;
-
-        typedef Vector<OpenGLRenderProgramVariable *> VectorCacheRenderProgramVariables;
-        VectorCacheRenderProgramVariables m_cacheRenderProgramVariables;
 
         bool m_renderWindowCreate;
         bool m_depthMask;

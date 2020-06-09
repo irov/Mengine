@@ -43,7 +43,7 @@ namespace Mengine
         return m_secureHash;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureService::protectData( void * _buffer, size_t _size ) const
+    void SecureService::protectData( void * const _buffer, size_t _size ) const
     {
         size_t tail = _size % 8;
         size_t head = _size - tail;
@@ -66,7 +66,7 @@ namespace Mengine
         MENGINE_MEMCPY( (int8_t *)_buffer + head, tail_buffer, tail );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SecureService::unprotectData( void * _buffer, size_t _size ) const
+    void SecureService::unprotectData( void * const _buffer, size_t _size ) const
     {
         size_t tail = _size % 8;
         size_t head = _size - tail;

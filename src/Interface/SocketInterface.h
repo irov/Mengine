@@ -27,7 +27,7 @@ namespace Mengine
         virtual bool waitForData( uint32_t _timeoutMs ) = 0;
 
         virtual int32_t send( const void * _buffer, size_t _size ) = 0;
-        virtual int32_t receive( void * _buffer, size_t _size ) = 0;
+        virtual int32_t receive( void * const _buffer, size_t _size ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getSendStream() const = 0;

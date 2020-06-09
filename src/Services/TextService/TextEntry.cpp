@@ -69,7 +69,7 @@ namespace Mengine
         return m_key;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * TextEntry::getValue( size_t * _size ) const
+    const Char * TextEntry::getValue( size_t * const _size ) const
     {
         *_size = (size_t)m_text.size();
 

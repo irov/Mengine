@@ -218,7 +218,7 @@ namespace Mengine
         MENGINE_INLINE const NodePtr & getLayerParent_( const MovieLayer & _layer ) const;
 
     protected:
-        void getFrameTime_( float _time, uint32_t * _frame, float * _timing ) const;
+        void getFrameTime_( float _time, uint32_t * const _frame, float * const _timing ) const;
 
     protected:
         void updateTime_();

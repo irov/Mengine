@@ -47,8 +47,8 @@ namespace Mengine
         void clear() override;
 
     public:
-        bool pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers * _pickers ) override;
-        bool getTraps( const mt::vec2f & _point, VectorPickers * _pickers ) override;
+        bool pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers * const _pickers ) override;
+        bool getTraps( const mt::vec2f & _point, VectorPickers * const _pickers ) override;
 
     public:
         void invalidateTraps() override;
@@ -72,9 +72,9 @@ namespace Mengine
         void updateTraps_();
 
     protected:
-        void fillStates_( VectorPickerStates * _states ) const;
-        bool pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates * _states );
-        bool getStates_( float _x, float _y, VectorPickerStates * _states );
+        void fillStates_( VectorPickerStates * const _states ) const;
+        bool pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates * const _states );
+        bool getStates_( float _x, float _y, VectorPickerStates * const _states );
 
     protected:
         ArrowPtr m_arrow;

@@ -47,7 +47,7 @@ namespace Mengine
         void _invalidateColor() const override;
 
     protected:
-        void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const override;
+        void _updateVertices( RenderVertex2D * const _vertices, uint8_t _invalidateVertices ) const override;
 
     protected:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;

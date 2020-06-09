@@ -216,7 +216,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * _size )
+        bool loadStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * const _size )
         {
             size_t pos = _stream->tell();
 

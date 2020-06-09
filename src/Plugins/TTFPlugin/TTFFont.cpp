@@ -351,7 +351,7 @@ namespace Mengine
             }
 
         public:
-            bool onTextureGlyphFill( uint8_t * _memory, size_t _pitch, uint32_t _channel ) override
+            bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) override
             {
                 const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(m_ttfbuffer);
 

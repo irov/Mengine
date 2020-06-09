@@ -173,14 +173,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::hasResource( const ConstString & _name, ResourcePtr * _resource ) const
+    bool ResourceService::hasResource( const ConstString & _name, ResourcePtr * const _resource ) const
     {
         bool exist = m_globalBank->hasResource( _name, _resource );
 
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const
+    bool ResourceService::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const
     {
         bool exist = m_globalBank->hasResourceWithType( _name, _type, _resource );
 

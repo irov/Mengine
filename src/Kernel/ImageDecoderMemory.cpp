@@ -9,7 +9,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderMemory::_decode( void * _buffer, size_t _bufferSize )
+    size_t ImageDecoderMemory::_decode( void * const _buffer, size_t _bufferSize )
     {
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
@@ -40,7 +40,7 @@ namespace Mengine
         return read_byte;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderMemory::decodeData_( void * _buffer, size_t _bufferSize ) const
+    size_t ImageDecoderMemory::decodeData_( void * const _buffer, size_t _bufferSize ) const
     {
         size_t read_byte = 0;
 

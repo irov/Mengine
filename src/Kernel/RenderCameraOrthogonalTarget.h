@@ -19,7 +19,7 @@ namespace Mengine
         ~RenderCameraOrthogonalTarget() override;
 
     public:
-        void setRenderCameraOrthogonal( RenderCameraOrthogonal * _camera );
+        void setRenderCameraOrthogonal( RenderCameraOrthogonal * const _camera );
         RenderCameraOrthogonal * getRenderCameraOrthogonal() const;
 
     public:

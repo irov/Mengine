@@ -13,9 +13,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32SocketInputStream::read( void * _buffer, size_t _size )
+    size_t Win32SocketInputStream::read( void * const _buffer, size_t _size )
     {
-        char * receiv_buffer = (char *)_buffer;
+        char * receiv_buffer = static_cast<char *>(_buffer);
 
         SOCKET socket = this->getSocket();
 
@@ -77,7 +77,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::memory( void ** _memory, size_t * _size )
+    bool Win32SocketInputStream::memory( void ** _memory, size_t * const _size )
     {
         MENGINE_UNUSED( _memory );
         MENGINE_UNUSED( _size );

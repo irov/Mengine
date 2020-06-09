@@ -107,12 +107,12 @@ namespace Mengine
         bool compilePolygon_( const AstralaxEmitterInterfacePtr & _emitter );
 
     protected:
-        void updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const;
-        void updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const;
+        void updateVertexColor_( RenderVertex2D * const _vertices, uint32_t _verticesCount ) const;
+        void updateVertexWM_( RenderVertex2D * const _vertices, uint32_t _verticesCount ) const;
 
     protected:
         void onProviderEmitterPosition( mt::vec3f * _position ) override;
-        void onProviderEmitterCamera( bool * _orthogonality, mt::vec3f * _position, mt::vec3f * _direction ) override;
+        void onProviderEmitterCamera( bool * const _orthogonality, mt::vec3f * const _position, mt::vec3f * const _direction ) override;
 
     protected:
         ResourceAstralaxPtr m_resourceAstralax;

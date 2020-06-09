@@ -69,7 +69,7 @@ namespace Mengine
         uint32_t getTextExpectedArgument() const;
 
     protected:
-        bool updateTextCache_( U32String * _cacheText ) const;
+        bool updateTextCache_( U32String * const _cacheText ) const;
 
     public:
         void setFontName( const ConstString & _fontName );
@@ -126,7 +126,7 @@ namespace Mengine
 
     public:
         const mt::vec2f & getTextSize() const;
-        bool calcTextViewport( Viewport * _viewport ) const;
+        bool calcTextViewport( Viewport * const _viewport ) const;
 
     public:
         uint32_t getCharCount() const;
@@ -154,7 +154,7 @@ namespace Mengine
         void invalidateVertices_() const;
 
         void updateVerticesWM_( const TextFontInterfacePtr & _font ) const;
-        void updateVertexDataWM_( VectorRenderVertex2D * _outVertex, const VectorRenderVertex2D & _fromVertex ) const;
+        void updateVertexDataWM_( VectorRenderVertex2D * const _outVertex, const VectorRenderVertex2D & _fromVertex ) const;
 
         void invalidateVerticesWM_() const;
 
@@ -168,8 +168,8 @@ namespace Mengine
         MENGINE_INLINE bool isInvalidateTextLines() const;
 
         bool updateTextLines_() const;
-        void updateTextLinesWrap_( VectorTextLineChunks2 * _textLines ) const;
-        void updateTextLinesMaxCount_( VectorTextLineChunks2 * _textLines ) const;
+        void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
+        void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
         bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _size, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
 
     public:

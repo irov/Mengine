@@ -186,7 +186,7 @@ namespace Mengine
         return bufferOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotspotImageConverterPNGToHIT::makeMipMapLevel_( uint8_t * _buffer, uint32_t _width, uint32_t _height, uint32_t _level )
+    void HotspotImageConverterPNGToHIT::makeMipMapLevel_( uint8_t * const _buffer, uint32_t _width, uint32_t _height, uint32_t _level )
     {
         uint8_t * mipmap[32];
 

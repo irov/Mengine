@@ -36,7 +36,7 @@ namespace Mengine
             return String( str, size );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split( VectorString * _outStrings, const String & _str, bool _trimDelims, const String & _delim )
+        void split( VectorString * const _outStrings, const String & _str, bool _trimDelims, const String & _delim )
         {
             uint32_t numSplits = 0;
             String::size_type start = 0;
@@ -70,7 +70,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C = Vector<T> >
-        static void t_split2( C * _outStrings, const T & _str, bool _trimDelims, const C & _delims )
+        static void t_split2( C * const _outStrings, const T & _str, bool _trimDelims, const C & _delims )
         {
             typename T::size_type start = 0;
             typename T::size_type pos = 0;
@@ -133,18 +133,18 @@ namespace Mengine
             } while( pos != T::npos );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split2( VectorString * _outStrings, const String & _str, bool _trimDelims, const VectorString & _delims )
+        void split2( VectorString * const _outStrings, const String & _str, bool _trimDelims, const VectorString & _delims )
         {
             t_split2( _outStrings, _str, _trimDelims, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
-        void u32split2( VectorU32String * _outStrings, const U32String & _str, bool _trimDelims, const VectorU32String & _delims )
+        void u32split2( VectorU32String * const _outStrings, const U32String & _str, bool _trimDelims, const VectorU32String & _delims )
         {
             t_split2( _outStrings, _str, _trimDelims, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C = Vector<T> >
-        static bool t_split3( C * _outStrings, const T & _str, const C & _delims )
+        static bool t_split3( C * const _outStrings, const T & _str, const C & _delims )
         {
             typename T::size_type start = 0;
             typename T::size_type pos = 0;
@@ -196,12 +196,12 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool u32split3( VectorU32String * _outStrings, const U32String & _str, const VectorU32String & _delims )
+        bool u32split3( VectorU32String * const _outStrings, const U32String & _str, const VectorU32String & _delims )
         {
             return t_split3( _outStrings, _str, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
-        void wsplit( VectorWString * _outStrings, const WString & _str, bool _trimDelims, const WString & _delims )
+        void wsplit( VectorWString * const _outStrings, const WString & _str, bool _trimDelims, const WString & _delims )
         {
             uint32_t numSplits = 0;
             WString::size_type start = 0;
@@ -258,7 +258,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void trim( String * _str, bool _left, bool _right )
+        void trim( String * const _str, bool _left, bool _right )
         {
             const Char * delims = " \t\r";
 

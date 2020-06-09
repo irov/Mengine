@@ -153,7 +153,7 @@ namespace Mengine
         typedef boost::geometry::model::box<mt::vec2f> BoostBox;
         typedef boost::geometry::model::segment<mt::vec2f> BoostSegment;
         //////////////////////////////////////////////////////////////////////////
-        static void makeBoostPolygon( BoostPolygon * _bp, const Polygon & _p )
+        static void makeBoostPolygon( BoostPolygon * const _bp, const Polygon & _p )
         {
             for( const mt::vec2f & v : _p )
             {
@@ -176,7 +176,7 @@ namespace Mengine
         //    }
         //}
         //////////////////////////////////////////////////////////////////////////
-        static void makeMengineGeolygon( Geolygon * _mg, const BoostPolygon & _bp )
+        static void makeMengineGeolygon( Geolygon * const _mg, const BoostPolygon & _bp )
         {
             const BoostPolygon::ring_type & ring = _bp.outer();
             BoostPolygon::ring_type::size_type ring_size = ring.size();

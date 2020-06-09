@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    void Win32DateTimeProvider::getLocalDateTime( PlatformDateTime * _dateTime ) const
+    void Win32DateTimeProvider::getLocalDateTime( PlatformDateTime * const _dateTime ) const
     {
         SYSTEMTIME time;
         ::GetLocalTime( &time );

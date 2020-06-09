@@ -43,7 +43,7 @@ namespace Mengine
         uint32_t getIcon() const override;
 
         void setProjectTitle( const Char * _projectTitle ) override;
-        size_t getProjectTitle( Char * _projectTitle ) const override;
+        size_t getProjectTitle( Char * const _projectTitle ) const override;
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
@@ -65,14 +65,14 @@ namespace Mengine
         DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
 
     public:
-        bool getDesktopResolution( Resolution * _resolution ) const override;
+        bool getDesktopResolution( Resolution * const _resolution ) const override;
 
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
 
-        size_t getCurrentPath( Char * _currentPath ) const override;
-        size_t getUserPath( Char * _userPath ) const override;
-        size_t getUserName( Char * _userName ) const override;
+        size_t getCurrentPath( Char * const _currentPath ) const override;
+        size_t getUserPath( Char * const _userPath ) const override;
+        size_t getUserName( Char * const _userName ) const override;
 
         void minimizeWindow() override;
 
@@ -97,7 +97,7 @@ namespace Mengine
         size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
-        void getMaxClientResolution( Resolution * _resolution ) const override;
+        void getMaxClientResolution( Resolution * const _resolution ) const override;
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;

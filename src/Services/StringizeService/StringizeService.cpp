@@ -73,7 +73,7 @@ namespace Mengine
         m_poolHolderStringMemory.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr )
+    void StringizeService::stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr )
     {
         MENGINE_ASSERTION_FATAL( _str != nullptr );
 
@@ -101,7 +101,7 @@ namespace Mengine
         *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr )
+    void StringizeService::stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr )
     {
         if( _size == 0 )
         {
@@ -150,7 +150,7 @@ namespace Mengine
         *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr )
+    void StringizeService::stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr )
     {
         if( _size == 0 )
         {
@@ -194,7 +194,7 @@ namespace Mengine
         *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool StringizeService::stringizeExternal( ConstStringHolder * _holder, ConstString * _cstr )
+    bool StringizeService::stringizeExternal( ConstStringHolder * const _holder, ConstString * const _cstr )
     {
         const ConstStringHolder::value_type * holder_str = _holder->c_str();
         ConstStringHolder::size_type holder_size = _holder->size();

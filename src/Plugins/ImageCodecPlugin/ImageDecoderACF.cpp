@@ -64,7 +64,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderACF::_decode( void * _buffer, size_t _bufferSize )
+    size_t ImageDecoderACF::_decode( void * const _buffer, size_t _bufferSize )
     {
         size_t dataSize;
         if( Helper::loadStreamArchiveBufferSize( m_stream, &dataSize ) == false )

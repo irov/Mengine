@@ -182,7 +182,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::getTimePos( ALuint _source, float * _pos ) const
+    bool OpenALSoundBufferMemory::getTimePos( ALuint _source, float * const _pos ) const
     {
         float al_pos = 0.f;
 

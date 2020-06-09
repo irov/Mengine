@@ -34,7 +34,7 @@ namespace Mengine
         RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const override;
 
     public:
-        bool hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * _texture ) const override;
+        bool hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * const _texture ) const override;
 
     public:
         void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture ) override;
@@ -50,7 +50,7 @@ namespace Mengine
         bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
 
     protected:
-        void updateImageParams_( uint32_t * _width, uint32_t * _height, uint32_t * _channels, uint32_t * _depth, EPixelFormat * _format ) const;
+        void updateImageParams_( uint32_t * const _width, uint32_t * const _height, uint32_t * const _channels, uint32_t * const _depth, EPixelFormat * const _format ) const;
 
     protected:
         typedef Hashtable2<ConstString, FilePath, RenderTextureInterface *> MapRenderTextureEntry;

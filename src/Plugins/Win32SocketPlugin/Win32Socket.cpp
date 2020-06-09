@@ -163,7 +163,7 @@ namespace Mengine
         return numBytesSent;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32Socket::receive( void * _data, size_t _maxBytes )
+    int32_t Win32Socket::receive( void * const _data, size_t _maxBytes )
     {
         if( m_socket == INVALID_SOCKET )
         {

@@ -682,7 +682,7 @@ namespace Mengine
         Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
+    size_t Win32Platform::getProjectTitle( Char * const _projectTitle ) const
     {
         size_t utf8Size;
         Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, &utf8Size );
@@ -809,7 +809,7 @@ namespace Mengine
         return utf8_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::getMaxClientResolution( Resolution * _resolution ) const
+    void Win32Platform::getMaxClientResolution( Resolution * const _resolution ) const
     {
         RECT workArea;
         ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 );
@@ -1161,7 +1161,7 @@ namespace Mengine
                 }
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case UWM_MOUSE_LEAVE:
             {
@@ -1188,7 +1188,7 @@ namespace Mengine
                 }
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
             //case WM_TOUCH:
             //    {
@@ -1281,7 +1281,7 @@ namespace Mengine
                 Helper::pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_MOUSEWHEEL:
             {
@@ -1295,7 +1295,7 @@ namespace Mengine
                 Helper::pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, wheel );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_RBUTTONDBLCLK:
         case WM_LBUTTONDBLCLK:
@@ -1303,7 +1303,7 @@ namespace Mengine
                 m_isDoubleClick = true;
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }
             break;
         case WM_LBUTTONDOWN:
@@ -1314,7 +1314,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }
             break;
         case WM_LBUTTONUP:
@@ -1330,7 +1330,7 @@ namespace Mengine
                 m_isDoubleClick = false;
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_RBUTTONDOWN:
             {
@@ -1340,7 +1340,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_RBUTTONUP:
             {
@@ -1355,7 +1355,7 @@ namespace Mengine
                 m_isDoubleClick = false;
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_MBUTTONDOWN:
             {
@@ -1365,7 +1365,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_MBUTTONUP:
             {
@@ -1375,7 +1375,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_KEYDOWN:
             {
@@ -1389,7 +1389,7 @@ namespace Mengine
                 Helper::pushKeyEvent( point.x, point.y, code, true, false );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_KEYUP:
             {
@@ -1403,7 +1403,7 @@ namespace Mengine
                 Helper::pushKeyEvent( point.x, point.y, code, false, false );
 
                 handle = true;
-                _result = FALSE;
+                *_result = FALSE;
             }break;
         case WM_UNICHAR:
             if( wParam == UNICODE_NOCHAR )
@@ -1425,7 +1425,7 @@ namespace Mengine
                     Helper::pushTextEvent( point.x, point.y, text_code[0] );
 
                     handle = true;
-                    _result = FALSE;
+                    *_result = FALSE;
                 }
             }break;
         }
@@ -2807,7 +2807,7 @@ namespace Mengine
         return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getDesktopResolution( Resolution * _resolution ) const
+    bool Win32Platform::getDesktopResolution( Resolution * const _resolution ) const
     {
         int32_t cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
         int32_t cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
@@ -2828,7 +2828,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getCurrentPath( Char * _currentPath ) const
+    size_t Win32Platform::getCurrentPath( Char * const _currentPath ) const
     {
         WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
@@ -2856,7 +2856,7 @@ namespace Mengine
         return path_len;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getUserPath( Char * _userPath ) const
+    size_t Win32Platform::getUserPath( Char * const _userPath ) const
     {
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
@@ -2958,7 +2958,7 @@ namespace Mengine
         return currentPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getUserName( Char * _userName ) const
+    size_t Win32Platform::getUserName( Char * const _userName ) const
     {
         WChar unicode_userName[UNLEN + 1] = {0};
         DWORD unicode_userNameLen = UNLEN + 1;

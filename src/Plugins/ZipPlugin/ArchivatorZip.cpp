@@ -24,12 +24,12 @@ namespace Mengine
         return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _compressSize, EArchivatorCompress _compress )
+    bool ArchivatorZip::compress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _compressSize, EArchivatorCompress _compress )
     {
         uLong compressSize = (uLong)_bufferSize;
 
-        Bytef * dst_buffer = (Bytef *)_distance;
-        const Bytef * src_buffer = (const Bytef *)_source;
+        Bytef * dst_buffer = static_cast<Bytef *>(_distance);
+        const Bytef * src_buffer = static_cast<const Bytef *>(_source);
 
         int32_t compress_method = 0;
 
@@ -118,7 +118,7 @@ namespace Mengine
         return err;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _decompressSize )
+    bool ArchivatorZip::decompress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _decompressSize )
     {
         uLong destLen = (uLong)_bufferSize;
 

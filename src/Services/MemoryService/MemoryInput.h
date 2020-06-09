@@ -29,7 +29,7 @@ namespace Mengine
         size_t getSize() const override;
 
     public:
-        size_t read( void * _buf, size_t _count ) override;
+        size_t read( void * const _buf, size_t _count ) override;
         bool seek( size_t _pos ) override;
         bool skip( size_t _pos ) override;
         size_t tell() const override;
@@ -37,10 +37,10 @@ namespace Mengine
         bool eof() const override;
 
     public:
-        bool time( uint64_t * _time ) const override;
+        bool time( uint64_t * const _time ) const override;
 
     public:
-        bool memory( void ** _memory, size_t * _size ) override;
+        bool memory( void ** _memory, size_t * const _size ) override;
 
     protected:
         uint8_t * m_data;

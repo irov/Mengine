@@ -132,7 +132,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        void substr( VectorTextLineChunks * _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size )
+        void substr( VectorTextLineChunks * const _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size )
         {
             VectorTextLineChunks::const_iterator it_offset = _str.begin();
             std::advance( it_offset, _offset );
@@ -151,7 +151,7 @@ namespace Mengine
             _out->insert( _out->begin(), it_offset, it_size );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split( VectorTextLineChunks2 * _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims )
+        void split( VectorTextLineChunks2 * const _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims )
         {
             VectorTextLineChunks collect;
 

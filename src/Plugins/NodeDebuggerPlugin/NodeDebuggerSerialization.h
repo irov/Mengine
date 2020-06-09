@@ -106,7 +106,7 @@ namespace Mengine
             return _attrib.as_float();
         }
 
-        MENGINE_INLINE void deserializeFloats( const pugi::xml_attribute & _attrib, float * _floats, const size_t _numFloats )
+        MENGINE_INLINE void deserializeFloats( const pugi::xml_attribute & _attrib, float * const _floats, const size_t _numFloats )
         {
             std::string strValue = _attrib.value();
             std::string::size_type lastPos = 0;

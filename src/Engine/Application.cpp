@@ -1631,7 +1631,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::calcWindowResolution( Resolution * _windowResolution ) const
+    void Application::calcWindowResolution( Resolution * const _windowResolution ) const
     {
         Resolution dres;
         PLATFORM_SERVICE()
@@ -1995,7 +1995,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Application::getCompanyName( Char * _companyName ) const
+    size_t Application::getCompanyName( Char * const _companyName ) const
     {
         MENGINE_STRCPY( _companyName, m_companyName );
 
@@ -2004,7 +2004,7 @@ namespace Mengine
         return companyNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Application::getProjectName( Char * _projectName ) const
+    size_t Application::getProjectName( Char * const _projectName ) const
     {
         MENGINE_STRCPY( _projectName, m_projectName );
 
@@ -2098,7 +2098,7 @@ namespace Mengine
         return m_fixedDisplayResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::getGameViewport( float * _aspect, Viewport * const _viewport ) const
+    void Application::getGameViewport( float * const _aspect, Viewport * const _viewport ) const
     {
         float aspect = m_currentResolution.getAspectRatio();
 

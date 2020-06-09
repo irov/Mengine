@@ -38,7 +38,7 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer MockupRenderImageTarget::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    Pointer MockupRenderImageTarget::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         MENGINE_UNUSED( _pitch );
         MENGINE_UNUSED( _level );

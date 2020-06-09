@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
         Identity();
-        ~Identity();
+        ~Identity() override;
 
     public:
         void setName( const ConstString & _name );

@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         ImageDecoderArchive();
+        ~ImageDecoderArchive() override;
 
     public:
         void setArchivator( const ArchivatorInterfacePtr & _archivator );

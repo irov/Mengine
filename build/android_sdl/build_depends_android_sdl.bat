@@ -5,7 +5,7 @@ if ["%~1"]==[""] (
   goto end
 )
 
-set "CONFIGURATION=%1"
+set CONFIGURATION=%1
 
 @echo Starting dependencies build %CONFIGURATION% configuration...
 

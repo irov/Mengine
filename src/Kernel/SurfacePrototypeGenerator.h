@@ -19,6 +19,15 @@ namespace Mengine
         : public DefaultPrototypeGenerator<Type, Count>
 #endif
     {
+    public:
+        SurfacePrototypeGenerator()
+        {
+        }
+
+        ~SurfacePrototypeGenerator() override
+        {
+        }
+
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
         {

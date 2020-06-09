@@ -125,7 +125,7 @@ public class FacebookInteractionLayer {
         request.executeAsync();
     }
 
-    public void shareLink(final Activity activity, String link) {
+    public void shareLink(final Activity activity, String link, String picture, String message) {
         ShareDialog shareDialog = new ShareDialog(activity);
         shareDialog.registerCallback(_callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override

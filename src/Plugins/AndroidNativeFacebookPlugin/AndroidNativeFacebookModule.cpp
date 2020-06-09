@@ -35,7 +35,7 @@ extern "C"
         jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
         jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)Z" );
         jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()Z" );
-        jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)Z" );
+        jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
         jmethodID_getAccessToken = mEnv->GetStaticMethodID( mActivityClass, "facebookGetAccessToken", "()Ljava/lang/String;" );
         jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)Z" );
@@ -430,16 +430,22 @@ namespace Mengine
         return (bool)jReturnValue;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeFacebookModule::shareLink( const String & _link )
+    bool AndroidNativeFacebookModule::shareLink( const String & _link, const String & _picture, const String & _message )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
         const Char * link_str = _link.c_str();
         jstring jlink = env->NewStringUTF( link_str );
+        const Char * picture_str = _picture.c_str();
+        jstring jpicture = env->NewStringUTF( picture_str );
+        const Char * message_str = _message.c_str();
+        jstring jmessage = env->NewStringUTF( message_str );
 
-        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_shareLink, jlink );
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_shareLink, jlink, jpicture, jmessage );
         
         env->DeleteLocalRef( jlink );
+        env->DeleteLocalRef( jpicture );
+        env->DeleteLocalRef( jmessage );
 
         return (bool)jReturnValue;
     }

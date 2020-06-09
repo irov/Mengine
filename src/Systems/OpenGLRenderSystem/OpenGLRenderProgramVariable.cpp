@@ -36,7 +36,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        static void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, EProgramVariableType _type, const T * _values, uint32_t _size, uint32_t _count )
+        static void makeVariableData( OpenGLRenderProgramVariable::ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, OpenGLRenderProgramVariable::EProgramVariableType _type, const T * _values, uint32_t _size, uint32_t _count )
         {
             MENGINE_STRCPY( _variable.uniform, _uniform );
             _variable.type = _type;
@@ -100,7 +100,7 @@ namespace Mengine
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        float * values = &m_pixelFloats[v.offset];
+        float * values = m_pixelFloats.data() + v.offset;
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ namespace Mengine
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        int32_t * values = &m_pixelIntegers[v.offset];
+        int32_t * values = m_pixelIntegers.data() + v.offset;
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ namespace Mengine
     {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        int32_t * values = &m_pixelBooleans[v.offset];
+        int32_t * values = m_pixelBooleans.data() + v.offset;
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ namespace Mengine
             {
             case EPVT_FLOAT:
                 {
-                    const float * buff = &m_dataFloats[v.offset];
+                    const float * buff = m_dataFloats.data() + v.offset;
 
                     switch( v.size )
                     {
@@ -172,7 +172,7 @@ namespace Mengine
                 }break;
             case EPVT_INTEGER:
                 {
-                    const int32_t * buff = &m_dataIntegers[v.offset];
+                    const int32_t * buff = m_dataIntegers.data() + v.offset;
 
                     switch( v.size )
                     {
@@ -198,7 +198,7 @@ namespace Mengine
                 }break;
             case EPVT_BOOLEAN:
                 {
-                    const int32_t * buff = &m_dataBooleans[v.offset];
+                    const int32_t * buff = m_dataBooleans.data() + v.offset;
 
                     switch( v.size )
                     {
@@ -251,7 +251,7 @@ namespace Mengine
             {
             case EPVT_FLOAT:
                 {
-                    const float * buff = &m_pixelFloats[v.offset];
+                    const float * buff = m_pixelFloats.data() + v.offset;
 
                     switch( v.size )
                     {
@@ -277,7 +277,7 @@ namespace Mengine
                 }break;
             case EPVT_INTEGER:
                 {
-                    const int32_t * buff = &m_pixelIntegers[v.offset];
+                    const int32_t * buff = m_pixelIntegers.data() + v.offset;
 
                     switch( v.size )
                     {
@@ -303,7 +303,7 @@ namespace Mengine
                 }break;
             case EPVT_BOOLEAN:
                 {
-                    const int32_t * buff = &m_pixelBooleans[v.offset];
+                    const int32_t * buff = m_pixelBooleans.data() + v.offset;
 
                     switch( v.size )
                     {

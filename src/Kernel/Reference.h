@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         Reference();
+        ~Reference() override;
 
     public:
         bool incrementReference();

@@ -35,7 +35,7 @@ extern "C"
         jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
         jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)Z" );
         jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()Z" );
-        jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)Z" );
+        jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
         jmethodID_getAccessToken = mEnv->GetStaticMethodID( mActivityClass, "facebookGetAccessToken", "()Ljava/lang/String;" );
         jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)Z" );

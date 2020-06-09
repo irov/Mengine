@@ -19,7 +19,7 @@ namespace Mengine
 
     public:
         void setUnprotectedValue( uint32_t _value );
-        bool getUnprotectedValue( uint32_t * _value ) const;
+        bool getUnprotectedValue( uint32_t * const _value ) const;
 
     public:
         bool setupSecureValue( const SecureValuePtr & _value );

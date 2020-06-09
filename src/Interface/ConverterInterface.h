@@ -28,7 +28,7 @@ namespace Mengine
         virtual bool initialize() = 0;
 
     public:
-        virtual void setOptions( ConverterOptions * _options ) = 0;
+        virtual void setOptions( const ConverterOptions * _options ) = 0;
 
     public:
         virtual const ConstString & getConvertExt() const = 0;

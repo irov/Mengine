@@ -210,7 +210,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const
+    void Window::_updateVertices( RenderVertex2D * const _vertices, uint8_t _invalidateVertices ) const
     {
         MENGINE_UNUSED( _invalidateVertices );
 

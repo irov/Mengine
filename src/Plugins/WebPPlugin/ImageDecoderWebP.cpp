@@ -97,9 +97,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderWEBP::_decode( void * _buffer, size_t _bufferSize )
+    size_t ImageDecoderWEBP::_decode( void * const _buffer, size_t _bufferSize )
     {
-        uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
+        uint8_t * const webp_buffer = static_cast<uint8_t * const>(_buffer);
         size_t webp_buffer_size = _bufferSize;
 
         void * streamMemory;

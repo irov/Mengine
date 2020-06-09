@@ -8,7 +8,7 @@ namespace Mengine
         : public DateTimeProviderInterface
     {
     protected:
-        void getLocalDateTime( PlatformDateTime * _dateTime ) const override;
+        void getLocalDateTime( PlatformDateTime * const _dateTime ) const override;
 
     protected:
         uint64_t getLocalDateMilliseconds() const override;

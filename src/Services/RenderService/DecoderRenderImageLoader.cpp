@@ -56,7 +56,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DecoderRenderImageLoader::getImageDesc( RenderImageDesc * _desc ) const
+    void DecoderRenderImageLoader::getImageDesc( RenderImageDesc * const _desc ) const
     {
         const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 

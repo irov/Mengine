@@ -696,7 +696,7 @@ namespace Mengine
         m_renderPrimitives.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void BatchRenderPipeline::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * _vbPos, uint32_t * _ibPos )
+    void BatchRenderPipeline::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * const _vbPos, uint32_t * const _ibPos )
     {
         uint32_t vbPos = *_vbPos;
         uint32_t ibPos = *_ibPos;
@@ -755,7 +755,7 @@ namespace Mengine
         *_ibPos = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BatchRenderPipeline::batchRenderObjectNormal_( DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderObjects::iterator _roEnd, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * _vbPos, uint32_t * _ibPos )
+    void BatchRenderPipeline::batchRenderObjectNormal_( DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderObjects::iterator _roEnd, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderPrimitive * const _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * const _vbPos, uint32_t * const _ibPos )
     {
         uint32_t vbPos = *_vbPos;
         uint32_t ibPos = *_ibPos;

@@ -198,7 +198,7 @@ namespace Mengine
         mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonal::makeViewport_( Viewport * _viewport ) const
+    void RenderCameraOrthogonal::makeViewport_( Viewport * const _viewport ) const
     {
         if( m_fixedOrthogonalViewport == false )
         {

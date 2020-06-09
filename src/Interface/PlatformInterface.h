@@ -51,7 +51,7 @@ namespace Mengine
         virtual uint32_t getIcon() const = 0;
 
         virtual void setProjectTitle( const Char * _projectTitle ) = 0;
-        virtual size_t getProjectTitle( Char * _projectTitle ) const = 0;
+        virtual size_t getProjectTitle( Char * const _projectTitle ) const = 0;
 
     public:
         virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;
@@ -68,7 +68,7 @@ namespace Mengine
         virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool getDesktopResolution( Resolution * _resolution ) const = 0;
+        virtual bool getDesktopResolution( Resolution * const _resolution ) const = 0;
 
         virtual bool getNoFullscreen() const = 0;
         virtual bool getAlwaysFullscreen() const = 0;
@@ -78,9 +78,9 @@ namespace Mengine
         virtual bool isDebuggerPresent() const = 0;
         virtual bool createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full ) = 0;
 
-        virtual size_t getCurrentPath( Char * _filePath ) const = 0;
-        virtual size_t getUserPath( Char * _filePath ) const = 0;
-        virtual size_t getUserName( Char * _userName ) const = 0;
+        virtual size_t getCurrentPath( Char * const _filePath ) const = 0;
+        virtual size_t getUserPath( Char * const _filePath ) const = 0;
+        virtual size_t getUserName( Char * const _userName ) const = 0;
 
         virtual void minimizeWindow() = 0;
 
@@ -104,7 +104,7 @@ namespace Mengine
         virtual size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const = 0;
 
     public:
-        virtual void getMaxClientResolution( Resolution * _resolution ) const = 0;
+        virtual void getMaxClientResolution( Resolution * const _resolution ) const = 0;
 
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;

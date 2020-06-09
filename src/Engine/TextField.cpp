@@ -572,7 +572,7 @@ namespace Mengine
         return m_textSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::calcTextViewport( Viewport * _viewport ) const
+    bool TextField::calcTextViewport( Viewport * const _viewport ) const
     {
         if( m_textId.empty() == true )
         {
@@ -610,7 +610,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesWrap_( VectorTextLineChunks2 * _textLines ) const
+    void TextField::updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const
     {
         if( m_wrap == false )
         {
@@ -717,7 +717,7 @@ namespace Mengine
         _textLines->swap( new_textLines );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 * _textLines ) const
+    void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const
     {
         if( m_maxCharCount == MENGINE_UNKNOWN_SIZE )
         {
@@ -767,7 +767,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
+    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _size, uint32_t * const _charCount, uint32_t * const _layoutCount ) const
     {
         float fontHeight = _font->getFontAscent();
 
@@ -1568,7 +1568,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextCache_( U32String * _cacheText ) const
+    bool TextField::updateTextCache_( U32String * const _cacheText ) const
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
@@ -1786,7 +1786,7 @@ namespace Mengine
         this->updateVertexDataWM_( &m_vertexDataTextWM, m_vertexDataText );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexDataWM_( VectorRenderVertex2D * _outVertex, const VectorRenderVertex2D & _fromVertex ) const
+    void TextField::updateVertexDataWM_( VectorRenderVertex2D * const _outVertex, const VectorRenderVertex2D & _fromVertex ) const
     {
         _outVertex->assign( _fromVertex.begin(), _fromVertex.end() );
 

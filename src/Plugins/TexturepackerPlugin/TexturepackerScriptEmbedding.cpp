@@ -22,12 +22,12 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        ResourceImagePtr ResourceTexturepacker_getFrame( ResourceTexturepacker * _texturepacker, const ConstString & _name )
+        static ResourceImagePtr ResourceTexturepacker_getFrame( ResourceTexturepacker * _texturepacker, const ConstString & _name )
         {
             ResourceImagePtr resource;
             if( _texturepacker->findFrame( _name, &resource ) == false )
             {
-                LOGGER_ERROR( "ResourceTexturepacker '%s' not found frame '%s'"
+                LOGGER_ERROR( "'%s' not found frame '%s'"
                     , _texturepacker->getName().c_str()
                     , _name.c_str()
                 );

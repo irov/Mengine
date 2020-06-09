@@ -105,7 +105,7 @@ namespace Mengine
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashW( WChar * _filePath )
+        void pathCorrectBackslashW( WChar * const _filePath )
         {
             WChar * pch = MENGINE_WCSCHR( _filePath, L'\\' );
 
@@ -117,21 +117,21 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashToA( Char * _out, const Char * _in )
+        void pathCorrectBackslashToA( Char * const _out, const Char * _in )
         {
             MENGINE_STRCPY( _out, _in );
 
             Helper::pathCorrectBackslashA( _out );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashToW( WChar * _out, const WChar * _in )
+        void pathCorrectBackslashToW( WChar * const _out, const WChar * _in )
         {
             MENGINE_WCSCPY( _out, _in );
 
             Helper::pathCorrectBackslashW( _out );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectForwardslashW( WChar * _filePath )
+        void pathCorrectForwardslashW( WChar * const _filePath )
         {
             WChar * pch = MENGINE_WCSCHR( _filePath, MENGINE_PATH_WDELIM );
 
@@ -143,7 +143,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectForwardslashA( Char * _filePath )
+        void pathCorrectForwardslashA( Char * const _filePath )
         {
             Char * pch = MENGINE_STRCHR( _filePath, MENGINE_PATH_DELIM );
 
@@ -155,7 +155,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathRemoveBackslashW( WChar * _filePath )
+        void pathRemoveBackslashW( WChar * const _filePath )
         {
             size_t len = MENGINE_WCSLEN( _filePath );
 
@@ -167,7 +167,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        bool pathRemoveFileSpecW( WChar * _filePath )
+        bool pathRemoveFileSpecW( WChar * const _filePath )
         {
             size_t len = MENGINE_WCSLEN( _filePath );
 
@@ -202,7 +202,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashA( Char * _filePath )
+        void pathCorrectBackslashA( Char * const _filePath )
         {
             Char * pch = MENGINE_STRCHR( _filePath, '\\' );
 
@@ -214,7 +214,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathRemoveBackslashA( Char * _filePath )
+        void pathRemoveBackslashA( Char * const _filePath )
         {
             size_t len = MENGINE_STRLEN( _filePath );
 
@@ -226,7 +226,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        bool pathRemoveFileSpecA( Char * _filePath )
+        bool pathRemoveFileSpecA( Char * const _filePath )
         {
             size_t len = MENGINE_STRLEN( _filePath );
 

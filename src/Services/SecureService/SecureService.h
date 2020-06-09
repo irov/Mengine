@@ -21,8 +21,8 @@ namespace Mengine
         HashType getSequreHash() const override;
 
     public:
-        void protectData( void * _buffer, size_t _size ) const override;
-        void unprotectData( void * _buffer, size_t _size ) const override;
+        void protectData( void * const _buffer, size_t _size ) const override;
+        void unprotectData( void * const _buffer, size_t _size ) const override;
 
     protected:
         HashType m_secureHash;

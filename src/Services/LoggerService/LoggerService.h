@@ -36,8 +36,8 @@ namespace Mengine
         bool isSilent() const override;
 
     public:
-        int32_t makeTimeStamp( Char * _buffer, int32_t _offset, size_t _capacity ) const override;
-        int32_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * _buffer, int32_t _offset, size_t _capacity ) const override;
+        int32_t makeTimeStamp( Char * const _buffer, int32_t _offset, size_t _capacity ) const override;
+        int32_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, int32_t _offset, size_t _capacity ) const override;
 
     public:
         bool validMessage( ELoggerLevel _level, uint32_t _flag ) const override;

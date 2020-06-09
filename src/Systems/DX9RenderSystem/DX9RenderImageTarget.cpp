@@ -52,7 +52,7 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer DX9RenderImageTarget::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    Pointer DX9RenderImageTarget::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         MENGINE_UNUSED( _pitch );
         MENGINE_UNUSED( _level );

@@ -411,7 +411,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const
+    void AstralaxEmitter::updateVertexColor_( RenderVertex2D * const _vertices, uint32_t _verticesCount ) const
     {
         Color color;
         this->calcTotalColor( &color );
@@ -444,7 +444,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const
+    void AstralaxEmitter::updateVertexWM_( RenderVertex2D * const _vertices, uint32_t _verticesCount ) const
     {
         if( this->isIdentityWorldMatrix() == true )
         {
@@ -786,7 +786,7 @@ namespace Mengine
         *_position = wm.v3.to_vec3f();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::onProviderEmitterCamera( bool * _orthogonality, mt::vec3f * _position, mt::vec3f * _direction )
+    void AstralaxEmitter::onProviderEmitterCamera( bool * const _orthogonality, mt::vec3f * const _position, mt::vec3f * const _direction )
     {
         RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( this );
 

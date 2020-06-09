@@ -34,12 +34,12 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr ) override;
+        void stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr ) override;
 
     public:
-        void stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr ) override;
-        void stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr ) override;
-        bool stringizeExternal( ConstStringHolder * _holder, ConstString * _cstr ) override;
+        void stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr ) override;
+        void stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr ) override;
+        bool stringizeExternal( ConstStringHolder * const _holder, ConstString * const _cstr ) override;
 
     protected:
         typedef Pool<ConstStringHolderMemory, 1024> PoolConstStringHolderMemory;

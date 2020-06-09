@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
         Compilable();
-        ~Compilable();
+        ~Compilable() override;
 
     public:
         MENGINE_INLINE bool isCompile() const;

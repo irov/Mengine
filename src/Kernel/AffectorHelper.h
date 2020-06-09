@@ -25,6 +25,15 @@ namespace Mengine
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
 
     public:
+        LambdaAffectorInterpolateLinear()
+        {
+        }
+
+        ~LambdaAffectorInterpolateLinear() override
+        {
+        }
+
+    public:
         void initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, float _time )
         {
             this->setSettuper( _lambda );
@@ -41,6 +50,15 @@ namespace Mengine
     {
     public:
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
+
+    public:
+        LambdaAffectorInterpolateQuadratic()
+        {
+        }
+
+        ~LambdaAffectorInterpolateQuadratic() override
+        {
+        }
 
     public:
         void initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, const T & _v0, float _time )
@@ -61,6 +79,16 @@ namespace Mengine
         typedef Lambda<void( const T & )> LambdaSettuper;
         typedef Lambda<T()> LambdaGetter;
         typedef Lambda<void( T * )> LambdaPoints;
+
+    public:
+        LambdaAffectorInterpolateBezier()
+        {
+        }
+
+        ~LambdaAffectorInterpolateBezier() override
+        {
+        }
+
 
     public:
         void initialize( const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _getterPoints, float _time )

@@ -10,21 +10,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EProgramVariableType
-    {
-        EPVT_FLOAT,
-        EPVT_INTEGER,
-        EPVT_BOOLEAN
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct ProgramVariableDesc
-    {
-        EProgramVariableType type;
-        uint32_t offset;
-        uint32_t size;
-        uint32_t count;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class DX9RenderProgramVariable
         : public RenderProgramVariableInterface
         , public Factorable
@@ -54,6 +39,22 @@ namespace Mengine
 
     public:
         bool apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program );
+
+    public:
+        enum EProgramVariableType
+        {
+            EPVT_FLOAT,
+            EPVT_INTEGER,
+            EPVT_BOOLEAN
+        };
+
+        struct ProgramVariableDesc
+        {
+            EProgramVariableType type;
+            uint32_t offset;
+            uint32_t size;
+            uint32_t count;
+        };
 
     protected:
         typedef Vector<float> VectorDataFloats;

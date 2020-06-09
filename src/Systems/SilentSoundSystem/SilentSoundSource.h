@@ -49,7 +49,7 @@ namespace Mengine
         void setHeadMode( bool _headMode );
         bool getHeadMode() const;
 
-    private:
+    protected:
         SilentSoundSystem * m_soundSystem;
         
         bool m_headMode;
@@ -61,10 +61,9 @@ namespace Mengine
         uint32_t m_sourceId;
         float m_timing;
 
-        SilentSoundBufferPtr m_soundBuffer;
-        
+        SilentSoundBufferPtr m_soundBuffer;        
 
-    private:
+    protected:
         void unloadBuffer_();
     };
 

@@ -132,11 +132,15 @@ namespace Mengine
         {
         case 0:
             {
-                return m_resourceImage->getUVTextureImage();
+                const mt::uv4f & uv = m_resourceImage->getUVTextureImage();
+
+                return uv;
             }break;
         case 1:
             {
-                return m_resourceTrackMatteImage->getUVTextureImage();
+                const mt::uv4f & uv = m_resourceTrackMatteImage->getUVTextureImage();
+
+                return uv;
             }break;
         default:
             break;

@@ -13,6 +13,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ImageDecoderArchive::~ImageDecoderArchive()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ImageDecoderArchive::setArchivator( const ArchivatorInterfacePtr & _archivator )
     {
         m_archivator = _archivator;

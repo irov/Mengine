@@ -10,6 +10,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ImageEncoder::~ImageEncoder()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ImageEncoder::setOptions( const CodecOptions * _options )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _options, false );

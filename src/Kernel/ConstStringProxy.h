@@ -14,6 +14,10 @@ namespace Mengine
         {
         }
 
+        ~ConstStringProxy()
+        {
+        }
+
     public:
         const ConstString & c_cstr() const
         {

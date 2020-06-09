@@ -34,7 +34,7 @@ Layer2D
 )
 
 ADD_FILTER(
-Motor\\\\Motor
+Motor
     Motor.cpp
     Motor.h
 )

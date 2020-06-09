@@ -147,6 +147,7 @@ public class FacebookInteractionLayer {
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
                     .setContentUrl(Uri.parse(link))
+                    .setQuote(message)
                     .build();
             shareDialog.show(linkContent);
         }

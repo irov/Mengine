@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         ImageEncoder();
+        ~ImageEncoder() override;
 
     public:
         bool setOptions( const CodecOptions * _options ) override;

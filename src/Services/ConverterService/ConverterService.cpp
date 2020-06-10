@@ -67,7 +67,7 @@ namespace Mengine
         return converter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * _out, const DocumentPtr & _doc )
+    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentPtr & _doc )
     {
         if( _converter.empty() == true )
         {

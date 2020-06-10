@@ -22,7 +22,7 @@ namespace Mengine
         ~AffectorTransformationRotateTime() override;
 
     public:
-        bool _affect( const UpdateContext * _context, float * _used ) override;
+        bool _affect( const UpdateContext * _context, float * const _used ) override;
 
     protected:
         void _complete( bool _isEnd ) override;

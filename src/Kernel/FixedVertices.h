@@ -45,7 +45,7 @@ namespace Mengine
         }
 
     protected:
-        virtual void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const = 0;
+        virtual void _updateVertices( RenderVertex2D * const _vertices, uint8_t _invalidateVertices ) const = 0;
 
     private:
         mutable RenderVertex2D m_vertices[VerticesCount];

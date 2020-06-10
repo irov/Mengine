@@ -28,15 +28,6 @@ namespace Mengine
 {
     namespace ScriptMethod
     {
-        ////////////////////////////////////////////////////////////////////////////
-        //static pybind::list s_Polygon_getPoints( pybind::kernel_interface * _kernel, Polygon * _polygon )
-        //{
-        //    const VectorPoints & points = _polygon->getPoints();
-
-        //    pybind::list py_list_vec2f = pybind::make_list_container_t( _kernel, points );
-
-        //    return py_list_vec2f;
-        //}
         //////////////////////////////////////////////////////////////////////////
         static String vec2f_repr( mt::vec2f * _v )
         {
@@ -83,7 +74,7 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool vec2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec2f * _place, void * _user )
+        static bool vec2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec2f * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -148,7 +139,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool vec3f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec3f * _place, void * _user )
+        static bool vec3f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec3f * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -218,7 +209,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool vec4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec4f * _place, void * _user )
+        static bool vec4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec4f * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -254,7 +245,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool uv4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::uv4f * _uv, void * _user )
+        static bool uv4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::uv4f * _uv, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -300,7 +291,7 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool box2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::box2f * _place, void * _user )
+        static bool box2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::box2f * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -336,7 +327,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool Polygon_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+        static bool Polygon_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -367,7 +358,7 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool color_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Color * _place, void * _user )
+        static bool color_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Color * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -429,7 +420,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool Resolution_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Resolution * _place, void * _user )
+        static bool Resolution_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Resolution * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -477,7 +468,7 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool Viewport_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Viewport * _place, void * _user )
+        static bool Viewport_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Viewport * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 
@@ -538,7 +529,7 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool Rect_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Rect * _place, void * _user )
+        static bool Rect_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Rect * _place, void * const _user )
         {
             MENGINE_UNUSED( _user );
 

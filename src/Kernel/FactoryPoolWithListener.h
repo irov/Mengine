@@ -18,18 +18,16 @@ namespace Mengine
             {
             }
 
+            ~MethodFactoryDestroyListener() override
+            {
+            }
+
         protected:
             void onFactoryDestroyObject( Factorable * _object ) override
             {
                 T * obj = static_cast<T *>(_object);
 
                 (m_self->*m_method)(obj);
-            }
-
-        protected:
-            void destroy() override
-            {
-                Helper::deleteT( this );
             }
 
         protected:

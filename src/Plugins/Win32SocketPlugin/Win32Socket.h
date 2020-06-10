@@ -28,7 +28,7 @@ namespace Mengine
         bool waitForData( uint32_t _timeoutMs ) override;
 
         int send( const void * _data, size_t _numBytes ) override;
-        int receive( void * _data, size_t _maxBytes ) override;
+        int receive( void * const _data, size_t _maxBytes ) override;
 
     public:
         OutputStreamInterfacePtr getSendStream() const override;

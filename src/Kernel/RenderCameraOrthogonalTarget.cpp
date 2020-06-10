@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonalTarget::setRenderCameraOrthogonal( RenderCameraOrthogonal * _camera )
+    void RenderCameraOrthogonalTarget::setRenderCameraOrthogonal( RenderCameraOrthogonal * const _camera )
     {
         m_camera = _camera;
     }

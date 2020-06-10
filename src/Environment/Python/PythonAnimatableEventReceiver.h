@@ -55,7 +55,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T_AnimatableReceiver = PythonAnimatableEventReceiver<> >
-        void registerAnimatableEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * _eventable, const DocumentPtr & _doc )
+        void registerAnimatableEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * const _eventable, const DocumentPtr & _doc )
         {
             Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatablePlay", EVENT_ANIMATION_PLAY, _doc );
             Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableRestart", EVENT_ANIMATION_RESTART, _doc );

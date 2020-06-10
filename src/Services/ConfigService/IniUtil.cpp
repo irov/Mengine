@@ -24,17 +24,10 @@ namespace Mengine
     namespace IniUtil
     {
         //////////////////////////////////////////////////////////////////////////
-        IniStore::IniStore()
-        {
-            tinyini_initialize( &ini );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        IniStore::~IniStore()
-        {
-        }
-        //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
         {
+            tinyini_initialize( &_ini.ini );
+
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "open ini file '%s:%s'"
@@ -51,6 +44,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
         {
+            tinyini_initialize( &_ini.ini );
+
             size_t size = _stream->size();
 
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()

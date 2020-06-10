@@ -10,7 +10,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t N>
-        MENGINE_CONSTEXPR void calculateBezierPosition( T * _out, const T & _begin, const T & _end, const T * _v, float _dt )
+        MENGINE_CONSTEXPR void calculateBezierPosition( T * const _out, const T & _begin, const T & _end, const T * _v, float _dt )
         {
             uint32_t n = N + 1;
 

@@ -123,7 +123,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath )
+    bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _fullPath )
     {
         size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
 
@@ -169,7 +169,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32FileInputStream::read( void * _buf, size_t _count )
+    size_t Win32FileInputStream::read( void * const _buf, size_t _count )
     {
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::read" );
 
@@ -257,7 +257,7 @@ namespace Mengine
         return readSize + tail;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::read_( void * _buf, size_t _offset, size_t _size, size_t * _read )
+    bool Win32FileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * _read )
     {
         uint8_t * buf_offset = (uint8_t *)_buf + _offset;
 
@@ -355,7 +355,7 @@ namespace Mengine
         return (m_reading - m_capacity + m_carriage) == m_size;
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::time( uint64_t * _time ) const
+    bool Win32FileInputStream::time( uint64_t * const _time ) const
     {
         FILETIME creation;
         FILETIME access;

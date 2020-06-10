@@ -14,11 +14,11 @@ namespace Mengine
         SERVICE_DECLARE( "FileService" )
 
     public:
-        virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const DocumentPtr & _doc ) = 0;
+        virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentPtr & _doc ) = 0;
         virtual bool unmountFileGroup( const ConstString & _name ) = 0;
 
     public:
-        virtual bool hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * _fileGroup ) const = 0;
+        virtual bool hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * const _fileGroup ) const = 0;
         virtual const FileGroupInterfacePtr & getFileGroup( const ConstString & _name ) const = 0;
 
     public:

@@ -22,6 +22,6 @@ namespace Mengine
         ConverterInterfacePtr createConverter( const ConstString & _type, const DocumentPtr & _doc ) override;
 
     public:
-        bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * _out, const DocumentPtr & _doc ) override;
+        bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentPtr & _doc ) override;
     };
 }

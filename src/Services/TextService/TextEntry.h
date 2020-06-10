@@ -35,7 +35,7 @@ namespace Mengine
 
     public:
         const ConstString & getKey() const override;
-        const Char * getValue( size_t * _size ) const override;
+        const Char * getValue( size_t * const _size ) const override;
 
     public:
         const Tags & getTags() const override;

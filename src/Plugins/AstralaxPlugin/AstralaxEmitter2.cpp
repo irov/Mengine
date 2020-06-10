@@ -190,7 +190,7 @@ namespace Mengine
         return m_is3d;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::getCamera( AstralaxCamera * _camera ) const
+    bool AstralaxEmitter2::getCamera( AstralaxCamera * const _camera ) const
     {
         MAGIC_VIEW view;
         if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
@@ -238,7 +238,7 @@ namespace Mengine
         m_start = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::update( float _time, bool * _stop )
+    bool AstralaxEmitter2::update( float _time, bool * const _stop )
     {
         if( m_start == false )
         {
@@ -380,7 +380,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::changeEmitterModel( float * _points, uint32_t _count )
+    bool AstralaxEmitter2::changeEmitterModel( float * const _points, uint32_t _count )
     {
         MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
@@ -512,7 +512,7 @@ namespace Mengine
         return mode;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::prepareParticles( AstralaxEmitterRenderFlush * _flush )
+    bool AstralaxEmitter2::prepareParticles( AstralaxEmitterRenderFlush * const _flush )
     {
         _flush->meshCount = 0;
         _flush->vertexCount = 0;
@@ -553,7 +553,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush * _flush )
+    bool AstralaxEmitter2::flushParticles( AstralaxMesh * const _meshes, uint32_t _meshLimit, RenderVertex2D * const _vertices, RenderIndex * const _indices, AstralaxEmitterRenderFlush * const _flush )
     {
         for( uint32_t i = 0; i != _flush->arrays; ++i )
         {

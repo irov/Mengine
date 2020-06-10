@@ -1291,7 +1291,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::stringToPath( const String & _str, VectorNodePath * _path ) const
+    void NodeDebuggerModule::stringToPath( const String & _str, VectorNodePath * const _path ) const
     {
         if( _str.empty() == false && _str[0] != '-' )
         {

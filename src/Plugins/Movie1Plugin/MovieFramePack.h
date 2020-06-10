@@ -34,13 +34,13 @@ namespace Mengine
         const MovieLayerFrame & getLayer( uint32_t _layerIndex ) const override;
 
     public:
-        bool getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource * _frame ) const override;
-        bool getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource * _frame ) const override;
+        bool getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource * const _frame ) const override;
+        bool getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource * const _frame ) const override;
 
     public:
-        bool getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float * _time ) const override;
+        bool getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float * const _time ) const override;
         bool getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** _shape ) const override;
-        bool getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t * _vertexCount ) const override;
+        bool getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t * const _vertexCount ) const override;
 
     public:
         bool isLayerPermanentlyHide( uint32_t _layerIndex ) const override;

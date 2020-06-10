@@ -38,7 +38,7 @@ namespace Mengine
             return memorySize;
         }
         //////////////////////////////////////////////////////////////////////////
-        void multiplyColorBuffer( const Color & _color, uint8_t * _out, const uint8_t * _in )
+        void multiplyColorBuffer( const Color & _color, uint8_t * const _out, const uint8_t * _in )
         {
             ColorValue_ARGB argb = _color.getAsARGB();
 

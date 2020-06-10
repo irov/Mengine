@@ -91,7 +91,7 @@ namespace Mengine
         m_factoryDecoderRenderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * _texture ) const
+    bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * const _texture ) const
     {
         const ConstString & fileGroupName = _fileGroup->getName();
 
@@ -382,7 +382,7 @@ namespace Mengine
         return memoryUse;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::updateImageParams_( uint32_t * _width, uint32_t * _height, uint32_t * _channels, uint32_t * _depth, EPixelFormat * _format ) const
+    void RenderTextureService::updateImageParams_( uint32_t * const _width, uint32_t * const _height, uint32_t * const _channels, uint32_t * const _depth, EPixelFormat * const _format ) const
     {
         if( ((*_width & (*_width - 1)) != 0 || (*_height & (*_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
         {

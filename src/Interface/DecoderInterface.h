@@ -29,7 +29,7 @@ namespace Mengine
         virtual bool prepareData( const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
-        virtual size_t decode( void * _buffer, size_t _bufferSize ) = 0;
+        virtual size_t decode( void * const _buffer, size_t _bufferSize ) = 0;
         virtual bool rewind() = 0;
 
     public:

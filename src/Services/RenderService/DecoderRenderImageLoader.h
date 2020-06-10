@@ -22,7 +22,7 @@ namespace Mengine
         bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags );
 
     protected:
-        void getImageDesc( RenderImageDesc * _desc ) const override;
+        void getImageDesc( RenderImageDesc * const _desc ) const override;
 
     protected:
         bool load( const RenderImageInterfacePtr & _image ) const override;

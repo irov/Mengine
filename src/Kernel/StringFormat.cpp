@@ -49,7 +49,7 @@ namespace Mengine
             return num_argumetns;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getStringFormat( String * _out, const Char * _format, size_t _size, const VectorString & _arguments )
+        bool getStringFormat( String * const _out, const Char * _format, size_t _size, const VectorString & _arguments )
         {
             uint32_t num_argumetns = 0;
 

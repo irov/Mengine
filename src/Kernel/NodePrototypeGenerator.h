@@ -22,6 +22,15 @@ namespace Mengine
         : public DefaultPrototypeGenerator<Type, Count>
 #endif
     {
+    public:
+        NodePrototypeGenerator()
+        {
+        }
+
+        ~NodePrototypeGenerator() override
+        {
+        }
+
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
         {

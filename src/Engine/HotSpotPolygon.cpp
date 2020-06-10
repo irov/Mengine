@@ -165,7 +165,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotPolygon::getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const
+    void HotSpotPolygon::getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * const _bb, Polygon * const _screen ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( _camera, "invalid camera nullptr" );
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( _viewport, "invalid viewport nullptr" );

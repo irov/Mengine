@@ -94,7 +94,7 @@ namespace Mengine
         return m_protocolPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * _exist ) const
+    bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const
     {
         LOGGER_INFO( "load bin '%s:%s'"
             , _fileGroup->getName().c_str()
@@ -195,7 +195,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * _reimport ) const
+    bool LoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport ) const
     {
         size_t size = _stream->size();
 
@@ -331,7 +331,7 @@ namespace Mengine
     }
 #ifndef MENGINE_MASTER_RELEASE
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * _stream, bool * _exist ) const
+    bool LoaderService::openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * const _stream, bool * const _exist ) const
     {
         PathString cache_path_xml;
         cache_path_xml += _filePath;
@@ -390,7 +390,7 @@ namespace Mengine
 
             if( this->makeBin_( _fileGroup, c_cache_path_xml, _filePath ) == false )
             {
-                _stream = nullptr;
+                *_stream = nullptr;
 
                 return false;
             }
@@ -448,7 +448,7 @@ namespace Mengine
     }
 #else
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * _stream, bool * _exist ) const
+    bool LoaderService::openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * const _stream, bool * const _exist ) const
     {
         if( _fileGroup->existFile( _filePath, true ) == false )
         {

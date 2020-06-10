@@ -57,7 +57,7 @@ namespace Mengine
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<OpenGLRenderFragmentShader, 16>( this, &OpenGLRenderSystem::onRenderFragmentShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexShader, 16>( this, &OpenGLRenderSystem::onRenderVertexShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgramVariable = Helper::makeFactoryPoolWithListener<OpenGLRenderProgramVariable, 16>( this, &OpenGLRenderSystem::onRenderProgramVariableDestroy_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariable = Helper::makeFactoryPool<OpenGLRenderProgramVariable, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -107,7 +107,6 @@ namespace Mengine
         m_cacheRenderVertexShaders.clear();
         m_cacheRenderFragmentShaders.clear();
         m_cacheRenderPrograms.clear();
-        m_cacheRenderProgramVariables.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
@@ -1146,19 +1145,6 @@ namespace Mengine
 
         *it_found = m_cacheRenderPrograms.back();
         m_cacheRenderPrograms.pop_back();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::onRenderProgramVariableDestroy_( OpenGLRenderProgramVariable * _variable )
-    {
-        VectorCacheRenderProgramVariables::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
-
-        if( it_found == m_cacheRenderProgramVariables.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderProgramVariables.back();
-        m_cacheRenderProgramVariables.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::updatePMWMatrix_()

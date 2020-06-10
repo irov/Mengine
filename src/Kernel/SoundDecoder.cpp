@@ -10,6 +10,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    SoundDecoder::~SoundDecoder()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SoundDecoder::setOptions( const CodecOptions * _options )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _options, false );

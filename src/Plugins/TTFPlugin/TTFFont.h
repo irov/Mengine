@@ -80,7 +80,7 @@ namespace Mengine
 
     public:
         bool hasGlyph( GlyphCode _code ) const override;
-        bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
+        bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const override;
 
     protected:
         uint32_t getLayoutCount() const override;
@@ -100,7 +100,7 @@ namespace Mengine
         bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) override;
 
     protected:
-        bool loadFaceGlyph_( GlyphCode _code, FT_Face * _face );
+        bool loadFaceGlyph_( GlyphCode _code, FT_Face * const _face );
 
     protected:
         FT_Library m_ftlibrary;

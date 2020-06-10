@@ -29,7 +29,7 @@ namespace Mengine
             return m_started;
         }
 
-        virtual bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used ) = 0;
+        virtual bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * const _out, float * const _used ) = 0;
 
     protected:
         bool m_started;

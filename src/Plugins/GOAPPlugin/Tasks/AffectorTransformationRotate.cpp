@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AffectorTransformationRotate::_affect( const UpdateContext * _context, float * _used )
+    bool AffectorTransformationRotate::_affect( const UpdateContext * _context, float * const _used )
     {
         float time = _context->time;
 

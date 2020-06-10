@@ -167,7 +167,7 @@ namespace Mengine
         mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::makeViewport_( Viewport * _viewport ) const
+    void RenderCameraProjection::makeViewport_( Viewport * const _viewport ) const
     {
         float tangent = MT_tanf( m_cameraFov * 0.5f );
         float height = 2.f * 1.f * tangent;

@@ -57,7 +57,7 @@ namespace Mengine
             return totalsize;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool base64_encode( const uint8_t * _data, size_t _datasize, bool _mod, Char * _base64, size_t _capacity, size_t * _outsize )
+        bool base64_encode( const uint8_t * _data, size_t _datasize, bool _mod, Char * const _base64, size_t _capacity, size_t * const _outsize )
         {
             size_t totalsize = base64_encode_size( _datasize );
 
@@ -101,7 +101,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool base64_decode( const Char * _base64, size_t _base64size, uint8_t * _data, size_t _capacity, size_t * _outsize )
+        bool base64_decode( const Char * _base64, size_t _base64size, uint8_t * const _data, size_t _capacity, size_t * const _outsize )
         {               
             size_t totalsize = base64_decode_size( _base64, _base64size );
 

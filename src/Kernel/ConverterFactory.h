@@ -17,6 +17,15 @@ namespace Mengine
         : public ConverterFactoryInterface
         , public Factorable
     {
+    public:
+        ConverterFactory()
+        {
+        }
+
+        ~ConverterFactory() override
+        {
+        }
+
     protected:
         bool initialize() override
         {
@@ -31,16 +40,6 @@ namespace Mengine
             IntrusivePtr<T> converter = m_factory->createObject( _doc );
 
             return converter;
-        }
-
-    protected:
-        void destroy() override
-        {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
-
-            m_factory = nullptr;
-
-            Helper::deleteT( this );
         }
 
     protected:

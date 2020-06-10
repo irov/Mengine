@@ -923,7 +923,7 @@ namespace Mengine
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * _entry ) const
+    bool TextService::hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * const _entry ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _textId );
 
@@ -940,7 +940,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::existFont( const ConstString & _fontName, TextFontInterfacePtr * _font ) const
+    bool TextService::existFont( const ConstString & _fontName, TextFontInterfacePtr * const _font ) const
     {
         const TextFontInterfacePtr & font = m_fonts.find( _fontName );
 
@@ -1030,7 +1030,7 @@ namespace Mengine
         m_aliasesArguments.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * _arguments ) const
+    bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const
     {
         PairAliasKey key = std::make_pair( _environment, _alias );
 
@@ -1124,7 +1124,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * _cstr )
+    void TextService::createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * const _cstr )
     {
         ConstStringHolderLocalString * holder = m_poolLocalString.createT();
 

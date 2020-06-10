@@ -41,7 +41,7 @@ namespace Mengine
         virtual const FilePath & getFolderPath() const = 0;
 
     public:
-        virtual bool getFullPath( const FilePath & _filePath, Char * _fullPath ) const = 0;
+        virtual bool getFullPath( const FilePath & _filePath, Char * const _fullPath ) const = 0;
 
     public:
         virtual bool isPacked() const = 0;

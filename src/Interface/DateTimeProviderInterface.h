@@ -10,7 +10,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void getLocalDateTime( PlatformDateTime * _dateTime ) const = 0;
+        virtual void getLocalDateTime( PlatformDateTime * const _dateTime ) const = 0;
 
     public:
         virtual uint64_t getLocalDateMilliseconds() const = 0;

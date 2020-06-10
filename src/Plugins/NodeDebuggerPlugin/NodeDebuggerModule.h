@@ -96,7 +96,7 @@ namespace Mengine
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
         void receiveGameControlCommand( const String & _command );
-        void stringToPath( const String & _str, VectorNodePath * _path ) const;
+        void stringToPath( const String & _str, VectorNodePath * const _path ) const;
 
     protected:
         void notifyChangeScene( const ScenePtr & _scene );

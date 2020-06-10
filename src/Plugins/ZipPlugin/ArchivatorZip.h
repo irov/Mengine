@@ -18,7 +18,7 @@ namespace Mengine
         size_t compressBound( size_t _size ) const override;
 
     public:
-        bool compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _compressSize, EArchivatorCompress _compress ) override;
-        bool decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * _uncompressSize ) override;
+        bool compress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _compressSize, EArchivatorCompress _compress ) override;
+        bool decompress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _uncompressSize ) override;
     };
 }

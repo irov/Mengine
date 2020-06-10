@@ -760,7 +760,7 @@ namespace Mengine
         m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport * _renderViewport ) const
+    void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport * const _renderViewport ) const
     {
         float renderWidth = m_renderViewport.getWidth();
         float renderHeight = m_renderViewport.getHeight();

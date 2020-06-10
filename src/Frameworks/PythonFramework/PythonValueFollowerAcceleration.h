@@ -33,7 +33,7 @@ namespace Mengine
         void resetValue( float _value );
 
     protected:
-        bool _affect( const UpdateContext * _context, float * _used ) override;
+        bool _affect( const UpdateContext * _context, float * const _used ) override;
 
     protected:
         typedef ValueFollowerAcceleration<float> ValueFollowerAccelerationFloat;

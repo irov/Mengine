@@ -238,7 +238,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderJPEG::_decode( void * _buffer, size_t _bufferSize )
+    size_t ImageDecoderJPEG::_decode( void * const _buffer, size_t _bufferSize )
     {
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {

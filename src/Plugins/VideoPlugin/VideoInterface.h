@@ -82,7 +82,7 @@ namespace Mengine
         virtual size_t getPitch() const = 0;
 
     public:
-        virtual EVideoDecoderReadState readNextFrame( float _request, float * _pts ) = 0;
+        virtual EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<VideoDecoderInterface> VideoDecoderInterfacePtr;

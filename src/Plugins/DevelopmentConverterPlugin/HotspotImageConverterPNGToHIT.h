@@ -21,7 +21,7 @@ namespace Mengine
         bool convert() override;
 
     protected:
-        uint32_t calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t * _level );
-        void makeMipMapLevel_( uint8_t * _buffer, uint32_t _width, uint32_t _height, uint32_t _level );
+        uint32_t calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t * const _level );
+        void makeMipMapLevel_( uint8_t * const _buffer, uint32_t _width, uint32_t _height, uint32_t _level );
     };
 }

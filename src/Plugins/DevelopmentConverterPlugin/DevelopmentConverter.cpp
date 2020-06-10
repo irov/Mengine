@@ -35,7 +35,7 @@ namespace Mengine
         return m_convertExt;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevelopmentConverter::setOptions( ConverterOptions * _options )
+    void DevelopmentConverter::setOptions( const ConverterOptions * _options )
     {
         m_options = *(_options);
     }

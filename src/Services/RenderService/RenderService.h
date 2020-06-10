@@ -110,7 +110,7 @@ namespace Mengine
         void renderPrimitive_( const RenderPrimitive * _renderObject );
 
     protected:
-        void calcRenderViewport_( const Viewport & _viewport, Viewport * _renderViewport ) const;
+        void calcRenderViewport_( const Viewport & _viewport, Viewport * const _renderViewport ) const;
 
     protected:
         bool makeBatches_( const RenderPipelineInterfacePtr & _renderPipeline );

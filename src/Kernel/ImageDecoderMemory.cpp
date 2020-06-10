@@ -1,6 +1,7 @@
 #include "ImageDecoderMemory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Error.h"
 
 namespace Mengine
 {
@@ -9,18 +10,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderMemory::_decode( void * _buffer, size_t _bufferSize )
+    ImageDecoderMemory::~ImageDecoderMemory()
     {
-        if( _bufferSize < m_options.pitch * m_dataInfo.height )
-        {
-            LOGGER_ERROR( "invalid bufferSize %zu != (%zu * %u)"
-                , _bufferSize
-                , m_options.pitch
-                , m_dataInfo.height
-            );
-
-            return 0;
-        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t ImageDecoderMemory::_decode( void * const _buffer, size_t _bufferSize )
+    {
+        MENGINE_ASSERTION_FATAL( _bufferSize >= m_options.pitch * m_dataInfo.height, "invalid bufferSize %zu != (%zu * %u)"
+            , _bufferSize
+            , m_options.pitch
+            , m_dataInfo.height
+        );
 
         m_stream->seek( 0 );
 
@@ -36,11 +36,18 @@ namespace Mengine
         {
             read_byte = this->decodeData_( _buffer, _bufferSize );
         }
+        else
+        {
+            MENGINE_ERROR_FATAL( "invalid channels data %u options %u"
+                , m_dataInfo.channels 
+                , m_options.channels
+            );
+        }
 
         return read_byte;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderMemory::decodeData_( void * _buffer, size_t _bufferSize ) const
+    size_t ImageDecoderMemory::decodeData_( void * const _buffer, size_t _bufferSize ) const
     {
         size_t read_byte = 0;
 

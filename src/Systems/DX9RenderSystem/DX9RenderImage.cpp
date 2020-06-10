@@ -74,7 +74,7 @@ namespace Mengine
         return m_renderImageProvider;
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer DX9RenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    Pointer DX9RenderImage::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         DWORD flags;
         if( _readOnly == true )

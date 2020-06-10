@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class Base>
     class FactorableUnique
         : public Base

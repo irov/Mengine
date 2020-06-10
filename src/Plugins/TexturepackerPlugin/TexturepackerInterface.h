@@ -12,7 +12,7 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        virtual bool findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const = 0;
+        virtual bool findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceTexturepackerInterface

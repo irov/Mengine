@@ -10,7 +10,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasEventableReceiver( const T * _self, uint32_t _event )
+        bool hasEventableReceiver( const T * _self, uint32_t _event )
         {
             const EventationInterface * eventation = _self->getEventation();
 
@@ -25,7 +25,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasEventableReceiver( const IntrusivePtr<T> & _self, uint32_t _event )
+        bool hasEventableReceiver( const IntrusivePtr<T> & _self, uint32_t _event )
         {
             EventationInterface * eventation = _self->getEventation();
 
@@ -40,7 +40,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static T * getThisEventReciever( Eventable * _self, uint32_t _event )
+        T * getThisEventReciever( Eventable * _self, uint32_t _event )
         {
             EventationInterface * eventation = _self->getEventation();
 
@@ -50,7 +50,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static T * getThisEventReciever( const EventablePtr & _self, uint32_t _event )
+        T * getThisEventReciever( const EventablePtr & _self, uint32_t _event )
         {
             EventationInterface * eventation = _self->getEventation();
 

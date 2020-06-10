@@ -38,7 +38,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef Vector<const RecordDesc *> VectorRecordRefs;
         //////////////////////////////////////////////////////////////////////////
-        static void s_filterRecords( const VectorRecords & _records, const Char * _section, const Char * _key, VectorRecordRefs * _refs )
+        static void s_filterRecords( const VectorRecords & _records, const Char * _section, const Char * _key, VectorRecordRefs * const _refs )
         {
             for( const RecordDesc & record : _records )
             {
@@ -57,7 +57,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool s_hasValueT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T * _value )
+        static bool s_hasValueT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T * const _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _section );

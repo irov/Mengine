@@ -20,7 +20,7 @@ namespace Mengine
         bool _prepareData() override;
 
     public:
-        size_t _decode( void * _buffer, size_t _bufferSize ) override;
+        size_t _decode( void * const _buffer, size_t _bufferSize ) override;
 
     protected:
         uint32_t m_mipmapcompresssize;

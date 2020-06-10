@@ -22,7 +22,7 @@ namespace Mengine
             }
         }
 
-        void _update( float _dt, T * _out ) override
+        void _update( float _dt, T * const _out ) override
         {
             MENGINE_UNUSED( _dt );
 

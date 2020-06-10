@@ -46,7 +46,7 @@ namespace Mengine
         uint32_t relativeOffset;
     };
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_get_uint32( uint8_t * _buff )
+    static uint32_t s_get_uint32( uint8_t * const _buff )
     {
         uint32_t x;
         x = (uint32_t)_buff[0];
@@ -210,7 +210,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::getFullPath( const FilePath & _filePath, Char * _fullPath ) const
+    bool FileGroupZip::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _fullPath );
@@ -346,15 +346,15 @@ namespace Mengine
         Helper::deallocateMemory( _address, "FileGroupZip" );
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_inflate_memory( void * _buffer, size_t _capacity, const void * _src, size_t _size )
+    static bool s_inflate_memory( void * const _buffer, size_t _capacity, z_const void * _src, size_t _size )
     {
         z_stream zs;
-        zs.next_in = (z_const Bytef *)_src;
+        zs.next_in = static_cast<z_const Bytef *>(_src);
         zs.avail_in = (uInt)_size;
         /* Check for source > 64K on 16-bit machine: */
         //if ((uLong)stream.avail_in != sourceLen) return Z_BUF_ERROR;
 
-        zs.next_out = (Bytef *)_buffer;
+        zs.next_out = static_cast<Bytef *>(_buffer);
         zs.avail_out = (uInt)_capacity;
         //if ((uLong)stream.avail_out != *destLen) return Z_BUF_ERROR;
 

@@ -17,7 +17,7 @@ namespace Mengine
             m_v0 = _v0;
         }
 
-        void step( float _timing, T * _out )
+        void step( float _timing, T * const _out )
         {
             if( _timing > ValueInterpolator<T>::m_duration )
             {
@@ -31,7 +31,7 @@ namespace Mengine
             Helper::calculateParabolicPosition( _out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
         }
 
-        void _update( float _dt, T * _out ) override
+        void _update( float _dt, T * const _out ) override
         {
             Helper::calculateParabolicPosition( _out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, _dt );
         }

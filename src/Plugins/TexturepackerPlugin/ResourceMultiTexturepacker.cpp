@@ -40,7 +40,7 @@ namespace Mengine
         return m_resourceTexturepackerNames;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMultiTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const
+    bool ResourceMultiTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const
     {
         ResourceImagePtr resourceImage;
 

@@ -53,8 +53,8 @@ namespace Mengine
         void _onComplete( bool _successful ) override;
 
     public:
-        void writeResponse( Char * _ptr, size_t _size );
-        void writeHeader( Char * _ptr, size_t _size );
+        void writeResponse( Char * const _ptr, size_t _size );
+        void writeHeader( Char * const _ptr, size_t _size );
 
     protected:
         String m_url;

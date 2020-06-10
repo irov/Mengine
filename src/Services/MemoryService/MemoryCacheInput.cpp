@@ -70,7 +70,7 @@ namespace Mengine
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MemoryCacheInput::read( void * _buf, size_t _size )
+    size_t MemoryCacheInput::read( void * const _buf, size_t _size )
     {
         STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::read" );
 
@@ -142,14 +142,14 @@ namespace Mengine
         return distance;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::time( uint64_t * _time ) const
+    bool MemoryCacheInput::time( uint64_t * const _time ) const
     {
         MENGINE_UNUSED( _time );
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::memory( void ** _memory, size_t * _size )
+    bool MemoryCacheInput::memory( void ** _memory, size_t * const _size )
     {
         *_memory = m_data;
         *_size = m_size;

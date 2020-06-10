@@ -8,6 +8,10 @@ namespace Mengine
         : public Mixin
     {
     public:
+        Soundable();
+        ~Soundable() override;
+
+    public:
         void setVolume( float _volume );
         float getVolume() const;
 

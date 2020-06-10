@@ -149,7 +149,7 @@ namespace Mengine
         return ResourceImagePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::loadContainer_( const void * _buffer, size_t _size, HM_FILE * _mf ) const
+    bool AstralaxEmitterContainer::loadContainer_( const void * _buffer, size_t _size, HM_FILE * const _mf ) const
     {
         MENGINE_UNUSED( _size );
 

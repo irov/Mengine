@@ -30,7 +30,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderETC1::_decode( void * _buffer, size_t _bufferSize )
+    size_t ImageDecoderETC1::_decode( void * const _buffer, size_t _bufferSize )
     {
         if( m_needSeek == true )
         {

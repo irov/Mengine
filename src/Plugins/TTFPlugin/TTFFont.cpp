@@ -351,7 +351,7 @@ namespace Mengine
             }
 
         public:
-            bool onTextureGlyphFill( uint8_t * _memory, size_t _pitch, uint32_t _channel ) override
+            bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) override
             {
                 const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(m_ttfbuffer);
 
@@ -810,7 +810,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
+    bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const
     {
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
@@ -905,7 +905,7 @@ namespace Mengine
         return m_ttfSpacing;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * _face )
+    bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * const _face )
     {
         FT_Face face = m_dataTTF->getFTFace();
 

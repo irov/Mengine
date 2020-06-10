@@ -35,7 +35,6 @@ src
     Metaprogramming.h
     GitSHA1.h
     BuildVersion.h
-    cmake_dummy.cpp
 )
 
-ADD_MENGINE_LIBRARY()
+ADD_MENGINE_INTERFACE()

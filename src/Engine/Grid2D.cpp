@@ -117,7 +117,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, Color * _value ) const
+    bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, Color * const _value ) const
     {
         if( _i >= m_countX || _j >= m_countY )
         {

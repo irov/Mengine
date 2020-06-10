@@ -28,7 +28,7 @@ namespace Mengine
         MENGINE_SPRINTF( m_buffer, "%x%x", m_value, hash );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::getUnprotectedValue( uint32_t * _value ) const
+    bool SecureValue::getUnprotectedValue( uint32_t * const _value ) const
     {
         uint32_t hash = Helper::make_crc32_pod( m_value ^ m_hash );
 
@@ -172,7 +172,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::cmpSecureValue( const SecureValuePtr & _value, int32_t * _result ) const
+    bool SecureValue::cmpSecureValue( const SecureValuePtr & _value, int32_t * const _result ) const
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )

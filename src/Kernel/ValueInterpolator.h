@@ -57,7 +57,7 @@ namespace Mengine
             return m_prev;
         }
 
-        void step( const EasingInterfacePtr & _easing, float _time, T * _out )
+        void step( const EasingInterfacePtr & _easing, float _time, T * const _out )
         {
             if( _time > m_duration )
             {
@@ -80,7 +80,7 @@ namespace Mengine
             }
         }
 
-        bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used )
+        bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * const _out, float * const _used )
         {
             if( m_started == false )
             {
@@ -140,7 +140,7 @@ namespace Mengine
         }
 
     protected:
-        virtual void _update( float _dt, T * _out ) = 0;
+        virtual void _update( float _dt, T * const _out ) = 0;
 
     protected:
         bool m_started;

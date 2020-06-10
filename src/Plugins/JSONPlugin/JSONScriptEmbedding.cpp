@@ -88,7 +88,7 @@ namespace Mengine
             return pybind::make_invalid_object_t();
         }
         //////////////////////////////////////////////////////////////////////////
-        static pybind::object s_getJSON( pybind::kernel_interface * _kernel, ResourceJSON * _resource )
+        static pybind::object s_getJSON( pybind::kernel_interface * _kernel, const ResourceJSON * _resource )
         {
             const JSONStorageInterfacePtr & storage = _resource->getJSONStorage();
 

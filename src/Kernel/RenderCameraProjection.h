@@ -31,7 +31,7 @@ namespace Mengine
         void _updateProjectionMatrix() const override;
 
     protected:
-        void makeViewport_( Viewport * _viewport ) const;
+        void makeViewport_( Viewport * const _viewport ) const;
 
     protected:
         mt::vec3f m_cameraPosition;

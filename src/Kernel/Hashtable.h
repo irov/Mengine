@@ -438,7 +438,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -463,7 +463,7 @@ namespace Mengine
                     return record->element;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -472,7 +472,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -504,7 +504,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -513,7 +513,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -531,7 +531,7 @@ namespace Mengine
                     return std::move( pop_element );
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -540,7 +540,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -559,7 +559,7 @@ namespace Mengine
                     return record->element;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -568,7 +568,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -587,7 +587,7 @@ namespace Mengine
                     return true;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -1031,7 +1031,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1046,7 +1046,7 @@ namespace Mengine
                     break;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -1055,7 +1055,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1086,7 +1086,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -1095,7 +1095,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1113,7 +1113,7 @@ namespace Mengine
                     return pop_element;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -1122,7 +1122,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1141,7 +1141,7 @@ namespace Mengine
                     return record->element;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 
@@ -1150,7 +1150,7 @@ namespace Mengine
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
 
-            for( hash_type probe = _hash; ; probe >>= 5 )
+            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1169,7 +1169,7 @@ namespace Mengine
                     return true;
                 }
 
-                mask = (mask << 2) + mask + (size_type)probe + 1;
+                mask = (mask << 2) + mask + probe + 1;
             }
         }
 

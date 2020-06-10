@@ -13,32 +13,8 @@ namespace Mengine
         , m_to( _to )
         , m_progress( 0.f )
         , m_time( _time )
+        , m_mode( _mode )
     {
-        switch( _mode )
-        {
-        case ETRANSFORMATION_ROTATE_MODE_INTERPOLATE:
-            mt::angle_correct_interpolate_from_to( m_from, m_to, m_from, m_to );
-
-            break;
-
-        case ETRANSFORMATION_ROTATE_MODE_CW:
-            while( m_to > m_from )
-            {
-                m_from += mt::constant::two_pi;
-                m_to -= mt::constant::two_pi;
-            }
-
-            break;
-
-        case ETRANSFORMATION_ROTATE_MODE_CCW:
-            while( m_from > m_to )
-            {
-                m_to += mt::constant::two_pi;
-                m_from -= mt::constant::two_pi;
-            }
-
-            break;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     AffectorTransformationRotateTime::~AffectorTransformationRotateTime()
@@ -71,10 +47,42 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AffectorTransformationRotateTime::_prepare()
+    {
+        switch( m_mode )
+        {
+        case ETRANSFORMATION_ROTATE_MODE_INTERPOLATE:
+            {
+                mt::angle_correct_interpolate_from_to( m_from, m_to, m_from, m_to );
+            } break;
+
+        case ETRANSFORMATION_ROTATE_MODE_CW:
+            {
+                while( m_to > m_from )
+                {
+                    m_from += mt::constant::two_pi;
+                    m_to -= mt::constant::two_pi;
+                }
+            } break;
+        case ETRANSFORMATION_ROTATE_MODE_CCW:
+            {
+                while( m_from > m_to )
+                {
+                    m_to += mt::constant::two_pi;
+                    m_from -= mt::constant::two_pi;
+                }
+            } break;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AffectorTransformationRotateTime::_complete( bool _isEnd )
     {
         bool skiped = (_isEnd == false);
 
         m_node->complete( true, skiped );
+
+        m_node = nullptr;
     }
 }

@@ -17,7 +17,7 @@ namespace Mengine
         static int cURL_trace( CURL * handle, curl_infotype type,
             char * data, size_t size,
             void * userp )
-        {            
+        {
             MENGINE_UNUSED( handle );
             MENGINE_UNUSED( data );
             MENGINE_UNUSED( size );
@@ -51,10 +51,11 @@ namespace Mengine
                 return 0;
             }
 
-            LOGGER_MESSAGE( "%s, %10.10zu bytes (0x%8.8zu)",
-                text, size, size );
+            LOGGER_MESSAGE_RELEASE( "%s, %10.10zu bytes (0x%8.8zu)"
+                , text, size, size
+            );
 
-            LOGGER_MESSAGE( "%.*s", (int32_t)size, data );
+            LOGGER_MESSAGE_RELEASE( "%.*s", (int32_t)size, data );
 
             return 0;
         }
@@ -187,8 +188,7 @@ namespace Mengine
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYHOST, 0) );
 
-
-        char errorbuf[CURL_ERROR_SIZE] = { '\0' };
+        char errorbuf[CURL_ERROR_SIZE] = {'\0'};
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
 
         if( CONFIG_VALUE( "HTTP", "Verbose", false ) == true )
@@ -197,7 +197,7 @@ namespace Mengine
         }
 
         if( CONFIG_VALUE( "HTTP", "Trace", false ) == true )
-        {            
+        {
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
         }
@@ -251,7 +251,7 @@ namespace Mengine
         size_t total = size * nmemb;
 
         perfomer->writeHeader( ptr, total );
-        
+
         return total;
     }
     //////////////////////////////////////////////////////////////////////////

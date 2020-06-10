@@ -42,14 +42,14 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        m_hFile = Helper::Win32CreateFile(
+        HANDLE hFile = Helper::Win32CreateFile(
             fullPath
             , GENERIC_WRITE
             , FILE_SHARE_READ | FILE_SHARE_WRITE
             , CREATE_ALWAYS
         );
 
-        if( m_hFile == INVALID_HANDLE_VALUE )
+        if( hFile == INVALID_HANDLE_VALUE )
         {
             LOGGER_ERROR( "invalid open '%ls'"
                 , fullPath
@@ -57,6 +57,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_hFile = hFile;
 
         return true;
     }

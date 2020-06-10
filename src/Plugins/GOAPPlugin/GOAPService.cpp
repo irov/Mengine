@@ -13,15 +13,15 @@ SERVICE_FACTORY( GOAPService, Mengine::GOAPService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MengineAllocator
+    class MengineGOAPAllocator
         : public GOAP::Allocator
     {
     public:
-        MengineAllocator()
+        MengineGOAPAllocator()
         {
         }
 
-        ~MengineAllocator() override
+        ~MengineGOAPAllocator() override
         {
         }
 
@@ -50,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GOAPService::_initializeService()
     {
-        m_allocator = Helper::newT<MengineAllocator>();
+        m_allocator = Helper::newT<MengineGOAPAllocator>();
 
         m_kernel = GOAP::Helper::makeKernel( m_allocator );
 

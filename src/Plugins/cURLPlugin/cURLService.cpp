@@ -404,7 +404,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_ERROR( "invalid request '%u' complete (status '%u' error '%s' response '%s' code '%u' successful '%d'"
+        LOGGER_ERROR( "invalid request '%u' complete (status '%u' error '%s' response '%s' code '%u' successful '%d')"
             , _id
             , _status
             , _error.c_str()

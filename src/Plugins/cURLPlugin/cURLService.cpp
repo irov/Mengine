@@ -203,7 +203,7 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
-        task->setReceiver( Helper::makeIntrusivePtr( this ) );
+        task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
         
         if( task->initialize() == false )
         {
@@ -242,11 +242,11 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
-        task->setReceiver( Helper::makeIntrusivePtr( this ) );
+        task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
         
         if( task->initialize( _params ) == false )
         {
-            return false;
+            return 0;
         }
 
         ReceiverDesc desc;
@@ -281,11 +281,11 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiveHeaders( _receiveHeaders );
-        task->setReceiver( Helper::makeIntrusivePtr( this ) );
+        task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
         
         if( task->initialize( _data ) == false )
         {
-            return false;
+            return 0;
         }
 
         ReceiverDesc desc;
@@ -329,11 +329,11 @@ namespace Mengine
         task->setURL( _url );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
-        task->setReceiver( Helper::makeIntrusivePtr( this ) );
+        task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
         
         if( task->initialize( _login, _password, _fileGroup, _filePath ) == false )
         {
-            return false;
+            return 0;
         }
 
         ReceiverDesc desc;
@@ -354,7 +354,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "service is stop" );
 
-            return 0;
+            return false;
         }
 
         for( ReceiverDesc & desc : m_receiverDescs )

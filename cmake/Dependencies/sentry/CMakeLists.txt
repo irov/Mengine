@@ -212,6 +212,13 @@ if(MSVC)
 	endif()
 else()
 	target_compile_options(sentry PRIVATE $<BUILD_INTERFACE:-Wall -Wextra -Wpedantic>)
+	# ignore all warnings for mpack
+	set_source_files_properties(
+		"${PROJECT_SOURCE_DIR}/vendor/mpack.c"
+		PROPERTIES
+		COMPILE_FLAGS
+		"-w"
+	)
 endif()
 
 target_include_directories(sentry
@@ -222,10 +229,13 @@ target_include_directories(sentry
 		"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
 
-# Without this, dladdr can't find functions
+# The modulefinder and symbolizer need these two settings, and they are exported
+# as `PUBLIC`, so libraries that depend on sentry get these too:
+# `-E`: To have all symbols in the dynamic symbol table.
+# `--build-id`: To have a build-id in the ELF object.
 # FIXME: cmake 3.13 introduced target_link_options
-target_link_libraries(sentry INTERFACE
-	"$<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Android>>:-Wl,--build-id=sha1>")
+target_link_libraries(sentry PUBLIC
+	"$<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Android>>:-Wl,-E,--build-id=sha1>")
 
 #respect CMAKE_SYSTEM_VERSION
 if(WIN32)
@@ -254,6 +264,8 @@ endif()
 
 if(LINUX)
 	target_link_libraries(sentry PRIVATE pthread dl)
+elseif(ANDROID)
+	target_link_libraries(sentry PRIVATE dl log)
 elseif(MSVC)
 	target_link_libraries(sentry PRIVATE dbghelp)
 elseif(MINGW)
@@ -347,6 +359,6 @@ endif()
 
 if(SENTRY_BUILD_EXAMPLES)
 	add_executable(sentry_example examples/example.c)
-	target_link_libraries(sentry_example sentry)
+	target_link_libraries(sentry_example PRIVATE sentry)
 	add_test(NAME sentry_example COMMAND sentry_example)
 endif()

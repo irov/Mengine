@@ -14,8 +14,12 @@
 #include "TaskGlobalMouseMove.h"
 #include "TaskGlobalMouseWheel.h"
 #include "TaskGlobalKeyPress.h"
+#include "TaskTransformationRotateX.h"
 #include "TaskTransformationRotateY.h"
+#include "TaskTransformationRotateZ.h"
+#include "TaskTransformationRotateXTime.h"
 #include "TaskTransformationRotateYTime.h"
+#include "TaskTransformationRotateZTime.h"
 #include "TaskTransformationScaleTime.h"
 #include "TaskTransformationTranslate.h"
 #include "TaskTransformationTranslateTime.h"
@@ -98,14 +102,34 @@ namespace Mengine
             Cook::addTask<TaskPickerableMouseLeave>( _source, _pickerable, _filter );
         }
         //////////////////////////////////////////////////////////////////////////
+        void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
+        {
+            Cook::addTask<TaskTransformationRotateX>( _source, _transformation, _affectorable, _to, _speed );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
         {
             Cook::addTask<TaskTransformationRotateY>( _source, _transformation, _affectorable, _to, _speed );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time )
+        void addTransformationRotateZ( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
         {
-            Cook::addTask<TaskTransformationRotateYTime>( _source, _transformation, _affectorable, _easing, _to, _time );
+            Cook::addTask<TaskTransformationRotateZ>( _source, _transformation, _affectorable, _to, _speed );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addTransformationRotateXTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode )
+        {
+            Cook::addTask<TaskTransformationRotateXTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode )
+        {
+            Cook::addTask<TaskTransformationRotateYTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addTransformationRotateZTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode )
+        {
+            Cook::addTask<TaskTransformationRotateZTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode );
         }
         //////////////////////////////////////////////////////////////////////////
         void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags )

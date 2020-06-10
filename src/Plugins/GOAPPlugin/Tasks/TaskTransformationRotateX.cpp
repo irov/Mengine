@@ -1,4 +1,4 @@
-#include "TaskTransformationRotateY.h"
+#include "TaskTransformationRotateX.h"
 
 #include "AffectorTransformationRotate.h"
 
@@ -11,7 +11,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateY::TaskTransformationRotateY( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
+    TaskTransformationRotateX::TaskTransformationRotateX( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
         : m_transformation( _transformation )
         , m_affectorable( _affectorable )
         , m_to( _to )
@@ -20,19 +20,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateY::~TaskTransformationRotateY()
+    TaskTransformationRotateX::~TaskTransformationRotateX()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationRotateY::_onRun( GOAP::NodeInterface * _node )
+    bool TaskTransformationRotateX::_onRun( GOAP::NodeInterface * _node )
     {
-        float orientationY = m_transformation->getLocalOrientationY();
+        float orientationX = m_transformation->getLocalOrientationX();
 
         float correct_rotate_from;
         float correct_rotate_to;
-        mt::angle_correct_interpolate_from_to( orientationY, m_to, correct_rotate_from, correct_rotate_to );
+        mt::angle_correct_interpolate_from_to( orientationX, m_to, correct_rotate_from, correct_rotate_to );
 
-        LambdaAffectorTransformationRotate transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationY );
+        LambdaAffectorTransformationRotate transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationX );
 
         AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotate>( MENGINE_DOCUMENT_FUNCTION, _node, transformCb, correct_rotate_from, correct_rotate_to, m_speed );
 
@@ -50,7 +50,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskTransformationRotateY::_onSkip()
+    void TaskTransformationRotateX::_onSkip()
     {
         if( m_id != 0 )
         {
@@ -60,10 +60,10 @@ namespace Mengine
             m_id = 0;
         }
 
-        m_transformation->setLocalOrientationY( m_to );
+        m_transformation->setLocalOrientationX( m_to );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskTransformationRotateY::_onFinally()
+    void TaskTransformationRotateX::_onFinally()
     {
         if( m_id != 0 )
         {

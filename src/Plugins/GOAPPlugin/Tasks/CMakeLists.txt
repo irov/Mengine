@@ -37,10 +37,23 @@ Tasks
     TaskGlobalMouseWheel.h
     TaskGlobalKeyPress.h
     TaskGlobalKeyPress.cpp
+    TransformationRotateMode.h
+    AffectorTransformationRotate.h
+    AffectorTransformationRotate.cpp
+    AffectorTransformationRotateTime.h
+    AffectorTransformationRotateTime.cpp
+    TaskTransformationRotateX.cpp
+    TaskTransformationRotateX.h
     TaskTransformationRotateY.cpp
     TaskTransformationRotateY.h
+    TaskTransformationRotateZ.cpp
+    TaskTransformationRotateZ.h
+    TaskTransformationRotateXTime.cpp
+    TaskTransformationRotateXTime.h
     TaskTransformationRotateYTime.cpp
     TaskTransformationRotateYTime.h
+    TaskTransformationRotateZTime.cpp
+    TaskTransformationRotateZTime.h
     TaskTransformationScaleTime.cpp
     TaskTransformationScaleTime.h
     TaskTransformationTranslate.cpp

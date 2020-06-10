@@ -58,7 +58,7 @@ namespace Mengine
         void update( const UpdateContext * _context ) override;
 
     protected:
-        virtual bool _affect( const UpdateContext * _context, float * _used ) = 0;
+        virtual bool _affect( const UpdateContext * _context, float * const _used ) = 0;
 
     public:
         void stop();

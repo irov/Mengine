@@ -15,6 +15,15 @@ namespace Mengine
         : public EncoderFactoryInterface
         , public Factorable
     {
+    public:
+        EncoderFactory()
+        {
+        }
+
+        ~EncoderFactory() override
+        {
+        }
+
     protected:
         bool initialize() override
         {
@@ -36,12 +45,6 @@ namespace Mengine
             IntrusivePtr<T> encoder = m_factory->createObject( _doc );
 
             return encoder;
-        }
-
-    protected:
-        void destroy() override
-        {
-            Helper::deleteT( this );
         }
 
     protected:

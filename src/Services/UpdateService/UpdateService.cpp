@@ -216,7 +216,7 @@ namespace Mengine
         proxy.state = EUS_REMOVE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable * _leaf, const UpdateContext * _context )
+    void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable * const _leaf, const UpdateContext * _context )
     {
         if( _leaf->indeciesAdd.empty() == false )
         {

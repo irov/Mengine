@@ -165,7 +165,7 @@ namespace Mengine
         this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers * _pickers )
+    bool PickerService::pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers * const _pickers )
     {
         VectorPickerStates statesAux;
         if( this->pickStates_( _point.x, _point.y, _touchId, _pressure, &statesAux ) == false )
@@ -194,7 +194,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::getTraps( const mt::vec2f & _point, VectorPickers * _pickers )
+    bool PickerService::getTraps( const mt::vec2f & _point, VectorPickers * const _pickers )
     {
         VectorPickerStates statesAux;
         if( this->getStates_( _point.x, _point.y, &statesAux ) == false )
@@ -659,7 +659,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::fillStates_( VectorPickerStates * _states ) const
+    void PickerService::fillStates_( VectorPickerStates * const _states ) const
     {
         PickerInterface * picker = m_scene->getPicker();
 
@@ -667,7 +667,7 @@ namespace Mengine
         visitor.visit( picker, m_viewport.get(), m_camera.get() );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates * _states )
+    bool PickerService::pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates * const _states )
     {
         MENGINE_ASSERTION_FATAL( _states->empty() );
 
@@ -794,7 +794,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::getStates_( float _x, float _y, VectorPickerStates * _states )
+    bool PickerService::getStates_( float _x, float _y, VectorPickerStates * const _states )
     {
         MENGINE_ASSERTION_FATAL( _states->empty() );
 

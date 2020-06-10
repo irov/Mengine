@@ -244,7 +244,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::removeScheduler_( SchedulerEventDesc * _event )
+    bool Scheduler::removeScheduler_( SchedulerEventDesc * const _event )
     {
         if( _event->dead == true )
         {

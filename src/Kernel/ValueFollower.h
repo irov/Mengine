@@ -73,7 +73,7 @@ namespace Mengine
             m_follow = _follow;
         }
 
-        bool update( const UpdateContext * _context, float * _used )
+        bool update( const UpdateContext * _context, float * const _used )
         {
             bool successful = this->_update( _context, _used );
 
@@ -81,7 +81,7 @@ namespace Mengine
         }
 
     protected:
-        virtual bool _update( const UpdateContext * _context, float * _used ) = 0;
+        virtual bool _update( const UpdateContext * _context, float * const _used ) = 0;
 
     protected:
         T m_value;

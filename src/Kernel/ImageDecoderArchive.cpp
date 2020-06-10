@@ -13,6 +13,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ImageDecoderArchive::~ImageDecoderArchive()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ImageDecoderArchive::setArchivator( const ArchivatorInterfacePtr & _archivator )
     {
         m_archivator = _archivator;
@@ -33,7 +37,7 @@ namespace Mengine
         return m_uncompressSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderArchive::_decode( void * _buffer, size_t _bufferSize )
+    size_t ImageDecoderArchive::_decode( void * const _buffer, size_t _bufferSize )
     {
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
@@ -68,7 +72,7 @@ namespace Mengine
         return read_byte;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderArchive::decodeData_( void * _buffer, size_t _bufferSize ) const
+    size_t ImageDecoderArchive::decodeData_( void * const _buffer, size_t _bufferSize ) const
     {
         MENGINE_UNUSED( _bufferSize );
 
@@ -95,7 +99,7 @@ namespace Mengine
         return decodyByte;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderArchive::decompressData_( const void * _source, size_t _sourceSize, void * _dest, size_t _capacityDest ) const
+    size_t ImageDecoderArchive::decompressData_( const void * _source, size_t _sourceSize, void * const _dest, size_t _capacityDest ) const
     {
         size_t read_byte = 0;
 

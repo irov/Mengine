@@ -46,11 +46,11 @@ namespace Mengine
         bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
-        bool hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * _entry ) const override;
+        bool hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * const _entry ) const override;
         const TextEntryInterfacePtr & getTextEntry( const ConstString & _textId ) const override;
 
     public:
-        bool existFont( const ConstString & _fontName, TextFontInterfacePtr * _font ) const override;
+        bool existFont( const ConstString & _fontName, TextFontInterfacePtr * const _font ) const override;
         const TextFontInterfacePtr & getFont( const ConstString & _fontName ) const override;
 
     public:
@@ -62,7 +62,7 @@ namespace Mengine
     public:
         void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) override;
         void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) override;
-        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * _arguments ) const override;
+        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const override;
 
     public:
         void foreachFonts( const LambdaTextFont & _lambda ) override;
@@ -146,6 +146,6 @@ namespace Mengine
         class TextManagerLoadSaxCallback;
         class TextManagerUnloadSaxCallback;
 
-        void createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * _cstr );
+        void createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * const _cstr );
     };
 }

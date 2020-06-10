@@ -665,7 +665,7 @@ namespace Mengine
                 }
 
             protected:
-                bool _affect( const UpdateContext * _context, float * _used ) override
+                bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     if( m_time - _context->time < 0.f )
                     {
@@ -1187,7 +1187,7 @@ namespace Mengine
                 }
 
             protected:
-                bool _affect( const UpdateContext * _context, float * _used ) override
+                bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     const EasingInterfacePtr & easing = this->getEasing();
 
@@ -1407,7 +1407,7 @@ namespace Mengine
                 }
 
             protected:
-                bool _affect( const UpdateContext * _context, float * _used ) override
+                bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     *_used = _context->time;
 
@@ -1662,7 +1662,7 @@ namespace Mengine
                 }
 
             protected:
-                bool _affect( const UpdateContext * _context, float * _used ) override
+                bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     *_used = _context->time;
 

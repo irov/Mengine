@@ -16,8 +16,8 @@ namespace Mengine
         virtual HashType getSequreHash() const = 0;
 
     public:
-        virtual void protectData( void * _buffer, size_t _size ) const = 0;
-        virtual void unprotectData( void * _buffer, size_t _size ) const = 0;
+        virtual void protectData( void * const _buffer, size_t _size ) const = 0;
+        virtual void unprotectData( void * const _buffer, size_t _size ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

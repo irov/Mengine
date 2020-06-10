@@ -92,7 +92,7 @@ namespace Mengine
 
     public:
         virtual bool hasGlyph( GlyphCode _char ) const = 0;
-        virtual bool getGlyph( uint32_t _layout, GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const = 0;
+        virtual bool getGlyph( uint32_t _layout, GlyphCode _char, GlyphCode _next, Glyph * const _glyph ) const = 0;
 
     public:
         virtual float getFontAscent() const = 0;

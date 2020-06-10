@@ -24,7 +24,7 @@ namespace Mengine
         bool isPacked() const override;
 
     public:
-        bool getFullPath( const FilePath & _filePath, Char * _fullPath ) const override;
+        bool getFullPath( const FilePath & _filePath, Char * const _fullPath ) const override;
 
     public:
         bool existFile( const FilePath & _filePath, bool _recursive ) const override;

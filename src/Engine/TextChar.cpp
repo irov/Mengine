@@ -14,7 +14,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static constexpr VectorTextLineChunks::size_type TextChunkNPos = MENGINE_UNKNOWN_SIZE;
         //////////////////////////////////////////////////////////////////////////
-        static bool test2( VectorTextLineChunks * _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
+        static bool test2( VectorTextLineChunks * const _out, const U32String & _in, VectorCacheFonts * const _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
         {
             if( _offset == _size )
             {
@@ -119,7 +119,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool test( VectorTextLineChunks * _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font )
+        bool test( VectorTextLineChunks * const _out, const U32String & _in, VectorCacheFonts * const _cacheFonts, uint32_t _font )
         {
             U32String tag_pre = U"{{font=";
             U32String tag_post = U"}}";
@@ -132,7 +132,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        void substr( VectorTextLineChunks * _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size )
+        void substr( VectorTextLineChunks * const _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size )
         {
             VectorTextLineChunks::const_iterator it_offset = _str.begin();
             std::advance( it_offset, _offset );
@@ -151,7 +151,7 @@ namespace Mengine
             _out->insert( _out->begin(), it_offset, it_size );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split( VectorTextLineChunks2 * _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims )
+        void split( VectorTextLineChunks2 * const _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims )
         {
             VectorTextLineChunks collect;
 

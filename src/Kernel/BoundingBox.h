@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         BoundingBox();
-        ~BoundingBox();
+        ~BoundingBox() override;
 
     public:
         MENGINE_INLINE const mt::box2f * getBoundingBox() const;

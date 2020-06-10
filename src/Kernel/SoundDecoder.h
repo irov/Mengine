@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         SoundDecoder();
+        ~SoundDecoder() override;
 
     public:
         bool setOptions( const CodecOptions * _options ) override;

@@ -77,7 +77,7 @@ namespace Mengine
         m_valueFollower.reset( _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonValueFollowerAcceleration::_affect( const UpdateContext * _context, float * _used )
+    bool PythonValueFollowerAcceleration::_affect( const UpdateContext * _context, float * const _used )
     {
         m_valueFollower.update( _context, _used );
 

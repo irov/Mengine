@@ -50,7 +50,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t PickDecoderHIT::_decode( void * _buffer, size_t _bufferSize )
+    size_t PickDecoderHIT::_decode( void * const _buffer, size_t _bufferSize )
     {
         if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {

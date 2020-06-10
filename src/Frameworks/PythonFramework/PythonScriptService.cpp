@@ -874,7 +874,7 @@ namespace Mengine
         pybind::dict_remove_t( m_kernel, dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptService::stringize( PyObject * _object, ConstString * _cstr )
+    bool PythonScriptService::stringize( PyObject * _object, ConstString * const _cstr )
     {
 #ifdef MENGINE_DEBUG
         if( m_kernel->string_check( _object ) == false )

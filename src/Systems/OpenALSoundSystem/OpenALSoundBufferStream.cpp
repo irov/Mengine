@@ -277,7 +277,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::getTimePos( ALuint _source, float * _pos ) const
+    bool OpenALSoundBufferStream::getTimePos( ALuint _source, float * const _pos ) const
     {
         MENGINE_UNUSED( _source );
 

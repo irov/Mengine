@@ -97,9 +97,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderWEBP::_decode( void * _buffer, size_t _bufferSize )
+    size_t ImageDecoderWEBP::_decode( void * const _buffer, size_t _bufferSize )
     {
-        uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
+        uint8_t * const webp_buffer = static_cast<uint8_t * const>(_buffer);
         size_t webp_buffer_size = _bufferSize;
 
         void * streamMemory;
@@ -135,7 +135,7 @@ namespace Mengine
         return _bufferSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * _buffer, size_t _bufferSize )
+    bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * const _buffer, size_t _bufferSize )
     {
 #ifdef MENGINE_RENDER_TEXTURE_RGBA
 #   define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto

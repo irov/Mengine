@@ -24,7 +24,7 @@ namespace Mengine
         const VectorConstString & getResourceTexturepackerNames() const override;
 
     public:
-        bool findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const override;
+        bool findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const override;
 
     public:
         void setStripFrameNameExtension( bool _value ) override;

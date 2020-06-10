@@ -49,7 +49,7 @@ namespace Mengine
         m_dataInfo = *static_cast<const ImageCodecDataInfo *>(_dataInfo);
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImageDecoder::sweezleAlpha1( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch )
+    void ImageDecoder::sweezleAlpha1( uint32_t _width, uint32_t _height, void * const _buffer, size_t _pitch )
     {
         uint8_t * sweezle_buffer = static_cast<uint8_t *>(_buffer);
 
@@ -64,7 +64,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImageDecoder::sweezleAlpha3( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch )
+    void ImageDecoder::sweezleAlpha3( uint32_t _width, uint32_t _height, void * const _buffer, size_t _pitch )
     {
         uint8_t * sweezle_buffer = static_cast<uint8_t *>(_buffer);
 

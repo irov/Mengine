@@ -104,7 +104,7 @@ namespace Mengine
         }
 
     private:
-        size_t decode( void * _buffer, size_t _bufferSize ) override
+        size_t decode( void * const _buffer, size_t _bufferSize ) override
         {
             STDEX_THREAD_GUARD_SCOPE( this, "Decoder::decode" );
 
@@ -114,7 +114,7 @@ namespace Mengine
         }
 
     protected:
-        virtual size_t _decode( void * _buffer, size_t _bufferSize ) = 0;
+        virtual size_t _decode( void * const _buffer, size_t _bufferSize ) = 0;
 
     private:
         bool seek( float _time ) override

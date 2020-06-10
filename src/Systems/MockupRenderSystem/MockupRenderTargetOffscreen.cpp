@@ -22,7 +22,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderTargetOffscreen::getData( void * _buffer, size_t _pitch )
+    bool MockupRenderTargetOffscreen::getData( void * const _buffer, size_t _pitch )
     {
         MENGINE_UNUSED( _buffer );
         MENGINE_UNUSED( _pitch );

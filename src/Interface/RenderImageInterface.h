@@ -38,7 +38,7 @@ namespace Mengine
         virtual float getHWHeightInv() const = 0;
 
     public:
-        virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
+        virtual Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
         virtual bool unlock( uint32_t _level, bool _successful ) = 0;
 
     public:

@@ -26,7 +26,7 @@ namespace Mengine
         void clearPoints();
 
     public:
-        void getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const;
+        void getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * const _bb, Polygon * const _screen ) const;
 
     protected:
         Polygon m_polygon;

@@ -33,7 +33,7 @@ namespace Mengine
     {
     public:
         virtual const ConstString & getKey() const = 0;
-        virtual const Char * getValue( size_t * _size ) const = 0;
+        virtual const Char * getValue( size_t * const _size ) const = 0;
 
     public:
         virtual const Tags & getTags() const = 0;

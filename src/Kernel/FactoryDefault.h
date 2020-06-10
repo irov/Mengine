@@ -16,6 +16,10 @@ namespace Mengine
         {
         }
 
+        ~FactoryDefault() override
+        {
+        }
+
     protected:
         Factorable * _createObject() override
         {

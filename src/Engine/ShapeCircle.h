@@ -33,7 +33,7 @@ namespace Mengine
         void _updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
-        MENGINE_INLINE const RenderVertex2D * getVerticesWM( uint32_t * _count ) const;
+        MENGINE_INLINE const RenderVertex2D * getVerticesWM( uint32_t * const _count ) const;
 
     protected:
         uint8_t m_quality;
@@ -48,7 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<ShapeCircle> ShapeCirclePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const RenderVertex2D * ShapeCircle::getVerticesWM( uint32_t * _count ) const
+    MENGINE_INLINE const RenderVertex2D * ShapeCircle::getVerticesWM( uint32_t * const _count ) const
     {
         this->prepareVerticesWM();
 

@@ -42,7 +42,7 @@ namespace Mengine
 
     protected:
         bool hasGlyph( GlyphCode _code ) const override;
-        bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
+        bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const override;
 
     protected:
         float getFontAscent() const override;

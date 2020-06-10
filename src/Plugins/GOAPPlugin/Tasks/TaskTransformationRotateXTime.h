@@ -10,12 +10,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class TaskTransformationRotateYTime
+    class TaskTransformationRotateXTime
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationRotateYTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode );
-        ~TaskTransformationRotateYTime() override;
+        TaskTransformationRotateXTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode );
+        ~TaskTransformationRotateXTime() override;
 
     protected:
         bool _onRun( GOAP::NodeInterface * _node ) override;
@@ -34,6 +34,6 @@ namespace Mengine
         AFFECTOR_ID m_id;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef GOAP::IntrusivePtr<TaskTransformationRotateYTime> TaskTransformationRotateYTimePtr;
+    typedef GOAP::IntrusivePtr<TaskTransformationRotateXTime> TaskTransformationRotateXTimePtr;
     //////////////////////////////////////////////////////////////////////////
 }

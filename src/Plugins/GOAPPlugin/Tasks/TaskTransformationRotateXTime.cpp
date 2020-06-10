@@ -1,6 +1,6 @@
-#include "TaskTransformationRotateY.h"
+#include "TaskTransformationRotateXTime.h"
 
-#include "AffectorTransformationRotate.h"
+#include "AffectorTransformationRotateTime.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
@@ -11,30 +11,30 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateY::TaskTransformationRotateY( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
+    TaskTransformationRotateXTime::TaskTransformationRotateXTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode )
         : m_transformation( _transformation )
         , m_affectorable( _affectorable )
+        , m_easing( _easing )
         , m_to( _to )
-        , m_speed( _speed )
+        , m_time( _time )
+        , m_mode( _mode )
         , m_id( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateY::~TaskTransformationRotateY()
+    TaskTransformationRotateXTime::~TaskTransformationRotateXTime()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationRotateY::_onRun( GOAP::NodeInterface * _node )
+    bool TaskTransformationRotateXTime::_onRun( GOAP::NodeInterface * _node )
     {
-        float orientationY = m_transformation->getLocalOrientationY();
+        float orientationX = m_transformation->getLocalOrientationX();
 
-        float correct_rotate_from;
-        float correct_rotate_to;
-        mt::angle_correct_interpolate_from_to( orientationY, m_to, correct_rotate_from, correct_rotate_to );
+        LambdaAffectorTransformationRotateTime transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationX );
 
-        LambdaAffectorTransformationRotate transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationY );
+        AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotateTime>( MENGINE_DOCUMENT_FUNCTION, _node, transformCb, orientationX, m_to, m_time, m_mode );
 
-        AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotate>( MENGINE_DOCUMENT_FUNCTION, _node, transformCb, correct_rotate_from, correct_rotate_to, m_speed );
+        affector->setEasing( m_easing );
 
         const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
@@ -50,7 +50,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskTransformationRotateY::_onSkip()
+    void TaskTransformationRotateXTime::_onSkip()
     {
         if( m_id != 0 )
         {
@@ -60,10 +60,10 @@ namespace Mengine
             m_id = 0;
         }
 
-        m_transformation->setLocalOrientationY( m_to );
+        m_transformation->setLocalOrientationX( m_to );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskTransformationRotateY::_onFinally()
+    void TaskTransformationRotateXTime::_onFinally()
     {
         if( m_id != 0 )
         {

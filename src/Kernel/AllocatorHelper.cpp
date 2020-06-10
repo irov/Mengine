@@ -24,7 +24,7 @@ namespace Mengine
             return memory_buffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        void * reallocateMemory( void * const _buffer, size_t _size, const Char * _doc )
+        void * reallocateMemory( void * _buffer, size_t _size, const Char * _doc )
         {
             void * memory_buffer = ALLOCATOR_SERVICE()
                 ->realloc( _buffer, _size, _doc );
@@ -32,7 +32,7 @@ namespace Mengine
             return memory_buffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        void deallocateMemory( void * const _memory, const Char * _doc )
+        void deallocateMemory( void * _memory, const Char * _doc )
         {
             ALLOCATOR_SERVICE()
                 ->free( _memory, _doc );

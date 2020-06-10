@@ -50,5 +50,7 @@ namespace Mengine
         bool skiped = (_isEnd == false);
 
         m_node->complete( true, skiped );
+
+        m_node = nullptr;
     }
 }

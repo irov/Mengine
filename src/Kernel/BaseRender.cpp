@@ -295,7 +295,7 @@ namespace Mengine
         return relationColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::calcTotalColor( Color * _color ) const
+    void BaseRender::calcTotalColor( Color * const _color ) const
     {
         const Color & worldColor = this->getWorldColor();
         *_color = worldColor;

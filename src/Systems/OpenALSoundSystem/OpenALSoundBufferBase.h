@@ -43,7 +43,7 @@ namespace Mengine
 
     public:
         virtual bool setTimePos( ALuint _source, float _pos ) const = 0;
-        virtual bool getTimePos( ALuint _source, float * _pos ) const = 0;
+        virtual bool getTimePos( ALuint _source, float * const _pos ) const = 0;
 
     public:
         bool isStereo() const;

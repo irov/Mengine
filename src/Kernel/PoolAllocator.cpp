@@ -12,14 +12,14 @@ namespace Mengine
         return p;
     }
     //////////////////////////////////////////////////////////////////////////
-    void * PoolAllocator::realloc( void * _mem, size_t _size, const char * _doc )
+    void * PoolAllocator::realloc( void * const _mem, size_t _size, const char * _doc )
     {
         void * p = Helper::reallocateMemory( _mem, _size, _doc );
 
         return p;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PoolAllocator::free( void * _ptr, const char * _doc )
+    void PoolAllocator::free( void * const _ptr, const char * _doc )
     {
         Helper::deallocateMemory( _ptr, _doc );
     }

@@ -23,12 +23,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::_initialize()
     {
-        m_programVariable = RENDER_SYSTEM()
+        RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
             ->createProgramVariable( 0, 1, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_programVariable, false, "'%s' invalid create program variable"
+        MENGINE_ASSERTION_MEMORY_PANIC( programVariable, false, "'%s' invalid create program variable"
             , this->getName().c_str()
         );
+
+        m_programVariable = programVariable;
 
         return true;
     }
@@ -130,11 +132,15 @@ namespace Mengine
         {
         case 0:
             {
-                return m_resourceImage->getUVTextureImage();
+                const mt::uv4f & uv = m_resourceImage->getUVTextureImage();
+
+                return uv;
             }break;
         case 1:
             {
-                return m_resourceTrackMatteImage->getUVTextureImage();
+                const mt::uv4f & uv = m_resourceTrackMatteImage->getUVTextureImage();
+
+                return uv;
             }break;
         default:
             break;

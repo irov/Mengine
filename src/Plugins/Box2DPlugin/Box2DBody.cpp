@@ -21,7 +21,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Box2DBody::initialize( const Box2DScaler & _scaler, b2World * _world, b2BodyDef * _bodyDef )
+    bool Box2DBody::initialize( const Box2DScaler & _scaler, b2World * _world, const b2BodyDef * _bodyDef )
     {
         m_scaler = _scaler;
 

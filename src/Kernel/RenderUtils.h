@@ -13,6 +13,6 @@ namespace Mengine
     {
         void makeRenderBoundingBox( mt::box2f * _bb, const RenderVertex2D * _vertices, uint32_t _verticesCount );
         uint32_t getImageMemorySize( const RenderImageInterfacePtr & _image );
-        void multiplyColorBuffer( const Color & _color, uint8_t * _out, const uint8_t * _in );
+        void multiplyColorBuffer( const Color & _color, uint8_t * const _out, const uint8_t * _in );
     }
 }

@@ -43,7 +43,7 @@ namespace Mengine
         uint32_t getIcon() const override;
 
         void setProjectTitle( const Char * _projectTitle ) override;
-        size_t getProjectTitle( Char * _projectTitle ) const override;
+        size_t getProjectTitle( Char * const _projectTitle ) const override;
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
@@ -65,14 +65,14 @@ namespace Mengine
         DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
 
     public:
-        bool getDesktopResolution( Resolution * _resolution ) const override;
+        bool getDesktopResolution( Resolution * const _resolution ) const override;
 
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
 
-        size_t getCurrentPath( Char * _currentPath ) const override;
-        size_t getUserPath( Char * _userPath ) const override;
-        size_t getUserName( Char * _userName ) const override;
+        size_t getCurrentPath( Char * const _currentPath ) const override;
+        size_t getUserPath( Char * const _userPath ) const override;
+        size_t getUserName( Char * const _userName ) const override;
 
         void minimizeWindow() override;
 
@@ -93,11 +93,11 @@ namespace Mengine
         float getJoystickAxis( uint32_t _index ) const override;
 
     public:
-        size_t getShortPathName( const Char * _path, Char * _short ) const override;
-        size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const override;
+        size_t getShortPathName( const Char * _path, Char * const _short ) const override;
+        size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
-        void getMaxClientResolution( Resolution * _resolution ) const override;
+        void getMaxClientResolution( Resolution * const _resolution ) const override;
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
@@ -135,8 +135,8 @@ namespace Mengine
 
     protected:
         void sleep( uint32_t _ms ) override;
-        bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) override;
-        bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) override;
+        bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size ) override;
+        bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode ) override;
         void abort() override;
         void debugBreak() override;
 
@@ -145,11 +145,11 @@ namespace Mengine
 
     public:
         bool isDebuggerPresent() const override;
-        bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
+        bool createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full ) override;
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-        bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * _result );
+        bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result );
 
     protected:
         bool calcCursorPosition_( mt::vec2f & _point ) const;
@@ -173,7 +173,7 @@ namespace Mengine
         time_t getFileUnixTime( const FILETIME * filetime ) const override;
 
     protected:
-        bool getErrorMessage( DWORD _messageId, Char * _out, size_t _capacity ) const override;
+        bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const override;
 
     protected:
         HINSTANCE m_hInstance;

@@ -17,12 +17,12 @@ namespace Mengine
         SERVICE_DECLARE( "StringizeService" )
 
     public:
-        virtual void stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr ) = 0;
+        virtual void stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr ) = 0;
 
     public:
-        virtual void stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr ) = 0;
-        virtual void stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * _cstr ) = 0;
-        virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString * _cstr ) = 0;
+        virtual void stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr ) = 0;
+        virtual void stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr ) = 0;
+        virtual bool stringizeExternal( ConstStringHolder * const _holder, ConstString * const _cstr ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

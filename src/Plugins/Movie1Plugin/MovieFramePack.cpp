@@ -172,7 +172,7 @@ namespace Mengine
         return polygon;
     }
     ///////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource * _frame ) const
+    bool MovieFramePack::getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource * const _frame ) const
     {
         if( (_layerIndex - 1) >= m_sizeLayers )
         {
@@ -217,7 +217,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource * _frame ) const
+    bool MovieFramePack::getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource * const _frame ) const
     {
         if( (_layerIndex - 1) >= m_sizeLayers )
         {
@@ -323,7 +323,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float * _time ) const
+    bool MovieFramePack::getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float * const _time ) const
     {
         for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
         {
@@ -365,7 +365,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t * _vertexCount ) const
+    bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t * const _vertexCount ) const
     {
         for( uint32_t index = 0; index != m_sizePolygons; ++index )
         {

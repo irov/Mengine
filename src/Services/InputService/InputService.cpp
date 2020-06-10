@@ -221,7 +221,7 @@ namespace Mengine
         return m_mouseBuffer[_button];
     }
     //////////////////////////////////////////////////////////////////////////
-    bool InputService::validCursorPosition( float _x, float _y, float * _vx, float * _vy ) const
+    bool InputService::validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const
     {
         bool inside = true;
 

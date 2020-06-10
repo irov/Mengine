@@ -267,12 +267,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLThreadTask::writeResponse( Char * _ptr, size_t _size )
+    void cURLThreadTask::writeResponse( Char * const _ptr, size_t _size )
     {
         m_responseData.append( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLThreadTask::writeHeader( Char * _ptr, size_t _size )
+    void cURLThreadTask::writeHeader( Char * const _ptr, size_t _size )
     {
         m_responseHeaders.emplace_back( _ptr, _size );
     }

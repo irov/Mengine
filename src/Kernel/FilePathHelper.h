@@ -14,6 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePath( const Char * _value );
         FilePath stringizeFilePath( const String & _filePath );
         FilePath stringizeFilePath( const PathString & _filePath );

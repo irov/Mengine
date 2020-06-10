@@ -36,18 +36,18 @@ namespace Mengine
     {
         int32_t scale = 1L << 13;
 
-        for( int32_t i = 0; i < 256; i++ )
+        for( int32_t i = 0; i != 256; ++i )
         {
             int32_t temp = i - 128;
 
-            s_YTable[i] = (int32_t)((1.164 * scale + 0.5) * (i - 16));
+            s_YTable[i] = (int32_t)((1.164f * scale + 0.5f) * (i - 16));
 
-            s_RVTable[i] = (int32_t)((1.596 * scale + 0.5) * temp);
+            s_RVTable[i] = (int32_t)((1.596f * scale + 0.5f) * temp);
 
-            s_GUTable[i] = (int32_t)((0.391 * scale + 0.5) * temp);
-            s_GVTable[i] = (int32_t)((0.813 * scale + 0.5) * temp);
+            s_GUTable[i] = (int32_t)((0.391f * scale + 0.5f) * temp);
+            s_GVTable[i] = (int32_t)((0.813f * scale + 0.5f) * temp);
 
-            s_BUTable[i] = (int32_t)((2.018 * scale + 0.5) * temp);
+            s_BUTable[i] = (int32_t)((2.018f * scale + 0.5f) * temp);
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -305,7 +305,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t TheoraVideoDecoder::_decode( void * _buffer, size_t _bufferSize )
+    size_t TheoraVideoDecoder::_decode( void * const _buffer, size_t _bufferSize )
     {
         if( m_readyFrame == false )
         {
@@ -340,7 +340,7 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * _buffer, size_t _size )
+    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _size )
     {
         MENGINE_UNUSED( _size );
 
@@ -648,7 +648,7 @@ namespace Mengine
         return bytes;
     }
     //////////////////////////////////////////////////////////////////////////
-    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float * _pts )
+    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float * const _pts )
     {
         MENGINE_UNUSED( _request );
         MENGINE_UNUSED( _pts );

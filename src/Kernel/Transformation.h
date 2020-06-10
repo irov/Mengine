@@ -121,13 +121,13 @@ namespace Mengine
 
     public:
         void setTransformation( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation );
-        void getTransformation( uint8_t * _transformationFlag, mt::vec3f * _position, mt::vec3f * _origin, mt::vec3f * _scale, mt::vec2f * _skew, mt::vec3f * _orientation ) const;
+        void getTransformation( uint8_t * const _transformationFlag, mt::vec3f * const _position, mt::vec3f * const _origin, mt::vec3f * const _scale, mt::vec2f * const _skew, mt::vec3f * const _orientation ) const;
 
     public:
         void resetTransformation();
 
     public:
-        virtual void calcWorldMatrix( mt::mat4f * _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const;
+        virtual void calcWorldMatrix( mt::mat4f * const _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const;
 
     public:
         void translate( const mt::vec3f & _delta );

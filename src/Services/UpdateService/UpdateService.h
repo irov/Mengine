@@ -73,7 +73,7 @@ namespace Mengine
 
     protected:
         uint32_t placeProxy_( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updatable );
-        void updateLeaf_( uint32_t _deep, LeafUpdatable * _leaf, const UpdateContext * _context );
+        void updateLeaf_( uint32_t _deep, LeafUpdatable * const _leaf, const UpdateContext * _context );
         LeafUpdatable * getLeafUpdatable( EUpdateMode _mode, uint32_t _deep );
     };
 }

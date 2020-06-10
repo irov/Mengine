@@ -10,7 +10,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, String * _utf8 )
+        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, String * const _utf8 )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -39,14 +39,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8( const WString & _unicode, String * _utf8 )
+        bool unicodeToUtf8( const WString & _unicode, String * const _utf8 )
         {
             bool result = unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), _utf8 );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8( const WChar * _unicode, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
+        bool unicodeToUtf8( const WChar * _unicode, Char * const _utf8, size_t _utf8Capacity, size_t * const _utf8Size )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -66,7 +66,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
+        bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, Char * const _utf8, size_t _utf8Capacity, size_t * const  _utf8Size )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -75,7 +75,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unicodeToUtf8( const WString & _unicode, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
+        bool unicodeToUtf8( const WString & _unicode, Char * const _utf8, size_t _utf8Capacity, size_t * const _utf8Size )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -87,7 +87,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const Char * _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        bool utf8ToUnicode( const Char * _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -98,7 +98,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const Char * _utf8, WString * _unicode )
+        bool utf8ToUnicode( const Char * _utf8, WString * const _unicode )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -127,7 +127,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -136,7 +136,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WString * _unicode )
+        bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WString * const _unicode )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -165,56 +165,56 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const String & _utf8, WString * _unicode )
+        bool utf8ToUnicode( const String & _utf8, WString * const _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const String & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        bool utf8ToUnicode( const String & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const ConstString & _utf8, WString * _unicode )
+        bool utf8ToUnicode( const ConstString & _utf8, WString * const _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const ConstString & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        bool utf8ToUnicode( const ConstString & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const PathString & _utf8, WString * _unicode )
+        bool utf8ToUnicode( const PathString & _utf8, WString * const _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const PathString & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        bool utf8ToUnicode( const PathString & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const FilePath & _utf8, WString * _unicode )
+        bool utf8ToUnicode( const FilePath & _utf8, WString * const _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool utf8ToUnicode( const FilePath & _utf8, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize )
+        bool utf8ToUnicode( const FilePath & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 

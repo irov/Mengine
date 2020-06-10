@@ -64,8 +64,8 @@ namespace Mengine
         virtual void finalizeGame() = 0;
 
     public:
-        virtual size_t getCompanyName( Char * _companyName ) const = 0;
-        virtual size_t getProjectName( Char * _projectName ) const = 0;
+        virtual size_t getCompanyName( Char * const _companyName ) const = 0;
+        virtual size_t getProjectName( Char * const _projectName ) const = 0;
 
     public:
         virtual const ConstString & getProjectCodename() const = 0;
@@ -99,13 +99,13 @@ namespace Mengine
         virtual bool isValidWindowMode() const = 0;
 
     public:
-        virtual void calcWindowResolution( Resolution * _windowResolution ) const = 0;
+        virtual void calcWindowResolution( Resolution * const _windowResolution ) const = 0;
 
         virtual const Resolution & getCurrentResolution() const = 0;
         virtual const Viewport & getRenderViewport() const = 0;
 
         virtual const Resolution & getContentResolution() const = 0;
-        virtual void getGameViewport( float * _aspect, Viewport * _viewport ) const = 0;
+        virtual void getGameViewport( float * const _aspect, Viewport * const _viewport ) const = 0;
 
     public:
         virtual bool createRenderWindow() = 0;

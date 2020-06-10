@@ -34,7 +34,7 @@ namespace Mengine
         void pause() override;
         void resume() override;
         void restart() override;
-        bool update( float _time, bool * _stop ) override;
+        bool update( float _time, bool * const _stop ) override;
         void seek( float _time ) override;
         void setLoop( bool _loop ) override;
         bool getLoop() const override;
@@ -52,11 +52,11 @@ namespace Mengine
     public:
         bool is3d() const override;
 
-        bool getCamera( AstralaxCamera * _camera ) const override;
+        bool getCamera( AstralaxCamera * const _camera ) const override;
 
     public:
-        bool prepareParticles( AstralaxEmitterRenderFlush * _flush ) override;
-        bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush * _flush ) override;
+        bool prepareParticles( AstralaxEmitterRenderFlush * const _flush ) override;
+        bool flushParticles( AstralaxMesh * const _meshes, uint32_t _meshLimit, RenderVertex2D * const _vertices, RenderIndex * const _indices, AstralaxEmitterRenderFlush * const _flush ) override;
 
     public:
         const mt::box2f & getBoundingBox() const override;
@@ -64,7 +64,7 @@ namespace Mengine
 
     public:
         bool changeEmitterImage( uint32_t _width, uint32_t _height, const void * _data, size_t _bytes ) override;
-        bool changeEmitterModel( float * _points, uint32_t _count ) override;
+        bool changeEmitterModel( float * const _points, uint32_t _count ) override;
 
     public:
         bool setPositionProvider( const AstralaxPositionProviderInterfacePtr & _positionProvider ) override;
@@ -112,6 +112,7 @@ namespace Mengine
         bool m_is3d;
         bool m_relative;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxEmitter2> AstralaxEmitter2Ptr;
+    //////////////////////////////////////////////////////////////////////////
 }

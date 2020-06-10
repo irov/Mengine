@@ -48,7 +48,7 @@ namespace Mengine
         }
 
     protected:
-        bool _update( const UpdateContext * _context, float * _used ) override
+        bool _update( const UpdateContext * _context, float * const _used ) override
         {
             *_used = _context->time;
 

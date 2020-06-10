@@ -267,7 +267,7 @@ namespace Mengine
                 return polygon;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_testHotspot( HotSpotPolygon * _left, HotSpotPolygon * _right )
+            bool s_testHotspot( const HotSpotPolygon * _left, const HotSpotPolygon * _right )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _left, false, "invalid left pointer" );
                 MENGINE_ASSERTION_MEMORY_PANIC( _right, false, "invalid right pointer" );
@@ -2068,7 +2068,7 @@ namespace Mengine
                 }
 
             protected:
-                bool _affect( const UpdateContext * _context, float * _used ) override
+                bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     *_used = _context->time;
 
@@ -2189,7 +2189,7 @@ namespace Mengine
                 }
 
             protected:
-                bool _affect( const UpdateContext * _context, float * _used ) override
+                bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     *_used = _context->time;
 
@@ -2338,7 +2338,7 @@ namespace Mengine
                 }
 
             protected:
-                bool _affect( const UpdateContext * _context, float * _used ) override
+                bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
                     T_Value current_value = m_getter();
 

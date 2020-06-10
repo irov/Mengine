@@ -33,7 +33,7 @@ namespace Mengine
         bool _prepareData() override;
 
     protected:
-        size_t _decode( void * _buffer, size_t _bufferSize ) override;
+        size_t _decode( void * const _buffer, size_t _bufferSize ) override;
 
     protected:
         bool _rewind() override;

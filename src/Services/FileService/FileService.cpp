@@ -99,7 +99,7 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const DocumentPtr & _doc )
+    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "mount file group '%s' path '%s' type '%s'"
             , _name.c_str()
@@ -181,7 +181,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * _fileGroup ) const
+    bool FileService::hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * const _fileGroup ) const
     {
         const FileGroupInterfacePtr & fileGroup = m_fileGroups.find( _name );
 

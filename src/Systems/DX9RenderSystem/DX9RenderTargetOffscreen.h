@@ -18,7 +18,7 @@ namespace Mengine
         void _finalize() override;
 
     public:
-        bool getData( void * _buffer, size_t _pitch ) override;
+        bool getData( void * const _buffer, size_t _pitch ) override;
 
     protected:
         IDirect3DSurface9 * m_surfacePlain;

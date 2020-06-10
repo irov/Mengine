@@ -232,7 +232,7 @@ namespace Mengine
         return type;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceBank::hasResource( const ConstString & _name, ResourcePtr * _resource ) const
+    bool ResourceBank::hasResource( const ConstString & _name, ResourcePtr * const _resource ) const
     {
         const ResourcePtr & resource = m_resources.find( _name );
 
@@ -249,7 +249,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceBank::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const
+    bool ResourceBank::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const
     {
         const ResourcePtr & resource = m_resources.find( _name );
 

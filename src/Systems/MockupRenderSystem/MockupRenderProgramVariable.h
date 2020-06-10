@@ -8,21 +8,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EProgramVariableType
-    {
-        EPVT_FLOAT,
-        EPVT_INTEGER,
-        EPVT_BOOLEAN
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct ProgramVariableDesc
-    {
-        EProgramVariableType type;
-        uint32_t offset;
-        uint32_t size;
-        uint32_t count;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class MockupRenderProgramVariable
         : public RenderProgramVariableInterface
         , public Factorable
@@ -49,6 +34,22 @@ namespace Mengine
         void updatePixelVariableFloats( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count ) override;
         void updatePixelVariableIntegers( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
         void updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
+
+    public:
+        enum EProgramVariableType
+        {
+            EPVT_FLOAT,
+            EPVT_INTEGER,
+            EPVT_BOOLEAN
+        };
+
+        struct ProgramVariableDesc
+        {
+            EProgramVariableType type;
+            uint32_t offset;
+            uint32_t size;
+            uint32_t count;
+        };
 
     protected:
         typedef Vector<float> VectorDataFloats;

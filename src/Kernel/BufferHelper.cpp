@@ -10,7 +10,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        size_t bufferFormat( Char * _buffer, size_t _capacity, const Char * _format, ... )
+        size_t bufferFormat( Char * const _buffer, size_t _capacity, const Char * _format, ... )
         {
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );

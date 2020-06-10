@@ -79,7 +79,7 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const
+    bool ResourceTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const
     {
         const ResourceImagePtr & image = m_hashtableFrames.find( _name );
 

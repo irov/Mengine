@@ -147,7 +147,7 @@ namespace Mengine
             return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size, const DocumentPtr & _doc )
+        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * const _data, size_t _size, const DocumentPtr & _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -216,7 +216,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * _size )
+        bool loadStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * const _size )
         {
             size_t pos = _stream->tell();
 

@@ -21,18 +21,18 @@ namespace Mengine
         virtual void removeWin32ProcessHandler( uint32_t _id ) = 0;
 
     public:
-        virtual size_t getShortPathName( const Char * _filePath, Char * _shortFilePath ) const = 0;
+        virtual size_t getShortPathName( const Char * _filePath, Char * const _shortFilePath ) const = 0;
 
     public:
         virtual time_t getFileUnixTime( const FILETIME * filetime ) const = 0;
 
     public:
-        virtual bool getErrorMessage( DWORD _messageId, Char * _out, size_t _capacity ) const = 0;
+        virtual bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const = 0;
 
     public:
-        virtual bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) = 0;
+        virtual bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size ) = 0;
 
     public:
-        virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) = 0;
+        virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode ) = 0;
     };
 }

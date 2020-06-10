@@ -40,7 +40,7 @@ namespace Mengine
         const ResourceImagePtr & getAtlasImage() const override;
 
     public:
-        bool findFrame( const ConstString & _name, ResourceImagePtr * _resourceImage ) const override;
+        bool findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const override;
 
     public:
         const VectorResourceImages & getFrames() const override;

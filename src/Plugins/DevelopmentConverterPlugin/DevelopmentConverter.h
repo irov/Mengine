@@ -24,7 +24,7 @@ namespace Mengine
         const ConstString & getConvertExt() const override;
 
     public:
-        void setOptions( ConverterOptions * _options ) override;
+        void setOptions( const ConverterOptions * _options ) override;
 
     public:
         bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;

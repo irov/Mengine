@@ -76,14 +76,14 @@ namespace Mengine
         void quit() override;
 
     public:
-        void calcWindowResolution( Resolution * _windowResolution ) const override;
+        void calcWindowResolution( Resolution * const _windowResolution ) const override;
 
         const Resolution & getCurrentResolution() const override;
 
         const Viewport & getRenderViewport() const override;
         const Resolution & getContentResolution() const override;
 
-        void getGameViewport( float * _aspect, Viewport * _viewport ) const override;
+        void getGameViewport( float * const _aspect, Viewport * const _viewport ) const override;
 
     public:
         bool render() override;
@@ -132,8 +132,8 @@ namespace Mengine
         uint32_t getDebugMask() const override;
 
     public:
-        size_t getCompanyName( Char * _companyName ) const override;
-        size_t getProjectName( Char * _projectName ) const override;
+        size_t getCompanyName( Char * const _companyName ) const override;
+        size_t getProjectName( Char * const _projectName ) const override;
 
     public:
         const ConstString & getProjectCodename() const override;
@@ -169,7 +169,7 @@ namespace Mengine
         void debugPause( bool _pause ) override;
 
     protected:
-        void calcRenderViewport_( const Resolution & _resolution, Viewport * _viewport );
+        void calcRenderViewport_( const Resolution & _resolution, Viewport * const _viewport );
         void invalidateWindow_();
 
     protected:

@@ -27,7 +27,7 @@ namespace Mengine
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share ) override;
 
     public:
-        size_t read( void * _buf, size_t _count ) override;
+        size_t read( void * const _buf, size_t _count ) override;
         bool seek( size_t _pos ) override;
         bool skip( size_t _pos ) override;
         size_t tell() const override;
@@ -35,15 +35,15 @@ namespace Mengine
         bool eof() const override;
 
     public:
-        bool time( uint64_t * _time ) const override;
+        bool time( uint64_t * const _time ) const override;
 
     public:
         bool memory( void ** _memory, size_t * _size ) override;
 
     protected:
-        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath );
+        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _fullPath );
         void close_();
-        bool read_( void * _buf, size_t _offset, size_t _size, size_t * _read );
+        bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 
 #ifdef MENGINE_DEBUG

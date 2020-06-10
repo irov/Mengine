@@ -138,7 +138,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////////
-    size_t XmlToBinDecoder::decode( void * _buffer, size_t _bufferSize )
+    size_t XmlToBinDecoder::decode( void * const _buffer, size_t _bufferSize )
     {
         MENGINE_UNUSED( _buffer );
         MENGINE_UNUSED( _bufferSize );

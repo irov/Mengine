@@ -108,7 +108,7 @@ namespace Mengine
         bool m_update;
 
     protected:
-        bool removeScheduler_( SchedulerEventDesc * _event );
+        bool removeScheduler_( SchedulerEventDesc * const _event );
         bool findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** _desc ) const;
         bool findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** _desc );
     };

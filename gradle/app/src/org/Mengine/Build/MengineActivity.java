@@ -85,8 +85,6 @@ public class MengineActivity extends SDLActivity {
 
         super.onCreate(savedInstanceState);
 
-        Log.e(TAG, "MengineActivity.onCreate()");
-
         initPlugins();
 
         if (_instance.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
@@ -98,7 +96,7 @@ public class MengineActivity extends SDLActivity {
     protected void onStop() {
         super.onStop();
 
-        Log.e(TAG, "MengineActivity.onStop()");
+        Log.i(TAG, "MengineActivity.onStop()");
 
         _instance = null;
     }
@@ -107,22 +105,23 @@ public class MengineActivity extends SDLActivity {
     public void onPause() {
         super.onPause();
 
-        Log.e(TAG, "MengineActivity.onPause()");
+        Log.i(TAG, "MengineActivity.onPause()");
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        Log.e(TAG, "MengineActivity.onResume()");
+        Log.i(TAG, "MengineActivity.onResume()");
+        
         if (_instance != null) {
             if (_instance.facebookInteractionLayer == null) {
-                Log.e(TAG, "_instance != null AND _instance.facebookInteractionLayer == null");
+                Log.i(TAG, "_instance != null AND _instance.facebookInteractionLayer == null");
             } else {
-                Log.e(TAG, "_instance != null AND _instance.facebookInteractionLayer != null");
+                Log.i(TAG, "_instance != null AND _instance.facebookInteractionLayer != null");
             }
         } else {
-            Log.e(TAG, "_instance == null -> init plugins");
+            Log.i(TAG, "_instance == null -> init plugins");
 
             _instance = this;
 
@@ -143,7 +142,7 @@ public class MengineActivity extends SDLActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.e(TAG, "MengineActivity.onActivityResult()");
+        Log.i(TAG, "MengineActivity.onActivityResult()");
 
         if (callbackManager != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -152,7 +151,7 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected SDLSurface createSDLSurface(Context context) {
-        Log.e(TAG, "MengineActivity.createSDLSurface()");
+        Log.i(TAG, "MengineActivity.createSDLSurface()");
 
         return new MengineSurface(context);
     }

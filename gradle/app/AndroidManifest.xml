@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!--used for http requests-->
     <uses-permission android:name="android.permission.WAKE_LOCK" /><!--used for http requests (downloading files)-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/><!--used for Proxy detection, could be disabled-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /><!-- Allow reading from external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><!-- Allow writing to external storage -->
 
     <application

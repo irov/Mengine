@@ -63,10 +63,6 @@ android {
             manifestPlaceholders = [app_name_gradle:"org.Mengine.EvilMonkey"]
         }
         
-        if (findProperty("ANDROID_BUILD_PUBLISH")) {
-            property_buildPublish = "TRUE"
-        }
-
         print 'manifestPlaceholders = '
         println manifestPlaceholders
         
@@ -75,6 +71,11 @@ android {
         
         print 'ANDROID_APP_NAME_VERSION = '
         println versionName
+
+        if (findProperty("ANDROID_BUILD_PUBLISH")) {
+            println "SET ANDROID_BUILD_PUBLISH"
+            property_buildPublish = "TRUE"
+        }
         
         print 'ANDROID_BUILD_PUBLISH = '
         println property_buildPublish
@@ -226,6 +227,8 @@ android {
     
     afterEvaluate {
         if (findProperty("ANDROID_APP_UPLOAD_CRASHLYTICS")) {
+            println "ANDROID_APP_UPLOAD_CRASHLYTICS"
+            
             assembleRelease.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
     }

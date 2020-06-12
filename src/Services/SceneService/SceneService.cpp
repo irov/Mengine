@@ -17,6 +17,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SceneService::SceneService()
+        : m_process( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -328,6 +329,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::update()
     {
+        ++m_process;
+
         for( const SceneCommandDesc & desc : m_commands )
         {
             switch( desc.type )
@@ -350,6 +353,14 @@ namespace Mengine
             }
         }
 
+        --m_process;
+
         m_commands.clear();
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool SceneService::isProcess() const
+    {
+        return m_process > 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

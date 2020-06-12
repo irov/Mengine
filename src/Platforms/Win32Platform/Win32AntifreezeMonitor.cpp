@@ -4,6 +4,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -36,7 +37,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::initialize()
     {
-        uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 5U );
+        bool enable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
+
+        if( enable == false )
+        {
+            return true;
+        }
+
+        uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
 
         if( seconds == 0U )
         {
@@ -162,9 +170,13 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->createProcessDump( processDumpPath.c_str(), nullptr, true );
 
-        MENGINE_ERROR_MESSAGE( "Antifreeze monitor detect freeze process for %u seconds, and create dump '%s'"
+        bool sceneProcess = SCENE_SERVICE()
+            ->isProcess();
+
+        MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for %u seconds, and create dump '%s' [scene process: %s]"
             , m_seconds
             , processDumpPath.c_str()
+            , sceneProcess == true ? "yes" : "no"
         );
 
         return true;

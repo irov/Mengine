@@ -40,6 +40,9 @@ namespace Mengine
 
     public:
         virtual void update() = 0;
+
+    public:
+        virtual bool isProcess() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#include "Config/Atomic.h"
+
 namespace Mengine
 {
     class SceneService
@@ -37,6 +39,9 @@ namespace Mengine
     public:
         void update() override;
 
+    public:
+        bool isProcess() const override;
+
     protected:
         enum ESceneCommandType
         {
@@ -58,6 +63,8 @@ namespace Mengine
 
         ScenePtr m_scene;
         ScenePtr m_globalScene;
+
+        AtomicUInt32 m_process;
 
     protected:
         void setCurrentScene_( const SceneCommandDesc & _desc );

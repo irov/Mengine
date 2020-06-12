@@ -8,6 +8,7 @@
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionContainer.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "Kernel/Logger.h"
@@ -94,6 +95,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxService::_finalizeService()
     {
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_containers );
+
+        m_containers.clear();
+
         m_archivator = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitterContainer );
@@ -106,7 +111,6 @@ namespace Mengine
     void AstralaxService::_stopService()
     {
         m_atlases.clear();
-        m_containers.clear();
 
         for( uint32_t index = 0; index != 256; ++index )
         {
@@ -129,7 +133,7 @@ namespace Mengine
 
         if( container->initialize( _fileGroup, _filePath, m_archivator ) == false )
         {
-            LOGGER_ERROR( "invalid initialize container doc '%s'"
+            LOGGER_ERROR( "invalid initialize container (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
@@ -137,6 +141,15 @@ namespace Mengine
         }
 
         uint32_t id = container->getPtcId();
+
+        if( id == 0 )
+        {
+            LOGGER_ERROR( "invalid container ptc id (doc: %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
 
         MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
@@ -982,7 +995,9 @@ namespace Mengine
 
         MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
-        MENGINE_ASSERTION( it_found != m_containers.end(), "deleted container not found on cache" );
+        MENGINE_ASSERTION( it_found != m_containers.end(), "deleted container not found on cache (doc: %s)"
+            , MENGINE_DOCUMENT_STR( _container->getDocument() )
+        );
 
         AstralaxEmitterContainerDesc & desc = it_found->second;
         --desc.reference;

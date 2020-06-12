@@ -348,6 +348,7 @@ Assertion
     Assertion.cpp
     AssertionFactory.h
     AssertionFactory.cpp
+    AssertionContainer.h
     AssertionNotImplemented.h
     AssertionToDo.h
     AssertionResourceType.h

@@ -165,6 +165,8 @@ namespace Mengine
 
     public:
         virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const DocumentPtr & _doc ) = 0;
+
+    public:
         virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc ) = 0;
 
     public:

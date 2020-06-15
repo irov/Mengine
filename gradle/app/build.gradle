@@ -3,12 +3,25 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'io.sentry.android.gradle'
 
-def property_buildPublish = "FALSE"
-
 android {
     buildToolsVersion '29.0.3'
     compileSdkVersion 28
 
+    ext.getBooleanProperty = { name ->
+        def p = project.getProperties().get(name, null);
+
+        if( p == null )
+        {
+            return false;
+        }
+
+        if( p as Integer == 0 )
+        {
+            return false;
+        }
+
+        return true
+    }
 
     signingConfigs {
         config {
@@ -33,7 +46,7 @@ android {
     }   
     
     defaultConfig {
-        if (findProperty("ANDROID_APP_ID")) {
+        if (project.hasProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
             print 'ANDROID_APP_ID = '
         } else if (System.getenv('ANDROID_ANDROID_APP_ID')) {
@@ -49,18 +62,18 @@ android {
         minSdkVersion 18
         targetSdkVersion 29
 
-        if (findProperty("ANDROID_APP_CODE_VERSION")) {
+        if (project.hasProperty("ANDROID_APP_CODE_VERSION")) {
             versionCode ANDROID_APP_CODE_VERSION as Integer
             versionName ANDROID_APP_CODE_VERSION
         } else {
-            versionCode 4
-            versionName "4"
+            versionCode 1
+            versionName "1"
         }
         
-        if (findProperty("ANDROID_APP_NAME")) {
+        if (project.hasProperty("ANDROID_APP_NAME")) {
             manifestPlaceholders = [app_name_gradle:ANDROID_APP_NAME]
         } else {
-            manifestPlaceholders = [app_name_gradle:"org.Mengine.EvilMonkey"]
+            manifestPlaceholders = [app_name_gradle:"org.Wonderland.EvilMonkey"]
         }
         
         print 'manifestPlaceholders = '
@@ -72,20 +85,18 @@ android {
         print 'ANDROID_APP_NAME_VERSION = '
         println versionName
 
-        if (findProperty("ANDROID_BUILD_PUBLISH")) {
-            println "SET ANDROID_BUILD_PUBLISH"
-            property_buildPublish = "TRUE"
-        }
-        
-        print 'ANDROID_BUILD_PUBLISH = '
-        println property_buildPublish
+        print 'ANDROID_APP_BUILD_PUBLISH = '
+        println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH")
         
         signingConfig signingConfigs.config
 
         multiDexEnabled true
         
+        print 'ANDROID_APP_EMULATOR_ENABLE = '
+        println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE")
+        
         ndk {
-            if (findProperty("ANDROID_APP_EMULATOR_ENABLE")) {
+            if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
                 abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }
             else
@@ -97,18 +108,18 @@ android {
 
     splits {
         abi {
-            if (findProperty("ANDROID_APP_SPLIT_ENABLE")) {
+            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == true) {
                 enable true
             } else {
                 enable false
             }
             
             print 'ANDROID_APP_SPLIT_ENABLE = '
-            println findProperty("ANDROID_APP_SPLIT_ENABLE") != null
+            println getBooleanProperty("ANDROID_APP_SPLIT_ENABLE")
             
             reset()
 
-            if (findProperty("ANDROID_APP_EMULATOR_ENABLE")) {
+            if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
@@ -136,7 +147,7 @@ android {
                         "-DANDROID_STL=c++_shared", 
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + property_buildPublish,
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "TRUE" : "FALSE",
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
                 }
                 
@@ -156,7 +167,7 @@ android {
                         "-DANDROID_STL=c++_shared",
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + property_buildPublish,
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "TRUE" : "FALSE",
                         "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
                 
@@ -175,12 +186,12 @@ android {
     
     sourceSets {
         main {
-            if (findProperty("MANIFEST_SRC_FILE")) {
+            if (project.hasProperty("MANIFEST_SRC_FILE")) {
                 print 'MANIFEST_SRC_FILE = '
                 println MANIFEST_SRC_FILE
             
                 manifest.srcFile MANIFEST_SRC_FILE
-            } else if (findProperty("ANDROID_BUILD_PUBLISH")) {
+            } else if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
                 println 'MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
             
                 manifest.srcFile 'AndroidManifestPublish.xml'
@@ -192,7 +203,7 @@ android {
             
             java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
             
-            if (findProperty("ASSETS_RES_DIR")) {
+            if (project.hasProperty("ASSETS_RES_DIR")) {
                 print 'ASSETS_RES_DIR = '
                 println ASSETS_RES_DIR
 
@@ -201,7 +212,7 @@ android {
                 res.srcDirs = ['res']
             }
 
-			if (findProperty("ASSETS_SRC_DIR")) {
+			if (project.hasProperty("ASSETS_SRC_DIR")) {
                 print 'ASSETS_SRC_DIR = '
                 println ASSETS_SRC_DIR
 
@@ -226,9 +237,7 @@ android {
     }
     
     afterEvaluate {
-        if (findProperty("ANDROID_APP_UPLOAD_CRASHLYTICS")) {
-            println "ANDROID_APP_UPLOAD_CRASHLYTICS"
-            
+        if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
             assembleRelease.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
     }

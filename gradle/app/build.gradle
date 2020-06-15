@@ -95,13 +95,15 @@ android {
         print 'ANDROID_APP_EMULATOR_ENABLE = '
         println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE")
         
-        ndk {
-            if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
-                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-            }
-            else
-            {
-                abiFilters "arm64-v8a", "armeabi-v7a"
+        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == false) {
+            ndk {
+                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
+                    abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                }
+                else
+                {
+                    abiFilters "arm64-v8a", "armeabi-v7a"
+                }
             }
         }
     }
@@ -119,12 +121,13 @@ android {
             
             reset()
 
-            if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
-                include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-            } else {
-                include "arm64-v8a", "armeabi-v7a"
+            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == false) {
+                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
+                    include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                } else {
+                    include "arm64-v8a", "armeabi-v7a"
+                }
             }
-            
 
             universalApk false
         }
@@ -152,7 +155,7 @@ android {
                 }
                 
                 firebaseCrashlytics {
-                    mappingFileUploadEnabled false
+                    mappingFileUploadEnabled true
                 }
             }
         }
@@ -238,7 +241,7 @@ android {
     
     afterEvaluate {
         if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
-            assembleRelease.finalizedBy(uploadCrashlyticsSymbolFileRelease)
+            build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
     }
 }

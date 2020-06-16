@@ -17,6 +17,11 @@ namespace Mengine
         m_json = _json;
     }
     //////////////////////////////////////////////////////////////////////////
+    jpp::object JSONStorage::modifyJSON()
+    {
+        return m_json;
+    }
+    //////////////////////////////////////////////////////////////////////////
     jpp::object JSONStorage::copyJSON() const
     {
         jpp::object j = jpp::copy( m_json );

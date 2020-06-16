@@ -11,6 +11,6 @@ namespace Mengine
     namespace Helper
     {
         bool hasNodePickerInheritance( const Node * _node );
-        PickerInterface * getNodePickerInheritance( Node * _node, Node ** _pickerNode );
+        PickerInterface * getNodePickerInheritance( Node * _node, Node ** const _pickerNode );
     }
 }

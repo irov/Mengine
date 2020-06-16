@@ -77,7 +77,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::memory( void ** _memory, size_t * const _size )
+    bool Win32SocketInputStream::memory( void ** const _memory, size_t * const _size )
     {
         MENGINE_UNUSED( _memory );
         MENGINE_UNUSED( _size );

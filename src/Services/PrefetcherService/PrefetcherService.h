@@ -56,8 +56,8 @@ namespace Mengine
         void visitPrefetches( const VisitorPtr & _visitor ) const override;
 
     protected:
-        bool hasPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const;
-        bool getPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const;
+        bool hasPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** const _receiver ) const;
+        bool getPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** const _receiver ) const;
         bool popPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ThreadTaskPrefetchPtr * const _prefetch );
 
     protected:

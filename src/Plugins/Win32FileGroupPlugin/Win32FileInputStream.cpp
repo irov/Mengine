@@ -382,7 +382,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::memory( void ** _memory, size_t * _size )
+    bool Win32FileInputStream::memory( void ** const _memory, size_t * _size )
     {
         MENGINE_UNUSED( _memory );
         MENGINE_UNUSED( _size );

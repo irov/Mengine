@@ -33,7 +33,7 @@ namespace Mengine
             , const ConstString & _name
             , const ConstString & _type
             , bool _keep
-            , Resource ** _prev
+            , Resource ** const _prev
             , const DocumentPtr & _doc ) = 0;
 
     public:

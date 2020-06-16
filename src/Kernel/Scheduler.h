@@ -109,8 +109,8 @@ namespace Mengine
 
     protected:
         bool removeScheduler_( SchedulerEventDesc * const _event );
-        bool findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** _desc ) const;
-        bool findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** _desc );
+        bool findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** const _desc ) const;
+        bool findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** const _desc );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Scheduler> SchedulerPtr;

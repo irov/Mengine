@@ -297,7 +297,7 @@ namespace Mengine
         m_invalidateVerticesWM = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void Grid2D::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 

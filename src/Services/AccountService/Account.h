@@ -36,8 +36,8 @@ namespace Mengine
     public:
         bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) override;
         bool changeSetting( const ConstString & _setting, const Char * _value ) override;
-        bool getSetting( const ConstString & _setting, const Char ** _value ) const override;
-        bool hasSetting( const ConstString & _setting, const Char ** _value ) const override;
+        bool getSetting( const ConstString & _setting, const Char ** const _value ) const override;
+        bool hasSetting( const ConstString & _setting, const Char ** const _value ) const override;
 
     public:
         void apply() override;

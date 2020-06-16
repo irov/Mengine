@@ -126,7 +126,7 @@ namespace Mengine
         }
 
     public:
-        void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
+        void parse( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
         {
             if( MENGINE_STRCMP( _node, "Text" ) != 0 )
             {
@@ -447,7 +447,7 @@ namespace Mengine
         callbacks.begin_node = nullptr;
         callbacks.end_node = nullptr;
 
-        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** _key, const xmlsax_char_t ** _value, void * _userdata )
+        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _key, const xmlsax_char_t ** const _value, void * _userdata )
         {
             MENGINE_UNUSED( _userdata );
 
@@ -488,7 +488,7 @@ namespace Mengine
         void operator = ( const TextManagerUnloadSaxCallback & ) = delete;
 
     public:
-        void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
+        void parse( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
         {
             if( MENGINE_STRCMP( _node, "Text" ) != 0 )
             {
@@ -543,7 +543,7 @@ namespace Mengine
         callbacks.begin_node = nullptr;
         callbacks.end_node = nullptr;
 
-        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** _key, const xmlsax_char_t ** _value, void * _userdata )
+        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _key, const xmlsax_char_t ** const _value, void * _userdata )
         {
             MENGINE_UNUSED( _userdata );
 

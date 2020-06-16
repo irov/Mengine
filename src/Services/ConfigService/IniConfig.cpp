@@ -14,7 +14,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_hasValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** _value )
+        static bool s_hasValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _prefix );
@@ -45,7 +45,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_hasValueString( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, const Char ** _value )
+        static bool s_hasValueString( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
@@ -128,7 +128,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_getValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** _value )
+        static bool s_getValueString2( const IniUtil::IniStore & _ini, const Char * _prefix, const Tags & _platform, const Char * _section, const Char * _key, const Char ** const _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _prefix );
@@ -398,7 +398,7 @@ namespace Mengine
         return Detail::s_hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool IniConfig::hasValue( const Char * _section, const Char * _key, const Char ** _value ) const
+    bool IniConfig::hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const
     {
         return Detail::s_hasValueString( m_stores, m_platformTags, _section, _key, _value );
     }

@@ -34,7 +34,7 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        CacheBufferID lockBuffer( size_t _size, void ** _memory, const DocumentPtr & _doc );
+        CacheBufferID lockBuffer( size_t _size, void ** const _memory, const DocumentPtr & _doc );
         void unlockBuffer( CacheBufferID _bufferId );
 
     public:
@@ -49,7 +49,7 @@ namespace Mengine
         MemoryInputInterfacePtr createMemoryInput( const DocumentPtr & _doc ) override;
 
     protected:
-        CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const DocumentPtr & _doc );
+        CacheBufferID lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentPtr & _doc );
 
     protected:
         struct CacheBufferMemory

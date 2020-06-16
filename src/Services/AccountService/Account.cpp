@@ -126,7 +126,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::getSetting( const ConstString & _setting, const Char ** _value ) const
+    bool Account::getSetting( const ConstString & _setting, const Char ** const _value ) const
     {
         MapSettings::const_iterator it_found = m_settings.find( _setting );
 
@@ -147,7 +147,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::hasSetting( const ConstString & _setting, const Char ** _value ) const
+    bool Account::hasSetting( const ConstString & _setting, const Char ** const _value ) const
     {
         MapSettings::const_iterator it_found = m_settings.find( _setting );
 

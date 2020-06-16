@@ -95,7 +95,7 @@ namespace Mengine
         this->clearCacheBuffers();
     }
     //////////////////////////////////////////////////////////////////////////
-    CacheBufferID MemoryService::lockBuffer( size_t _size, void ** _memory, const DocumentPtr & _doc )
+    CacheBufferID MemoryService::lockBuffer( size_t _size, void ** const _memory, const DocumentPtr & _doc )
     {
         m_memoryCacheMutex->lock();
 
@@ -107,7 +107,7 @@ namespace Mengine
         return buffer_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const DocumentPtr & _doc )
+    CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

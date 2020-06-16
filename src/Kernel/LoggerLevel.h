@@ -13,6 +13,7 @@ namespace Mengine
         LM_WARNING,
         LM_MESSAGE,
         LM_INFO,
+        LM_DEBUG,
         LM_MAX
     };
     //////////////////////////////////////////////////////////////////////////

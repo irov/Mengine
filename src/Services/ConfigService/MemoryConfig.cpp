@@ -14,7 +14,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_getRecord( const VectorRecords & _records, const Char * _section, const Char * _key, const RecordDesc ** _record )
+        static bool s_getRecord( const VectorRecords & _records, const Char * _section, const Char * _key, const RecordDesc ** const _record )
         {
             for( const RecordDesc & record : _records )
             {
@@ -240,7 +240,7 @@ namespace Mengine
         return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const Char ** _value ) const
+    bool MemoryConfig::hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const
     {
         return Detail::s_hasValueT( m_records, m_platformTags, _section, _key, _value );
     }

@@ -149,7 +149,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::memory( void ** _memory, size_t * const _size )
+    bool MemoryCacheInput::memory( void ** const _memory, size_t * const _size )
     {
         *_memory = m_data;
         *_size = m_size;

@@ -26,7 +26,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        PickerInterface * getNodePickerInheritance( Node * _node, Node ** _pickerNode )
+        PickerInterface * getNodePickerInheritance( Node * _node, Node ** const _pickerNode )
         {
             if( _node == nullptr )
             {

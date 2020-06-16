@@ -1102,7 +1102,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, EPixelFormat Format, D3DPOOL Pool, IDirect3DTexture9 ** _ppD3DTexture )
+    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, EPixelFormat Format, D3DPOOL Pool, IDirect3DTexture9 ** const _ppD3DTexture )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, false, "device not created" );
 

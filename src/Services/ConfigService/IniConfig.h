@@ -38,7 +38,7 @@ namespace Mengine
         bool hasValue( const Char * _section, const Char * _key, uint64_t * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, float * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, double * _value ) const override;
-        bool hasValue( const Char * _section, const Char * _key, const Char ** _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, ConstString * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, FilePath * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, Tags * _value ) const override;

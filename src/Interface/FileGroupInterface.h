@@ -57,7 +57,7 @@ namespace Mengine
         virtual bool findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFilePath & _lambda ) const = 0;
 
     public:
-        virtual InputStreamInterfacePtr createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const DocumentPtr & _doc ) = 0;
+        virtual InputStreamInterfacePtr createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) = 0;
         virtual bool openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share ) = 0;
 
     public:

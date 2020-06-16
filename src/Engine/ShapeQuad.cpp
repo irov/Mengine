@@ -26,7 +26,7 @@ namespace Mengine
         _renderPipeline->addRenderQuad( _context, material, vertices, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeQuad::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void ShapeQuad::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 

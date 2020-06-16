@@ -1375,7 +1375,7 @@ namespace Mengine
         return offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void TextField::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         //mt::vec2f offset = mt::zero_v2;
 

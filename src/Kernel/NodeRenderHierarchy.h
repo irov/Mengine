@@ -15,7 +15,7 @@ namespace Mengine
     {
         void nodeRenderChildren( const Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external );
         bool hasNodeRenderInheritance( const Node * _node );
-        RenderInterface * getNodeRenderInheritance( Node * _node, Node ** _nodeRender );
+        RenderInterface * getNodeRenderInheritance( Node * _node, Node ** const _nodeRender );
         const RenderViewportInterfacePtr & getRenderViewportInheritance( const RenderInterface * _render );
         const RenderCameraInterfacePtr & getRenderCameraInheritance( const RenderInterface * _render );
         const RenderTransformationInterfacePtr & getRenderTransformationInheritance( const RenderInterface * _render );

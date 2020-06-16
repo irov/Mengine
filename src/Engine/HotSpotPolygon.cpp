@@ -40,7 +40,7 @@ namespace Mengine
         m_polygon.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    //void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    //void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     //{
     //    const VectorPoints & points = m_polygon.getPoints();
 

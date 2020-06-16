@@ -141,7 +141,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool stringalized( const Char * _string, const Char ** _value )
+        bool stringalized( const Char * _string, const Char ** const _value )
         {
             *_value = _string;
 

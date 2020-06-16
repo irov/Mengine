@@ -123,7 +123,7 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void Meshget::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         if( m_positions.empty() == true )
         {

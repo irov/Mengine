@@ -39,7 +39,7 @@ namespace Mengine
         bool time( uint64_t * const _time ) const override;
 
     public:
-        bool memory( void ** _memory, size_t * const _size ) override;
+        bool memory( void ** const _memory, size_t * const _size ) override;
 
     protected:
         uint8_t * m_data;

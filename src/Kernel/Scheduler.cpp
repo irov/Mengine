@@ -507,7 +507,7 @@ namespace Mengine
         return m_time;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** _desc )
+    bool Scheduler::findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** const _desc )
     {
         VectorSchedulers::iterator it_find =
             std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
@@ -542,7 +542,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** _desc ) const
+    bool Scheduler::findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** const _desc ) const
     {
         VectorSchedulers::const_iterator it_find =
             std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )

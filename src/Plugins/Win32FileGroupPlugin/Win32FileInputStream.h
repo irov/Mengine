@@ -38,7 +38,7 @@ namespace Mengine
         bool time( uint64_t * const _time ) const override;
 
     public:
-        bool memory( void ** _memory, size_t * _size ) override;
+        bool memory( void ** const _memory, size_t * _size ) override;
 
     protected:
         bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _fullPath );

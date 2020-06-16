@@ -31,7 +31,7 @@ namespace Mengine
         bool stringalized( const Char * _string, mt::vec2f * _value );
         bool stringalized( const Char * _string, mt::vec3f * _value );
         bool stringalized( const Char * _string, mt::vec4f * _value );
-        bool stringalized( const Char * _string, const Char ** _value );
+        bool stringalized( const Char * _string, const Char ** const _value );
         bool stringalized( const Char * _string, String * _value );
         bool stringalized( const Char * _string, ConstString * _value );
         bool stringalized( const Char * _string, FilePath * _value );

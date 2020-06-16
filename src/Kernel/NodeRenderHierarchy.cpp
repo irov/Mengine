@@ -33,7 +33,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        RenderInterface * getNodeRenderInheritance( Node * _node, Node ** _nodeRender )
+        RenderInterface * getNodeRenderInheritance( Node * _node, Node ** const _nodeRender )
         {
             if( _node == nullptr )
             {

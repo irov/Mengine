@@ -437,7 +437,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void Window::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVertices();
 

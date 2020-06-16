@@ -598,7 +598,43 @@ namespace Mengine
 
         if( _node->hasAnimation )
         {
-            _node->render.deserialize( animationNode );
+            _node->animation.deserialize( animationNode );
+        }
+
+        pugi::xml_node componentSurface = _xmlNode.child( "Component:Surface" );
+
+        _node->hasComponentSurface = componentSurface;
+
+        if( _node->hasComponentSurface )
+        {
+            _node->componentSurface.deserialize( componentSurface );
+
+            pugi::xml_node componentSurfaceNode = componentSurface.child( "Animation" );
+
+            _node->componentSurface.hasAnimation = componentSurfaceNode;
+
+            if( _node->componentSurface.hasAnimation )
+            {
+                _node->componentSurface.animation.deserialize( componentSurfaceNode );
+            }
+
+            pugi::xml_node typeSurfaceImageNode = componentSurface.child( "Type:SurfaceImage" );
+
+            _node->componentSurface.isTypeSurfaceImage = typeSurfaceImageNode;
+
+            if( _node->componentSurface.isTypeSurfaceImage )
+            {
+                _node->componentSurface.surfaceImage.deserialize( typeSurfaceImageNode );
+
+                pugi::xml_node contentNode = typeSurfaceImageNode.child( "Content" );
+
+                _node->componentSurface.surfaceImage.isContent = contentNode;
+
+                if( _node->componentSurface.surfaceImage.isContent )
+                {
+                    _node->componentSurface.surfaceImage.content.deserialize( contentNode );
+                }
+            }
         }
 
         pugi::xml_node typeTextFieldNode = _xmlNode.child( "Type:TextField" );
@@ -1414,7 +1450,7 @@ namespace Mengine
             }
         };
 
-        auto uiReadOnlyBool = [_node]( const char * _caption, bool & _prop )
+        auto uiReadOnlyBool = [_node]( const char * _caption, bool _prop )
         {
             bool testValue = _prop;
 
@@ -1437,28 +1473,6 @@ namespace Mengine
             }
         };
 
-        auto uiEditorVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
-        {
-            mt::vec3f testValue = _prop;
-            bool input = ImGui::DragFloat3( _caption, testValue.buff() );
-
-            if( input && testValue != _prop )
-            {
-                _prop = testValue;
-                _node->dirty = true;
-            }
-        };
-
-        auto uiReadOnlyVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
-        {
-            mt::vec3f testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::DragFloat3( _caption, testValue.buff() );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
-        };
-
         auto uiEditorVec1f = [_node]( const char * _caption, float & _prop )
         {
             float testValue = _prop;
@@ -1471,7 +1485,7 @@ namespace Mengine
             }
         };
 
-        auto uiReadOnlyVec1f = [_node]( const char * _caption, float & _prop )
+        auto uiReadOnlyVec1f = [_node]( const char * _caption, const float & _prop )
         {
             float testValue = _prop;
             ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
@@ -1493,6 +1507,38 @@ namespace Mengine
             }
         };
 
+        auto uiReadOnlyVec2f = [_node]( const char * _caption, const mt::vec2f & _prop )
+        {
+            mt::vec2f testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragFloat2( _caption, testValue.buff() );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
+        auto uiEditorVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
+        {
+            mt::vec3f testValue = _prop;
+            bool input = ImGui::DragFloat3( _caption, testValue.buff() );
+
+            if( input && testValue != _prop )
+            {
+                _prop = testValue;
+                _node->dirty = true;
+            }
+        };
+
+        auto uiReadOnlyVec3f = [_node]( const char * _caption, const mt::vec3f & _prop )
+        {
+            mt::vec3f testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragFloat3( _caption, testValue.buff() );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
         auto uiEditorColor = [_node]( const Char * _caption, Color & _prop )
         {
             Color testValue = _prop;
@@ -1505,7 +1551,7 @@ namespace Mengine
             }
         };
 
-        auto uiReadOnlyColor = [_node]( const Char * _caption, Color & _prop )
+        auto uiReadOnlyColor = [_node]( const Char * _caption, const Color & _prop )
         {
             Color testValue = _prop;
             ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
@@ -1529,7 +1575,7 @@ namespace Mengine
             }
         };
 
-        auto uiReadOnlyString = [_node]( const char * _caption, String & _prop )
+        auto uiReadOnlyString = [_node]( const char * _caption, const String & _prop )
         {
             char testValue[2048] = {0};
             strcpy( testValue, _prop.c_str() );
@@ -1557,7 +1603,7 @@ namespace Mengine
             }
         };
 
-        auto uiReadOnlyListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
+        auto uiReadOnlyListBox = [_node]( const char * _caption, uint32_t _prop, const std::initializer_list<String> & _items, uint32_t _count )
         {
             int32_t testValue = _prop;
             ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
@@ -1624,6 +1670,42 @@ namespace Mengine
             uiReadOnlyBool( "pause", _node->animation.pause );
             uiEditorVec1f( "time", _node->animation.time );
             uiReadOnlyVec1f( "duration", _node->animation.duration );
+        }
+
+        if( _node->hasComponentSurface && ImGui::CollapsingHeader( "Component Surface:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            uiReadOnlyString( "name", _node->componentSurface.Name );
+            uiReadOnlyString( "type", _node->componentSurface.Type );
+
+            if( _node->componentSurface.Compile == true )
+            {
+                uiReadOnlyVec2f( "max size", _node->componentSurface.MaxSize );
+                uiReadOnlyVec2f( "size", _node->componentSurface.Size );
+                uiReadOnlyVec2f( "offset", _node->componentSurface.Offset );
+            }
+
+            if( _node->componentSurface.hasAnimation && ImGui::CollapsingHeader( "Surface Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                uiEditorBool( "loop", _node->componentSurface.animation.loop );
+                uiReadOnlyBool( "play", _node->componentSurface.animation.play );
+                uiReadOnlyBool( "pause", _node->componentSurface.animation.pause );
+                uiEditorVec1f( "time", _node->componentSurface.animation.time );
+                uiReadOnlyVec1f( "duration", _node->componentSurface.animation.duration );
+            }
+
+            if( _node->componentSurface.isTypeSurfaceImage && ImGui::CollapsingHeader( "Surface Image:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                uiReadOnlyString( "resource name", _node->componentSurface.surfaceImage.ResourceName );
+                uiReadOnlyString( "resource type", _node->componentSurface.surfaceImage.ResourceType );
+
+                if( _node->componentSurface.surfaceImage.isContent && ImGui::CollapsingHeader( "Surface Image Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                {
+                    uiReadOnlyString( "file group", _node->componentSurface.surfaceImage.content.FileGroup );
+                    uiReadOnlyString( "file path", _node->componentSurface.surfaceImage.content.FilePath );
+                    uiReadOnlyString( "codec", _node->componentSurface.surfaceImage.content.CodecType );
+                    uiReadOnlyString( "converter", _node->componentSurface.surfaceImage.content.ConverterType );
+                }
+            }
         }
 
         if( _node->isTypeTextField && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )
@@ -1931,6 +2013,34 @@ namespace Mengine
             pugi::xml_node xmlAnimation = xmlNode.append_child( "Animation" );
 
             _node.animation.serialize( xmlAnimation );
+        }
+
+        if( _node.hasComponentSurface )
+        {
+            pugi::xml_node xmlSurface = xmlNode.append_child( "Component:Surface" );
+
+            _node.componentSurface.serialize( xmlSurface );
+
+            if( _node.componentSurface.hasAnimation )
+            {
+                pugi::xml_node xmlAnimation = xmlSurface.append_child( "Animation" );
+
+                _node.componentSurface.animation.serialize( xmlAnimation );
+            }
+
+            if( _node.componentSurface.isTypeSurfaceImage )
+            {
+                pugi::xml_node xmlSurfaceImage = xmlSurface.append_child( "Type:SurfaceImage" );
+
+                _node.componentSurface.surfaceImage.serialize( xmlSurfaceImage );
+
+                if( _node.componentSurface.surfaceImage.isContent )
+                {
+                    pugi::xml_node xmlContent = xmlSurfaceImage.append_child( "Content" );
+
+                    _node.componentSurface.surfaceImage.content.serialize( xmlContent );
+                }
+            }
         }
 
         if( _node.isTypeTextField )

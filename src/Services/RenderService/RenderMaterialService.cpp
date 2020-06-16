@@ -323,7 +323,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialStage * RenderMaterialService::removeMaterialStage( const ConstString & _name )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( m_materialStageIndexer.exist( _name ) == true, nullptr, "absent material stage '%s'"
+        MENGINE_ASSERTION_FATAL( m_materialStageIndexer.exist( _name ) == true, "absent material stage '%s'"
             , _name.c_str()
         );
 
@@ -635,7 +635,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr RenderMaterialService::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( _name ) == false, nullptr, "already has vertex attribute '%s' (doc: %s)"
+        MENGINE_ASSERTION_FATAL( m_vertexAttributes.exist( _name ) == false, "already has vertex attribute '%s' (doc: %s)"
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -652,7 +652,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr RenderMaterialService::removeVertexAttribute( const ConstString & _name )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( _name ) == true, nullptr, "absent vertex attribute '%s'"
+        MENGINE_ASSERTION_FATAL( m_vertexAttributes.exist( _name ) == true, "absent vertex attribute '%s'"
             , _name.c_str()
         );
 
@@ -665,7 +665,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _converterType );
 
-        MENGINE_ASSERTION_FATAL_RETURN( m_vertexShaders.exist( _name ) == false, nullptr, "material '%s:%s' already has vertex shader '%s' (doc: %s)"
+        MENGINE_ASSERTION_FATAL( m_vertexShaders.exist( _name ) == false, "material '%s:%s' already has vertex shader '%s' (doc: %s)"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _name.c_str()
@@ -698,7 +698,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr RenderMaterialService::removeVertexShader( const ConstString & _name )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( m_vertexShaders.exist( _name ) == true, nullptr, "absent vertex shader '%s'"
+        MENGINE_ASSERTION_FATAL( m_vertexShaders.exist( _name ) == true, "absent vertex shader '%s'"
             , _name.c_str()
         );
 
@@ -711,7 +711,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _converterType );
 
-        MENGINE_ASSERTION_FATAL_RETURN( m_fragmentShaders.exist( _name ) == false, nullptr, "material '%s:%s' already has fragment shader '%s' (doc: %s)"
+        MENGINE_ASSERTION_FATAL( m_fragmentShaders.exist( _name ) == false, "material '%s:%s' already has fragment shader '%s' (doc: %s)"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _name.c_str()
@@ -744,7 +744,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr RenderMaterialService::removeFragmentShader( const ConstString & _name )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( m_fragmentShaders.exist( _name ) == true, nullptr, "absent fragment shader '%s'"
+        MENGINE_ASSERTION_FATAL( m_fragmentShaders.exist( _name ) == true, "absent fragment shader '%s'"
             , _name.c_str()
         );
 
@@ -755,7 +755,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr RenderMaterialService::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( m_programs.exist( _name ) == false, nullptr, "already has program '%s' (doc: %s)"
+        MENGINE_ASSERTION_FATAL( m_programs.exist( _name ) == false, "already has program '%s' (doc: %s)"
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -772,7 +772,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr RenderMaterialService::removeProgram( const ConstString & _name )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( m_programs.exist( _name ) == true, nullptr, "absent program '%s'"
+        MENGINE_ASSERTION_FATAL( m_programs.exist( _name ) == true, "absent program '%s'"
             , _name.c_str()
         );
 

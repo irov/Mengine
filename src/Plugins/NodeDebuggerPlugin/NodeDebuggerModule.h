@@ -3,12 +3,14 @@
 #include "NodeDebuggerBoundingBoxInterface.h"
 
 #include "Engine/TextField.h"
+#include "Engine/SurfaceImage.h"
 
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
 #include "Kernel/Deque.h"
 #include "Kernel/ModuleBase.h"
 #include "Kernel/NodeUniqueFinder.h"
+#include "Kernel/Shape.h"
 #include "Kernel/Scene.h"
 
 #include "Interface/SocketInterface.h"
@@ -83,16 +85,21 @@ namespace Mengine
         void sendSettings();
         void sendObjectsLeak();
 
+    protected:
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
         void serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode );
         void serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode );
         void serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode );
-
         void serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode );
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
         void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
-        void serializeMovie2( UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode );
+        void serializeMovie2( const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode );
+        void serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode );
+        void serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode );
+        void serializeContent( const ContentInterface * _content, pugi::xml_node & _xmlParentNode );
+
+    protected:
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
         void receiveGameControlCommand( const String & _command );

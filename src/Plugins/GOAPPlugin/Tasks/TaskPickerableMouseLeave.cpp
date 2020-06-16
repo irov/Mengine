@@ -178,7 +178,7 @@ namespace Mengine
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_LEAVE, newreceiver );
 
-        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "pickerable override" );
+        MENGINE_ASSERTION_FATAL( oldreceiver == nullptr, "pickerable override" );
 
         m_receiver = newreceiver;
 

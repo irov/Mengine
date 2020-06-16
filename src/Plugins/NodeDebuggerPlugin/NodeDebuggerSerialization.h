@@ -3,6 +3,7 @@
 #include "Kernel/Color.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePath.h"
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
 #include "Kernel/Blobject.h"
@@ -81,6 +82,12 @@ namespace Mengine
 
         template <>
         MENGINE_INLINE void setXmlValue<ConstString>( pugi::xml_attribute & _attrib, const ConstString & _value )
+        {
+            _attrib.set_value( _value.c_str() );
+        }
+
+        template <>
+        MENGINE_INLINE void setXmlValue<FilePath>( pugi::xml_attribute & _attrib, const FilePath & _value )
         {
             _attrib.set_value( _value.c_str() );
         }
@@ -266,6 +273,15 @@ namespace Mengine
 
         template<>
         struct prop_type_name<ConstString>
+        {
+            static const Char * get_value()
+            {
+                return "String";
+            }
+        };
+
+        template<>
+        struct prop_type_name<FilePath>
         {
             static const Char * get_value()
             {

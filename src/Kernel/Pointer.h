@@ -159,18 +159,6 @@ namespace Mengine
         template<class U>
         operator U * () const
         {
-#ifdef MENGINE_DEBUG
-            if( m_pointer == nullptr )
-            {
-                return nullptr;
-            }
-
-            if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
-            {
-                throw;
-            }
-#endif
-
             U * t = dynamic_cast<U *>(m_pointer);
 
             return t;
@@ -216,18 +204,6 @@ namespace Mengine
         template<class U>
         operator const U * () const
         {
-#ifdef MENGINE_DEBUG
-            if( m_pointer == nullptr )
-            {
-                return nullptr;
-            }
-
-            if( stdex::mpl::is_dynamic_cast<const U *>::test( m_pointer ) == false )
-            {
-                throw;
-            }
-#endif
-
             const U * t = dynamic_cast<const U *>(m_pointer);
 
             return t;
@@ -297,7 +273,7 @@ namespace Mengine
 
         template<class U>
         operator IntrusivePtr<U>() &&
-        {            
+        {
 #ifdef MENGINE_DEBUG
             T * p = m_pointer.get();
 
@@ -347,5 +323,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef ConstPointerT<void> ConstPointer;
     typedef PointerT<void> Pointer;
+    typedef DynamicConstPointerT<void> DynamicConstPointer;
+    typedef DynamicPointerT<void> DynamicPointer;
     //////////////////////////////////////////////////////////////////////////
 }

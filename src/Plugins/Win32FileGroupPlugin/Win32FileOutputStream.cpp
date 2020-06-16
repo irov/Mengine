@@ -37,7 +37,7 @@ namespace Mengine
 
         MENGINE_UNUSED( fullPathLen );
 
-        MENGINE_ASSERTION_FATAL_RETURN( fullPathLen != MENGINE_PATH_INVALID_LENGTH, false, "invlalid concatenate filePath '%s':'%s'"
+        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s':'%s'"
             , _folderPath.c_str()
             , _filePath.c_str()
         );

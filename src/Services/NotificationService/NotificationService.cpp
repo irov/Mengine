@@ -119,7 +119,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::visitObservers( uint32_t _id, const LambdaObserver & _lambda )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( _id < MENGINE_NOTIFICATOR_MAX_COUNT, false );
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

@@ -35,6 +35,7 @@
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/Scene.h"
+#include "Kernel/Surface.h"
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -696,12 +697,91 @@ namespace Mengine
         Detail::serializeNodeProp( _textField->getPixelsnap(), "Pixelsnap", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeMovie2( UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeMovie2( const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:Movie2" );
 
         Detail::serializeNodeProp( _unknownMovie2->getCompositionName(), "CompositionName", xmlNode );
         Detail::serializeNodeProp( _unknownMovie2->getTextAliasEnvironment(), "TextAliasEnvironment", xmlNode );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode )
+    {
+        const SurfacePtr & surface = _shape->getSurface();
+
+        if( surface == nullptr )
+        {
+            return;
+        }
+
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Component:Surface" );
+
+        Detail::serializeNodeProp( surface->getName(), "Name", xmlNode );
+        Detail::serializeNodeProp( surface->getType(), "Type", xmlNode );
+
+        if( surface->isCompile() == true )
+        {
+            Detail::serializeNodeProp( true, "Compile", xmlNode );
+            Detail::serializeNodeProp( surface->getMaxSize(), "MaxSize", xmlNode );
+            Detail::serializeNodeProp( surface->getSize(), "Size", xmlNode );
+            Detail::serializeNodeProp( surface->getOffset(), "Offset", xmlNode );
+        }
+        else
+        {
+            Detail::serializeNodeProp( false, "Compile", xmlNode );
+            Detail::serializeNodeProp( mt::vec2f{0.f, 0.f}, "MaxSize", xmlNode );
+            Detail::serializeNodeProp( mt::vec2f{0.f, 0.f}, "Size", xmlNode );
+            Detail::serializeNodeProp( mt::vec2f{0.f, 0.f}, "Offset", xmlNode );
+        }
+
+        const AnimationInterface * animation = surface->getAnimation();
+
+        if( animation != nullptr )
+        {
+            this->serializeAnimation( animation, xmlNode );
+        }
+
+        SurfaceImagePtr surfaceImage = stdex::intrusive_dynamic_cast<SurfaceImagePtr>(surface);
+
+        if( surfaceImage != nullptr )
+        {
+            this->serializeSurfaceImage( surfaceImage, xmlNode );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode )
+    {
+        const ResourceImagePtr & resourceImage = _surfaceImage->getResourceImage();
+        
+        if( resourceImage == nullptr )
+        {
+            return;
+        }
+
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:SurfaceImage" );
+
+        Detail::serializeNodeProp( resourceImage->getName(), "ResourceName", xmlNode );
+        Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
+
+        const ContentInterface * content = resourceImage->getContent();
+
+        if( content != nullptr )
+        {
+            this->serializeContent( content, xmlNode );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeContent( const ContentInterface * _content, pugi::xml_node & _xmlParentNode )
+    {
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Content" );
+
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+
+        Detail::serializeNodeProp( fileGroup->getName(), "FileGroup", xmlNode );
+
+        Detail::serializeNodeProp( _content->getFilePath(), "FilePath", xmlNode );
+        Detail::serializeNodeProp( _content->getCodecType(), "CodecType", xmlNode );
+        Detail::serializeNodeProp( _content->getConverterType(), "ConverterType", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
@@ -738,20 +818,28 @@ namespace Mengine
         }
 
         AnimationInterface * animation = _node->getAnimation();
+
         if( animation != nullptr )
         {
             this->serializeAnimation( animation, _xmlNode );
         }
 
+        ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_node);
+
+        if( shape != nullptr )
+        {
+            this->serializeShape( shape, _xmlNode );
+        }
+
         TextFieldPtr textField = stdex::intrusive_dynamic_cast<TextFieldPtr>(_node);
+
         if( textField != nullptr )
         {
             this->serializeTextField( textField, _xmlNode );
         }
 
-        UnknownInterface * unknownNode = _node->getUnknown();
+        const UnknownMovie2Interface * unknownMovie2 = _node->getDynamicUnknown();
 
-        UnknownMovie2Interface * unknownMovie2 = dynamic_cast<UnknownMovie2Interface *>(unknownNode);
         if( unknownMovie2 != nullptr )
         {
             this->serializeMovie2( unknownMovie2, _xmlNode );

@@ -1872,7 +1872,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existDirectory( const Char * _directoryPath ) const
     {
-        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -1909,7 +1909,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _directoryPath )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )

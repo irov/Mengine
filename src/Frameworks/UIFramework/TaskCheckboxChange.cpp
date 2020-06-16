@@ -104,7 +104,7 @@ namespace Mengine
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_CHECKBOX_CHANGE, newreceiver );
 
-        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "event EVENT_CHECKBOX_CHANGE override" );
+        MENGINE_ASSERTION_FATAL( oldreceiver == nullptr, "event EVENT_CHECKBOX_CHANGE override" );
 
         m_receiver = newreceiver;
 

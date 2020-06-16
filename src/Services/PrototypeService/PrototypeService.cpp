@@ -64,7 +64,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL_RETURN( m_generators.exist( _category, _prototype ) == false, false, "prototype '%s:%s' alredy exist"
+        MENGINE_ASSERTION_FATAL( m_generators.exist( _category, _prototype ) == false, "prototype '%s:%s' alredy exist"
             , _category.c_str()
             , _prototype.c_str()
         );

@@ -811,19 +811,19 @@ namespace Mengine
 
         GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL_RETURN( textureInternalFormat != 0, nullptr, "invalid get GL Texture Internal format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureInternalFormat != 0, "invalid get GL Texture Internal format for PF %d"
             , hwFormat
         );
 
         GLint textureColorFormat = s_toGLColorFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL_RETURN( textureColorFormat != 0, nullptr, "invalid get GL Texture Color format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorFormat != 0, "invalid get GL Texture Color format for PF %d"
             , hwFormat
         );
 
         GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
-        MENGINE_ASSERTION_FATAL_RETURN( textureColorDataType != 0, nullptr, "invalid get GL Color Data Type for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorDataType != 0, "invalid get GL Color Data Type for PF %d"
             , hwFormat
         );
 
@@ -1019,19 +1019,19 @@ namespace Mengine
 
         GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL_RETURN( textureInternalFormat != 0, nullptr, "invalid get GL Texture Internal format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureInternalFormat != 0, "invalid get GL Texture Internal format for PF %d"
             , hwFormat
         );
 
         GLint textureColorFormat = s_toGLColorFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL_RETURN( textureColorFormat != 0, nullptr, "invalid get GL Texture Color format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorFormat != 0, "invalid get GL Texture Color format for PF %d"
             , hwFormat
         );
 
         GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
-        MENGINE_ASSERTION_FATAL_RETURN( textureColorDataType != 0, nullptr, "invalid get GL Color Data Type for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorDataType != 0, "invalid get GL Color Data Type for PF %d"
             , hwFormat
         );
 

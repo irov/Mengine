@@ -133,12 +133,6 @@ android {
         }
     }
     
-    externalNativeBuild {
-        cmake {
-            version "3.10.2"
-        }
-    }
-    
     buildTypes {
         debug {
             debuggable true
@@ -149,13 +143,16 @@ android {
                         "-DANDROID_ARM_NEON=TRUE",
                         "-DANDROID_STL=c++_shared", 
                         "-DANDROID_TOOLCHAIN=clang",
-                        "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "TRUE" : "FALSE",
+                        "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
+                        
                 }
                 
-                firebaseCrashlytics {
-                    mappingFileUploadEnabled true
+                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+                    firebaseCrashlytics {
+                        mappingFileUploadEnabled true
+                    }
                 }
             }
         }
@@ -169,13 +166,15 @@ android {
                         "-DANDROID_ARM_NEON=TRUE",
                         "-DANDROID_STL=c++_shared",
                         "-DANDROID_TOOLCHAIN=clang",
-                        "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "TRUE" : "FALSE",
+                        "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
                         "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
                 
-                firebaseCrashlytics {
-                    nativeSymbolUploadEnabled true
+                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+                    firebaseCrashlytics {
+                        nativeSymbolUploadEnabled true
+                    }
                 }
             }
         }
@@ -184,6 +183,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../CMake/Android_SDL/CMakeLists.txt"
+            version "3.10.2"
         }
     }
     
@@ -302,7 +302,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ndk:17.0.1'
     implementation 'com.google.firebase:firebase-messaging:20.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'io.sentry:sentry-android:2.0.0'
+    implementation 'io.sentry:sentry-android:2.1.6'
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')

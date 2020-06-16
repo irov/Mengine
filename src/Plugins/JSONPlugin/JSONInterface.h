@@ -18,6 +18,7 @@ namespace Mengine
         virtual const jpp::object & getJSON() const = 0;
 
     public:
+        virtual jpp::object modifyJSON() = 0;
         virtual jpp::object copyJSON() const = 0;
 
     public:

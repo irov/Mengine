@@ -262,7 +262,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie::hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const
+    bool ResourceMovie::hasMovieLayer( const ConstString & _name, const MovieLayer ** const _layer ) const
     {
         for( const MovieLayer & layer : m_layers )
         {
@@ -279,7 +279,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie::hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** _layer ) const
+    bool ResourceMovie::hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** const _layer ) const
     {
         for( const MovieLayer & layer : m_layers )
         {

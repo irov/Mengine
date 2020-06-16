@@ -92,7 +92,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** _argv )
+    bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
@@ -197,7 +197,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initialize( int32_t _argc, Char ** _argv )
+    bool SDLApplication::initialize( int32_t _argc, Char ** const _argv )
     {
         ::setlocale( LC_ALL, "C" );
 

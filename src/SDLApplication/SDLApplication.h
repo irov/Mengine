@@ -31,14 +31,14 @@ namespace Mengine
         ~SDLApplication();
 
     public:
-        bool initialize( int32_t _argc, Char ** _argv );
+        bool initialize( int32_t _argc, Char ** const _argv );
         void finalize();
 
     public:
         void loop();
 
     protected:
-        bool initializeOptionsService_( int32_t argc, Char ** _argv );
+        bool initializeOptionsService_( int32_t argc, Char ** const _argv );
         bool initializeFileService_();
         bool initializeLoggerService_();
 

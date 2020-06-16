@@ -2083,7 +2083,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::getCamera_( const ConstString & _name, Camera ** _camera )
+    bool Movie2::getCamera_( const ConstString & _name, Camera ** const _camera )
     {
         MapCameras::iterator it_found = m_cameras.find( _name );
 

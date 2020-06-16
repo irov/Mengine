@@ -244,8 +244,8 @@ namespace Mengine
         MENGINE_INLINE const MovieFramePackInterfacePtr & getFramePack() const;
 
     public:
-        bool hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const;
-        bool hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** _layer ) const;
+        bool hasMovieLayer( const ConstString & _name, const MovieLayer ** const _layer ) const;
+        bool hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** const _layer ) const;
 
     public:
         typedef Lambda<void( const MovieFramePackInterfacePtr &, const MovieLayer & )> LambdaResourceMovie;

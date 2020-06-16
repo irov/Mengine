@@ -1499,7 +1499,7 @@ namespace Mengine
                     py_cb_begin.call( _node );
                 }
 
-                void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
+                void callback_node_attributes( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
                 {
                     MENGINE_UNUSED( _node );
 

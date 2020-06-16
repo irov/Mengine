@@ -861,7 +861,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * const _movie ) const
+    bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** const _layer, MoviePtr * const _movie ) const
     {
         if( m_resourceMovie == nullptr )
         {

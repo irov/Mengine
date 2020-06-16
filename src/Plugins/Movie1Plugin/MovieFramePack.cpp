@@ -344,7 +344,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** _shape ) const
+    bool MovieFramePack::getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** const _shape ) const
     {
         for( uint32_t index = 0; index != m_sizeShapes; ++index )
         {
@@ -365,7 +365,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t * const _vertexCount ) const
+    bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** const _polygon, uint8_t * const _vertexCount ) const
     {
         for( uint32_t index = 0; index != m_sizePolygons; ++index )
         {

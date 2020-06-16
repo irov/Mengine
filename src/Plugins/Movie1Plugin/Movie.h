@@ -92,7 +92,7 @@ namespace Mengine
         bool hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * const _node, MoviePtr * const _movie ) const;
 
     public:
-        bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * const _movie ) const;
+        bool getMovieLayer( const ConstString & _name, const MovieLayer ** const _layer, MoviePtr * const _movie ) const;
         bool hasMovieLayer( const ConstString & _name ) const;
 
     public:

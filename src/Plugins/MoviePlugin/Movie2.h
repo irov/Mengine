@@ -188,7 +188,7 @@ namespace Mengine
         Camera * addCamera_( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport );
         bool removeCamera_( const ConstString & _name );
         bool hasCamera_( const ConstString & _name ) const;
-        bool getCamera_( const ConstString & _name, Camera ** _camera );
+        bool getCamera_( const ConstString & _name, Camera ** const _camera );
 
     public:
         bool interruptElements_();

@@ -377,7 +377,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::memory( void ** _memory, size_t * _size )
+    bool SDLFileInputStream::memory( void ** const _memory, size_t * _size )
     {
         MENGINE_UNUSED( _memory );
         MENGINE_UNUSED( _size );

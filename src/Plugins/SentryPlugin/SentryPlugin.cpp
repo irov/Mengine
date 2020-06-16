@@ -27,6 +27,47 @@ PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static void sentry_logger_func( sentry_level_t _level, const char * _format, va_list _args )
+    {
+        ELoggerLevel level;
+        switch( _level )
+        {
+        case SENTRY_LEVEL_DEBUG:
+            {
+                return;
+            }break;
+        case SENTRY_LEVEL_INFO:
+            {
+                level = LM_INFO;
+            }break;
+        case SENTRY_LEVEL_WARNING:
+            {
+                level = LM_WARNING;
+            }break;
+        case SENTRY_LEVEL_ERROR:
+            {
+                level = LM_ERROR;
+            }break;
+        case SENTRY_LEVEL_FATAL:
+            {
+                level = LM_FATAL;
+            }break;
+        default:
+            return;
+        }
+
+        Char message[2048];
+        int n = MENGINE_VSNPRINTF( message, 2047, _format, _args );
+
+        if( n <= 0 )
+        {
+            return;
+        }
+
+        LOGGER_SERVICE()
+            ->logMessage( level, 0, LCOLOR_GREEN, message, (size_t)n );
+    }
+    //////////////////////////////////////////////////////////////////////////
     SentryPlugin::SentryPlugin()
     {
     }
@@ -69,6 +110,8 @@ namespace Mengine
 
         sentry_options_t * options = sentry_options_new();
 
+        sentry_options_set_logger( options, &sentry_logger_func );
+
         Char userPath[MENGINE_MAX_PATH] = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
@@ -97,7 +140,7 @@ namespace Mengine
 
         sentry_options_set_dsn( options, sentryDSN );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
-        sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 0, 1 ) );
+        sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 1, 0 ) );
 
         sentry_options_set_release( options, MENGINE_BUILD_VERSION );
 

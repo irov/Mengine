@@ -1,4 +1,11 @@
-cmake_minimum_required (VERSION 3.10)
+if(WIN32)
+	cmake_minimum_required (VERSION 3.15)
+
+	# enables support for CMAKE_MSVC_RUNTIME_LIBRARY
+	cmake_policy(SET CMP0091 NEW)
+else()
+	cmake_minimum_required (VERSION 3.10)
+endif()
 
 foreach(flag_var
     CMAKE_CXX_FLAGS_RELEASE
@@ -15,6 +22,14 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 	set(SENTRY_MAIN_PROJECT ON)
 endif()
 
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 11)
+endif()
+
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11)
+endif()
+
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/sentry")
 
@@ -27,6 +42,10 @@ option(SENTRY_PIC "Build sentry (and dependent) libraries as position independen
 
 option(SENTRY_BUILD_TESTS "Build sentry-native tests" "${SENTRY_MAIN_PROJECT}")
 option(SENTRY_BUILD_EXAMPLES "Build sentry-native example(s)" "${SENTRY_MAIN_PROJECT}")
+
+if(MSVC)
+	option(SENTRY_BUILD_RUNTIMESTATIC "Build sentry-native with static runtime" OFF)
+endif()
 
 # CMAKE_POSITION_INDEPENDENT_CODE must be set BEFORE adding any libraries (including subprojects)
 if(SENTRY_PIC)
@@ -210,6 +229,21 @@ if(MSVC)
 	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_ASM_MASM_FLAGS "${CMAKE_ASM_MASM_FLAGS} /safeseh")
 	endif()
+
+	# using `/Wall` is not feasible, as it spews tons of warnings from windows headers
+	target_compile_options(sentry PRIVATE $<BUILD_INTERFACE:/W4>)
+	# ignore all warnings for mpack
+	set_source_files_properties(
+		"${PROJECT_SOURCE_DIR}/vendor/mpack.c"
+		PROPERTIES
+		COMPILE_FLAGS
+		"/W0"
+	)
+
+	# set static runtime if enabled
+	if(SENTRY_BUILD_RUNTIMESTATIC)
+		set_property(TARGET sentry PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+	endif()
 else()
 	target_compile_options(sentry PRIVATE $<BUILD_INTERFACE:-Wall -Wextra -Wpedantic>)
 	# ignore all warnings for mpack
@@ -220,6 +254,7 @@ else()
 		"-w"
 	)
 endif()
+
 
 target_include_directories(sentry
 	PUBLIC
@@ -234,8 +269,11 @@ target_include_directories(sentry
 # `-E`: To have all symbols in the dynamic symbol table.
 # `--build-id`: To have a build-id in the ELF object.
 # FIXME: cmake 3.13 introduced target_link_options
-target_link_libraries(sentry PUBLIC
-	"$<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Android>>:-Wl,-E,--build-id=sha1>")
+option(SENTRY_EXPORT_SYMBOLS "Export symbols for modulefinder and symbolizer" ON)
+if(SENTRY_EXPORT_SYMBOLS)
+	target_link_libraries(sentry PUBLIC
+		"$<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Android>>:-Wl,-E,--build-id=sha1>")
+endif()
 
 #respect CMAKE_SYSTEM_VERSION
 if(WIN32)
@@ -256,14 +294,18 @@ if(WIN32)
 	endif()
 
 	target_link_libraries(sentry PRIVATE shlwapi)
-	#crashpad does not support Windows XP toolset
+	# crashpad does not support Windows XP toolset
 	if(MSVC AND CMAKE_GENERATOR_TOOLSET MATCHES "_xp$" AND SENTRY_BACKEND_CRASHPAD)
 		message(FATAL_ERROR "MSVC XP toolset does not support Crashpad")
 	endif()
 endif()
 
 if(LINUX)
-	target_link_libraries(sentry PRIVATE pthread dl)
+	option(SENTRY_LINK_PTHREAD "Link Sentry with pthread" ON)
+	if(SENTRY_LINK_PTHREAD)
+		target_link_libraries(sentry PRIVATE pthread)
+	endif()
+	target_link_libraries(sentry PRIVATE dl)
 elseif(ANDROID)
 	target_link_libraries(sentry PRIVATE dl log)
 elseif(MSVC)
@@ -307,6 +349,21 @@ if(SENTRY_BACKEND_CRASHPAD)
 			set(CRASHPAD_ENABLE_INSTALL ON CACHE BOOL "Enable crashpad installation" FORCE)
 		endif()
 		add_subdirectory(external/crashpad crashpad_build)
+
+		# set static runime if enabled
+		if(SENTRY_BUILD_RUNTIMESTATIC AND MSVC)
+			set_property(TARGET crashpad_client PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_compat PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_getopt PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_handler PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_minidump PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_snapshot PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_tools PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_util PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET crashpad_zlib PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			set_property(TARGET mini_chromium PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+		endif()
+
 		target_link_libraries(sentry PRIVATE
 			$<BUILD_INTERFACE:crashpad::client>
 			$<INSTALL_INTERFACE:sentry_crashpad::client>
@@ -360,5 +417,11 @@ endif()
 if(SENTRY_BUILD_EXAMPLES)
 	add_executable(sentry_example examples/example.c)
 	target_link_libraries(sentry_example PRIVATE sentry)
+
+	# set static runtime if enabled
+	if(SENTRY_BUILD_RUNTIMESTATIC AND MSVC)
+		set_property(TARGET sentry_example PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+	endif()
+
 	add_test(NAME sentry_example COMMAND sentry_example)
 endif()

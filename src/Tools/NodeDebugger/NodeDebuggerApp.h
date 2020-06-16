@@ -116,6 +116,78 @@ namespace Mengine
         }
     };
 
+    struct NodeContent
+    {
+        String FileGroup;
+        String FilePath;
+        String CodecType;
+        String ConverterType;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( FileGroup );
+            DESERIALIZE_PROP( FilePath );
+            DESERIALIZE_PROP( CodecType );
+            DESERIALIZE_PROP( ConverterType );
+        }
+    };
+
+    struct NodeSurfaceImage
+    {
+        String ResourceName;
+        String ResourceType;
+
+        bool isContent;
+        NodeContent content;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( ResourceName );
+            DESERIALIZE_PROP( ResourceType );
+        }
+    };
+
+    struct NodeComponentSurface
+    {
+        String Name;
+        String Type;
+
+        bool Compile;
+        mt::vec2f MaxSize;
+        mt::vec2f Size;
+        mt::vec2f Offset;
+
+        bool hasAnimation;
+        NodeAnimation animation;
+
+        bool isTypeSurfaceImage;
+        NodeSurfaceImage surfaceImage;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( Name );
+            DESERIALIZE_PROP( Type );
+
+            DESERIALIZE_PROP( Compile );
+
+            DESERIALIZE_PROP( MaxSize );
+            DESERIALIZE_PROP( Size );
+            DESERIALIZE_PROP( Offset );
+        }
+    };
+
     struct NodeTextField
     {
         float MaxLength;
@@ -262,11 +334,14 @@ namespace Mengine
         bool                    hasAnimation;
         NodeAnimation           animation;
 
+        bool                    hasComponentSurface;
+        NodeComponentSurface    componentSurface;
+
         bool                    isTypeTextField;
         NodeTextField           textField;
 
         bool                    isTypeMovie2;
-        NodeMovie2           movie2;
+        NodeMovie2              movie2;
 
         Vector<DebuggerNode*>   children;
         DebuggerNode*           parent;

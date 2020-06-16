@@ -58,7 +58,7 @@ namespace Mengine
 
         MENGINE_UNUSED( successful );
 
-        MENGINE_ASSERTION_FATAL_RETURN( successful == true, false, "invlalid concatenate fullPath '%s':'%s'"
+        MENGINE_ASSERTION_FATAL( successful == true, "invalid concatenate fullPath '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -73,7 +73,7 @@ namespace Mengine
         Char fullPath[MENGINE_MAX_PATH];
         if( this->getFullPath( _filePath, fullPath ) == false )
         {
-            LOGGER_ERROR( "invlalid get fullPath '%s'"
+            LOGGER_ERROR( "invalid get fullPath '%s'"
                 , _filePath.c_str()
             );
 
@@ -152,7 +152,7 @@ namespace Mengine
         Char utf8_base[MENGINE_MAX_PATH];
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, FilePath::none(), utf8_base, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
             );

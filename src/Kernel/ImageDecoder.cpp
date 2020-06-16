@@ -21,8 +21,8 @@ namespace Mengine
 
         m_options = *static_cast<const ImageCodecOptions *>(_options);
 
-        MENGINE_ASSERTION_FATAL_RETURN( m_options.pitch != 0, false, "pitch == 0" );
-        MENGINE_ASSERTION_FATAL_RETURN( m_options.channels != 0, false, "pitch == 0" );
+        MENGINE_ASSERTION_FATAL( m_options.pitch != 0, "pitch == 0" );
+        MENGINE_ASSERTION_FATAL( m_options.channels != 0, "pitch == 0" );
 
         bool result = this->_invalidateOptions();
 

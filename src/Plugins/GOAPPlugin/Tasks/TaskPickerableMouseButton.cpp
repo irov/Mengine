@@ -203,7 +203,7 @@ namespace Mengine
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, newreceiver );
 
-        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "event EVENT_HOTSPOT_MOUSE_BUTTON override" );
+        MENGINE_ASSERTION_FATAL( oldreceiver == nullptr, "event EVENT_HOTSPOT_MOUSE_BUTTON override" );
 
         m_receiver = newreceiver;
 

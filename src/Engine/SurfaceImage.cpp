@@ -79,14 +79,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getMaxSize() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return mt::vec2f::identity();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::vec2f::identity(), "'%s' not setup resource"
+            , this->getName().c_str()
+        );
 
         const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
 
@@ -117,14 +112,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SurfaceImage::getUVCount() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, 0, "'%s' not setup resource"
+            , this->getName().c_str()
+        );
 
         const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture();
 

@@ -87,7 +87,7 @@ namespace Mengine
 
         float offset = m_offsets.back();
 
-        MENGINE_ASSERTION_FATAL_RETURN( m_time >= offset, 0.f, "time %f < %f"
+        MENGINE_ASSERTION_FATAL( m_time >= offset, "time %f < %f"
             , m_time
             , offset
         );

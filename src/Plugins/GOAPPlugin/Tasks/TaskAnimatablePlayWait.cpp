@@ -45,9 +45,9 @@ namespace Mengine
         EventReceiverInterfacePtr oldreceiver_stop = eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );
         EventReceiverInterfacePtr oldreceiver_interrupt = eventation->addEventReceiver( EVENT_ANIMATION_INTERRUPT, receiver );
 
-        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver_end == nullptr, false, "event EVENT_ANIMATION_END override" );
-        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver_stop == nullptr, false, "event EVENT_ANIMATION_STOP override" );
-        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver_interrupt == nullptr, false, "event EVENT_ANIMATION_INTERRUPT override" );
+        MENGINE_ASSERTION_FATAL( oldreceiver_end == nullptr, "event EVENT_ANIMATION_END override" );
+        MENGINE_ASSERTION_FATAL( oldreceiver_stop == nullptr, "event EVENT_ANIMATION_STOP override" );
+        MENGINE_ASSERTION_FATAL( oldreceiver_interrupt == nullptr, "event EVENT_ANIMATION_INTERRUPT override" );
 
         m_receiver = receiver;
 

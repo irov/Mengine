@@ -142,7 +142,7 @@ namespace Mengine
 
             EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_BUTTON_MOUSE_BUTTON, router );
 
-            MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, nullptr, "event EVENT_BUTTON_MOUSE_BUTTON override" );
+            MENGINE_ASSERTION_FATAL( oldreceiver == nullptr, "event EVENT_BUTTON_MOUSE_BUTTON override" );
 
             return router;
         }

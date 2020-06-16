@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Kernel/Surface.h"
+#include "Kernel/ResourceImage.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
     class SurfaceImage
         : public Surface

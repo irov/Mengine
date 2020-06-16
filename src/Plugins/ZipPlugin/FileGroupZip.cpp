@@ -435,7 +435,7 @@ namespace Mengine
 
         MapFileInfo::const_iterator it_found = m_files.find( _filePath );
 
-        MENGINE_ASSERTION_FATAL_RETURN( it_found != m_files.end(), false, "zip '%s' file '%s' not found"
+        MENGINE_ASSERTION_FATAL( it_found != m_files.end(), "zip '%s' file '%s' not found"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -445,7 +445,7 @@ namespace Mengine
         size_t file_offset = fi.seek_pos + _offset;
         size_t file_size = _size == 0 ? fi.file_size : _size;
 
-        MENGINE_ASSERTION_FATAL_RETURN( _offset + file_size <= fi.file_size, false, "zip '%s' file '%s' invalid open range %zu:%zu (file size is low %zu:%zu)"
+        MENGINE_ASSERTION_FATAL( _offset + file_size <= fi.file_size, "zip '%s' file '%s' invalid open range %zu:%zu (file size is low %zu:%zu)"
             , m_folderPath.c_str()
             , _filePath.c_str()
             , _offset
@@ -456,7 +456,7 @@ namespace Mengine
 
         if( _streaming == true )
         {
-            MENGINE_ASSERTION_FATAL_RETURN( fi.compr_method == Z_NO_COMPRESSION, false, "zip '%s' file '%s' invalid open, not support compress + stream"
+            MENGINE_ASSERTION_FATAL( fi.compr_method == Z_NO_COMPRESSION, "zip '%s' file '%s' invalid open, not support compress + stream"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
             );

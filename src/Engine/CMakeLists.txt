@@ -38,6 +38,7 @@ Motor
     Motor.cpp
     Motor.h
 )
+
 ADD_FILTER(
 Surface\\\\SurfaceSound
     SurfaceSound.cpp
@@ -98,21 +99,21 @@ Object\\\\Shape\\\\ShapeQuad
 
 ADD_FILTER(
 Object\\\\HotSpot
-     HotSpot.cpp
-     HotSpot.h
-     HotSpotEventReceiverInterface.h
-     HotSpotPolygon.cpp
-     HotSpotPolygon.h
-     HotSpotImage.cpp
-     HotSpotImage.h
-     HotSpotBubbles.cpp
-     HotSpotBubbles.h
-     HotSpotShape.cpp
-     HotSpotShape.h
-     HotSpotCircle.cpp
-     HotSpotCircle.h
-     HotSpotGlobal.cpp
-     HotSpotGlobal.h
+    HotSpot.cpp
+    HotSpot.h
+    HotSpotEventReceiverInterface.h
+    HotSpotPolygon.cpp
+    HotSpotPolygon.h
+    HotSpotImage.cpp
+    HotSpotImage.h
+    HotSpotBubbles.cpp
+    HotSpotBubbles.h
+    HotSpotShape.cpp
+    HotSpotShape.h
+    HotSpotCircle.cpp
+    HotSpotCircle.h
+    HotSpotGlobal.cpp
+    HotSpotGlobal.h
 )
 
 ADD_FILTER(

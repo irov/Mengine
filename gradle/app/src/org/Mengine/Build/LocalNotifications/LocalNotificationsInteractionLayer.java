@@ -84,7 +84,8 @@ public class LocalNotificationsInteractionLayer {
 
         return builder.setContentTitle(title)
                 .setContentText(content)
-                .setSmallIcon(R.mipmap.ic_notification)
+                .setSmallIcon(R.drawable.ic_stat_onesignal_default)
+                .setColor(Color.GRAY)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)

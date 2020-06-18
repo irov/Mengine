@@ -85,7 +85,7 @@ public class LocalNotificationsInteractionLayer {
         return builder.setContentTitle(title)
                 .setContentText(content)
                 .setSmallIcon(R.drawable.ic_stat_onesignal_default)
-                .setColor(Color.parseColor("#422b00"))
+                .setColor(Color.parseColor("#422b00"))  // todo: take out in xml
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX)

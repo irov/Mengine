@@ -725,6 +725,7 @@ namespace Mengine
             Detail::serializeNodeProp( surface->getMaxSize(), "MaxSize", xmlNode );
             Detail::serializeNodeProp( surface->getSize(), "Size", xmlNode );
             Detail::serializeNodeProp( surface->getOffset(), "Offset", xmlNode );
+            Detail::serializeNodeProp( surface->getAnchor(), "Anchor", xmlNode );
         }
         else
         {
@@ -732,6 +733,7 @@ namespace Mengine
             Detail::serializeNodeProp( mt::vec2f{0.f, 0.f}, "MaxSize", xmlNode );
             Detail::serializeNodeProp( mt::vec2f{0.f, 0.f}, "Size", xmlNode );
             Detail::serializeNodeProp( mt::vec2f{0.f, 0.f}, "Offset", xmlNode );
+            Detail::serializeNodeProp( mt::vec2f{0.f, 0.f}, "Anchor", xmlNode );
         }
 
         const AnimationInterface * animation = surface->getAnimation();
@@ -746,6 +748,13 @@ namespace Mengine
         if( surfaceImage != nullptr )
         {
             this->serializeSurfaceImage( surfaceImage, xmlNode );
+        }
+
+        SurfaceImageSequencePtr surfaceImageSequence = stdex::intrusive_dynamic_cast<SurfaceImageSequencePtr>(surface);
+
+        if( surfaceImage != nullptr )
+        {
+            this->serializeSurfaceImageSequence( surfaceImageSequence, xmlNode );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -764,6 +773,36 @@ namespace Mengine
         Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
 
         const ContentInterface * content = resourceImage->getContent();
+
+        if( content != nullptr )
+        {
+            this->serializeContent( content, xmlNode );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeSurfaceImageSequence( const SurfaceImageSequencePtr & _surfaceImageSequence, pugi::xml_node & _xmlParentNode )
+    {
+        const ResourceImageSequencePtr & resourceImageSequence = _surfaceImageSequence->getResourceImageSequence();
+
+        if( resourceImageSequence == nullptr )
+        {
+            return;
+        }
+
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:SurfaceImageSequence" );
+
+        Detail::serializeNodeProp( resourceImageSequence->getName(), "ResourceName", xmlNode );
+        Detail::serializeNodeProp( resourceImageSequence->getType(), "ResourceType", xmlNode );
+
+        Detail::serializeNodeProp( resourceImageSequence->getSequenceCount(), "ResourceSequenceCount", xmlNode );
+        Detail::serializeNodeProp( resourceImageSequence->getSequenceDuration(), "ResourceSequenceDuration", xmlNode );
+
+        Detail::serializeNodeProp( resourceImageSequence->getSequenceCount(), "ResourceSequenceCount", xmlNode );
+        Detail::serializeNodeProp( resourceImageSequence->getSequenceDuration(), "ResourceSequenceDuration", xmlNode );
+
+        Detail::serializeNodeProp( _surfaceImageSequence->getCurrentFrame(), "CurrentFrame", xmlNode );
+
+        const ContentInterface * content = resourceImageSequence->getContent();
 
         if( content != nullptr )
         {

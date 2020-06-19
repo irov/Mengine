@@ -4,6 +4,8 @@
 
 #include "Engine/TextField.h"
 #include "Engine/SurfaceImage.h"
+#include "Engine/SurfaceImageSequence.h"
+#include "Engine/ResourceImageSequence.h"
 
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -97,6 +99,7 @@ namespace Mengine
         void serializeMovie2( const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode );
         void serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode );
         void serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode );
+        void serializeSurfaceImageSequence( const SurfaceImageSequencePtr & _surfaceImageSequence, pugi::xml_node & _xmlParentNode );
         void serializeContent( const ContentInterface * _content, pugi::xml_node & _xmlParentNode );
 
     protected:

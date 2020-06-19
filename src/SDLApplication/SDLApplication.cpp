@@ -115,6 +115,7 @@ namespace Mengine
     bool SDLApplication::initializeFileService_()
     {
         LOGGER_INFO( "Initialize SDL file group..." );
+
         PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FUNCTION );
 
         // mount root

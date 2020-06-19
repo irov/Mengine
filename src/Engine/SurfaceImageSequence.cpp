@@ -341,14 +341,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImageSequence::getMaxSize() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return mt::vec2f::identity();
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
@@ -359,14 +354,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImageSequence::getSize() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return mt::vec2f::identity();
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
@@ -377,14 +367,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImageSequence::getOffset() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return mt::vec2f::identity();
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
@@ -395,14 +380,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SurfaceImageSequence::getUVCount() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
@@ -425,14 +405,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceImageSequence::getUV( uint32_t _index ) const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return mt::uv4f::identity();
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
@@ -460,14 +435,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
@@ -489,14 +459,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImageSequence::getColor() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return Color::identity();
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
@@ -523,14 +488,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::_setTime( float _timing )
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not activate"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         float duration = m_resourceImageSequence->getSequenceDuration();
 
@@ -550,14 +510,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SurfaceImageSequence::_getTime() const
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not activate"
-                , this->getName().c_str()
-            );
-
-            return 0.f;
-        }
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
+            , this->getName().c_str()
+        );
 
         float timing = 0.f;
 

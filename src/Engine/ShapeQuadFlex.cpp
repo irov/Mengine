@@ -171,6 +171,10 @@ namespace Mengine
             offset = mt::vec2f( 0.f, 0.f );
         }
 
+        const mt::vec2f & anchor = m_surface->getAnchor();
+
+        mt::vec2f total_offset = offset - anchor * maxSize;
+
         mt::vec4f percent_size = m_percentVisibility * size;
 
         mt::vec2f visOffset( percent_size.x, percent_size.y );
@@ -184,20 +188,20 @@ namespace Mengine
 
         if( m_flipX == true )
         {
-            visOffset.x += maxSize.x - (percent_size.z + offset.x);
+            visOffset.x += maxSize.x - (percent_size.z + total_offset.x);
         }
         else
         {
-            visOffset.x += offset.x;
+            visOffset.x += total_offset.x;
         }
 
         if( m_flipY == true )
         {
-            visOffset.y += maxSize.y - (percent_size.w + offset.y);
+            visOffset.y += maxSize.y - (percent_size.w + total_offset.y);
         }
         else
         {
-            visOffset.y += offset.y;
+            visOffset.y += total_offset.y;
         }
 
         m_verticesLocal[0].x = visOffset.x + 0.f;

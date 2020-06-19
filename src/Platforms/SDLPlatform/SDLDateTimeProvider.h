@@ -14,7 +14,7 @@ namespace Mengine
         ~SDLDateTimeProvider() override;
 
     protected:
-        void getLocalDateTime( PlatformDateTime * _dateTime ) const override;
+        void getLocalDateTime( PlatformDateTime * const _dateTime ) const override;
 
     public:
         uint64_t getLocalDateMilliseconds() const override;

@@ -38,7 +38,7 @@ namespace Mengine
 
         m_id = bufId;
 
-        m_usage = s_getGLBufferType( _bufferType );
+        m_usage = Helper::toGLBufferType( _bufferType );
         m_indexSize = _indexSize;
 
 #if defined(MENGINE_RENDER_OPENGL_ES)

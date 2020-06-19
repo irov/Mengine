@@ -88,7 +88,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-    size_t SDLPlatform::getCurrentPath( Char * _currentPath ) const
+    size_t SDLPlatform::getCurrentPath( Char * const _currentPath ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_path[MENGINE_MAX_PATH];
@@ -123,7 +123,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getUserPath( Char * _userPath ) const
+    size_t SDLPlatform::getUserPath( Char * const _userPath ) const
     {
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
@@ -171,7 +171,7 @@ namespace Mengine
         return sdl_prefPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getUserName( Char * _userName ) const
+    size_t SDLPlatform::getUserName( Char * const _userName ) const
     {
         _userName[0] = '\0';
 
@@ -197,7 +197,7 @@ namespace Mengine
         return axis;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getSystemFontPath( const Char * _fontName, Char * _fontPath ) const
+    size_t SDLPlatform::getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );
         MENGINE_UNUSED( _fontPath );
@@ -688,7 +688,7 @@ namespace Mengine
         MENGINE_STRCPY( m_projectTitle, _projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getProjectTitle( Char * _projectTitle ) const
+    size_t SDLPlatform::getProjectTitle( Char * const _projectTitle ) const
     {
         MENGINE_STRCPY( _projectTitle, m_projectTitle );
 
@@ -790,7 +790,7 @@ namespace Mengine
         return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::getDesktopResolution( Resolution * _resolution ) const
+    bool SDLPlatform::getDesktopResolution( Resolution * const _resolution ) const
     {
 #if defined(MENGINE_PLATFORM_IOS)
         if( m_window == nullptr )
@@ -983,7 +983,7 @@ namespace Mengine
         static bool s_createDurectoryFullpath( const Char * _fullpath )
         {
 #if defined(MENGINE_PLATFORM_IOS)
-            int status = mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, 0700 );
 
             if( status != 0 )
             {
@@ -995,7 +995,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_OSX)
-            int status = mkdir( _fullpath, 0700 );
+            int status = ::mkdir( _fullpath, 0700 );
 
             if( status != 0 )
             {

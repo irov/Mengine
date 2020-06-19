@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderIndexBuffer
         : public RenderIndexBufferInterface
         , public Factorable

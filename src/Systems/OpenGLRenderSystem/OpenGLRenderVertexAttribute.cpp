@@ -84,7 +84,7 @@ namespace Mengine
 
             GLCALL( glEnableVertexAttribArray, (attribute_location) );
 
-            GLenum gl_type = s_getGLVertexAttributeType( attribute.type );
+            GLenum gl_type = Helper::toGLVertexAttributeType( attribute.type );
 
             GLCALL( glVertexAttribPointer, (attribute_location
                 , attribute.size

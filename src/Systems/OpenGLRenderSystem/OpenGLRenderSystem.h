@@ -125,7 +125,7 @@ namespace Mengine
         UnknownPointer getRenderSystemExtention() override;
 
     protected:
-        void findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
+        void findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat * const _hwFormat, uint32_t * const _hwChannels ) const;
 
     protected:
         void onRenderImageDestroy_( OpenGLRenderImage * _image );

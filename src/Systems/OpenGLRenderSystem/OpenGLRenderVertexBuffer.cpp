@@ -43,7 +43,7 @@ namespace Mengine
         m_id = bufId;
 
         m_vertexSize = _elementSize;
-        m_usage = s_getGLBufferType( _bufferType );
+        m_usage = Helper::toGLBufferType( _bufferType );
 
 #if defined(MENGINE_RENDER_OPENGL_ES)
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()

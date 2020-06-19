@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLDateTimeProvider::getLocalDateTime( PlatformDateTime * _dateTime ) const
+    void SDLDateTimeProvider::getLocalDateTime( PlatformDateTime * const _dateTime ) const
     {
         std::time_t ctTime = std::time( nullptr );
         std::tm * sTime = std::localtime( &ctTime );

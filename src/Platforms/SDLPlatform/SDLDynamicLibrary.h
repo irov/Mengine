@@ -26,7 +26,7 @@ namespace Mengine
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
     private:
-        Char m_name[MENGINE_MAX_PATH];
+        Char m_name[MENGINE_MAX_PATH] = {'\0'};
         void * m_instance;
     };
     //////////////////////////////////////////////////////////////////////////

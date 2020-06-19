@@ -13,6 +13,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLThreadIdentity
         : public ThreadIdentityInterface
         , public Factorable

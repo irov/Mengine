@@ -10,6 +10,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderImage
         : public RenderImageInterface
         , public OpenGLRenderImageExtensionInterface
@@ -35,7 +36,7 @@ namespace Mengine
         bool reload();
 
     public:
-        Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( uint32_t _level, bool _successful ) override;
 
     public:
@@ -111,4 +112,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderImage> OpenGLRenderImagePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

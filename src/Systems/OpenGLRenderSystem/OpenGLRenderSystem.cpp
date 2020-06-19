@@ -588,11 +588,11 @@ namespace Mengine
 
         vertexAttribute->enable();
 
-        GLenum mode = s_getGLPrimitiveMode( _type );
+        GLenum mode = Helper::toGLPrimitiveMode( _type );
         const RenderIndex * baseIndex = nullptr;
         const RenderIndex * offsetIndex = baseIndex + _startIndex;
 
-        GLenum indexType = s_getGLIndexType( sizeof( RenderIndex ) );
+        GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
 
         GLCALL( glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(offsetIndex)) );
 
@@ -641,8 +641,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
     {
-        GLenum modeUGL = s_getGLAddressMode( _modeU );
-        GLenum modeVGL = s_getGLAddressMode( _modeV );
+        GLenum modeUGL = Helper::toGLAddressMode( _modeU );
+        GLenum modeVGL = Helper::toGLAddressMode( _modeV );
 
         m_textureStage[_stage].wrapS = modeUGL;
         m_textureStage[_stage].wrapT = modeVGL;
@@ -658,9 +658,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
     {
-        const GLenum srcBlendFactor = s_toGLBlendFactor( _src );
-        const GLenum dstBlendFactor = s_toGLBlendFactor( _dst );
-        const GLenum blendOp = s_toGLBlendFactor( _op );
+        const GLenum srcBlendFactor = Helper::toGLBlendFactor( _src );
+        const GLenum dstBlendFactor = Helper::toGLBlendFactor( _dst );
+        const GLenum blendOp = Helper::toGLBlendOp( _op );
 
         GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 
@@ -733,14 +733,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
     {
-        const GLenum cmpFunc = s_toGLCmpFunc( _depthFunction );
+        const GLenum cmpFunc = Helper::toGLCmpFunc( _depthFunction );
         GLCALL( glDepthFunc, (cmpFunc) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setFillMode( EFillMode _mode )
     {
 #ifndef MENGINE_RENDER_OPENGL_ES
-        const GLenum mode = s_getGLFillMode( _mode );
+        const GLenum mode = Helper::toGLFillMode( _mode );
         glPolygonMode( GL_FRONT_AND_BACK, mode );
 #endif      
     }
@@ -766,11 +766,11 @@ namespace Mengine
     {
         TextureStage & tStage = m_textureStage[_stage];
 
-        tStage.minFilter = s_toGLMinFilter( _minification, _mipmap );
-        tStage.magFilter = s_toMagFilter( _magnification );
+        tStage.minFilter = Helper::toGLMinFilter( _minification, _mipmap );
+        tStage.magFilter = Helper::toMagFilter( _magnification );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat & _hwFormat, uint32_t & _hwChannels ) const
+    void OpenGLRenderSystem::findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat * const _hwFormat, uint32_t * const _hwChannels ) const
     {
         switch( _format )
         {
@@ -778,25 +778,24 @@ namespace Mengine
             {
                 if( _channels == 1 )
                 {
-                    _hwFormat = PF_A8;
-                    _hwChannels = 1;
+                    *_hwFormat = PF_A8;
+                    *_hwChannels = 1;
                 }
                 else if( _channels == 3 )
                 {
-                    _hwFormat = PF_X8R8G8B8;    //original
-                    //_hwFormat = PF_X8B8G8R8;
-                    _hwChannels = 4;            // original
+                    *_hwFormat = PF_X8R8G8B8;    //original
+                    *_hwChannels = 4;            // original
                 }
                 else if( _channels == 4 )
                 {
-                    _hwFormat = PF_A8R8G8B8; //original
-                    _hwChannels = 4;
+                    *_hwFormat = PF_A8R8G8B8; //original
+                    *_hwChannels = 4;
                 }
             }break;
         default:
             {
-                _hwFormat = _format;
-                _hwChannels = _channels;
+                *_hwFormat = _format;
+                *_hwChannels = _channels;
             }break;
         }
     }
@@ -807,21 +806,21 @@ namespace Mengine
 
         uint32_t hwChannels = 0;
         EPixelFormat hwFormat = PF_UNKNOWN;
-        this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
+        this->findFormatFromChannels_( _format, _channels, &hwFormat, &hwChannels );
 
-        GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
+        GLint textureInternalFormat = Helper::toGLInternalFormat( hwFormat );
 
         MENGINE_ASSERTION_FATAL( textureInternalFormat != 0, "invalid get GL Texture Internal format for PF %d"
             , hwFormat
         );
 
-        GLint textureColorFormat = s_toGLColorFormat( hwFormat );
+        GLint textureColorFormat = Helper::toGLColorFormat( hwFormat );
 
         MENGINE_ASSERTION_FATAL( textureColorFormat != 0, "invalid get GL Texture Color format for PF %d"
             , hwFormat
         );
 
-        GLint textureColorDataType = s_getGLColorDataType( hwFormat );
+        GLint textureColorDataType = Helper::toGLColorDataType( hwFormat );
 
         MENGINE_ASSERTION_FATAL( textureColorDataType != 0, "invalid get GL Color Data Type for PF %d"
             , hwFormat
@@ -928,7 +927,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
-        return s_toGLInternalFormat( _format ) != 0;
+        return Helper::toGLInternalFormat( _format ) != 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::supportTextureNonPow2() const
@@ -1015,21 +1014,21 @@ namespace Mengine
 
         uint32_t hwChannels = 0;
         EPixelFormat hwFormat = PF_UNKNOWN;
-        this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
+        this->findFormatFromChannels_( _format, _channels, &hwFormat, &hwChannels );
 
-        GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
+        GLint textureInternalFormat = Helper::toGLInternalFormat( hwFormat );
 
         MENGINE_ASSERTION_FATAL( textureInternalFormat != 0, "invalid get GL Texture Internal format for PF %d"
             , hwFormat
         );
 
-        GLint textureColorFormat = s_toGLColorFormat( hwFormat );
+        GLint textureColorFormat = Helper::toGLColorFormat( hwFormat );
 
         MENGINE_ASSERTION_FATAL( textureColorFormat != 0, "invalid get GL Texture Color format for PF %d"
             , hwFormat
         );
 
-        GLint textureColorDataType = s_getGLColorDataType( hwFormat );
+        GLint textureColorDataType = Helper::toGLColorDataType( hwFormat );
 
         MENGINE_ASSERTION_FATAL( textureColorDataType != 0, "invalid get GL Color Data Type for PF %d"
             , hwFormat

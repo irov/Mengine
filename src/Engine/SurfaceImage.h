@@ -22,6 +22,7 @@ namespace Mengine
         const mt::vec2f & getSize() const override;
         const mt::vec2f & getOffset() const override;
 
+    public:
         uint32_t getUVCount() const override;
         const mt::uv4f & getUV( uint32_t _index ) const override;
 

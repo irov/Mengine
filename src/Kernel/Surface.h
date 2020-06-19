@@ -41,6 +41,10 @@ namespace Mengine
         ~Surface() override;
 
     public:
+        void setAnchor( const mt::vec2f & _anchor );
+        const mt::vec2f & getAnchor() const;
+
+    public:
         virtual const mt::vec2f & getMaxSize() const = 0;
         virtual const mt::vec2f & getSize() const = 0;
         virtual const mt::vec2f & getOffset() const = 0;
@@ -68,6 +72,9 @@ namespace Mengine
     protected:
         virtual void _activate();
         virtual void _deactivate();
+
+    protected:
+        mt::vec2f m_anchor;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

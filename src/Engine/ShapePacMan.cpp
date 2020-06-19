@@ -48,22 +48,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapePacMan::updateVerticesLocal() const
     {
+        const mt::vec2f & maxSize = m_surface->getMaxSize();
         const mt::vec2f & size = m_surface->getSize();
         const mt::vec2f & offset = m_surface->getOffset();
+        const mt::vec2f & anchor = m_surface->getAnchor();
+
+        mt::vec2f total_offset = offset + anchor * maxSize;
 
         if( mt::equal_f_z( m_angleTo ) == true )
         {
-            m_verticesLocal[0].x = offset.x + 0.f;
-            m_verticesLocal[0].y = offset.y + 0.f;
+            m_verticesLocal[0].x = total_offset.x + 0.f;
+            m_verticesLocal[0].y = total_offset.y + 0.f;
 
-            m_verticesLocal[1].x = offset.x + size.x;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + size.x;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x;
-            m_verticesLocal[2].y = offset.y + size.y;
+            m_verticesLocal[2].x = total_offset.x + size.x;
+            m_verticesLocal[2].y = total_offset.y + size.y;
 
-            m_verticesLocal[3].x = offset.x + 0.f;
-            m_verticesLocal[3].y = offset.y + size.y;
+            m_verticesLocal[3].x = total_offset.x + 0.f;
+            m_verticesLocal[3].y = total_offset.y + size.y;
 
             m_vertexCount = 4;
 
@@ -79,26 +83,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 1.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x * 0.5f + MT_sinf( m_angleTo ) * size.y * 0.5f;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x * 0.5f + MT_sinf( m_angleTo ) * size.y * 0.5f;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + 0.f;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + 0.f;
 
-            m_verticesLocal[5].x = offset.x + size.x;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + size.x;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + 0.f;
-            m_verticesLocal[6].y = offset.y + size.y;
+            m_verticesLocal[6].x = total_offset.x + 0.f;
+            m_verticesLocal[6].y = total_offset.y + size.y;
 
             m_vertexCount = 7;
 
@@ -126,26 +130,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 2.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + size.y * 0.5f - MT_sinf( mt::constant::half_pi - m_angleTo ) * size.x * 0.5f;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + size.y * 0.5f - MT_sinf( mt::constant::half_pi - m_angleTo ) * size.x * 0.5f;
 
-            m_verticesLocal[5].x = offset.x + size.x;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + size.x;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + 0.f;
-            m_verticesLocal[6].y = offset.y + size.y;
+            m_verticesLocal[6].x = total_offset.x + 0.f;
+            m_verticesLocal[6].y = total_offset.y + size.y;
 
             m_vertexCount = 7;
 
@@ -169,26 +173,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 3.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + size.y * 0.5f + MT_sinf( m_angleTo - mt::constant::half_pi ) * size.x * 0.5f;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + size.y * 0.5f + MT_sinf( m_angleTo - mt::constant::half_pi ) * size.x * 0.5f;
 
-            m_verticesLocal[5].x = offset.x + size.x;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + size.x;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + 0.f;
-            m_verticesLocal[6].y = offset.y + size.y;
+            m_verticesLocal[6].x = total_offset.x + 0.f;
+            m_verticesLocal[6].y = total_offset.y + size.y;
 
             m_vertexCount = 7;
 
@@ -212,26 +216,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 4.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + size.y;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + size.y;
 
-            m_verticesLocal[5].x = offset.x + size.x * 0.5f + MT_sinf( mt::constant::pi - m_angleTo ) * size.y * 0.5f;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + size.x * 0.5f + MT_sinf( mt::constant::pi - m_angleTo ) * size.y * 0.5f;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + 0.f;
-            m_verticesLocal[6].y = offset.y + size.y;
+            m_verticesLocal[6].x = total_offset.x + 0.f;
+            m_verticesLocal[6].y = total_offset.y + size.y;
 
             m_vertexCount = 7;
 
@@ -251,26 +255,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 5.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + size.y;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + size.y;
 
-            m_verticesLocal[5].x = offset.x + size.x * 0.5f - MT_sinf( m_angleTo - mt::constant::pi ) * size.y * 0.5f;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + size.x * 0.5f - MT_sinf( m_angleTo - mt::constant::pi ) * size.y * 0.5f;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + 0.f;
-            m_verticesLocal[6].y = offset.y + size.y;
+            m_verticesLocal[6].x = total_offset.x + 0.f;
+            m_verticesLocal[6].y = total_offset.y + size.y;
 
             m_vertexCount = 7;
 
@@ -290,26 +294,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 6.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + size.y;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + size.y;
 
-            m_verticesLocal[5].x = offset.x + 0.f;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + 0.f;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + 0.f;
-            m_verticesLocal[6].y = offset.y + size.y * 0.5f + MT_sinf( mt::constant::pi + mt::constant::half_pi - m_angleTo ) * size.x * 0.5f;
+            m_verticesLocal[6].x = total_offset.x + 0.f;
+            m_verticesLocal[6].y = total_offset.y + size.y * 0.5f + MT_sinf( mt::constant::pi + mt::constant::half_pi - m_angleTo ) * size.x * 0.5f;
 
             m_vertexCount = 7;
 
@@ -325,26 +329,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 7.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + size.y;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + size.y;
 
-            m_verticesLocal[5].x = offset.x + 0.f;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + 0.f;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + 0.f;
-            m_verticesLocal[6].y = offset.y + size.y * 0.5f - MT_sinf( m_angleTo - mt::constant::pi - mt::constant::half_pi ) * size.x * 0.5f;
+            m_verticesLocal[6].x = total_offset.x + 0.f;
+            m_verticesLocal[6].y = total_offset.y + size.y * 0.5f - MT_sinf( m_angleTo - mt::constant::pi - mt::constant::half_pi ) * size.x * 0.5f;
 
             m_vertexCount = 7;
 
@@ -360,26 +364,26 @@ namespace Mengine
         }
         else if( m_angleTo < mt::constant::fourth_pi * 8.f )
         {
-            m_verticesLocal[0].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[0].y = offset.y + size.y * 0.5f;
+            m_verticesLocal[0].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[0].y = total_offset.y + size.y * 0.5f;
 
-            m_verticesLocal[1].x = offset.x + 0.f;
-            m_verticesLocal[1].y = offset.y + 0.f;
+            m_verticesLocal[1].x = total_offset.x + 0.f;
+            m_verticesLocal[1].y = total_offset.y + 0.f;
 
-            m_verticesLocal[2].x = offset.x + size.x * 0.5f;
-            m_verticesLocal[2].y = offset.y + 0.f;
+            m_verticesLocal[2].x = total_offset.x + size.x * 0.5f;
+            m_verticesLocal[2].y = total_offset.y + 0.f;
 
-            m_verticesLocal[3].x = offset.x + size.x;
-            m_verticesLocal[3].y = offset.y + 0.f;
+            m_verticesLocal[3].x = total_offset.x + size.x;
+            m_verticesLocal[3].y = total_offset.y + 0.f;
 
-            m_verticesLocal[4].x = offset.x + size.x;
-            m_verticesLocal[4].y = offset.y + size.y;
+            m_verticesLocal[4].x = total_offset.x + size.x;
+            m_verticesLocal[4].y = total_offset.y + size.y;
 
-            m_verticesLocal[5].x = offset.x + 0.f;
-            m_verticesLocal[5].y = offset.y + size.y;
+            m_verticesLocal[5].x = total_offset.x + 0.f;
+            m_verticesLocal[5].y = total_offset.y + size.y;
 
-            m_verticesLocal[6].x = offset.x + size.x * 0.5f - MT_sinf( mt::constant::two_pi - m_angleTo ) * size.y * 0.5f;
-            m_verticesLocal[6].y = offset.y + 0.f;
+            m_verticesLocal[6].x = total_offset.x + size.x * 0.5f - MT_sinf( mt::constant::two_pi - m_angleTo ) * size.y * 0.5f;
+            m_verticesLocal[6].y = total_offset.y + 0.f;
 
             m_vertexCount = 7;
 

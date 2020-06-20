@@ -755,7 +755,6 @@ namespace Mengine
 
         float gameViewportAspect;
         Viewport gameViewport;
-
         this->getGameViewport( &gameViewportAspect, &gameViewport );
 
         GAME_SERVICE()
@@ -1713,10 +1712,8 @@ namespace Mengine
         {
             float c_aspect = m_contentResolution.getAspectRatio();
 
-            Viewport dummy_aspectRatioViewport;
             float contentAspect;
-
-            if( Helper::findBestAspectViewport( m_aspectRatioViewports, r_aspect, &contentAspect, &dummy_aspectRatioViewport ) == false )
+            if( Helper::findBestAspectViewport( m_aspectRatioViewports, r_aspect, &contentAspect, nullptr ) == false )
             {
                 contentAspect = c_aspect;
             }
@@ -1748,58 +1745,6 @@ namespace Mengine
             _viewport->end.x = rw;
             _viewport->end.y = rh;
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::isValidWindowMode() const
-    {
-        bool windowModeCheck = CONFIG_VALUE( "Game", "WindowModeCheck", false );
-
-        if( windowModeCheck == false )
-        {
-            return true;
-        }
-
-        Resolution windowResolution;
-        this->calcWindowResolution( &windowResolution );
-
-        LOGGER_INFO( "resolution %u:%u\n"
-            , windowResolution.getWidth()
-            , windowResolution.getHeight()
-            );
-
-        float aspect = windowResolution.getAspectRatio();
-
-        Viewport aspectRatioViewport;
-        float bestAspect;
-
-        if( Helper::findBestAspectViewport( m_aspectRatioViewports, aspect, &bestAspect, &aspectRatioViewport ) == true )
-        {
-            LOGGER_INFO( "viewport (1) %f:%f\n"
-                , aspectRatioViewport.getWidth()
-                , aspectRatioViewport.getHeight()
-                );
-
-            if( windowResolution.getWidth() < aspectRatioViewport.getWidth() ||
-                windowResolution.getHeight() < aspectRatioViewport.getHeight() )
-            {
-                return false;
-            }
-        }
-        else
-        {
-            LOGGER_INFO( "viewport (2) %u:%u\n"
-                , m_contentResolution.getWidth()
-                , m_contentResolution.getHeight()
-                );
-
-            if( windowResolution.getWidth() < m_contentResolution.getWidth() ||
-                windowResolution.getHeight() < m_contentResolution.getHeight() )
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::changeWindowResolution( const Resolution & _resolution )
@@ -2102,8 +2047,8 @@ namespace Mengine
     {
         float aspect = m_currentResolution.getAspectRatio();
 
-        uint32_t width = m_contentResolution.getWidth();
-        uint32_t height = m_contentResolution.getHeight();
+        float width = m_contentResolution.getWidthF();
+        float height = m_contentResolution.getHeightF();
 
         if( m_fixedContentResolution == false )
         {
@@ -2111,8 +2056,8 @@ namespace Mengine
 
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
-            _viewport->end.x = (float)width;
-            _viewport->end.y = (float)height;
+            _viewport->end.x = width;
+            _viewport->end.y = height;
 
             return;
         }
@@ -2132,8 +2077,8 @@ namespace Mengine
 
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
-            _viewport->end.x = (float)width;
-            _viewport->end.y = (float)height;
+            _viewport->end.x = width;
+            _viewport->end.y = height;
         }
     }
     //////////////////////////////////////////////////////////////////////////

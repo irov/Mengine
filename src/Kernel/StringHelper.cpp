@@ -8,6 +8,7 @@
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -271,6 +272,29 @@ namespace Mengine
             {
                 _str->erase( 0, _str->find_first_not_of( delims ) );
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool toupper( const Char * _str, Char * _upper, size_t _capacity )
+        {
+            size_t len = MENGINE_STRLEN( _str );
+
+            if( len >= _capacity )
+            {
+                return false;
+            }
+
+            for( size_t index = 0, index_end = len;
+                index != index_end;
+                ++index )
+            {
+                Char ch = _str[index];
+
+                _upper[index] = (Char)MENGINE_TOUPPER( ch );
+            }
+
+            _upper[len] = '\0';
+
+            return true;
         }
     }
 }

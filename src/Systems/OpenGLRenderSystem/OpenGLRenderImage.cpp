@@ -294,7 +294,7 @@ namespace Mengine
         case GL_ETC1_RGB8_OES:
         case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
         case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-#ifdef _WIN32
+#ifdef MENGINE_PLATFORM_WINDOWS
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 #endif
             {

@@ -69,7 +69,14 @@ namespace Mengine
     {
         ModuleFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Module" ), _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
+        if( factory == nullptr )
+        {
+            LOGGER_ERROR( "invalid found module '%s'"
+                , _name.c_str()
+            );
+
+            return false;
+        }
 
         ModuleInterfacePtr module = factory->createModule( _doc );
 

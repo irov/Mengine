@@ -2532,6 +2532,8 @@ namespace Mengine
             ;
 
         pybind::interface_<Surface, pybind::bases<Scriptable, Eventable, Animatable, Identity, Materialable, Compilable>>( _kernel, "Surface", false )
+            .def( "setAnchor", &Surface::setAnchor )
+            .def( "getAnchor", &Surface::getAnchor )
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )

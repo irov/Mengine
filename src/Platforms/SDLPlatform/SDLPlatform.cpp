@@ -35,6 +35,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/StringHelper.h"
 
 #include "Config/StdString.h"
 
@@ -318,6 +319,72 @@ namespace Mengine
             LOGGER_ERROR( "SDL Platform '%s' unspecified"
                 , sdlPlatform
             );
+        }
+
+        if( HAS_OPTION( "win32" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "win64" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "mac" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "ios" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+        else if( HAS_OPTION( "android" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+        else if( HAS_OPTION( "wp" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+
+        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
+
+        if( option_platform != nullptr )
+        {
+            Char uppercase_option_platform[256];
+            Helper::toupper( option_platform, uppercase_option_platform, 256 );
+
+            m_platformTags.clear();
+            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
 
         if( HAS_OPTION( "touchpad" ) == true )

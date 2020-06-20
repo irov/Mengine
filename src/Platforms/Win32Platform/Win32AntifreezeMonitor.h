@@ -38,6 +38,7 @@ namespace Mengine
     protected:
         void notifyLoggerBegin( ELoggerLevel _level );
         void notifyLoggerEnd( ELoggerLevel _level );
+        void notifyAbort();
 
     protected:
         ThreadJobPtr m_threadJob;

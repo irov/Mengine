@@ -13,7 +13,6 @@
 
 namespace Mengine
 {
-
     //////////////////////////////////////////////////////////////////////////
     class GameService
         : public ServiceBase<GameServiceInterface>

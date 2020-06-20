@@ -6,6 +6,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         bool findBestAspectViewport( const MapAspectRatioViewports & _aspectRatioViewports, float _aspect, float * const _bestAspect, Viewport * const _viewport )
         {
             if( _aspectRatioViewports.empty() == true )
@@ -19,11 +20,20 @@ namespace Mengine
             {
                 float deltha_aspect = MT_fabsf( _aspect - aspect );
 
-                if( deltha_aspect < minimal_aspect )
+                if( deltha_aspect >= minimal_aspect )
                 {
-                    minimal_aspect = deltha_aspect;
+                    continue;
+                }
 
+                minimal_aspect = deltha_aspect;
+
+                if( _bestAspect != nullptr )
+                {
                     *_bestAspect = aspect;
+                }
+
+                if( _viewport != nullptr )
+                {
                     *_viewport = viewport;
                 }
             }

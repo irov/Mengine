@@ -85,6 +85,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_BEGIN, this, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_END, this, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ABORT, this, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -102,6 +103,7 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_BEGIN );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_END );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ABORT );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
@@ -201,5 +203,10 @@ namespace Mengine
         MENGINE_UNUSED( _level );
 
         --m_reflogger;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::notifyAbort()
+    {
+        m_reflogger += 1024;
     }
 }

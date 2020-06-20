@@ -101,7 +101,7 @@
 #define MENGINE_CONSTEXPR constexpr
 #define MENGINE_INLINE inline
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #   define MENGINE_PLATFORM_DESKTOP
 #elif defined(__linux__) && !defined(__ANDROID__)

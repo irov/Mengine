@@ -20,5 +20,7 @@ namespace Mengine
 
         void join( const String & _delim, const VectorString & _stringArray, String * const _outString );
         void trim( String * const _str, bool _left = true, bool _right = true );
+
+        bool toupper( const Char * _str, Char * _upper, size_t _capacity );
     }
 };

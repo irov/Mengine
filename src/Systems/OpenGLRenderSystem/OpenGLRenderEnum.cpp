@@ -178,7 +178,7 @@ namespace Mengine
                 return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
             case PF_PVRTC4_RGBA:
                 return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-#ifdef _WIN32
+#ifdef MENGINE_PLATFORM_WINDOWS
             case PF_DXT1:
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 #endif
@@ -206,7 +206,7 @@ namespace Mengine
                 return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
             case PF_PVRTC4_RGBA:
                 return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-#ifdef _WIN32
+#ifdef MENGINE_PLATFORM_WINDOWS
             case PF_DXT1:
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 #endif

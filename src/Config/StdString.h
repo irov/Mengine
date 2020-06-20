@@ -66,6 +66,9 @@
 #define MENGINE_MEMSET(d, v, s) ::memset(d, v, s)
 #endif
 
+#ifndef MENGINE_TOUPPER
+#define MENGINE_TOUPPER(c) ::toupper(c)
+#endif
 
 #ifndef MENGINE_STRICMP
 #if defined(MENGINE_COMPILER_MSVC)

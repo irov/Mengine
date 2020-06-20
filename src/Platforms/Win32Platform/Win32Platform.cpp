@@ -7,6 +7,7 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
@@ -25,6 +26,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/StringHelper.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -179,6 +181,9 @@ namespace Mengine
 
         if( option_platform != nullptr )
         {
+            Char uppercase_option_platform[256];
+            Helper::toupper( option_platform, uppercase_option_platform, 256 );
+
             m_platformTags.clear();
             m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
@@ -2771,6 +2776,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::abort()
     {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_ABORT );
+
         ::abort();
     }
     //////////////////////////////////////////////////////////////////////////

@@ -155,9 +155,6 @@ namespace Mengine
         bool getFixedDisplayResolution() override;
 
     public:
-        bool isValidWindowMode() const override;
-
-    public:
         void updateNotification();
         void setVSync( bool _vsync ) override;
         bool getVSync() const override;

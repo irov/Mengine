@@ -375,16 +375,26 @@ namespace Mengine
         contentResolution.calcSize( &cr );
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
+        float gameViewportAspect;
+        Viewport gameViewport;
+
+        APPLICATION_SERVICE()
+            ->getGameViewport( &gameViewportAspect, &gameViewport );
+
         m_defaultCamera2D = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_defaultCamera2D->setOrthogonalViewport( vp );
+        m_defaultCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultCamera2D" ) );
+
+        m_defaultCamera2D->setOrthogonalViewport( gameViewport );
         m_defaultCamera2D->enableForce();
 
         this->setRenderCamera( m_defaultCamera2D );
 
         m_defaultViewport2D = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
+
+        m_defaultViewport2D->setName( STRINGIZE_STRING_LOCAL( "DefaultViewport2D" ) );
 
         m_defaultViewport2D->setViewport( vp );
         m_defaultViewport2D->enableForce();
@@ -394,7 +404,9 @@ namespace Mengine
         m_defaultArrowCamera2D = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_defaultArrowCamera2D->setOrthogonalViewport( vp );
+        m_defaultArrowCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultArrowCamera2D" ) );
+
+        m_defaultArrowCamera2D->setOrthogonalViewport( gameViewport );
         m_defaultArrowCamera2D->enableForce();
 
         if( m_arrow != nullptr )

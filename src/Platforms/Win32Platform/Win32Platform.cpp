@@ -1464,6 +1464,7 @@ namespace Mengine
     bool Win32Platform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
         m_windowResolution = _resolution;
+        m_fullscreen = _fullscreen;
 
         bool Platform_AlreadyRunning = CONFIG_VALUE( "Platform", "AlreadyRunning", true );
 
@@ -1543,7 +1544,8 @@ namespace Mengine
         DWORD dwStyle = this->getWindowStyle_( _fullscreen );
         dwStyle &= ~WS_VISIBLE;
 
-        RECT rc = this->getWindowsRect_( m_windowResolution, _fullscreen );
+        RECT rc;
+        this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc );
 
         DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
         //DWORD exStyle = 0;
@@ -1555,6 +1557,12 @@ namespace Mengine
 
         if( hWnd == NULL )
         {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "Can't create window [error: %u]"
+                , error
+            );
+
             return false;
         }
 
@@ -1580,6 +1588,10 @@ namespace Mengine
             this->getDesktopResolution( &desktopResolution );
 
             this->notifyWindowModeChanged( desktopResolution, true );
+        }
+        else
+        {
+            this->notifyWindowModeChanged( m_windowResolution, false );
         }
 
         ::SetForegroundWindow( m_hWnd );
@@ -1610,7 +1622,8 @@ namespace Mengine
 
         DWORD dwStyle = this->getWindowStyle_( m_fullscreen );
 
-        RECT rc = this->getWindowsRect_( m_windowResolution, m_fullscreen );
+        RECT rc;
+        this->calcWindowsRect_( m_windowResolution, m_fullscreen, &rc );
 
         LONG dwExStyle = ::GetWindowLong( m_hWnd, GWL_EXSTYLE );
 
@@ -1818,7 +1831,7 @@ namespace Mengine
         return dwStyle;
     }
     //////////////////////////////////////////////////////////////////////////
-    RECT Win32Platform::getWindowsRect_( const Resolution & _resolution, bool _fullsreen ) const
+    void Win32Platform::calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const
     {
         RECT rc;
         ::SetRect( &rc, 0, 0, (int32_t)_resolution.getWidth(), (int32_t)_resolution.getHeight() );
@@ -1834,14 +1847,32 @@ namespace Mengine
             LONG width = rc.right - rc.left;
             LONG height = rc.bottom - rc.top;
 
-            rc.left = (workArea.left + workArea.right - width) / 2;
-            rc.top = (workArea.top + workArea.bottom - height) / 2;
+            LONG left = (workArea.left + workArea.right - width) / 2;
+            LONG top = (workArea.top + workArea.bottom - height) / 2;
+
+            if( top > 0 )
+            {
+                rc.top = (workArea.top + workArea.bottom - height) / 2;
+            }
+            else
+            {
+                rc.top = 0;
+            }
+
+            if( left > 0 )
+            {
+                rc.left = (workArea.left + workArea.right - width) / 2;
+            }
+            else
+            {
+                rc.left = 0;
+            }
 
             rc.right = rc.left + width;
             rc.bottom = rc.top + height;
         }
 
-        return rc;
+        *_rect = rc;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::calcCursorPosition_( mt::vec2f & _point ) const

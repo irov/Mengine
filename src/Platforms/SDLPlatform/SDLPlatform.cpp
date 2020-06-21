@@ -789,23 +789,22 @@ namespace Mengine
 
         m_glContext = glContext;
 
-        int dw;
-        int dh;
-        SDL_GL_GetDrawableSize( m_window, &dw, &dh );
+        Resolution resoultion;
+        this->getDesktopResolution( &resoultion );
 
-        float dwf = (float)dw;
-        float dhf = (float)dh;
+        float dwf = resoultion.getWidthF();
+        float dhf = resoultion.getHeightF();
 
         m_sdlInput->updateSurfaceResolution( dwf, dhf );
 
 #if defined(MENGINE_PLATFORM_IOS)
         APPLICATION_SERVICE()
-            ->changeWindowResolution( Resolution( dw, dh ) );
+            ->changeWindowResolution( resoultion );
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         APPLICATION_SERVICE()
-            ->changeWindowResolution( Resolution( dw, dh ) );
+            ->changeWindowResolution( resoultion );
 #endif
 
         return true;
@@ -859,34 +858,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getDesktopResolution( Resolution * const _resolution ) const
     {
-#if defined(MENGINE_PLATFORM_IOS)
         if( m_window == nullptr )
         {
             return false;
         }
 
-        int dw;
-        int dh;
-        SDL_GL_GetDrawableSize( m_window, &dw, &dh );
+        int displayIndex = SDL_GetWindowDisplayIndex( m_window );
 
-        _resolution->setWidth( static_cast<uint32_t>(dw) );
-        _resolution->setHeight( static_cast<uint32_t>(dh) );
+        uint32_t width;
+        uint32_t height;
 
+#if defined(MENGINE_PLATFORM_IOS)
+        SDL_Rect rect;
+        SDL_GetDisplayBounds( displayIndex, &rect );
+
+        width = (uint32_t)rect.w;
+        height = (uint32_t)rect.h;
 #elif defined(MENGINE_PLATFORM_ANDROID)
         if( m_window == nullptr )
         {
             return false;
         }
 
-        int dw;
-        int dh;
-        SDL_GL_GetDrawableSize( m_window, &dw, &dh );
+        SDL_Rect rect;
+        SDL_GetDisplayBounds( displayIndex, &rect );
 
-        _resolution->setWidth( static_cast<uint32_t>(dw) );
-        _resolution->setHeight( static_cast<uint32_t>(dh) );
+        width = (uint32_t)rect.w;
+        height = (uint32_t)rect.h;
 #else
         SDL_DisplayMode dm;
-        if( SDL_GetDesktopDisplayMode( 0, &dm ) != 0 )
+        if( SDL_GetDesktopDisplayMode( displayIndex, &dm ) != 0 )
         {
             LOGGER_ERROR( "failed %s"
                 , SDL_GetError()
@@ -895,9 +896,11 @@ namespace Mengine
             return false;
         }
 
-        _resolution->setWidth( static_cast<uint32_t>(dm.w) );
-        _resolution->setHeight( static_cast<uint32_t>(dm.h) );
+        width = (uint32_t)dm.w;
+        height = (uint32_t)dm.h;
 #endif
+
+        * _resolution = Resolution( width, height );
 
         return true;
     }
@@ -1072,6 +1075,7 @@ namespace Mengine
 
                 return false;
             }
+
 #elif defined(MENGINE_PLATFORM_LINUX)
             int status = ::mkdir( _fullpath, 0700 );
 
@@ -1630,6 +1634,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
     {
+        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _fullscreen );
+
         //SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
@@ -1652,8 +1659,9 @@ namespace Mengine
         SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
+        windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
-        windowFlags |= SDL_WINDOW_BORDERLESS;
+        windowFlags |= SDL_WINDOW_BORDERLESS;        
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );

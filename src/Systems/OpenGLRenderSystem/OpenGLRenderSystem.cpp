@@ -268,7 +268,10 @@ namespace Mengine
 
         GLsizei resolution_height = static_cast<GLsizei>(m_resolution.getHeight());
 
-        GLCALL( glViewport, (xb, resolution_height - ye, w, h) );
+        GLsizei x = xb;
+        GLsizei y = resolution_height - ye;
+
+        GLCALL( glViewport, (x, y, w, h) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )

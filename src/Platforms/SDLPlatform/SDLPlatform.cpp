@@ -1688,12 +1688,25 @@ namespace Mengine
             , windowFlags );
 
 #else
+        SDL_DisplayMode mode;
+        if( SDL_GetDesktopDisplayMode( 0, &mode ) != 0 )
+        {
+            LOGGER_ERROR( "get desktop display mode failed: %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
         int width = static_cast<int>(_resolution.getWidth());
         int height = static_cast<int>(_resolution.getHeight());
 
+        uint32_t window_x_mode = (mode.w > width) ? SDL_WINDOWPOS_CENTERED : 50;
+        uint32_t window_y_mode = (mode.h > height) ? SDL_WINDOWPOS_CENTERED : 50;
+
         SDL_Window * window = SDL_CreateWindow( m_projectTitle
-            , SDL_WINDOWPOS_CENTERED
-            , SDL_WINDOWPOS_CENTERED
+            , window_x_mode
+            , window_y_mode
             , width
             , height
             , windowFlags
@@ -1702,6 +1715,10 @@ namespace Mengine
 
         if( window == nullptr )
         {
+            LOGGER_ERROR( "create window failed: %s"
+                , SDL_GetError()
+            );
+
             return false;
         }
 

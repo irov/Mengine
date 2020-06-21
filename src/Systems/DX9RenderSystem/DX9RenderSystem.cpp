@@ -609,11 +609,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
-        float DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetX", -0.5f );
-        float DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetY", -0.5f );
+        float Engine_DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetX", -0.5f );
+        float Engine_DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetY", -0.5f );
 
-        float perfect_x = DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        float perfect_y = DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
+        float perfect_x = Engine_DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        float perfect_y = Engine_DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
         mt::mat4f vmperfect;
         mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );

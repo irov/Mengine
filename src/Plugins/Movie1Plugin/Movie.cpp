@@ -4,8 +4,8 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
-#include "Plugins/AstralaxPlugin/UnknownAstralaxEmitterInterface.h"
-#include "Plugins/VideoPlugin/VideoUnknownInterface.h"
+#include "Plugins/AstralaxPlugin/AstralaxInterface.h"
+#include "Plugins/VideoPlugin/VideoInterface.h"
 
 #include "ResourceMovie.h"
 

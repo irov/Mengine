@@ -17,7 +17,8 @@
 #include "Kernel/Hashtable.h"
 #include "Kernel/Map.h"
 
-#include "UnknownMovie2Interface.h"
+#include "Movie2Interface.h"
+
 #include "ResourceMovie2.h"
 #include "Movie2Slot.h"
 #include "Movie2SubComposition.h"

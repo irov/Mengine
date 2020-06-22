@@ -1,9 +1,54 @@
 #pragma once
 
+#include "Interface/UnknownInterface.h"
+#include "Interface/RenderPipelineInterface.h"
+
 #include "Kernel/Magic.h"
+#include "Kernel/Resource.h"
+#include "Kernel/Node.h"
+#include "Kernel/RenderContext.h"
+
+#include "Config/Lambda.h"
+
+#include "math/box2.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DECLARE_MAGIC_NUMBER( MAGIC_AEZ, 'A', 'E', 'Z', '1', 1 );
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownMovie2Interface
+        : public UnknownInterface
+    {
+    public:
+        virtual void setResourceMovie2( const ResourcePtr & _resource ) = 0;
+        virtual const ResourcePtr & getResourceMovie2() const = 0;
+
+    public:
+        virtual bool setCompositionName( const ConstString & _compositionName ) = 0;
+        virtual const ConstString & getCompositionName() const = 0;
+
+    public:
+        virtual void setTextAliasEnvironment( const ConstString & _aliasEnvironment ) = 0;
+        virtual const ConstString & getTextAliasEnvironment() const = 0;
+
+    public:
+        virtual bool setWorkAreaFromEvent( const ConstString & _eventName ) = 0;
+        virtual bool removeWorkArea() = 0;
+
+    public:
+        virtual bool hasCompositionBounds() const = 0;
+        virtual const mt::box2f & getCompositionBounds() const = 0;
+
+    public:
+        virtual bool hasMovieLayers( const ConstString & _name ) const = 0;
+        virtual void setEnableMovieLayers( const ConstString & _name, bool _enable ) = 0;
+
+    public:
+        virtual bool getWorldBoundingBox( mt::box2f * _bb ) const = 0;
+
+    public:
+        typedef Lambda<void( Node * _node, const RenderPipelineInterfacePtr &, const RenderContext * _context )> LambdaMovieRenderSlot;
+        virtual void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) = 0;
+    };
 }

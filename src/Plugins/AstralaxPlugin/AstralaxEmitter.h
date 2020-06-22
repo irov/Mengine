@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AstralaxInterface.h"
-#include "UnknownAstralaxEmitterInterface.h"
 
 #include "ResourceAstralax.h"
 

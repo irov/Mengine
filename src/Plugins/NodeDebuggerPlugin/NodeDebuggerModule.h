@@ -2,6 +2,13 @@
 
 #include "NodeDebuggerBoundingBoxInterface.h"
 
+#include "Interface/SocketInterface.h"
+#include "Interface/ThreadServiceInterface.h"
+#include "Interface/ArchivatorInterface.h"
+
+#include "Plugins/MoviePlugin/Movie2Interface.h"
+#include "Plugins/SpinePlugin/SpineInterface.h"
+
 #include "Engine/TextField.h"
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"
@@ -14,12 +21,6 @@
 #include "Kernel/NodeUniqueFinder.h"
 #include "Kernel/Shape.h"
 #include "Kernel/Scene.h"
-
-#include "Interface/SocketInterface.h"
-#include "Interface/ThreadServiceInterface.h"
-#include "Interface/ArchivatorInterface.h"
-
-#include "Plugins/MoviePlugin/UnknownMovie2Interface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -97,6 +98,7 @@ namespace Mengine
         void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
         void serializeMovie2( const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode );
+        void serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode );
         void serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode );
         void serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode );
         void serializeSurfaceImageSequence( const SurfaceImageSequencePtr & _surfaceImageSequence, pugi::xml_node & _xmlParentNode );

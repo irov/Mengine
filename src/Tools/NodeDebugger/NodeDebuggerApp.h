@@ -291,6 +291,25 @@ namespace Mengine
         }
     };
 
+    struct NodeSpine
+    {
+        String ResourceName;
+        String ResourceType;
+
+        bool isContent;
+        NodeContent content;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( ResourceName );
+            DESERIALIZE_PROP( ResourceType );
+        }
+    };
+
     struct CachedImage
     {
         String      name;
@@ -342,6 +361,9 @@ namespace Mengine
 
         bool                    isTypeMovie2;
         NodeMovie2              movie2;
+
+        bool                    isTypeSpine;
+        NodeSpine               spine;
 
         Vector<DebuggerNode*>   children;
         DebuggerNode*           parent;

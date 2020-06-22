@@ -44,7 +44,6 @@ namespace Mengine
     public:
         virtual void setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas ) = 0;
         virtual const ConstString & getResourceSpineAtlasName() const = 0;
-
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownSpineInterface

@@ -655,6 +655,24 @@ namespace Mengine
             _node->movie2.deserialize( typeMovie2Node );
         }
 
+        pugi::xml_node typeSpineNode = _xmlNode.child( "Type:Spine" );
+
+        _node->isTypeSpine = typeSpineNode;
+
+        if( _node->isTypeSpine )
+        {
+            _node->spine.deserialize( typeSpineNode );
+
+            pugi::xml_node contentNode = typeSpineNode.child( "Content" );
+
+            _node->spine.isContent = contentNode;
+
+            if( _node->spine.isContent )
+            {
+                _node->spine.content.deserialize( contentNode );
+            }
+        }
+
         pugi::xml_node childrenNode = _xmlNode.child( "Children" );
 
         if( childrenNode )
@@ -1743,6 +1761,20 @@ namespace Mengine
         {
             uiReadOnlyString( "Composition Name", _node->movie2.CompositionName );
             uiEditorString( "AliasEnvironment", _node->movie2.TextAliasEnvironment );
+        }
+
+        if( _node->isTypeSpine && ImGui::CollapsingHeader( "Spine:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            uiReadOnlyString( "Resource Name", _node->spine.ResourceName );
+            uiReadOnlyString( "Resource Type", _node->spine.ResourceType );
+
+            if( _node->spine.isContent && ImGui::CollapsingHeader( "Spine Resource Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                uiReadOnlyString( "file group", _node->spine.content.FileGroup );
+                uiReadOnlyString( "file path", _node->spine.content.FilePath );
+                uiReadOnlyString( "codec", _node->spine.content.CodecType );
+                uiReadOnlyString( "converter", _node->spine.content.ConverterType );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

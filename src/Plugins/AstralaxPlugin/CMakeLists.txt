@@ -2,6 +2,8 @@ MENGINE_PROJECT(AstralaxPlugin)
 
 ADD_FILTER(
 src
+    AstralaxInterface.h
+
     AstralaxModule.cpp
     AstralaxModule.h
     AstralaxEmitter.cpp
@@ -19,8 +21,6 @@ src
     
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h
-    
-    UnknownAstralaxEmitterInterface.h
 
     AstralaxPlugin.cpp
     AstralaxPlugin.h

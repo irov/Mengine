@@ -484,12 +484,12 @@ namespace Mengine
         indices[3 * 6 + 1 * 3 + 2] = 4;
 
         _renderPipeline->addRenderObject( &node_context
-                , debugMaterial
-                , nullptr
-                , vertices.data(), (uint32_t)vertices.size()
-                , indices.data(), (uint32_t)indices.size()
-                , &bbox
-                , false, MENGINE_DOCUMENT_FORWARD );
+            , debugMaterial
+            , nullptr
+            , vertices.data(), (uint32_t)vertices.size()
+            , indices.data(), (uint32_t)indices.size()
+            , &bbox
+            , false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::privateInit()
@@ -524,7 +524,7 @@ namespace Mengine
         m_socket = SOCKET_SYSTEM()
             ->createSocket( MENGINE_DOCUMENT_FACTORABLE );
 
-        SocketConnectInfo sci = { "0.0.0.0", "18790" };
+        SocketConnectInfo sci = {"0.0.0.0", "18790"};
         m_socket->bind( sci, false );
 
         m_serverState = ENodeDebuggerServerState::WaitingForClient;
@@ -705,6 +705,28 @@ namespace Mengine
         Detail::serializeNodeProp( _unknownMovie2->getTextAliasEnvironment(), "TextAliasEnvironment", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode )
+    {
+        const ResourcePtr & resourceSpineSkeleton = _unknownSpine->getResourceSpineSkeleton();
+
+        if( resourceSpineSkeleton == nullptr )
+        {
+            return;
+        }
+
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:Spine" );
+
+        Detail::serializeNodeProp( resourceSpineSkeleton->getName(), "ResourceName", xmlNode );
+        Detail::serializeNodeProp( resourceSpineSkeleton->getType(), "ResourceType", xmlNode );
+
+        const ContentInterface * content = resourceSpineSkeleton->getContent();
+
+        if( content != nullptr )
+        {
+            this->serializeContent( content, xmlNode );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode )
     {
         const SurfacePtr & surface = _shape->getSurface();
@@ -752,7 +774,7 @@ namespace Mengine
 
         SurfaceImageSequencePtr surfaceImageSequence = stdex::intrusive_dynamic_cast<SurfaceImageSequencePtr>(surface);
 
-        if( surfaceImage != nullptr )
+        if( surfaceImageSequence != nullptr )
         {
             this->serializeSurfaceImageSequence( surfaceImageSequence, xmlNode );
         }
@@ -761,7 +783,7 @@ namespace Mengine
     void NodeDebuggerModule::serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode )
     {
         const ResourceImagePtr & resourceImage = _surfaceImage->getResourceImage();
-        
+
         if( resourceImage == nullptr )
         {
             return;
@@ -882,6 +904,13 @@ namespace Mengine
         if( unknownMovie2 != nullptr )
         {
             this->serializeMovie2( unknownMovie2, _xmlNode );
+        }
+
+        const UnknownSpineInterface * unknownSpine = _node->getDynamicUnknown();
+
+        if( unknownSpine != nullptr )
+        {
+            this->serializeSpine( unknownSpine, _xmlNode );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1032,7 +1061,7 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = _settings->getFileGroup();
             const FilePath & filePath = _settings->getFilePath();
 
-            Char fullPath[MENGINE_MAX_PATH] = { '\0' };
+            Char fullPath[MENGINE_MAX_PATH] = {'\0'};
             if( fileGroup->getFullPath( filePath, fullPath ) == false )
             {
                 return;
@@ -1230,7 +1259,7 @@ namespace Mengine
                 {
                     return;
                 }
-                 
+
                 if( _value == true )
                 {
                     node->enable();

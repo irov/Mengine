@@ -3,7 +3,6 @@ MENGINE_PROJECT(VideoPlugin)
 ADD_FILTER(
 src
     VideoInterface.h
-    VideoUnknownInterface.h
 
     VideoPlugin.h
     VideoPlugin.cpp
@@ -13,7 +12,7 @@ src
     ResourceVideo.h
     
     LoaderResourceVideo.cpp
-    LoaderResourceVideo.h    
+    LoaderResourceVideo.h
 
     SurfaceVideo.cpp
     SurfaceVideo.h
@@ -29,9 +28,9 @@ if(MENGINE_USE_SCRIPT_SERVICE)
         VideoScriptEmbedding.h
         )
         
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
-endif()    
-    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+endif()
+
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)

@@ -3,7 +3,6 @@ MENGINE_PROJECT(MoviePlugin)
 ADD_FILTER(
 src
     Movie2Interface.h
-    UnknownMovie2Interface.h
     
     MoviePlugin.h
     MoviePlugin.cpp

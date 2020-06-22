@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VideoUnknownInterface.h"
+#include "VideoInterface.h"
 
 #include "Kernel/Surface.h"
 #include "Kernel/BaseEventation.h"

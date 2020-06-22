@@ -203,7 +203,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Spine::hasSkeletonAnimationName( const ConstString & _name ) const 
+    bool Spine::hasSkeletonAnimationName( const ConstString & _name ) const
     {
         spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
 
@@ -621,7 +621,7 @@ namespace Mengine
             {
                 continue;
             }
-             
+
             AttachmentMeshDesc desc;
             desc.index = slotIndex;
             desc.image = nullptr;
@@ -864,7 +864,7 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        const RenderIndex quadTriangles[6] = { 0, 1, 2, 2, 3, 0 };
+        const RenderIndex quadTriangles[6] = {0, 1, 2, 2, 3, 0};
 
         float attachment_vertices[MENGINE_SPINE_MAX_VERTICES * 2];
 

@@ -146,8 +146,8 @@ namespace Mengine
 
                 const mt::vec2f & offset = frame->getOffset();
 
-                region->offsetX = (int)(offset.x + 0.5f);
-                region->offsetY = (int)(offset.y + 0.5f);
+                region->offsetX = (int)(maxSize.x - size.x - offset.x + 0.5f);
+                region->offsetY = (int)(maxSize.y - size.y - offset.y + 0.5f);
 
                 region->index = -1;
 

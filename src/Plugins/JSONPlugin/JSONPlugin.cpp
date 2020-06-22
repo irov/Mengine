@@ -72,12 +72,24 @@ namespace Mengine
             return true;
         } );
 
-        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, [this]()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+        } );
+
+        PLUGIN_SERVICE_WAIT( ResourcePrefetcherServiceInterface, [this]()
         {
             ResourcePrefetcherInterfacePtr resourcePrefetcherDefault = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ) );
 
             VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), resourcePrefetcherDefault, MENGINE_DOCUMENT_FACTORABLE );
-        }
+
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, [this]()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+        } );
 
         return true;
     }
@@ -88,16 +100,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
-
-        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
-        }
-
-        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
-        }
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );

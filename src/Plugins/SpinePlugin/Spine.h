@@ -45,7 +45,7 @@ namespace Mengine
         bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix ) override;
 
     public:
-        bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop ) override;
+        bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _time, float _speedFactor, bool _loop ) override;
         bool removeStateAnimation( const ConstString & _state ) override;
 
         bool hasSkeletonAnimationName( const ConstString & _name ) const override;
@@ -54,8 +54,8 @@ namespace Mengine
         bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor ) override;
         float getStateAnimationSpeedFactor( const ConstString & _state ) const override;
 
-        bool setStateAnimationTiming( const ConstString & _state, float _timing ) override;
-        float getStateAnimationTiming( const ConstString & _state ) const override;
+        bool setStateAnimationTime( const ConstString & _state, float _time ) override;
+        float getStateAnimationTime( const ConstString & _state ) const override;
 
         bool setStateAnimationFreeze( const ConstString & _state, bool _freeze ) override;
         bool getStateAnimationFreeze( const ConstString & _state ) const override;

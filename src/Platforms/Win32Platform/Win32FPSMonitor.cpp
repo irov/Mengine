@@ -77,9 +77,9 @@ namespace Mengine
         m_active = _active;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32FPSMonitor::setFrameTime( float _frameTiming )
+    void Win32FPSMonitor::setFrameTime( float _frameTime )
     {
-        m_frameTime = _frameTiming;
+        m_frameTime = _frameTime;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FPSMonitor::monitor()
@@ -96,8 +96,8 @@ namespace Mengine
         {
             if( m_active == true )
             {
-                DWORD ms_frameTiming = (DWORD)m_frameTime;
-                ::Sleep( ms_frameTiming );
+                DWORD ms_frameTime = (DWORD)m_frameTime;
+                ::Sleep( ms_frameTime );
                 ::SetEvent( m_hFrameSignalEvent );
             }
             else

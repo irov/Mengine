@@ -57,9 +57,9 @@ namespace Mengine
             return invalidate;
         }
 
-        float totalTiming = this->calcTotalTime( _context );
+        float totalTime = this->calcTotalTime( _context );
 
-        m_frameTime += totalTiming;
+        m_frameTime += totalTime;
 
         uint32_t frameCount = m_resourceImageSequence->getSequenceCount();
 
@@ -99,11 +99,11 @@ namespace Mengine
                     }
                     else
                     {
-                        float adaptFrameTiming = this->getAdaptTime( m_frameTime );
+                        float adaptFrameTime = this->getAdaptTime( m_frameTime );
 
-                        float newFrameTiming;
-                        m_currentFrame = this->getFrame_( adaptFrameTiming, &newFrameTiming );
-                        m_frameTime = newFrameTiming;
+                        float newFrameTime;
+                        m_currentFrame = this->getFrame_( adaptFrameTime, &newFrameTime );
+                        m_frameTime = newFrameTime;
                     }
                 }
 
@@ -486,7 +486,7 @@ namespace Mengine
         this->setCurrentFrame( lastFrame );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::_setTime( float _timing )
+    void SurfaceImageSequence::_setTime( float _time )
     {
         MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
             , this->getName().c_str()
@@ -503,7 +503,7 @@ namespace Mengine
             m_playIterator -= skipIterator;
         }
 
-        m_currentFrame = this->getFrame_( _timing, &m_frameTime );
+        m_currentFrame = this->getFrame_( _time, &m_frameTime );
 
         this->invalidateMaterial();
     }
@@ -514,18 +514,18 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        float timing = 0.f;
+        float time = 0.f;
 
         for( uint32_t frame = 0; frame != m_currentFrame; ++frame )
         {
             float delay = m_resourceImageSequence->getSequenceDelay( frame );
 
-            timing += delay;
+            time += delay;
         }
 
-        timing += m_frameTime;
+        time += m_frameTime;
 
-        return timing;
+        return time;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_interrupt( uint32_t _enumerator )

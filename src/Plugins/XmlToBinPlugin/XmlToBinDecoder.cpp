@@ -352,9 +352,9 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinDecoder::seek( float _timing )
+    bool XmlToBinDecoder::seek( float _time )
     {
-        MENGINE_UNUSED( _timing );
+        MENGINE_UNUSED( _time );
 
         return false;
     }

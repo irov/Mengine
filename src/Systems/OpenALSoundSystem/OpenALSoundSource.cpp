@@ -63,7 +63,7 @@ namespace Mengine
 
             if( m_soundBuffer->playSource( m_sourceId, m_loop, m_time ) == false )
             {
-                LOGGER_ERROR( "invalid buffer play %d loop %d timing %f"
+                LOGGER_ERROR( "invalid buffer play %d loop %d time %f"
                     , m_sourceId
                     , m_loop
                     , m_time
@@ -76,8 +76,6 @@ namespace Mengine
         {
             m_soundBuffer->resumeSource( m_sourceId );
         }
-
-        //m_timing = 0.f;
 
         m_playing = true;
         m_pausing = false;

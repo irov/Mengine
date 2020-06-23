@@ -20,7 +20,7 @@ namespace Mengine
 
     public:
         void setActive( bool _active );
-        void setFrameTime( float _frameTiming );
+        void setFrameTime( float _frameTime );
 
     public:
         void monitor();

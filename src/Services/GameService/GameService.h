@@ -79,7 +79,7 @@ namespace Mengine
 
     public:
         float getTimeFactor() const override;
-        void setTimeFactor( float _timingFactor ) override;
+        void setTimeFactor( float _timeFactor ) override;
 
     protected:
         ConstString m_currentPackName;

@@ -152,19 +152,19 @@ namespace Mengine
         return bytesDone;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoderWAV::_seek( float _timing )
+    bool SoundDecoderWAV::_seek( float _time )
     {
-        if( _timing > m_dataInfo.length && mt::equal_f_f_e( _timing, m_dataInfo.length, 0.01f ) == false )
+        if( _time > m_dataInfo.length && mt::equal_f_f_e( _time, m_dataInfo.length, 0.01f ) == false )
         {
             LOGGER_ERROR( "timing %f > total %f"
-                , _timing
+                , _time
                 , m_dataInfo.length
             );
 
-            _timing = m_dataInfo.length;
+            _time = m_dataInfo.length;
         }
 
-        size_t wav_pos = ((size_t)(_timing) * (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits)) / 1000;
+        size_t wav_pos = ((size_t)(_time) * (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits)) / 1000;
 
         bool result = m_stream->seek( m_chunkDataPos + wav_pos );
 

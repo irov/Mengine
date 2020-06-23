@@ -92,7 +92,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Spine::setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
+    bool Spine::setStateAnimation( const ConstString & _state, const ConstString & _name, float _time, float _speedFactor, bool _loop )
     {
         VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
         {
@@ -133,15 +133,15 @@ namespace Mengine
             desc.name = _name;
             desc.animationState = animationState;
             desc.track = track;
-            desc.time = _timing;
+            desc.time = _time;
             desc.duration = animation->duration * 1000.f;
             desc.speedFactor = _speedFactor;
             desc.freeze = false;
             desc.complete = false;
             desc.loop = _loop;
 
-            float spTiming = desc.time * 0.001f;
-            spAnimationState_update( animationState, spTiming );
+            float spTime = desc.time * 0.001f;
+            spAnimationState_update( animationState, spTime );
             spAnimationState_apply( animationState, m_skeleton );
 
             m_animations.emplace_back( desc );
@@ -158,7 +158,7 @@ namespace Mengine
             desc.state = _state;
             desc.name = _name;
             desc.animationState = nullptr;
-            desc.time = _timing;
+            desc.time = _time;
             desc.duration = -1.f;
             desc.speedFactor = _speedFactor;
             desc.freeze = false;
@@ -261,7 +261,7 @@ namespace Mengine
         return desc.speedFactor;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Spine::setStateAnimationTiming( const ConstString & _state, float _timing )
+    bool Spine::setStateAnimationTime( const ConstString & _state, float _time )
     {
         VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
         {
@@ -280,7 +280,7 @@ namespace Mengine
 
         const AnimationDesc & desc = *it_found;
 
-        if( this->setStateAnimation( _state, desc.name, _timing, desc.speedFactor, desc.loop ) == false )
+        if( this->setStateAnimation( _state, desc.name, _time, desc.speedFactor, desc.loop ) == false )
         {
             return false;
         }
@@ -334,7 +334,7 @@ namespace Mengine
         return desc.freeze;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Spine::getStateAnimationTiming( const ConstString & _state ) const
+    float Spine::getStateAnimationTime( const ConstString & _state ) const
     {
         VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
         {
@@ -426,8 +426,8 @@ namespace Mengine
             desc.complete = false;
             desc.loop = false;
 
-            float spTiming = desc.time * 0.001f;
-            spAnimationState_update( animationState, spTiming );
+            float spTime = desc.time * 0.001f;
+            spAnimationState_update( animationState, spTime );
             spAnimationState_apply( animationState, m_skeleton );
 
             m_animations.emplace_back( desc );
@@ -505,8 +505,8 @@ namespace Mengine
             desc.complete = false;
             desc.loop = false;
 
-            float spTiming = desc.time * 0.001f;
-            spAnimationState_update( animationState, spTiming );
+            float spTime = desc.time * 0.001f;
+            spAnimationState_update( animationState, spTime );
             spAnimationState_apply( animationState, m_skeleton );
 
             spSkeleton_updateCache( m_skeleton );
@@ -595,9 +595,8 @@ namespace Mengine
                 desc.time = desc.duration;
             }
 
-            float spTiming = desc.time * 0.001f;
-
-            spAnimationState_update( animationState, spTiming );
+            float spTime = desc.time * 0.001f;
+            spAnimationState_update( animationState, spTime );
             spAnimationState_apply( animationState, m_skeleton );
         }
 
@@ -789,9 +788,9 @@ namespace Mengine
 
         float totalTime = this->calcTotalTime( _context );
 
-        float spTiming = totalTime * 0.001f;
+        float spTime = totalTime * 0.001f;
 
-        spSkeleton_update( m_skeleton, spTiming );
+        spSkeleton_update( m_skeleton, spTime );
 
         for( AnimationDesc & desc : m_animations )
         {
@@ -823,9 +822,9 @@ namespace Mengine
 
             spAnimationState * animationState = desc.animationState;
 
-            float sp_an_timing = an_time * 0.001f;
+            float sp_an_time = an_time * 0.001f;
 
-            spAnimationState_update( animationState, sp_an_timing );
+            spAnimationState_update( animationState, sp_an_time );
             spAnimationState_apply( animationState, m_skeleton );
         }
 

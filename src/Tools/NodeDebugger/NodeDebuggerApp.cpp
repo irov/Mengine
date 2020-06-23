@@ -42,7 +42,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t* _socket, const int _timeoutMs )
+    static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t * _socket, const int _timeoutMs )
     {
         fd_set socketsSet;
         socketsSet.fd_count = 1;
@@ -128,13 +128,14 @@ namespace Mengine
         glfwSetCharCallback( m_window, ImGui_ImplGlfw_CharCallback );
         glfwSetKeyCallback( m_window, ImGui_ImplGlfw_KeyCallback );
         glfwSetMouseButtonCallback( m_window, ImGui_ImplGlfw_MouseButtonCallback );
-        glfwSetWindowSizeCallback(m_window, []( GLFWwindow * _wnd, int _width, int _height ) {
-             NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
-             if( _this != nullptr )
-             {
-                 _this->Resize( _width, _height );
-             }
-        });
+        glfwSetWindowSizeCallback( m_window, []( GLFWwindow * _wnd, int _width, int _height )
+        {
+            NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
+            if( _this != nullptr )
+            {
+                _this->Resize( _width, _height );
+            }
+        } );
 
         // Setup Dear ImGui binding
         IMGUI_CHECKVERSION();
@@ -296,7 +297,7 @@ namespace Mengine
             {
                 m_sceneUpdateTimer += _dt;
 
-                const double updateInterval = 1.0 / static_cast<double>( m_sceneUpdateFreq );
+                const double updateInterval = 1.0 / static_cast<double>(m_sceneUpdateFreq);
                 if( m_sceneUpdateTimer >= updateInterval )
                 {
                     this->SendSceneRequest();
@@ -318,7 +319,7 @@ namespace Mengine
 
         if( payloadSize < 1024 )
         {
-            _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+            _hdr.compressedSize = static_cast<uint32_t>(payloadSize);
             _hdr.uncompressedSize = 0; // packet is not compressed
         }
         else
@@ -326,11 +327,11 @@ namespace Mengine
             const size_t maxCompressedSize = ::LZ4_compressBound( static_cast<int>(payloadSize) );
             Mengine::Blobject compressedPayload( maxCompressedSize );
 
-            int result = ::LZ4_compress_default( reinterpret_cast<char*>( _packet.payload.data() ), reinterpret_cast<char*>( compressedPayload.data() ), static_cast<int>( payloadSize ), static_cast<int>( maxCompressedSize ) );
+            int result = ::LZ4_compress_default( reinterpret_cast<char *>(_packet.payload.data()), reinterpret_cast<char *>(compressedPayload.data()), static_cast<int>(payloadSize), static_cast<int>(maxCompressedSize) );
 
             if( result < 0 || payloadSize < (Blobject::size_type)result )
             {
-                _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+                _hdr.compressedSize = static_cast<uint32_t>(payloadSize);
                 _hdr.uncompressedSize = 0; // packet is not compressed
             }
             else
@@ -356,7 +357,7 @@ namespace Mengine
         {
             _packet.payload.resize( _hdr.uncompressedSize );
 
-            const int result = ::LZ4_decompress_safe( reinterpret_cast<const char*>( _receivedData ), reinterpret_cast<char*>( _packet.payload.data() ), static_cast<int>( _hdr.compressedSize ), static_cast<int>( _hdr.uncompressedSize ) );
+            const int result = ::LZ4_decompress_safe( reinterpret_cast<const char *>(_receivedData), reinterpret_cast<char *>(_packet.payload.data()), static_cast<int>(_hdr.compressedSize), static_cast<int>(_hdr.uncompressedSize) );
             assert( static_cast<uint32_t>(result) == _hdr.uncompressedSize );
         }
     }
@@ -488,7 +489,7 @@ namespace Mengine
         for( const pugi::xml_node & child : _xmlContainer.children() )
         {
             const pugi::char_t * type = child.attribute( "Factory" ).value();
-            
+
             VectorLeaks & leaks = m_objectLeaks[type];
 
             for( const pugi::xml_node & obj : child.children() )
@@ -568,7 +569,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& _xmlNode, DebuggerNode* _node )
+    void NodeDebuggerApp::DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node )
     {
         _node->deserialize( _xmlNode );
 
@@ -677,9 +678,9 @@ namespace Mengine
 
         if( childrenNode )
         {
-            for( const auto & child : childrenNode.children() )
+            for( const pugi::xml_node & child : childrenNode.children() )
             {
-                DebuggerNode* childNode = new DebuggerNode();
+                DebuggerNode * childNode = new DebuggerNode();
                 childNode->parent = _node;
                 DeserializeNode( child, childNode );
                 _node->children.push_back( childNode );
@@ -695,7 +696,7 @@ namespace Mengine
     {
         Vector<uint32_t> path;
 
-        const DebuggerNode* current = _node;
+        const DebuggerNode * current = _node;
         while( current && current->parent )
         {
             path.insert( path.begin(), current->uid );
@@ -719,7 +720,7 @@ namespace Mengine
 
         if( !_pathStr.empty() && _pathStr[0] != '-' )
         {
-            const Char* ptr = _pathStr.c_str();
+            const Char * ptr = _pathStr.c_str();
 
             uint32_t uid = 0;
             while( *ptr )
@@ -732,7 +733,7 @@ namespace Mengine
                 else
                 {
                     uid *= 10;
-                    uid += static_cast<uint32_t>( *ptr - '0' );
+                    uid += static_cast<uint32_t>(*ptr - '0');
                 }
 
                 ++ptr;
@@ -750,13 +751,14 @@ namespace Mengine
         {
             DebuggerNode * node = m_scene;
 
-            auto it = _path.begin(), end = _path.end();
+            Vector<uint32_t>::const_iterator it = _path.begin(), end = _path.end();
             for( ; it != end; ++it )
             {
                 const uint32_t nextUid = *it;
-                auto found = std::find_if( node->children.begin(), node->children.end(), [nextUid]( const DebuggerNode * _n )->bool {
+                Vector<DebuggerNode *>::const_iterator found = std::find_if( node->children.begin(), node->children.end(), [nextUid]( const DebuggerNode * _n )->bool
+                {
                     return _n->uid == nextUid;
-                });
+                } );
 
                 if( found != node->children.end() )
                 {
@@ -784,7 +786,7 @@ namespace Mengine
             m_selectedNode = nullptr;
         }
 
-        for( auto n : _node->children )
+        for( DebuggerNode * n : _node->children )
         {
             DestroyNode( n );
         }
@@ -793,13 +795,14 @@ namespace Mengine
         delete _node;
     }
     //////////////////////////////////////////////////////////////////////////
-    const CachedImage* NodeDebuggerApp::GetIconImage( const String & _name )
+    const CachedImage * NodeDebuggerApp::GetIconImage( const String & _name )
     {
-        const CachedImage* result = nullptr;
+        const CachedImage * result = nullptr;
 
-        auto it = std::find_if( m_imagesCache.begin(), m_imagesCache.end(), [&_name]( const CachedImage & _ci )->bool {
+        Vector<CachedImage>::const_iterator it = std::find_if( m_imagesCache.begin(), m_imagesCache.end(), [&_name]( const CachedImage & _ci )->bool
+        {
             return _ci.name == _name;
-        });
+        } );
 
         if( it != m_imagesCache.end() )
         {
@@ -808,7 +811,7 @@ namespace Mengine
         else
         {
             int width, height, bpp;
-            stbi_uc* data = stbi_load( _name.c_str(), &width, &height, &bpp, STBI_rgb_alpha );
+            stbi_uc * data = stbi_load( _name.c_str(), &width, &height, &bpp, STBI_rgb_alpha );
             if( data != nullptr )
             {
                 GLuint texture;
@@ -825,7 +828,7 @@ namespace Mengine
 
                 stbi_image_free( data );
 
-                m_imagesCache.push_back( { _name, static_cast<uintptr_t>(texture), static_cast<size_t>(width), static_cast<size_t>(height) } );
+                m_imagesCache.push_back( {_name, static_cast<uintptr_t>(texture), static_cast<size_t>(width), static_cast<size_t>(height)} );
 
                 result = &m_imagesCache.back();
             }
@@ -849,18 +852,18 @@ namespace Mengine
             return;
         }
 
-        for( const auto & iconNode : mainNode.children() )
+        for( const pugi::xml_node & iconNode : mainNode.children() )
         {
             pugi::xml_attribute attrName = iconNode.attribute( "name" );
             pugi::xml_attribute attrImage = iconNode.attribute( "image" );
 
             if( attrName && attrImage )
             {
-                const CachedImage* ci = GetIconImage( attrImage.as_string() );
+                const CachedImage * ci = GetIconImage( attrImage.as_string() );
                 if( ci != nullptr )
                 {
-                    pugi::xml_attribute attrX = iconNode.attribute("x");
-                    pugi::xml_attribute attrY = iconNode.attribute("y");
+                    pugi::xml_attribute attrX = iconNode.attribute( "x" );
+                    pugi::xml_attribute attrY = iconNode.attribute( "y" );
 
                     const float x = attrX ? attrX.as_float() : 0.0f;
                     const float y = attrY ? attrY.as_float() : 0.0f;
@@ -879,9 +882,10 @@ namespace Mengine
         }
 
         // trying to assign the default icon
-        auto it = std::find_if( m_icons.begin(), m_icons.end(), []( const NodeIcon & _ni )->bool {
+        Vector<NodeIcon>::const_iterator it = std::find_if( m_icons.begin(), m_icons.end(), []( const NodeIcon & _ni )
+        {
             return _ni.name == "?";
-        });
+        } );
 
         if( it != m_icons.end() )
         {
@@ -893,11 +897,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const NodeIcon* NodeDebuggerApp::GetIconForNodeType( const String & _nodeType )
+    const NodeIcon * NodeDebuggerApp::GetIconForNodeType( const String & _nodeType )
     {
-        auto it = std::find_if( m_icons.begin(), m_icons.end(), [&_nodeType]( const NodeIcon & _ni )->bool {
+        Vector<NodeIcon>::const_iterator it = std::find_if( m_icons.begin(), m_icons.end(), [&_nodeType]( const NodeIcon & _ni )->bool
+        {
             return _ni.name == _nodeType;
-        });
+        } );
 
         if( it == m_icons.end() )
         {
@@ -921,7 +926,7 @@ namespace Mengine
         {
             if( ImGui::BeginTabBar( "##Tabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton ) )
             {
-                for( auto& tab : m_tabs )
+                for( TabDescriptor & tab : m_tabs )
                 {
                     if( ImGui::BeginTabItem( tab.title.c_str() ) )
                     {
@@ -1285,8 +1290,8 @@ namespace Mengine
                     {
                         int min = record.get( "min", 0 );
                         int max = record.get( "max", 0 );
-                        
-                        float speed = (min == max) ? 1.f : float(max - min) * 0.0015f;
+
+                        float speed = (min == max) ? 1.f : float( max - min ) * 0.0015f;
 
                         int value = j;
                         if( ImGui::DragInt( key, &value, speed, min, max ) == true )
@@ -1334,7 +1339,7 @@ namespace Mengine
                 bool successful = jpp::dump( desc.json, &jpp_dump_callback, f );
                 MENGINE_UNUSED( successful );
 
-                fclose( f );                
+                fclose( f );
             }
         }
     }
@@ -1430,7 +1435,7 @@ namespace Mengine
             iconPtr = &icon;
         }
 
-        auto result = ImGuiExt::TreeNodeWithIcon
+        std::pair<bool, bool> result = ImGuiExt::TreeNodeWithIcon
         (
             iconPtr,
             fullLabel.c_str(),
@@ -1445,7 +1450,7 @@ namespace Mengine
 
         if( result.first )
         {
-            for( DebuggerNode* child : _node->children )
+            for( DebuggerNode * child : _node->children )
             {
                 this->DoNodeElement( child, _tag );
             }
@@ -1581,7 +1586,7 @@ namespace Mengine
 
         auto uiEditorString = [_node]( const char * _caption, String & _prop )
         {
-            char testValue[2048] = { 0 };
+            char testValue[2048] = {0};
             strcpy( testValue, _prop.c_str() );
             testValue[2047] = 0;
             bool input = ImGui::InputText( _caption, testValue, 2048 );
@@ -1608,7 +1613,7 @@ namespace Mengine
         auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
         {
             int32_t testValue = _prop;
-            bool input = ImGui::ListBox( _caption, &testValue, []( void* data, int idx, const char** out_text )
+            bool input = ImGui::ListBox( _caption, &testValue, []( void * data, int idx, const char ** out_text )
             {
                 *out_text = ((String *)data + idx)->c_str();
                 return true;
@@ -1626,7 +1631,7 @@ namespace Mengine
             int32_t testValue = _prop;
             ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::ListBox( _caption, &testValue, []( void* data, int idx, const char** out_text )
+            ImGui::ListBox( _caption, &testValue, []( void * data, int idx, const char ** out_text )
             {
                 *out_text = ((String *)data + idx)->c_str();
                 return true;
@@ -1678,7 +1683,7 @@ namespace Mengine
             ImGui::Spacing();
 
             uiEditorColor( "Local Color", _node->render.local_color );
-            uiEditorColor( "Personal Color", _node->render.personal_color );            
+            uiEditorColor( "Personal Color", _node->render.personal_color );
         }
 
         if( _node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
@@ -1749,10 +1754,10 @@ namespace Mengine
             uiReadOnlyVec1f( "TotalCharOffset", _node->textField.TotalCharOffset );
             uiEditorVec1f( "CharScale", _node->textField.CharScale );
             uiReadOnlyVec1f( "TotalCharScale", _node->textField.TotalCharScale );
-            uiEditorListBox( "HorizontAlign", _node->textField.HorizontAlign, { "Left", "Center", "Right", "None" }, 4 );
-            uiReadOnlyListBox( "TotalHorizontAlign", _node->textField.TotalHorizontAlign, { "Left", "Center", "Right", "None" }, 4 );
-            uiEditorListBox( "VerticalAlign", _node->textField.VerticalAlign, { "Bottom", "Center", "Top", "None" }, 4 );
-            uiReadOnlyListBox( "TotalVerticalAlign", _node->textField.TotalVerticalAlign, { "Bottom", "Center", "Top", "None" }, 4 );
+            uiEditorListBox( "HorizontAlign", _node->textField.HorizontAlign, {"Left", "Center", "Right", "None"}, 4 );
+            uiReadOnlyListBox( "TotalHorizontAlign", _node->textField.TotalHorizontAlign, {"Left", "Center", "Right", "None"}, 4 );
+            uiEditorListBox( "VerticalAlign", _node->textField.VerticalAlign, {"Bottom", "Center", "Top", "None"}, 4 );
+            uiReadOnlyListBox( "TotalVerticalAlign", _node->textField.TotalVerticalAlign, {"Bottom", "Center", "Top", "None"}, 4 );
             uiEditorVec1U( "MaxCharCount", _node->textField.MaxCharCount );
             uiEditorBool( "Pixelsnap", _node->textField.Pixelsnap );
         }
@@ -1853,7 +1858,7 @@ namespace Mengine
 
         if( zed_net_tcp_connect( &socket, address ) )
         {
-            zed_net_socket_close( &socket);
+            zed_net_socket_close( &socket );
             m_connectionStatus = ConnectionStatus::ConnectionFailed;
             return;
         }
@@ -1864,7 +1869,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DisconnectFromServer()
     {
-        zed_net_socket_close( &m_socket);
+        zed_net_socket_close( &m_socket );
         m_connectionStatus = ConnectionStatus::Disconnected;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1924,7 +1929,7 @@ namespace Mengine
             MutexLocker lock( m_dataMutex );
 
             // check if we have enough data to form a packet
-            PacketHeader* hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
+            PacketHeader * hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
 
             // received garbage - nothing fancy, just disconnect
             if( hdr->magic != PACKET_MAGIC )
@@ -1999,7 +2004,7 @@ namespace Mengine
             PacketHeader hdr;
             hdr.magic = PACKET_MAGIC;
 
-            this->CompressPacket( packet, hdr);
+            this->CompressPacket( packet, hdr );
 
             Detail::InsertPacketHeader( packet.payload, hdr );
 
@@ -2097,7 +2102,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::SendNodeSelection(const String & _path)
+    void NodeDebuggerApp::SendNodeSelection( const String & _path )
     {
         pugi::xml_document doc;
 

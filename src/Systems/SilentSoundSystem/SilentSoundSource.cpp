@@ -16,7 +16,7 @@ namespace Mengine
         , m_volume( 1.f )
         , m_loop( false )
         , m_sourceId( 0 )
-        , m_timing( 0.f )
+        , m_time( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ namespace Mengine
                 return false;
             }
 
-            m_soundBuffer->play( m_sourceId, m_loop, m_timing );
+            m_soundBuffer->play( m_sourceId, m_loop, m_time );
         }
         else
         {
@@ -93,7 +93,7 @@ namespace Mengine
         m_playing = false;
         m_pausing = true;
 
-        m_timing = m_soundBuffer->getTimePos( m_sourceId );
+        m_time = m_soundBuffer->getTimePos( m_sourceId );
 
         m_soundBuffer->pause( m_sourceId );
     }
@@ -144,7 +144,7 @@ namespace Mengine
             m_soundSystem->releaseSourceId( sourceId );
         }
 
-        m_timing = 0.f;
+        m_time = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundSource::isPlay() const
@@ -207,15 +207,15 @@ namespace Mengine
 
         if( m_pausing == true )
         {
-            return m_timing;
+            return m_time;
         }
 
         float posms = m_soundBuffer->getTimePos( m_sourceId );
 
         //timing dont assign to zero when m_soundBuffer is stopped!
-        if( MT_fabsf( posms ) < 0.0001f && MT_fabsf( m_timing ) > 0.0001 )
+        if( MT_fabsf( posms ) < 0.0001f && MT_fabsf( m_time ) > 0.0001 )
         {
-            posms = m_timing;
+            posms = m_time;
         }
 
         return posms;
@@ -228,7 +228,7 @@ namespace Mengine
             return false;
         }
 
-        m_timing = _posMs;
+        m_time = _posMs;
 
         return true;
     }

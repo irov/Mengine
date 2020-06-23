@@ -129,9 +129,9 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameTimingFactor( float _timingFactor )
+    void DummyGameEventReceiver::onGameTimeFactor( float _timeFactor )
     {
-        MENGINE_UNUSED( _timingFactor );
+        MENGINE_UNUSED( _timeFactor );
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////

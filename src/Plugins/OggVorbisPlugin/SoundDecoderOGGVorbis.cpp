@@ -210,7 +210,7 @@ namespace Mengine
     {
         if( _time >= m_dataInfo.length )
         {
-            LOGGER_ERROR( "timing %f > total %f"
+            LOGGER_ERROR( "time %f > total %f"
                 , _time
                 , m_dataInfo.length
             );
@@ -236,7 +236,7 @@ namespace Mengine
         if( seek_err != 0 )
         {
             //OV_ENOSEEK
-            LOGGER_ERROR( "timing %f is %f error %d"
+            LOGGER_ERROR( "time %f is %f error %d"
                 , _time
                 , m_dataInfo.length
                 , seek_err

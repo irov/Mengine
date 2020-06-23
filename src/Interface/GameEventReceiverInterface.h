@@ -26,7 +26,7 @@ namespace Mengine
         EVENT_GAME_MOUSE_WHEEL,
         EVENT_GAME_APP_MOUSE_ENTER,
         EVENT_GAME_APP_MOUSE_LEAVE,
-        EVENT_GAME_ON_TIMING_FACTOR,
+        EVENT_GAME_ON_TIME_FACTOR,
         EVENT_GAME_PREPARATION,
         EVENT_GAME_RUN,
         EVENT_GAME_INITIALIZE,
@@ -71,7 +71,7 @@ namespace Mengine
         virtual bool onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel ) = 0;
         virtual void onGameAppMouseEnter( float _x, float _y ) = 0;
         virtual void onGameAppMouseLeave() = 0;
-        virtual void onGameTimingFactor( float _timingFactor ) = 0;
+        virtual void onGameTimeFactor( float _timeFactor ) = 0;
         virtual bool onGamePreparation( bool _debug ) = 0;
         virtual void onGameRun() = 0;
         virtual bool onGameInitialize() = 0;
@@ -111,7 +111,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_WHEEL );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_ENTER );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_LEAVE );
-    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ON_TIMING_FACTOR );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ON_TIME_FACTOR );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_PREPARATION );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_RUN );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_INITIALIZE );

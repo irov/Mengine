@@ -127,9 +127,9 @@ namespace Mengine
         }
 
     protected:
-        virtual bool _seek( float _timing )
+        virtual bool _seek( float _time )
         {
-            MENGINE_UNUSED( _timing );
+            MENGINE_UNUSED( _time );
 
             return false;
         }

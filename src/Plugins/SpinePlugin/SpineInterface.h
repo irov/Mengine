@@ -57,7 +57,7 @@ namespace Mengine
         virtual bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix ) = 0;
 
     public:
-        virtual bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop ) = 0;
+        virtual bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _time, float _speedFactor, bool _loop ) = 0;
         virtual bool removeStateAnimation( const ConstString & _state ) = 0;
 
         virtual bool hasSkeletonAnimationName( const ConstString & _name ) const = 0;
@@ -66,8 +66,8 @@ namespace Mengine
         virtual bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor ) = 0;
         virtual float getStateAnimationSpeedFactor( const ConstString & _state ) const = 0;
 
-        virtual bool setStateAnimationTiming( const ConstString & _state, float _timing ) = 0;
-        virtual float getStateAnimationTiming( const ConstString & _state ) const = 0;
+        virtual bool setStateAnimationTime( const ConstString & _state, float _time ) = 0;
+        virtual float getStateAnimationTime( const ConstString & _state ) const = 0;
 
         virtual bool setStateAnimationFreeze( const ConstString & _state, bool _freeze ) = 0;
         virtual bool getStateAnimationFreeze( const ConstString & _state ) const = 0;

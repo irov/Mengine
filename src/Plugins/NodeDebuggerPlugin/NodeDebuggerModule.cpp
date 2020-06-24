@@ -410,7 +410,7 @@ namespace Mengine
         }
 
         RenderContext node_context = *_context;
-        Helper::getNodeRenderContext( node, &node_context );
+        Helper::fillNodeRenderContext( node, &node_context );
 
         mt::box2f bbox;
         if( s_absorbBoundingBox( node, &bbox ) == false )

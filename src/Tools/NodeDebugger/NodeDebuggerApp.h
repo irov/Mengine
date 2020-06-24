@@ -22,7 +22,7 @@
 
 namespace Mengine
 {
-    enum class ConnectionStatus: uint32_t
+    enum class ConnectionStatus : uint32_t
     {
         Disconnected,
         ConnectionRequested,
@@ -75,12 +75,16 @@ namespace Mengine
     {
         bool    enable;
         bool    hide;
+        int32_t z_index;
+        int32_t z_order;
         Color   local_color;
         Color   personal_color;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
             SERIALIZE_PROP( hide );
+            SERIALIZE_PROP( z_index );
+            SERIALIZE_PROP( z_order );
             SERIALIZE_PROP( local_color );
             SERIALIZE_PROP( personal_color );
         }
@@ -89,6 +93,8 @@ namespace Mengine
         {
             DESERIALIZE_PROP( enable );
             DESERIALIZE_PROP( hide );
+            DESERIALIZE_PROP( z_index );
+            DESERIALIZE_PROP( z_order );
             DESERIALIZE_PROP( local_color );
             DESERIALIZE_PROP( personal_color );
         }
@@ -104,7 +110,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
-            SERIALIZE_PROP( loop );            
+            SERIALIZE_PROP( loop );
             SERIALIZE_PROP( time );
         }
 
@@ -277,7 +283,7 @@ namespace Mengine
     struct NodeMovie2
     {
         String CompositionName;
-        String TextAliasEnvironment;        
+        String TextAliasEnvironment;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {

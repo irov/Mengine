@@ -1484,6 +1484,18 @@ namespace Mengine
             ImGui::PopItemFlag();
         };
 
+        auto uiEditorVec1I = [_node]( const char * _caption, int32_t & _prop )
+        {
+            int32_t testValue = _prop;
+            bool input = ImGui::DragScalarN( _caption, ImGuiDataType_S32, &testValue, 1, 1.f );
+
+            if( input && testValue != _prop )
+            {
+                _prop = testValue;
+                _node->dirty = true;
+            }
+        };
+
         auto uiEditorVec1U = [_node]( const char * _caption, uint32_t & _prop )
         {
             uint32_t testValue = _prop;
@@ -1681,7 +1693,9 @@ namespace Mengine
             uiReadOnlyBool( "Enable", _node->render.enable );
             uiEditorBool( "Hide", _node->render.hide );
             ImGui::Spacing();
-
+            uiEditorVec1I( "Z Index", _node->render.z_index );
+            uiEditorVec1I( "Z Order", _node->render.z_order );
+            ImGui::Spacing();
             uiEditorColor( "Local Color", _node->render.local_color );
             uiEditorColor( "Personal Color", _node->render.personal_color );
         }

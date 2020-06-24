@@ -102,6 +102,12 @@ namespace Mengine
         }
 
         template <>
+        MENGINE_INLINE int32_t getXmlValue<int32_t>( const pugi::xml_attribute & _attrib )
+        {
+            return _attrib.as_int();
+        }
+
+        template <>
         MENGINE_INLINE uint32_t getXmlValue<uint32_t>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_uint();
@@ -214,6 +220,15 @@ namespace Mengine
             static const Char * get_value()
             {
                 return "bool";
+            }
+        };
+
+        template<>
+        struct prop_type_name<int32_t>
+        {
+            static const Char * get_value()
+            {
+                return "int32_t";
             }
         };
 

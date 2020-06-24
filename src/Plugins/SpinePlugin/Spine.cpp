@@ -378,6 +378,52 @@ namespace Mengine
         return desc.duration;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Spine::setStateAnimationLoop( const ConstString & _state, bool _loop )
+    {
+        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
+
+        if( it_found == m_animations.end() )
+        {
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
+                , _state.c_str()
+            );
+
+            return false;
+        }
+
+        AnimationDesc & desc = *it_found;
+
+        desc.loop = _loop;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Spine::getStateAnimationLoop( const ConstString & _state ) const
+    {
+        VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
+
+        if( it_found == m_animations.end() )
+        {
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , this->getName().c_str()
+                , _state.c_str()
+            );
+
+            return false;
+        }
+
+        const AnimationDesc & desc = *it_found;
+
+        return desc.loop;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Spine::setStateAnimationFirstFrame( const ConstString & _state, const ConstString & _name )
     {
         VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
@@ -738,7 +784,7 @@ namespace Mengine
                         continue;
                     }
 
-                    if( desc.loop == true )
+                    if( desc.loop == true || this->isLoop() == true )
                     {
                         break;
                     }

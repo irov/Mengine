@@ -57,24 +57,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRenderZOrder::flushZOrderRenderAfter( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-        std::sort( m_zRenderObjectsAfter.begin(), m_zRenderObjectsAfter.end(), []( const ZRenderObject & _zro0, const ZRenderObject & _zro1 )
-        {
-            if( _zro0.zIndex < _zro1.zIndex )
-            {
-                return true;
-            }
-            else if( _zro0.zIndex > _zro1.zIndex )
-            {
-                return false;
-            }
-
-            if( _zro0.zOrder < _zro1.zOrder )
-            {
-                return true;
-            }
-
-            return false;
-        } );
+        this->sortZRenderObjects_( &m_zRenderObjectsAfter );
 
         for( const ZRenderObject & zro : m_zRenderObjectsAfter )
         {
@@ -88,7 +71,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRenderZOrder::flushZOrderRenderBefore( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-        std::sort( m_zRenderObjectsBefore.begin(), m_zRenderObjectsBefore.end(), []( const ZRenderObject & _zro0, const ZRenderObject & _zro1 )
+        this->sortZRenderObjects_( &m_zRenderObjectsBefore );
+
+        for( const ZRenderObject & zro : m_zRenderObjectsBefore )
+        {
+            const RenderInterface * render = zro.render;
+
+            render->render( _renderPipeline, &zro.context );
+        }
+
+        m_zRenderObjectsBefore.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRenderZOrder::sortZRenderObjects_( VectorZRenderObject * _zRenderObject )
+    {
+        std::sort( _zRenderObject->begin(), _zRenderObject->end(), []( const ZRenderObject & _zro0, const ZRenderObject & _zro1 )
         {
             if( _zro0.zIndex < _zro1.zIndex )
             {
@@ -106,14 +103,5 @@ namespace Mengine
 
             return false;
         } );
-
-        for( const ZRenderObject & zro : m_zRenderObjectsBefore )
-        {
-            const RenderInterface * render = zro.render;
-
-            render->render( _renderPipeline, &zro.context );
-        }
-
-        m_zRenderObjectsBefore.clear();
-    }    
+    }
 }

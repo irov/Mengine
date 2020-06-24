@@ -654,7 +654,7 @@ namespace Mengine
         {
             _renderZOrder->fetchZOrder( scene.get(), &context );
 
-            _renderZOrder->flushZOrderRenderAfter( _renderPipeline );
+            _renderZOrder->flushZOrderRenderBefore( _renderPipeline );
 
             if( debugMask == 0 )
             {
@@ -669,7 +669,7 @@ namespace Mengine
                 }
             }
 
-            _renderZOrder->flushZOrderRenderBefore( _renderPipeline );
+            _renderZOrder->flushZOrderRenderAfter( _renderPipeline );
         }
 
         MODULE_SERVICE()

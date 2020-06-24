@@ -621,6 +621,8 @@ namespace Mengine
 
         Detail::serializeNodeProp( _render->isRenderEnable(), "enable", xmlNode );
         Detail::serializeNodeProp( _render->isHide(), "hide", xmlNode );
+        Detail::serializeNodeProp( _render->getZIndex(), "z_index", xmlNode );
+        Detail::serializeNodeProp( _render->getZOrder(), "z_order", xmlNode );
         Detail::serializeNodeProp( _render->getLocalColor(), "local_color", xmlNode );
         Detail::serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlNode );
     }
@@ -1306,6 +1308,16 @@ namespace Mengine
                 Detail::deserializeNodeProp<bool>( "hide", renderNode, [render]( bool _value )
                 {
                     render->setHide( _value );
+                } );
+
+                Detail::deserializeNodeProp<int32_t>( "z_index", renderNode, [render]( int32_t _value )
+                {
+                    render->setZIndex( _value );
+                } );
+
+                Detail::deserializeNodeProp<int32_t>( "z_order", renderNode, [render]( int32_t _value )
+                {
+                    render->setZOrder( _value );
                 } );
 
                 Detail::deserializeNodeProp<Color>( "local_color", renderNode, [render]( const Color & _value )

@@ -40,6 +40,9 @@ namespace Mengine
         typedef Vector<ZRenderObject> VectorZRenderObject;
         VectorZRenderObject m_zRenderObjectsAfter;
         VectorZRenderObject m_zRenderObjectsBefore;
+
+    protected:
+        void sortZRenderObjects_( VectorZRenderObject * _zRenderObject );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<BaseRenderZOrder> BaseRenderZOrderPtr;

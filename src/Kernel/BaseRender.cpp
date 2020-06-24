@@ -224,11 +224,6 @@ namespace Mengine
             return;
         }
 
-        if( m_zIndex == 0 && m_zOrder == 0 )
-        {
-            return;
-        }
-
         if( m_externalRender == true )
         {
             return;
@@ -242,9 +237,12 @@ namespace Mengine
         context.scissor = m_renderScissor != nullptr ? m_renderScissor.get() : _context->scissor;
         context.target = m_renderTarget != nullptr ? m_renderTarget.get() : _context->target;
 
-        if( m_localHide == false && this->isPersonalTransparent() == false )
+        if( m_zIndex != 0 )
         {
-            _renderZOrder->addZOrderRender( m_zIndex, m_zOrder, this, &context );
+            if( m_localHide == false && this->isPersonalTransparent() == false )
+            {
+                _renderZOrder->addZOrderRender( m_zIndex, m_zOrder, this, &context );
+            }
         }
 
         for( const BaseRender * child : m_renderChildren )

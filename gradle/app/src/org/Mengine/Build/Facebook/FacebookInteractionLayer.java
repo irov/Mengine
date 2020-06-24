@@ -120,7 +120,7 @@ public class FacebookInteractionLayer {
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, email, gender, picture");
+        parameters.putString("fields", "id, name, email, picture");
         request.setParameters(parameters);
         request.executeAsync();
     }

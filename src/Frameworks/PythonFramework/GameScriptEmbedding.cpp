@@ -41,7 +41,7 @@ namespace Mengine
 
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onAppMouseEnter", EVENT_GAME_APP_MOUSE_ENTER, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onAppMouseLeave", EVENT_GAME_APP_MOUSE_LEAVE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onTimingFactor", EVENT_GAME_ON_TIMING_FACTOR, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onTimeFactor", EVENT_GAME_ON_TIME_FACTOR, _doc );
 
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onPreparation", EVENT_GAME_PREPARATION, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onRun", EVENT_GAME_RUN, _doc );

@@ -470,7 +470,7 @@ namespace Mengine
 
         // UI
         DebuggerNode * m_selectedNode;
-        NodeIcon * m_defaultIcon;
+        const NodeIcon * m_defaultIcon;
         Vector<NodeIcon> m_icons;
         Vector<CachedImage> m_imagesCache;
         Vector<TabDescriptor> m_tabs;

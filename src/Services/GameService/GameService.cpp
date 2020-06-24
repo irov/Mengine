@@ -520,18 +520,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float GameService::getTimeFactor() const
     {
-        float timingFactor = UPDATE_SERVICE()
+        float timeFactor = UPDATE_SERVICE()
             ->getTimeFactor();
 
-        return timingFactor;
+        return timeFactor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::setTimeFactor( float _timingFactor )
+    void GameService::setTimeFactor( float _timeFactor )
     {
         UPDATE_SERVICE()
-            ->setTimeFactor( _timingFactor );
+            ->setTimeFactor( _timeFactor );
 
-        EVENTABLE_METHOD( EVENT_GAME_ON_TIMING_FACTOR )
-            ->onGameTimingFactor( _timingFactor );
+        EVENTABLE_METHOD( EVENT_GAME_ON_TIME_FACTOR )
+            ->onGameTimeFactor( _timeFactor );
     }
 }

@@ -173,8 +173,9 @@ namespace Mengine
         void updateDebugOpenFile_();
         void notifyDebugOpenFile_( const Char * _folder, const Char * _filePath, bool _streaming );
 
-    protected:
+    protected:        
         RenderPipelineInterfacePtr m_renderPipeline;
+        RenderZOrderInterfacePtr m_renderZOrder;
 
         Resolution m_currentResolution;
 

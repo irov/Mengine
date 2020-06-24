@@ -267,10 +267,10 @@ namespace Mengine
         m_userEvents.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::render( const RenderPipelineInterfacePtr & _renderPipeline )
+    void GameService::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderZOrderInterfacePtr & _renderZOrder )
     {
         PLAYER_SERVICE()
-            ->render( _renderPipeline );
+            ->render( _renderPipeline, _renderZOrder );
 
         EVENTABLE_METHOD( EVENT_GAME_FRAME_END )
             ->onGameFrameEnd();

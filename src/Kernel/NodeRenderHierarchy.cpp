@@ -161,7 +161,7 @@ namespace Mengine
             return relation_target;
         }
         //////////////////////////////////////////////////////////////////////////
-        void getNodeRenderContext( const NodePtr & _node, RenderContext * const _context )
+        void fillNodeRenderContext( const NodePtr & _node, RenderContext * const _context )
         {
             const Node * node_ptr = _node.get();
 

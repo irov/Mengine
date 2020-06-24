@@ -20,6 +20,10 @@ src
     RenderMaterialService.cpp
     BatchRenderPipeline.h
     BatchRenderPipeline.cpp
+    BaseRenderZOrder.h
+    BaseRenderZOrder.cpp
+    NoneRenderZOrder.h
+    NoneRenderZOrder.cpp
 )
 
 ADD_MENGINE_LIBRARY(Services)

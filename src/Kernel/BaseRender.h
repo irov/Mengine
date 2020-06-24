@@ -45,6 +45,13 @@ namespace Mengine
         void setLocalHide( bool _localHide ) override;
         MENGINE_INLINE bool isLocalHide() const override;
 
+    public:
+        void setZIndex( int32_t _index ) override;
+        MENGINE_INLINE int32_t getZIndex() const override;
+
+        void setZOrder( int32_t _order ) override;
+        MENGINE_INLINE int32_t getZOrder() const override;
+
     protected:
         virtual void _setHide( bool _hide );
         virtual void _setLocalHide( bool _localHide );
@@ -74,6 +81,7 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
+        void fetchZOrderWithChildren( const RenderZOrderInterfacePtr & _renderZOrder, const RenderContext * _context ) const override;
         void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
 
     public:
@@ -115,6 +123,9 @@ namespace Mengine
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
 
+        int32_t m_zIndex;
+        int32_t m_zOrder;
+
         bool m_externalRender;
         bool m_renderEnable;
         bool m_hide;
@@ -152,6 +163,15 @@ namespace Mengine
     MENGINE_INLINE bool BaseRender::isLocalHide() const
     {
         return m_localHide;
+    }
+    MENGINE_INLINE int32_t BaseRender::getZIndex() const
+    {
+        return m_zIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE int32_t BaseRender::getZOrder() const
+    {
+        return m_zOrder;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BaseRender::isExternalRender() const

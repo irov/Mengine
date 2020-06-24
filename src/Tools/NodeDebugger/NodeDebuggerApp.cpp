@@ -865,8 +865,8 @@ namespace Mengine
                     pugi::xml_attribute attrX = iconNode.attribute( "x" );
                     pugi::xml_attribute attrY = iconNode.attribute( "y" );
 
-                    const float x = attrX ? attrX.as_float() : 0.0f;
-                    const float y = attrY ? attrY.as_float() : 0.0f;
+                    float x = attrX ? attrX.as_float() : 0.f;
+                    float y = attrY ? attrY.as_float() : 0.f;
 
                     NodeIcon ni;
                     ni.name = attrName.as_string();

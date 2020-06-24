@@ -2,6 +2,7 @@
 
 #include "Interface/Interface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/RenderZOrderInterface.h"
 
 #include "Kernel/Colorable.h"
 #include "Kernel/BoundingBox.h"
@@ -46,6 +47,13 @@ namespace Mengine
         virtual bool isLocalHide() const = 0;
 
     public:
+        virtual void setZIndex( int32_t _index ) = 0;
+        virtual int32_t getZIndex() const = 0;
+
+        virtual void setZOrder( int32_t _order ) = 0;
+        virtual int32_t getZOrder() const = 0;
+
+    public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
         virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 
@@ -71,6 +79,9 @@ namespace Mengine
 
     public:
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const = 0;
+
+    public:
+        virtual void fetchZOrderWithChildren( const RenderZOrderInterfacePtr & _renderZOrder, const RenderContext * _context ) const = 0;
         virtual void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const = 0;
 
     public:

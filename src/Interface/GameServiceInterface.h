@@ -7,6 +7,7 @@
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/GameEventReceiverInterface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/RenderZOrderInterface.h"
 
 #include "Kernel/Eventable.h"
 
@@ -26,7 +27,7 @@ namespace Mengine
         virtual void update() = 0;
 
     public:
-        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;
+        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderZOrderInterfacePtr & _renderZOrder ) = 0;
 
     public:
         virtual void setCursorMode( bool _mode ) = 0;

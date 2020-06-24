@@ -318,7 +318,7 @@ namespace Mengine
                 continue;
             }
 
-            float old_timing = desc.time_delay;
+            float old_time_delay = desc.time_delay;
 
             desc.time_delay += total_time;
 
@@ -331,7 +331,7 @@ namespace Mengine
                         continue;
                     }
 
-                    float timeOffset = desc.delay - old_timing;
+                    float timeOffset = desc.delay - old_time_delay;
 
                     TIMELINE_SERVICE()
                         ->beginOffset( timeOffset, desc.doc );
@@ -383,7 +383,7 @@ namespace Mengine
 
                         acc_delay += desc.delay;
 
-                        float timeOffset = acc_delay - old_timing;
+                        float timeOffset = acc_delay - old_time_delay;
 
                         uint32_t iterate = desc.iterate;
 

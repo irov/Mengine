@@ -39,7 +39,7 @@ namespace Mengine
         bool rewind() override;
 
     public:
-        bool seek( float _timing ) override;
+        bool seek( float _time ) override;
         float tell() const override;
 
     protected:

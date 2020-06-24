@@ -32,7 +32,7 @@ namespace Mengine
         bool onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel ) override;
         void onGameAppMouseEnter( float _x, float _y ) override;
         void onGameAppMouseLeave() override;
-        void onGameTimingFactor( float _timingFactor ) override;
+        void onGameTimeFactor( float _timeFactor ) override;
         bool onGamePreparation( bool _debug ) override;
         void onGameRun() override;
         bool onGameInitialize() override;

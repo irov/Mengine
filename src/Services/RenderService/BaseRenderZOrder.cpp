@@ -85,7 +85,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRenderZOrder::sortZRenderObjects_( VectorZRenderObject * _zRenderObject )
     {
-        std::sort( _zRenderObject->begin(), _zRenderObject->end(), []( const ZRenderObject & _zro0, const ZRenderObject & _zro1 )
+        std::stable_sort( _zRenderObject->begin(), _zRenderObject->end(), []( const ZRenderObject & _zro0, const ZRenderObject & _zro1 )
         {
             if( _zro0.zIndex < _zro1.zIndex )
             {

@@ -26,9 +26,7 @@ namespace Mengine
         BF_DEST_ALPHA,
         BF_SOURCE_ALPHA,
         BF_ONE_MINUS_DEST_ALPHA,
-        BF_ONE_MINUS_SOURCE_ALPHA,
-
-        BF_MAX_VALUE
+        BF_ONE_MINUS_SOURCE_ALPHA
     };
     //////////////////////////////////////////////////////////////////////////
     enum EBlendOp
@@ -37,9 +35,7 @@ namespace Mengine
         BOP_SUBTRACT,
         BOP_REVSUBTRACT,
         BOP_MIN,
-        BOP_MAX,
-
-        BOP_MAX_VALUE
+        BOP_MAX
     };
     //////////////////////////////////////////////////////////////////////////
     enum EPrimitiveType
@@ -49,9 +45,7 @@ namespace Mengine
         PT_LINESTRIP,
         PT_TRIANGLELIST,
         PT_TRIANGLESTRIP,
-        PT_TRIANGLEFAN,
-
-        PT_MAX_VALUE
+        PT_TRIANGLEFAN
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextureAddressMode
@@ -60,18 +54,14 @@ namespace Mengine
         TAM_MIRROR,
         TAM_CLAMP,
         TAM_BORDER,
-        TAM_MIRRORONCE,
-
-        TAM_MAX_VALUE
+        TAM_MIRRORONCE
     };
     //////////////////////////////////////////////////////////////////////////
     enum ECullMode
     {
         CM_CULL_NONE = 0,
         CM_CULL_CW,
-        CM_CULL_CCW,
-
-        CM_MAX_VALUE
+        CM_CULL_CCW
     };
     //////////////////////////////////////////////////////////////////////////
     enum ECompareFunction
@@ -83,9 +73,7 @@ namespace Mengine
         CMPF_EQUAL,
         CMPF_NOT_EQUAL,
         CMPF_GREATER_EQUAL,
-        CMPF_GREATER,
-
-        CMPF_MAX_VALUE
+        CMPF_GREATER
     };
     //////////////////////////////////////////////////////////////////////////
     enum EVertexAttributeType
@@ -98,9 +86,7 @@ namespace Mengine
     {
         FM_POINT = 0,
         FM_WIREFRAME,
-        FM_SOLID,
-
-        FM_MAX_VALUE
+        FM_SOLID
     };
     //////////////////////////////////////////////////////////////////////////
     enum EBufferType
@@ -121,9 +107,7 @@ namespace Mengine
     {
         SHT_FLAT = 0,
         SHT_GOURAUD,
-        SHT_PHONG,
-
-        SHT_MAX_VALUE
+        SHT_PHONG
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextureOp
@@ -135,9 +119,7 @@ namespace Mengine
         TOP_MODULATE2X,
         TOP_MODULATE4X,
         TOP_ADD,
-        TOP_SUBTRACT,
-
-        TOP_MAX_VALUE
+        TOP_SUBTRACT
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextureArgument
@@ -146,18 +128,14 @@ namespace Mengine
         TARG_DIFFUSE,
         TARG_SPECULAR,
         TARG_TEXTURE,
-        TARG_TFACTOR,
-
-        TARG_MAX_VALUE
+        TARG_TFACTOR
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextureFilterType
     {
         TFT_MAGNIFICATION = 0,
         TFT_MINIFICATION,
-        TFT_MIPMAP,
-
-        TFT_MAX_VALUE
+        TFT_MIPMAP
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextureFilter
@@ -167,9 +145,7 @@ namespace Mengine
         TF_LINEAR,
         TF_ANISOTROPIC,
         TF_FLATCUBIC,
-        TF_GAUSSIANCUBIC,
-
-        TF_MAX_VALUE
+        TF_GAUSSIANCUBIC
     };
     //////////////////////////////////////////////////////////////////////////
     enum EBufferLockFlag
@@ -178,18 +154,14 @@ namespace Mengine
         BLF_LOCK_READONLY,
         BLF_LOCK_DISCARD,
         BLF_LOCK_NOOVERWRITE,
-        BLF_LOCK_NOSYSLOCK,
-
-        BLF_MAX_VALUE
+        BLF_LOCK_NOSYSLOCK
     };
     //////////////////////////////////////////////////////////////////////////
     enum ERenderImageMode
     {
         ERIM_NORMAL = 0,
         ERIM_DYNAMIC,
-        ERIM_RENDER_TARGET,
-
-        ERIM_MAX_VALUE
+        ERIM_RENDER_TARGET
     };
     //////////////////////////////////////////////////////////////////////////
     enum ERenderBatchMode

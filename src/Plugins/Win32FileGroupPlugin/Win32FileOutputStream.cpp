@@ -70,7 +70,7 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( "write invalid %d"
+            LOGGER_ERROR( "invalid write %zu"
                 , _size
             );
 

@@ -47,7 +47,7 @@ namespace Mengine
         {
             DWORD le = ::GetLastError();
 
-            LOGGER_ERROR( "invalid load '%s' error code %d"
+            LOGGER_ERROR( "invalid load '%s' error code %lu"
                 , m_name
                 , le
             );

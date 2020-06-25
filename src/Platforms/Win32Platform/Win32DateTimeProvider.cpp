@@ -77,7 +77,7 @@ namespace Mengine
             {
                 DWORD err = ::GetLastError();
 
-                LOGGER_ERROR( "GetTimeZoneInformation get error [%d]"
+                LOGGER_ERROR( "GetTimeZoneInformation get error [%lu]"
                     , err
                 );
 
@@ -85,7 +85,7 @@ namespace Mengine
             }break;
         }
 
-        LOGGER_ERROR( "GetTimeZoneInformation unknown zone ID [%d]"
+        LOGGER_ERROR( "GetTimeZoneInformation unknown zone ID [%lu]"
             , zoneId
         );
 

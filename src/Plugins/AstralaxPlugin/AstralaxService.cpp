@@ -242,6 +242,11 @@ namespace Mengine
                     std::advance( it_remove, c.index );
                     m_atlases.erase( it_remove );
                 }break;
+            default:
+                LOGGER_ERROR( "invalid atlas state" 
+                );
+
+                return false;
             }
         }
 
@@ -370,7 +375,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxService::getResourceImage( int32_t _index ) const
     {
-        MENGINE_ASSERTION_RETURN( (VectorAtlasDesc::size_type)_index < m_atlases.size(), ResourceImagePtr::none(), "index %d but size is %d"
+        MENGINE_ASSERTION_RETURN( (VectorAtlasDesc::size_type)_index < m_atlases.size(), ResourceImagePtr::none(), "index %d but size is %llu"
             , _index
             , m_atlases.size()
         );

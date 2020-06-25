@@ -177,17 +177,17 @@ namespace Mengine
         LOGGER_MESSAGE( "Description: %s", AdID.Description );
         LOGGER_MESSAGE( "DeviceName: %s", AdID.DeviceName );
 
-        LOGGER_MESSAGE( "Version: %u.%u.%u.%u"
+        LOGGER_MESSAGE( "Version: %hu.%hu.%hu.%hu"
             , HIWORD( AdID.DriverVersion.HighPart )
             , LOWORD( AdID.DriverVersion.HighPart )
             , HIWORD( AdID.DriverVersion.LowPart )
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_MESSAGE( "VendorId: %u", AdID.VendorId );
-        LOGGER_MESSAGE( "DeviceId: %u", AdID.DeviceId );
-        LOGGER_MESSAGE( "SubSysId: %u", AdID.SubSysId );
-        LOGGER_MESSAGE( "Revision: %u", AdID.Revision );
+        LOGGER_MESSAGE( "VendorId: %lu", AdID.VendorId );
+        LOGGER_MESSAGE( "DeviceId: %lu", AdID.DeviceId );
+        LOGGER_MESSAGE( "SubSysId: %lu", AdID.SubSysId );
+        LOGGER_MESSAGE( "Revision: %lu", AdID.Revision );
 
         IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_caps) )
         {
@@ -276,7 +276,7 @@ namespace Mengine
 
             if( FAILED( hr_checkDeviceMultiSampleType ) )
             {
-                LOGGER_ERROR( "Can't support multi sample count '%u' error [%p]"
+                LOGGER_ERROR( "Can't support multi sample count '%u' error [%ld]"
                     , testMultiSampleType
                     , hr_checkDeviceMultiSampleType
                 );
@@ -437,15 +437,15 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE( "VertexShaderVersion [%u] [%u]"
+        LOGGER_MESSAGE( "VertexShaderVersion [%lu] [%s]"
             , caps.VertexShaderVersion
-            , caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 )
+            , caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
         );
 
-        LOGGER_MESSAGE( "PixelShaderVersion [%u] [%u] [%u]"
+        LOGGER_MESSAGE( "PixelShaderVersion [%lu] [%s] [%s]"
             , caps.PixelShaderVersion
-            , caps.PixelShaderVersion < D3DPS_VERSION( 1, 1 )
-            , caps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 )
+            , caps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
+            , caps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
         );
 
         HRESULT hr;
@@ -468,7 +468,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%ld) Try another"
                     , hr
                 );
 
@@ -480,7 +480,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%ld) Try another"
                     , hr
                 );
 
@@ -492,7 +492,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%ld) Try another"
                     , hr
                 );
 
@@ -504,7 +504,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%ld) Try another"
                     , hr
                 );
 
@@ -516,7 +516,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%ld) Try another"
                     , hr
                 );
 
@@ -528,7 +528,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%ld) Try another"
                     , hr
                 );
 
@@ -541,9 +541,9 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%p) BackBuffer Size %u:%u Format %u"
+            LOGGER_ERROR( "Can't create D3D device (hr:%ld, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , hr
-                , windowHandle
+                , (void *)windowHandle
                 , m_d3dpp->BackBufferWidth
                 , m_d3dpp->BackBufferHeight
                 , m_d3dpp->BackBufferFormat
@@ -839,7 +839,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "invalid TestCooperativeLevel %d"
+            LOGGER_ERROR( "invalid TestCooperativeLevel [%ld]"
                 , hr
             );
 
@@ -887,7 +887,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "failed to swap buffers %x"
+            LOGGER_ERROR( "failed to swap buffers [%ld]"
                 , hr
             );
         }
@@ -981,7 +981,7 @@ namespace Mengine
 
         IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
         {
-            LOGGER_ERROR( "failed viewport (%d, %d, %d, %d)"
+            LOGGER_ERROR( "failed viewport (%lu, %lu, %lu, %lu)"
                 , VP.X
                 , VP.Y
                 , VP.X + VP.Width
@@ -1236,7 +1236,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) == true )
         {
-            LOGGER_ERROR( "failed to reset device (hr:%p)"
+            LOGGER_ERROR( "failed to reset device (hr:%ld)"
                 , hr
             );
 

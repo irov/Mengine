@@ -69,18 +69,6 @@ namespace Mengine
         m_debugInfo.triangle = 0;
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderZOrder" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<NoneRenderZOrder, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderZOrder" ), STRINGIZE_STRING_LOCAL( "Base" ), Helper::makeDefaultPrototypeGenerator<BaseRenderZOrder, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), Helper::makeDefaultPrototypeGenerator<BatchRenderPipeline, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;

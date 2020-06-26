@@ -83,7 +83,7 @@ namespace Mengine
         bool update() override;
 
     public:
-        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderZOrderInterfacePtr & _renderZOrder ) override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;
 
     public:
         bool handleKeyEvent( const InputKeyEvent & _event ) override;

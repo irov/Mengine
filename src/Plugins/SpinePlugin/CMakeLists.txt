@@ -7,6 +7,9 @@ src
     Spine.h
     Spine.cpp
     
+    SamplerSpineAnimation.h
+    SamplerSpineAnimation.cpp
+    
     ResourceSpineSkeleton.h
     ResourceSpineSkeleton.cpp    
     ResourceSpineAtlas.h    

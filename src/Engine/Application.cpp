@@ -366,24 +366,6 @@ namespace Mengine
 
         m_renderPipeline = renderPipeline;
 
-        ConstString Engine_RenderZOrder = CONFIG_VALUE( "Engine", "RenderZOrder", ConstString::none() );
-
-        RenderZOrderInterfacePtr renderZOrder = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "RenderZOrder" ), Engine_RenderZOrder, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( renderZOrder, false );
-
-        if( renderZOrder->initialize() == false )
-        {
-            LOGGER_ERROR( "render ZOrder '%s' invalid initialize"
-                , Engine_RenderZOrder.c_str()
-            );
-
-            return false;
-        }
-
-        m_renderZOrder = renderZOrder;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -406,12 +388,6 @@ namespace Mengine
         {
             m_renderPipeline->finalize();
             m_renderPipeline = nullptr;
-        }
-
-        if( m_renderZOrder != nullptr )
-        {
-            m_renderZOrder->finalize();
-            m_renderZOrder = nullptr;
         }
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
@@ -1571,7 +1547,7 @@ namespace Mengine
         }
 
         GAME_SERVICE()
-            ->render( m_renderPipeline, m_renderZOrder );
+            ->render( m_renderPipeline );
 
         RENDER_SERVICE()
             ->endScene( m_renderPipeline );
@@ -1953,7 +1929,7 @@ namespace Mengine
             ->beginScene( m_renderPipeline ) == true )
         {
             GAME_SERVICE()
-                ->render( m_renderPipeline, m_renderZOrder );
+                ->render( m_renderPipeline );
 
             RENDER_SERVICE()
                 ->endScene( m_renderPipeline );

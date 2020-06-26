@@ -22,9 +22,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::setResourceOzzAnimation( const ResourcePtr & _resource )
+    void SamplerOzzAnimation::setResourceOzzAnimation( const ResourcePtr & _resourceOzzAnimation )
     {
-        m_resourceOzzAnimation = _resource;
+        m_resourceOzzAnimation = _resourceOzzAnimation;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & SamplerOzzAnimation::getResourceOzzAnimation() const
@@ -32,9 +32,9 @@ namespace Mengine
         return m_resourceOzzAnimation;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::setResourceOzzSkeleton( const ResourcePtr & _resource )
+    void SamplerOzzAnimation::setResourceOzzSkeleton( const ResourcePtr & _resourceOzzSkeleton )
     {
-        m_resourceOzzSkeleton = _resource;
+        m_resourceOzzSkeleton = _resourceOzzSkeleton;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & SamplerOzzAnimation::getResourceOzzSkeleton() const

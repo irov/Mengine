@@ -11,10 +11,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseRender::BaseRender()
         : m_relationRender( nullptr )
+        , m_extraRelationRender( nullptr )
         , m_externalRender( false )
         , m_renderEnable( false )
-        , m_zIndex( 0 )
-        , m_zOrder( 0 )
         , m_hide( false )
         , m_localHide( false )
         , m_rendering( true )
@@ -30,6 +29,13 @@ namespace Mengine
     {
         MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
         MENGINE_ASSERTION( _relationRender != this, "set this relation" );
+
+        if( m_extraRelationRender != nullptr )
+        {
+            m_relationRender = static_cast<BaseRender *>(_relationRender);
+
+            return;
+        }
 
         if( m_relationRender != nullptr )
         {
@@ -51,9 +57,64 @@ namespace Mengine
             return;
         }
 
+        if( m_extraRelationRender != nullptr )
+        {
+            m_relationRender = nullptr;
+
+            return;
+        }
+
         m_relationRender->removeRelationRenderChildren_( this );
         m_relationRender = nullptr;
-    }    
+
+        this->invalidateColor();
+
+        m_invalidateRendering = true;
+    }
+        //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setExtraRelationRender( RenderInterface * _relationRender )
+    {
+        MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
+        MENGINE_ASSERTION( _relationRender != this, "set this relation" );
+
+        if( m_extraRelationRender != nullptr )
+        {
+            m_extraRelationRender->removeRelationRenderChildren_( this );
+        }
+        else if( m_relationRender != nullptr )
+        {
+            m_relationRender->removeRelationRenderChildren_( this );
+        }
+
+        m_extraRelationRender = static_cast<BaseRender *>(_relationRender);
+        m_extraRelationRender->addRelationRenderChildrenBack_( this );
+
+        this->invalidateColor();
+
+        m_invalidateRendering = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::removeExtraRelationRender()
+    {
+        if( m_extraRelationRender == nullptr )
+        {
+            return;
+        }
+
+        m_extraRelationRender->removeRelationRenderChildren_( this );
+        m_extraRelationRender = nullptr;
+
+        if( m_relationRender == nullptr )
+        {
+            return;
+        }
+
+        m_relationRender->addRelationRenderChildrenBack_( this );
+
+        this->invalidateColor();
+
+        m_invalidateRendering = true;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::emptyRenderChildren() const
     {
@@ -136,16 +197,6 @@ namespace Mengine
         this->_setLocalHide( _localHide );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setZIndex( int32_t _index )
-    {
-        m_zIndex = _index;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setZOrder( int32_t _order )
-    {
-        m_zOrder = _order;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setLocalHide( bool _localHide )
     {
         MENGINE_UNUSED( _localHide );
@@ -217,48 +268,9 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::fetchZOrderWithChildren( const RenderZOrderInterfacePtr & _renderZOrder, const RenderContext * _context ) const
-    {
-        if( this->isRendering() == false )
-        {
-            return;
-        }
-
-        if( m_externalRender == true )
-        {
-            return;
-        }
-
-        RenderContext context;
-
-        context.viewport = m_renderViewport != nullptr ? m_renderViewport.get() : _context->viewport;
-        context.camera = m_renderCamera != nullptr ? m_renderCamera.get() : _context->camera;
-        context.transformation = m_renderTransformation != nullptr ? m_renderTransformation.get() : _context->transformation;
-        context.scissor = m_renderScissor != nullptr ? m_renderScissor.get() : _context->scissor;
-        context.target = m_renderTarget != nullptr ? m_renderTarget.get() : _context->target;
-
-        if( m_zIndex != 0 )
-        {
-            if( m_localHide == false && this->isPersonalTransparent() == false )
-            {
-                _renderZOrder->addZOrderRender( m_zIndex, m_zOrder, this, &context );
-            }
-        }
-
-        for( const BaseRender * child : m_renderChildren )
-        {
-            child->fetchZOrderWithChildren( _renderZOrder, &context );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void BaseRender::renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const
     {
         if( this->isRendering() == false )
-        {
-            return;
-        }
-
-        if( m_zIndex != 0 || m_zOrder != 0 )
         {
             return;
         }
@@ -325,7 +337,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Color & BaseRender::getWorldColor() const
     {
-        if( m_relationRender == nullptr )
+        const BaseRender * relationRenderTotal = this->getTotalRelationRender();
+
+        if( relationRenderTotal == nullptr )
         {
             const Color & localColor = Colorable::getLocalColor();
 
@@ -339,7 +353,7 @@ namespace Mengine
             return relationColor;
         }
 
-        const Color & parentColor = m_relationRender->getWorldColor();
+        const Color & parentColor = relationRenderTotal->getWorldColor();
 
         const Color & relationColor = Colorable::updateRelationColor( parentColor );
 

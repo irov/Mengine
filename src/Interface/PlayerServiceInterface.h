@@ -34,7 +34,7 @@ namespace Mengine
 
     public:
         virtual bool update() = 0;
-        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderZOrderInterfacePtr & _renderZOrder ) = 0;
+        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;
 
     public:
         virtual void initializeRenderResources() = 0;

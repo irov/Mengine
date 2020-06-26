@@ -58,9 +58,15 @@ shutdown_task(void *data)
 #    define THREAD_FUNCTION_API
 #endif
 
+#if defined(__MINGW32__) && !defined(__MINGW64__)
+#    define UNSIGNED_MINGW unsigned
+#else
+#    define UNSIGNED_MINGW
+#endif
+
 // pthreads use `void *` return types, whereas windows uses `DWORD`
 #ifdef SENTRY_PLATFORM_WINDOWS
-static DWORD THREAD_FUNCTION_API
+static UNSIGNED_MINGW DWORD THREAD_FUNCTION_API
 #else
 static void *
 #endif

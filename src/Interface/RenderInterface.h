@@ -21,9 +21,17 @@ namespace Mengine
         , public BoundingBox
     {
     public:
-        virtual void setRelationRender( RenderInterface * const _relationRender ) = 0;
+        virtual void setRelationRender( RenderInterface * _relationRender ) = 0;
         virtual void removeRelationRender() = 0;
         virtual RenderInterface * getRelationRender() const = 0;
+
+    public:
+        virtual void setExtraRelationRender( RenderInterface * _relationRender ) = 0;
+        virtual void removeExtraRelationRender() = 0;
+        virtual RenderInterface * getExtraRelationRender() const = 0;
+
+    public:
+        virtual RenderInterface * getTotalRelationRender() const = 0;
 
     public:
         virtual bool emptyRenderChildren() const = 0;
@@ -45,13 +53,6 @@ namespace Mengine
     public:
         virtual void setLocalHide( bool _localHide ) = 0;
         virtual bool isLocalHide() const = 0;
-
-    public:
-        virtual void setZIndex( int32_t _index ) = 0;
-        virtual int32_t getZIndex() const = 0;
-
-        virtual void setZOrder( int32_t _order ) = 0;
-        virtual int32_t getZOrder() const = 0;
 
     public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
@@ -81,7 +82,6 @@ namespace Mengine
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const = 0;
 
     public:
-        virtual void fetchZOrderWithChildren( const RenderZOrderInterfacePtr & _renderZOrder, const RenderContext * _context ) const = 0;
         virtual void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const = 0;
 
     public:

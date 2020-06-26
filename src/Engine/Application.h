@@ -175,7 +175,6 @@ namespace Mengine
 
     protected:        
         RenderPipelineInterfacePtr m_renderPipeline;
-        RenderZOrderInterfacePtr m_renderZOrder;
 
         Resolution m_currentResolution;
 

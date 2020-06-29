@@ -2,7 +2,6 @@
 
 #include "Interface/Interface.h"
 #include "Interface/RenderPipelineInterface.h"
-#include "Interface/RenderZOrderInterface.h"
 
 #include "Kernel/Colorable.h"
 #include "Kernel/BoundingBox.h"

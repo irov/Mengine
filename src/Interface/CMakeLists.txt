@@ -184,7 +184,6 @@ Render
     RenderMaterialInterface.h
     RenderBatchInterface.h
     RenderPipelineInterface.h
-    RenderZOrderInterface.h
 )
 
 ADD_MENGINE_INTERFACE()

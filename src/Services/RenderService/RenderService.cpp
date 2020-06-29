@@ -9,8 +9,6 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "NoneRenderZOrder.h"
-#include "BaseRenderZOrder.h"
 #include "BatchRenderPipeline.h"
 
 #include "Kernel/DefaultPrototypeGenerator.h"

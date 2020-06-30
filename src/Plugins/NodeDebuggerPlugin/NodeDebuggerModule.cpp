@@ -159,6 +159,12 @@ namespace Mengine
             }break;
         case ENodeDebuggerServerState::WaitingForClient:
             {
+                if( m_socket == nullptr )
+                {
+                    m_serverState = ENodeDebuggerServerState::Invalid;
+                    return false;
+                }
+
                 int32_t check = m_socket->checkForClientConnection();
                 if( check < 0 )
                 {

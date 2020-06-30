@@ -66,10 +66,6 @@ namespace Mengine
 
         m_relationRender->removeRelationRenderChildren_( this );
         m_relationRender = nullptr;
-
-        this->invalidateColor();
-
-        m_invalidateRendering = true;
     }
         //////////////////////////////////////////////////////////////////////////
     void BaseRender::setExtraRelationRender( RenderInterface * _relationRender )

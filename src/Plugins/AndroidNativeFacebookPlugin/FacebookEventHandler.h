@@ -12,6 +12,9 @@ namespace Mengine
         FACEBOOK_LOGIN_SUCCESS,
         FACEBOOK_LOGIN_CANCEL,
         FACEBOOK_LOGIN_ERROR,
+        FACEBOOK_LOGOUT_SUCCESS,
+        FACEBOOK_LOGOUT_CANCEL,
+        FACEBOOK_LOGOUT_ERROR,
         FACEBOOK_SHARE_SUCCESS,
         FACEBOOK_SHARE_CANCEL,
         FACEBOOK_SHARE_ERROR,
@@ -29,6 +32,11 @@ namespace Mengine
         virtual void onFacebookLoginSuccess( const String & _token ) = 0;
         virtual void onFacebookLoginCancel() = 0;
         virtual void onFacebookLoginError( const String & _exception ) = 0;
+
+    public:
+        virtual void onFacebookLogoutSuccess() = 0;
+        virtual void onFacebookLogoutCancel() = 0;
+        virtual void onFacebookLogoutError( const String & _exception ) = 0;
 
     public:
         virtual void onFacebookShareSuccess( const String & _postId ) = 0;

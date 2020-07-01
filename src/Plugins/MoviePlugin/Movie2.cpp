@@ -872,9 +872,7 @@ namespace Mengine
             return false;
         }
 
-        float timing = this->getTime();
-
-        ae_play_movie_composition( m_composition, timing * 0.001f );
+        ae_play_movie_composition( m_composition, _time * 0.001f );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _playId, _time );
@@ -2201,15 +2199,15 @@ namespace Mengine
 
         if( play == true )
         {
-            float timing = this->getTime();
+            float time = this->getTime();
 
-            ae_play_movie_composition( m_composition, timing * 0.001f );
+            ae_play_movie_composition( m_composition, time * 0.001f );
         }
         else
         {
-            float timing = this->getTime();
+            float time = this->getTime();
 
-            ae_set_movie_composition_time( m_composition, timing * 0.001f );
+            ae_set_movie_composition_time( m_composition, time * 0.001f );
         }
 
         return true;
@@ -2353,9 +2351,9 @@ namespace Mengine
             return 0.f;
         }
 
-        float timing = ae_get_movie_composition_time( m_composition );
+        float time = ae_get_movie_composition_time( m_composition );
 
-        return AE_TIME_MILLISECOND( timing );
+        return AE_TIME_MILLISECOND( time );
     }
     //////////////////////////////////////////////////////////////////////////
     float Movie2::_getDuration() const

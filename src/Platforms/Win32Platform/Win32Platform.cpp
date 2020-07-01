@@ -301,7 +301,7 @@ namespace Mengine
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
 
-        LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
+        LOGGER_MESSAGE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -1534,7 +1534,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "Can't register window class [error: %u]"
+            LOGGER_ERROR( "Can't register window class [error: %lu]"
                 , error
             );
 
@@ -1559,7 +1559,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "Can't create window [error: %u]"
+            LOGGER_ERROR( "Can't create window [error: %lu]"
                 , error
             );
 
@@ -1780,7 +1780,7 @@ namespace Mengine
 
                 if( errCode != 0 )
                 {
-                    LOGGER_ERROR( "icon '%s' for file '%ls' errCode %d"
+                    LOGGER_ERROR( "icon '%s' for file '%ls' errCode %lu"
                         , _name.c_str()
                         , unicode_icoFullFile.c_str()
                         , errCode
@@ -2036,7 +2036,7 @@ namespace Mengine
                     }break;
                 default:
                     {
-                        LOGGER_WARNING( "directory '%ls' unknown error %d"
+                        LOGGER_WARNING( "directory '%ls' unknown error: %lu"
                             , path.c_str()
                             , err
                         );
@@ -2125,7 +2125,7 @@ namespace Mengine
 
             MENGINE_UNUSED( err );
 
-            LOGGER_WARNING( "file '%ls' error '%d'"
+            LOGGER_WARNING( "file '%ls' error '%lu'"
                 , fullPath
                 , err
             );
@@ -2591,7 +2591,7 @@ namespace Mengine
         Helper::utf8ToUnicode( _key, unicode_key, MENGINE_MAX_PATH );
 
         HKEY hKey;
-        LONG lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
+        LSTATUS lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
 
         if( lRes == ERROR_FILE_NOT_FOUND )
         {
@@ -2602,7 +2602,7 @@ namespace Mengine
 
         if( lRes != ERROR_SUCCESS )
         {
-            LOGGER_ERROR( "RegOpenKeyEx HKEY_LOCAL_MACHINE '%s' get Error [%d]"
+            LOGGER_ERROR( "RegOpenKeyEx HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
                 , _path
                 , lRes
             );
@@ -2612,13 +2612,13 @@ namespace Mengine
 
         WChar unicode_value[1024] = {L'\0'};
         DWORD dwBufferSize = 1024;
-        LONG nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
+        LSTATUS nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
 
         ::RegCloseKey( hKey );
 
         if( nError != ERROR_SUCCESS )
         {
-            LOGGER_ERROR( "RegQueryValueEx HKEY_LOCAL_MACHINE '%s' get Error [%d]"
+            LOGGER_ERROR( "RegQueryValueEx HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
                 , _path
                 , nError
             );
@@ -2701,7 +2701,7 @@ namespace Mengine
                 Char message[1024] = {'\0'};
                 this->getErrorMessage( le, message, 1024 );
 
-                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
+                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
                     , _process
                     , message
                     , le
@@ -2729,7 +2729,7 @@ namespace Mengine
                 return false;
             }
 
-            LOGGER_MESSAGE( "result [%u]"
+            LOGGER_MESSAGE( "result [%lu]"
                 , exitCode
             );
 
@@ -2792,7 +2792,7 @@ namespace Mengine
                 Char message[1024] = {'\0'};
                 this->getErrorMessage( le, message, 1024 );
 
-                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
+                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
                     , _process
                     , message
                     , le
@@ -2939,7 +2939,7 @@ namespace Mengine
             Char errorMessage[4096] = { '\0' };
             this->getErrorMessage( hr, errorMessage, 4096 );
 
-            LOGGER_ERROR( "SHGetSpecialFolderLocation invalid [%d]: %s"
+            LOGGER_ERROR( "SHGetSpecialFolderLocation invalid [%ld]: %s"
                 , hr
                 , errorMessage
             );

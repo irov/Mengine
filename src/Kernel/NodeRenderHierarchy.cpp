@@ -65,7 +65,7 @@ namespace Mengine
                 return viewport;
             }
 
-            const RenderInterface * relationRender = _render->getRelationRender();
+            const RenderInterface * relationRender = _render->getTotalRelationRender();
 
             if( relationRender == nullptr )
             {
@@ -86,7 +86,7 @@ namespace Mengine
                 return camera;
             }
 
-            RenderInterface * relationRender = _render->getRelationRender();
+            RenderInterface * relationRender = _render->getTotalRelationRender();
 
             if( relationRender == nullptr )
             {
@@ -107,7 +107,7 @@ namespace Mengine
                 return transformation;
             }
 
-            RenderInterface * relationRender = _render->getRelationRender();
+            RenderInterface * relationRender = _render->getTotalRelationRender();
 
             if( relationRender == nullptr )
             {
@@ -128,7 +128,7 @@ namespace Mengine
                 return scissor;
             }
 
-            RenderInterface * relationRender = _render->getRelationRender();
+            RenderInterface * relationRender = _render->getTotalRelationRender();
 
             if( relationRender == nullptr )
             {
@@ -149,7 +149,7 @@ namespace Mengine
                 return target;
             }
 
-            RenderInterface * relationRender = _render->getRelationRender();
+            RenderInterface * relationRender = _render->getTotalRelationRender();
 
             if( relationRender == nullptr )
             {

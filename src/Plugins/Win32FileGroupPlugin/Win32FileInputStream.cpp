@@ -85,7 +85,7 @@ namespace Mengine
 
         if( _offset + _size > size )
         {
-            LOGGER_ERROR( "invalid file '%ls' range %d:%d size %d"
+            LOGGER_ERROR( "invalid file '%ls' range %zu:%zu size %lu"
                 , fullPath
                 , _offset
                 , _size
@@ -110,7 +110,7 @@ namespace Mengine
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR( "seek offset %zu size %zu get error '%u'"
+                LOGGER_ERROR( "seek offset %zu size %zu get error '%lu'"
                     , m_offset
                     , m_size
                     , dwError
@@ -266,7 +266,7 @@ namespace Mengine
         {
             DWORD dwError = ::GetLastError();
 
-            LOGGER_ERROR( "read %d:%d get error '%u'"
+            LOGGER_ERROR( "read %zu:%zu get error '%lu'"
                 , _size
                 , m_size
                 , dwError
@@ -303,7 +303,7 @@ namespace Mengine
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR( "seek %zu:%zu get error '%u'"
+                LOGGER_ERROR( "seek %zu:%zu get error '%lu'"
                     , _pos
                     , m_size
                     , dwError
@@ -365,7 +365,7 @@ namespace Mengine
         {
             DWORD dwError = ::GetLastError();
 
-            LOGGER_ERROR( "invalid get file time '%d'"
+            LOGGER_ERROR( "invalid get file time '%lu'"
                 , dwError
             );
 
@@ -407,6 +407,5 @@ namespace Mengine
         return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-#endif
-    //////////////////////////////////////////////////////////////////////////
+#endif    
 }

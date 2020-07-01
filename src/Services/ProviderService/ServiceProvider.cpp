@@ -193,6 +193,7 @@ namespace Mengine
 
             desc.lambda = nullptr;
             desc.name[0] = '\0';
+            desc.owner[0] = '\0';
 
             lambda();
         }
@@ -359,6 +360,7 @@ namespace Mengine
             }
 
             desc.lambda = nullptr;
+            desc.name[0] = '\0';
             desc.owner[0] = '\0';
         }
 
@@ -371,9 +373,18 @@ namespace Mengine
                 continue;
             }
 
+            if( desc.lambda == nullptr )
+            {
+                continue;
+            }
+
+            LambdaLeaveService lambda = desc.lambda;
+
             desc.lambda = nullptr;
             desc.name[0] = '\0';
             desc.owner[0] = '\0';
+
+            lambda();
         }
     }
     //////////////////////////////////////////////////////////////////////////

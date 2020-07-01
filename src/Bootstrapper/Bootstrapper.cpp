@@ -1217,6 +1217,11 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
         }
 
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EJECTING );
+        }
+
         this->stopModules_();
         this->stopDevModules_();
 

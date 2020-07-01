@@ -35,7 +35,7 @@ namespace Mengine
         void update() override;
 
     public:
-        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderZOrderInterfacePtr & _renderZOrder ) override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;
 
     public:
         void initializeRenderResources() override;

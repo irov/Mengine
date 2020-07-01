@@ -37,7 +37,7 @@ namespace Mengine
         );
 
         LOGGER_MESSAGE( "WebP ABI Version: %p"
-            , WEBP_DECODER_ABI_VERSION
+            , (void *)WEBP_DECODER_ABI_VERSION
         );
 
         Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ), MENGINE_DOCUMENT_FACTORABLE );

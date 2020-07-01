@@ -116,7 +116,7 @@ namespace Mengine
     {
         if( _offset + _count > m_vertexCount )
         {
-            LOGGER_ERROR( "%d offset %d more max size %d"
+            LOGGER_ERROR( "%u offset %u more max size %u"
                 , _count
                 , _offset
                 , m_vertexCount
@@ -177,7 +177,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pVB, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
-            LOGGER_ERROR( "invalid lock size %u (doc %s)"
+            LOGGER_ERROR( "invalid lock size %zu (doc %s)"
                 , _size
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );

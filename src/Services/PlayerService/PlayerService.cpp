@@ -635,7 +635,7 @@ namespace Mengine
         return m_renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderZOrderInterfacePtr & _renderZOrder )
+    void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
@@ -652,10 +652,6 @@ namespace Mengine
 
         if( scene != nullptr )
         {
-            _renderZOrder->fetchZOrder( scene.get(), &context );
-
-            _renderZOrder->flushZOrderRenderBefore( _renderPipeline );
-
             if( debugMask == 0 )
             {
                 Helper::nodeRenderChildren( scene.get(), _renderPipeline, &context, false );
@@ -668,8 +664,6 @@ namespace Mengine
                         ->renderDebugNode( scene, _renderPipeline, &context, false );
                 }
             }
-
-            _renderZOrder->flushZOrderRenderAfter( _renderPipeline );
         }
 
         MODULE_SERVICE()

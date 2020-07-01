@@ -131,6 +131,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
@@ -152,6 +153,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
@@ -179,6 +181,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
@@ -307,6 +310,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )

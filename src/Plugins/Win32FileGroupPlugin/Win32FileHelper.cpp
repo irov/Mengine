@@ -24,7 +24,7 @@ namespace Mengine
             {
                 DWORD err_code = ::GetLastError();
 
-                LOGGER_ERROR( "invalid create file '%ls' err %d"
+                LOGGER_ERROR( "invalid create file '%ls' err %lu"
                     , pathCorrect
                     , err_code
                 );

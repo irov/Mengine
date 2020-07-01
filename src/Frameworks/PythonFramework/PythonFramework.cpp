@@ -102,9 +102,7 @@ namespace Mengine
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );        
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EJECTING );
+        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::notifyBootstrapperInitializeGame()

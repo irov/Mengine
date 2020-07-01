@@ -105,13 +105,17 @@ if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/CMakeLists.txt COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/sentry_sync.c ${THIRDPARTY_DIR}/sentry/src/sentry_sync.c COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/exception_handler_server.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/util/win/exception_handler_server.cc COPYONLY)
         
         set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
         set(SENTRY_BUILD_TESTS OFF CACHE BOOL "SENTRY_BUILD_TESTS" FORCE)
         set(SENTRY_BUILD_EXAMPLES OFF CACHE BOOL "SENTRY_BUILD_EXAMPLES" FORCE)
         set(SENTRY_ENABLE_INSTALL OFF CACHE BOOL "SENTRY_ENABLE_INSTALL" FORCE)
-        set(SENTRY_BUILD_RUNTIMESTATIC ON CACHE BOOL "SENTRY_BUILD_RUNTIMESTATIC" FORCE)
+        
+        if(MSVC)
+            set(SENTRY_BUILD_RUNTIMESTATIC ON CACHE BOOL "SENTRY_BUILD_RUNTIMESTATIC" FORCE)
+        endif()
         
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/sentry ${CMAKE_TEMP_DIR}/sentry)
     endif()

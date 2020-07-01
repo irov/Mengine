@@ -26,6 +26,14 @@ namespace Mengine
         MENGINE_INLINE BaseRender * getRelationRender() const override;
 
     public:
+        void setExtraRelationRender( RenderInterface * _relationRender ) override;
+        void removeExtraRelationRender() override;
+        MENGINE_INLINE BaseRender * getExtraRelationRender() const override;
+
+    public:
+        MENGINE_INLINE BaseRender * getTotalRelationRender() const override;
+
+    public:
         bool emptyRenderChildren() const override;
         void clearRenderChildren() override;
 
@@ -44,13 +52,6 @@ namespace Mengine
     public:
         void setLocalHide( bool _localHide ) override;
         MENGINE_INLINE bool isLocalHide() const override;
-
-    public:
-        void setZIndex( int32_t _index ) override;
-        MENGINE_INLINE int32_t getZIndex() const override;
-
-        void setZOrder( int32_t _order ) override;
-        MENGINE_INLINE int32_t getZOrder() const override;
 
     protected:
         virtual void _setHide( bool _hide );
@@ -81,7 +82,6 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
-        void fetchZOrderWithChildren( const RenderZOrderInterfacePtr & _renderZOrder, const RenderContext * _context ) const override;
         void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
 
     public:
@@ -113,6 +113,7 @@ namespace Mengine
 
     protected:
         BaseRender * m_relationRender;
+        BaseRender * m_extraRelationRender;
 
         typedef Vector<BaseRender *> VectorBaseRender;
         VectorBaseRender m_renderChildren;
@@ -122,9 +123,6 @@ namespace Mengine
         RenderTransformationInterfacePtr m_renderTransformation;
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
-
-        int32_t m_zIndex;
-        int32_t m_zOrder;
 
         bool m_externalRender;
         bool m_renderEnable;
@@ -150,6 +148,11 @@ namespace Mengine
         return m_relationRender;
     }
     //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE BaseRender * BaseRender::getExtraRelationRender() const
+    {
+        return m_extraRelationRender;
+    }
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BaseRender::isRenderEnable() const
     {
         return m_renderEnable;
@@ -164,18 +167,14 @@ namespace Mengine
     {
         return m_localHide;
     }
-    MENGINE_INLINE int32_t BaseRender::getZIndex() const
-    {
-        return m_zIndex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE int32_t BaseRender::getZOrder() const
-    {
-        return m_zOrder;
-    }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BaseRender::isExternalRender() const
     {
         return m_externalRender;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE BaseRender * BaseRender::getTotalRelationRender() const
+    {
+        return m_extraRelationRender == nullptr ? m_relationRender : m_extraRelationRender;
     }
 }

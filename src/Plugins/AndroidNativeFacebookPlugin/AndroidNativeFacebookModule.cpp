@@ -18,6 +18,7 @@ static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_isLoggedIn;
 static jmethodID jmethodID_getAccessToken;
 static jmethodID jmethodID_performLogin;
+static jmethodID jmethodID_logout;
 static jmethodID jmethodID_getUser;
 static jmethodID jmethodID_shareLink;
 static jmethodID jmethodID_getProfilePictureLink;
@@ -34,6 +35,7 @@ extern "C"
 
         jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
         jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)Z" );
+        jmethodID_logout = mEnv->GetStaticMethodID( mActivityClass, "facebookLogout", "()Z" );
         jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()Z" );
         jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
@@ -314,6 +316,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidFacebookIsLoggedIn", this, &AndroidNativeFacebookModule::isLoggedIn );
         pybind::def_functor( kernel, "androidFacebookGetAccessToken", this, &AndroidNativeFacebookModule::getAccessToken );
         pybind::def_functor( kernel, "androidFacebookPerformLogin", this, &AndroidNativeFacebookModule::performLogin );
+        pybind::def_functor( kernel, "androidFacebookLogout", this, &AndroidNativeFacebookModule::logout );
         pybind::def_functor( kernel, "androidFacebookGetUser", this, &AndroidNativeFacebookModule::getUser );
         pybind::def_functor( kernel, "androidFacebookShareLink", this, &AndroidNativeFacebookModule::shareLink );
         pybind::def_functor( kernel, "androidFacebookGetProfilePictureLink", this, &AndroidNativeFacebookModule::getProfilePictureLink );
@@ -419,6 +422,17 @@ namespace Mengine
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_performLogin, jpermissions );
 
         return (bool)jReturnValue;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookModule::logout()
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_logout );
+
+        bool returnValue = (bool)jReturnValue;
+
+        return returnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::getUser()

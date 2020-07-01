@@ -25,11 +25,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SettingsService::_initializeService()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SettingsService::_finalizeService()
     {
+        for( const HashtableSettings::value_type & value : m_settings )
+        {
+            const SettingInterfacePtr & setting = value.element;
+
+            setting->finalize();
+        }
+
         m_settings.clear();
     }
     //////////////////////////////////////////////////////////////////////////

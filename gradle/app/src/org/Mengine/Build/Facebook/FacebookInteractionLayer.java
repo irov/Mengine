@@ -10,6 +10,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
@@ -97,6 +98,20 @@ public class FacebookInteractionLayer {
         }
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
+
+    public void LogoutFromFacebook() {
+        if (AccessToken.getCurrentAccessToken() == null) {
+            return; // user already logged out
+        }
+
+        new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
+            @Override
+            public void onCompleted(GraphResponse graphResponse) {
+                LoginManager.getInstance().logOut();
+            }
+        }).executeAsync();
+    }
+
 
     public void getUser() {
         if (!isLoggedIn()) {

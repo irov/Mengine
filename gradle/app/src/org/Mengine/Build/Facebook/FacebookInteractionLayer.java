@@ -39,19 +39,15 @@ public class FacebookInteractionLayer {
     private String _userId;
 
     static native void AndroidNativeFacebook_onLoginSuccess(String loginResult);
-
     static native void AndroidNativeFacebook_onLoginCancel();
-
     static native void AndroidNativeFacebook_onLoginError(String exception);
-
+    static native void AndroidNativeFacebook_onLogoutSuccess();
+    static native void AndroidNativeFacebook_onLogoutCancel();
+    static native void AndroidNativeFacebook_onLogoutError(String exception);
     static native void AndroidNativeFacebook_onUserFetchSuccess(String object, String response);
-
     static native void AndroidNativeFacebook_onShareSuccess(String postId);
-
     static native void AndroidNativeFacebook_onShareCancel();
-
     static native void AndroidNativeFacebook_onShareError(String exception);
-
     static native void AndroidNativeFacebook_onProfilePictureLinkGet(String pictureURL);
 
     public FacebookInteractionLayer(CallbackManager callbackManager) {

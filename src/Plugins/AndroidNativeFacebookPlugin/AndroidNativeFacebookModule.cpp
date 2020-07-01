@@ -104,6 +104,48 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
+    FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutSuccess )(JNIEnv *env, jclass cls)
+    {
+        if( s_androidNativeFacebookModule != nullptr )
+        {
+            s_androidNativeFacebookModule->addCommand( []( const Mengine::FacebookEventHandlerPtr & _handler )
+                                                       {
+                                                           _handler->onFacebookLogoutSuccess();
+                                                       } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+    FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutCancel )(JNIEnv *env, jclass cls)
+    {
+        if( s_androidNativeFacebookModule != nullptr )
+        {
+            s_androidNativeFacebookModule->addCommand( []( const Mengine::FacebookEventHandlerPtr & _handler )
+                                                       {
+                                                           _handler->onFacebookLogoutCancel();
+                                                       } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+    FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutError )(JNIEnv *env, jclass cls, jstring exception_)
+    {
+        const char * exception = env->GetStringUTFChars( exception_, 0 );
+
+        if( s_androidNativeFacebookModule != nullptr )
+        {
+            Mengine::String exception_str = exception;
+
+            s_androidNativeFacebookModule->addCommand( [exception_str]( const Mengine::FacebookEventHandlerPtr & _handler )
+                                                       {
+                                                           _handler->onFacebookLogoutError( exception_str );
+                                                       } );
+        }
+
+        env->ReleaseStringUTFChars( exception_, exception );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
         FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onUserFetchSuccess )(JNIEnv *env, jclass cls, jstring object_, jstring response_)
     {
         const char * object = env->GetStringUTFChars( object_, 0 );
@@ -239,6 +281,27 @@ namespace Mengine
                 m_cb.call_args( FACEBOOK_LOGIN_ERROR, pyparams, m_args );
             }
 
+            void onFacebookLogoutSuccess() override
+            {
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
+
+                m_cb.call_args( FACEBOOK_LOGOUT_SUCCESS, pyparams, m_args );
+            }
+
+            void onFacebookLogoutCancel() override
+            {
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
+
+                m_cb.call_args( FACEBOOK_LOGOUT_CANCEL, pyparams, m_args );
+            }
+
+            void onFacebookLogoutError( const String & _exception ) override
+            {
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _exception );
+
+                m_cb.call_args( FACEBOOK_LOGOUT_ERROR, pyparams, m_args );
+            }
+
             void onFacebookShareSuccess( const String & _postId ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _postId );
@@ -303,6 +366,10 @@ namespace Mengine
                 .def("FACEBOOK_INITIALIZE", FACEBOOK_INITIALIZE)
                 .def("FACEBOOK_LOGIN_SUCCESS", FACEBOOK_LOGIN_SUCCESS)
                 .def("FACEBOOK_LOGIN_CANCEL", FACEBOOK_LOGIN_CANCEL)
+                .def("FACEBOOK_LOGIN_ERROR", FACEBOOK_LOGIN_ERROR)
+                .def("FACEBOOK_LOGOUT_SUCCESS", FACEBOOK_LOGOUT_SUCCESS)
+                .def("FACEBOOK_LOGOUT_CANCEL", FACEBOOK_LOGOUT_CANCEL)
+                .def("FACEBOOK_LOGOUT_ERROR", FACEBOOK_LOGOUT_ERROR)
                 .def("FACEBOOK_SHARE_SUCCESS", FACEBOOK_SHARE_SUCCESS)
                 .def("FACEBOOK_SHARE_CANCEL", FACEBOOK_SHARE_CANCEL)
                 .def("FACEBOOK_SHARE_ERROR", FACEBOOK_SHARE_ERROR)

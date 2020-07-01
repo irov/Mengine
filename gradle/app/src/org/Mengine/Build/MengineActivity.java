@@ -206,6 +206,15 @@ public class MengineActivity extends SDLActivity {
         return false;
     }
 
+    public static boolean facebookLogout() {
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            _instance.facebookInteractionLayer.LogoutFromFacebook();
+            return true;
+        }
+
+        return false;
+    }
+
     public static boolean facebookGetUser() {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.getUser();

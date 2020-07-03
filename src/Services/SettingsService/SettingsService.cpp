@@ -106,7 +106,7 @@ namespace Mengine
 
         for( const String & setting : settingSettings )
         {
-            LOGGER_MESSAGE( "Setting '%s'"
+            LOGGER_INFO( "setting load '%s'"
                 , setting.c_str()
             );
 

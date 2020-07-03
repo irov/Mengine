@@ -1263,16 +1263,99 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize )
             {
+                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                    ->getFileGroup( _fileGroupName );
+
+#ifdef MENGINE_DEBUG
+                {
+                    InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "image file '%s:%s' was not found"
+                        , fileGroup->getName().c_str()
+                        , _filePath.c_str()
+                    );
+
+                    MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s'"
+                        , fileGroup->getName().c_str()
+                        , _filePath.c_str()
+                    );
+
+                    uint8_t Magic_PNGBytes[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+                    uint8_t Magic_BMPBytes[] = {0x42, 0x4D};
+                    uint8_t Magic_JPGBytes[] = {0xFF, 0xD8, 0xFF};
+                    uint8_t Magic_JPEGBytes[] = {0x00, 0x00, 0x00, 0x0C, 0x6A, 0x50, 0x20, 0x20};
+                    uint8_t Magic_WEBPBytes[] = {0x52, 0x49, 0x46, 0x46};
+
+                    uint8_t magic_image[8];
+                    if( stream->read( magic_image, 8 ) != 8 )
+                    {
+                        return nullptr;
+                    }
+
+                    ConstString codecTypeMagic;
+
+                    if( memcmp( magic_image, Magic_PNGBytes, 8 ) == 0 )
+                    {
+                        codecTypeMagic = STRINGIZE_STRING_LOCAL( "pngImage" );
+                    }
+                    else if( memcmp( magic_image, Magic_BMPBytes, 2 ) == 0 )
+                    {
+                        codecTypeMagic = STRINGIZE_STRING_LOCAL( "bmpImage" );
+                    }
+                    else if( memcmp( magic_image, Magic_JPGBytes, 3 ) == 0 )
+                    {
+                        codecTypeMagic = STRINGIZE_STRING_LOCAL( "jpegImage" );
+                    }
+                    else if( memcmp( magic_image, Magic_JPEGBytes, 8 ) == 0 )
+                    {
+                        codecTypeMagic = STRINGIZE_STRING_LOCAL( "jpegImage" );
+                    }
+                    else if( memcmp( magic_image, Magic_WEBPBytes, 4 ) == 0 )
+                    {
+                        codecTypeMagic = STRINGIZE_STRING_LOCAL( "webpImage" );
+                    }
+                    else
+                    {
+                        LOGGER_ERROR( "invalid get image '%s:%s' type from magic bytes"
+                            , fileGroup->getName().c_str()
+                            , _filePath.c_str()
+                        );
+
+                        return nullptr;
+                    }
+
+                    ConstString codecType = CODEC_SERVICE()
+                        ->findCodecType( _filePath );
+
+                    if( codecTypeMagic != codecType )
+                    {
+                        LOGGER_ERROR( "image '%s:%s' ext not magic bytes types '%s' != '%s'"
+                            , fileGroup->getName().c_str()
+                            , _filePath.c_str()
+                            , codecType.c_str()
+                            , codecTypeMagic.c_str()
+                        );
+
+                        return nullptr;
+                    }
+                }
+#endif
+
                 mt::vec2f maxSize;
 
                 if( _maxSize.x < 0.f || _maxSize.y < 0.f )
                 {
-                    const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                        ->getFileGroup( _fileGroupName );
-
                     InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+                    MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "image file '%s:%s' was not found"
+                        , fileGroup->getName().c_str()
+                        , _filePath.c_str()
+                    );
+
+                    MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s'"
+                        , fileGroup->getName().c_str()
+                        , _filePath.c_str()
+                    );
 
                     ConstString codecType = CODEC_SERVICE()
                         ->findCodecType( _filePath );
@@ -1307,8 +1390,13 @@ namespace Mengine
                 mt::uv4f uv_image;
                 mt::uv4f uv_alpha;
 
-                if( resource->setup( _filePath, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
+                if( resource->setup( fileGroup, _filePath, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
                 {
+                    LOGGER_ERROR( "invalid setup image '%s:%s'"
+                        , fileGroup->getName().c_str()
+                        , _filePath.c_str()
+                    );
+
                     return nullptr;
                 }
 

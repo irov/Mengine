@@ -18,7 +18,7 @@ namespace Mengine
         ~ResourceImageDefault() override;
 
     public:
-        bool setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
+        bool setup( const FileGroupInterfacePtr & _fileGroup, const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
 
     protected:
         bool _compile() override;

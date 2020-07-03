@@ -95,7 +95,7 @@ namespace Mengine
             ESchdulerType type;
             bool dead;
             bool freeze;
-            bool iterate_invalide;
+            bool iterate_invalid;
 
             DocumentPtr doc;
         };

@@ -64,6 +64,19 @@ namespace Mengine
             return false;
         }
 
+        if( stream->size() == 0 )
+        {
+            LOGGER_ERROR( "resource '%s' group '%s' stream '%s:%s' codec '%s' empty"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
+                , content->getCodecType().c_str()
+            );
+
+            return false;
+        }
+
         const ConstString & codecType = content->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()

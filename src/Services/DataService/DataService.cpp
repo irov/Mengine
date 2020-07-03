@@ -50,7 +50,7 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         DataflowContext context;
-        context.filePath = Helper::getInputStreamFilePath( _stream );
+        context.filePath = Helper::getInputStreamDebugFilePath( _stream );
 #endif
 
         if( _dataflow->flow( data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), _doc ) == false )

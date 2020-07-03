@@ -450,6 +450,10 @@ namespace Mengine
 
         FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, (FilePath::size_type)userPathLen );
 
+        LOGGER_MESSAGE( "mount user file group: %s"
+            , cs_userPath.c_str()
+        );
+
         // mount user directory
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
@@ -1250,6 +1254,7 @@ namespace Mengine
         SERVICE_FINALIZE( GraveyardService );
         SERVICE_FINALIZE( ResourceService );
         SERVICE_FINALIZE( TextService );
+        SERVICE_FINALIZE( SettingsService );
         SERVICE_FINALIZE( DataService );
 
         if( SERVICE_EXIST( PluginServiceInterface ) == true )
@@ -1278,7 +1283,6 @@ namespace Mengine
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( RenderSystem );
         SERVICE_FINALIZE( ConfigService );
-        SERVICE_FINALIZE( SettingsService );
         SERVICE_FINALIZE( ArchiveService );
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( ThreadService );

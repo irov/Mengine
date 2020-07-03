@@ -2,6 +2,8 @@
 
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
@@ -25,18 +27,28 @@ namespace Mengine
             boolean start_of_file;
         };
         //////////////////////////////////////////////////////////////////////////
+        static const FilePath & getJPEGDebugFilePath( j_common_ptr _cinfo )
+        {
+            ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
+
+            const InputStreamInterfacePtr & stream = decoder->getStream();
+
+            const FilePath & filePath = Helper::getInputStreamDebugFilePath( stream );
+
+            return filePath;
+        }
+        //////////////////////////////////////////////////////////////////////////
         METHODDEF( noreturn_t ) s_jpegErrorExit( j_common_ptr _cinfo )
         {
-            {
-                Char buffer[JMSG_LENGTH_MAX] = {0};
+            Char buffer[JMSG_LENGTH_MAX] = {0};
 
-                (*_cinfo->err->format_message)(_cinfo, buffer);
+            (*_cinfo->err->format_message)(_cinfo, buffer);
 
-                LOGGER_ERROR( "jpeg error: %s"
-                    , buffer
-                );
-            }
-
+            LOGGER_ERROR( "jpeg '%s' error: %s"
+                , Detail::getJPEGDebugFilePath( _cinfo ).c_str()
+                , buffer
+            );
+        
             if( _cinfo->err->msg_parm.i[0] != 13 )
             {
                 jpeg_destroy( _cinfo );
@@ -49,7 +61,8 @@ namespace Mengine
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
-            LOGGER_ERROR( "jpeg message: %s"
+            LOGGER_ERROR( "jpeg '%s' message: %s"
+                , Detail::getJPEGDebugFilePath( _cinfo ).c_str()
                 , buffer
             );
         }
@@ -219,12 +232,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_prepareData()
     {
-        // step 2a: specify data source (eg, a handle)
-        Detail::s_jpeg_mengine_src( &m_jpegObject, m_stream.get() );
+        const InputStreamInterfacePtr & stream = this->getStream();
 
-        // step 3: read handle parameters with jpeg_read_header()
+        Detail::s_jpeg_mengine_src( &m_jpegObject, stream.get() );
+
         jpeg_read_header( &m_jpegObject, TRUE );
-
         jpeg_calc_output_dimensions( &m_jpegObject );
 
         m_dataInfo.depth = 1;

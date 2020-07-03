@@ -67,7 +67,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
+    bool ResourceImageDefault::setup( const FileGroupInterfacePtr & _fileGroup, const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
     {
         if( _codecType.empty() == true )
         {
@@ -102,8 +102,9 @@ namespace Mengine
 
         this->correctUVTexture();
 
-        bool successful = this->recompile( [this, &_imagePath]()
+        bool successful = this->recompile( [this, _fileGroup, &_imagePath]()
         {
+            this->setFileGroup( _fileGroup );
             this->setFilePath( _imagePath );
 
             if( _imagePath.empty() == true )

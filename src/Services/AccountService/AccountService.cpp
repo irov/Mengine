@@ -136,18 +136,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountID, const DocumentPtr & _doc )
     {
-#ifdef MENGINE_DEBUG
-        AccountInterfacePtr account = m_accounts.find( _accountID );
-
-        if( account != nullptr )
-        {
-            LOGGER_ERROR( "account with ID '%s' already exist. Account not created"
-                , _accountID.c_str()
-            );
-
-            return nullptr;
-        }
-#endif
+        MENGINE_ASSERTION_FATAL( m_accounts.find( _accountID ) == nullptr, "account with ID '%s' already exist. Account not created"
+            , _accountID.c_str()
+        );
 
         this->unselectCurrentAccount_();
 
@@ -246,7 +237,8 @@ namespace Mengine
 
         if( m_fileGroup->createDirectory( accountPath ) == false )
         {
-            LOGGER_ERROR( "Account '%s' failed create directory"
+            LOGGER_ERROR( "Account '%s' failed create directory '%s'"
+                , _accountID.c_str()
                 , accountPath.c_str()
             );
 
@@ -260,6 +252,10 @@ namespace Mengine
 
         if( newAccount->initialize( _accountID, m_archivator, m_fileGroup, accountPath, projectVersion ) == false )
         {
+            LOGGER_ERROR( "Account '%s' invalid initialize"
+                , _accountID.c_str()
+            );
+
             return nullptr;
         }
 

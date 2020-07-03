@@ -61,7 +61,7 @@ namespace Mengine
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {
-            LOGGER_ERROR( "invalide open file '%s':'%s'"
+            LOGGER_ERROR( "invalid open file '%s':'%s'"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -71,7 +71,7 @@ namespace Mengine
 
         MemoryInterfacePtr memory = m_dataflow->load( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalide load file '%s':'%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid load file '%s':'%s'"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );
@@ -80,12 +80,12 @@ namespace Mengine
         {
 #ifdef MENGINE_DEBUG
             DataflowContext context;
-            context.filePath = Helper::getInputStreamFilePath( m_stream );
+            context.filePath = Helper::getInputStreamDebugFilePath( m_stream );
 #endif
 
             if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "invalide flow file '%s':'%s'"
+                LOGGER_ERROR( "invalid flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()
                     , this->getFilePath().c_str()
                 );
@@ -109,12 +109,12 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
             DataflowContext context;
-            context.filePath = Helper::getInputStreamFilePath( m_stream );
+            context.filePath = Helper::getInputStreamDebugFilePath( m_stream );
 #endif
 
             if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "invalide flow file '%s':'%s'"
+                LOGGER_ERROR( "invalid flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()
                     , this->getFilePath().c_str()
                 );

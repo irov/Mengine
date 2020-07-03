@@ -204,6 +204,14 @@ Interender
 )
 
 ADD_FILTER(
+ZOrder
+    ZOrder.cpp
+    ZOrder.h
+    ZOrderRender.cpp
+    ZOrderRender.h
+)
+
+ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
     BasePrototypeGenerator.h

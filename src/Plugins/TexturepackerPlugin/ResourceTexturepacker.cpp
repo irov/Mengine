@@ -188,6 +188,12 @@ namespace Mengine
             {
                 InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, newFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
+                MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s' codec '%s'"
+                    , fileGroup->getName().c_str()
+                    , newFilePath.c_str()
+                    , codecType.c_str()
+                );
+
                 ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
                     ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 

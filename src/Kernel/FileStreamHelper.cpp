@@ -57,10 +57,9 @@ namespace Mengine
             return file;
         }
         //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getInputStreamRelationPath( const InputStreamInterfacePtr & _stream )
+        const FilePath & getInputStreamDebugRelationPath( const InputStreamInterfacePtr & _stream )
         {
+#ifdef MENGINE_DEBUG
             FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
             if( file_stream == nullptr )
@@ -71,10 +70,14 @@ namespace Mengine
             const FilePath & relationPath = file_stream->getRelationPath();
 
             return relationPath;
+#else
+            return FilePath::none();
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
-        const FilePath & getInputStreamFolderPath( const InputStreamInterfacePtr & _stream )
+        const FilePath & getInputStreamDebugFolderPath( const InputStreamInterfacePtr & _stream )
         {
+#ifdef MENGINE_DEBUG
             FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
             if( file_stream == nullptr )
@@ -85,10 +88,14 @@ namespace Mengine
             const FilePath & folderPath = file_stream->getFolderPath();
 
             return folderPath;
+#else
+            return FilePath::none();
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
-        const FilePath & getInputStreamFilePath( const InputStreamInterfacePtr & _stream )
+        const FilePath & getInputStreamDebugFilePath( const InputStreamInterfacePtr & _stream )
         {
+#ifdef MENGINE_DEBUG
             FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
             if( file_stream == nullptr )
@@ -99,8 +106,10 @@ namespace Mengine
             const FilePath & filePath = file_stream->getFilePath();
 
             return filePath;
+#else
+            return FilePath::none();
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
-#endif
     }
 }

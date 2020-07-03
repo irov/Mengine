@@ -111,7 +111,7 @@ namespace Mengine
         desc.type = EST_EVENT;
         desc.dead = false;
         desc.freeze = false;
-        desc.iterate_invalide = true;
+        desc.iterate_invalid = true;
 
         desc.doc = _doc;
 
@@ -140,7 +140,7 @@ namespace Mengine
         desc.type = EST_TIMING;
         desc.dead = false;
         desc.freeze = false;
-        desc.iterate_invalide = true;
+        desc.iterate_invalid = true;
 
         desc.doc = _doc;
 
@@ -191,7 +191,7 @@ namespace Mengine
 
         desc->time_delay = 0.f;
         desc->iterate = 0;
-        desc->iterate_invalide = true;
+        desc->iterate_invalid = true;
 
         return true;
     }
@@ -354,7 +354,7 @@ namespace Mengine
 
                     for( ;; )
                     {
-                        if( desc.iterate_invalide == true )
+                        if( desc.iterate_invalid == true )
                         {
                             float delay = desc.pipe->onSchedulerPipe( desc.id, desc.iterate );
 
@@ -372,7 +372,7 @@ namespace Mengine
                                 break;
                             }
 
-                            desc.iterate_invalide = false;
+                            desc.iterate_invalid = false;
                             desc.delay = delay;
                         }
 
@@ -390,7 +390,7 @@ namespace Mengine
                         desc.time_delay -= desc.delay;
 
                         desc.iterate++;
-                        desc.iterate_invalide = true;
+                        desc.iterate_invalid = true;
 
                         TIMELINE_SERVICE()
                             ->beginOffset( timeOffset, desc.doc );

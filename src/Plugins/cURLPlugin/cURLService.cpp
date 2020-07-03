@@ -311,7 +311,7 @@ namespace Mengine
 
         if( _fileGroup->existFile( _filePath, true ) == true )
         {
-            LOGGER_ERROR( "url '%s' category '%s' file alredy exist '%s'"
+            LOGGER_ERROR( "url '%s' category '%s' file already exist '%s'"
                 , _url.c_str()
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()

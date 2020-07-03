@@ -76,7 +76,7 @@ namespace Mengine
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {
-            LOGGER_ERROR( "invalide open file '%s':'%s'"
+            LOGGER_ERROR( "invalid open file '%s':'%s'"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -86,7 +86,7 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalide stream archive magic memory '%s':'%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid stream archive magic memory '%s':'%s'"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );

@@ -27,20 +27,20 @@ namespace Mengine
         virtual bool existValue( const Char * _section, const Char * _key ) const = 0;
 
     public:
-        virtual bool hasValue( const Char * _section, const Char * _key, bool * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, int8_t * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, uint8_t * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, int32_t * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, uint32_t * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, uint64_t * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, float * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, double * _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, bool * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, int8_t * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, uint8_t * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, int32_t * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, uint32_t * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, uint64_t * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, float * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, double * const _value ) const = 0;
         virtual bool hasValue( const Char * _section, const Char * _key, const Char ** const _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, ConstString * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, FilePath * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, Tags * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, Resolution * _value ) const = 0;
-        virtual bool hasValue( const Char * _section, const Char * _key, Color * _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, ConstString * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, FilePath * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, Tags * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, Resolution * const _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, Color * const _value ) const = 0;
 
     public:
         virtual bool hasSection( const Char * _section ) const = 0;
@@ -62,10 +62,10 @@ namespace Mengine
         virtual Color getValue( const Char * _section, const Char * _key, const Color & _default ) const = 0;
 
     public:
-        virtual void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * _values ) const = 0;
-        virtual void getValues( const Char * _section, const Char * _key, VectorFilePath * _values ) const = 0;
-        virtual void getValues( const Char * _section, const Char * _key, VectorConstString * _values ) const = 0;
-        virtual void getValues( const Char * _section, const Char * _key, VectorString * _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorFilePath * const _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorConstString * const _values ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorString * const _values ) const = 0;
 
     public:
         virtual void setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;

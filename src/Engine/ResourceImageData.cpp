@@ -39,6 +39,12 @@ namespace Mengine
             , this->getFilePath().c_str()
         );
 
+        MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s:%s' codec '%s'"
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+            , this->getCodecType().c_str()
+        );
+
         const ConstString & codecType = this->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()

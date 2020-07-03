@@ -7,6 +7,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
@@ -64,13 +65,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLScriptEmbedding::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _fileGroupName, const FilePath & _filepath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestID cURLScriptEmbedding::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _fileGroupName, const FilePath & _filePath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( _fileGroupName );
 
         if( fileGroup == nullptr )
         {
+            LOGGER_ERROR( "invalid get file group '%s' for url '%s' file '%s'"
+                , _fileGroupName.c_str()
+                , _url.c_str()
+                , _filePath.c_str()
+            );
+
             return 0;
         }
 
@@ -81,7 +88,7 @@ namespace Mengine
         receiver->initialize( _cb, _args );
 
         uint32_t id = CURL_SERVICE()
-            ->downloadAsset( _url, _login, _password, fileGroup, _filepath, _timeout, receiver );
+            ->downloadAsset( _url, _login, _password, fileGroup, _filePath, _timeout, receiver );
 
         return id;
     }

@@ -51,7 +51,7 @@ namespace Mengine
         m_soundDecoder = CODEC_SERVICE()
             ->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_soundDecoder, false, "invalide create codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_soundDecoder, false, "invalid create codec '%s'"
             , m_soundCodec.c_str()
         );
 
@@ -62,7 +62,7 @@ namespace Mengine
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {
-            LOGGER_ERROR( "invalide open file '%s:%s'"
+            LOGGER_ERROR( "invalid open file '%s:%s'"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );

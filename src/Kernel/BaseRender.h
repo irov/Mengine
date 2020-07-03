@@ -133,6 +133,8 @@ namespace Mengine
         mutable bool m_invalidateRendering;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<BaseRender> BaseRenderPtr;
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BaseRender::isRendering() const
     {
         if( m_invalidateRendering == true )
@@ -177,4 +179,5 @@ namespace Mengine
     {
         return m_extraRelationRender == nullptr ? m_relationRender : m_extraRelationRender;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

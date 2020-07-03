@@ -17,6 +17,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/Stringstream.h"
 
 #include "Config/StdString.h"
@@ -320,6 +321,8 @@ namespace Mengine
             return 0;
         }
 
+        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", _filePath.c_str() );
+
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FACTORABLE );
@@ -331,8 +334,14 @@ namespace Mengine
         task->setTimeout( _timeout );
         task->setReceiver( cURLReceiverInterfacePtr::from( this ) );
         
-        if( task->initialize( _login, _password, _fileGroup, _filePath ) == false )
+        if( task->initialize( _login, _password, _fileGroup, _filePath, filePathTmp ) == false )
         {
+            LOGGER_ERROR( "url '%s' category '%s' file '%s' invalid initialize task"
+                , _url.c_str()
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
+            );
+
             return 0;
         }
 

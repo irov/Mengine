@@ -100,6 +100,22 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::removeFile( const FilePath & _filePath ) const
+    {
+        const FilePath & relationPath = this->getRelationPath();
+        const FilePath & folderPath = this->getFolderPath();
+
+        PathString filePathString;
+        filePathString.append( relationPath );
+        filePathString.append( folderPath );
+        filePathString.append( _filePath );
+
+        bool successful = PLATFORM_SERVICE()
+            ->removeFile( filePathString.c_str() );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderPath, bool _recursive ) const
     {
         const FilePath & relationPath = this->getRelationPath();
@@ -145,6 +161,27 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::moveFile( const FilePath & _oldFilePath, const FilePath & _newFilePath ) const
+    {
+        const FilePath & relationPath = this->getRelationPath();
+        const FilePath & folderPath = this->getFolderPath();
+
+        PathString oldFilePathString;
+        oldFilePathString.append( relationPath );
+        oldFilePathString.append( folderPath );
+        oldFilePathString.append( _oldFilePath );
+
+        PathString newFilePathString;
+        newFilePathString.append( relationPath );
+        newFilePathString.append( folderPath );
+        newFilePathString.append( _newFilePath );
+
+        bool successful = PLATFORM_SERVICE()
+            ->moveFile( oldFilePathString.c_str(), newFilePathString.c_str() );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const

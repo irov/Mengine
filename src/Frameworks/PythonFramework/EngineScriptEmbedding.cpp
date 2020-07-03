@@ -1549,15 +1549,21 @@ namespace Mengine
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( _fileGroupName );
 
+                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+
                 bool result = fileGroup->existFile( _filePath, true );
 
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_removeFile( const FilePath & _filePath )
+            bool s_removeFile( const ConstString & _fileGroupName, const FilePath & _filePath )
             {
-                bool result = PLATFORM_SERVICE()
-                    ->removeFile( _filePath.c_str() );
+                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                    ->getFileGroup( _fileGroupName );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+
+                bool result = fileGroup->removeFile( _filePath );
 
                 return result;
             }

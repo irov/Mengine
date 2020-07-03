@@ -47,11 +47,13 @@ namespace Mengine
         virtual bool isPacked() const = 0;
 
     public:
-        virtual bool existFile( const FilePath & _filePath, bool _recursive ) const = 0;
         virtual bool existDirectory( const FilePath & _folderPath, bool _recursive ) const = 0;
+        virtual bool createDirectory( const FilePath & _folderPath ) const = 0;
 
     public:
-        virtual bool createDirectory( const FilePath & _folderPath ) const = 0;
+        virtual bool existFile( const FilePath & _filePath, bool _recursive ) const = 0;
+        virtual bool removeFile( const FilePath & _filePath ) const = 0;
+        virtual bool moveFile( const FilePath & _oldFilePath, const FilePath & _newFilePath ) const = 0;
 
     public:
         virtual bool findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFilePath & _lambda ) const = 0;

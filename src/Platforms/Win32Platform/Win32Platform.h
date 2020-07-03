@@ -109,6 +109,7 @@ namespace Mengine
     public:
         bool existFile( const Char * _utf8Path ) override;
         bool removeFile( const Char * _filePath ) override;
+        bool moveFile( const Char * _oldFilePath, const Char * _newFilePath ) override;
 
     public:
         bool findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const override;

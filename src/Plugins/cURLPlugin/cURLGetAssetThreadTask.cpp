@@ -20,12 +20,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLGetAssetThreadTask::initialize( const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
+    bool cURLGetAssetThreadTask::initialize( const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath, const FilePath & _filePathTemp )
     {
         m_login = _login;
         m_password = _password;
         m_fileGroup = _fileGroup;
         m_filePath = _filepath;
+        m_filePathTemp = _filePathTemp;
 
         return true;
     }
@@ -37,12 +38,12 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePathTemp, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "get asset url '%s' invalid open file '%s:%s'"
             , m_url.c_str()
             , m_fileGroup->getName().c_str()
-            , m_filePath.c_str()
+            , m_filePathTemp.c_str()
         );
 
         m_stream = stream;
@@ -56,7 +57,9 @@ namespace Mengine
 
         size_t realsize = _size * _nmemb;
 
-        stream_ptr->write( _contents, realsize );
+        size_t writez = stream_ptr->write( _contents, realsize );
+
+        MENGINE_UNUSED( writez );
 
         return realsize;
     }
@@ -93,12 +96,10 @@ namespace Mengine
         OutputStreamInterface * stream_ptr = m_stream.get();
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)stream_ptr) );
 
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0") );
+
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_XFERINFOFUNCTION, &XFERInfoCallback) );
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_XFERINFODATA, (void *)this) );
-
-        /* some servers don't like requests that are made without a user-agent
-        field, so we provide one */
-        //curl_easy_setopt( _curl, CURLOPT_USERAGENT, "libcurl-agent/1.0" );
 
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_NOPROGRESS, 0L) );
 
@@ -122,6 +123,26 @@ namespace Mengine
             m_stream = nullptr;
         }
 
-        cURLThreadTask::_onComplete( _successful );
+        if( _successful == false || m_responseCode != 200 )
+        {
+            m_fileGroup = nullptr;
+
+            cURLThreadTask::_onComplete( false );
+
+            return;
+        }
+
+        if( m_fileGroup->moveFile( m_filePathTemp, m_filePath ) == false )
+        {
+            m_fileGroup = nullptr;
+
+            cURLThreadTask::_onComplete( false );
+
+            return;
+        }
+
+        m_fileGroup = nullptr;
+
+        cURLThreadTask::_onComplete( true );
     }
 }

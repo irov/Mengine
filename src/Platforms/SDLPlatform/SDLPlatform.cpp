@@ -1165,7 +1165,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::existDirectory( const Char * _path ) const
     {
-        Char fullPath[MENGINE_MAX_PATH];
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
         Helper::pathCorrectBackslashToA( fullPath, _path );
 
         Helper::pathRemoveFileSpecA( fullPath );
@@ -1189,7 +1189,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectory( const Char * _path )
     {
-        Char fullPath[MENGINE_MAX_PATH];
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
         Helper::pathCorrectBackslashToA( fullPath, _path );
 
         Helper::pathRemoveFileSpecA( fullPath );
@@ -1237,20 +1237,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::existFile( const Char * _path )
+    bool SDLPlatform::existFile( const Char * _filePath )
     {
-        Char userPath[MENGINE_MAX_PATH];
-        this->getUserPath( userPath );
-
-        Char pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslashToA( pathCorrect, _path );
-
-        Char fullPath[MENGINE_MAX_PATH];
-        MENGINE_STRCPY( fullPath, userPath );
-        MENGINE_STRCAT( fullPath, pathCorrect );
+        Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         struct stat sb;
-        if( stat( fullPath, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
+        if( stat( pathCorrect, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
         {
             return true;
         }
@@ -1258,19 +1251,30 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::removeFile( const Char * _path )
+    bool SDLPlatform::removeFile( const Char * _filePath )
     {
-        Char userPath[MENGINE_MAX_PATH];
-        this->getUserPath( userPath );
+        Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
-        Char pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslashToA( pathCorrect, _path );
+        int result = ::remove( pathCorrect );
 
-        Char fullPath[MENGINE_MAX_PATH];
-        MENGINE_STRCPY( fullPath, userPath );
-        MENGINE_STRCAT( fullPath, pathCorrect );
+        if( result != 0 )
+        {
+            return false;
+        }
 
-        int result = ::remove( fullPath );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
+    {
+        Char oldPathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
+
+        Char newPathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
+
+        int result = ::rename( oldPathCorrect, newPathCorrect );
 
         if( result != 0 )
         {

@@ -234,6 +234,15 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::removeFile( const FilePath & _filePath ) const
+    {
+        MENGINE_UNUSED( _filePath );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::existDirectory( const FilePath & _folderName, bool _recursive ) const
     {
         MENGINE_UNUSED( _folderName );
@@ -247,6 +256,16 @@ namespace Mengine
     bool FileGroupZip::createDirectory( const FilePath & _folderName ) const
     {
         MENGINE_UNUSED( _folderName );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::moveFile( const FilePath & _oldFilePath, const FilePath & _newFilePath ) const
+    {
+        MENGINE_UNUSED( _oldFilePath );
+        MENGINE_UNUSED( _newFilePath );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 

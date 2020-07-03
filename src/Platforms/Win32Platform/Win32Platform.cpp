@@ -2103,30 +2103,55 @@ namespace Mengine
             return false;
         }
 
-        Char userPath[MENGINE_MAX_PATH] = {'\0'};
-        this->getUserPath( userPath );
-
-        WChar unicode_userPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( userPath, unicode_userPath, MENGINE_MAX_PATH ) == false )
-        {
-            return false;
-        }
-
         WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, unicode_path );
 
-        WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WCSCPY( fullPath, unicode_userPath );
-        MENGINE_WCSCAT( fullPath, pathCorrect );
-
-        if( ::DeleteFile( fullPath ) == FALSE )
+        if( ::DeleteFile( pathCorrect ) == FALSE )
         {
             DWORD err = ::GetLastError();
 
             MENGINE_UNUSED( err );
 
             LOGGER_WARNING( "file '%ls' error '%lu'"
-                , fullPath
+                , pathCorrect
+                , err
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
+    {
+        WChar unicode_oldFilePath[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _oldFilePath, unicode_oldFilePath, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar oldFilePathCorrect[MENGINE_MAX_PATH] = {L'\0'};
+        Helper::pathCorrectBackslashToW( oldFilePathCorrect, unicode_oldFilePath );
+
+        WChar unicode_newFilePath[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _newFilePath, unicode_newFilePath, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar newFilePathCorrect[MENGINE_MAX_PATH] = {L'\0'};
+        Helper::pathCorrectBackslashToW( newFilePathCorrect, unicode_newFilePath );
+
+        if( ::MoveFile( oldFilePathCorrect, newFilePathCorrect ) == FALSE )
+        {
+            DWORD err = ::GetLastError();
+
+            MENGINE_UNUSED( err );
+
+            LOGGER_WARNING( "file '%ls' move to '%ls' error '%lu'"
+                , oldFilePathCorrect
+                , newFilePathCorrect
                 , err
             );
 

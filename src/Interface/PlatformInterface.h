@@ -116,6 +116,7 @@ namespace Mengine
     public:
         virtual bool existFile( const Char * _filePath ) = 0;
         virtual bool removeFile( const Char * _filePath ) = 0;
+        virtual bool moveFile( const Char * _oldFilePath, const Char * _newFilePath ) = 0;
 
     public:
         virtual bool findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const = 0;

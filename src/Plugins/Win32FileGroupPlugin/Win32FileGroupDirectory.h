@@ -27,11 +27,13 @@ namespace Mengine
         bool getFullPath( const FilePath & _filePath, Char * const _fullPath ) const override;
 
     public:
-        bool existFile( const FilePath & _filePath, bool _recursive ) const override;
         bool existDirectory( const FilePath & _folderPath, bool _recursive ) const override;
+        bool createDirectory( const FilePath & _folderPath ) const override;
 
     public:
-        bool createDirectory( const FilePath & _folderPath ) const override;
+        bool existFile( const FilePath & _filePath, bool _recursive ) const override;
+        bool removeFile( const FilePath & _filePath ) const override;
+        bool moveFile( const FilePath & _oldFilePath, const FilePath & _newFilePath ) const override;
 
     public:
         bool findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const override;

@@ -124,8 +124,9 @@ namespace Mengine
         bool createDirectory( const Char * _path ) override;
 
     public:
-        bool existFile( const Char * _path ) override;
-        bool removeFile( const Char * _path ) override;
+        bool existFile( const Char * _filePath ) override;
+        bool removeFile( const Char * _filePath ) override;
+        bool moveFile( const Char * _oldFilePath, const Char * _newFilePath ) override;
 
     public:
         bool findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const override;

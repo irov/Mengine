@@ -324,8 +324,6 @@ else()
 	${SOURCE_DIR}/PC/getpathp.c	)	
 endif()
 
-find_package(OpenSSL REQUIRED)
-
 include_directories(${OPENSSL_INCLUDE_DIR})
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")

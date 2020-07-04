@@ -1,27 +1,27 @@
-#	pragma once
+#pragma once
 
-#	ifdef _WIN32_WINNT	
-#       undef _WIN32_WINNT
-#       define _WIN32_WINNT 0x0500
-#   endif
+#ifdef _WIN32_WINNT	
+#   undef _WIN32_WINNT
+#   define _WIN32_WINNT 0x0500
+#endif
 
-#   ifdef _WIN32_WINDOWS
-#       undef _WIN32_WINDOWS
-#       define _WIN32_WINDOWS 0x0500
-#   endif
+#ifdef _WIN32_WINDOWS
+#   undef _WIN32_WINDOWS
+#   define _WIN32_WINDOWS 0x0500
+#endif
 
-#	define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 
-#	include <Windows.h>
+#include <Windows.h>
 
-#	include <Shlwapi.h>
-#	include <shellapi.h>
+#include <Shlwapi.h>
+#include <shellapi.h>
 
-#	include <string>
-#	include <sstream>
-#	include <vector>
+#include <string>
+#include <sstream>
+#include <vector>
 
-#	include <stdint.h>
+#include <stdint.h>
 
 //////////////////////////////////////////////////////////////////////////
 void message_error( const char * _format, ... );

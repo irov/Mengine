@@ -2,6 +2,7 @@
 
 #include "Kernel/Assertion.h"
 
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_ASSERTION_DEBUG
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_ASSERTION_RESOURCE_TYPE( Resource, ResourceType, ... ) MENGINE_ASSERTION_FATAL( (Resource != nullptr && stdex::intrusive_dynamic_cast<ResourceType>(Resource) != nullptr), __VA_ARGS__)
@@ -34,3 +35,4 @@
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( ResourceName, ResourceType, Ret, ... )
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME_VOID( ResourceName, ResourceType, Ret, ... )
 #endif
+//////////////////////////////////////////////////////////////////////////

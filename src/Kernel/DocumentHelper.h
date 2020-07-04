@@ -4,6 +4,7 @@
 
 #include "Kernel/Win32Helper.h"
 
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
 #   include "Kernel/Document.h"
 #   include "Kernel/BufferHelper.h"
@@ -22,3 +23,4 @@
 #   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) nullptr
 #   define MENGINE_DOCUMENT_FACTORABLE_MEMBER(Ptr) nullptr
 #endif
+//////////////////////////////////////////////////////////////////////////

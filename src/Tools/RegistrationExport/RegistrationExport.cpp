@@ -1,19 +1,19 @@
-#	ifdef _WIN32_WINNT	
-#       undef _WIN32_WINNT
-#       define _WIN32_WINNT 0x0500
-#   endif
+#ifdef _WIN32_WINNT	
+#   undef _WIN32_WINNT
+#   define _WIN32_WINNT 0x0500
+#endif
 
-#   ifdef _WIN32_WINDOWS
-#       undef _WIN32_WINDOWS
-#       define _WIN32_WINDOWS 0x0500
-#   endif
+#ifdef _WIN32_WINDOWS
+#   undef _WIN32_WINDOWS
+#   define _WIN32_WINDOWS 0x0500
+#endif
 
-#	define WIN32_LEAN_AND_MEAN
-#	include <Windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
-#	include "shlobj.h"
+#include "shlobj.h"
 
-#	include <string>
+#include <string>
 
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure( HWND, UINT, WPARAM, LPARAM );

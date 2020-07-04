@@ -196,6 +196,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#   define ASTRALAX_SERVICE()\
-	((AstralaxServiceInterface *)SERVICE_GET(Mengine::AstralaxServiceInterface))
+#define ASTRALAX_SERVICE()\
+    ((AstralaxServiceInterface *)SERVICE_GET(Mengine::AstralaxServiceInterface))
 //////////////////////////////////////////////////////////////////////////

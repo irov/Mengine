@@ -59,6 +59,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const FilePath & getInputStreamDebugRelationPath( const InputStreamInterfacePtr & _stream )
         {
+            MENGINE_UNUSED( _stream );
+
 #ifdef MENGINE_DEBUG
             FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
@@ -77,6 +79,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const FilePath & getInputStreamDebugFolderPath( const InputStreamInterfacePtr & _stream )
         {
+            MENGINE_UNUSED( _stream );
+
 #ifdef MENGINE_DEBUG
             FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 
@@ -95,6 +99,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const FilePath & getInputStreamDebugFilePath( const InputStreamInterfacePtr & _stream )
         {
+            MENGINE_UNUSED( _stream );
+
 #ifdef MENGINE_DEBUG
             FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
 

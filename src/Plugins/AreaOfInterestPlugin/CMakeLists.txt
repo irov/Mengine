@@ -2,8 +2,8 @@ MENGINE_PROJECT(AreaOfInterestPlugin)
 
 ADD_FILTER(
 src
-	AreaOfInterestPlugin.h
-	AreaOfInterestPlugin.cpp   
+    AreaOfInterestPlugin.h
+    AreaOfInterestPlugin.cpp   
     AreaOfInterestPlugin.def
     
     AreaOfInterestInterface.h

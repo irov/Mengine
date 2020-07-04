@@ -59,3 +59,4 @@ namespace Mengine
 #else
 #   define MENGINE_DOCUMENT_STR(Doc) MENGINE_STRING_EMPTY
 #endif
+//////////////////////////////////////////////////////////////////////////

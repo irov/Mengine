@@ -42,13 +42,13 @@
 #include "imgui_impl_glfw_gl3_glad.h"
 
 // GLAD/GLFW
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 #ifdef _WIN32
 #undef APIENTRY
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
-#include <GLFW/glfw3native.h>
+#include "GLFW/glfw3native.h"
 #endif
 
 // GLFW data
@@ -273,9 +273,9 @@ bool ImGui_ImplGlfwGL3_CreateDeviceObjects()
         "out vec4 Frag_Color;\n"
         "void main()\n"
         "{\n"
-        "	Frag_UV = UV;\n"
-        "	Frag_Color = Color;\n"
-        "	gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
+        "   Frag_UV = UV;\n"
+        "   Frag_Color = Color;\n"
+        "   gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
         "}\n";
 
     const GLchar* fragment_shader =
@@ -285,7 +285,7 @@ bool ImGui_ImplGlfwGL3_CreateDeviceObjects()
         "out vec4 Out_Color;\n"
         "void main()\n"
         "{\n"
-        "	Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
+        "   Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
         "}\n";
 
     const GLchar* vertex_shader_with_version[2] = { g_GlslVersion, vertex_shader };

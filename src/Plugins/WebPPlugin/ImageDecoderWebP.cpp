@@ -8,6 +8,14 @@
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#   define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
+#   define MENGINE_WEBP_DECODE_RGB WebPDecodeRGBInto
+#else
+#   define MENGINE_WEBP_DECODE_RGBA WebPDecodeBGRAInto
+#   define MENGINE_WEBP_DECODE_RGB WebPDecodeBGRInto
+#endif
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -137,14 +145,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * const _buffer, size_t _bufferSize )
     {
-#ifdef MENGINE_RENDER_TEXTURE_RGBA
-#   define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
-#   define MENGINE_WEBP_DECODE_RGB WebPDecodeRGBInto
-#else
-#   define MENGINE_WEBP_DECODE_RGBA WebPDecodeBGRAInto
-#   define MENGINE_WEBP_DECODE_RGB WebPDecodeBGRInto
-#endif
-
         if( m_dataInfo.channels == 4 && m_options.channels == 4 )
         {
             if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, (int32_t)m_options.pitch ) == nullptr )

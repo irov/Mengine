@@ -56,7 +56,7 @@ namespace Mengine
 
         return result;
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestTrigger::addActor( const AreaOfInterestActorPtr & _actor )
     {
         VectorAreaOfInterestActors::iterator it_found = std::find_if( m_actors.begin(), m_actors.end(), [_actor]( const AreaOfInterestActorDesc & _desc )

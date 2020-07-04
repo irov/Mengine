@@ -5,8 +5,7 @@
 
 #include "Kernel/Win32Helper.h"
 
-namespace Mengine
-{
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
 #   define MENGINE_DOCUMENT_PYBIND [](const Mengine::Char * _file, const Mengine::Char * _function, uint32_t _line) \
     { \
@@ -19,4 +18,4 @@ namespace Mengine
 #else
 #   define MENGINE_DOCUMENT_PYBIND nullptr
 #endif
-}
+//////////////////////////////////////////////////////////////////////////

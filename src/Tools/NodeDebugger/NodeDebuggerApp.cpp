@@ -1104,7 +1104,9 @@ namespace Mengine
 
         for( auto && [type, objects] : m_objectLeaks )
         {
-            leaksCount += objects.size();
+            uint32_t count = (uint32_t)objects.size();
+
+            leaksCount += count;
         }
 
         ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Generator: %s [total %u]"

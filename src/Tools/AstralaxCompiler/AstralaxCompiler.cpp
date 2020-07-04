@@ -218,8 +218,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     struct AtlasDesc
     {
         std::string path;
-        size_t width;
-        size_t height;
+        int32_t width;
+        int32_t height;
     };
 
     typedef std::vector<AtlasDesc> TVectorAtlas;

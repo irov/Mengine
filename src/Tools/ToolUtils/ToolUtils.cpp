@@ -1,4 +1,4 @@
-#	include "ToolUtils.h"
+#include "ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
 void message_error( const char * _format, ... )
@@ -23,9 +23,9 @@ void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, 
         CP_UTF8
         , dwConversionFlags
         , _unicode
-        , _size
+        , (int)_size
         , _utf8
-        , _capacity
+        , (int)_capacity
         , NULL
         , NULL
     );

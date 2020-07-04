@@ -2,8 +2,8 @@ MENGINE_PROJECT(CameraDebugGizmoPlugin)
 
 ADD_FILTER(
 src
-	CameraDebugGizmoPlugin.h
-	CameraDebugGizmoPlugin.cpp   
+    CameraDebugGizmoPlugin.h
+    CameraDebugGizmoPlugin.cpp   
     
     ModuleCameraDebugGizmo.cpp
     ModuleCameraDebugGizmo.h

@@ -65,32 +65,49 @@ namespace Mengine
     {
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
 
-        int32_t size = 0;
+        size_t size = 0;
 
-        size += LOGGER_SERVICE()
+        int32_t size_timestamp = LOGGER_SERVICE()
             ->makeTimeStamp( str, size, MENGINE_LOGGER_MAX_MESSAGE );
 
-        size += LOGGER_SERVICE()
+        if( size_timestamp > 0 )
+        {
+            size += size_timestamp;
+        }
+
+        int32_t size_functionstamp = LOGGER_SERVICE()
             ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE );
 
-        size += MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
+        if( size_functionstamp > 0 )
+        {
+            size += size_functionstamp;
+        }
+
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
+
+        if( size_vsnprintf > 0 )
+        {
+            size += size_vsnprintf;
+        }
         
         if( size < 0 )
         {
             const Char msg[] = "invalid message :(\n";
             this->logMessage( msg, sizeof( msg ) );
 
-            size = MENGINE_SPRINTF( str, "%s", _format );
+            int32_t size_sprintf = MENGINE_SPRINTF( str, "%s", _format );
 
-            if( size < 0 )
+            if( size_sprintf < 0 )
             {
                 return;
             }
 
+            size += size_sprintf;
+
             str[size] = '\n';
             str[size + 1] = '\0';
 
-            this->logMessage( _format, size + 1 );
+            this->logMessage( _format, (size_t)(size + 1) );
 
             return;
         }
@@ -105,7 +122,7 @@ namespace Mengine
             str[size + 0] = '\n';
             str[size + 1] = '\0';
 
-            this->logMessage( str, size + 1 );
+            this->logMessage( str, (size_t)(size + 1) );
         }
         else
         {
@@ -120,7 +137,7 @@ namespace Mengine
         }        
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessage( const Char * _msg, uint32_t _size ) const
+    void LoggerOperator::logMessage( const Char * _msg, size_t _size ) const
     {
         LOGGER_SERVICE()
             ->logMessage( m_level, m_flag, m_color, _msg, _size );

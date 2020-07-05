@@ -385,8 +385,6 @@ endif()
 if(MENGINE_DEPENDENCE_FREETYPE)
     message("================freetype================")
     
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/CMakeLists.txt ${THIRDPARTY_DIR}/freetype/CMakeLists.txt COPYONLY)
-    
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
     set(DISABLE_FORCE_DEBUG_POSTFIX ON CACHE BOOL "DISABLE_FORCE_DEBUG_POSTFIX" FORCE)
 

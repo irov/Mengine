@@ -29,7 +29,7 @@ namespace Mengine
 
     public:
         void logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const;
-        void logMessage( const Char * _msg, uint32_t _size ) const;
+        void logMessage( const Char * _msg, size_t _size ) const;
 
     protected:
         ELoggerLevel m_level;

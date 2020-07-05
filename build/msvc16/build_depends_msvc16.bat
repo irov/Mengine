@@ -5,6 +5,9 @@ if ["%~1"]==[""] (
   goto end
 )
 
+setlocal
+call :setESC
+
 set "CONFIGURATION=%1"
 
 @echo Starting build dependencies msvc %CONFIGURATION% configuration...
@@ -21,16 +24,22 @@ set "YEAR=2019"
 @popd
 
 if errorlevel 1 (
-    @echo *****************************************
-    @echo ***************  Failure  ***************
-    @echo *****************************************
+    @echo %ESC%[91m*****************************************%ESC%[0m
+    @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
+    @echo %ESC%[91m*****************************************%ESC%[0m
 ) else (
-    @echo =========================================
-    @echo =============  Successful  ==============
-    @echo =========================================
+    @echo %ESC%[92m=========================================%ESC%[0m
+    @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
+    @echo %ESC%[92m=========================================%ESC%[0m
 )
 
 :end
 
 @pause
 @exit /b %errorlevel%
+
+:setESC
+for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
+  set ESC=%%b
+  exit /B 0
+)

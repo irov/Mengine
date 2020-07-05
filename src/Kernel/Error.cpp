@@ -35,14 +35,14 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        int str_len = MENGINE_VSNPRINTF( str_info, MENGINE_ERROR_MAX_MESSAGE - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ERROR_MAX_MESSAGE - 1, _format, args );
 
         MENGINE_VA_LIST_END( args );
 
-        if( str_len >= 0 )
+        if( size_vsnprintf >= 0 )
         {
             LoggerOperator( LM_ERROR, 0, LCOLOR_RED, m_file, m_line )
-                .logMessage( str_info, (size_t)str_len );
+                .logMessage( str_info, (size_t)size_vsnprintf );
         }
 
         switch( m_level )

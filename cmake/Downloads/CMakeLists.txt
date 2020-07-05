@@ -14,7 +14,7 @@ DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 
-GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-1")
+GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-2")
 GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "3.1.2")
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.11")
 GIT_CLONE(libogg https://github.com/xiph/ogg.git "v1.3.4")

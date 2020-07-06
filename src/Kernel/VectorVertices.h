@@ -5,6 +5,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class VectorVertices
     {
     public:
@@ -12,32 +13,30 @@ namespace Mengine
         ~VectorVertices();
 
     public:
-        MENGINE_INLINE VectorRenderVertex2D & getVertices();
-        MENGINE_INLINE void invalidateVertices( uint8_t _invalidate = 0xFE );
+        MENGINE_INLINE VectorRenderVertex2D & getVertices() const;
+        MENGINE_INLINE void invalidateVertices( uint8_t _invalidate = 0xFE ) const;
 
     protected:
-        void updateVertices_();
+        virtual void _updateVertices( VectorRenderVertex2D & _vertices, uint8_t _invalidate ) const = 0;
 
     protected:
-        virtual void _updateVertices( VectorRenderVertex2D & _vertices, uint8_t _invalidate ) = 0;
-
-    private:
-        VectorRenderVertex2D m_vertices;
-        uint8_t m_invalidateVertices;
+        mutable VectorRenderVertex2D m_vertices;
+        mutable uint8_t m_invalidateVertices;
     };
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE VectorRenderVertex2D & VectorVertices::getVertices()
+    MENGINE_INLINE VectorRenderVertex2D & VectorVertices::getVertices() const
     {
         if( m_invalidateVertices != 0 )
         {
-            _updateVertices( m_vertices, m_invalidateVertices );
+            this->_updateVertices( m_vertices, m_invalidateVertices );
         }
 
         return m_vertices;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE void VectorVertices::invalidateVertices( uint8_t _invalidate )
+    MENGINE_INLINE void VectorVertices::invalidateVertices( uint8_t _invalidate ) const
     {
         m_invalidateVertices |= _invalidate;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

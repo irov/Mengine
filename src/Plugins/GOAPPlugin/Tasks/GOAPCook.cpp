@@ -7,6 +7,7 @@
 #include "TaskLocalDelay.h"
 #include "TaskGlobalDelay.h"
 #include "TaskPrint.h"
+#include "TaskReleasePrint.h"
 #include "TaskPickerableMouseButton.h"
 #include "TaskPickerableMouseEnter.h"
 #include "TaskPickerableMouseLeave.h"
@@ -154,10 +155,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void addPrint( const GOAP::SourceInterfacePtr & _source, const Char * _format, ... )
         {
+            MENGINE_UNUSED( _source );
+            MENGINE_UNUSED( _format );
+
+#ifdef MENGINE_DEBUG
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
 
             Cook::addTask<TaskPrint>( _source, _format, args );
+
+            MENGINE_VA_LIST_END( args );
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addReleasePrint( const GOAP::SourceInterfacePtr & _source, const Char * _format, ... )
+        {
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _format );
+
+            Cook::addTask<TaskReleasePrint>( _source, _format, args );
 
             MENGINE_VA_LIST_END( args );
         }

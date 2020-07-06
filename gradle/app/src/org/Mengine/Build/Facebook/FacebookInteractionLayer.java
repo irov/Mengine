@@ -198,7 +198,7 @@ public class FacebookInteractionLayer {
         request.executeAsync();
     }
 
-    public void getProfileUserPictureLink(String user_id, final String typeParameter) {
+    public void getProfileUserPictureLink(final String user_id, final String typeParameter) {
         if (user_id.isEmpty()) {
             AndroidNativeFacebook_onProfilePictureLinkGet("");
             return;

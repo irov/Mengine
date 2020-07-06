@@ -23,6 +23,8 @@ Tasks
     TaskGlobalDelay.cpp
     TaskPrint.cpp
     TaskPrint.h
+    TaskReleasePrint.cpp
+    TaskReleasePrint.h
     TaskPickerableMouseButton.cpp
     TaskPickerableMouseButton.h
     TaskPickerableMouseEnter.cpp

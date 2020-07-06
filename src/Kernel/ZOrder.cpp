@@ -24,13 +24,13 @@ namespace Mengine
 
             return render;
         }
-        
+
         ZOrderRenderPtr render = Helper::makeFactorableUnique<ZOrderRender>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( render, RenderInterfacePtr::none() );
 
         render->setRelationRender( this );
-        render->setZOrder( _zOrder );        
+        render->setZOrder( _zOrder );
 
         VectorZOrderRenders::iterator it_lower = std::lower_bound( m_zOrderRenders.begin(), m_zOrderRenders.end(), _zOrder, []( const ZOrderRenderPtr & _render, int32_t _zOrder )
         {

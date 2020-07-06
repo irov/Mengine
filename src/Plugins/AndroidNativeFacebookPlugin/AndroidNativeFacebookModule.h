@@ -49,6 +49,7 @@ namespace Mengine
         bool getUser();
         bool shareLink( const String & _link, const String & _picture, const String & _message );
         bool getProfilePictureLink( const String & _typeParameter );
+        bool getProfileUserPictureLink( const String & _userId, const String & _typeParameter );
 
     protected:
         FacebookEventation m_eventation;

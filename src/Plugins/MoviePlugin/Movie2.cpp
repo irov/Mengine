@@ -872,7 +872,7 @@ namespace Mengine
             return false;
         }
 
-        ae_play_movie_composition( m_composition, _time * 0.001f );
+        ae_play_movie_composition( m_composition, -1.f );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _playId, _time );
@@ -1277,8 +1277,6 @@ namespace Mengine
 
                 unknownAstralaxEmitter->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
 
-                //EMaterialBlendMode blend_mode = getMovieBlendMode( layer );
-
                 AnimationInterface * animation = node->getAnimation();
 
                 ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
@@ -1329,6 +1327,14 @@ namespace Mengine
                         {
                             surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_ALPHA_INVERTED );
                         }break;
+                    case AE_MOVIE_TRACK_MATTE_LUMA:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_LUMA );
+                        }break;
+                    case AE_MOVIE_TRACK_MATTE_LUMA_INVERTED:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_LUMA_INVERTED );
+                        }break;
                     default:
                         break;
                     }
@@ -1353,11 +1359,6 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    //Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
-                    //const ResourceImagePtr & resourceImage = imageDesc->resourceImage;
-
-                    //surfaceTrackMatte->setResourceImage( resourceImage );
-
                     Movie2DataImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
                     const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
@@ -1374,6 +1375,14 @@ namespace Mengine
                     case AE_MOVIE_TRACK_MATTE_ALPHA_INVERTED:
                         {
                             surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_ALPHA_INVERTED );
+                        }break;
+                    case AE_MOVIE_TRACK_MATTE_LUMA:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_LUMA );
+                        }break;
+                    case AE_MOVIE_TRACK_MATTE_LUMA_INVERTED:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_LUMA_INVERTED );
                         }break;
                     default:
                         break;

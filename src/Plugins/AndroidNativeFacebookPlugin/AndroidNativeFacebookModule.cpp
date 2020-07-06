@@ -22,6 +22,7 @@ static jmethodID jmethodID_logout;
 static jmethodID jmethodID_getUser;
 static jmethodID jmethodID_shareLink;
 static jmethodID jmethodID_getProfilePictureLink;
+static jmethodID jmethodID_getProfileUserPictureLink;
 
 static Mengine::AndroidNativeFacebookModule * s_androidNativeFacebookModule;
 
@@ -41,6 +42,7 @@ extern "C"
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
         jmethodID_getAccessToken = mEnv->GetStaticMethodID( mActivityClass, "facebookGetAccessToken", "()Ljava/lang/String;" );
         jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)Z" );
+        jmethodID_getProfileUserPictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfileUserPictureLink", "(Ljava/lang/String;Ljava/lang/String;)Z" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -387,6 +389,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidFacebookGetUser", this, &AndroidNativeFacebookModule::getUser );
         pybind::def_functor( kernel, "androidFacebookShareLink", this, &AndroidNativeFacebookModule::shareLink );
         pybind::def_functor( kernel, "androidFacebookGetProfilePictureLink", this, &AndroidNativeFacebookModule::getProfilePictureLink );
+        pybind::def_functor( kernel, "androidFacebookGetProfileUserPictureLink", this, &AndroidNativeFacebookModule::getProfileUserPictureLink );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -540,6 +543,24 @@ namespace Mengine
 
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_getProfilePictureLink, jtypeParameter );
         
+        env->DeleteLocalRef( jtypeParameter );
+
+        return (bool)jReturnValue;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookModule::getProfileUserPictureLink( const String & _userId, const String & _typeParameter )
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+
+        const Char * userId_str = _userId.c_str();
+        jstring juserId = env->NewStringUTF( userId_str );
+
+        const Char * typeParameter_str = _typeParameter.c_str();
+        jstring jtypeParameter = env->NewStringUTF( typeParameter_str );
+
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_getProfileUserPictureLink, juserId, jtypeParameter );
+
+        env->DeleteLocalRef( juserId );
         env->DeleteLocalRef( jtypeParameter );
 
         return (bool)jReturnValue;

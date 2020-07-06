@@ -25,7 +25,9 @@ namespace Mengine
         {
             if( m_invalidateVertices != 0 )
             {
-                this->updateVertices_();
+                this->_updateVertices( m_vertices, m_invalidateVertices );
+
+                m_invalidateVertices = 0;
             }
 
             return m_vertices;
@@ -36,18 +38,10 @@ namespace Mengine
             m_invalidateVertices |= _invalidate;
         }
 
-    private:
-        MENGINE_INLINE void updateVertices_() const
-        {
-            this->_updateVertices( m_vertices, m_invalidateVertices );
-
-            m_invalidateVertices = 0;
-        }
-
     protected:
         virtual void _updateVertices( RenderVertex2D * const _vertices, uint8_t _invalidateVertices ) const = 0;
 
-    private:
+    protected:
         mutable RenderVertex2D m_vertices[VerticesCount];
         mutable uint8_t m_invalidateVertices;
     };

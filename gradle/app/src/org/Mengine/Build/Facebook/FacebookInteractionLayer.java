@@ -97,12 +97,14 @@ public class FacebookInteractionLayer {
 
     public void LogoutFromFacebook() {
         if (AccessToken.getCurrentAccessToken() == null) {
+            AndroidNativeFacebook_onLogoutCancel();
             return; // user already logged out
         }
 
         new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
+                AndroidNativeFacebook_onLogoutSuccess();
                 LoginManager.getInstance().logOut();
             }
         }).executeAsync();
@@ -172,6 +174,38 @@ public class FacebookInteractionLayer {
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 _accessToken,
                 "/" + _userId + "/picture" + typeParameter,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        String pictureURL = "";
+                        if (response != null) {
+                            JSONObject responseObject = response.getJSONObject();
+                            if (responseObject != null) {
+                                try {
+                                    pictureURL = responseObject.getJSONObject("data").getString("url");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        AndroidNativeFacebook_onProfilePictureLinkGet(pictureURL);
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putBoolean("redirect", false);
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    public void getProfileUserPictureLink(String user_id, final String typeParameter) {
+        if (user_id.isEmpty()) {
+            AndroidNativeFacebook_onProfilePictureLinkGet("");
+            return;
+        }
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                _accessToken,
+                "/" + user_id + "/picture" + typeParameter,
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {

@@ -245,6 +245,15 @@ public class MengineActivity extends SDLActivity {
         return false;
     }
 
+    public static boolean facebookGetProfileUserPictureLink(String user_id, String typeParameter) {
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            _instance.facebookInteractionLayer.getProfileUserPictureLink(user_id, typeParameter);
+            return true;
+        }
+
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //UnityAds Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////

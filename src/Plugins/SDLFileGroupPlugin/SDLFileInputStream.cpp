@@ -30,11 +30,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLFileInputStream::~SDLFileInputStream()
     {
-        this->close_();
+        this->close();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLFileInputStream::close_()
+    bool SDLFileInputStream::close()
     {
+        if( m_rwops == nullptr )
+        {
+            return true;
+        }
+
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
@@ -42,11 +47,20 @@ namespace Mengine
         }
 #endif
 
-        if( m_rwops != nullptr )
+        int error = SDL_RWclose( m_rwops );
+        m_rwops = nullptr;
+
+        if( error != 0 )
         {
-            SDL_RWclose( m_rwops );
-            m_rwops = nullptr;
+            LOGGER_ERROR( "invalid close '%s' get error: %s"
+                , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
+                , SDL_GetError()
+            );
+
+            return false;
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
@@ -72,11 +86,11 @@ namespace Mengine
 
         if( 0 > size )
         {
-            this->close_();
-
             LOGGER_ERROR( "invalid file size '%s'"
                 , fullPath
             );
+
+            this->close();
 
             return false;
         }
@@ -106,12 +120,10 @@ namespace Mengine
 
             if( 0 > result )
             {
-                const char * sdlError = SDL_GetError();
-
                 LOGGER_ERROR( "seek offset %zu size %zu get error: %s"
                     , m_offset
                     , m_size
-                    , sdlError
+                    , SDL_GetError()
                 );
 
                 return false;
@@ -137,11 +149,9 @@ namespace Mengine
 
         if( m_rwops == nullptr )
         {
-            const char * sdl_error = SDL_GetError();
-
             LOGGER_ERROR( "invalid open '%s' error '%s'"
                 , _fullPath
-                , sdl_error
+                , SDL_GetError()
             );
 
             return false;
@@ -259,12 +269,10 @@ namespace Mengine
 
         if( bytesRead == 0 )
         {
-            const char * sdl_error = SDL_GetError();
-
             LOGGER_ERROR( "read %zu:%zu get error: %s"
                 , _size
                 , m_size
-                , sdl_error
+                , SDL_GetError()
             );
 
             return false;
@@ -292,16 +300,14 @@ namespace Mengine
         }
         else
         {
-            const Sint64 result = SDL_RWseek( m_rwops, static_cast<Sint64>(m_offset + _pos), RW_SEEK_SET );
+            Sint64 result = SDL_RWseek( m_rwops, static_cast<Sint64>(m_offset + _pos), RW_SEEK_SET );
 
             if( 0 > result )
             {
-                const char * sdl_error = SDL_GetError();
-
                 LOGGER_ERROR( "seek %zu:%zu get error: %s"
                     , _pos
                     , m_size
-                    , sdl_error
+                    , SDL_GetError()
                 );
 
                 return false;

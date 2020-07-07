@@ -67,7 +67,7 @@ namespace Mengine
 
         size_t size = 0;
 
-        int32_t size_timestamp = LOGGER_SERVICE()
+        size_t size_timestamp = LOGGER_SERVICE()
             ->makeTimeStamp( str, size, MENGINE_LOGGER_MAX_MESSAGE );
 
         if( size_timestamp > 0 )
@@ -75,7 +75,7 @@ namespace Mengine
             size += size_timestamp;
         }
 
-        int32_t size_functionstamp = LOGGER_SERVICE()
+        size_t size_functionstamp = LOGGER_SERVICE()
             ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE );
 
         if( size_functionstamp > 0 )

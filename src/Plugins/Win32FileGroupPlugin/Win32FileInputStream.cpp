@@ -112,28 +112,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::close()
     {
-        if( m_hFile != INVALID_HANDLE_VALUE )
+        if( m_hFile == INVALID_HANDLE_VALUE )
         {
+            return true;
+        }
+
 #ifdef MENGINE_DEBUG
-            if( SERVICE_EXIST( NotificationServiceInterface ) == true )
-            {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
-            }
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
+        }
 #endif
 
-            BOOL successful = ::CloseHandle( m_hFile );
-            m_hFile = INVALID_HANDLE_VALUE;
+        BOOL successful = ::CloseHandle( m_hFile );
+        m_hFile = INVALID_HANDLE_VALUE;
 
-            if( successful == FALSE )
-            {
-                DWORD dwError = ::GetLastError();
+        if( successful == FALSE )
+        {
+            DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR( "invalid close '%s:%s' handle '%zu'"
-                    , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
-                    , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
-                    , dwError
-                );
-            }
+            LOGGER_ERROR( "invalid close '%s:%s' handle '%zu'"
+                , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
+                , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
+                , dwError
+            );
         }
 
         return true;

@@ -213,7 +213,7 @@ namespace Mengine
         return m_silent;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t LoggerService::makeTimeStamp( Char * const _buffer, int32_t _offset, size_t _capacity ) const
+    size_t LoggerService::makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const
     {
         if( m_dateTimeProvider == nullptr )
         {
@@ -230,10 +230,10 @@ namespace Mengine
             , dateTime.milliseconds
         );
 
-        return size;
+        return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t LoggerService::makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, int32_t _offset, size_t _capacity ) const
+    size_t LoggerService::makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const
     {
         if( _file == nullptr )
         {
@@ -269,7 +269,7 @@ namespace Mengine
             , _line
         );
 
-        return size;
+        return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::validMessage( ELoggerLevel _level, uint32_t _flag ) const

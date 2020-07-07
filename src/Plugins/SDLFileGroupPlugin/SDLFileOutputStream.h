@@ -18,6 +18,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
+        bool close() override;
 
     public:
         size_t write( const void * _data, size_t _size ) override;
@@ -30,6 +31,10 @@ namespace Mengine
         SDL_RWops * m_rwops;
 
         size_t m_size;
+
+        FilePath m_relationPath;
+        FilePath m_folderPath;
+        FilePath m_filePath;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLFileOutputStream> SDLFileOutputStreamPtr;

@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSound, false, "sound '%s' resource  is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSound, "sound '%s' resource  is null"
             , this->getName().c_str()
         );
 

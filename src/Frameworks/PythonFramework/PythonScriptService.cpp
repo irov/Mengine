@@ -652,7 +652,7 @@ namespace Mengine
 
             ScriptModuleInterfacePtr module = this->importModule( package.module );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
                 , package.module.c_str()
             );
         }
@@ -689,7 +689,7 @@ namespace Mengine
 
         ScriptModuleInterfacePtr module = this->importModule( _pack.module );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
             , _pack.module.c_str()
         );
 
@@ -733,7 +733,7 @@ namespace Mengine
 
             ScriptModuleInterfacePtr module = this->importModule( package.module );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
                 , package.module.c_str()
             );
 
@@ -833,7 +833,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( py_module, nullptr, "invalid import module '%s'(script)"
+        MENGINE_ASSERTION_MEMORY_PANIC( py_module, "invalid import module '%s'(script)"
             , _name.c_str()
         );
 

@@ -436,7 +436,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
 

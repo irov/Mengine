@@ -48,7 +48,7 @@ namespace Mengine
 
                 uint8_t * featuresMemory = buffer->getBuffer();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( featuresMemory, false, "invalid get memory %zu"
+                MENGINE_ASSERTION_MEMORY_PANIC( featuresMemory, "invalid get memory %zu"
                     , featuresBufferSize
                 );
 
@@ -116,7 +116,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0, "invalid create memory for stream" );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create memory for stream" );
 
             const uint8_t * buffer_memory = buffer->getBuffer();
 

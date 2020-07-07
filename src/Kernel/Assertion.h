@@ -32,8 +32,9 @@ namespace Mengine
             const AssertionOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
         private:
-            const AssertionOperator & operator()( std::nullptr_t ) const = delete;
-            const AssertionOperator & operator()( bool ) const = delete;
+            const AssertionOperator & operator()( int32_t, ... ) const = delete;
+            const AssertionOperator & operator()( std::nullptr_t, ... ) const = delete;
+            const AssertionOperator & operator()( bool, ... ) const = delete;
 
         protected:
             uint32_t m_level;

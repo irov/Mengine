@@ -73,7 +73,7 @@ namespace Mengine
 
         InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( videoStream, nullptr, "group '%s' name '%s' can't open video file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( videoStream, "group '%s' name '%s' can't open video file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
             , this->getFilePath().c_str()
@@ -84,7 +84,7 @@ namespace Mengine
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
             ->createDecoderT<VideoDecoderInterfacePtr>( codecType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, nullptr, "group '%s' name '%s' can't create video decoder for file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, "group '%s' name '%s' can't create video decoder for file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
             , this->getFilePath().c_str()

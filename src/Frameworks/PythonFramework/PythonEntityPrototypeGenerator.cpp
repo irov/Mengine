@@ -128,7 +128,7 @@ namespace Mengine
         EntityPtr entity = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( entity, nullptr, "can't generate '%s' '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't generate '%s' '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

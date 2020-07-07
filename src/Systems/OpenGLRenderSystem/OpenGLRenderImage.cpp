@@ -232,7 +232,7 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr, "invalid create memory (l %u w %u h %u c %u f %u)"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory (l %u w %u h %u c %u f %u)"
             , _level
             , miplevel_width
             , miplevel_height
@@ -242,7 +242,7 @@ namespace Mengine
 
         void * buffer = memory->newBuffer( size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid new memory %zu (l %u w %u h %u c %u f %u)"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid new memory %zu (l %u w %u h %u c %u f %u)"
             , size
             , _level
             , miplevel_width

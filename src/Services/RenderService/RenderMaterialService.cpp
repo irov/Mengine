@@ -582,7 +582,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage )
     {
-        MENGINE_ASSERTION( m_materialStageIndexer.find( _name ) == nullptr, nullptr, "'%s' is already created"
+        MENGINE_ASSERTION( m_materialStageIndexer.find( _name ) == nullptr, "'%s' is already created"
             , _name.c_str()
         );
 

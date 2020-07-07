@@ -90,7 +90,7 @@ namespace Mengine
         _CrtSetReportMode( _CRT_ASSERT, crt_assert );
 #endif
 
-        MENGINE_ASSERTION_MEMORY_PANIC( kernel, false, "invalid initialize pybind" );
+        MENGINE_ASSERTION_MEMORY_PANIC( kernel, "invalid initialize pybind" );
 
         m_kernel = kernel;
 

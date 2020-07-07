@@ -1293,7 +1293,7 @@ namespace Mengine
         const ResourceImageSolidPtr & resource = RESOURCE_SERVICE()
             ->getResource( _layer.source );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "'%s' resource '%s' can't compile sprite '%s' imageSolid resource = NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "'%s' resource '%s' can't compile sprite '%s' imageSolid resource = NULL"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _layer.name.c_str()
@@ -1695,7 +1695,7 @@ namespace Mengine
         ResourceImagePtr resourceImage = RESOURCE_SERVICE()
             ->getResourceReference( _layer.name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "movie '%s' resource '%s' layer '%s' invalid get resource for image '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "movie '%s' resource '%s' layer '%s' invalid get resource for image '%s'"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _layer.name.c_str()
@@ -1717,7 +1717,7 @@ namespace Mengine
         ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite, false, "movie '%s' resource '%s' layer '%s' invalid create 'Sprite'"
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite, "movie '%s' resource '%s' layer '%s' invalid create 'Sprite'"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _layer.name.c_str()
@@ -1853,7 +1853,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceMovie, false, "movie '%s' can't setup resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceMovie, "movie '%s' can't setup resource"
             , this->getName().c_str()
         );
 
@@ -2027,7 +2027,7 @@ namespace Mengine
             {
                 const NodePtr & node_parent = this->getLayerParent_( layer );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node_parent, false, "movie '%s' resource '%s' invalid parent node %d"
+                MENGINE_ASSERTION_MEMORY_PANIC( node_parent, "movie '%s' resource '%s' invalid parent node %d"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , layer.parent

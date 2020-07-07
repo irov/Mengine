@@ -950,8 +950,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_intersectsMoviesHotspot( Movie * _movie1, const ConstString & _socket1, Movie * _movie2, const ConstString & _socket2 )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _movie1, false, "movie1 is NULL" );
-            MENGINE_ASSERTION_MEMORY_PANIC( _movie2, false, "movie2 is NULL" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie1, "movie1 is NULL" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie2, "movie2 is NULL" );
 
             if( _movie1->enable() == false )
             {
@@ -1048,7 +1048,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, const Polygon & _polygon )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _movie, false, "movie is NULL" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie, "movie is NULL" );
 
             if( _movie->enable() == false )
             {

@@ -522,7 +522,7 @@ namespace Mengine
                     {
                         const Char * value = py_obj.str();
 
-                        MENGINE_ASSERTION_MEMORY_PANIC( value, false, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
+                        MENGINE_ASSERTION_MEMORY_PANIC( value, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
                             , py_obj.repr()
                             , _args.repr()
                         );
@@ -1498,7 +1498,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1532,7 +1532,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1546,7 +1546,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1583,7 +1583,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1609,7 +1609,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1639,7 +1639,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1669,7 +1669,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1699,7 +1699,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1729,7 +1729,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -2736,7 +2736,7 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid account '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid account '%s'"
                     , _accountID.c_str()
                 );
 
@@ -2754,7 +2754,7 @@ namespace Mengine
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "'%s' invalid get memory for '%zu' size"
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, "'%s' invalid get memory for '%zu' size"
                     , _accountID.c_str()
                     , size
                 );

@@ -235,15 +235,8 @@ namespace Mengine
 
         MENGINE_STRNCPY( m_uid.data, uid, AccountUID::size_data );
 
-        for( MapSettings::iterator
-            it = m_settings.begin(),
-            it_end = m_settings.end();
-            it != it_end;
-            ++it )
+        for( auto && [key, st] : m_settings )
         {
-            const ConstString & key = it->first;
-            Setting & st = it->second;
-
             const Char * value;
             if( config->hasValue( "SETTINGS", key.c_str(), &value ) == false )
             {
@@ -277,16 +270,14 @@ namespace Mengine
 
         Helper::writeIniSection( file, "[SETTINGS]" );
 
-        for( MapSettings::const_iterator
-            it = m_settings.begin(),
-            it_end = m_settings.end();
-            it != it_end;
-            ++it )
+        for( auto && [key, st] : m_settings )
         {
-            const ConstString & key = it->first;
-            const Setting & st = it->second;
-
             Helper::writeIniSetting( file, key.c_str(), st.value );
+        }
+
+        if( m_fileGroup->closeOutputFile( file ) == false )
+        {
+            return false;
         }
 
         return true;
@@ -294,14 +285,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Account::apply()
     {
-        for( MapSettings::iterator
-            it = m_settings.begin(),
-            it_end = m_settings.end();
-            it != it_end;
-            ++it )
+        for( auto && [key, st] : m_settings )
         {
-            Setting & st = it->second;
-
             if( st.provider == nullptr )
             {
                 continue;
@@ -318,51 +303,64 @@ namespace Mengine
         path += m_folderPath;
         path += _filePath;
 
-        FilePath fullpath = Helper::stringizeFilePath( path );
+        FilePath fullFilePath = Helper::stringizeFilePath( path );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullpath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "account '%s' invalid open file '%s'"
             , m_id.c_str()
-            , fullpath.c_str()
+            , fullFilePath.c_str()
         );
 
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr Account::openWriteBinaryFile( const FilePath & _filepath )
+    OutputStreamInterfacePtr Account::openWriteBinaryFile( const FilePath & _filePath )
     {
         PathString path;
-
         path += m_folderPath;
-        path += _filepath;
+        path += _filePath;
 
-        FilePath fullpath = Helper::stringizeFilePath( path );
+        FilePath fullFilePath = Helper::stringizeFilePath( path );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullpath, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "account '%s' invalid open file '%s'"
             , m_id.c_str()
-            , _filepath.c_str()
+            , _filePath.c_str()
         );
 
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr Account::loadBinaryFile( const FilePath & _filepath )
+    bool Account::closeReadBinaryFile( const InputStreamInterfacePtr & _stream )
     {
-        InputStreamInterfacePtr stream = this->openReadBinaryFile( _filepath );
+        bool successful = m_fileGroup->closeInputFile( _stream );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Account::openWriteBinaryFile( const OutputStreamInterfacePtr & _stream )
+    {
+        bool successful = m_fileGroup->closeOutputFile( _stream );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MemoryInterfacePtr Account::loadBinaryFile( const FilePath & _filePath )
+    {
+        InputStreamInterfacePtr stream = this->openReadBinaryFile( _filePath );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "account '%s' invalid open file '%s'"
             , m_id.c_str()
-            , _filepath.c_str()
+            , _filePath.c_str()
         );
 
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "account '%s' invalid load stream archive '%s'"
             , m_id.c_str()
-            , _filepath.c_str()
+            , _filePath.c_str()
         );
 
         return binaryBuffer;
@@ -397,6 +395,11 @@ namespace Mengine
                 , _filepath.c_str()
             );
 
+            return false;
+        }
+
+        if( m_fileGroup->closeOutputFile( stream ) == false )
+        {
             return false;
         }
 

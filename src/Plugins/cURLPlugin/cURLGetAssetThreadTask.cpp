@@ -117,13 +117,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetAssetThreadTask::_onComplete( bool _successful )
     {
+        bool successful_stream_flush = true;
+
         if( m_stream != nullptr )
         {
-            m_stream->flush();
+            successful_stream_flush = m_stream->flush();
             m_stream = nullptr;
         }
 
-        if( _successful == false || m_responseCode != 200 )
+        if( _successful == false ||
+            m_responseCode != 200 ||
+            successful_stream_flush == false )
         {
             m_fileGroup = nullptr;
 

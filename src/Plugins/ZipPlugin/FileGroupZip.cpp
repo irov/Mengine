@@ -553,6 +553,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::closeInputFile( const InputStreamInterfacePtr & _stream )
+    {
+        MENGINE_UNUSED( _stream );
+
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile( const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -572,5 +581,14 @@ namespace Mengine
         );
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    {
+        MENGINE_UNUSED( _stream );
+
+        //Empty
+
+        return true;
     }
 }

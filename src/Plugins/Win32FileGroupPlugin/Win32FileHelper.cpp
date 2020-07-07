@@ -118,5 +118,49 @@ namespace Mengine
 
             return utf8_filePathLen;
         }
+        //////////////////////////////////////////////////////////////////////////
+        size_t Win32ConcatenateFilePathTempA( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _concatenatePath, size_t _capacity )
+        {
+            size_t relationSize = _relationPath.size();
+            size_t folderSize = _folderPath.size();
+            size_t fileSize = _filePath.size();
+
+            size_t filePathSize = relationSize + folderSize + fileSize + 5;
+
+            if( filePathSize >= MENGINE_MAX_PATH )
+            {
+                return MENGINE_PATH_INVALID_LENGTH;
+            }
+
+            stdex::memorycopy_safe( _concatenatePath, 0, _capacity, _relationPath.c_str(), relationSize );
+            stdex::memorycopy_safe( _concatenatePath, relationSize, _capacity, _folderPath.c_str(), folderSize );
+            stdex::memorycopy_safe( _concatenatePath, relationSize + folderSize, _capacity, _filePath.c_str(), fileSize );
+            stdex::memorycopy_safe( _concatenatePath, relationSize + folderSize + fileSize, _capacity, ".~tmp", 5 );
+
+            _concatenatePath[filePathSize] = '\0';
+
+            Helper::pathCorrectBackslashA( _concatenatePath );
+
+            return filePathSize;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        size_t Win32ConcatenateFilePathTempW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _concatenatePath, size_t _capacity )
+        {
+            Char utf8_filePath[MENGINE_MAX_PATH] = {'\0'};
+            size_t utf8_filePathLen = Win32ConcatenateFilePathTempA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
+
+            if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
+            {
+                return MENGINE_PATH_INVALID_LENGTH;
+            }
+
+            if( UNICODE_SYSTEM()
+                ->utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, _capacity, nullptr ) == false )
+            {
+                return MENGINE_PATH_INVALID_LENGTH;
+            }
+
+            return utf8_filePathLen;
+        }
     }
 }

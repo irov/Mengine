@@ -65,21 +65,21 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    METHODDEF( void ) init_destination( j_compress_ptr cinfo )
+    METHODDEF( void ) init_destination( j_compress_ptr _cinfo )
     {
-        mengine_dst_ptr dest = (mengine_dst_ptr)cinfo->dest;
+        mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
 
         dest->buffer = (JOCTET *)
-            (*cinfo->mem->alloc_small) ((j_common_ptr)cinfo, JPOOL_IMAGE,
+            (*_cinfo->mem->alloc_small) ((j_common_ptr)_cinfo, JPOOL_IMAGE,
                 MENGINE_JPEG_OUTPUT_BUF_SIZE * sizeof( uint8_t ));
 
         dest->pub.next_output_byte = dest->buffer;
         dest->pub.free_in_buffer = MENGINE_JPEG_OUTPUT_BUF_SIZE;
     }
     //////////////////////////////////////////////////////////////////////////
-    METHODDEF( boolean ) empty_output_buffer( j_compress_ptr cinfo )
+    METHODDEF( boolean ) empty_output_buffer( j_compress_ptr _cinfo )
     {
-        mengine_dst_ptr dest = (mengine_dst_ptr)cinfo->dest;
+        mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
 
         dest->m_stream->write( dest->buffer, MENGINE_JPEG_OUTPUT_BUF_SIZE );
 
@@ -89,9 +89,9 @@ namespace Mengine
         return TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    METHODDEF( void ) term_destination( j_compress_ptr cinfo )
+    METHODDEF( void ) term_destination( j_compress_ptr _cinfo )
     {
-        mengine_dst_ptr dest = (mengine_dst_ptr)cinfo->dest;
+        mengine_dst_ptr dest = (mengine_dst_ptr)_cinfo->dest;
 
         size_t datacount = MENGINE_JPEG_OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
 
@@ -101,17 +101,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    GLOBAL( void ) jpeg_mengine_dst( j_compress_ptr cinfo, OutputStreamInterface * _stream )
+    static GLOBAL( void ) jpeg_mengine_dst( j_compress_ptr _cinfo, OutputStreamInterface * _stream )
     {
         mengine_dst_ptr dest;
 
-        if( cinfo->dest == nullptr )
+        if( _cinfo->dest == nullptr )
         {
-            cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small)
-                ((j_common_ptr)cinfo, JPOOL_PERMANENT, sizeof( DestinationManager ));
+            _cinfo->dest = (struct jpeg_destination_mgr *)(*_cinfo->mem->alloc_small)
+                ((j_common_ptr)_cinfo, JPOOL_PERMANENT, sizeof( DestinationManager ));
         }
 
-        dest = (mengine_dst_ptr)cinfo->dest;
+        dest = (mengine_dst_ptr)_cinfo->dest;
         dest->pub.init_destination = init_destination;
         dest->pub.empty_output_buffer = empty_output_buffer;
         dest->pub.term_destination = term_destination;

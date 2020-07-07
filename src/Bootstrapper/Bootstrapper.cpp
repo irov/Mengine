@@ -1271,8 +1271,7 @@ namespace Mengine
         SERVICE_FINALIZE( PlayerService );
         SERVICE_FINALIZE( PickerService );
         SERVICE_FINALIZE( UpdateService );
-        SERVICE_FINALIZE( InputService );
-        SERVICE_FINALIZE( UnicodeSystem );
+        SERVICE_FINALIZE( InputService );        
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
         SERVICE_FINALIZE( SoundSystem );
@@ -1302,6 +1301,7 @@ namespace Mengine
             m_loggerFile = nullptr;
         }
 
+        SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( Platform );

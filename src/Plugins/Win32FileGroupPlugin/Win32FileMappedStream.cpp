@@ -94,9 +94,9 @@ namespace Mengine
             return false;
         }
 
-        m_memory = ::MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
+        LPVOID memory = ::MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
 
-        if( m_memory == NULL )
+        if( memory == NULL )
         {
             DWORD error = ::GetLastError();
 
@@ -113,6 +113,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_memory = memory;
 
         return true;
     }

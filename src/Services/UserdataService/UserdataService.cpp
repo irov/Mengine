@@ -179,6 +179,11 @@ namespace Mengine
             return false;
         }
 
+        if( desc.fileGroup->closeOutputFile( stream ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
 }

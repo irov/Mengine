@@ -681,6 +681,11 @@ namespace Mengine
             Helper::writeIniSetting( file, "Account", accountID );
         }
 
+        if( m_fileGroup->closeOutputFile( file ) == false )
+        {
+            return false;
+        }
+
         for( const HashtableAccounts::value_type & value : m_accounts )
         {
             const AccountInterfacePtr & account = value.element;

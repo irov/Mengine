@@ -22,6 +22,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
+        bool close() override;
 
     public:
         size_t write( const void * _data, size_t _size ) override;
@@ -35,11 +36,9 @@ namespace Mengine
 
         size_t m_size;
 
-#ifdef MENGINE_DEBUG
         FilePath m_relationPath;
         FilePath m_folderPath;
         FilePath m_filePath;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32FileOutputStream> Win32FileOutputStreamPtr;

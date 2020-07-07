@@ -16,7 +16,12 @@ namespace Mengine
         bool loadStreamMagicHeader( const InputStreamInterfacePtr & _stream, magic_number_type _magic, magic_version_type _version )
         {
             magic_number_type magic_number;
-            _stream->read( &magic_number, sizeof( magic_number ) );
+            if( _stream->read( &magic_number, sizeof( magic_number ) ) != sizeof( magic_number ) )
+            {
+                LOGGER_ERROR( "invalid format stream magic head" );
+
+                return false;
+            }
 
             if( magic_number != _magic )
             {
@@ -29,7 +34,12 @@ namespace Mengine
             }
 
             magic_version_type magic_version;
-            _stream->read( &magic_version, sizeof( magic_version ) );
+            if( _stream->read( &magic_version, sizeof( magic_version ) ) != sizeof( magic_version ) )
+            {
+                LOGGER_ERROR( "invalid format stream magic head" );
+
+                return false;
+            }
 
             if( magic_version != _version )
             {
@@ -68,13 +78,28 @@ namespace Mengine
         MemoryInterfacePtr loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
         {
             uint32_t crc32;
-            _stream->read( &crc32, sizeof( crc32 ) );
+            if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive buffer" );
+
+                return nullptr;
+            }
 
             uint32_t load_binary_size;
-            _stream->read( &load_binary_size, sizeof( load_binary_size ) );
+            if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive buffer" );
+
+                return nullptr;
+            }
 
             uint32_t load_compress_size;
-            _stream->read( &load_compress_size, sizeof( load_compress_size ) );
+            if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive buffer" );
+
+                return nullptr;
+            }
 
             size_t binary_size = load_binary_size;
             size_t compress_size = load_compress_size;
@@ -150,13 +175,28 @@ namespace Mengine
         bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * const _data, size_t _size, const DocumentPtr & _doc )
         {
             uint32_t crc32;
-            _stream->read( &crc32, sizeof( crc32 ) );
+            if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive inplace" );
+
+                return false;
+            }
 
             uint32_t load_binary_size;
-            _stream->read( &load_binary_size, sizeof( load_binary_size ) );
+            if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive inplace" );
+
+                return false;
+            }
 
             uint32_t load_compress_size;
-            _stream->read( &load_compress_size, sizeof( load_compress_size ) );
+            if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive inplace" );
+
+                return false;
+            }
 
             uint32_t binary_size = load_binary_size;
             uint32_t compress_size = load_compress_size;
@@ -337,13 +377,28 @@ namespace Mengine
         MemoryInterfacePtr loadStreamArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
         {
             uint32_t crc32;
-            _stream->read( &crc32, sizeof( crc32 ) );
+            if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive memory" );
+
+                return nullptr;
+            }
 
             uint32_t load_binary_size;
-            _stream->read( &load_binary_size, sizeof( load_binary_size ) );
+            if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive memory" );
+
+                return nullptr;
+            }
 
             uint32_t load_compress_size;
-            _stream->read( &load_compress_size, sizeof( load_compress_size ) );
+            if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream archive memory" );
+
+                return nullptr;
+            }
 
             size_t binary_size = load_binary_size;
             size_t compress_size = load_compress_size;
@@ -429,13 +484,28 @@ namespace Mengine
         MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
         {
             uint32_t crc32;
-            _stream->read( &crc32, sizeof( crc32 ) );
+            if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
+            {
+                LOGGER_ERROR( "invalid format stream cache archive memory" );
+
+                return nullptr;
+            }
 
             uint32_t load_binary_size;
-            _stream->read( &load_binary_size, sizeof( load_binary_size ) );
+            if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream cache archive memory" );
+
+                return nullptr;
+            }
 
             uint32_t load_compress_size;
-            _stream->read( &load_compress_size, sizeof( load_compress_size ) );
+            if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
+            {
+                LOGGER_ERROR( "invalid format stream cache archive memory" );
+
+                return nullptr;
+            }
 
             size_t binary_size = load_binary_size;
             size_t compress_size = load_compress_size;

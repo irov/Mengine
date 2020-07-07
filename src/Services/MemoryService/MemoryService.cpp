@@ -167,10 +167,11 @@ namespace Mengine
 
             void * memory = Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid realloc %p memory %zu to %zu"
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid realloc %p memory %zu to %zu (doc: %s)"
                 , buffer.memory
                 , buffer.size
                 , _size
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             buffer.memory = memory;
@@ -186,10 +187,11 @@ namespace Mengine
             return buffer.id;
         }
 
-        uint8_t * memory = (uint8_t *)Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
+        void * memory = Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid malloc memory %zu"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid malloc memory %zu (doc: %s)"
             , _size
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         CacheBufferID new_id = GENERATE_UNIQUE_IDENTITY();

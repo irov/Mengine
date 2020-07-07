@@ -42,10 +42,12 @@ namespace Mengine
     public:
         InputStreamInterfacePtr createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) override;
         bool openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share ) override;
+        bool closeInputFile( const InputStreamInterfacePtr & _stream ) override;
 
     public:
         OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) override;
         bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) override;
+        bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
 
     protected:
         bool loadHeader_();

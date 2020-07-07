@@ -2822,6 +2822,8 @@ namespace Mengine
                     , _filePath.c_str()
                 );
 
+                binaryBuffer = nullptr;
+
                 return py_data;
             }
             //////////////////////////////////////////////////////////////////////////

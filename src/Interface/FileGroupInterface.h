@@ -61,10 +61,12 @@ namespace Mengine
     public:
         virtual InputStreamInterfacePtr createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) = 0;
         virtual bool openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share ) = 0;
+        virtual bool closeInputFile( const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) = 0;
         virtual bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FileGroupInterface> FileGroupInterfacePtr;

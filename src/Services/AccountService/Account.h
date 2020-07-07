@@ -46,8 +46,10 @@ namespace Mengine
         bool save() override;
 
     public:
-        InputStreamInterfacePtr openReadBinaryFile( const FilePath & _filepath ) override;
-        OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _filepath ) override;
+        InputStreamInterfacePtr openReadBinaryFile( const FilePath & _filePath ) override;
+        OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _filePath ) override;
+        bool closeReadBinaryFile( const InputStreamInterfacePtr & _stream ) override;
+        bool openWriteBinaryFile( const OutputStreamInterfacePtr & _stream ) override;
 
     public:
         MemoryInterfacePtr loadBinaryFile( const FilePath & _filepath ) override;

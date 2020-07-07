@@ -54,13 +54,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileLogger::finalize()
     {
-        m_fileGroup = nullptr;
-
         if( m_stream != nullptr )
         {
             m_stream->flush();
             m_stream = nullptr;
         }
+
+        m_fileGroup = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )

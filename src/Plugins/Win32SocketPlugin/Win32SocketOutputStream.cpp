@@ -38,6 +38,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32SocketOutputStream::flush()
     {
+        //Empty
+
         return true;
     }
 }

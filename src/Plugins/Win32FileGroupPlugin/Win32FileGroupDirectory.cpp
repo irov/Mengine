@@ -232,6 +232,21 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::closeInputFile( const InputStreamInterfacePtr & _stream )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+
+        bool result = file->close();
+
+        MENGINE_ASSERTION_RETURN( result == true, "failed close file '%s'"
+            , m_folderPath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const DocumentPtr & _doc )
     {
         Win32FileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
@@ -252,6 +267,21 @@ namespace Mengine
         MENGINE_ASSERTION_RETURN( result == true, "failed open file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
+
+        bool result = file->close();
+
+        MENGINE_ASSERTION_RETURN( result == true, "failed close file '%s'"
+            , m_folderPath.c_str()
         );
 
         return result;

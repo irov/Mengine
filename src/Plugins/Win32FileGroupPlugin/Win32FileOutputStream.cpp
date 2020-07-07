@@ -1,6 +1,7 @@
 #include "Win32FileOutputStream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Win32FileHelper.h"
 
@@ -17,33 +18,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32FileOutputStream::~Win32FileOutputStream()
     {
-        if( m_hFile != INVALID_HANDLE_VALUE )
-        {
-            ::CloseHandle( m_hFile );
-            m_hFile = INVALID_HANDLE_VALUE;
-        }
+        this->close();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
     {
-#ifdef MENGINE_DEBUG
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
-#endif
 
-        WChar fullPath[MENGINE_MAX_PATH] = { L'\0' };
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH );
+        WChar fullPathTemp[MENGINE_MAX_PATH] = { L'\0' };
+        size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
 
-        MENGINE_UNUSED( fullPathLen );
+        MENGINE_UNUSED( fullPathTempLen );
 
-        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s':'%s'"
-            , _folderPath.c_str()
-            , _filePath.c_str()
+        MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s':'%s'"
+            , m_folderPath.c_str()
+            , m_filePath.c_str()
         );
 
         HANDLE hFile = Helper::Win32CreateFile(
-            fullPath
+            fullPathTemp
             , GENERIC_WRITE
             , FILE_SHARE_READ | FILE_SHARE_WRITE
             , CREATE_ALWAYS
@@ -51,8 +46,11 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "invalid open '%ls'"
-                , fullPath
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid open '%ls' [error %lu]"
+                , fullPathTemp
+                , error
             );
 
             return false;
@@ -63,15 +61,43 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32FileOutputStream::close()
+    {
+        if( m_hFile == INVALID_HANDLE_VALUE )
+        {
+            return true;
+        }
+
+        bool successful = this->flush();
+
+        ::CloseHandle( m_hFile );
+        m_hFile = INVALID_HANDLE_VALUE;
+
+        Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
+        Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+        Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH );
+
+        if( PLATFORM_SERVICE()
+            ->moveFile( fullPathTemp, fullPath ) == false )
+        {
+            return false;
+        }
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t Win32FileOutputStream::write( const void * _data, size_t _size )
     {
         DWORD bytesWritten = 0;
-        BOOL result = ::WriteFile( m_hFile, _data, (DWORD)_size, &bytesWritten, NULL );
-
-        if( result == FALSE )
+        if( ::WriteFile( m_hFile, _data, (DWORD)_size, &bytesWritten, NULL ) == FALSE )
         {
-            LOGGER_ERROR( "invalid write %zu"
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid write %zu [error %lu]"
                 , _size
+                , error
             );
 
             return 0;
@@ -91,6 +117,12 @@ namespace Mengine
     {
         if( ::FlushFileBuffers( m_hFile ) == FALSE )
         {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid flush [error %lu]"
+                , error
+            );
+
             return false;
         }
 

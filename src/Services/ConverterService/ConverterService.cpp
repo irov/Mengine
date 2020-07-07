@@ -45,13 +45,13 @@ namespace Mengine
 
         ConverterFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), _type );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found converter factory '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found converter factory '%s'"
             , _type.c_str()
         );
 
         ConverterInterfacePtr converter = factory->createConverter( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( converter, nullptr, "invalid create converter '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( converter, "invalid create converter '%s'"
             , _type.c_str()
         );
 
@@ -78,7 +78,7 @@ namespace Mengine
 
         ConverterInterfacePtr converter = this->createConverter( _converter, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( converter, false, "can't create converter '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( converter, "can't create converter '%s'"
             , _converter.c_str()
         );
 
@@ -129,7 +129,7 @@ namespace Mengine
         {
             InputStreamInterfacePtr oldFile = Helper::openInputStreamFile( options.fileGroup, options.inputFilePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( oldFile, false, "converter '%s' can't open input file '%s:%s' (time)"
+            MENGINE_ASSERTION_MEMORY_PANIC( oldFile, "converter '%s' can't open input file '%s:%s' (time)"
                 , _converter.c_str()
                 , options.fileGroup->getName().c_str()
                 , options.inputFilePath.c_str()
@@ -142,7 +142,7 @@ namespace Mengine
 
             InputStreamInterfacePtr newFile = Helper::openInputStreamFile( options.fileGroup, options.outputFilePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( newFile, false, "converter '%s' can't open output file '%s:%s' (time)"
+            MENGINE_ASSERTION_MEMORY_PANIC( newFile, "converter '%s' can't open output file '%s:%s' (time)"
                 , _converter.c_str()
                 , options.fileGroup->getName().c_str()
                 , options.outputFilePath.c_str()

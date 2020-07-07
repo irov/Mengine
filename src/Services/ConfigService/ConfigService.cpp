@@ -65,7 +65,7 @@ namespace Mengine
     {
         MemoryConfigPtr config = m_factoryMemoryConfig->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( config );
 
         config->setPlatformTags( m_platformTags );
 
@@ -82,13 +82,13 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid open config '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s'"
             , _filePath.c_str()
         );
 
         INIConfigPtr config = m_factoryIniConfig->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( config );
 
         config->setPlatformTags( m_platformTags );
 
@@ -112,7 +112,7 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open config '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s'"
             , _filePath.c_str()
         );
 

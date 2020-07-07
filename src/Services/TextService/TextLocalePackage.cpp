@@ -28,7 +28,7 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -38,11 +38,11 @@ namespace Mengine
         m_memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_memory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_memory );
 
         Char * memory_buffer = m_memory->newBuffer( xml_buffer_size + 1 );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
 
         stream->read( memory_buffer, xml_buffer_size );
         memory_buffer[xml_buffer_size] = '\0';

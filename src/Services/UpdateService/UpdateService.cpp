@@ -176,7 +176,7 @@ namespace Mengine
 
         LeafUpdatable * leaf = this->getLeafUpdatable( _mode, _deep );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( leaf, INVALID_UPDATABLE_ID, "unsupport mode '%d'"
+        MENGINE_ASSERTION_MEMORY_PANIC( leaf, "unsupport mode '%d'"
             , _mode
         );
 

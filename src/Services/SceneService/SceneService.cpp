@@ -73,7 +73,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _scene, false, "scene == nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _scene, "scene == nullptr" );
 
         SceneCommandDesc desc;
         desc.type = ESCT_SET;
@@ -302,7 +302,7 @@ namespace Mengine
         ScenePtr scene = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( scene, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( scene );
 
         m_globalScene = scene;
 

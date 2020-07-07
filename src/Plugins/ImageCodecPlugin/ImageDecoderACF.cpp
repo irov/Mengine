@@ -29,7 +29,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
@@ -99,7 +99,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
             void * memory = buffer->getBuffer();
 

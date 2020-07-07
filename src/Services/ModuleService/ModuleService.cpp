@@ -80,7 +80,7 @@ namespace Mengine
 
         ModuleInterfacePtr module = factory->createModule( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( module );
 
         module->setName( _name );
 
@@ -119,7 +119,7 @@ namespace Mengine
     {
         ModuleInterfacePtr module = this->popModule_( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module, false, "not found module '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( module, "not found module '%s'"
             , _name.c_str()
         );
 

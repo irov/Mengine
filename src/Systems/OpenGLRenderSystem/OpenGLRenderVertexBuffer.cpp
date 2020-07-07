@@ -53,7 +53,7 @@ namespace Mengine
             ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         m_memory = memory;
 

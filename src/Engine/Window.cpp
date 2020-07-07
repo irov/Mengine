@@ -68,7 +68,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceWindow, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceWindow, "'%s' resource is null"
             , this->getName().c_str()
         );
 
@@ -167,7 +167,7 @@ namespace Mengine
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
                 ->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( material, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( material );
 
             edge.material = material;
         }

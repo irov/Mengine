@@ -62,7 +62,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
@@ -122,7 +122,7 @@ namespace Mengine
         }
 
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, true );
+        MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
         bool reimport = false;
         bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport );
@@ -248,7 +248,7 @@ namespace Mengine
 
         MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer );
 
         uint8_t * binary_memory = binary_buffer->getBuffer();
 
@@ -298,7 +298,7 @@ namespace Mengine
                 stringBuffer = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
             }
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stringBuffer, false, "invlid read string (error)" );
+            MENGINE_ASSERTION_MEMORY_PANIC( stringBuffer, "invlid read string (error)" );
 
             STRINGIZE_SERVICE()
                 ->stringize( stringBuffer, stringSize, stringHash, &cstr );
@@ -350,7 +350,7 @@ namespace Mengine
 
             InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
             *_stream = file_bin;
 
@@ -369,11 +369,11 @@ namespace Mengine
 
         InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
         InputStreamInterfacePtr file_xml = Helper::openInputStreamFile( _fileGroup, c_cache_path_xml, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file_xml, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( file_xml );
 
         uint64_t time_xml;
         file_xml->time( &time_xml );
@@ -459,7 +459,7 @@ namespace Mengine
 
         InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
         *_stream = file_bin;
 

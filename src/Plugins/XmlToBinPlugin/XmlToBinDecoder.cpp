@@ -85,7 +85,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinDecoder::setOptions( const CodecOptions * _options )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _options );
         MENGINE_ASSERTION_TYPE( _options, const XmlCodecOptions * );
 
         m_options = *static_cast<const XmlCodecOptions *>(_options);
@@ -109,14 +109,14 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
 
         m_fileGroupDev = fileGroup;
 
@@ -150,7 +150,7 @@ namespace Mengine
 
         InputStreamInterfacePtr protocol_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathProtocol, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, 0, "error open protocol '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, "error open protocol '%s'"
             , m_options.pathProtocol.c_str()
         );
 
@@ -159,11 +159,11 @@ namespace Mengine
         MemoryBufferInterfacePtr memory_protocol = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol, 0, "invalid create memory for protocol" );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol, "invalid create memory for protocol" );
 
         void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol_buffer, 0, "invalid new memory buffer '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol_buffer, "invalid new memory buffer '%zu'"
             , protocol_size
         );
 
@@ -216,7 +216,7 @@ namespace Mengine
 
         InputStreamInterfacePtr xml_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathXml, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, 0, "error open xml '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, "error open xml '%s'"
             , m_options.pathXml.c_str()
         );
 
@@ -234,11 +234,11 @@ namespace Mengine
         MemoryBufferInterfacePtr memory_xml = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid create memory for xml" );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, "invalid create memory for xml" );
 
         void * memory_xml_buffer = memory_xml->newBuffer( xml_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid new memory buffer '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, "invalid new memory buffer '%zu'"
             , xml_size
         );
 
@@ -251,7 +251,7 @@ namespace Mengine
 
         const Metabuf::XmlMeta * xml_meta = xml_protocol.getMeta( "Data" );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( xml_meta, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( xml_meta );
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
@@ -269,11 +269,11 @@ namespace Mengine
         MemoryBufferInterfacePtr memory_header = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_header, 0, "invalid create memory for bin" );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_header, "invalid create memory for bin" );
 
         void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_header_buffer, 0, "invalid new memory buffer '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_header_buffer, "invalid new memory buffer '%zu'"
             , Metacode::header_size
         );
 
@@ -294,11 +294,11 @@ namespace Mengine
         MemoryBufferInterfacePtr memory_bin = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_bin, 0, "invalid create memory for bin" );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_bin, "invalid create memory for bin" );
 
         void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2 );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_bin_buffer, 0, "invalid new memory buffer '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_bin_buffer, "invalid new memory buffer '%zu'"
             , xml_size * 2
         );
 
@@ -316,13 +316,13 @@ namespace Mengine
         MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE()
             ->compressBuffer( m_archivator, memory_bin_buffer, bin_size, EAC_BEST );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, 0, "error convert '%s' invalid compress buffer"
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, "error convert '%s' invalid compress buffer"
             , m_options.pathXml.c_str()
         );
 
         OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, 0, "error create bin '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, "error create bin '%s'"
             , m_options.pathBin.c_str()
         );
 
@@ -334,7 +334,7 @@ namespace Mengine
         const void * compress_buffer = compress_memory->getBuffer();
         size_t compress_size = compress_memory->getSize();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, 0, "error create bin '%s' invalid get memory"
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "error create bin '%s' invalid get memory"
             , m_options.pathBin.c_str()
         );
 

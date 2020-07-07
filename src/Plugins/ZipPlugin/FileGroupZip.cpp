@@ -79,7 +79,7 @@ namespace Mengine
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
         m_mutex = mutex;
 
@@ -104,7 +104,7 @@ namespace Mengine
     {
         InputStreamInterfacePtr zipFile = Helper::openInputStreamFile( m_baseFileGroup, m_folderPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( zipFile, false, "can't open input stream for path '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( zipFile, "can't open input stream for path '%s'"
             , m_folderPath.c_str()
         );
 
@@ -435,7 +435,7 @@ namespace Mengine
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryInput( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         if( _fileGroup != nullptr )
         {
@@ -447,7 +447,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "zip '%s' file '%s' stream is NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "zip '%s' file '%s' stream is NULL"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -501,7 +501,7 @@ namespace Mengine
         {
             void * buffer = memory->newBuffer( fi.file_size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %zu"
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 , fi.unz_size
@@ -516,7 +516,7 @@ namespace Mengine
         {
             void * buffer = memory->newBuffer( fi.unz_size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %zu"
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 , fi.unz_size
@@ -524,7 +524,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "zip '%s' file '%s' failed cache memory %zu"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "zip '%s' file '%s' failed cache memory %zu"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 , fi.file_size
@@ -532,7 +532,7 @@ namespace Mengine
 
             void * compress_memory = compress_buffer->getBuffer();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory );
 
             m_mutex->lock();
             m_zipFile->seek( file_offset );

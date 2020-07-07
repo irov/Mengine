@@ -65,7 +65,7 @@ namespace Mengine
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
             ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( material );
 
         m_material = material;
 

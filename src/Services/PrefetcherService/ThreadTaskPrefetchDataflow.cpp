@@ -43,13 +43,13 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s'"
             , this->getFileGroup()->getName().c_str()
         );
 
         m_data = m_dataflow->create( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_data, false, "dataflow '%s':'%s' invalid create data"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_data, "dataflow '%s':'%s' invalid create data"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );
@@ -71,7 +71,7 @@ namespace Mengine
 
         MemoryInterfacePtr memory = m_dataflow->load( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid load file '%s':'%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid load file '%s':'%s'"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );

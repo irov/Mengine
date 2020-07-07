@@ -75,7 +75,7 @@ namespace Mengine
 
         png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr );
 
         m_png_ptr = png_ptr;
 
@@ -328,7 +328,7 @@ namespace Mengine
                 {
                     MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, "invalid create cache buffer" );
 
                     png_byte * row_memory = row_buffer->getBuffer();
 
@@ -363,7 +363,7 @@ namespace Mengine
                 {
                     MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, "invalid create cache buffer" );
 
                     png_byte * row_memory = row_buffer->getBuffer();
 
@@ -385,7 +385,7 @@ namespace Mengine
                 {
                     MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, "invalid create cache buffer" );
 
                     png_byte * row_memory = row_buffer->getBuffer();
 
@@ -437,7 +437,7 @@ namespace Mengine
         //m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
         m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_png_ptr, false, "Can't create read structure" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_png_ptr, "Can't create read structure" );
 
         m_info_ptr = png_create_info_struct( m_png_ptr );
 

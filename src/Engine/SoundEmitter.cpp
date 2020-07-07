@@ -43,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundEmitter::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_surfaceSound, false, "'%s' can`t setup sound surface"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_surfaceSound, "'%s' can`t setup sound surface"
             , this->getName().c_str()
         );
 

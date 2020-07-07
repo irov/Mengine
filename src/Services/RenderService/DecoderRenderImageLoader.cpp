@@ -30,7 +30,7 @@ namespace Mengine
         {
             decoder = this->createImageDecoder_( _fileGroup, _filePath, _codecType );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder '%s':'%s' codec '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s':'%s' codec '%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _codecType.c_str()
@@ -96,7 +96,7 @@ namespace Mengine
         size_t pitch = 0;
         void * textureBuffer = _image->lock( &pitch, 0, rect, false );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, false, "Invalid lock mipmap %d rect %d:%d-%d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, "invalid lock mipmap %d rect %d:%d-%d:%d"
             , 0
             , rect.left
             , rect.top
@@ -155,7 +155,7 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid open stream '%s:%s' codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open stream '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()
@@ -170,7 +170,7 @@ namespace Mengine
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, nullptr, "invalid create decoder '%s:%s' codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()

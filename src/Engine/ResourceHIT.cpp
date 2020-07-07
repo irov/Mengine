@@ -35,7 +35,7 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' - hit file '%s' not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "name '%s' - hit file '%s' not found"
             , this->getName().c_str()
             , this->getFilePath().c_str()
         );
@@ -45,7 +45,7 @@ namespace Mengine
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "name '%s' - hit file '%s' invalid create decoder '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "name '%s' - hit file '%s' invalid create decoder '%s'"
             , this->getName().c_str()
             , this->getFilePath().c_str()
             , this->getCodecType().c_str()
@@ -74,7 +74,7 @@ namespace Mengine
         MemoryBufferInterfacePtr mipmap = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mipmap, false, "name '%s' - hit file '%s' invalid create memory"
+        MENGINE_ASSERTION_MEMORY_PANIC( mipmap, "name '%s' - hit file '%s' invalid create memory"
             , this->getName().c_str()
             , this->getFilePath().c_str()
         );
@@ -82,7 +82,7 @@ namespace Mengine
         size_t mipmapsize = (size_t)dataInfo->mipmapsize;
         void * buffer = mipmap->newBuffer( mipmapsize );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "name '%s' - hit file '%s' invalid new memory '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "name '%s' - hit file '%s' invalid new memory '%zu'"
             , this->getName().c_str()
             , this->getFilePath().c_str()
             , mipmapsize
@@ -218,7 +218,7 @@ namespace Mengine
 
         uint8_t * alphaBuffer = this->getHitBuffer_( level );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, false, "'%s' hit file '%s' invalid get level buffer %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, "'%s' hit file '%s' invalid get level buffer %d:%d"
             , this->getName().c_str()
             , this->getFilePath().c_str()
             , level

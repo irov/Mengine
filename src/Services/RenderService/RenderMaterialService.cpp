@@ -445,7 +445,7 @@ namespace Mengine
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stage, nullptr, "invalid get stage for material '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( _stage, "invalid get stage for material '%s'"
             , _materialName.c_str()
         );
 
@@ -474,7 +474,7 @@ namespace Mengine
 
         RenderMaterialPtr material = m_factoryMaterial->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( material );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );
@@ -491,7 +491,7 @@ namespace Mengine
     {
         const RenderMaterialStage * stage = m_defaultStages[_materialId];
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stage, nullptr, "invalid get stage for material '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stage, "invalid get stage for material '%s'"
             , m_defaultStageNames[_materialId].c_str()
         );
 
@@ -522,7 +522,7 @@ namespace Mengine
 
         RenderMaterialPtr material = m_factoryMaterial->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( material );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
@@ -588,7 +588,7 @@ namespace Mengine
 
         const RenderMaterialStage * cache_stage = this->cacheMaterialStage( _stage );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, nullptr, "'%s' invalid cache"
+        MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "'%s' invalid cache"
             , _name.c_str()
         );
 
@@ -643,7 +643,7 @@ namespace Mengine
         RenderVertexAttributeInterfacePtr vertexAttribute = RENDER_SYSTEM()
             ->createVertexAttribute( _name, _elementSize, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute );
 
         m_vertexAttributes.emplace( _name, vertexAttribute );
 
@@ -684,12 +684,12 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         RenderVertexShaderInterfacePtr vertexShader = RENDER_SYSTEM()
             ->createVertexShader( _name, memory, _compile, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexShader );
 
         m_vertexShaders.emplace( _name, vertexShader );
 
@@ -730,12 +730,12 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         RenderFragmentShaderInterfacePtr fragmentShader = RENDER_SYSTEM()
             ->createFragmentShader( _name, memory, _compile, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader );
 
         m_fragmentShaders.emplace( _name, fragmentShader );
 
@@ -763,7 +763,7 @@ namespace Mengine
         RenderProgramInterfacePtr program = RENDER_SYSTEM()
             ->createProgram( _name, _vertexShader, _fragmentShader, _vertexAttribute, _samplerCount, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( program );
 
         m_programs.emplace( _name, program );
 
@@ -785,7 +785,7 @@ namespace Mengine
     {
         const RenderVertexShaderInterfacePtr & shader = m_vertexShaders.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, RenderVertexShaderInterfacePtr::none(), "not found vertex shader '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, "not found vertex shader '%s'"
             , _name.c_str()
         );
 
@@ -796,7 +796,7 @@ namespace Mengine
     {
         const RenderFragmentShaderInterfacePtr & shader = m_fragmentShaders.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, RenderFragmentShaderInterfacePtr::none(), "not found fragment shader '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, "not found fragment shader '%s'"
             , _name.c_str()
         );
 
@@ -807,7 +807,7 @@ namespace Mengine
     {
         const RenderVertexAttributeInterfacePtr & vertexAttribute = m_vertexAttributes.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, RenderVertexAttributeInterfacePtr::none(), "not found vertex attribute '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "not found vertex attribute '%s'"
             , _name.c_str()
         );
 
@@ -818,7 +818,7 @@ namespace Mengine
     {
         const RenderProgramInterfacePtr & program = m_programs.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( program, RenderProgramInterfacePtr::none(), "not found program '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( program, "not found program '%s'"
             , _name.c_str()
         );
 

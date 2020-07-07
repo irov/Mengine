@@ -216,7 +216,7 @@ namespace Mengine
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
                 void * memory_buffer = buffer->getBuffer();
                 size_t memory_size = buffer->getSize();
@@ -225,7 +225,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "data '%s' invalid pickle"
                         , _name.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -235,7 +235,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "data '%s' invalid write"
                         , _name.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -248,18 +248,18 @@ namespace Mengine
                 MemoryInterfacePtr binaryBuffer = USERDATA_SERVICE()
                     ->loadUserdata( _name, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "data '%s' invalid load"
+                MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "data '%s' invalid load"
                     , _name.c_str()
-                    );
+                );
 
                 void * binaryBuffer_memory = binaryBuffer->getBuffer();
                 size_t binaryBuffer_size = binaryBuffer->getSize();
 
                 PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( py_data, _kernel->ret_none(), "data '%s' invalid unpickle"
+                MENGINE_ASSERTION_MEMORY_PANIC( py_data, "data '%s' invalid unpickle"
                     , _name.c_str()
-                    );
+                );
 
                 return py_data;
             }
@@ -525,7 +525,7 @@ namespace Mengine
                         MENGINE_ASSERTION_MEMORY_PANIC( value, false, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
                             , py_obj.repr()
                             , _args.repr()
-                            );
+                        );
 
                         arguments.emplace_back( String( value ) );
                     }
@@ -575,7 +575,7 @@ namespace Mengine
                 mt::box2f bb;
                 mt::insideout_box( bb );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, bb, "hotspot is NULL" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is NULL" );
 
                 const Polygon & polygon = _hotspotPolygon->getPolygon();
 
@@ -1321,7 +1321,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1339,7 +1339,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1357,7 +1357,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1375,7 +1375,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1393,7 +1393,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1411,7 +1411,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1429,7 +1429,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1447,7 +1447,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1500,7 +1500,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( _kernel->unicode_check( _defaultValue ) == false )
                 {
@@ -1508,7 +1508,7 @@ namespace Mengine
                         , _accountID.c_str()
                         , _setting.c_str()
                         , _kernel->object_repr( _defaultValue )
-                        );
+                    );
 
                     return false;
                 }
@@ -1534,7 +1534,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 bool result = account->hasSetting( _setting, nullptr );
 
@@ -1548,14 +1548,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
                     LOGGER_ERROR( "account '%s' not found setting '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1566,7 +1566,7 @@ namespace Mengine
                         , _accountID.c_str()
                         , _setting.c_str()
                         , _kernel->object_repr( _value )
-                        );
+                    );
 
                     return false;
                 }
@@ -1585,14 +1585,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
                     LOGGER_ERROR( "account '%s' not found setting '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1611,14 +1611,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
                     LOGGER_ERROR( "account '%s' not found setting '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1641,14 +1641,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
                     LOGGER_ERROR( "account '%s' not found setting '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1671,14 +1671,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
                     LOGGER_ERROR( "account '%s' not found setting '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1701,14 +1701,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
                     LOGGER_ERROR( "account '%s' not found setting '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1731,14 +1731,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
                     LOGGER_ERROR( "account '%s' not found setting '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1769,7 +1769,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1786,7 +1786,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1803,7 +1803,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1820,7 +1820,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1837,7 +1837,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1854,7 +1854,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1871,7 +1871,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1888,7 +1888,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1905,7 +1905,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account not found"
-                        );
+                    );
 
                     return false;
                 }
@@ -1923,7 +1923,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1939,7 +1939,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
                 {
-                    LOGGER_ERROR( "currentAccount is none");
+                    LOGGER_ERROR( "currentAccount is none" );
 
                     return _kernel->ret_none();
                 }
@@ -1957,7 +1957,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -1975,7 +1975,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -1993,7 +1993,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2011,7 +2011,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2029,7 +2029,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2047,7 +2047,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2065,7 +2065,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2083,7 +2083,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "currentAccount is none [%s]"
                         , _setting.c_str()
-                        );
+                    );
 
                     return _default;
                 }
@@ -2159,9 +2159,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const AccountUID & value = account->getUID();
 
@@ -2175,9 +2175,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const Char * value = nullptr;
                 if( account->getSetting( _setting, &value ) == false )
@@ -2195,9 +2195,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const Char * value = nullptr;
                 if( account->getSetting( _setting, &value ) == false )
@@ -2205,7 +2205,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2223,7 +2223,7 @@ namespace Mengine
                     , _accountID.c_str()
                     , _setting.c_str()
                     , value
-                    );
+                );
 
                 return _kernel->ret_none();
             }
@@ -2233,9 +2233,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const Char * setting_value = nullptr;
                 if( account->getSetting( _setting, &setting_value ) == false )
@@ -2243,7 +2243,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2255,7 +2255,7 @@ namespace Mengine
                         , _accountID.c_str()
                         , _setting.c_str()
                         , setting_value
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2270,9 +2270,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const Char * setting_value = nullptr;
                 if( account->getSetting( _setting, &setting_value ) == false )
@@ -2280,7 +2280,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2292,7 +2292,7 @@ namespace Mengine
                         , _accountID.c_str()
                         , _setting.c_str()
                         , setting_value
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2307,9 +2307,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const Char * setting_value = nullptr;
                 if( account->getSetting( _setting, &setting_value ) == false )
@@ -2317,7 +2317,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2329,7 +2329,7 @@ namespace Mengine
                         , _accountID.c_str()
                         , _setting.c_str()
                         , setting_value
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2344,9 +2344,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const Char * setting_value = nullptr;
                 if( account->getSetting( _setting, &setting_value ) == false )
@@ -2354,7 +2354,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2384,9 +2384,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 const Char * setting_value = nullptr;
                 if( account->getSetting( _setting, &setting_value ) == false )
@@ -2394,7 +2394,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2406,7 +2406,7 @@ namespace Mengine
                         , _accountID.c_str()
                         , _setting.c_str()
                         , setting_value
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2421,9 +2421,9 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _default, "account '%s' is none"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
                     , _accountID.c_str()
-                    );
+                );
 
                 if( account->hasSetting( _setting, nullptr ) == false )
                 {
@@ -2436,7 +2436,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        );
+                    );
 
                     return _default;
                 }
@@ -2448,7 +2448,7 @@ namespace Mengine
                         , _accountID.c_str()
                         , _setting.c_str()
                         , setting_value
-                        );
+                    );
 
                     return _default;
                 }
@@ -2462,7 +2462,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2479,7 +2479,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2498,7 +2498,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2515,7 +2515,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2532,7 +2532,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2549,7 +2549,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2566,7 +2566,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2583,7 +2583,7 @@ namespace Mengine
                     ->hasGlobalAccount() == false )
                 {
                     LOGGER_ERROR( "account is none"
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2599,7 +2599,7 @@ namespace Mengine
                 AccountInterfacePtr account = ACCOUNT_SERVICE()
                     ->createAccount( MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none() );
+                MENGINE_ASSERTION_MEMORY_PANIC( account );
 
                 const ConstString & accountId = account->getID();
 
@@ -2613,7 +2613,7 @@ namespace Mengine
                 AccountInterfacePtr account = ACCOUNT_SERVICE()
                     ->createGlobalAccount( MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none() );
+                MENGINE_ASSERTION_MEMORY_PANIC( account );
 
                 const ConstString & accountId = account->getID();
 
@@ -2710,7 +2710,7 @@ namespace Mengine
                     ->hasCurrentAccount() == false )
                 {
                     LOGGER_ERROR( "currentAccount is none"
-                        );
+                    );
 
                     return ConstString::none();
                 }
@@ -2728,7 +2728,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid file '%ls' convert to utf8"
                         , _filePath.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -2738,7 +2738,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid account '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
@@ -2747,7 +2747,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "'%s' invalid get pickle size"
                         , _accountID.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -2757,7 +2757,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "'%s' invalid get memory for '%zu' size"
                     , _accountID.c_str()
                     , size
-                    );
+                );
 
                 void * memory_buffer = buffer->getBuffer();
                 size_t memory_size = buffer->getSize();
@@ -2766,7 +2766,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "account '%s' invalid pickle"
                         , _accountID.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -2776,7 +2776,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' invalid write file '%ls'"
                         , _accountID.c_str()
                         , _filePath.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -2791,7 +2791,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid convert file '%ls' to utf8"
                         , _filePath.c_str()
-                        );
+                    );
 
                     return _kernel->ret_none();
                 }
@@ -2799,28 +2799,28 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "invalid get account '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid get account '%s'"
                     , _accountID.c_str()
-                    );
+                );
 
                 FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
                 MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filePath );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "account '%s' invalid load file '%ls'"
+                MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "account '%s' invalid load file '%ls'"
                     , _accountID.c_str()
                     , _filePath.c_str()
-                    );
+                );
 
                 void * binaryBuffer_memory = binaryBuffer->getBuffer();
                 size_t binaryBuffer_size = binaryBuffer->getSize();
 
                 PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( py_data, _kernel->ret_none(), "account '%s' invalid unpickle file '%ls'"
+                MENGINE_ASSERTION_MEMORY_PANIC( py_data, "account '%s' invalid unpickle file '%ls'"
                     , _accountID.c_str()
                     , _filePath.c_str()
-                    );
+                );
 
                 return py_data;
             }
@@ -2859,7 +2859,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid get account '%s'"
                         , _accountID.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -2869,7 +2869,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid convert file '%ls' to utf8"
                         , _filePath.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -2889,7 +2889,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getNodeScreenPosition( Node * _node )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _node, mt::vec2f( 0.f, 0.f ), "node is null" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "node is null" );
 
                 RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node );
 
@@ -2923,7 +2923,7 @@ namespace Mengine
                 {
                     pybind::throw_exception( "invalid get key '%s'"
                         , _key.c_str()
-                        );
+                    );
                 }
 
                 size_t text_size;
@@ -2935,7 +2935,7 @@ namespace Mengine
                     pybind::throw_exception( "invalid text key '%s' convert '%s' to unicode"
                         , _key.c_str()
                         , text
-                        );
+                    );
                 }
 
                 return unicode;
@@ -2949,7 +2949,7 @@ namespace Mengine
                 {
                     pybind::throw_exception( "invalid get key '%s'"
                         , _key.c_str()
-                        );
+                    );
                 }
 
                 size_t text_size;

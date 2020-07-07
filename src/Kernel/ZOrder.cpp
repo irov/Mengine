@@ -27,7 +27,7 @@ namespace Mengine
 
         ZOrderRenderPtr render = Helper::makeFactorableUnique<ZOrderRender>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( render, RenderInterfacePtr::none() );
+        MENGINE_ASSERTION_MEMORY_PANIC( render );
 
         render->setRelationRender( this );
         render->setZOrder( _zOrder );

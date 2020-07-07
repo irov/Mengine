@@ -23,7 +23,7 @@ namespace Mengine
     {
         b2Joint * b2_joint = _world->CreateJoint( _jointDef );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( b2_joint, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( b2_joint );
 
         b2_joint->SetUserData( this );
 

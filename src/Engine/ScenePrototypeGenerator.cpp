@@ -22,7 +22,7 @@ namespace Mengine
         ScenePtr scene = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr, "can't create '%s' '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( scene, "can't create '%s' '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

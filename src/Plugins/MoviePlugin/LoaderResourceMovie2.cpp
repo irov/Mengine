@@ -39,7 +39,7 @@ namespace Mengine
 
         const DataflowInterfacePtr & dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
 
         content->setDataflow( dataflow );
 

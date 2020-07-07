@@ -310,7 +310,7 @@ namespace Mengine
         ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, false, "failed create defaultArrow 'Default'" );
+        MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, "failed create defaultArrow 'Default'" );
 
         ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
 

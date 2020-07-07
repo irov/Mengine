@@ -145,7 +145,7 @@ namespace Mengine
 
         ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->initialize( _fileGroup, _filePath, _observer );
         task->setImageCodec( _codecType );
@@ -218,7 +218,7 @@ namespace Mengine
 
         ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->initialize( _fileGroup, _filePath, _observer );
         task->setSoundCodec( _codecType );
@@ -261,7 +261,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, false, "'%s':'%s' invalid dataflow is nullptr"
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, "'%s':'%s' invalid dataflow is nullptr"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -296,7 +296,7 @@ namespace Mengine
 
         ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->initialize( _fileGroup, _filePath, _observer );
 
@@ -397,7 +397,7 @@ namespace Mengine
 
         ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->initialize( _fileGroup, _filePath, _observer );
 

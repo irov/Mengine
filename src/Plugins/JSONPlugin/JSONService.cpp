@@ -110,7 +110,7 @@ namespace Mengine
     {
         JSONStoragePtr storage = m_factoryJSONStorage->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( storage, nullptr, "invalid create json storage" );
+        MENGINE_ASSERTION_MEMORY_PANIC( storage, "invalid create json storage" );
 
         if( _copy == true )
         {
@@ -139,7 +139,7 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         JSONStorageInterfacePtr storage = this->loadJSONStream( stream, _doc );
 
@@ -148,11 +148,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JSONStorageInterfacePtr JSONService::loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream );
 
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         JSONStorageInterfacePtr storage = this->createJSON( memory, _doc );
 
@@ -161,14 +161,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JSONStorageInterfacePtr JSONService::createJSON( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( _memory );
 
         const void * memory_buffer = _memory->getBuffer();
         size_t memory_size = _memory->getSize();
 
         JSONStorageInterfacePtr storage = this->createJSONBuffer( memory_buffer, memory_size, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( storage, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( storage );
 
         return storage;
     }

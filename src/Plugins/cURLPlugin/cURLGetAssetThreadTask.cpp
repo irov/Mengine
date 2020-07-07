@@ -40,7 +40,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePathTemp, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "get asset url '%s' invalid open file '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "get asset url '%s' invalid open file '%s:%s'"
             , m_url.c_str()
             , m_fileGroup->getName().c_str()
             , m_filePathTemp.c_str()

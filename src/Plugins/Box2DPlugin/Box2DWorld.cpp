@@ -104,7 +104,7 @@ namespace Mengine
 
         Box2DBodyPtr body = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( body, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( body );
 
         if( body->initialize( m_scaler, m_world, &bodyDef ) == false )
         {
@@ -528,7 +528,7 @@ namespace Mengine
     {
         Box2DJointPtr join = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( join, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( join );
 
         if( join->initialize( m_world, _jointDef ) == false )
         {

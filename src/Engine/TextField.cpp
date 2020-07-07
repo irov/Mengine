@@ -1048,7 +1048,7 @@ namespace Mengine
         const TextFontInterfacePtr & font = TEXT_SERVICE()
             ->getFont( fontName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( font, false, "font '%s' can't found font '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( font, "font '%s' can't found font '%s'"
             , this->getName().c_str()
             , fontName.c_str()
         );
@@ -1078,7 +1078,7 @@ namespace Mengine
         TextEntryInterfacePtr textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
 
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( textEntry, "'%s' can't find text ID '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s' can't find text ID '%s'"
             , this->getName().c_str()
             , aliasTestId.c_str()
         );
@@ -1542,7 +1542,7 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, 0, "'%s:%s' not compile"
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s:%s' not compile"
             , this->getName().c_str()
             , m_textId.c_str()
         );
@@ -1572,7 +1572,7 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, false, "'%s:%s' invalid get text entry can't setup text ID"
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s:%s' invalid get text entry can't setup text ID"
             , this->getName().c_str()
             , m_textId.c_str()
         );

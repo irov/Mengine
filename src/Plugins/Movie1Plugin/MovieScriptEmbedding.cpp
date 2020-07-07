@@ -59,7 +59,7 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, mt::vec3f( 0.f, 0.f, 0.f ), "'%s' invalid setup resource"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "'%s' invalid setup resource"
                 , _movie->getName().c_str()
             );
 
@@ -433,7 +433,7 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0.f, "'%s' not activate"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "'%s' not activate"
                 , _movie->getName().c_str()
             );
 
@@ -446,7 +446,7 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0.f, "'%s' not activate"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "'%s' not activate"
                 , _movie->getName().c_str()
             );
 
@@ -459,7 +459,7 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0, "'%s' not activate"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "'%s' not activate"
                 , _movie->getName().c_str()
             );
 
@@ -472,7 +472,7 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, mt::vec2f::identity(), "'%s' not activate"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "'%s' not activate"
                 , _movie->getName().c_str()
             );
 
@@ -561,7 +561,7 @@ namespace Mengine
 
             const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( framePack, pybind::make_invalid_list_t(), "sub_movie '%s' not found layer '%s' frame pack is null"
+            MENGINE_ASSERTION_MEMORY_PANIC( framePack, "sub_movie '%s' not found layer '%s' frame pack is null"
                 , sub_movie->getName().c_str()
                 , _name.c_str()
             );
@@ -793,7 +793,7 @@ namespace Mengine
 
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, mt::vec3f::identity(), "'%s' invalid setup resource"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "'%s' invalid setup resource"
                 , _movie->getName().c_str()
             );
 
@@ -882,7 +882,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
@@ -1179,7 +1179,7 @@ namespace Mengine
             const ResourceMoviePtr & resourceMovie = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0.f, "invalid movie resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "invalid movie resource '%s'"
                 , _resourceName.c_str()
             );
 
@@ -1192,7 +1192,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_getNullObjectsFromResourceMovie( pybind::kernel_interface * _kernel, ResourceMovie * _resource )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _resource, _kernel->ret_none() );
+            MENGINE_ASSERTION_MEMORY_PANIC( _resource );
 
             pybind::dict dictResult( _kernel );
 
@@ -1243,7 +1243,7 @@ namespace Mengine
             const ResourceMoviePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
             bool result = s_hasMovieElement2( resource, _slotName, _typeName );
 

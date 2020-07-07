@@ -27,7 +27,7 @@ namespace Mengine
 
         b2Body * b2_body = _world->CreateBody( _bodyDef );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( b2_body, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( b2_body );
 
         b2_body->SetUserData( this );
 

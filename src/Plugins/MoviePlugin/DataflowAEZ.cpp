@@ -256,7 +256,7 @@ namespace Mengine
     {
         Movie2DataPtr data = m_factoryMovieData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( data );
 
         return data;
     }
@@ -265,7 +265,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         return memory;
     }

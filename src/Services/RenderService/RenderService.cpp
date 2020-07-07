@@ -206,7 +206,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture %d:%d"
             , null_width
             , null_height
         );
@@ -222,7 +222,7 @@ namespace Mengine
         size_t pitch = 0;
         void * textureData = image->lock( &pitch, 0, rect, false );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textureData, false, "invalid lock null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
             , null_width
             , null_height
         );
@@ -273,7 +273,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture %d:%d"
             , null_width
             , null_height
         );
@@ -289,7 +289,7 @@ namespace Mengine
         size_t pitch = 0;
         void * textureData = image->lock( &pitch, 0, rect, false );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textureData, false, "invalid lock null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
             , null_width
             , null_height
         );
@@ -1041,7 +1041,7 @@ namespace Mengine
 
         RenderVertexBufferInterfacePtr vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer, RenderBatchInterfacePtr::none() );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer );
 
         vertexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
 
@@ -1051,7 +1051,7 @@ namespace Mengine
 
         RenderIndexBufferInterfacePtr indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer, RenderBatchInterfacePtr::none() );
+        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer );
 
         indexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
 

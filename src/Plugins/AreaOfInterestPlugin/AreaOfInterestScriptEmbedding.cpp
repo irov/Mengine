@@ -61,7 +61,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
 

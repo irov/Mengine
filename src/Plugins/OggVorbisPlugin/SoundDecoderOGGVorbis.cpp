@@ -108,7 +108,7 @@ namespace Mengine
 
         vorbis_info * vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vorbisInfo, false, "invalid ov_info" );
+        MENGINE_ASSERTION_MEMORY_PANIC( vorbisInfo, "invalid ov_info" );
 
 #ifdef MENGINE_SOUND_STEREO_ONLY
         MENGINE_ASSERTION_FATAL( vorbisInfo->channels == 2, "invalid channels %d need %d"

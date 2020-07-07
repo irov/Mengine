@@ -78,7 +78,7 @@ namespace Mengine
 
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
@@ -92,7 +92,7 @@ namespace Mengine
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
@@ -112,7 +112,7 @@ namespace Mengine
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 
@@ -126,7 +126,7 @@ namespace Mengine
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
         receiver->initialize( _cb, _args );
 

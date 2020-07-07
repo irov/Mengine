@@ -51,7 +51,7 @@ namespace Mengine
 
             Factory * factory = Helper::newT<FactoryPool<Type, Count, F>>();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
 #ifdef MENGINE_DEBUG
             factory->setDocument( _doc );

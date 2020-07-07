@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotShape::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceShape, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceShape, "'%s' resource is null"
             , this->getName().c_str()
         );
 

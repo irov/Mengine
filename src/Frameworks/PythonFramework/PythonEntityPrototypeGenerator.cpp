@@ -91,7 +91,7 @@ namespace Mengine
         EventablePtr eventable = SCRIPT_SERVICE()
             ->eventableEntity( py_type );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( eventable, pybind::object::get_invalid(), "type '%s' prototype '%s' invalid eventable entity"
+        MENGINE_ASSERTION_MEMORY_PANIC( eventable, "type '%s' prototype '%s' invalid eventable entity"
             , m_category.c_str()
             , m_prototype.c_str()
         );

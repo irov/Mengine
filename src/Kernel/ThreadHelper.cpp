@@ -67,7 +67,7 @@ namespace Mengine
             ThreadJobPtr threadJob = THREAD_SERVICE()
                 ->createJob( _sleep, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( threadJob, false, "invalid create thread job" );
+            MENGINE_ASSERTION_MEMORY_PANIC( threadJob, "invalid create thread job" );
 
             if( THREAD_SERVICE()
                 ->createThread( _threadName, MENGINE_THREAD_PRIORITY_NORMAL, _doc ) == false )

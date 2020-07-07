@@ -115,7 +115,7 @@ namespace Mengine
 
             spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( animation, "'%s' invalid found animation '%s'"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -447,7 +447,7 @@ namespace Mengine
 
             spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( animation, "'%s' invalid found animation '%s'"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -526,7 +526,7 @@ namespace Mengine
 
             spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( animation, "'%s' invalid found animation '%s'"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -587,7 +587,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Spine::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, "'%s' resource is null"
             , m_name.c_str()
         );
 
@@ -604,14 +604,12 @@ namespace Mengine
         spSkeletonData * skeletonData = m_resourceSpineSkeleton->getSkeletonData();
 
         spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData );
 
         m_animationStateData = animationStateData;
 
         spSkeleton * skeleton = spSkeleton_create( skeletonData );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( skeleton, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( skeleton );
 
         m_skeleton = skeleton;
 
@@ -621,7 +619,7 @@ namespace Mengine
         {
             spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( desc.name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( animation, "'%s' invalid found animation '%s'"
                 , this->getName().c_str()
                 , desc.name.c_str()
             );
@@ -744,7 +742,7 @@ namespace Mengine
 
         RenderMaterialInterfacePtr material = Helper::makeImageMaterial( ResourceImagePtr::from( _resourceImage ), ConstString::none(), blendMode, false, false, MENGINE_DOCUMENT_FORWARD );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' resource '%s' image '%s' m_material is NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' resource '%s' image '%s' m_material is NULL"
             , this->getName().c_str()
             , m_resourceSpineSkeleton->getName().c_str()
             , _resourceImage->getName().c_str()

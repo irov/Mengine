@@ -34,14 +34,14 @@ namespace Mengine
         ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating );
 
         m_mutexUpdating = mutexUpdating;
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         memory->newBuffer( MENGINE_OPENAL_STREAM_BUFFER_SIZE );
 

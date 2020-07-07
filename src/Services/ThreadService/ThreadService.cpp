@@ -143,7 +143,7 @@ namespace Mengine
         ThreadIdentityInterfacePtr identity = THREAD_SYSTEM()
             ->createThread( _threadName, _priority, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( identity, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( identity );
 
         ThreadDesc td;
         td.name = _threadName;

@@ -27,7 +27,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
@@ -119,14 +119,14 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.fileGroup, desc.path, false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "data '%s' invalid open file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
             , desc.path.c_str()
         );
 
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "data '%s' invalid load stream archive '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "data '%s' invalid load stream archive '%s'"
             , _name.c_str()
             , desc.path.c_str()
         );
@@ -161,7 +161,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( desc.fileGroup, desc.path, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "data '%s' invalid open file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
             , desc.path.c_str()
         );

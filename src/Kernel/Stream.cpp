@@ -81,7 +81,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, nullptr, "invalid get memory '%zu' (compress)"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "invalid get memory '%zu' (compress)"
                 , compress_size
             );
 
@@ -114,13 +114,13 @@ namespace Mengine
             MemoryBufferInterfacePtr binaryBuffer = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "invalid create memory cache [size: %zu]"
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "invalid create memory cache [size: %zu]"
                 , binary_size
             );
 
             void * binaryMemory = binaryBuffer->newBuffer( binary_size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binaryMemory, nullptr, "invalid get memory '%zu' (binary)"
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryMemory, "invalid get memory '%zu' (binary)"
                 , binary_size
             );
 
@@ -173,7 +173,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, compress_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "invalid get memory '%u' (compress)"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "invalid get memory '%u' (compress)"
                 , compress_size
             );
 
@@ -260,12 +260,12 @@ namespace Mengine
             MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE()
                 ->compressBuffer( _archivator, _data, _size, _compress );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, false, "invalid compress" );
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, "invalid compress" );
 
             const void * compressBuffer = compress_memory->getBuffer();
             size_t compressSize = compress_memory->getSize();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compressBuffer, false, "invalid get memory" );
+            MENGINE_ASSERTION_MEMORY_PANIC( compressBuffer, "invalid get memory" );
 
             uint32_t value_crc32 = _crc32 == true ? Helper::make_crc32( compressBuffer, compressSize ) : 0;
 
@@ -350,7 +350,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%zu' (compress)"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, "invalid get memory '%zu' (compress)"
                 , compress_size
             );
 
@@ -386,7 +386,7 @@ namespace Mengine
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%zu' (binary)"
+            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, "invalid get memory '%zu' (binary)"
                 , binary_size
             );
 
@@ -442,7 +442,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%zu' (compress)"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, "invalid get memory '%zu' (compress)"
                 , compress_size
             );
 
@@ -478,7 +478,7 @@ namespace Mengine
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%zu' (binary)"
+            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, "invalid get memory '%zu' (binary)"
                 , binary_size
             );
 

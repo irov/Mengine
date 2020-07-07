@@ -469,7 +469,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _args );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
 
@@ -553,7 +553,7 @@ namespace Mengine
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 node->disable();
 
@@ -582,7 +582,7 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
 
                 affectorHub->stopAffectors( ETA_POSITION );
             }
@@ -1611,7 +1611,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector );
 
                 s_Node_moveStop( _node );
 
@@ -1817,7 +1817,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector );
 
                 s_Node_moveStop( _node );
 
@@ -1837,7 +1837,7 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
 
                 affectorHub->stopAffectors( ETA_ANGLE );                
             }
@@ -1953,7 +1953,7 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
 
                 affectorHub->stopAffectors( ETA_SCALE );
             }
@@ -2005,7 +2005,7 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
 
                 affectorHub->stopAffectors( ETA_COLOR );
             }

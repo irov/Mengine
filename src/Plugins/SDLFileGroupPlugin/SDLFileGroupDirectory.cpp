@@ -222,7 +222,7 @@ namespace Mengine
 
         SDLFileInputStreamPtr stream = m_factoryInputStream->createObject( _doc );
         
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         if( _fileGroup != nullptr )
         {
@@ -252,7 +252,7 @@ namespace Mengine
     {
         SDLFileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         return stream;
     }

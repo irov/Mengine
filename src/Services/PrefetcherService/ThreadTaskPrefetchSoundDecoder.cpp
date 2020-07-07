@@ -44,14 +44,14 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s'"
             , this->getFileGroup()->getName().c_str()
         );
 
         m_soundDecoder = CODEC_SERVICE()
             ->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_soundDecoder, false, "invalid create codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_soundDecoder, "invalid create codec '%s'"
             , m_soundCodec.c_str()
         );
 
@@ -75,7 +75,7 @@ namespace Mengine
         MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
             ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, false, "file '%s:%s' invalid create memory input [size %zu]"
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, "file '%s:%s' invalid create memory input [size %zu]"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
             , stream_size
@@ -83,7 +83,7 @@ namespace Mengine
 
         void * memory = memoryInput->newBuffer( stream_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "file '%s:%s' invalid alloc memory '%zu'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "file '%s:%s' invalid alloc memory '%zu'"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
             , stream_size

@@ -81,7 +81,7 @@ namespace Mengine
 
         png_structp png_ptr = png_create_write_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, false, "PNG encoder error: Can't create write structure" );
+        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "PNG encoder error: Can't create write structure" );
 
         m_png_ptr = png_ptr;
 
@@ -113,7 +113,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);

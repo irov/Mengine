@@ -34,7 +34,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
@@ -50,18 +50,18 @@ namespace Mengine
 
         MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_cache, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( data_cache );
 
         const void * data_memory = data_cache->getBuffer();
         size_t data_size = data_cache->getSize();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_memory, false, "invalid cache memory '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( data_memory, "invalid cache memory '%s'"
             , full_inputFilePath.c_str()
         );
 
         OutputStreamInterfacePtr output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output, false, "invalid open '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( output, "invalid open '%s'"
             , full_outputFilePath.c_str()
         );
 

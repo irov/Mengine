@@ -122,7 +122,7 @@ namespace Mengine
         MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxyInput( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         return memory;
     }

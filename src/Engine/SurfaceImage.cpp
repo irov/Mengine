@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImage::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' resource is null"
             , this->getName().c_str()
         );
 
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getMaxSize() const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::vec2f::identity(), "'%s' not setup resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup resource"
             , this->getName().c_str()
         );
 
@@ -90,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getSize() const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::vec2f::identity(), "'%s' not setup resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup resource"
             , this->getName().c_str()
         );
 
@@ -101,7 +101,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getOffset() const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::vec2f::identity(), "'%s' not setup resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup resource"
             , this->getName().c_str()
         );
 
@@ -112,7 +112,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SurfaceImage::getUVCount() const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, 0, "'%s' not setup resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup resource"
             , this->getName().c_str()
         );
 
@@ -135,7 +135,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceImage::getUV( uint32_t _index ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::uv4f::identity(), "'%s' not setup texture"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup texture"
             , this->getName().c_str()
         );
 
@@ -163,7 +163,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImage::getColor() const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, Color::identity(), "surface image '%s' not setup texture"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "surface image '%s' not setup texture"
             , this->getName().c_str()
         );
 
@@ -174,7 +174,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImage::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_resourceImage, "'%s' not setup texture"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup texture"
             , this->getName().c_str()
         );
 
@@ -198,7 +198,7 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' resource '%s' m_material is NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' resource '%s' m_material is NULL"
             , this->getName().c_str()
             , m_resourceImage->getName().c_str()
         );

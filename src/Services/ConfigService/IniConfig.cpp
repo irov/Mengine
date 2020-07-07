@@ -314,7 +314,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool IniConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "invalid stream config" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
         IniUtil::IniStore store;
         if( IniUtil::loadIni( store, _stream, _doc ) == false )

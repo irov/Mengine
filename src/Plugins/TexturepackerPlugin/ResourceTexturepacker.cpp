@@ -119,7 +119,7 @@ namespace Mengine
         {
             const ResourceImagePtr & resourceImage = resourceBank->getResource( m_resourceImageName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' group '%s' invalid get image resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , m_resourceImageName.c_str()
@@ -130,7 +130,7 @@ namespace Mengine
 
         const ResourcePtr & resourceJSON = resourceBank->getResource( m_resourceJSONName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, false, "'%s' group '%s' invalid get image resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, "'%s' group '%s' invalid get image resource '%s'"
             , this->getName().c_str()
             , this->getGroupName().c_str()
             , m_resourceJSONName.c_str()
@@ -159,7 +159,7 @@ namespace Mengine
 
             ResourceImagePtr resource = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
             const ContentInterface * json_content = m_resourceJSON->getContent();
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
@@ -197,7 +197,7 @@ namespace Mengine
                 ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
                     ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( decoder, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( decoder );
 
                 if( decoder->prepareData( stream ) == false )
                 {
@@ -290,7 +290,7 @@ namespace Mengine
 
             ResourceImagePtr image = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImage" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( image, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( image );
 
             image->setName( c_name );
             image->setTexture( atlasTexture );

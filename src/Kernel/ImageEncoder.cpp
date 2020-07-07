@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageEncoder::setOptions( const CodecOptions * _options )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _options );
         MENGINE_ASSERTION_TYPE( _options, const ImageCodecOptions * );
 
         m_options = *static_cast<const ImageCodecOptions *>(_options);

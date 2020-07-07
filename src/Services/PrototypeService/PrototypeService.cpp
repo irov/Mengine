@@ -83,7 +83,7 @@ namespace Mengine
     {
         PrototypeGeneratorInterfacePtr generator = m_generators.erase( _category, _prototype );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, false, "not found '%s' prototype '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, "not found '%s' prototype '%s'"
             , _category.c_str()
             , _prototype.c_str()
         );
@@ -114,7 +114,7 @@ namespace Mengine
     {
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, PrototypeGeneratorInterfacePtr::none(), "prototype not found '%s' generator '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found '%s' generator '%s'"
             , _category.c_str()
             , _prototype.c_str()
         );
@@ -126,7 +126,7 @@ namespace Mengine
     {
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, nullptr, "prototype not found '%s:%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found '%s:%s' doc '%s'"
             , _category.c_str()
             , _prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

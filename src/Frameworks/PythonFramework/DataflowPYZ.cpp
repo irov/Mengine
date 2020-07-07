@@ -66,7 +66,7 @@ namespace Mengine
     {
         ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( data );
 
         return data;
     }
@@ -86,7 +86,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         return memory;
     }
@@ -101,7 +101,7 @@ namespace Mengine
         const uint8_t * source_buffer = _memory->getBuffer();
         size_t source_size = _memory->getSize();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, false, "module invalid buffer [doc: %s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, "module invalid buffer [doc: %s]"
             , MENGINE_DOCUMENT_STR( _doc ) 
         );
 
@@ -120,7 +120,7 @@ namespace Mengine
 
         PyObject * py_code = m_kernel->marshal_get_object( (char *)source_buffer + 8, source_size - 8 );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "module invalid marshal get object [doc: %s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( py_code, "module invalid marshal get object [doc: %s]"
             , MENGINE_DOCUMENT_STR( _doc )
             );
 

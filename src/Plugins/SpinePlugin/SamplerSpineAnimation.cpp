@@ -86,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerSpineAnimation::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, "'%s' resource is null"
             , this->getName().c_str()
         );
 
@@ -104,13 +104,13 @@ namespace Mengine
 
         spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData );
 
         m_animationStateData = animationStateData;
 
         spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( m_animationName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( animation, "'%s' invalid found animation '%s'"
             , this->getName().c_str()
             , m_animationName.c_str()
         );

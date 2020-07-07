@@ -38,13 +38,13 @@ namespace Mengine
     {
         DataInterfacePtr data = _dataflow->create( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr, "invalid create data '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create data '%s'"
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
         MemoryInterfacePtr memory = _dataflow->load( _stream, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr, "invalid load data (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid load data (doc: %s)"
             , MENGINE_DOCUMENT_STR( _doc )
         );
 

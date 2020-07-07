@@ -21,7 +21,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
 
         m_fileGroup = fileGroup;
 

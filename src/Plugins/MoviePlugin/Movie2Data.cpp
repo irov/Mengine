@@ -85,7 +85,7 @@ namespace Mengine
         const ResourcePtr & resource = RESOURCE_SERVICE()
             ->getResourceReference( Helper::stringizeString( _resourceName ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "not found resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "not found resource '%s'"
             , _resourceName
         );
 

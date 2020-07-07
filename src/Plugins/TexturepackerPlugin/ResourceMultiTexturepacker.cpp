@@ -85,7 +85,7 @@ namespace Mengine
         {
             const ResourcePtr & resourceTexturepacker = resourceBank->getResource( resourceTexturepackerName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker, false, "'%s' group '%s' invalid get texturepacker resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker, "'%s' group '%s' invalid get texturepacker resource '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , resourceTexturepackerName.c_str()

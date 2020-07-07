@@ -31,7 +31,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
         const ImageCodecDataInfo * imageInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);

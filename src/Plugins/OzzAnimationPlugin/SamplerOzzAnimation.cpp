@@ -77,8 +77,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzAnimation, false );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzSkeleton, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzAnimation );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzSkeleton );
 
         if( m_resourceOzzAnimation->compile() == false )
         {

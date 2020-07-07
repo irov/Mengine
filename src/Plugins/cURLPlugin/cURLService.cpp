@@ -107,7 +107,7 @@ namespace Mengine
         ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadQueue, false, "invalid create task queue" );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadQueue, "invalid create task queue" );
 
         m_threadQueue = threadQueue;
 
@@ -197,7 +197,7 @@ namespace Mengine
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
         task->setHeaders( _headers );
@@ -236,7 +236,7 @@ namespace Mengine
 
         cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
         task->setHeaders( _headers );
@@ -275,7 +275,7 @@ namespace Mengine
 
         cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
         task->setHeaders( _headers );
@@ -327,7 +327,7 @@ namespace Mengine
 
         cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
         task->setRequestId( task_id );

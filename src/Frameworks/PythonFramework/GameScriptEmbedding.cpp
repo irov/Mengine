@@ -94,7 +94,7 @@ namespace Mengine
         ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
             ->importModule( personality );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid import module '%s'"
             , personality.c_str()
         );
 

@@ -616,7 +616,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -767,7 +767,7 @@ namespace Mengine
                     , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -815,7 +815,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -870,7 +870,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -933,7 +933,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -957,7 +957,7 @@ namespace Mengine
                 , const pybind::object & _cb
                 , const pybind::args & _args )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _follow, 0, "invalid create follower" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _follow, "invalid create follower" );
 
                 if( _node->isActivate() == false )
                 {
@@ -1000,7 +1000,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -1065,7 +1065,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -1131,7 +1131,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -1348,7 +1348,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -1388,8 +1388,8 @@ namespace Mengine
             public:
                 bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
                 {
-                    MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
-                    MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( _node, "invalid create followTo" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( _target, "invalid create followTo" );
 
                     m_node = _node;
                     m_target = _target;
@@ -1647,8 +1647,8 @@ namespace Mengine
             public:
                 bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
                 {
-                    MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
-                    MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( _node, "invalid create followTo" );
+                    MENGINE_ASSERTION_MEMORY_PANIC( _target, "invalid create followTo" );
 
                     m_node = _node;
                     m_target = _target;
@@ -1876,7 +1876,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_angleStop( _node );
 
@@ -1935,7 +1935,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_angleStop( _node );
 
@@ -1985,7 +1985,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_scaleStop( _node );
 
@@ -2014,7 +2014,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Node_colorTo( Node * _node, float _time, const Color & _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "_node is None" );
 
                 if( _node->isActivate() == false )
                 {
@@ -2036,13 +2036,13 @@ namespace Mengine
 
                 RenderInterface * render = _node->getRender();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' is not renderable"
+                MENGINE_ASSERTION_MEMORY_PANIC( render, "node '%s' is not renderable"
                     , _node->getName().c_str()
                     );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' not found easing '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, "node '%s' not found easing '%s'"
                     , _node->getName().c_str()
                     , _easingType.c_str()
                     );
@@ -2061,7 +2061,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
                     , _node->getName().c_str()
                     );
 
@@ -2094,7 +2094,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "_node is None" );
 
                 if( _node->isActivate() == false )
                 {
@@ -2116,14 +2116,14 @@ namespace Mengine
 
                 RenderInterface * render = _node->getRender();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' type '%s' is not renderable"
+                MENGINE_ASSERTION_MEMORY_PANIC( render, "node '%s' type '%s' is not renderable"
                     , _node->getName().c_str()
                     , _node->getType().c_str()
                     );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' type '%s' not found easing '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, "node '%s' type '%s' not found easing '%s'"
                     , _node->getName().c_str()
                     , _node->getType().c_str()
                     , _easingType.c_str()
@@ -2143,7 +2143,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
                     , _node->getName().c_str()
                     );
 

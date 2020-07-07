@@ -70,7 +70,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( _fileGroupName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, 0, "invalid get file group '%s' for url '%s' file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "invalid get file group '%s' for url '%s' file '%s'"
             , _fileGroupName.c_str()
             , _url.c_str()
             , _filePath.c_str()

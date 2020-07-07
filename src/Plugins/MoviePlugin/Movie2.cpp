@@ -668,7 +668,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, false, "name '%s' invalid setup '%s' not compile"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, "name '%s' invalid setup '%s' not compile"
             , this->getName().c_str()
             , _eventName.c_str()
         );
@@ -1136,7 +1136,7 @@ namespace Mengine
             {
                 const ShapeQuadFixedPtr & node = movie2->getSprite_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
                     , movie2->getName().c_str()
                     , movie2->getResourceMovie2()->getName().c_str()
                     , movie2->getCompositionName().c_str()
@@ -2105,7 +2105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceMovie2, false, "name '%s' can't setup resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceMovie2, "name '%s' can't setup resource"
             , this->getName().c_str()
         );
 
@@ -2121,7 +2121,7 @@ namespace Mengine
 
         const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( compositionData, false, "name '%s' resource '%s' not found composition '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( compositionData, "name '%s' resource '%s' not found composition '%s'"
             , this->getName().c_str()
             , m_resourceMovie2->getName().c_str()
             , m_compositionName.c_str()
@@ -2163,7 +2163,7 @@ namespace Mengine
 
         const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( composition, false, "name '%s' resource '%s' invalid create composition '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( composition, "name '%s' resource '%s' invalid create composition '%s'"
             , this->getName().c_str()
             , m_resourceMovie2->getName().c_str()
             , m_compositionName.c_str()

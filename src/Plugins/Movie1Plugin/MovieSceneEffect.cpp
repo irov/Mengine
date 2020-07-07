@@ -45,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieSceneEffect::setPropagateNode( Node * _propagate )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _propagate, false, "'%s' invalid set propagate node 'nullptr'"
+        MENGINE_ASSERTION_MEMORY_PANIC( _propagate, "'%s' invalid set propagate node 'nullptr'"
             , this->getName().c_str()
         );
 

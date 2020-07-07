@@ -129,7 +129,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceVideo, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceVideo, "'%s' resource is null"
             , this->getName().c_str()
         );
 
@@ -169,7 +169,7 @@ namespace Mengine
         RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
             ->createDynamicTexture( dataInfo->width, dataInfo->height, channels, 1, dataInfo->format, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dynamicTexture, false, "'%s' resource '%s' can`t create dynamic texture"
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicTexture, "'%s' resource '%s' can`t create dynamic texture"
             , this->getName().c_str()
             , m_resourceVideo->getName().c_str()
         );
@@ -191,7 +191,7 @@ namespace Mengine
     {
         VideoDecoderInterfacePtr videoDecoder = m_resourceVideo->createVideoDecoder( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, false, "'%s' can't create video decoder"
+        MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, "'%s' can't create video decoder"
             , this->getName().c_str()
         );
 
@@ -549,7 +549,7 @@ namespace Mengine
         size_t pitch = 0;
         void * lockRect = image->lock( &pitch, 0, rect, false );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( lockRect, false, "'%s:%s' invalid lock texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( lockRect, "'%s:%s' invalid lock texture %d:%d"
             , this->getName().c_str()
             , m_resourceVideo->getName().c_str()
             , rect.right
@@ -579,7 +579,7 @@ namespace Mengine
 
         RenderMaterialInterfacePtr material = this->makeTextureMaterial( 1, m_textures, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "surface '%s' invalid make material"
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "surface '%s' invalid make material"
             , this->getName().c_str()
         );
 

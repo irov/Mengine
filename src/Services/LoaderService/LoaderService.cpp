@@ -408,7 +408,7 @@ namespace Mengine
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder xml2bin for '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder xml2bin for '%s:%s'"
             , _fileGroup->getName().c_str()
             , _pathXml.c_str()
         );

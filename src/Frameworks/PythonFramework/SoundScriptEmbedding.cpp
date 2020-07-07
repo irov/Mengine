@@ -242,7 +242,7 @@ namespace Mengine
             {
                 SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
                     );
 
@@ -263,7 +263,7 @@ namespace Mengine
             {
                 SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
                     );
 
@@ -300,7 +300,7 @@ namespace Mengine
             {
                 SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, "can't get resource '%s'"
                     , _resourceName.c_str()
                     );
 
@@ -437,7 +437,7 @@ namespace Mengine
             {
                 SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
                     );
 
@@ -453,7 +453,7 @@ namespace Mengine
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, "invalid found easing '%s'"
                     , _easingType.c_str()
                     );
 
@@ -467,7 +467,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
@@ -506,7 +506,7 @@ namespace Mengine
             {
                 SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
                     );
 
@@ -522,7 +522,7 @@ namespace Mengine
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( easing, "invalid found easing '%s'"
                     , _easingType.c_str()
                     );
 
@@ -539,7 +539,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();

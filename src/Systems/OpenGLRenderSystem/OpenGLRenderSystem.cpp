@@ -306,7 +306,7 @@ namespace Mengine
     {
         OpenGLRenderVertexBufferPtr buffer = m_factoryRenderVertexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid create render vertex buffer (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create render vertex buffer (doc: %s)"
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -329,7 +329,7 @@ namespace Mengine
     {
         OpenGLRenderIndexBufferPtr buffer = m_factoryRenderIndexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid create render index buffer (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create render index buffer (doc: %s)"
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -352,7 +352,7 @@ namespace Mengine
     {
         OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, nullptr, "invalid create vertex attribute '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "invalid create vertex attribute '%s'"
             , _name.c_str()
         );
 
@@ -374,7 +374,7 @@ namespace Mengine
 
         OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
             , _name.c_str()
         );
 
@@ -415,7 +415,7 @@ namespace Mengine
 
         OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
             , _name.c_str()
         );
 
@@ -454,7 +454,7 @@ namespace Mengine
     {
         OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr, "invalid create program '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( program, "invalid create program '%s'"
             , _name.c_str()
         );
 
@@ -505,7 +505,7 @@ namespace Mengine
     {
         OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr, "invalid create program variable" );
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable" );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
@@ -831,7 +831,7 @@ namespace Mengine
 
         OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "invalid create" );
+        MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create" );
 
         if( image->initialize( ERIM_NORMAL
             , _mipmaps

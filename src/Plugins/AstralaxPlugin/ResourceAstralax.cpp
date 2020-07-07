@@ -44,7 +44,7 @@ namespace Mengine
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( container, false, "resource '%s' can't create container file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' can't create container file '%s'"
             , this->getName().c_str()
             , this->getFilePath().c_str()
         );

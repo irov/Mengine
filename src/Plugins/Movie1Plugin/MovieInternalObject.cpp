@@ -52,11 +52,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieInternalObject::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_movie, false, "'%s' movie not setup"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_movie, "'%s' movie not setup"
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceInternalObject, false, "'%s' resource not setup"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceInternalObject, "'%s' resource not setup"
             , this->getName().c_str()
         );
 
@@ -110,7 +110,7 @@ namespace Mengine
         NodePtr node = EVENTABLE_OTHER_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
             ->onMovieActivateInternal( m_internalObject );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node, false, "'%s' resource '%s' invalid get internal node '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "'%s' resource '%s' invalid get internal node '%s:%s'"
             , this->getName().c_str()
             , m_resourceInternalObject->getName().c_str()
             , m_resourceInternalObject->getInternalGroup().c_str()

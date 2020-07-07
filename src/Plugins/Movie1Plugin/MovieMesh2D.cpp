@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieMesh2D::compileResource_()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, false, "'%s' image resource null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' image resource null"
             , this->getName().c_str()
         );
 
@@ -94,7 +94,7 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' m_material is NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' m_material is NULL"
             , this->getName().c_str()
         );
 

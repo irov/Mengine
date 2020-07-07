@@ -127,7 +127,7 @@ namespace Mengine
     {
         AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( container, nullptr, "invalid create container doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( container, "invalid create container doc '%s'"
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -969,7 +969,7 @@ namespace Mengine
             }break;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, nullptr, "not support this astralax particle shader" );
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "not support this astralax particle shader" );
 
         MagicStatesCache key;
         key.textures = textures;

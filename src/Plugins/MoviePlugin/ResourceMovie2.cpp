@@ -200,7 +200,7 @@ namespace Mengine
 
         DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data, false, "resource movie '%s' group '%s' invalid compile data"
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "resource movie '%s' group '%s' invalid compile data"
             , this->getName().c_str()
             , this->getGroupName().c_str()
         );

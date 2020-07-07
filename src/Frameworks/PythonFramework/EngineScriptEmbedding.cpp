@@ -269,8 +269,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_testHotspot( const HotSpotPolygon * _left, const HotSpotPolygon * _right )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _left, false, "invalid left pointer" );
-                MENGINE_ASSERTION_MEMORY_PANIC( _right, false, "invalid right pointer" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _left, "invalid left pointer" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _right, "invalid right pointer" );
 
                 const Polygon & left_poligon = _left->getPolygon();
                 const mt::mat4f & left_wm = _left->getWorldMatrix();
@@ -374,7 +374,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_destroyScheduler( const SchedulerInterfacePtr & _sm )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _sm, false, "destroy scheduler is NULL" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _sm, "destroy scheduler is NULL" );
 
                 bool successful = PLAYER_SERVICE()
                     ->destroySchedulerManager( _sm );
@@ -852,7 +852,7 @@ namespace Mengine
                     EventablePtr eventable = SCRIPT_SERVICE()
                         ->eventableEntity( _type );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( eventable, nullptr, "scene '%s' invalid eventable '%s'"
+                    MENGINE_ASSERTION_MEMORY_PANIC( eventable, "scene '%s' invalid eventable '%s'"
                         , _name.c_str()
                         , _type.repr()
                         );
@@ -1347,7 +1347,7 @@ namespace Mengine
                 {
                     InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "image file '%s:%s' was not found"
+                    MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s:%s' was not found"
                         , fileGroup->getName().c_str()
                         , _filePath.c_str()
                     );
@@ -2519,7 +2519,7 @@ namespace Mengine
             {
                 RenderInterface * render = _node->getRender();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( render, nullptr, "node '%s' is not renderable"
+                MENGINE_ASSERTION_MEMORY_PANIC( render, "node '%s' is not renderable"
                     , _node->getName().c_str()
                     );
 
@@ -3368,7 +3368,7 @@ namespace Mengine
 
                 PyGlobalBaseHandlerPtr py_handler = stdex::intrusive_dynamic_cast<PyGlobalBaseHandlerPtr>(handler);
 
-                MENGINE_ASSERTION_MEMORY_PANIC( py_handler, false, "%d handler invalid"
+                MENGINE_ASSERTION_MEMORY_PANIC( py_handler, "%d handler invalid"
                     , _id
                     );
 
@@ -3699,7 +3699,7 @@ namespace Mengine
                 const ResourcePtr & resource = RESOURCE_SERVICE()
                     ->getResourceReference( _resourceName );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "resource '%s' not found"
+                MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' not found"
                     , _resourceName.c_str()
                     );
 

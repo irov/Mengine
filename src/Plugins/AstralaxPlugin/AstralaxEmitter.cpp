@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceAstralax, false, "emitter '%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceAstralax, "emitter '%s' resource is null"
             , this->getName().c_str()
         );
 
@@ -77,7 +77,7 @@ namespace Mengine
 
         AstralaxEmitterInterfacePtr emitter = m_resourceAstralax->createEmitter( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( emitter, false, "emitter '%s' can't create emitter source '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( emitter, "emitter '%s' can't create emitter source '%s'"
             , this->getName().c_str()
             , m_resourceAstralax->getName().c_str()
         );
@@ -622,14 +622,14 @@ namespace Mengine
         const ResourcePtr & resourceHIT = RESOURCE_SERVICE()
             ->getResource( m_emitterImageName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT, false, "emitter '%s' can't compile emitter hit '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT, "emitter '%s' can't compile emitter hit '%s'"
             , this->getName().c_str()
             , m_emitterImageName.c_str()
         );
 
         UnknownResourceImageDataInterface * unknownImageData = resourceHIT->getUnknown();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( unknownImageData, false, "emitter '%s' resource '%s' for emitter image don't base 'UnknownResourceImageDataInterface'"
+        MENGINE_ASSERTION_MEMORY_PANIC( unknownImageData, "emitter '%s' resource '%s' for emitter image don't base 'UnknownResourceImageDataInterface'"
             , this->getName().c_str()
             , m_emitterImageName.c_str()
         );

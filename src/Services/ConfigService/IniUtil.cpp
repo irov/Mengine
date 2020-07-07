@@ -30,7 +30,7 @@ namespace Mengine
 
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "open ini file '%s:%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "open ini file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );

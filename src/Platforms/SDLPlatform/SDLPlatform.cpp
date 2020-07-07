@@ -1507,7 +1507,7 @@ namespace Mengine
     {
         SDLDateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
 
         return dateTimeProvider;
     }

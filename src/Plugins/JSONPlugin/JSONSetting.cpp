@@ -23,7 +23,7 @@ namespace Mengine
         JSONStorageInterfacePtr storage = JSON_SERVICE()
             ->loadJSON( _fileGroup, _filePath, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( storage, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( storage );
 
         m_storage = storage;
 
@@ -33,7 +33,7 @@ namespace Mengine
             JSONStorageInterfacePtr storage = JSON_SERVICE()
                 ->loadJSON( _fileGroup, _filePath, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC_VOID( storage );
+            MENGINE_ASSERTION_MEMORY_PANIC( storage );
 
             m_storage = storage;
         } );

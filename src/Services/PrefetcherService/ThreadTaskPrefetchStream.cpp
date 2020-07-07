@@ -65,7 +65,7 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s'"
             , this->getFileGroup()->getName().c_str()
         );
 
@@ -86,7 +86,7 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid stream archive magic memory '%s':'%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid stream archive magic memory '%s':'%s'"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );

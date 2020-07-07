@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickEncoder::setOptions( const CodecOptions * _options )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _options );
         MENGINE_ASSERTION_TYPE( _options, const PickCodecOptions * );
 
         m_options = *static_cast<const PickCodecOptions *>(_options);

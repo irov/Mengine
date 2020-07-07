@@ -107,7 +107,7 @@ namespace Mengine
         ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
             ->getResourceReference( _resourceName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceMusic, false, "can't found resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceMusic, "can't found resource '%s'"
             , _resourceName.c_str()
         );
 
@@ -136,7 +136,7 @@ namespace Mengine
                 ->createSoundBufferFromFile( defaultFileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FACTORABLE );
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "can't load sample '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't load sample '%s'"
             , filePath.c_str()
         );
 
@@ -144,7 +144,7 @@ namespace Mengine
             ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true
                 , MENGINE_DOCUMENT_MESSAGE( "resource '%s'", _resourceName.c_str() ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, false, "can't create sound source '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't create sound source '%s'"
             , filePath.c_str()
         );
 

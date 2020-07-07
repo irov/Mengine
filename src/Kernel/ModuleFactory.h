@@ -29,7 +29,7 @@ namespace Mengine
         {
             FactoryPtr factory = Helper::makeFactoryDefault<T>( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
             m_factory = factory;
 
@@ -57,7 +57,7 @@ namespace Mengine
 
             ModuleFactoryInterface * factory = Helper::newT<FactorableUnique<ModuleFactory<T>>>();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
 #ifdef MENGINE_DEBUG
             factory->setDocument( _doc );

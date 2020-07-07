@@ -392,7 +392,7 @@ namespace Mengine
                         , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 node->setName( layer.name );
                 node->setExternalRender( true );
@@ -407,7 +407,7 @@ namespace Mengine
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
                 matrixProxy->setName( layer.name );
 
@@ -425,7 +425,7 @@ namespace Mengine
                 Movie2SlotPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 node->setName( layer.name );
 
@@ -440,7 +440,7 @@ namespace Mengine
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
                 matrixProxy->setName( layer.name );
 
@@ -460,7 +460,7 @@ namespace Mengine
                         , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 node->setName( layer.name );
 
@@ -471,7 +471,7 @@ namespace Mengine
                         , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
                 matrixProxy->setName( layer.name );
 
@@ -491,7 +491,7 @@ namespace Mengine
                         , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 node->setName( layer.name );
 
@@ -505,10 +505,7 @@ namespace Mengine
                         , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                if( matrixProxy == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
                 matrixProxy->setName( layer.name );
 
@@ -526,7 +523,7 @@ namespace Mengine
                 ResourceImagePtr resourceImage = RESOURCE_SERVICE()
                     ->getResourceReference( layer.name );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image '%s'"
                     , this->getName().c_str()
                     , this->getResourceMovie2()->getName().c_str()
                     , this->getCompositionName().c_str()
@@ -539,14 +536,14 @@ namespace Mengine
                         , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
                 surface->setResourceImage( resourceImage );
 
                 ShapeQuadFixedPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type, MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, false, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
                     , this->getName().c_str()
                     , this->getResourceMovie2()->getName().c_str()
                     , this->getCompositionName().c_str()
@@ -565,7 +562,7 @@ namespace Mengine
                         , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
                 matrixProxy->setName( layer.name );
 
@@ -597,7 +594,7 @@ namespace Mengine
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( node );
 
             node->setMovie( this );
 
@@ -1160,7 +1157,7 @@ namespace Mengine
             {
                 const TextFieldPtr & node = movie2->getText_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 Detail::updateMatrixProxy( movie2, node.get(), AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
 
@@ -1216,7 +1213,7 @@ namespace Mengine
             {
                 const Movie2SlotPtr & node = movie2->getSlot_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 *_nd = node.get();
 
@@ -1226,7 +1223,7 @@ namespace Mengine
             {
                 const HotSpotPolygonPtr & node = movie2->getSocket_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 const ae_polygon_t * polygon;
                 if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
@@ -1254,7 +1251,7 @@ namespace Mengine
             {
                 const NodePtr & node = movie2->getParticle_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 UnknownAstralaxEmitterInterface * unknownAstralaxEmitter = node->getUnknown();
 
@@ -1300,7 +1297,7 @@ namespace Mengine
                     SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, AE_FALSE );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
@@ -1354,7 +1351,7 @@ namespace Mengine
                     SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, AE_FALSE );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
@@ -1412,7 +1409,7 @@ namespace Mengine
                     SurfacePtr surface = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surface, AE_FALSE );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surface->setName( c_name );
@@ -1443,7 +1440,7 @@ namespace Mengine
                     SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound, AE_FALSE );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceSound->setName( c_name );
@@ -2014,7 +2011,7 @@ namespace Mengine
 
         const Movie2SubCompositionPtr & subcomposition = m2->getSubComposition( c_name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( subcomposition, AE_FALSE );
+        MENGINE_ASSERTION_MEMORY_PANIC( subcomposition );
 
         *_scd = subcomposition.get();
 

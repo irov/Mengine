@@ -48,7 +48,7 @@ namespace Mengine
         {
             SoundBufferInterfacePtr soundBuffer = this->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer );
 
             if( soundBuffer->acquire() == false )
             {
@@ -83,7 +83,7 @@ namespace Mengine
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
             ->createSoundBufferFromFile( fileGroup, filePath, m_codecType, m_isStreamable, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, nullptr, "sound '%s' group '%s' can't load sound '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, "sound '%s' group '%s' can't load sound '%s'"
             , this->getName().c_str()
             , this->getGroupName().c_str()
             , this->getFilePath().c_str()

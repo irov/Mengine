@@ -32,11 +32,11 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, m_filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         MemoryInterfacePtr memory = Helper::createMemoryStream( stream, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         const void * memory_buffer = memory->getBuffer();
         size_t memory_size = memory->getSize();

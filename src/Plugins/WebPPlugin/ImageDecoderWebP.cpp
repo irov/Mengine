@@ -44,7 +44,7 @@ namespace Mengine
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
                 uint8_t * featuresMemory = buffer->getBuffer();
 
@@ -120,7 +120,7 @@ namespace Mengine
 
             const uint8_t * buffer_memory = buffer->getBuffer();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer_memory, 0 );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer_memory );
 
             size_t buffer_size = buffer->getSize();
 

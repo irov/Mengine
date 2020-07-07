@@ -149,7 +149,7 @@ namespace Mengine
         virtual void updateWorldMatrix() const;
 
     protected:
-        static void makeLocalMatrix_( mt::mat4f & _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation );
+        static void makeLocalMatrix( mt::mat4f * _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation );
 
     protected:
         Transformation * m_relationTransformation;

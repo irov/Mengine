@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Meshget::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_surface, false, "'%s' can`t setup surface"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_surface, "'%s' can`t setup surface"
             , this->getName().c_str()
         );
 

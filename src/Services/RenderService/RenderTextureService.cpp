@@ -144,14 +144,14 @@ namespace Mengine
         RenderImageInterfacePtr image = RENDER_SYSTEM()
             ->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "invalid create image %ux%u"
+        MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create image %ux%u"
             , HWWidth
             , HWHeight
         );
 
         RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr, "invalid create render texture %ux%u"
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create render texture %ux%u"
             , _width
             , _height
         );
@@ -172,7 +172,7 @@ namespace Mengine
         RenderImageInterfacePtr image = RENDER_SYSTEM()
             ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "couldn't create image size %d:%d channels %d (doc %s)"            
+        MENGINE_ASSERTION_MEMORY_PANIC( image, "couldn't create image size %d:%d channels %d (doc %s)"            
             , HWWidth
             , HWHeight
             , HWChannels
@@ -181,7 +181,7 @@ namespace Mengine
 
         RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture );
 
         return texture;
     }
@@ -190,7 +190,7 @@ namespace Mengine
     {
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't create file '%s' '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create file '%s' '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -198,7 +198,7 @@ namespace Mengine
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, false, "can't create encoder for file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, "can't create encoder for file '%s'"
             , _filePath.c_str()
         );
 
@@ -230,7 +230,7 @@ namespace Mengine
         size_t pitch = 0;
         void * buffer = image->lock( &pitch, 0, rect, true );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "can't lock texture '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't lock texture '%s'"
             , _filePath.c_str()
         );
 
@@ -327,20 +327,20 @@ namespace Mengine
 
         DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageProvider, nullptr, "invalid create render image provider" );
+        MENGINE_ASSERTION_MEMORY_PANIC( imageProvider, "invalid create render image provider" );
 
         imageProvider->initialize( _fileGroup, _filePath, _codecType, _codecFlags );
 
         RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageLoader, nullptr, "invalid get image loader" );
+        MENGINE_ASSERTION_MEMORY_PANIC( imageLoader, "invalid get image loader" );
 
         RenderImageDesc imageDesc;
         imageLoader->getImageDesc( &imageDesc );
 
         RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( new_texture, nullptr, "create texture '%s:%s' codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( new_texture, "create texture '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()
@@ -348,7 +348,7 @@ namespace Mengine
 
         const RenderImageInterfacePtr & image = new_texture->getImage();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "invalid get image" );
+        MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid get image" );
 
         if( imageLoader->load( image ) == false )
         {
@@ -491,7 +491,7 @@ namespace Mengine
             RenderTextureInterface * erase_texture = m_textures.erase( fileGroupName, filePath );
             MENGINE_UNUSED( erase_texture );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( erase_texture, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( erase_texture );
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, _texture );
         }
@@ -507,7 +507,7 @@ namespace Mengine
 
         RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture );
 
         texture->initialize( id, _image, _width, _height );
 

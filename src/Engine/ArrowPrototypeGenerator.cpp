@@ -22,7 +22,7 @@ namespace Mengine
         ArrowPtr arrow = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( arrow, nullptr, "can't create '%s' '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( arrow, "can't create '%s' '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

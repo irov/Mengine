@@ -31,7 +31,7 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid create memory proxy" );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory proxy" );
 
         m_memory = memory;
 

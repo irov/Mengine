@@ -125,7 +125,7 @@ namespace Mengine
 
         MemoryInterfacePtr vertexMemory = m_vertexBuffer->lock( 0, m_vertexCount );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory, false, "failed to lock vertex buffer '%u'"
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory, "failed to lock vertex buffer '%u'"
             , m_vertexCount
         );
 
@@ -142,7 +142,7 @@ namespace Mengine
 
         MemoryInterfacePtr indexMemory = m_indexBuffer->lock( 0, m_indexCount );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( indexMemory, false, "failed to lock index buffer '%u'"
+        MENGINE_ASSERTION_MEMORY_PANIC( indexMemory, "failed to lock index buffer '%u'"
             , m_indexCount
         );
 

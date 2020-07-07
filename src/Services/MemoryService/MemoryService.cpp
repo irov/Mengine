@@ -39,14 +39,14 @@ namespace Mengine
             ThreadMutexInterfacePtr memoryCacheMutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex );
 
             m_memoryCacheMutex = memoryCacheMutex;
 
             ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex );
 
             m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
             m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
@@ -167,7 +167,7 @@ namespace Mengine
 
             void * memory = Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid realloc %p memory %zu to %zu"
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid realloc %p memory %zu to %zu"
                 , buffer.memory
                 , buffer.size
                 , _size
@@ -188,7 +188,7 @@ namespace Mengine
 
         uint8_t * memory = (uint8_t *)Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid malloc memory %zu"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid malloc memory %zu"
             , _size
         );
 
@@ -253,7 +253,7 @@ namespace Mengine
     {
         MemoryCacheBufferPtr memoryBuffer = m_factoryMemoryCacheBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryBuffer, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryBuffer );
 
         memoryBuffer->setMemoryManager( this );
 
@@ -264,7 +264,7 @@ namespace Mengine
     {
         MemoryCacheInputPtr memoryCache = m_factoryMemoryCacheInput->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryCache, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryCache );
 
         memoryCache->setMemoryManager( this );
 
@@ -275,7 +275,7 @@ namespace Mengine
     {
         MemoryProxyInputPtr memoryProxy = m_factoryMemoryProxyInput->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryProxy, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryProxy );
 
         return memoryProxy;
     }
@@ -284,7 +284,7 @@ namespace Mengine
     {
         MemoryInputPtr memory = m_factoryMemoryInput->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         return memory;
     }
@@ -293,7 +293,7 @@ namespace Mengine
     {
         MemoryPtr memory = m_factoryMemoryBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         return memory;
     }
@@ -302,7 +302,7 @@ namespace Mengine
     {
         MemoryProxyPtr memory = m_factoryMemoryProxy->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         return memory;
     }

@@ -201,7 +201,7 @@ namespace Mengine
 
         MockupRenderImagePtr dxTexture = this->createRenderImage_( ERIM_NORMAL, _mipmaps, _width, _height, _channels, _depth, _format, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, nullptr, "invalid create render texture" );
+        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, "invalid create render texture" );
 
         return dxTexture;
     }
@@ -220,7 +220,7 @@ namespace Mengine
 
         MockupRenderImagePtr dxTexture = this->createRenderImage_( ERIM_DYNAMIC, 1, _width, _height, _channels, _depth, _format, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, nullptr, "invalid create render texture" );
+        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, "invalid create render texture" );
 
         return dxTexture;
     }
@@ -229,7 +229,7 @@ namespace Mengine
     {
         MockupRenderTargetTexturePtr target = m_factoryRenderTargetTexture->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( target, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( target );
 
         if( target->initialize( _width, _height, _channels, _format ) == false )
         {
@@ -255,7 +255,7 @@ namespace Mengine
     {
         MockupRenderTargetOffscreenPtr target = m_factoryRenderTargetOffscreen->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( target, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( target );
 
         if( target->initialize( _width, _height, _channels, _format ) == false )
         {
@@ -283,7 +283,7 @@ namespace Mengine
 
         MockupRenderImageTargetPtr imageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageTarget, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( imageTarget );
 
         imageTarget->initialize( targetTexture );
 
@@ -473,7 +473,7 @@ namespace Mengine
     {
         MockupRenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
@@ -508,7 +508,7 @@ namespace Mengine
     {
         MockupRenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -686,7 +686,7 @@ namespace Mengine
     {
         MockupRenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr, "invalid create attribute '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( attribute, "invalid create attribute '%s'"
             , _name.c_str()
         );
 
@@ -706,7 +706,7 @@ namespace Mengine
     {
         MockupRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
             , _name.c_str()
         );
 
@@ -726,7 +726,7 @@ namespace Mengine
     {
         MockupRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
             , _name.c_str()
         );
 
@@ -748,7 +748,7 @@ namespace Mengine
 
         MockupRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr, "invalid create program '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( program, "invalid create program '%s'"
             , _name.c_str()
         );
 
@@ -782,7 +782,7 @@ namespace Mengine
     {
         MockupRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr, "invalid create program variable"
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable"
         );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
@@ -843,7 +843,7 @@ namespace Mengine
 
         MockupRenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage );
 
         dx9RenderImage->initialize( _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 

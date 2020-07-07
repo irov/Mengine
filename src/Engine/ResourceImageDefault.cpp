@@ -41,7 +41,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false, "name '%s' group '%s' file path '%s' invalid setup category"
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "name '%s' group '%s' file path '%s' invalid setup category"
             , this->getName().c_str()
             , this->getGroupName().c_str()
             , this->getFilePath().c_str()
@@ -53,7 +53,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->loadTexture( fileGroup, filePath, codecType, DF_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "name '%s' category '%s' group '%s' can't load image file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "name '%s' category '%s' group '%s' can't load image file '%s'"
             , this->getName().c_str()
             , this->getFileGroup()->getName().c_str()
             , this->getGroupName().c_str()

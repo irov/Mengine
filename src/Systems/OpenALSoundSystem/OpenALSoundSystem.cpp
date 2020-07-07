@@ -213,7 +213,7 @@ namespace Mengine
         {
             OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
             buffer->setSoundSystem( this );
 
@@ -223,7 +223,7 @@ namespace Mengine
         {
             OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
             buffer->setSoundSystem( this );
 

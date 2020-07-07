@@ -46,13 +46,13 @@ namespace Mengine
         FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
 
         m_fileGroup = fileGroup;
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
@@ -108,7 +108,7 @@ namespace Mengine
 
         AccountInterfacePtr account = this->createAccount_( accountID, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( account, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( account );
 
         AccountUID uid;
         Helper::makeUID( 20, uid.data );
@@ -129,7 +129,7 @@ namespace Mengine
 
         AccountInterfacePtr account = this->createGlobalAccount_( accountID, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( account, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( account );
 
         return account;
     }
@@ -144,7 +144,7 @@ namespace Mengine
 
         AccountInterfacePtr newAccount = this->newAccount_( _accountID, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, nullptr, "account with ID '%s' invalid create. Account not created"
+        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "account with ID '%s' invalid create. Account not created"
             , _accountID.c_str()
         );
 
@@ -189,7 +189,7 @@ namespace Mengine
 
         AccountInterfacePtr newAccount = this->newAccount_( _accountID, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, nullptr, "Account with ID '%s' invalid create. Account not created"
+        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "Account with ID '%s' invalid create. Account not created"
             , _accountID.c_str()
         );
 
@@ -275,7 +275,7 @@ namespace Mengine
     {
         AccountPtr account = m_accounts.erase( _accountID );
 
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( account, "can't delete account '%s'. There is no account with such ID"
+        MENGINE_ASSERTION_MEMORY_PANIC( account, "can't delete account '%s'. There is no account with such ID"
             , _accountID.c_str()
         );
 
@@ -346,7 +346,7 @@ namespace Mengine
     {
         const AccountInterfacePtr & account = m_accounts.find( _accountID );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( account, AccountInterfacePtr::none(), "account with ID '%s' not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( account, "account with ID '%s' not found"
             , _accountID.c_str()
         );
 
@@ -543,7 +543,7 @@ namespace Mengine
         {
             AccountInterfacePtr account = this->newAccount_( accountID, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid create account '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account '%s'"
                 , accountID.c_str()
             );
 
@@ -649,7 +649,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file, false, "can't open file for writing. Accounts '%s' settings not saved"
+        MENGINE_ASSERTION_MEMORY_PANIC( file, "can't open file for writing. Accounts '%s' settings not saved"
             , accountsPath.c_str()
         );
 

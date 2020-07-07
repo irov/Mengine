@@ -298,7 +298,7 @@ namespace Mengine
     {
         SchedulerPtr sm = m_factoryScheduleManager->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( sm, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( sm );
 
         sm->setName( _name );
 

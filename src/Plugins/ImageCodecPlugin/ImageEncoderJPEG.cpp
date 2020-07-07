@@ -135,7 +135,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);

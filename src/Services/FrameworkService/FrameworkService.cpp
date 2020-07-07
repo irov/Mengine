@@ -56,11 +56,11 @@ namespace Mengine
     {
         FrameworkFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Framework" ), _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
         FrameworkInterfacePtr framework = factory->createFramework( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( framework, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( framework );
 
         framework->setName( _name );
 
@@ -82,7 +82,7 @@ namespace Mengine
     {
         FrameworkInterfacePtr framework = this->popFramework_( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( framework, false, "not found framework '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( framework, "not found framework '%s'"
             , _name.c_str()
         );
 

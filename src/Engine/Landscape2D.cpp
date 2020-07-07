@@ -123,7 +123,7 @@ namespace Mengine
 
                     RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false, MENGINE_DOCUMENT_FACTORABLE );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC_VOID( material, "'%s' invalid get material"
+                    MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' invalid get material"
                         , this->getName().c_str()
                     );
 
@@ -170,7 +170,7 @@ namespace Mengine
 
         for( const ResourceImagePtr & image : m_images )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC_VOID( image, "'%s' invalid setup image for %d:%d"
+            MENGINE_ASSERTION_MEMORY_PANIC( image, "'%s' invalid setup image for %d:%d"
                 , this->getName().c_str()
                 , i
                 , j

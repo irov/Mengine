@@ -56,7 +56,7 @@ namespace Mengine
         ThreadJobPtr threadJob = THREAD_SERVICE()
             ->createJob( seconds * 1000, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadJob, false, "invalid create thread job" );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadJob, "invalid create thread job" );
 
         m_threadJob = threadJob;
 
@@ -79,7 +79,7 @@ namespace Mengine
         DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
             ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
 
         m_dateTimeProvider = dateTimeProvider;
 

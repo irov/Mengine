@@ -25,7 +25,7 @@ namespace Mengine
 
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "dataflow invalid open file '%s/%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "dataflow invalid open file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()
                 , _filePath.c_str()
             );
@@ -33,7 +33,7 @@ namespace Mengine
             DataInterfacePtr data = DATA_SERVICE()
                 ->dataflow( _dataflow, stream, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr, "dataflow invalid create data for file '%s/%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( data, "dataflow invalid create data for file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()
                 , _filePath.c_str()
             );
@@ -52,7 +52,7 @@ namespace Mengine
 
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "dataflow invalid open file '%s/%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "dataflow invalid open file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()
                 , _filePath.c_str()
             );
@@ -60,7 +60,7 @@ namespace Mengine
             DataInterfacePtr data = DATA_SERVICE()
                 ->dataflow( _dataflow, stream, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr, "dataflow invalid create data for file '%s/%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( data, "dataflow invalid create data for file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()
                 , _filePath.c_str()
             );

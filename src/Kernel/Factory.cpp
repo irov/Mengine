@@ -54,7 +54,7 @@ namespace Mengine
 
         Factorable * object = this->_createObject();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( object, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( object );
 
         ++m_count;
         IntrusivePtrBase::intrusive_ptr_add_ref( this );

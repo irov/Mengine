@@ -206,7 +206,7 @@ namespace Mengine
 
         Win32FileInputStreamPtr stream = m_factoryInputStream->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         if( _fileGroup != nullptr )
         {
@@ -218,13 +218,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming, _share );
 
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+        MENGINE_ASSERTION_RETURN( result == true, "failed open file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -236,20 +236,20 @@ namespace Mengine
     {
         Win32FileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath );
         
-        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+        MENGINE_ASSERTION_RETURN( result == true, "failed open file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );

@@ -4,10 +4,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_ASSERTION_DEBUG
-#   define MENGINE_ASSERTION_MEMORY_PANIC( memory, Ret, ... ) if( (memory) == nullptr ) return Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( ASSERTION_LEVEL_FATAL, "memory == nullptr", MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(__VA_ARGS__)
-#   define MENGINE_ASSERTION_MEMORY_PANIC_VOID( memory, ... ) if( (memory) == nullptr ) return Helper::makeAssertionReturnOperator() << Helper::AssertionOperator( ASSERTION_LEVEL_FATAL, "memory == nullptr", MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(__VA_ARGS__)
+#   define MENGINE_ASSERTION_MEMORY_PANIC( memory, ... ) if( (memory) == nullptr ) Helper::AssertionOperator( ASSERTION_LEVEL_FATAL, #memory " == nullptr", MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(__VA_ARGS__)
 #else
-#   define MENGINE_ASSERTION_MEMORY_PANIC( memory, Ret, ... )
-#   define MENGINE_ASSERTION_MEMORY_PANIC_VOID( memory, ... )
+#   define MENGINE_ASSERTION_MEMORY_PANIC_( memory, ... )
 #endif
 //////////////////////////////////////////////////////////////////////////

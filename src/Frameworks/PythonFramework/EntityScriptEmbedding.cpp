@@ -105,7 +105,7 @@ namespace Mengine
             EntityPtr entity = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( entity, pybind::object::get_invalid(), "can't create entity '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create entity '%s'"
                 , _prototype.c_str()
             );
 
@@ -129,7 +129,7 @@ namespace Mengine
             const PrototypeGeneratorInterfacePtr & generator = PROTOTYPE_SERVICE()
                 ->getGenerator( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( generator, pybind::make_none_t( _kernel ), "importEntity: can't import 'Entity' '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( generator, "importEntity: can't import 'Entity' '%s'"
                 , _prototype.c_str()
             );
 

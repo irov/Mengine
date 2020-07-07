@@ -523,7 +523,7 @@ namespace Mengine
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getGlobalScheduler();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( sm, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( sm );
 
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
                 sl->initialize( _cb, _args );
@@ -767,7 +767,7 @@ namespace Mengine
                     ScenePtr scene = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( scene, false );
+                    MENGINE_ASSERTION_MEMORY_PANIC( scene );
 
                     scene->setName( _name );
 
@@ -843,7 +843,7 @@ namespace Mengine
                 ScenePtr scene = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( scene );
 
                 scene->setName( _name );
 
@@ -909,7 +909,7 @@ namespace Mengine
                 ArrowPtr arrow = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( arrow, "Error: can't setup arrow '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( arrow, "Error: can't setup arrow '%s'"
                     , _prototype.c_str()
                     );
 
@@ -1017,7 +1017,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_destroyNode( const NodePtr & _node )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( _node, "invalid take None object" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "invalid take None object" );
 
                 _node->disable();
                 _node->removeFromParent();
@@ -1029,7 +1029,7 @@ namespace Mengine
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 return node;
             }
@@ -1039,7 +1039,7 @@ namespace Mengine
                 SurfacePtr surface = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), _type, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
                 return surface;
             }
@@ -1049,21 +1049,21 @@ namespace Mengine
                 RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( randomizer, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( randomizer );
 
                 return randomizer;
             }
             //////////////////////////////////////////////////////////////////////////
             ShapeQuadFixedPtr s_createSprite( const ConstString & _name, const ResourcePtr & _resource )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _resource, nullptr, "'%s' resource is NULL"
+                MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is NULL"
                     , _name.c_str()
                     );
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
                 surface->setName( _name );
                 surface->setResourceImage( _resource );
@@ -1071,7 +1071,7 @@ namespace Mengine
                 ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( shape, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( shape );
 
                 shape->setName( _name );
                 shape->setSurface( surface );
@@ -1090,7 +1090,7 @@ namespace Mengine
                 ResourcePtr resource = RESOURCE_SERVICE()
                     ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), _type, false, false, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid create resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
                     , _type.c_str()
                     );
 
@@ -1162,7 +1162,7 @@ namespace Mengine
                 const ResourcePtr & resource = RESOURCE_SERVICE()
                     ->getResource( _name );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "not exist resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( resource, "not exist resource '%s'"
                     , _name.c_str()
                     );
 
@@ -1174,7 +1174,7 @@ namespace Mengine
                 const ResourcePtr & resource = RESOURCE_SERVICE()
                     ->getResourceReference( _name );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "not exist resource '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( resource, "not exist resource '%s'"
                     , _name.c_str()
                     );
 
@@ -1242,7 +1242,7 @@ namespace Mengine
                 const ResourceImagePtr & resource = RESOURCE_SERVICE()
                     ->getResource( _resource );
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( resource, "image resource not getting '%s'"
+                MENGINE_ASSERTION_MEMORY_PANIC( resource, "image resource not getting '%s'"
                     , _resource.c_str()
                     );
 
@@ -1270,7 +1270,7 @@ namespace Mengine
                 {
                     InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "image file '%s:%s' was not found"
+                    MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s:%s' was not found"
                         , fileGroup->getName().c_str()
                         , _filePath.c_str()
                     );
@@ -1363,7 +1363,7 @@ namespace Mengine
                     ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
                         ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_PYBIND );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, nullptr );
+                    MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
 
                     if( imageDecoder->prepareData( stream ) == false )
                     {
@@ -1383,7 +1383,7 @@ namespace Mengine
                 ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
                     ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, false, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
                 resource->setName( _resourceName );
 
@@ -1408,7 +1408,7 @@ namespace Mengine
                 ResourceImageSolidPtr resource = RESOURCE_SERVICE()
                     ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), false, false, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
                 resource->setName( _resourceName );
 
@@ -1549,7 +1549,7 @@ namespace Mengine
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( _fileGroupName );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
 
                 bool result = fileGroup->existFile( _filePath, true );
 
@@ -1561,7 +1561,7 @@ namespace Mengine
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( _fileGroupName );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
 
                 bool result = fileGroup->removeFile( _filePath );
 
@@ -1631,11 +1631,11 @@ namespace Mengine
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( _fileGroupName );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
 
                 MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer );
 
                 char * memory = binary_buffer->getBuffer();
 
@@ -1875,7 +1875,7 @@ namespace Mengine
                 const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
                     ->getResource( _resourceFilePath );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resourceFile, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( resourceFile );
 
                 const ContentInterface * content = resourceFile->getContent();
 
@@ -1925,7 +1925,7 @@ namespace Mengine
                 MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                     ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
                 if( this->s_copyFile_( _resourceFilePath, memory ) == false )
                 {
@@ -1952,7 +1952,7 @@ namespace Mengine
                 MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                     ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
                 if( this->s_copyFile_( _resourceFilePath, memory ) == false )
                 {
@@ -2578,7 +2578,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_removeNodeFollower( const AffectorFollowerPtr & _affector )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( _affector, "take NULL affector" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _affector, "take NULL affector" );
 
                 _affector->stop();
             }
@@ -2662,7 +2662,7 @@ namespace Mengine
             {
                 SecureValuePtr secureValue = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( secureValue, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
 
                 secureValue->setUnprotectedValue( _value );
 
@@ -3217,7 +3217,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
 
                 const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels
                     ->createObject( MENGINE_DOCUMENT_PYBIND );
@@ -3265,7 +3265,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
 
                 PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
                     ->createObject( MENGINE_DOCUMENT_PYBIND );
@@ -3306,7 +3306,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
 
                 PyGlobalKeyHandlerPtr handler = m_factoryPyGlobalKeyHandler
                     ->createObject( MENGINE_DOCUMENT_PYBIND );
@@ -3345,7 +3345,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
 
                 PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalTextHandler
                     ->createObject( MENGINE_DOCUMENT_PYBIND );
@@ -3362,7 +3362,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
 
                 InputHandlerInterfacePtr handler = globalHandleSystem->removeGlobalHandler( _id );
 
@@ -3382,7 +3382,7 @@ namespace Mengine
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, false );
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
 
                 bool successful = globalHandleSystem->enableGlobalHandler( _id, _value );
 

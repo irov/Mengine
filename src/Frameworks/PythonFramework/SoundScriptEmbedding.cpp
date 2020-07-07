@@ -174,7 +174,7 @@ namespace Mengine
                 const ResourceSoundPtr & resource = RESOURCE_SERVICE()
                     ->getResource( _resourceName );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
                 SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer( _doc );
 

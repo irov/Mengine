@@ -57,13 +57,13 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
         m_dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_dataflow, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_dataflow );
 
         return true;
     }
@@ -781,7 +781,7 @@ namespace Mengine
     {
         OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "invalid open file '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "invalid open file '%s:%s'"
             , m_options.fileGroup->getName().c_str()
             , m_options.outputFilePath.c_str()
         );

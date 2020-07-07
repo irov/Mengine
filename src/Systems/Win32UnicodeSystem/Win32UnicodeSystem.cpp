@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * const _utf8, size_t _utf8Capacity, size_t * const _utf8Size )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _unicode, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _unicode );
 
 #   if (WINVER >= 0x0600)
         DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
@@ -81,7 +81,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _sizeUnicode )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _utf8, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _utf8 );
 
         int32_t int_utf8Size = static_cast<int32_t>(_utf8Size);
         int32_t int_unicodeCapacity = static_cast<int32_t>(_unicodeCapacity);

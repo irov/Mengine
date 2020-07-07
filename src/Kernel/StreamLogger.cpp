@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StreamLogger::initialize()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream );
 
         LOGGER_SERVICE()
             ->writeHistory( LoggerInterfacePtr::from( this ) );

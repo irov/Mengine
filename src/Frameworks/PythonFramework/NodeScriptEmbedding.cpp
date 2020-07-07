@@ -331,11 +331,11 @@ namespace Mengine
                 const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _hs );
                 const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _hs );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( camera, mt::vec2f( 0.f, 0.f ), "invalid get node '%s' rencer camera inheritance"
+                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' rencer camera inheritance"
                     , _hs->getName().c_str() 
                 );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( camera, mt::vec2f( 0.f, 0.f ), "invalid get node '%s' rencer viewport inheritance"
+                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' rencer viewport inheritance"
                     , _hs->getName().c_str()
                 );
 
@@ -364,7 +364,7 @@ namespace Mengine
             {
                 const SurfacePtr & surface = _shape->getSurface();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
+                MENGINE_ASSERTION_MEMORY_PANIC( surface, "shape '%s' not setup surface"
                     , _shape->getName().c_str()
                     );
 
@@ -377,7 +377,7 @@ namespace Mengine
             {
                 const SurfacePtr & surface = _shape->getSurface();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
+                MENGINE_ASSERTION_MEMORY_PANIC( surface, "shape '%s' not setup surface"
                     , _shape->getName().c_str()
                     );
 
@@ -456,7 +456,7 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
 
                 affectorHub->stopAffectors( ETA_VISIBILITY );
             }
@@ -536,7 +536,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _args );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
                 Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
@@ -550,7 +550,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _args );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
                 Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
@@ -585,7 +585,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _args );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
                 Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE, MENGINE_DOCUMENT_PYBIND );
@@ -625,7 +625,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _args );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
                 Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
@@ -640,7 +640,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _args );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
                 pybind::dict py_kwds( _kernel, _kwds );
 

@@ -22,7 +22,7 @@ namespace Mengine
     {
         const ContentInterface * content = _resource->getContent();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
+        MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
             , _resource->getType().c_str()
         );
 
@@ -43,7 +43,7 @@ namespace Mengine
     {
         const ContentInterface * content = _resource->getContent();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
+        MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
             , _resource->getType().c_str()
         );
 

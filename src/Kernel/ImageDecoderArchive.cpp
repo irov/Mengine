@@ -84,7 +84,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
             const void * cache_buffer = buffer->getBuffer();
             size_t cache_size = buffer->getSize();
@@ -117,7 +117,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
             void * cache_buffer = buffer->getBuffer();
 

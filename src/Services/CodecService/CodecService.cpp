@@ -51,14 +51,14 @@ namespace Mengine
     {
         DecoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found codec '%s' doc '%s'"
             , _type.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
         DecoderInterfacePtr decoder = factory->createDecoder( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder );
 
         if( decoder->initialize() == false )
         {
@@ -77,14 +77,14 @@ namespace Mengine
     {
         EncoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found codec '%s' doc '%s'"
             , _type.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
         EncoderInterfacePtr encoder = factory->createEncoder( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( encoder, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder );
 
         return encoder;
     }

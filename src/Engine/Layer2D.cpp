@@ -99,7 +99,7 @@ namespace Mengine
             m_renderCamera = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_renderCamera, "name '%s' invalid create Camera2D"
+            MENGINE_ASSERTION_MEMORY_PANIC( m_renderCamera, "name '%s' invalid create Camera2D"
                 , this->getName().c_str()
             );
 
@@ -111,7 +111,7 @@ namespace Mengine
             m_renderViewport = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_renderViewport, "name '%s' invalid create RenderViewport"
+            MENGINE_ASSERTION_MEMORY_PANIC( m_renderViewport, "name '%s' invalid create RenderViewport"
                 , this->getName().c_str()
             );
 
@@ -153,7 +153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _resourceImageMask, false, "image mask is null" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _resourceImageMask, "image mask is null" );
 
         m_resourceImageMask = _resourceImageMask;
 
@@ -186,7 +186,7 @@ namespace Mengine
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
             ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, 3, PF_A8R8G8B8, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, false, "invalid create render target texture [%f, %f]"
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture [%f, %f]"
             , m_size.x
             , m_size.y
         );
@@ -197,12 +197,12 @@ namespace Mengine
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
             ->createRenderTargetImage( renderTarget, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetImage, false, "invalid create render target image" );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetImage, "invalid create render target image" );
 
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
             ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, false, "invalid create render texture [%f, %f]"
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, "invalid create render texture [%f, %f]"
             , m_size.x
             , m_size.y
         );
@@ -226,7 +226,7 @@ namespace Mengine
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial3( EM_TEXTURE_ALPHAMASK_BLEND, PT_TRIANGLELIST, 2, texures, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, false, "invalid get material" );
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid get material" );
 
         m_materialImageMask = material;
 

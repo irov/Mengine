@@ -49,7 +49,7 @@ namespace Mengine
 
         BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph );
 
         if( glyph->initialize( _fileGroup, _filePath ) == false )
         {

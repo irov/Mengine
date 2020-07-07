@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AFFECTOR_ID BaseAffectorHub::addAffector( const AffectorPtr & _affector )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _affector, INVALID_AFFECTOR_ID, "affector is nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _affector, "affector is nullptr" );
 
         AFFECTOR_ID id = GENERATE_UNIQUE_IDENTITY();
 

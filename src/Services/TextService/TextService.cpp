@@ -578,7 +578,7 @@ namespace Mengine
         TextFontInterfacePtr font = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( font, nullptr, "invalid create font '%s' type '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( font, "invalid create font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()
             , _fontType.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
@@ -617,7 +617,7 @@ namespace Mengine
         ConfigInterfacePtr config = CONFIG_SERVICE()
             ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , _filePath.c_str()
         );
 
@@ -649,7 +649,7 @@ namespace Mengine
 
             TextFontInterfacePtr font = this->createFont( fontName, fontType, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( font, false, "invalid create '%s:%s' font '%s' not found type '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( font, "invalid create '%s:%s' font '%s' not found type '%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , fontName.c_str()
@@ -725,7 +725,7 @@ namespace Mengine
         ConfigInterfacePtr config = CONFIG_SERVICE()
             ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , _filePath.c_str()
         );
 
@@ -759,7 +759,7 @@ namespace Mengine
 
             TextFontInterfacePtr font = m_fonts.erase( fontName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( font, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( font );
 
             font->finalize();
         }
@@ -784,7 +784,7 @@ namespace Mengine
     {
         TextEntryPtr textEntry = m_factoryTextEntry->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry );
 
         if( textEntry->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
         {
@@ -916,7 +916,7 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, TextEntryInterfacePtr::none(), "can't find string associated with key - '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "can't find string associated with key - '%s'"
             , _key.c_str()
         );
 
@@ -961,7 +961,7 @@ namespace Mengine
     {
         const TextFontInterfacePtr & font = m_fonts.find( _fontName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( font, TextFontInterfacePtr::none(), "not found '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( font, "not found '%s'"
             , _fontName.c_str()
         );
 

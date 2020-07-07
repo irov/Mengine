@@ -59,7 +59,7 @@ namespace Mengine
         {
             EncoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<EncoderFactory<T>>( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
             if( factory->initialize() == false )
             {
@@ -79,7 +79,7 @@ namespace Mengine
         {
             EncoderFactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 
-            MENGINE_ASSERTION_MEMORY_PANIC_VOID( factory, "invalid unregister encoder '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid unregister encoder '%s'"
                 , _type.c_str()
             );
 

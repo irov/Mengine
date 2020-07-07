@@ -42,14 +42,14 @@ namespace Mengine
 
         InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, "invalid open input file '%s'"
             , m_options.inputFilePath.c_str()
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pvrImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder for '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder for '%s'"
             , m_options.inputFilePath.c_str()
         );
 
@@ -68,7 +68,7 @@ namespace Mengine
 
         MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, false, "invalid cache memory %d for '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, "invalid cache memory %d for '%s'"
             , data_full_size
             , m_options.inputFilePath.c_str()
         );
@@ -118,7 +118,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "invalid open output '%s' for file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "invalid open output '%s' for file '%s'"
             , full_outputFilePath.c_str()
             , m_options.inputFilePath.c_str()
         );
@@ -126,7 +126,7 @@ namespace Mengine
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "invalid create encoder 'htfImage'" );
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, "invalid create encoder 'htfImage'" );
 
         if( encoder->initialize( stream_output ) == false )
         {

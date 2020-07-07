@@ -96,9 +96,10 @@ namespace Mengine
             }break;
         }
 
+        Char msg[4096] = {'\0'};
+
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
-        Char msg[4096];
         MENGINE_VSPRINTF( msg, _format, args );
         MENGINE_VA_LIST_END( args );
 
@@ -167,11 +168,11 @@ namespace Mengine
         {
             ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
             DataflowAEZPtr dataflowAEZ = Helper::makeFactorableUnique<DataflowAEZ>( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( dataflowAEZ, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflowAEZ );
 
             dataflowAEZ->setMovieInstance( m_movieInstance );
             dataflowAEZ->setArchivator( archivator );
@@ -215,9 +216,11 @@ namespace Mengine
         {
             ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
             ResourceMovie2ValidatorPtr movie2Validator = Helper::makeFactorableUnique<ResourceMovie2Validator>( MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( movie2Validator );
 
             movie2Validator->setMovieInstance( m_movieInstance );
             movie2Validator->setArchivator( archivator );
@@ -247,7 +250,7 @@ namespace Mengine
         MODULE_LEAVE( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" ), []()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
-        } );        
+        } );
 
         return true;
     }

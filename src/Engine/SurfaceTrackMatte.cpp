@@ -26,7 +26,7 @@ namespace Mengine
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
             ->createProgramVariable( 0, 1, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( programVariable, false, "'%s' invalid create program variable"
+        MENGINE_ASSERTION_MEMORY_PANIC( programVariable, "'%s' invalid create program variable"
             , this->getName().c_str()
         );
 
@@ -174,7 +174,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' resource is null"
             , this->getName().c_str()
         );
 
@@ -188,7 +188,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTrackMatteImage, false, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTrackMatteImage, "'%s' resource is null"
             , this->getName().c_str()
         );
 

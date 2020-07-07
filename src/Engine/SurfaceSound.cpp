@@ -43,7 +43,7 @@ namespace Mengine
 
         SoundBufferInterfacePtr soundBuffer = m_resourceSound->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, false, "sound '%s' resource '%s' sound buffer not create"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, "sound '%s' resource '%s' sound buffer not create"
             , this->getName().c_str()
             , m_resourceSound->getName().c_str()
         );
@@ -54,7 +54,7 @@ namespace Mengine
             ->createSoundIdentity( m_isHeadMode, soundBuffer, m_sourceCategory, streamable
                 , MENGINE_DOCUMENT_MESSAGE( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, false, "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
             , this->getName().c_str()
             , m_resourceSound->getName().c_str()
             , m_sourceCategory

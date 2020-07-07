@@ -394,7 +394,7 @@ namespace Mengine
     void Transformation::calcWorldMatrix( mt::mat4f * _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const
     {
         mt::mat4f localMatrix;
-        Transformation::makeLocalMatrix_( localMatrix, _transformationFlag, _position, _origin, _scale, _skew, _orientation );
+        Transformation::makeLocalMatrix( &localMatrix, _transformationFlag, _position, _origin, _scale, _skew, _orientation );
 
         if( m_relationTransformation == nullptr )
         {
@@ -564,58 +564,57 @@ namespace Mengine
     {
         m_invalidateLocalMatrix = false;
 
-        Transformation::makeLocalMatrix_( m_localMatrix, m_transformationFlag, m_position, m_origin, m_scale, m_skew, m_orientation );
+        Transformation::makeLocalMatrix( &m_localMatrix, m_transformationFlag, m_position, m_origin, m_scale, m_skew, m_orientation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::makeLocalMatrix_( mt::mat4f & _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation )
+    void Transformation::makeLocalMatrix( mt::mat4f * _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation )
     {
         switch( _transformationFlag )
         {
         case TRANSFORMATION_INVALIDATE_IDENTITY:
             {
-                mt::ident_m4( _lm );
+                mt::ident_m4( *_lm );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_POSITION:
             {
-                mt::make_translation_m4( _lm, _position.x, _position.y, _position.z );
+                mt::make_translation_m4( *_lm, _position.x, _position.y, _position.z );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_ORIGIN:
             {
-                mt::make_translation_m4( _lm, -_origin.x, -_origin.y, -_origin.z );
+                mt::make_translation_m4( *_lm, -_origin.x, -_origin.y, -_origin.z );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_SCALE:
             {
-                mt::make_scale_m4( _lm, _scale.x, _scale.y, _scale.z );
+                mt::make_scale_m4( *_lm, _scale.x, _scale.y, _scale.z );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_SKEW:
             {
-                mt::make_skew_m4( _lm, _skew.x, _skew.y );
+                mt::make_skew_m4( *_lm, _skew.x, _skew.y );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_ORIENTATION_X:
             {
-                mt::make_rotate_z_axis_m4( _lm, _orientation.x );
+                mt::make_rotate_z_axis_m4( *_lm, _orientation.x );
 
                 return;
             }break;
         case TRANSFORMATION_INVALIDATE_POSITION | TRANSFORMATION_INVALIDATE_ORIGIN:
             {
-                mt::make_translation_m4( _lm, _position.x - _origin.x, _position.y - _origin.y, _position.z - _origin.z );
+                mt::make_translation_m4( *_lm, _position.x - _origin.x, _position.y - _origin.y, _position.z - _origin.z );
 
                 return;
             }break;
         default:
             {
-
             }break;
         }
 
@@ -654,25 +653,25 @@ namespace Mengine
             mt::mat4f mat_rot;
             mt::make_rotate_m4_euler( mat_rot, _orientation.x, _orientation.y, _orientation.z );
 
-            mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
+            mt::mul_m4_m4_r( *_lm, mat_base, mat_rot );
         }
         else if( _transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION_X )
         {
             mt::mat4f mat_rot;
             mt::make_rotate_z_axis_m4( mat_rot, _orientation.x );
 
-            mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
+            mt::mul_m4_m4_r( *_lm, mat_base, mat_rot );
         }
         else
         {
-            _lm = mat_base;
+            *_lm = mat_base;
         }
 
         if( _transformationFlag & TRANSFORMATION_INVALIDATE_POSITION )
         {
-            _lm.v3.x += _position.x;
-            _lm.v3.y += _position.y;
-            _lm.v3.z += _position.z;
+            _lm->v3.x += _position.x;
+            _lm->v3.y += _position.y;
+            _lm->v3.z += _position.z;
         }
     }
     //////////////////////////////////////////////////////////////////////////

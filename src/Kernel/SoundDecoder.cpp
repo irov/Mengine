@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoder::setOptions( const CodecOptions * _options )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _options, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _options );
         MENGINE_ASSERTION_TYPE( _options, const SoundCodecOptions * );
 
         m_options = *static_cast<const SoundCodecOptions *>(_options);
@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( _dataInfo );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const SoundCodecDataInfo * );
 
         m_dataInfo = *static_cast<const SoundCodecDataInfo *>(_dataInfo);

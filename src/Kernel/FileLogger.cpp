@@ -42,7 +42,7 @@ namespace Mengine
     {
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         m_stream = stream;
 

@@ -275,7 +275,7 @@ namespace Mengine
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &texture, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( material );
 
         m_material = material;
 

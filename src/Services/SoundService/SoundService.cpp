@@ -353,11 +353,11 @@ namespace Mengine
         SoundSourceInterfacePtr source = SOUND_SYSTEM()
             ->createSoundSource( _isHeadMode, _buffer, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( source, nullptr, "create SoundSource invalid" );
+        MENGINE_ASSERTION_MEMORY_PANIC( source, "create SoundSource invalid" );
 
         SoundIdentityPtr emitter = m_factorySoundEmitter->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( emitter, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( emitter );
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
         emitter->setId( new_id );
@@ -464,7 +464,7 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _streamable, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "can't open sound file '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open sound file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -472,7 +472,7 @@ namespace Mengine
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
             ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "can't create sound decoder for file '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "can't create sound decoder for file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -536,7 +536,7 @@ namespace Mengine
             soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, true, _doc );
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "invalid create decoder '%s':'%s' type '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "invalid create decoder '%s':'%s' type '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()
@@ -545,7 +545,7 @@ namespace Mengine
         SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
             ->createSoundBuffer( soundDecoder, _streamable, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "can't create sound buffer for file '%s:%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't create sound buffer for file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -1282,7 +1282,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, 0.f, "identity is nullptr (mixer '%s')"
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr (mixer '%s')"
             , _mixer.c_str()
         );
 
@@ -1295,7 +1295,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getDuration( const SoundIdentityInterfacePtr & _identity ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, 0.f, "identity is nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr" );
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
@@ -1317,7 +1317,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, false, "identity is nullptr (pos '%f')"
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr (pos '%f')"
             , _pos
         );
 

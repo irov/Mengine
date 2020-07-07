@@ -37,7 +37,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
@@ -325,17 +325,17 @@ namespace Mengine
                 break;
             };
 
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, false );
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute );
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexShader );
 
             RenderFragmentShaderInterfacePtr fragmentShader = this->cacheFragmentShader_( &m );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader );
 
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
                 ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( program, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( program );
 
             rs.program = program;
 

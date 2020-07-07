@@ -32,7 +32,7 @@ namespace Mengine
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
             m_mutex = mutex;
 

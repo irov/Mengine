@@ -39,7 +39,7 @@ namespace Mengine
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder );
 
         if( decoder->prepareData( _stream ) == false )
         {
@@ -52,7 +52,7 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         uint8_t * buffer = memory->getBuffer();
 
@@ -70,14 +70,14 @@ namespace Mengine
     {
         InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( m_options.fileGroup, m_options.inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( input_stream, false, "Image file '%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( input_stream, "Image file '%s' was not found"
             , m_options.inputFilePath.c_str()
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, false, "Image decoder for file '%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "Image decoder for file '%s' was not found"
             , m_options.inputFilePath.c_str()
         );
 
@@ -111,7 +111,7 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "create memory cache buffer '%d'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "create memory cache buffer '%d'"
             , bufferSize
         );
 
@@ -132,7 +132,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "HIT file '%s' not create (open file '%s')"
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "HIT file '%s' not create (open file '%s')"
             , m_options.outputFilePath.c_str()
             , m_options.fileGroup->getName().c_str()
         );
@@ -140,7 +140,7 @@ namespace Mengine
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "HIT file '%s' not create (createEncoder hitPick)"
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, "HIT file '%s' not create (createEncoder hitPick)"
             , m_options.outputFilePath.c_str()
         );
 

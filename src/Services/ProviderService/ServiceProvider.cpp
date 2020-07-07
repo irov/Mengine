@@ -67,7 +67,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( service, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( service );
 
 #ifdef MENGINE_DEBUG
         service->setDocument( _doc );

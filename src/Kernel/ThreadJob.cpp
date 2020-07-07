@@ -73,7 +73,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _worker, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( _worker );
 
         if( this->isCancel() == true )
         {

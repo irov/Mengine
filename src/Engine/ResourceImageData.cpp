@@ -34,7 +34,7 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "image file '%s:%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s:%s' was not found"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );
@@ -50,7 +50,7 @@ namespace Mengine
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, false, "image decoder '%s' for file '%s:%s' was not found"
+        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "image decoder '%s' for file '%s:%s' was not found"
             , this->getCodecType().c_str()
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()

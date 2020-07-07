@@ -41,7 +41,7 @@ namespace Mengine
 
             const ResourceImagePtr & resourceImage = resourceBank->getResource( m_elements[i].resourceImageName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "window '%s' not found resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "window '%s' not found resource '%s'"
                 , this->getName().c_str()
                 , element.resourceImageName.c_str()
             );

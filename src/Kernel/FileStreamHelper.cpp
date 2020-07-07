@@ -17,7 +17,7 @@ namespace Mengine
             FileGroupInterface * realFileGroup;
             InputStreamInterfacePtr file = _fileGroup->createInputFile( _filePath, _streaming, &realFileGroup, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( file, nullptr, "can't create input file '%s:%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( file, "can't create input file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -39,7 +39,7 @@ namespace Mengine
         {
             OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( file, nullptr, "can't create output file '%s:%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( file, "can't create output file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );

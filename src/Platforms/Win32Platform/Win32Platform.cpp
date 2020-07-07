@@ -1731,7 +1731,7 @@ namespace Mengine
 
             OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' path '%s' can't open output stream '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "name '%s' path '%s' can't open output stream '%s'"
                 , _name.c_str()
                 , filePath.c_str()
                 , c_icoFile.c_str()
@@ -2369,7 +2369,7 @@ namespace Mengine
     {
         Win32DateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider );
 
         return dateTimeProvider;
     }
@@ -2854,7 +2854,7 @@ namespace Mengine
         Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries
             ->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary );
 
         dynamicLibrary->setName( _dynamicLibraryName );
 

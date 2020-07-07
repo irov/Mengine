@@ -66,7 +66,7 @@ namespace Mengine
 
         MemoryInterfacePtr binary_memory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, false, "invalid sound %u [memory %zu]"
+        MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, "invalid sound %u [memory %zu]"
             , m_alBufferId
             , size
         );

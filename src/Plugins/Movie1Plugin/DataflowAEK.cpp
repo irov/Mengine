@@ -29,7 +29,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
@@ -54,7 +54,7 @@ namespace Mengine
     {
         MovieFramePackPtr data = m_factoryMovieFramePack->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( data );
 
         return data;
     }
@@ -63,7 +63,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
         return memory;
     }

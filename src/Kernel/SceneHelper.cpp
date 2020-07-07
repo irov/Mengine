@@ -16,16 +16,16 @@ namespace Mengine
             ScenePtr scene = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( scene );
 
             EntityEventablePtr eventable = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( eventable, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( eventable );
 
             EventationInterface * eventation = eventable->getEventation();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( eventation, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( eventation );
 
             eventation->setReceiver( EVENTATION_RECEIVER_MASK_FULL, _eventReceiver );
 

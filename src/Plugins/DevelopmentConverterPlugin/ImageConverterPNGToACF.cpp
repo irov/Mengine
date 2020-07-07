@@ -42,14 +42,14 @@ namespace Mengine
 
         InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, "invalid open input file '%s'"
             , m_options.inputFilePath.c_str()
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s'"
             , m_options.inputFilePath.c_str()
         );
 
@@ -81,7 +81,7 @@ namespace Mengine
 
         MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer );
 
         void * data_memory = data_buffer->getBuffer();
 
@@ -96,7 +96,7 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "'%s' invalid open output '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "'%s' invalid open output '%s'"
             , m_options.inputFilePath.c_str()
             , full_outputFilePath.c_str()
         );
@@ -104,7 +104,7 @@ namespace Mengine
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "'%s' invalid create encoder"
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, "'%s' invalid create encoder"
             , m_options.inputFilePath.c_str()
         );
 

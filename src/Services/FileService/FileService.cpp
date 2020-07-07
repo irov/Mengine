@@ -86,13 +86,13 @@ namespace Mengine
     {
         FactoryPtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), _type );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not registry factory '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not registry factory '%s'"
             , _type.c_str()
         );
 
         FileGroupInterfacePtr fileGroup = factory->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, nullptr, "invalid create file group '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "invalid create file group '%s'"
             , _type.c_str()
         );
 
@@ -114,7 +114,7 @@ namespace Mengine
 
         FileGroupInterfacePtr fileGroup = this->createFileGroup( _type, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false, "can't create fileGroup '%s' type '%s' for object '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "can't create fileGroup '%s' type '%s' for object '%s'"
             , _name.c_str()
             , _type.c_str()
             , _filePath.c_str()
@@ -167,7 +167,7 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & groupInterface = m_fileGroups.erase( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( groupInterface, false, "not mount '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( groupInterface, "not mount '%s'"
             , _name.c_str()
         );
 
@@ -202,7 +202,7 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & fileGroup = m_fileGroups.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, FileGroupInterfacePtr::none(), "not mount '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "not mount '%s'"
             , _name.c_str()
         );
 

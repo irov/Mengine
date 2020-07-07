@@ -18,7 +18,7 @@ namespace Mengine
     {
         FactoryPtr factory = this->_initializeFactory();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
         m_factory = factory;
 

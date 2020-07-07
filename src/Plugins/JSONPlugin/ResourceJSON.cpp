@@ -35,7 +35,7 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
         JSONStorageInterfacePtr storage = JSON_SERVICE()
             ->loadJSONStream( stream, MENGINE_DOCUMENT_FACTORABLE );

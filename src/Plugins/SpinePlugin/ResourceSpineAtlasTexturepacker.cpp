@@ -43,7 +43,7 @@ namespace Mengine
 
         spAtlas * atlas = NEW( spAtlas );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( atlas, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas );
 
         spAtlasPage * lastPage = nullptr;
         spAtlasRegion * lastRegion = nullptr;
@@ -68,7 +68,7 @@ namespace Mengine
 
             ResourcePtr resourceTexturepacker = resourceBank->getResource( desc.resourceTexturepackerName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker );
 
             UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = resourceTexturepacker->getUnknown();
 

@@ -55,7 +55,7 @@ namespace Mengine
         BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE()
             ->getGlyph( _fileGroup, glyphPath );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph, false, "invalid font '%s' don't load Glyph '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid font '%s' don't load Glyph '%s'"
             , name.c_str()
             , glyphPath.c_str()
         );

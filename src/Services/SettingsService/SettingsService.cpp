@@ -61,7 +61,7 @@ namespace Mengine
 
         SettingInterfacePtr setting = generator->generate( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( setting, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( setting );
 
         if( setting->initialize( _fileGroup, _filePath, _doc ) == false )
         {
@@ -97,7 +97,7 @@ namespace Mengine
         ConfigInterfacePtr config = CONFIG_SERVICE()
             ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
             , _filePath.c_str()
         );
 
@@ -143,7 +143,7 @@ namespace Mengine
     {
         const SettingInterfacePtr & setting = m_settings.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( setting, SettingInterfacePtr::none() );
+        MENGINE_ASSERTION_MEMORY_PANIC( setting );
 
         return setting;
     }

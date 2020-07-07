@@ -47,7 +47,7 @@ namespace Mengine
 
         ResourceSpineAtlasPtr resourceSpineAtlas = resourceBank->getResource( m_resourceSpineAtlasName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas );
 
         m_resourceSpineAtlas = resourceSpineAtlas;
 
@@ -55,20 +55,17 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory );
 
         const char * skeleton_memory_buffer = skeleton_memory->getBuffer();
 
         spAtlas * atlas = m_resourceSpineAtlas->getSpineAtlas();
 
         spSkeletonJson * skeletonJson = spSkeletonJson_create( atlas );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( skeletonJson, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonJson );
 
         spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, skeleton_memory_buffer );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( skeletonData, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonData );
 
         skeleton_memory = nullptr;
 

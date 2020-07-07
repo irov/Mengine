@@ -40,7 +40,7 @@ namespace Mengine
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
         m_mutex = mutex;
 
@@ -48,7 +48,7 @@ namespace Mengine
 
         ResourceBankPtr globalBank = m_factoryResourceBank->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( globalBank, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( globalBank );
 
         uint32_t ResourceHashTableSize = CONFIG_VALUE( "Engine", "ResourceHashTableSize", 1024 * 32 );
 
@@ -84,7 +84,7 @@ namespace Mengine
     {
         ResourceBankPtr bank = m_factoryResourceBank->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( bank, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( bank );
 
         if( bank->initialize( m_mutex, _reserved ) == false )
         {
@@ -101,7 +101,7 @@ namespace Mengine
         Resource * prev_resource = nullptr;
         ResourcePtr resource = m_globalBank->createResource( _locale, _groupName, _name, _type, _keep, &prev_resource, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
             , _locale.c_str()
             , _groupName.c_str()
             , _name.c_str()
@@ -152,7 +152,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::removeResource( const ResourcePtr & _resource )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _resource, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( _resource );
 
         if( _resource->isGroupCache() == true )
         {

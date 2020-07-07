@@ -64,7 +64,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         archivePrefetcherLZ4->setArchivator( archivator );
 

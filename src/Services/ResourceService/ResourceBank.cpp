@@ -92,7 +92,7 @@ namespace Mengine
         ResourcePtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not registered resource type '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "not registered resource type '%s'"
             , _type.c_str()
         );
 
@@ -106,7 +106,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
             , _locale.c_str()
             , _groupName.c_str()
             , _name.c_str()
@@ -189,7 +189,7 @@ namespace Mengine
 
         const ResourcePtr & resource = m_resources.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
             , _name.c_str()
         );
 
@@ -212,7 +212,7 @@ namespace Mengine
 
         const ResourcePtr & resource = m_resources.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
             , _name.c_str()
         );
 
@@ -223,7 +223,7 @@ namespace Mengine
     {
         const ResourcePtr & resource = m_resources.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, ConstString::none(), "resource '%s' does not exist"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
             , _name.c_str()
         );
 

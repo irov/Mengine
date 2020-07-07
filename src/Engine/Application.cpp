@@ -353,7 +353,7 @@ namespace Mengine
         RenderPipelineInterfacePtr renderPipeline = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), Engine_RenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline );
 
         if( renderPipeline->initialize() == false )
         {
@@ -2181,7 +2181,7 @@ namespace Mengine
         const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()
             ->getResource( _resourceName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( cursorResource, "can't find resource cursor '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( cursorResource, "can't find resource cursor '%s'"
             , _resourceName.c_str()
             );
 

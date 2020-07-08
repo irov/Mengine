@@ -124,7 +124,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_RETURN( s_get_uint32( endof_central_dir ) == 0x06054B50, false, "bad 'End of Central Dir' signature zip '%s'"
+        MENGINE_ASSERTION_FATAL( s_get_uint32( endof_central_dir ) == 0x06054B50, "bad 'End of Central Dir' signature zip '%s'"
             , m_folderPath.c_str()
         );
 

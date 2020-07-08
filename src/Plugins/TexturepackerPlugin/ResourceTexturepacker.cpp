@@ -144,7 +144,7 @@ namespace Mengine
 
         const jpp::object & root = storage->getJSON();
 
-        MENGINE_ASSERTION_RETURN( !(root == jpp::detail::invalid), false, "invalid json '%s'"
+        MENGINE_ASSERTION_FATAL( root != jpp::detail::invalid, "invalid json '%s'"
             , m_resourceJSONName.c_str()
         );
 

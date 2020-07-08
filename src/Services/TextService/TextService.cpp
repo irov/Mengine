@@ -638,7 +638,7 @@ namespace Mengine
 
         for( const ConstString & fontName : fonts )
         {
-            MENGINE_ASSERTION_RETURN( config->hasSection( fontName.c_str() ) == true, false, "invalid '%s:%s' section for FONT '%s'"
+            MENGINE_ASSERTION_FATAL( config->hasSection( fontName.c_str() ) == true, "invalid '%s:%s' section for FONT '%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , fontName.c_str()

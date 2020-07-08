@@ -61,7 +61,7 @@ namespace Mengine
 
         m_memory = memory;
 
-        MENGINE_ASSERTION_RETURN( Magic_HasTextures( m_mf ) == false, false, "astralax '%s' incorrect safe 'with textures'"
+        MENGINE_ASSERTION_FATAL( Magic_HasTextures( m_mf ) == false, "astralax '%s' incorrect safe 'with textures'"
             , _filePath.c_str()
         );
 

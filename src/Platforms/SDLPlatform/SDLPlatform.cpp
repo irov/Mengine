@@ -234,7 +234,7 @@ namespace Mengine
             level = LM_INFO;
             break;
         case SDL_LOG_PRIORITY_DEBUG:
-            level = LM_MESSAGE;
+            level = LM_DEBUG;
             break;
         case SDL_LOG_PRIORITY_INFO:
             level = LM_INFO;

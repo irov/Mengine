@@ -278,10 +278,10 @@ namespace Mengine
     {
         if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 )
         {
-            LOGGER_ERROR("SDL invalid initialize %s"
+            LOGGER_ERROR( "SDL invalid initialize %s"
                 , SDL_GetError()
-            );            
-            
+            );
+
             return false;
         }
 
@@ -1274,10 +1274,37 @@ namespace Mengine
         Char newPathCorrect[MENGINE_MAX_PATH] = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
-        int result = ::rename( oldPathCorrect, newPathCorrect );
-
-        if( result != 0 )
+        struct stat sb;
+        if( stat( newPathCorrect, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
         {
+            int result_remove = ::remove( newPathCorrect );
+
+            if( result_remove != 0 )
+            {
+                const char * msg = ::strerror( errno );
+
+                LOGGER_ERROR( "invalid remove new move file from '%s' to '%s' error '%s' [%u]"
+                    , _oldFilePath
+                    , _newFilePath
+                    , msg
+                    , errno
+                );
+            }
+        }
+
+        int result_rename = ::rename( oldPathCorrect, newPathCorrect );
+
+        if( result_rename != 0 )
+        {
+            const char * msg = ::strerror( errno );
+
+            LOGGER_ERROR( "invalid move file from '%s' to '%s' error '%s' [%u]"
+                , _oldFilePath
+                , _newFilePath
+                , msg
+                , errno
+            );
+
             return false;
         }
 
@@ -1665,7 +1692,7 @@ namespace Mengine
 #elif defined(MENGINE_PLATFORM_ANDROID)
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
-        windowFlags |= SDL_WINDOW_BORDERLESS;        
+        windowFlags |= SDL_WINDOW_BORDERLESS;
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );

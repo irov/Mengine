@@ -41,7 +41,9 @@ namespace Mengine
         : m_composition( nullptr )
         , m_duration( 0.f )
         , m_frameDuration( 0.f )
+        , m_preCompileTime( 0.f )
         , m_hasBounds( false )
+        , m_bounds( {0.f, 0.f}, {0.f, 0.f} )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2205,15 +2207,31 @@ namespace Mengine
 
         if( play == true )
         {
-            float time = this->getTime();
+            if( m_preCompileTime != -1.f )
+            {
+                ae_play_movie_composition( m_composition, m_preCompileTime * 0.001f );
+            }
+            else
+            {
+                float duration = ae_get_movie_composition_data_duration( compositionData );
+                float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
 
-            ae_play_movie_composition( m_composition, time * 0.001f );
+                ae_play_movie_composition( m_composition, duration - frameDuration );
+            }
         }
         else
         {
-            float time = this->getTime();
+            if( m_preCompileTime != -1.f )
+            {
+                ae_set_movie_composition_time( m_composition, m_preCompileTime * 0.001f );
+            }
+            else
+            {
+                float duration = ae_get_movie_composition_data_duration( compositionData );
+                float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
 
-            ae_set_movie_composition_time( m_composition, time * 0.001f );
+                ae_set_movie_composition_time( m_composition, duration - frameDuration );
+            }
         }
 
         return true;
@@ -2340,9 +2358,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "name '%s' invalid compile"
-                , this->getName().c_str()
-            );
+            m_preCompileTime = _time;
 
             return;
         }
@@ -2354,7 +2370,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            return 0.f;
+            return m_preCompileTime;
         }
 
         float time = ae_get_movie_composition_time( m_composition );
@@ -2376,9 +2392,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "name '%s' not activate"
-                , this->getName().c_str()
-            );
+            m_preCompileTime = -1.f;
 
             return;
         }

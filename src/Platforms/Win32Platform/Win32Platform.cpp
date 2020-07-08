@@ -2143,16 +2143,59 @@ namespace Mengine
         WChar newFilePathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( newFilePathCorrect, unicode_newFilePath );
 
+#ifdef MENGINE_DEBUG
+        DWORD oldFileAttributes = ::GetFileAttributes( oldFilePathCorrect );
+
+        if( oldFileAttributes != INVALID_FILE_ATTRIBUTES && (oldFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
+        {
+            LOGGER_WARNING( "invalid move old file '%ls' it's directory"
+                , newFilePathCorrect
+            );
+
+            return false;
+        }
+#endif
+
+        DWORD newFileAttributes = ::GetFileAttributes( newFilePathCorrect );
+
+        if( newFileAttributes != INVALID_FILE_ATTRIBUTES )
+        {
+#ifdef MENGINE_DEBUG
+            if( (newFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
+            {
+                LOGGER_WARNING( "invalid move file '%ls' it's directory"
+                    , newFilePathCorrect
+                );
+
+                return false;
+            }
+#endif
+
+            if( ::DeleteFile( newFilePathCorrect ) == FALSE )
+            {
+                DWORD err = ::GetLastError();
+
+                MENGINE_UNUSED( err );
+
+                LOGGER_WARNING( "invalid move file '%ls' error '%lu'"
+                    , newFilePathCorrect
+                    , err
+                );
+            }
+        }
+
         if( ::MoveFile( oldFilePathCorrect, newFilePathCorrect ) == FALSE )
         {
-            DWORD err = ::GetLastError();
+            DWORD le = ::GetLastError();
 
-            MENGINE_UNUSED( err );
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &le, str_le, 1024 );
 
-            LOGGER_WARNING( "file '%ls' move to '%ls' error '%lu'"
+            LOGGER_WARNING( "file '%ls' move to '%ls' error: %s [%lu]"
                 , oldFilePathCorrect
                 , newFilePathCorrect
-                , err
+                , str_le
+                , le
             );
 
             return false;
@@ -2190,35 +2233,35 @@ namespace Mengine
                             continue;
                         }
 
-                    WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
-                    MENGINE_WCSCPY( sPath2, sPath );
-                    MENGINE_WCSCAT( sPath2, L"\0" );
+                        WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
+                        MENGINE_WCSCPY( sPath2, sPath );
+                        MENGINE_WCSCAT( sPath2, L"\0" );
 
                         Helper::pathCorrectForwardslashW( sPath2 );
 
                         ::PathRemoveFileSpec( sPath2 );
 
-                    WChar unicode_filepath[MENGINE_MAX_PATH] = {L'\0'};
-                    ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
+                        WChar unicode_filepath[MENGINE_MAX_PATH] = {L'\0'};
+                        ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
-                    WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
-                    if( MENGINE_WCSLEN( _dir ) != 0 )
-                    {
-                        ::PathRelativePathTo( unicode_out,
-                            _dir,
-                            FILE_ATTRIBUTE_DIRECTORY,
-                            unicode_filepath,
-                            FILE_ATTRIBUTE_NORMAL );
-                    }
-                    else
-                    {
-                        MENGINE_WCSCPY( unicode_out, unicode_filepath );
-                    }
+                        WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
+                        if( MENGINE_WCSLEN( _dir ) != 0 )
+                        {
+                            ::PathRelativePathTo( unicode_out,
+                                _dir,
+                                FILE_ATTRIBUTE_DIRECTORY,
+                                unicode_filepath,
+                                FILE_ATTRIBUTE_NORMAL );
+                        }
+                        else
+                        {
+                            MENGINE_WCSCPY( unicode_out, unicode_filepath );
+                        }
 
-                    Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
-                    if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
-                    {
-                        ::FindClose( hFind );
+                        Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
+                        if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                        {
+                            ::FindClose( hFind );
 
                             return false;
                         }
@@ -2241,7 +2284,7 @@ namespace Mengine
             }
 
             {
-                WChar sPath[MENGINE_MAX_PATH] = { L'\0' };
+                WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
                 MENGINE_WCSCPY( sPath, _dir );
                 MENGINE_WCSCAT( sPath, _path );
                 MENGINE_WCSCAT( sPath, L"*.*" );
@@ -2267,13 +2310,13 @@ namespace Mengine
                         continue;
                     }
 
-                    WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
+                    WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
                     MENGINE_WCSCPY( currentPath, sPath );
                     MENGINE_WCSCAT( currentPath, L"\0" );
 
                     ::PathRemoveFileSpec( currentPath );
 
-                    WChar nextPath[MENGINE_MAX_PATH] = { L'\0' };
+                    WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
                     ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
                     MENGINE_WCSCAT( nextPath, L"\\" );
@@ -2602,6 +2645,17 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getLastErrorMessage( DWORD * const _le, Char * const _out, size_t _capacity ) const
+    {
+        DWORD le = ::GetLastError();
+
+        *_le = le;
+
+        bool result = this->getErrorMessage( le, _out, _capacity );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::sleep( uint32_t _ms )
     {
         ::Sleep( _ms );
@@ -2721,14 +2775,13 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD le = ::GetLastError();
-
-                Char message[1024] = {'\0'};
-                this->getErrorMessage( le, message, 1024 );
+                DWORD le;
+                Char str_le[1024] = {'\0'};
+                this->getLastErrorMessage( &le, str_le, 1024 );
 
                 LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
                     , _process
-                    , message
+                    , str_le
                     , le
                 );
 
@@ -2771,7 +2824,7 @@ namespace Mengine
                 DWORD tempFileSizeHigh;
                 DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
 
-                Char tempFileBuffer[4096] = { '\0' };
+                Char tempFileBuffer[4096] = {'\0'};
 
                 DWORD dwBytesRead;
                 DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4096 );
@@ -2812,14 +2865,13 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD le = ::GetLastError();
-
-                Char message[1024] = {'\0'};
-                this->getErrorMessage( le, message, 1024 );
+                DWORD le;
+                Char str_le[1024] = {'\0'};
+                this->getLastErrorMessage( &le, str_le, 1024 );
 
                 LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
                     , _process
-                    , message
+                    , str_le
                     , le
                 );
 
@@ -2961,12 +3013,12 @@ namespace Mengine
 
         if( hr != S_OK )
         {
-            Char errorMessage[4096] = { '\0' };
-            this->getErrorMessage( hr, errorMessage, 4096 );
+            Char str_hr[4096] = {'\0'};
+            this->getErrorMessage( hr, str_hr, 4096 );
 
-            LOGGER_ERROR( "SHGetSpecialFolderLocation invalid [%ld]: %s"
+            LOGGER_ERROR( "SHGetSpecialFolderLocation invalid error: %s [%ld] "
+                , str_hr
                 , hr
-                , errorMessage
             );
 
             return 0;

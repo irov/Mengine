@@ -177,6 +177,9 @@ namespace Mengine
         bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const override;
 
     protected:
+        bool getLastErrorMessage( DWORD * const _le, Char * const _out, size_t _capacity ) const;
+
+    protected:
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;

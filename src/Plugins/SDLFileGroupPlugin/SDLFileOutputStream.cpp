@@ -78,7 +78,7 @@ namespace Mengine
         }
 
         Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::concatenateFilePathTemp( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()

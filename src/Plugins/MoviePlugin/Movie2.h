@@ -215,6 +215,8 @@ namespace Mengine
         float m_duration;
         float m_frameDuration;
 
+        float m_preCompileTime;
+
         bool m_hasBounds;
         mt::box2f m_bounds;
 

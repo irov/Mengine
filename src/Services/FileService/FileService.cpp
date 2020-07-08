@@ -107,7 +107,7 @@ namespace Mengine
             , _type.c_str()
         );
 
-        MENGINE_ASSERTION_RETURN( m_fileGroups.exist( _name ) == false, false, "already mount '%s'\n"
+        MENGINE_ASSERTION_FATAL( m_fileGroups.exist( _name ) == false, "already mount '%s'\n"
             "Remount would be performed"
             , _name.c_str()
         );

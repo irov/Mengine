@@ -132,7 +132,7 @@ namespace Mengine
 
                     MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( insert_group );
 
-                    MENGINE_ASSERTION_RETURN( it_remove_cache_found != m_resourcesCache.end(), nullptr );
+                    MENGINE_ASSERTION_FATAL( it_remove_cache_found != m_resourcesCache.end() );
 
                     VectorResources & cache_resources = it_remove_cache_found->second;
 
@@ -160,7 +160,7 @@ namespace Mengine
 
             MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( group );
 
-            MENGINE_ASSERTION_RETURN( it_remove_cache_found != m_resourcesCache.end(), false );
+            MENGINE_ASSERTION_FATAL( it_remove_cache_found != m_resourcesCache.end() );
 
             VectorResources & cache_resources = it_remove_cache_found->second;
 

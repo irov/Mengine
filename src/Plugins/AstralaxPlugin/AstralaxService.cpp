@@ -375,7 +375,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxService::getResourceImage( int32_t _index ) const
     {
-        MENGINE_ASSERTION_RETURN( (VectorAtlasDesc::size_type)_index < m_atlases.size(), ResourceImagePtr::none(), "index %d but size is %llu"
+        MENGINE_ASSERTION_FATAL( (VectorAtlasDesc::size_type)_index < m_atlases.size(), "index %d but size is %llu"
             , _index
             , m_atlases.size()
         );

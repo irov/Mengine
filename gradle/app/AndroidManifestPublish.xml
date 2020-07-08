@@ -22,6 +22,7 @@
         android:label="${app_name_gradle}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
+        android:theme="@style/AppTheme"
         android:hardwareAccelerated="true"
         tools:replace="android:label"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -38,13 +39,14 @@
 
         <activity
             android:name="MengineActivity"
-              android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-              android:clearTaskOnLaunch="true"
-              android:launchMode="singleTop"
-              android:label="${app_name_gradle}"
-              android:keepScreenOn="true"
-              android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-              android:screenOrientation="fullSensor">
+            android:label="${app_name_gradle}"
+            android:theme="@style/AppTheme"
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleTop"
+            android:keepScreenOn="true"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="fullSensor">
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

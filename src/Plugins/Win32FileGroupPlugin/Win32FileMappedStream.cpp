@@ -23,7 +23,7 @@ namespace Mengine
     {
         if( m_memory != NULL )
         {
-            if( UnmapViewOfFile( m_memory ) == FALSE )
+            if( ::UnmapViewOfFile( m_memory ) == FALSE )
             {
                 DWORD uError = ::GetLastError();
 
@@ -61,14 +61,14 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        m_hFile = Helper::Win32CreateFile(
+        HANDLE hFile = Helper::Win32CreateFile(
             concatenatePath, // file to open
             GENERIC_READ, // open for reading
             FILE_SHARE_READ, // share for reading, exclusive for mapping
             OPEN_EXISTING // existing file only
         );
 
-        if( m_hFile == INVALID_HANDLE_VALUE )
+        if( hFile == INVALID_HANDLE_VALUE )
         {
             LOGGER_ERROR( "file '%ls' invalid open"
                 , concatenatePath
@@ -77,9 +77,11 @@ namespace Mengine
             return false;
         }
 
-        m_hMapping = CreateFileMapping( m_hFile, NULL, PAGE_READONLY, 0, 0, NULL );
+        m_hFile = hFile;
 
-        if( m_hMapping == NULL )
+        HANDLE hMapping = CreateFileMapping( m_hFile, NULL, PAGE_READONLY, 0, 0, NULL );
+
+        if( hMapping == NULL )
         {
             DWORD error = ::GetLastError();
 
@@ -93,6 +95,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_hMapping = hMapping;
 
         LPVOID memory = ::MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
 

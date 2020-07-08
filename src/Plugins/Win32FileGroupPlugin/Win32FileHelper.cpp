@@ -5,6 +5,8 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 #include "stdex/memorycopy.h"
 
 namespace Mengine
@@ -33,7 +35,7 @@ namespace Mengine
             }
 
 #ifdef MENGINE_DEBUG
-            if( Win32ValidateFile( pathCorrect ) == false )
+            if( Helper::Win32ValidateFile( pathCorrect ) == false )
             {
                 ::CloseHandle( handle );
 
@@ -60,9 +62,9 @@ namespace Mengine
 
             ::FindClose( hFind );
 
-            const WChar * filename = PathFindFileName( _path );
+            const WChar * filename = ::PathFindFileName( _path );
 
-            if( wcscmp( filename, wfd.cFileName ) != 0 )
+            if( MENGINE_WCSCMP( filename, wfd.cFileName ) != 0 )
             {
                 LOGGER_ERROR( "File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
                     , _path

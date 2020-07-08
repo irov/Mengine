@@ -199,10 +199,13 @@ namespace Mengine
 
         Helper::pathCorrectForwardslashA( utf8_base );
 
-        PLATFORM_SERVICE()
-            ->findFiles( utf8_base, _filePath.c_str(), _mask, _lambda );
+        if( PLATFORM_SERVICE()
+            ->findFiles( utf8_base, _filePath.c_str(), _mask, _lambda ) == false )
+        {
+            return false;
+        }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )

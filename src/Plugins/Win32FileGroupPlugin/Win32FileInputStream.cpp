@@ -48,7 +48,7 @@ namespace Mengine
         m_share = _share;
         m_streaming = _streaming;
 
-        WChar fullPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
         {
             return false;
@@ -275,7 +275,7 @@ namespace Mengine
         return readSize + tail;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * _read )
+    bool Win32FileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read )
     {
         uint8_t * buf_offset = (uint8_t *)_buf + _offset;
 
@@ -371,7 +371,7 @@ namespace Mengine
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::eof" );
 
         return (m_reading - m_capacity + m_carriage) == m_size;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::time( uint64_t * const _time ) const
     {

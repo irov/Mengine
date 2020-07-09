@@ -45,13 +45,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()( const Char * _format, ... ) const
         {
-            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
+            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
 
             MENGINE_VA_LIST_TYPE argList;
             MENGINE_VA_LIST_START( argList, _format );
 
             MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE - 1, _format, argList );
-            
+
             MENGINE_VA_LIST_END( argList );
 
             Helper::Assertion( m_level, m_test, m_file, m_line, "%s", str_info );
@@ -68,19 +68,19 @@ namespace Mengine
         {
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
-                volatile uint32_t * p = nullptr; 
+                volatile uint32_t * p = nullptr;
                 *p = 0xBADC0DE;
 
                 return;
             }
 
-            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
+            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
 
             MENGINE_VA_LIST_TYPE argList;
             MENGINE_VA_LIST_START( argList, _format );
 
             MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE - 1, _format, argList );
-            
+
             MENGINE_VA_LIST_END( argList );
 
             if( _level == ASSERTION_LEVEL_EXCEPTION )

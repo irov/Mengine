@@ -84,11 +84,18 @@ namespace Mengine
 
         if( rwops != nullptr )
         {
-            SDL_ClearError();
-            SDL_RWclose( rwops );
+            if( SDL_RWclose( rwops ) != 0 )
+            {
+                LOGGER_ERROR( "invalid close file '%s' error: %s"
+                    , _filePath.c_str()
+                    , SDL_GetError()
+                );
+            }
 
             return true;
         }
+
+        SDL_ClearError();
 
         if( _recursive == true && m_parentFileGroup != nullptr )
         {

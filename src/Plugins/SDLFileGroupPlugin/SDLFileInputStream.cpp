@@ -145,9 +145,9 @@ namespace Mengine
             return false;
         }
 
-        m_rwops = SDL_RWFromFile( _fullPath, "rb" );
+        SDL_RWops * rwops = SDL_RWFromFile( _fullPath, "rb" );
 
-        if( m_rwops == nullptr )
+        if( rwops == nullptr )
         {
             LOGGER_ERROR( "invalid open '%s' error '%s'"
                 , _fullPath
@@ -156,6 +156,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_rwops = rwops;
 
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )

@@ -39,9 +39,9 @@ namespace Mengine
             return false;
         }
 
-        m_rwops = SDL_RWFromFile( concatenatePath, "wb" );
+        SDL_RWops * rwops = SDL_RWFromFile( concatenatePath, "wb" );
 
-        if( m_rwops == nullptr )
+        if( rwops == nullptr )
         {
             LOGGER_ERROR( "%s invalid open error '%s'"
                 , concatenatePath
@@ -50,6 +50,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_rwops = rwops;
 
         return true;
     }

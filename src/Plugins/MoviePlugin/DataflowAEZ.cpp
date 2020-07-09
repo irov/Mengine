@@ -46,7 +46,7 @@ namespace Mengine
             {
             case AE_MOVIE_RESOURCE_IMAGE:
                 {
-                    const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
+                    const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(_resource);
 
                     const ResourcePtr & data_resource = data->getResource( resource_image->name );
 
@@ -55,7 +55,7 @@ namespace Mengine
                         return AE_FALSE;
                     }
 
-                    Movie2DataImageDesc * desc = data->makeImageDesc( data_resource );
+                    Movie2Data::ImageDesc * desc = data->makeImageDesc( data_resource );
 
                     *_rd = desc;
 
@@ -63,7 +63,7 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_VIDEO:
                 {
-                    const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
+                    const aeMovieResourceVideo * resource_video = reinterpret_cast<const aeMovieResourceVideo *>(_resource);
 
                     const ResourcePtr & data_resource = data->getResource( resource_video->name );
 
@@ -78,7 +78,7 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_SOUND:
                 {
-                    const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
+                    const aeMovieResourceSound * resource_sound = reinterpret_cast<const aeMovieResourceSound *>(_resource);
 
                     const ResourcePtr & data_resource = data->getResource( resource_sound->name );
 
@@ -93,7 +93,7 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_PARTICLE:
                 {
-                    const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
+                    const aeMovieResourceParticle * resource_particle = reinterpret_cast<const aeMovieResourceParticle *>(_resource);
 
                     const ResourcePtr & data_resource = data->getResource( resource_particle->name );
 
@@ -123,7 +123,7 @@ namespace Mengine
             {
             case AE_MOVIE_RESOURCE_IMAGE:
                 {
-                    Movie2DataImageDesc * desc = reinterpret_cast<Movie2DataImageDesc *>(_data);
+                    Movie2Data::ImageDesc * desc = reinterpret_cast<Movie2Data::ImageDesc *>(_data);
 
                     data->removeImageDesc( desc );
                 }break;
@@ -159,7 +159,7 @@ namespace Mengine
                         break;
                     }
 
-                    const Movie2DataImageDesc * image_desc = reinterpret_cast<const Movie2DataImageDesc *>(movie_resource->userdata);
+                    const Movie2Data::ImageDesc * image_desc = reinterpret_cast<const Movie2Data::ImageDesc *>(movie_resource->userdata);
 
                     const ResourceImagePtr & resource_image = image_desc->resourceImage;
 

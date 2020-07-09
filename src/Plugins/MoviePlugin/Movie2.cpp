@@ -1304,12 +1304,12 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
+                    Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
                     const ResourceImagePtr & resourceImage = imageDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceImage( resourceImage );
 
-                    Movie2DataImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
+                    Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
                     const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
@@ -1358,7 +1358,7 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    Movie2DataImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
+                    Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
                     const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
@@ -2171,6 +2171,16 @@ namespace Mengine
             , m_compositionName.c_str()
         );
 
+        if( data->acquireComposition( composition ) == false )
+        {
+            LOGGER_ERROR( "name '%s' resource '%s' not acquire composition"
+                , this->getName().c_str()
+                , m_resourceMovie2->getName().c_str()
+            );
+
+            return false;
+        }
+
         m_composition = composition;
 
         aeMovieCompositionRenderInfo info;
@@ -2239,6 +2249,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_release()
     {
+        const Movie2DataInterfacePtr & data = m_resourceMovie2->getData();
+
+        data->releaseComposition( m_composition );
+
         ae_delete_movie_composition( m_composition );
         m_composition = nullptr;
 
@@ -2635,7 +2649,7 @@ namespace Mengine
 
                         ae_userdata_t resource_userdata = ae_get_movie_resource_userdata( mesh.resource );
 
-                        Movie2DataImageDesc * image_desc = reinterpret_cast<Movie2DataImageDesc *>(resource_userdata);
+                        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_userdata);
 
                         const ResourceImagePtr & resourceImage = image_desc->resourceImage;
 
@@ -2957,7 +2971,7 @@ namespace Mengine
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
-                        Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_resource_userdata( mesh.resource ));
+                        Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( mesh.resource ));
                         surfaceTrackMatte->setResourceImage( imageDesc->resourceImage );
 
                         surfaceTrackMatte->compile();

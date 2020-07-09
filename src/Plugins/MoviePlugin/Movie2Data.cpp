@@ -28,39 +28,138 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2Data::acquire()
     {
-        for( const ResourcePtr & resource : m_resources )
-        {
-            if( resource->compile() == false )
-            {
-                return false;
-            }
-        }
-
-        for( Movie2DataImageDesc * desc : m_images )
-        {
-            desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FACTORABLE );
-            desc->materials[EMB_ADD] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FACTORABLE );
-            desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FACTORABLE );
-            desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FACTORABLE );
-        }
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2Data::release()
     {
-        for( const ResourcePtr & resource : m_resources )
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __ae_movie_layer_data_visitor_acquire( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layer, ae_userdata_t _ud )
+    {
+        AE_UNUSED( _compositionData );
+
+        Movie2Data * data = reinterpret_cast<Movie2Data *>(_ud);
+
+        aeMovieResourceTypeEnum resource_type = ae_get_movie_layer_data_resource_type( _layer );
+
+        ae_userdata_t resource_ud = ae_get_movie_layer_data_resource_userdata( _layer );
+
+        if( resource_ud == AE_USERDATA_NULL )
         {
-            resource->release();
+            return AE_TRUE;
         }
 
-        for( Movie2DataImageDesc * desc : m_images )
+        switch( resource_type )
         {
-            desc->materials[EMB_NORMAL] = nullptr;
-            desc->materials[EMB_ADD] = nullptr;
-            desc->materials[EMB_SCREEN] = nullptr;
-            desc->materials[EMB_MULTIPLY] = nullptr;
+        case AE_MOVIE_RESOURCE_IMAGE:
+            {
+                Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+
+                const ResourceImagePtr & resource_image = image_desc->resourceImage;
+
+                if( resource_image->compile() == false )
+                {
+                    return AE_FALSE;
+                }
+
+                if( ++image_desc->refcount == 1 )
+                {
+                    image_desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
+                    image_desc->materials[EMB_ADD] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
+                    image_desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
+                    image_desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
+                }
+
+                return AE_TRUE;
+            }break;
+        case AE_MOVIE_RESOURCE_VIDEO:
+        case AE_MOVIE_RESOURCE_SOUND:
+        case AE_MOVIE_RESOURCE_PARTICLE:
+            {
+                Resource * resource = reinterpret_cast<Resource *>(resource_ud);
+
+                if( resource->compile() == false )
+                {
+                    return AE_FALSE;
+                }
+
+                return AE_TRUE;
+            }break;
+        default:
+            break;
         }
+
+        return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2Data::acquireComposition( const aeMovieComposition * _composition )
+    {
+        if( ae_visit_nodes_layer_data( _composition, &__ae_movie_layer_data_visitor_acquire, this ) == AE_FALSE )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __ae_movie_layer_data_visitor_release( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layer, ae_userdata_t _ud )
+    {
+        AE_UNUSED( _compositionData );
+        AE_UNUSED( _ud );
+
+        aeMovieResourceTypeEnum resource_type = ae_get_movie_layer_data_resource_type( _layer );
+
+        ae_userdata_t resource_ud = ae_get_movie_layer_data_resource_userdata( _layer );
+
+        if( resource_ud == AE_USERDATA_NULL )
+        {
+            return AE_TRUE;
+        }
+
+        switch( resource_type )
+        {
+        case AE_MOVIE_RESOURCE_IMAGE:
+            {
+                Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+
+                const ResourceImagePtr & resource_image = image_desc->resourceImage;
+
+                resource_image->release();
+
+                if( --image_desc->refcount == 0 )
+                {
+                    image_desc->materials[EMB_NORMAL] = nullptr;
+                    image_desc->materials[EMB_ADD] = nullptr;
+                    image_desc->materials[EMB_SCREEN] = nullptr;
+                    image_desc->materials[EMB_MULTIPLY] = nullptr;
+                }
+
+                return AE_TRUE;
+            }break;
+        case AE_MOVIE_RESOURCE_VIDEO:
+        case AE_MOVIE_RESOURCE_SOUND:
+        case AE_MOVIE_RESOURCE_PARTICLE:
+            {
+                Resource * resource = reinterpret_cast<Resource *>(resource_ud);
+
+                resource->release();
+
+                return AE_TRUE;
+            }break;
+        default:
+            break;
+        }
+
+        return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2Data::releaseComposition( const aeMovieComposition * _composition )
+    {
+        ae_visit_nodes_layer_data( _composition, &__ae_movie_layer_data_visitor_release, this );
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer Movie2Data::allocateMemory( size_t _size ) const
@@ -94,10 +193,11 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2DataImageDesc * Movie2Data::makeImageDesc( const ResourceImagePtr & _resource )
+    Movie2Data::ImageDesc * Movie2Data::makeImageDesc( const ResourceImagePtr & _resource )
     {
-        Movie2DataImageDesc * desc = m_poolImageDesc.createT();
+        ImageDesc * desc = m_poolImageDesc.createT();
 
+        desc->refcount = 0;
         desc->resourceImage = _resource;
 
         m_images.push_back( desc );
@@ -105,7 +205,7 @@ namespace Mengine
         return desc;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2Data::removeImageDesc( Movie2DataImageDesc * _desc )
+    void Movie2Data::removeImageDesc( ImageDesc * _desc )
     {
         m_poolImageDesc.destroyT( _desc );
     }

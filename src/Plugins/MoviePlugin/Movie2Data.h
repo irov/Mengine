@@ -11,13 +11,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct Movie2DataImageDesc
-    {
-        ResourceImagePtr resourceImage;
-
-        RenderMaterialInterfacePtr materials[4];
-    };
-    //////////////////////////////////////////////////////////////////////////
     class Movie2Data
         : public Movie2DataInterface
     {
@@ -29,6 +22,10 @@ namespace Mengine
         bool acquire() override;
         void release() override;
 
+    public:
+        bool acquireComposition( const aeMovieComposition * _composition ) override;
+        void releaseComposition( const aeMovieComposition * _composition ) override;
+
     protected:
         Pointer allocateMemory( size_t _size ) const override;
 
@@ -39,16 +36,26 @@ namespace Mengine
     public:
         const ResourcePtr & getResource( const ae_string_t _resourceName );
 
-        Movie2DataImageDesc * makeImageDesc( const ResourceImagePtr & _resource );
-        void removeImageDesc( Movie2DataImageDesc * _desc );
+    public:
+        struct ImageDesc
+        {
+            uint32_t refcount;
+
+            ResourceImagePtr resourceImage;
+            RenderMaterialInterfacePtr materials[4];
+        };
+
+    public:
+        ImageDesc * makeImageDesc( const ResourceImagePtr & _resource );
+        void removeImageDesc( ImageDesc * _desc );
 
     protected:
         const aeMovieData * m_movieData;
 
-        typedef Pool<Movie2DataImageDesc, 512> PoolImageDesc;
+        typedef Pool<ImageDesc, 512> PoolImageDesc;
         PoolImageDesc m_poolImageDesc;
 
-        typedef Vector<Movie2DataImageDesc *> VectorImageDesc;
+        typedef Vector<ImageDesc *> VectorImageDesc;
         VectorImageDesc m_images;
 
         typedef Vector<ResourcePtr> VectorResources;

@@ -211,7 +211,14 @@ namespace Mengine
     void SDLPlatform::getMaxClientResolution( Resolution * _resolution ) const
     {
         SDL_Rect rect;
-        SDL_GetDisplayUsableBounds( 0, &rect );
+        if( SDL_GetDisplayUsableBounds( 0, &rect ) != 0 )
+        {
+            LOGGER_ERROR( "invalid get max client resolution: %s"
+                , SDL_GetError()
+            );
+
+            return;
+        }
 
         LOGGER_MESSAGE( "client resolution width %d height %d"
             , rect.w
@@ -276,9 +283,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
-        if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 )
+        if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) != 0 )
         {
-            LOGGER_ERROR( "SDL invalid initialize %s"
+            LOGGER_ERROR( "invalid initialize %s"
                 , SDL_GetError()
             );
 
@@ -316,7 +323,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "SDL Platform '%s' unspecified"
+            LOGGER_ERROR( "platform '%s' unspecified"
                 , sdlPlatform
             );
         }
@@ -573,7 +580,7 @@ namespace Mengine
 
         if( m_accelerometer != nullptr )
         {
-            if( SDL_JoystickGetAttached( m_accelerometer ) )
+            if( SDL_JoystickGetAttached( m_accelerometer ) == SDL_TRUE )
             {
                 SDL_JoystickClose( m_accelerometer );
             }
@@ -870,7 +877,14 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_IOS)
         SDL_Rect rect;
-        SDL_GetDisplayBounds( displayIndex, &rect );
+        if( SDL_GetDisplayBounds( displayIndex, &rect ) != 0 )
+        {
+            LOGGER_ERROR( "invalid get desktop resolution error: %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
 
         width = (uint32_t)rect.w;
         height = (uint32_t)rect.h;
@@ -881,7 +895,14 @@ namespace Mengine
         }
 
         SDL_Rect rect;
-        SDL_GetDisplayBounds( displayIndex, &rect );
+        if( SDL_GetDisplayBounds( displayIndex, &rect ) != 0 )
+        {
+            LOGGER_ERROR( "invalid get desktop resolution error: %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
 
         width = (uint32_t)rect.w;
         height = (uint32_t)rect.h;
@@ -889,7 +910,7 @@ namespace Mengine
         SDL_DisplayMode dm;
         if( SDL_GetDesktopDisplayMode( displayIndex, &dm ) != 0 )
         {
-            LOGGER_ERROR( "failed %s"
+            LOGGER_ERROR( "invalid get desktop resolution error: %s"
                 , SDL_GetError()
             );
 
@@ -1012,11 +1033,21 @@ namespace Mengine
 
         if( _vsync == false )
         {
-            SDL_GL_SetSwapInterval( 0 );
+            if( SDL_GL_SetSwapInterval( 0 ) != 0 )
+            {
+                LOGGER_ERROR( "notify vsync changed error: %s"
+                    , SDL_GetError()
+                );
+            }
         }
         else
         {
-            SDL_GL_SetSwapInterval( 1 );
+            if( SDL_GL_SetSwapInterval( 1 ) != 0 )
+            {
+                LOGGER_ERROR( "notify vsync changed error: %s"
+                    , SDL_GetError()
+                );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1668,12 +1699,40 @@ namespace Mengine
         MENGINE_UNUSED( _resolution );
         MENGINE_UNUSED( _fullscreen );
 
-        //SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-        SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 0 );
-        SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
+        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 0 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to 0 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_SHARE_WITH_CURRENT_CONTEXT to 1 error: %s"
+                , SDL_GetError()
+            );
+        }
 
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
@@ -1682,25 +1741,72 @@ namespace Mengine
         windowFlags |= SDL_WINDOW_BORDERLESS;
         windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
 
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 );
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_ES error: %s"
+                , SDL_GetError()
+            );
+        }
 
-        //SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" );
-        SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to 2 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to 0 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        const Char * Engine_SDLRenderScaleQuality = CONFIG_VALUE( "Engine", "SDLRenderScaleQuality", "linear" );
+
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDLRenderScaleQuality ) != SDL_TRUE )
+        {
+            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to '%s' error: %s"
+                , Engine_SDLRenderScaleQuality
+                , SDL_GetError()
+            );
+        }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
 
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 );
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_ES error: %s"
+                , SDL_GetError()
+            );
+        }
 
-        SDL_SetHint( SDL_HINT_ORIENTATIONS, "Portrait" );
-        SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to 2 error: %s"
+                , SDL_GetError()
+            );
+        }
 
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to 0 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        const Char * Engine_SDLOrientations = CONFIG_VALUE( "Engine", "SDLOrientations", "Portrait" );
+
+        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDLOrientations ) != SDL_TRUE )
+        {
+            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to '%s' error: %s"
+                , Engine_SDLOrientations
+                , SDL_GetError()
+            );
+        }
 #else
         if( _fullscreen == true )
         {
@@ -1708,8 +1814,20 @@ namespace Mengine
         }
 #endif
 
+        LOGGER_MESSAGE( "num video displays: %d"
+            , SDL_GetNumVideoDisplays()
+        );
+
 #if defined(MENGINE_PLATFORM_IOS)
-        SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, "1" );
+        const Char * Engine_SDLIOSHideHomeIndicator = CONFIG_VALUE( "Engine", "SDLIOSHideHomeIndicator", "1" );
+
+        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDLIOSHideHomeIndicator ) != SDL_TRUE )
+        {
+            LOGGER_ERROR( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to '%s' error: %s"
+                , Engine_SDLIOSHideHomeIndicator
+                , SDL_GetError()
+            );
+        }
 
         SDL_Window * window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_UNDEFINED
@@ -1730,7 +1848,7 @@ namespace Mengine
         SDL_DisplayMode mode;
         if( SDL_GetDesktopDisplayMode( 0, &mode ) != 0 )
         {
-            LOGGER_ERROR( "get desktop display mode failed: %s"
+            LOGGER_ERROR( "get desktop display mode error: %s"
                 , SDL_GetError()
             );
 
@@ -1783,8 +1901,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents()
     {
-        bool quitRequest = m_shouldQuit;
-
         if( m_shouldQuit == true )
         {
             return true;
@@ -1793,7 +1909,7 @@ namespace Mengine
         Uint32 windowID = SDL_GetWindowID( m_window );
 
         SDL_Event sdlEvent;
-        while( SDL_PollEvent( &sdlEvent ) != 0 && !quitRequest )
+        while( SDL_PollEvent( &sdlEvent ) != 0 )
         {
             for( const SDLEventHandlerDesc & desc : m_sdlEventHandlers )
             {
@@ -1849,7 +1965,13 @@ namespace Mengine
                             newEvent = sdlEvent;
                             newEvent.type = SDL_QUIT;
 
-                            SDL_PushEvent( &newEvent );
+                            if( SDL_PushEvent( &newEvent ) == -1 )
+                            {
+                                LOGGER_ERROR( "invalid push event [%u] error: %s"
+                                    , newEvent.type
+                                    , SDL_GetError()
+                                );
+                            }
                         }break;
                     default:
                         break;
@@ -1864,7 +1986,7 @@ namespace Mengine
             }
         }
 
-        return quitRequest;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setActive_( bool _active )

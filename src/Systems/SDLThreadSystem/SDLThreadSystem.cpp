@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t SDLThreadSystem::getCurrentThreadId() const
     {
-        const SDL_threadID threadId = SDL_ThreadID();
+        SDL_threadID threadId = SDL_ThreadID();
 
         return static_cast<uint64_t>(threadId);
     }

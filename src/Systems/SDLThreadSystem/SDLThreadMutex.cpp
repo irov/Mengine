@@ -26,6 +26,12 @@ namespace Mengine
 
         if( cs == nullptr )
         {
+            const char * err_str = SDL_GetError();
+
+            LOGGER_ERROR( "invalid create mutex error: %s"
+                , err_str
+            );
+
             return false;
         }
 
@@ -36,13 +42,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadMutex::lock()
     {
-        int err = SDL_LockMutex( m_cs );
-
-        if( err != 0 )
+        if( SDL_LockMutex( m_cs ) == -1 )
         {
             const char * err_str = SDL_GetError();
 
-            LOGGER_ERROR( "invalid lock (msg: %s)"
+            LOGGER_ERROR( "invalid lock error: %s"
                 , err_str
             );
         }
@@ -56,7 +60,7 @@ namespace Mengine
         {
             const char * err_str = SDL_GetError();
 
-            LOGGER_ERROR( "invalid unlock (msg: %s)"
+            LOGGER_ERROR( "invalid unlock error: %s"
                 , err_str
             );
         }
@@ -74,7 +78,7 @@ namespace Mengine
         {
             const char * err_msg = SDL_GetError();
 
-            LOGGER_ERROR( "invalid try lock (msg: %s)"
+            LOGGER_ERROR( "invalid try lock error: %s"
                 , err_msg
             );
         }

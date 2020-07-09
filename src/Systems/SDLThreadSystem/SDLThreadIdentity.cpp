@@ -79,7 +79,7 @@ namespace Mengine
 
         if( processLock == nullptr )
         {
-            LOGGER_ERROR( "invalid create mutex error code - '%s'"
+            LOGGER_ERROR( "invalid create mutex error: %s"
                 , SDL_GetError()
             );
 
@@ -92,7 +92,7 @@ namespace Mengine
 
         if( conditionLock == nullptr )
         {
-            LOGGER_ERROR( "invalid create mutex error code - '%s'"
+            LOGGER_ERROR( "invalid create mutex error: %s"
                 , SDL_GetError()
             );
 
@@ -103,7 +103,7 @@ namespace Mengine
 
         if( conditionVariable == nullptr )
         {
-            LOGGER_ERROR( "invalid create condition error code - %s"
+            LOGGER_ERROR( "invalid create condition error: %s"
                 , SDL_GetError()
             );
 
@@ -117,7 +117,7 @@ namespace Mengine
 
         if( thread == nullptr )
         {
-            LOGGER_ERROR( "invalid create thread error code - '%s'"
+            LOGGER_ERROR( "invalid create thread error: %s"
                 , SDL_GetError()
             );
 
@@ -232,7 +232,7 @@ namespace Mengine
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid join thread error code - '%d'"
+            LOGGER_ERROR( "invalid join thread error status [%d]"
                 , status
             );
         }

@@ -131,7 +131,7 @@ namespace Mengine
         {
             DWORD dwError = ::GetLastError();
 
-            LOGGER_ERROR( "invalid close '%s:%s' handle '%zu'"
+            LOGGER_ERROR( "invalid close '%s:%s' handle '%lu'"
                 , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
                 , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                 , dwError

@@ -2,22 +2,15 @@
 #include "Interface/ThreadQueueInterface.h"
 
 #include "ThreadTaskPrefetch.h"
+#include "PrefetchReceiver.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/Factory.h"
-
-#include "Kernel/Pair.h"
-#include "Kernel/Map.h"
+#include "Kernel/Hashtable2.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct PrefetchReceiver
-    {
-        uint32_t refcount;
-        ThreadTaskPrefetchPtr prefetcher;
-    };
     //////////////////////////////////////////////////////////////////////////
     class PrefetcherService
         : public ServiceBase<PrefetcherServiceInterface>
@@ -56,11 +49,13 @@ namespace Mengine
         void visitPrefetches( const VisitorPtr & _visitor ) const override;
 
     protected:
-        bool hasPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** const _receiver ) const;
-        bool getPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** const _receiver ) const;
+        bool hasPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiverPtr * const _receiver ) const;
+        bool getPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiverPtr * const _receiver ) const;
         bool popPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ThreadTaskPrefetchPtr * const _prefetch );
 
     protected:
+        FactoryPtr m_factoryPrefetchReceiver;
+
         ThreadQueueInterfacePtr m_threadQueue;
 
         typedef VectorConstString VectorThreads;
@@ -71,9 +66,8 @@ namespace Mengine
         FactoryPtr m_factoryThreadTaskPrefetchDataflow;
         FactoryPtr m_factoryThreadTaskPrefetchStream;
 
-        typedef Pair<ConstString, FilePath> KeyPrefetchReceiver;
-        typedef Map<KeyPrefetchReceiver, PrefetchReceiver> MapPrefetchReceiver;
-        MapPrefetchReceiver m_prefetchReceiver;
+        typedef Hashtable2<ConstString, FilePath, PrefetchReceiverPtr> HashtablePrefetchReceiver;
+        HashtablePrefetchReceiver m_prefetchReceivers;
     };
     //////////////////////////////////////////////////////////////////////////
 }

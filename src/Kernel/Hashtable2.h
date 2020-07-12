@@ -22,13 +22,7 @@ namespace Mengine
 
         struct value_type
         {
-            value_type()
-                : hash( 0 )
-            {
-            }
-
-
-            hash_type hash;
+            hash_type hash = 0;
             key_type1 key1;
             key_type2 key2;
             element_type_ptr element;
@@ -633,16 +627,10 @@ namespace Mengine
 
         struct value_type
         {
-            value_type()
-                : hash( 0 )
-                , element( nullptr )
-            {
-            }
-
-            hash_type hash;
+            hash_type hash = 0;
             key_type1 key1;
             key_type2 key2;
-            element_type_ptr element;
+            element_type_ptr element = nullptr;
         };
 
     public:

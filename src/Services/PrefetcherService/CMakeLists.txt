@@ -3,7 +3,9 @@ MENGINE_PROJECT(PrefetcherService)
 ADD_FILTER(
 src
     PrefetcherService.h
-    PrefetcherService.cpp    
+    PrefetcherService.cpp
+    PrefetchReceiver.h
+    PrefetchReceiver.cpp
     ThreadTaskPrefetch.h
     ThreadTaskPrefetch.cpp
     ThreadTaskPrefetchDataflow.h

@@ -40,6 +40,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __ae_movie_resource_image_acquire( const aeMovieResourceImage * _resource, const Movie2Data * _data )
     {
+        MENGINE_UNUSED( _data );
+
         ae_userdata_t resource_ud = ae_get_movie_resource_userdata( (const aeMovieResource * )_resource );
 
         Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);

@@ -38,40 +38,67 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __ae_movie_resource_image_acquire( const aeMovieResourceImage * _resource, const Movie2Data * _data )
+    {
+        ae_userdata_t resource_ud = ae_get_movie_resource_userdata( (const aeMovieResource * )_resource );
+
+        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+
+        const ResourceImagePtr & resource_image = image_desc->resourceImage;
+
+        if( resource_image->compile() == false )
+        {
+            return AE_FALSE;
+        }
+
+        if( ++image_desc->refcount == 1 )
+        {
+            image_desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
+            image_desc->materials[EMB_ADD] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
+            image_desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
+            image_desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
+        }
+
+        return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __ae_movie_layer_data_visitor_acquire( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layer, ae_userdata_t _ud )
     {
         AE_UNUSED( _compositionData );
 
-        Movie2Data * data = reinterpret_cast<Movie2Data *>(_ud);
+        const Movie2Data * data = reinterpret_cast<const Movie2Data *>(_ud);
 
         aeMovieResourceTypeEnum resource_type = ae_get_movie_layer_data_resource_type( _layer );
 
-        ae_userdata_t resource_ud = ae_get_movie_layer_data_resource_userdata( _layer );
-
-        if( resource_ud == AE_USERDATA_NULL )
-        {
-            return AE_TRUE;
-        }
-
         switch( resource_type )
         {
-        case AE_MOVIE_RESOURCE_IMAGE:
+        case AE_MOVIE_RESOURCE_SEQUENCE:
             {
-                Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+                const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
 
-                const ResourceImagePtr & resource_image = image_desc->resourceImage;
+                const aeMovieResourceSequence * resource_sequence = (const aeMovieResourceSequence *)resource;
 
-                if( resource_image->compile() == false )
+                for( ae_uint32_t index = 0; index != resource_sequence->image_count; ++index )
                 {
-                    return AE_FALSE;
+                    const aeMovieResourceImage * resource_image = resource_sequence->images[index];
+
+                    if( __ae_movie_resource_image_acquire( resource_image, data ) == AE_FALSE )
+                    {
+                        return AE_FALSE;
+                    }
                 }
 
-                if( ++image_desc->refcount == 1 )
+                return AE_TRUE;
+            }break;
+        case AE_MOVIE_RESOURCE_IMAGE:
+            {
+                const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
+
+                const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(resource);
+
+                if( __ae_movie_resource_image_acquire( resource_image, data ) == AE_FALSE )
                 {
-                    image_desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
-                    image_desc->materials[EMB_ADD] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
-                    image_desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
-                    image_desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( resource_image, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( data ) );
+                    return AE_FALSE;
                 }
 
                 return AE_TRUE;
@@ -80,6 +107,13 @@ namespace Mengine
         case AE_MOVIE_RESOURCE_SOUND:
         case AE_MOVIE_RESOURCE_PARTICLE:
             {
+                ae_userdata_t resource_ud = ae_get_movie_layer_data_resource_userdata( _layer );
+
+                if( resource_ud == AE_USERDATA_NULL )
+                {
+                    return AE_TRUE;
+                }
+
                 Resource * resource = reinterpret_cast<Resource *>(resource_ud);
 
                 if( resource->compile() == false )
@@ -106,6 +140,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    static void __ae_movie_resource_image_release( const aeMovieResourceImage * _resource )
+    {
+        ae_userdata_t resource_ud = ae_get_movie_resource_userdata( (const aeMovieResource *)_resource );
+
+        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+
+        const ResourceImagePtr & resource_image = image_desc->resourceImage;
+
+        resource_image->release();
+
+        if( ++image_desc->refcount == 1 )
+        {
+            image_desc->materials[EMB_NORMAL] = nullptr;
+            image_desc->materials[EMB_ADD] = nullptr;
+            image_desc->materials[EMB_SCREEN] = nullptr;
+            image_desc->materials[EMB_MULTIPLY] = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __ae_movie_layer_data_visitor_release( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layer, ae_userdata_t _ud )
     {
         AE_UNUSED( _compositionData );
@@ -113,30 +166,30 @@ namespace Mengine
 
         aeMovieResourceTypeEnum resource_type = ae_get_movie_layer_data_resource_type( _layer );
 
-        ae_userdata_t resource_ud = ae_get_movie_layer_data_resource_userdata( _layer );
-
-        if( resource_ud == AE_USERDATA_NULL )
-        {
-            return AE_TRUE;
-        }
-
         switch( resource_type )
         {
+        case AE_MOVIE_RESOURCE_SEQUENCE:
+            {
+                const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
+
+                const aeMovieResourceSequence * resource_sequence = (const aeMovieResourceSequence *)resource;
+
+                for( ae_uint32_t index = 0; index != resource_sequence->image_count; ++index )
+                {
+                    const aeMovieResourceImage * resource_image = resource_sequence->images[index];
+
+                    __ae_movie_resource_image_release( resource_image );
+                }
+
+                return AE_TRUE;
+            }break;
         case AE_MOVIE_RESOURCE_IMAGE:
             {
-                Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+                const aeMovieResource * resource = ae_get_movie_layer_data_resource( _layer );
 
-                const ResourceImagePtr & resource_image = image_desc->resourceImage;
+                const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(resource);
 
-                resource_image->release();
-
-                if( --image_desc->refcount == 0 )
-                {
-                    image_desc->materials[EMB_NORMAL] = nullptr;
-                    image_desc->materials[EMB_ADD] = nullptr;
-                    image_desc->materials[EMB_SCREEN] = nullptr;
-                    image_desc->materials[EMB_MULTIPLY] = nullptr;
-                }
+                __ae_movie_resource_image_release( resource_image );
 
                 return AE_TRUE;
             }break;
@@ -144,6 +197,13 @@ namespace Mengine
         case AE_MOVIE_RESOURCE_SOUND:
         case AE_MOVIE_RESOURCE_PARTICLE:
             {
+                ae_userdata_t resource_ud = ae_get_movie_layer_data_resource_userdata( _layer );
+
+                if( resource_ud == AE_USERDATA_NULL )
+                {
+                    return AE_TRUE;
+                }
+
                 Resource * resource = reinterpret_cast<Resource *>(resource_ud);
 
                 resource->release();

@@ -34,12 +34,6 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLReceiverInterface> cURLReceiverInterfacePtr;
-    /////////////////////////////////////////////////////////////////////////
-    /************************************************************************
-    uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful
-    ************************************************************************/
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class cURLSourceInterface> cURLSourceInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class cURLServiceInterface
         : public ServiceInterface

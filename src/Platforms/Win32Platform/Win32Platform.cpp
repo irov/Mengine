@@ -2946,7 +2946,7 @@ namespace Mengine
     size_t Win32Platform::getCurrentPath( Char * const _currentPath ) const
     {
         WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {
@@ -2980,7 +2980,7 @@ namespace Mengine
         if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
             WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-            DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+            DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
             if( len == 0 )
             {

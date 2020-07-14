@@ -83,7 +83,7 @@ namespace Mengine
         // create node for box2d objects
         NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( node );
 
         m_node = node;
 

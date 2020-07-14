@@ -88,10 +88,8 @@ namespace Mengine
     {
         LOGGER_INFO( "Inititalizing File Service..." );
 
-        {
-            LOGGER_INFO( "Initialize Win32 file group..." );
-            PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
-        }
+        LOGGER_INFO( "Initialize Win32 file group..." );
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
 
         Char currentPath[MENGINE_MAX_PATH] = { '\0' };
         size_t currentPathLen = PLATFORM_SERVICE()

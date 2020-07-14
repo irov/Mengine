@@ -16,9 +16,6 @@ namespace Mengine
         bool acquire() override;
         void release() override;
 
-    protected:
-        Pointer allocateMemory( size_t _size ) const override;
-
     public:
         void setScriptCode( const pybind::object & _moduleCode );
         const pybind::object & getScriptCode() const override;

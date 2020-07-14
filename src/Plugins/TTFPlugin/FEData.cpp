@@ -34,13 +34,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer FEData::allocateMemory( size_t _size ) const
-    {
-        MENGINE_UNUSED( _size );
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void FEData::setFEBundle( fe_bundle * _bundle )
     {
         m_bundle = _bundle;

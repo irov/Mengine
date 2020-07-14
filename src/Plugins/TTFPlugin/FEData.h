@@ -16,9 +16,6 @@ namespace Mengine
         bool acquire() override;
         void release() override;
 
-    protected:
-        Pointer allocateMemory( size_t _size ) const override;
-
     public:
         void setFEBundle( fe_bundle * _bundle );
         fe_bundle * getFEBundle() const override;

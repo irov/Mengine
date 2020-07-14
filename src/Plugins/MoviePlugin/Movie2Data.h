@@ -26,9 +26,6 @@ namespace Mengine
         bool acquireComposition( const aeMovieComposition * _composition ) override;
         void releaseComposition( const aeMovieComposition * _composition ) override;
 
-    protected:
-        Pointer allocateMemory( size_t _size ) const override;
-
     public:
         void setMovieData( const aeMovieData * _movieData );
         const aeMovieData * getMovieData() const override;

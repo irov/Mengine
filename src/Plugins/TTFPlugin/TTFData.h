@@ -16,9 +16,6 @@ namespace Mengine
         bool acquire() override;
         void release() override;
 
-    protected:
-        Pointer allocateMemory( size_t _size ) const override;
-
     public:
         void setTTFMemory( const MemoryInterfacePtr & _memory );
         const MemoryInterfacePtr & getTTFMemory() const;

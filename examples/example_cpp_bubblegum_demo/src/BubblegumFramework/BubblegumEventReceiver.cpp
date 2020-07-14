@@ -312,7 +312,7 @@ namespace Mengine
         Cook::addNodeEnable( source, m_textFinish );
 
         GOAP::ChainInterfacePtr chain = GOAP_SERVICE()
-            ->makeChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
+            ->makeChain( source, nullptr, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
         chain->run();
 

@@ -22,13 +22,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer PythonScriptCodeData::allocateMemory( size_t _size ) const
-    {
-        MENGINE_UNUSED( _size );
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PythonScriptCodeData::setScriptCode( const pybind::object & _moduleCode )
     {
         m_moduleCode = _moduleCode;

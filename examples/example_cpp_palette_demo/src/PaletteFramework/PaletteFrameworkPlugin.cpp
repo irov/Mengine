@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PaletteFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PaletteFramework" ), Helper::makeFrameworkFactory<PaletteFramework>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PaletteFramework" ), Helper::makeFrameworkFactory<PaletteFramework>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

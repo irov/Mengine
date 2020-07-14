@@ -722,7 +722,7 @@ namespace Mengine
         } );
 
         GOAP::ChainInterfacePtr chain = GOAP_SERVICE()
-            ->makeChain( source, MENGINE_CODE_FILE, MENGINE_CODE_LINE );
+            ->makeChain( source, nullptr, MENGINE_CODE_FILE, MENGINE_CODE_LINE );
 
         chain->run();
 

@@ -152,7 +152,7 @@ namespace Mengine
 
         resource_image->release();
 
-        if( ++image_desc->refcount == 1 )
+        if( --image_desc->refcount == 0 )
         {
             image_desc->materials[EMB_NORMAL] = nullptr;
             image_desc->materials[EMB_ADD] = nullptr;

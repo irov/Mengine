@@ -8,6 +8,7 @@
 #include "Interface/ApplicationInterface.h"
 
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
+#include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -83,7 +84,7 @@ namespace Mengine
         // create node for box2d objects
         NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( node );
 
         m_boxNode = node;
 
@@ -104,7 +105,7 @@ namespace Mengine
         Box2DWorldInterfacePtr world = BOX2D_SERVICE()
             ->createWorld( gravity, 1.f, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( world, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( world );
 
         m_world = world;
 
@@ -241,7 +242,7 @@ namespace Mengine
         Cook::addPrint( source, "Click" );
 
         GOAP::ChainInterfacePtr chain = GOAP_SERVICE()
-            ->makeChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
+            ->makeChain( source, nullptr, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
         chain->run();
 

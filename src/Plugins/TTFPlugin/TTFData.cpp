@@ -34,13 +34,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer TTFData::allocateMemory( size_t _size ) const
-    {
-        MENGINE_UNUSED( _size );
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void TTFData::setTTFMemory( const MemoryInterfacePtr & _memory )
     {
         m_memory = _memory;

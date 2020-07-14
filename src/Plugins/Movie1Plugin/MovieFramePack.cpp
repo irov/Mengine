@@ -403,9 +403,4 @@ namespace Mengine
 
         return false;
     }
-    //////////////////////////////////////////////////////////////////////////
-    Pointer MovieFramePack::allocateMemory( size_t _size ) const
-    {
-        return Helper::allocateMemory( _size, "MovieFramePack" );
-    }
 }

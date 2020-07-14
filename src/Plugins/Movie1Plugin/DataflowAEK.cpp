@@ -169,8 +169,8 @@ namespace Mengine
                         } \
                         else \
                         { \
-                            frame.Member2 = _pack->allocateMemoryT<Type>( frames_size ); \
-                            ar.readPODs( frame.Member2, frames_size );\
+                            frame.Member2 = (Type *)Helper::allocateMemory( sizeof(Type) * frames_size, "DataflowAEK" ); \
+                            ar.readPODs( frame.Member2, frames_size ); \
                         } \
                     }
 
@@ -212,7 +212,7 @@ namespace Mengine
                         continue;
                     }
 
-                    timeremap.times = _pack->allocateMemoryT<float>( times_size );
+                    timeremap.times = Helper::allocateMemoryNT<float>( times_size, "DataflowAEK" );
 
                     float * times_buff = &timeremap.times[0];
                     ar.readPODs( times_buff, times_size );
@@ -244,7 +244,7 @@ namespace Mengine
                     }
 
                     shapes.shapes_size = shapes_size;
-                    shapes.shapes = _pack->allocateMemoryT<MovieFrameShape>( shapes_size );
+                    shapes.shapes = Helper::allocateMemoryNT<MovieFrameShape>( shapes_size, "DataflowAEK" );
 
                     for( uint32_t j = 0; j != shapes_size; ++j )
                     {
@@ -254,15 +254,15 @@ namespace Mengine
 
                         if( shape.vertexCount > 0 )
                         {
-                            shape.pos = _pack->allocateMemoryT<mt::vec2f>( shape.vertexCount );
-                            shape.uv = _pack->allocateMemoryT<mt::vec2f>( shape.vertexCount );
+                            shape.pos = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "DataflowAEK" );
+                            shape.uv = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "DataflowAEK" );
 
                             ar.readPODs( shape.pos, shape.vertexCount );
                             ar.readPODs( shape.uv, shape.vertexCount );
 
                             ar << shape.indexCount;
 
-                            shape.indices = _pack->allocateMemoryT<RenderIndex>( shape.indexCount );
+                            shape.indices = Helper::allocateMemoryNT<RenderIndex>( shape.indexCount, "DataflowAEK" );
 
                             ar.readPODs( shape.indices, shape.indexCount );
                         }
@@ -298,7 +298,7 @@ namespace Mengine
                     ar << vertexCount;
 
                     polygon.vertexCount = vertexCount;
-                    polygon.polygon = _pack->allocateMemoryT<mt::vec2f>( vertexCount );
+                    polygon.polygon = Helper::allocateMemoryNT<mt::vec2f>( vertexCount, "DataflowAEK" );
 
                     for( uint32_t j = 0; j != vertexCount; ++j )
                     {

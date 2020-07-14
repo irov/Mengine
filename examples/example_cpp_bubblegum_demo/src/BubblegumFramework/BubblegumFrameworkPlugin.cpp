@@ -12,7 +12,7 @@
 PLUGIN_FACTORY( BubblegumFramework, Mengine::BubblegumFrameworkPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     BubblegumFrameworkPlugin::BubblegumFrameworkPlugin()
     {
@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BubblegumFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "BubblegumFramework" ), Helper::makeFrameworkFactory<BubblegumFramework>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "BubblegumFramework" ), Helper::makeFrameworkFactory<BubblegumFramework>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

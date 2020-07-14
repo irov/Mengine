@@ -224,13 +224,6 @@ namespace Mengine
         ae_visit_nodes_layer_data( _composition, &__ae_movie_layer_data_visitor_release, this );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer Movie2Data::allocateMemory( size_t _size ) const
-    {
-        MENGINE_UNUSED( _size );
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Movie2Data::setMovieData( const aeMovieData * _movieData )
     {
         m_movieData = _movieData;

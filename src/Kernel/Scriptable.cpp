@@ -32,6 +32,7 @@ namespace Mengine
             );
         }
 #endif
+
         m_kernel = _kernel;
         m_embed = _embed;
     }

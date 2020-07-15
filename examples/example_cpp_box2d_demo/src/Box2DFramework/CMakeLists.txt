@@ -1,13 +1,13 @@
-MENGINE_PROJECT(SimpleBox2DFramework)
+MENGINE_PROJECT(Box2DFramework)
 
 ADD_FILTER(
-SimpleBox2DFramework
-    SimpleBox2DFramework.cpp
-    SimpleBox2DFramework.h
-    SimpleBox2DFrameworkPlugin.cpp
-    SimpleBox2DFrameworkPlugin.h
-    SimpleBox2DEventReceiver.cpp
-    SimpleBox2DEventReceiver.h
+Box2DFramework
+    Box2DFramework.cpp
+    Box2DFramework.h
+    Box2DFrameworkPlugin.cpp
+    Box2DFrameworkPlugin.h
+    Box2DEventReceiver.cpp
+    Box2DEventReceiver.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)

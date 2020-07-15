@@ -5,12 +5,12 @@
 
 namespace Mengine
 {
-    class SimpleBox2DFramework
+    class Box2DFramework
         : public FrameworkBase
     {
     public:
-        SimpleBox2DFramework();
-        ~SimpleBox2DFramework() override;
+        Box2DFramework();
+        ~Box2DFramework() override;
 
     protected:
         bool _initializeFramework() override;

@@ -982,7 +982,7 @@ namespace Mengine
 
         MyXMLWriter writer( packet.payload );
 
-#ifdef _DEBUG
+#ifdef MENGINE_DEBUG
         const uint32_t xmlFlags = pugi::format_indent;
 #else
         const uint32_t xmlFlags = pugi::format_raw;
@@ -1012,7 +1012,7 @@ namespace Mengine
 
         MyXMLWriter writer( packet.payload );
 
-#ifdef _DEBUG
+#ifdef MENGINE_DEBUG
         const uint32_t xmlFlags = pugi::format_indent;
 #else
         const uint32_t xmlFlags = pugi::format_raw;
@@ -1042,7 +1042,7 @@ namespace Mengine
 
         MyXMLWriter writer( packet.payload );
 
-#ifdef _DEBUG
+#ifdef MENGINE_DEBUG
         const uint32_t xmlFlags = pugi::format_indent;
 #else
         const uint32_t xmlFlags = pugi::format_raw;
@@ -1083,7 +1083,7 @@ namespace Mengine
 
         MyXMLWriter writer( packet.payload );
 
-#ifdef _DEBUG
+#ifdef MENGINE_DEBUG
         const uint32_t xmlFlags = pugi::format_indent;
 #else
         const uint32_t xmlFlags = pugi::format_raw;
@@ -1168,7 +1168,7 @@ namespace Mengine
 
         MyXMLWriter writer( packet.payload );
 
-#ifdef _DEBUG
+#ifdef MENGINE_DEBUG
         const uint32_t xmlFlags = pugi::format_indent;
 #else
         const uint32_t xmlFlags = pugi::format_raw;

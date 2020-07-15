@@ -1,4 +1,4 @@
-#include "SimpleBox2DEventReceiver.h"
+#include "Box2DEventReceiver.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -32,16 +32,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DEventReceiver::SimpleBox2DEventReceiver()
+    Box2DEventReceiver::Box2DEventReceiver()
         : m_scene( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DEventReceiver::~SimpleBox2DEventReceiver()
+    Box2DEventReceiver::~Box2DEventReceiver()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
+    bool Box2DEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -54,7 +54,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
+    void Box2DEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -73,7 +73,7 @@ namespace Mengine
         m_world = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
+    bool Box2DEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -234,7 +234,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
+    bool Box2DEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -259,7 +259,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void Box2DEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 

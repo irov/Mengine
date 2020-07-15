@@ -1,4 +1,4 @@
-#include "SimpleBox2DFramework.h"
+#include "Box2DFramework.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -11,23 +11,23 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "SimpleBox2DEventReceiver.h"
+#include "Box2DEventReceiver.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DFramework::SimpleBox2DFramework()
+    Box2DFramework::Box2DFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SimpleBox2DFramework::~SimpleBox2DFramework()
+    Box2DFramework::~Box2DFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SimpleBox2DFramework::_initializeFramework()
+    bool Box2DFramework::_initializeFramework()
     {
-        SimpleBox2DEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<SimpleBox2DEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
+        SimpleBox2DEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<Box2DEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -39,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SimpleBox2DFramework::_finalizeFramework()
+    void Box2DFramework::_finalizeFramework()
     {
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );

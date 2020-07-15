@@ -7,7 +7,7 @@ namespace Mengine
     class Box2DFrameworkPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "SimpleBox2DFramework" )
+        PLUGIN_DECLARE( "Box2DFramework" )
 
     public:
         Box2DFrameworkPlugin();

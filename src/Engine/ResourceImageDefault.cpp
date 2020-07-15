@@ -69,43 +69,43 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::setup( const FileGroupInterfacePtr & _fileGroup, const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
     {
-        if( _codecType.empty() == true )
-        {
-            const FilePath & filePath = this->getFilePath();
-
-            const ConstString & newCodecType = CODEC_SERVICE()
-                ->findCodecType( filePath );
-
-            if( newCodecType.empty() == true )
-            {
-                return false;
-            }
-
-            this->setCodecType( newCodecType );
-        }
-        else
-        {
-            this->setCodecType( _codecType );
-        }
-
-        this->setMaxSize( _maxSize );
-        this->setSize( m_size );
-        this->setOffset( mt::vec2f( 0.f, 0.f ) );
-
-        this->setUVImage( _uv_image );
-        this->setUVAlpha( _uv_alpha );
-
-        this->setTexture( nullptr );
-        this->setTextureAlpha( nullptr );
-
-        this->setAlpha( true );
-
-        this->correctUVTexture();
-
-        bool successful = this->recompile( [this, _fileGroup, &_imagePath]()
+        bool successful = this->recompile( [this, _fileGroup, _imagePath, _codecType, _uv_image, _uv_alpha, _maxSize]()
         {
             this->setFileGroup( _fileGroup );
             this->setFilePath( _imagePath );
+
+            if( _codecType.empty() == true )
+            {
+                const FilePath & filePath = this->getFilePath();
+
+                const ConstString & newCodecType = CODEC_SERVICE()
+                    ->findCodecType( filePath );
+
+                if( newCodecType.empty() == true )
+                {
+                    return false;
+                }
+
+                this->setCodecType( newCodecType );
+            }
+            else
+            {
+                this->setCodecType( _codecType );
+            }
+
+            this->setMaxSize( _maxSize );
+            this->setSize( _maxSize );
+            this->setOffset( mt::vec2f( 0.f, 0.f ) );
+
+            this->setUVImage( _uv_image );
+            this->setUVAlpha( _uv_alpha );
+
+            this->setTexture( nullptr );
+            this->setTextureAlpha( nullptr );
+
+            this->setAlpha( true );
+
+            this->correctUVTexture();
 
             if( _imagePath.empty() == true )
             {

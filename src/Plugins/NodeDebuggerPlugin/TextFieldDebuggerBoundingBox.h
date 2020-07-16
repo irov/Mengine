@@ -1,8 +1,8 @@
 #pragma once
 
-#include "NodeDebuggerBoundingBoxInterface.h"
-
 #include "Engine/TextField.h"
+
+#include "Kernel/BaseDebuggerBoundingBox.h"
 
 namespace Mengine
 {
@@ -15,6 +15,6 @@ namespace Mengine
         ~TextFieldDebuggerBoundingBox() override;
 
     public:
-        bool _getBoundingBox( const TextFieldPtr & _node, mt::box2f * _bb ) override;
+        bool _getBoundingBox( const TextFieldPtr & _node, mt::box2f * const _bb ) const override;
     };
 }

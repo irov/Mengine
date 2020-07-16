@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextFieldDebuggerBoundingBox::_getBoundingBox( const TextFieldPtr & _node, mt::box2f * _bb )
+    bool TextFieldDebuggerBoundingBox::_getBoundingBox( const TextFieldPtr & _node, mt::box2f * _bb ) const
     {
         Viewport vp;
         if( _node->calcTextViewport( &vp ) == false )

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "NodeDebuggerBoundingBoxInterface.h"
-
 #include "Interface/SocketInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/DebuggerBoundingBoxInterface.h"
 
 #include "Plugins/MoviePlugin/Movie2Interface.h"
 #include "Plugins/SpinePlugin/SpineInterface.h"

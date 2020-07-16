@@ -40,6 +40,6 @@ namespace Mengine
         Box2DWorldInterfacePtr m_world;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Box2DEventReceiver> SimpleBox2DEventReceiverPtr;
+    typedef IntrusivePtr<Box2DEventReceiver> Box2DEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

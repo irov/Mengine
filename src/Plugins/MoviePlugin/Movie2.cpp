@@ -353,13 +353,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::createCompositionLayers_()
     {
-        const ResourceMovie2CompositionDesc * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
+        const ResourceMovie2::CompositionDesc * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
 
         if( composition == nullptr )
         {
             Stringstream ss;
 
-            m_resourceMovie2->foreachCompositionDesc( [&ss]( const ConstString & _name, const ResourceMovie2CompositionDesc & _desc )
+            m_resourceMovie2->foreachCompositionDesc( [&ss]( const ConstString & _name, const ResourceMovie2::CompositionDesc & _desc )
             {
                 if( _desc.master == false )
                 {
@@ -385,7 +385,7 @@ namespace Mengine
         m_hasBounds = composition->has_bounds;
         m_bounds = composition->bounds;
 
-        for( const ResourceMovie2CompositionLayer & layer : composition->layers )
+        for( const ResourceMovie2::CompositionLayer & layer : composition->layers )
         {
             if( layer.type == STRINGIZE_STRING_LOCAL( "TextField" ) )
             {
@@ -591,7 +591,7 @@ namespace Mengine
             }
         }
 
-        for( const ResourceMovie2CompositionSubComposition & subcomposition : composition->subcompositions )
+        for( const ResourceMovie2::CompositionSubComposition & subcomposition : composition->subcompositions )
         {
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -2131,6 +2131,16 @@ namespace Mengine
 
         const Movie2DataInterfacePtr & data = m_resourceMovie2->getData();
 
+        if( data->acquireCompositionData( compositionData ) == false )
+        {
+            LOGGER_ERROR( "name '%s' resource '%s' not acquire composition"
+                , this->getName().c_str()
+                , m_resourceMovie2->getName().c_str()
+            );
+
+            return false;
+        }
+
         const aeMovieData * movieData = data->getMovieData();
 
         aeMovieCompositionProviders providers;
@@ -2170,16 +2180,6 @@ namespace Mengine
             , m_resourceMovie2->getName().c_str()
             , m_compositionName.c_str()
         );
-
-        if( data->acquireComposition( composition ) == false )
-        {
-            LOGGER_ERROR( "name '%s' resource '%s' not acquire composition"
-                , this->getName().c_str()
-                , m_resourceMovie2->getName().c_str()
-            );
-
-            return false;
-        }
 
         m_composition = composition;
 
@@ -2253,7 +2253,9 @@ namespace Mengine
     {
         const Movie2DataInterfacePtr & data = m_resourceMovie2->getData();
 
-        data->releaseComposition( m_composition );
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
+
+        data->releaseCompositionData( compositionData );
 
         ae_delete_movie_composition( m_composition );
         m_composition = nullptr;
@@ -2288,7 +2290,6 @@ namespace Mengine
         if( ae_get_movie_composition_anchor_point( m_composition, anchorPoint ) == AE_TRUE )
         {
             mt::vec3f origin;
-
             origin.from_f3( anchorPoint );
 
             this->setLocalOrigin( origin );
@@ -2657,7 +2658,12 @@ namespace Mengine
 
                         const Color & imageColor = resourceImage->getColor();
 
-                        ColorValue_ARGB total_mesh_color = Helper::makeRGBA( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+                        float r = total_color_r * mesh.color.r * imageColor.getR();
+                        float g = total_color_g * mesh.color.g * imageColor.getG();
+                        float b = total_color_b * mesh.color.b * imageColor.getB();
+                        float a = total_color_a * mesh.opacity * imageColor.getA();
+
+                        ColorValue_ARGB total_mesh_color = Helper::makeRGBA( r, g, b, a );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {
@@ -2815,7 +2821,12 @@ namespace Mengine
 
                         const Color & surfaceColor = surface->getColor();
 
-                        ColorValue_ARGB total_mesh_color = Helper::makeRGBA( total_color_r * mesh.color.r * surfaceColor.getR(), total_color_g * mesh.color.g * surfaceColor.getG(), total_color_b * mesh.color.b * surfaceColor.getB(), total_color_a * mesh.opacity * surfaceColor.getA() );
+                        float r = total_color_r * mesh.color.r * surfaceColor.getR();
+                        float g = total_color_g * mesh.color.g * surfaceColor.getG();
+                        float b = total_color_b * mesh.color.b * surfaceColor.getB();
+                        float a = total_color_a * mesh.opacity * surfaceColor.getA();
+
+                        ColorValue_ARGB total_mesh_color = Helper::makeRGBA( r, g, b, a );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {
@@ -2987,7 +2998,12 @@ namespace Mengine
 
                         const Color & imageColor = resourceImage->getColor();
 
-                        ColorValue_ARGB total_mesh_color = Helper::makeRGBA( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+                        float r = total_color_r * mesh.color.r * imageColor.getR();
+                        float g = total_color_g * mesh.color.g * imageColor.getG();
+                        float b = total_color_b * mesh.color.b * imageColor.getB();
+                        float a = total_color_a * mesh.opacity * imageColor.getA();
+
+                        ColorValue_ARGB total_mesh_color = Helper::makeRGBA( r, g, b, a );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {

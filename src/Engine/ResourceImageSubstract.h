@@ -16,8 +16,8 @@ namespace Mengine
         ~ResourceImageSubstract() override;
 
     public:
-        void setResourceImageName( const ConstString & _resourceImageName );
-        const ConstString & getResourceImageName() const;
+        void setResourceImage( const ResourceImagePtr & _resourceImageName );
+        const ResourceImagePtr & getResourceImage() const;
 
     protected:
         bool _compile() override;
@@ -27,7 +27,6 @@ namespace Mengine
         void correctUVTexture();
 
     protected:
-        ConstString m_resourceImageName;
         ResourceImagePtr m_resourceImage;
     };
     //////////////////////////////////////////////////////////////////////////

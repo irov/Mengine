@@ -99,7 +99,7 @@ namespace Mengine
             return 0.f;
         }
 
-        const ResourceMovie2CompositionDesc & composition = it_found->second;
+        const CompositionDesc & composition = it_found->second;
 
         return AE_TIME_MILLISECOND( composition.duration );
     }
@@ -113,7 +113,7 @@ namespace Mengine
             return 0.f;
         }
 
-        const ResourceMovie2CompositionDesc & composition = it_found->second;
+        const CompositionDesc & composition = it_found->second;
 
         return composition.frameDuration;
     }
@@ -148,12 +148,12 @@ namespace Mengine
         return compositionData;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setCompositionDesc( const ConstString & _name, const ResourceMovie2CompositionDesc & _composition )
+    void ResourceMovie2::setCompositionDesc( const ConstString & _name, const CompositionDesc & _composition )
     {
         m_compositions[_name] = _composition;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceMovie2CompositionDesc * ResourceMovie2::getCompositionDesc( const ConstString & _compositionName ) const
+    const ResourceMovie2::CompositionDesc * ResourceMovie2::getCompositionDesc( const ConstString & _compositionName ) const
     {
         MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
 
@@ -162,7 +162,7 @@ namespace Mengine
             return nullptr;
         }
 
-        const ResourceMovie2CompositionDesc & composition = it_found->second;
+        const CompositionDesc & composition = it_found->second;
 
         return &composition;
     }
@@ -172,7 +172,7 @@ namespace Mengine
         for( const MapCompositions::value_type & value : m_compositions )
         {
             const ConstString & name = value.first;
-            const ResourceMovie2CompositionDesc & desc = value.second;
+            const CompositionDesc & desc = value.second;
 
             _lambda( name, desc );
         }

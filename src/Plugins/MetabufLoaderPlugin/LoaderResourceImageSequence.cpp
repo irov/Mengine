@@ -1,6 +1,6 @@
 #include "LoaderResourceImageSequence.h"
 
-#include "Interface/ResourceServiceInterface.h"
+#include "Interface/ResourceBankInterface.h"
 
 #include "Engine/ResourceImageSequence.h"
 
@@ -23,6 +23,8 @@ namespace Mengine
     {
         ResourceImageSequence * resource = stdex::intrusive_get<ResourceImageSequence *>( _loadable );
 
+        ResourceBankInterface * resourceBank = resource->getResourceBank();
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence *>(_meta);
 
@@ -41,8 +43,13 @@ namespace Mengine
                 , resourceName.c_str() 
             );
 
-            const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
-                ->getResourceReference( resourceName );
+            const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( resourceName );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get sequence image resource '%s'"
+                , resource->getName().c_str()
+                , resource->getGroupName().c_str()
+                , resourceName.c_str()
+            );
 
             resource->addFrame( resourceImage, delay );
         }

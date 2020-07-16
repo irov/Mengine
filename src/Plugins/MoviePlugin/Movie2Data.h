@@ -23,8 +23,11 @@ namespace Mengine
         void release() override;
 
     public:
-        bool acquireComposition( const aeMovieComposition * _composition ) override;
-        void releaseComposition( const aeMovieComposition * _composition ) override;
+        bool acquireCompositionData( const aeMovieCompositionData * _compositionData ) override;
+        void releaseCompositionData( const aeMovieCompositionData * _compositionData ) override;
+
+    public:
+        void visitCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaResource & _lambda ) override;
 
     public:
         void setMovieData( const aeMovieData * _movieData );

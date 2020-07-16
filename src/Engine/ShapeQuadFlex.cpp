@@ -237,7 +237,9 @@ namespace Mengine
             {
                 const mt::vec2f & uv_correct = uv_percentVisibility[v];
 
-                m_verticesWM[v].uv[i] = uv_correct * m_textureUVScale + m_textureUVOffset;
+                mt::vec2f uv_total = uv_correct * m_textureUVScale + m_textureUVOffset;
+
+                m_surface->correctUV( i, uv_total, m_verticesWM[v].uv + i );
             }
         }
     }

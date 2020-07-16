@@ -208,7 +208,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::getMaxClientResolution( Resolution * _resolution ) const
+    bool SDLPlatform::getMaxClientResolution( Resolution * const _resolution ) const
     {
         SDL_Rect rect;
         if( SDL_GetDisplayUsableBounds( 0, &rect ) != 0 )
@@ -217,7 +217,7 @@ namespace Mengine
                 , SDL_GetError()
             );
 
-            return;
+            return false;
         }
 
         LOGGER_MESSAGE( "client resolution width %d height %d"
@@ -226,6 +226,8 @@ namespace Mengine
         );
 
         *_resolution = Resolution( (uint32_t)rect.w, (uint32_t)rect.h );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     static void MySDL_LogOutputFunction( void * _userdata, int _category, SDL_LogPriority _priority, const char * _message )

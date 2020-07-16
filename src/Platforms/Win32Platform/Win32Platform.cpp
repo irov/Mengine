@@ -814,18 +814,40 @@ namespace Mengine
         return utf8_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::getMaxClientResolution( Resolution * const _resolution ) const
+    bool Win32Platform::getMaxClientResolution( Resolution * const _resolution ) const
     {
         RECT workArea;
-        ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 );
+        if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
+        {
+            DWORD le = ::GetLastError();
+
+            LOGGER_ERROR( "invalid get system parameters info [error: %lu]"
+                , le
+            );
+
+            return false
+                ;
+        }
 
         RECT clientArea = workArea;
-        ::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
+        if( ::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE ) == FALSE )
+        {
+            DWORD le = ::GetLastError();
+
+            LOGGER_ERROR( "invalid adjust window rect [error: %lu]"
+                , le
+            );
+
+            return false;
+        }
+
         uint32_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
         uint32_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
 
         _resolution->setWidth( maxClientWidth );
         _resolution->setHeight( maxClientHeight );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const Tags & Win32Platform::getPlatformTags() const

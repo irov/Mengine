@@ -104,7 +104,7 @@ namespace Mengine
         virtual size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const = 0;
 
     public:
-        virtual void getMaxClientResolution( Resolution * const _resolution ) const = 0;
+        virtual bool getMaxClientResolution( Resolution * const _resolution ) const = 0;
 
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;

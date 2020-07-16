@@ -309,8 +309,11 @@ namespace Mengine
             ->setProjectTitle( projectTitle );
 
         Resolution windowResolution;
-        APPLICATION_SERVICE()
-            ->calcWindowResolution( &windowResolution );
+        if( APPLICATION_SERVICE()
+            ->calcWindowResolution( &windowResolution ) == false )
+        {
+            return false;
+        }
 
         PLATFORM_SERVICE()
             ->setIcon( IDI_MENGINE );

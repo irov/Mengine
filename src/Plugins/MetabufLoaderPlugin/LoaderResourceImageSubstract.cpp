@@ -1,5 +1,7 @@
 #include "LoaderResourceImageSubstract.h"
 
+#include "Interface/ResourceBankInterface.h"
+
 #include "Engine/ResourceImageSubstract.h"
 
 #include "Metacode/Metacode.h"
@@ -24,7 +26,16 @@ namespace Mengine
 
         const ConstString & resourceImageName = metadata->get_Image_Name();
 
-        resource->setResourceImageName( resourceImageName );
+        ResourceBankInterface * resourceBank = resource->getResourceBank();
+
+        const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( resourceImageName );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get image resource"
+            , resource->getName().c_str()
+            , resource->getGroupName().c_str()
+        );
+
+        resource->setResourceImage( resourceImage );
 
         const mt::uv4f & uvImage = metadata->get_Image_UV();
 

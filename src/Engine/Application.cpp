@@ -311,7 +311,10 @@ namespace Mengine
         }
         else
         {
-            this->calcWindowResolution( &m_currentResolution );
+            if( this->calcWindowResolution( &m_currentResolution ) == false )
+            {
+                return false;
+            }
         }
 
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
@@ -1629,11 +1632,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::calcWindowResolution( Resolution * const _windowResolution ) const
+    bool Application::calcWindowResolution( Resolution * const _windowResolution ) const
     {
         Resolution dres;
-        PLATFORM_SERVICE()
-            ->getMaxClientResolution( &dres );
+        if( PLATFORM_SERVICE()
+            ->getMaxClientResolution( &dres ) == false )
+        {
+            return false;
+        }
 
         LOGGER_MESSAGE( "Max Client Resolution %u %u"
             , dres.getWidth()
@@ -1685,6 +1691,8 @@ namespace Mengine
         {
             *_windowResolution = m_windowResolution;
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const Resolution & Application::getCurrentResolution() const
@@ -1816,7 +1824,7 @@ namespace Mengine
         }
         else
         {
-            this->calcWindowResolution( &m_currentResolution );
+            this->calcWindowResolution( &m_currentResolution );            
         }
 
         LOGGER_MESSAGE( "%d Current Resolution [%u %u]"

@@ -16,11 +16,11 @@ namespace Mengine
         ~ResourceImageSubstractRGBAndAlpha() override;
 
     public:
-        void setResourceImageRGBName( const ConstString & _resourceImageRGBName );
-        const ConstString & getResourceRGBName() const;
+        void setResourceImageRGB( const ResourceImagePtr & _resourceImageRGBName );
+        const ResourceImagePtr & getResourceRGB() const;
 
-        void setResourceImageAlphaName( const ConstString & _resourceImageAlphaName );
-        const ConstString & getResourceAlphaName() const;
+        void setResourceImageAlpha( const ResourceImagePtr & _resourceImageAlphaName );
+        const ResourceImagePtr & getResourceAlpha() const;
 
     protected:
         bool _compile() override;

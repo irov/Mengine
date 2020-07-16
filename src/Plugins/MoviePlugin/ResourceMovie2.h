@@ -18,42 +18,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct ResourceMovie2CompositionLayer
-    {
-        uint32_t index;
-        ConstString name;
-        ConstString type;
-        mt::mat4f matrix;
-        Color color;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourceMovie2CompositionLayer> ResourceMovie2CompositionLayers;
-    //////////////////////////////////////////////////////////////////////////
-    struct ResourceMovie2CompositionSubComposition
-    {
-        uint32_t index;
-        ConstString name;
-
-        float duration;
-        float frameDuration;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourceMovie2CompositionSubComposition> ResourceMovie2CompositionSubCompositions;
-    //////////////////////////////////////////////////////////////////////////
-    struct ResourceMovie2CompositionDesc
-    {
-        float duration;
-        float frameDuration;
-
-        bool has_bounds;
-        mt::box2f bounds;
-
-        bool master;
-
-        ResourceMovie2CompositionLayers layers;
-        ResourceMovie2CompositionSubCompositions subcompositions;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class ResourceMovie2
         : public Resource
         , private BaseContent
@@ -77,11 +41,48 @@ namespace Mengine
         const aeMovieCompositionData * getCompositionData( const ConstString & _compositionName ) const;
 
     public:
-        void setCompositionDesc( const ConstString & _name, const ResourceMovie2CompositionDesc & _composition );
-        const ResourceMovie2CompositionDesc * getCompositionDesc( const ConstString & _compositionName ) const;
+        struct CompositionLayer
+        {
+            uint32_t index;
+            ConstString name;
+            ConstString type;
+            mt::mat4f matrix;
+            Color color;
+        };
+
+        typedef Vector<CompositionLayer> VectorCompositionLayers;
+
+        struct CompositionSubComposition
+        {
+            uint32_t index;
+            ConstString name;
+
+            float duration;
+            float frameDuration;
+        };
+
+        typedef Vector<CompositionSubComposition> VectorCompositionSubCompositions;
+
+        struct CompositionDesc
+        {
+            float duration;
+            float frameDuration;
+
+            bool has_bounds;
+            mt::box2f bounds;
+
+            bool master;
+
+            VectorCompositionLayers layers;
+            VectorCompositionSubCompositions subcompositions;
+        };
 
     public:
-        typedef Lambda<void( const ConstString &, const ResourceMovie2CompositionDesc & )> LambdaCompositionDescs;
+        void setCompositionDesc( const ConstString & _name, const CompositionDesc & _composition );
+        const CompositionDesc * getCompositionDesc( const ConstString & _compositionName ) const;
+
+    public:
+        typedef Lambda<void( const ConstString &, const CompositionDesc & )> LambdaCompositionDescs;
         void foreachCompositionDesc( const LambdaCompositionDescs & _lambda );
 
     protected:
@@ -91,7 +92,7 @@ namespace Mengine
     protected:
         Movie2DataInterfacePtr m_data;
 
-        typedef Map<ConstString, ResourceMovie2CompositionDesc> MapCompositions;
+        typedef Map<ConstString, CompositionDesc> MapCompositions;
         MapCompositions m_compositions;
     };
     //////////////////////////////////////////////////////////////////////////

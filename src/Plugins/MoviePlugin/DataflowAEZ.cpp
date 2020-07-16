@@ -161,7 +161,7 @@ namespace Mengine
 
                     const Movie2Data::ImageDesc * image_desc = reinterpret_cast<const Movie2Data::ImageDesc *>(movie_resource->userdata);
 
-                    const ResourceImagePtr & resource_image = image_desc->resourceImage;
+                    const ResourceImagePtr & resourceImage = image_desc->resourceImage;
 
                     ae_uint32_t vertex_count = _callbackData->vertex_count;
 
@@ -179,7 +179,7 @@ namespace Mengine
                         const float * uv2 = *it;
                         uv.from_f2( uv2 );
 
-                        resource_image->correctUVImage( uv, uvs_iterator );
+                        resourceImage->correctUVImage( uv, uvs_iterator );
                     }
 
                     *_rd = uvs;

@@ -49,7 +49,7 @@ namespace Mengine
         {
             const ConstString & compositionName = meta_composition.get_Name();
 
-            ResourceMovie2CompositionDesc desc;
+            ResourceMovie2::CompositionDesc desc;
 
             desc.duration = meta_composition.get_Duration();
             desc.frameDuration = meta_composition.get_FrameDuration();
@@ -67,7 +67,7 @@ namespace Mengine
                 const mt::mat4f & layerMatrix = meta_layer.get_Matrix();
                 const Color & layerColor = meta_layer.get_Color();
 
-                ResourceMovie2CompositionLayer layer;
+                ResourceMovie2::CompositionLayer layer;
                 layer.index = layerIndex;
                 layer.name = layerName;
                 layer.type = layerType;
@@ -86,7 +86,7 @@ namespace Mengine
                 float subcompositionDuration = meta_subcomposition.get_Duration();
                 float subcompositionFrameDuration = meta_subcomposition.get_FrameDuration();
 
-                ResourceMovie2CompositionSubComposition subcomposition;
+                ResourceMovie2::CompositionSubComposition subcomposition;
                 subcomposition.index = subcompositionIndex;
                 subcomposition.name = subcompositionName;
                 subcomposition.duration = subcompositionDuration;

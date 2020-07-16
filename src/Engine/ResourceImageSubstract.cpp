@@ -1,6 +1,5 @@
 #include "ResourceImageSubstract.h"
 
-#include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/Logger.h"
@@ -17,14 +16,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImageSubstract::setResourceImageName( const ConstString & _resourceImageName )
+    void ResourceImageSubstract::setResourceImage( const ResourceImagePtr & _resourceImage )
     {
-        m_resourceImageName = _resourceImageName;
+        m_resourceImage = _resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageSubstract::getResourceImageName() const
+    const ResourceImagePtr & ResourceImageSubstract::getResourceImage() const
     {
-        return m_resourceImageName;
+        return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_compile()
@@ -38,26 +37,11 @@ namespace Mengine
             return false;
         }
 
-        if( m_resourceImageName.empty() == true )
-        {
-            LOGGER_ERROR( "'%s' not setup image resource"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
-        const ResourceImagePtr & resourceImage = resourceBank->getResource( m_resourceImageName );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get image resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' group '%s' invalid setup image resource"
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , m_resourceImageName.c_str()
         );
 
-        m_resourceImage = resourceImage;
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
 
@@ -72,11 +56,7 @@ namespace Mengine
     {
         ResourceImage::_release();
 
-        if( m_resourceImage != nullptr )
-        {
-            m_resourceImage->release();
-            m_resourceImage = nullptr;
-        }
+        m_resourceImage->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSubstract::correctUVTexture()

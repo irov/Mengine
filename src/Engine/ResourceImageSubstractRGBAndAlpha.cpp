@@ -1,6 +1,5 @@
 #include "ResourceImageSubstractRGBAndAlpha.h"
 
-#include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/Logger.h"
@@ -17,24 +16,24 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImageSubstractRGBAndAlpha::setResourceImageRGBName( const ConstString & _resourceImageRGBName )
+    void ResourceImageSubstractRGBAndAlpha::setResourceImageRGB( const ResourceImagePtr & _resourceImageRGB )
     {
-        m_resourceImageRGBName = _resourceImageRGBName;
+        m_resourceImageRGB = _resourceImageRGB;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceRGBName() const
+    const ResourceImagePtr & ResourceImageSubstractRGBAndAlpha::getResourceRGB() const
     {
-        return m_resourceImageRGBName;
+        return m_resourceImageRGB;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImageSubstractRGBAndAlpha::setResourceImageAlphaName( const ConstString & _resourceImageAlphaName )
+    void ResourceImageSubstractRGBAndAlpha::setResourceImageAlpha( const ResourceImagePtr & _resourceImageAlpha )
     {
-        m_resourceImageAlphaName = _resourceImageAlphaName;
+        m_resourceImageAlpha = _resourceImageAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceAlphaName() const
+    const ResourceImagePtr & ResourceImageSubstractRGBAndAlpha::getResourceAlpha() const
     {
-        return m_resourceImageAlphaName;
+        return m_resourceImageAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstractRGBAndAlpha::_compile()
@@ -48,40 +47,12 @@ namespace Mengine
             return false;
         }
 
-        if( m_resourceImageRGBName.empty() == true )
-        {
-            LOGGER_ERROR( "'%s' not setup rgb resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, "'%s' not setup rgb resource"
                 , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        if( m_resourceImageAlphaName.empty() == true )
-        {
-            LOGGER_ERROR( "'%s' not setup alpha resource"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
-        m_resourceImageRGB = resourceBank->getResource( m_resourceImageRGBName );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, "'%s' group '%s' invalid get rgb resource '%s'"
-            , this->getName().c_str()
-            , this->getGroupName().c_str()
-            , m_resourceImageRGBName.c_str()
         );
 
-        m_resourceImageAlpha = resourceBank->getResource( m_resourceImageAlphaName );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, "'%s' group '%s' invalid get alpha resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlphaName, "'%s' not setup alpha resource"
             , this->getName().c_str()
-            , this->getGroupName().c_str()
-            , m_resourceImageRGBName.c_str()
         );
 
         m_texture = m_resourceImageRGB->getTexture();
@@ -98,17 +69,8 @@ namespace Mengine
     {
         ResourceImage::_release();
 
-        if( m_resourceImageRGB != nullptr )
-        {
-            m_resourceImageRGB->release();
-            m_resourceImageRGB = nullptr;
-        }
-
-        if( m_resourceImageAlpha != nullptr )
-        {
-            m_resourceImageAlpha->release();
-            m_resourceImageAlpha = nullptr;
-        }
+        m_resourceImageRGB->release();
+        m_resourceImageAlpha->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSubstractRGBAndAlpha::correctUVTexture()

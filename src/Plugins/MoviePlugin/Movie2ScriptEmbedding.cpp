@@ -183,6 +183,22 @@ namespace Mengine
 
             return _kernel->ret_none();
         }
+        //////////////////////////////////////////////////////////////////////////
+        static pybind::list s_ResourceMovie2_getCompositionResources( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
+        {
+            const Movie2DataInterfacePtr & data = _resourceMovie2->getData();
+
+            const aeMovieCompositionData * compositionData = _resourceMovie2->getCompositionData( _compositionName );
+
+            pybind::list l = pybind::make_list_t( _kernel );
+
+            data->visitCompositionDataResources( compositionData, [&l]( const ResourcePtr & _resource )
+            {
+                l.append( _resource );
+            } );
+
+            return l;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     Movie2ScriptEmbedding::Movie2ScriptEmbedding()
@@ -241,6 +257,7 @@ namespace Mengine
             .def( "hasCompositionLayer", &ResourceMovie2::hasCompositionLayer )
             .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
             .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
+            .def_static_kernel( "getCompositionResources", &Detail::s_ResourceMovie2_getCompositionResources )
             ;
 
         VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );

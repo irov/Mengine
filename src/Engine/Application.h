@@ -76,7 +76,7 @@ namespace Mengine
         void quit() override;
 
     public:
-        void calcWindowResolution( Resolution * const _windowResolution ) const override;
+        bool calcWindowResolution( Resolution * const _windowResolution ) const override;
 
         const Resolution & getCurrentResolution() const override;
 

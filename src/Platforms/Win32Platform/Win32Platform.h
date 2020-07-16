@@ -97,7 +97,7 @@ namespace Mengine
         size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
-        void getMaxClientResolution( Resolution * const _resolution ) const override;
+        bool getMaxClientResolution( Resolution * const _resolution ) const override;
 
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;

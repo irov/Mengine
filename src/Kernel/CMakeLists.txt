@@ -628,6 +628,8 @@ Core
     Stringalized.h
     Stringalized.cpp
     
+    BaseDebuggerBoundingBox.h
+    
     Event.h
     Delegate.h
     

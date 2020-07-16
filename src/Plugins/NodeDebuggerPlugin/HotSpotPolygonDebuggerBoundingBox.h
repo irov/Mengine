@@ -1,8 +1,8 @@
 #pragma once
 
-#include "NodeDebuggerBoundingBoxInterface.h"
-
 #include "Engine/HotSpotPolygon.h"
+
+#include "Kernel/BaseDebuggerBoundingBox.h"
 
 namespace Mengine
 {
@@ -15,6 +15,6 @@ namespace Mengine
         ~HotSpotPolygonDebuggerBoundingBox() override;
 
     public:
-        bool _getBoundingBox( const HotSpotPolygonPtr & _node, mt::box2f * _bb ) override;
+        bool _getBoundingBox( const HotSpotPolygonPtr & _node, mt::box2f * _bb ) const override;
     };
 }

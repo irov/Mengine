@@ -122,6 +122,7 @@ src
     ComponentHubInterface.h
     ComponentInterface.h
     AffectorHubInterface.h
+    DebuggerBoundingBoxInterface.h
 )
 
 ADD_FILTER(

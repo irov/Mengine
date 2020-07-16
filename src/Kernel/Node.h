@@ -265,7 +265,31 @@ namespace Mengine
             }
 #endif
 
-            return static_cast<T>(_node);
+            T t = static_cast<T>(_node);
+
+            return t;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T staticNodeCast( const NodePtr & _node )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Node, std::remove_pointer_t<typename T::value_type>>, "static node cast use on non 'Nodeable' type");
+
+            if( _node == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::intrusive_dynamic_cast<T>(_node) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            T t = stdex::intrusive_static_cast<T>(_node);
+
+            return std::move( t );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>

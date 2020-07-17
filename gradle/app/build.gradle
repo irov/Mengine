@@ -70,16 +70,16 @@ android {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
         }
 
-        if (project.hasProperty("ANDROID_APP_VERSION_NAME")) {
-            versionName ANDROID_APP_VERSION_NAME
-        } else {
-            versionName "1.0"
-        }
-        
         if(getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
             versionCode = 400000000 + buildNumber;
         } else {
             versionCode = 300000000 + buildNumber;
+        }
+        
+        if (project.hasProperty("ANDROID_APP_VERSION_NAME")) {
+            versionName ANDROID_APP_VERSION_NAME
+        } else {
+            versionName versionCode as String
         }
         
         if (project.hasProperty("ANDROID_APP_NAME")) {

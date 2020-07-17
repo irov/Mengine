@@ -69,6 +69,9 @@ namespace Mengine
         bool setStateAnimationFirstFrame( const ConstString & _state, const ConstString & _name ) override;
         bool setStateAnimationLastFrame( const ConstString & _state, const ConstString & _name ) override;
 
+    public:
+        bool getWorldBoundingBox( mt::box2f * _box ) const;
+
     protected:
         bool _compile() override;
         void _release() override;

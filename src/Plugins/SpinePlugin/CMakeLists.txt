@@ -11,8 +11,8 @@ src
     SamplerSpineAnimation.cpp
     
     ResourceSpineSkeleton.h
-    ResourceSpineSkeleton.cpp    
-    ResourceSpineAtlas.h    
+    ResourceSpineSkeleton.cpp
+    ResourceSpineAtlas.h
     ResourceSpineAtlasDefault.h
     ResourceSpineAtlasDefault.cpp
     ResourceSpineAtlasTexturepacker.h
@@ -28,7 +28,10 @@ src
     LoaderResourceSpineAtlasTexturepacker.cpp
 
     LoaderResourceSpineSkeleton.h
-    LoaderResourceSpineSkeleton.cpp    
+    LoaderResourceSpineSkeleton.cpp
+    
+    SpineDebuggerBoundingBox.h
+    SpineDebuggerBoundingBox.cpp
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

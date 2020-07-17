@@ -585,6 +585,73 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Spine::getWorldBoundingBox( mt::box2f * _box ) const
+    {
+        if( this->isCompile() == false )
+        {
+            return false;
+        }
+
+        mt::box2f bb;
+        mt::insideout_box( bb );
+
+        int slotCount = m_skeleton->slotsCount;
+
+        const RenderIndex quadTriangles[6] = {0, 1, 2, 2, 3, 0};
+
+        mt::vec2f attachment_vertices[MENGINE_SPINE_MAX_VERTICES];
+
+        for( int index_slot = 0; index_slot != slotCount; ++index_slot )
+        {
+            spSlot * slot = m_skeleton->drawOrder[index_slot];
+
+            if( slot->attachment == nullptr )
+            {
+                continue;
+            }
+
+            int verticesCount;
+
+            const spAttachmentType attachment_type = slot->attachment->type;
+
+            switch( attachment_type )
+            {
+            case SP_ATTACHMENT_REGION:
+                {
+                    spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
+
+                    spRegionAttachment_computeWorldVertices( attachment, slot->bone, (float *)attachment_vertices, 0, 2 );
+
+                    verticesCount = 4;
+                }break;
+            case SP_ATTACHMENT_MESH:
+                {
+                    spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
+
+                    spVertexAttachment_computeWorldVertices( &attachment->super, slot, 0, attachment->super.worldVerticesLength, (float *)attachment_vertices, 0, 2 );
+
+                    verticesCount = attachment->super.worldVerticesLength;
+                }break;
+            default:
+                continue;
+                break;
+            }
+
+            for( int index_vertex = 0; index_vertex != verticesCount; ++index_vertex )
+            {
+                const mt::vec2f & v = attachment_vertices[index_vertex];
+
+                mt::add_internal_point( bb, v );
+            }
+        }
+
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        mt::mul_box2_m4( *_box, bb, wm );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Spine::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, "'%s' resource is null"

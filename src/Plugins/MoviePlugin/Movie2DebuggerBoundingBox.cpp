@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2DebuggerBoundingBox::_getBoundingBox( const Movie2Ptr & _node, mt::box2f * _bb )
+    bool Movie2DebuggerBoundingBox::_getBoundingBox( const Movie2Ptr & _node, mt::box2f * const _bb ) const
     {
         mt::box2f bb;
         if( _node->getWorldBoundingBox( &bb ) == false )

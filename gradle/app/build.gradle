@@ -61,13 +61,25 @@ android {
 
         minSdkVersion 18
         targetSdkVersion 29
+        
+        print 'ANDROID_APP_BUILD_PUBLISH = '
+        println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH")
+        
+        def buildNumber = 0;
+        if (project.hasProperty("ANDROID_APP_BUILD_NUMBER")) {
+            buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
+        }
 
-        if (project.hasProperty("ANDROID_APP_CODE_VERSION")) {
-            versionCode ANDROID_APP_CODE_VERSION as Integer
-            versionName ANDROID_APP_CODE_VERSION
+        if (project.hasProperty("ANDROID_APP_VERSION_NAME")) {
+            versionName ANDROID_APP_VERSION_NAME
         } else {
-            versionCode 1
-            versionName "1"
+            versionName "1.0"
+        }
+        
+        if(getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
+            versionCode = 400000000 + buildNumber;
+        } else {
+            versionCode = 300000000 + buildNumber;
         }
         
         if (project.hasProperty("ANDROID_APP_NAME")) {
@@ -79,14 +91,11 @@ android {
         print 'manifestPlaceholders = '
         println manifestPlaceholders
         
-        print 'ANDROID_APP_CODE_VERSION = '
+        print 'versionCode = '
         println versionCode
         
-        print 'ANDROID_APP_NAME_VERSION = '
+        print 'versionName = '
         println versionName
-
-        print 'ANDROID_APP_BUILD_PUBLISH = '
-        println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH")
         
         signingConfig signingConfigs.config
 

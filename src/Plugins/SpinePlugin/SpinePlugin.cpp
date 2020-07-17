@@ -4,6 +4,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/DebuggerBoundingBoxInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "SpineScriptEmbedding.h"
@@ -12,6 +13,8 @@
 #include "ResourceSpineAtlasDefault.h"
 #include "ResourceSpineAtlasTexturepacker.h"
 #include "ResourceSpineSkeleton.h"
+
+#include "SpineDebuggerBoundingBox.h"
 
 #include "Spine.h"
 
@@ -126,6 +129,8 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
         } );
 
+        VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Spine" ), Helper::makeFactorableUnique<SpineDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
         _spSetMalloc( &Detail::my_spine_malloc );
         _spSetDebugMalloc( &Detail::my_spine_debug_malloc );
         _spSetRealloc( &Detail::my_spine_realloc );
@@ -140,6 +145,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Spine" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ) );

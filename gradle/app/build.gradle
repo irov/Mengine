@@ -70,7 +70,7 @@ android {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
         }
 
-        if(getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
+        if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
             versionCode = 400000000 + buildNumber;
         } else {
             versionCode = 300000000 + buildNumber;

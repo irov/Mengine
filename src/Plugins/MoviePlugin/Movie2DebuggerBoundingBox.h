@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Plugins/NodeDebuggerPlugin/NodeDebuggerBoundingBoxInterface.h"
-
 #include "Movie2.h"
+
+#include "Kernel/BaseDebuggerBoundingBox.h"
 
 namespace Mengine
 {
@@ -15,6 +15,6 @@ namespace Mengine
         ~Movie2DebuggerBoundingBox() override;
 
     public:
-        bool _getBoundingBox( const Movie2Ptr & _node, mt::box2f * _bb ) override;
+        bool _getBoundingBox( const Movie2Ptr & _node, mt::box2f * const _bb ) const override;
     };
 }

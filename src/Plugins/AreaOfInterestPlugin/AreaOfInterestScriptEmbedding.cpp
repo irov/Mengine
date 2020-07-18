@@ -97,10 +97,10 @@ namespace Mengine
             .def( "isFreeze", &AreaOfInterestZoneInterface::isFreeze )
             ;
 
-        pybind::interface_<AreaOfInterestZone, pybind::bases<AreaOfInterestZoneInterface, Scriptable> >( _kernel, "AreaOfInterestZone", false )
+        pybind::interface_<AreaOfInterestZone, pybind::bases<AreaOfInterestZoneInterface, Scriptable>>( _kernel, "AreaOfInterestZone", false )
             ;
 
-        pybind::interface_<NodeAreaOfInterestTrigger, pybind::bases<Node, Eventable> >( _kernel, "NodeAOITrigger", false )
+        pybind::interface_<NodeAreaOfInterestTrigger, pybind::bases<Node, Eventable>>( _kernel, "NodeAOITrigger", false )
             .def( "setRadius", &NodeAreaOfInterestTrigger::setRadius )
             .def( "getRadius", &NodeAreaOfInterestTrigger::getRadius )
             .def( "setIFF", &NodeAreaOfInterestTrigger::setIFF )
@@ -112,7 +112,7 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_NodeAOITrigger_setEventListener )
             ;
 
-        pybind::interface_<NodeAreaOfInterestActor, pybind::bases<Node> >( _kernel, "NodeAOIActor", false )
+        pybind::interface_<NodeAreaOfInterestActor, pybind::bases<Node>>( _kernel, "NodeAOIActor", false )
             .def( "setRadius", &NodeAreaOfInterestActor::setRadius )
             .def( "getRadius", &NodeAreaOfInterestActor::getRadius )
             .def( "setIFF", &NodeAreaOfInterestActor::setIFF )
@@ -125,8 +125,8 @@ namespace Mengine
 
         pybind::def_function( _kernel, "createAreaOfInterestZone", &Detail::s_createAreaOfInterestZone );
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeAreaOfInterestTrigger> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeAreaOfInterestActor> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeAreaOfInterestTrigger>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeAreaOfInterestActor>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

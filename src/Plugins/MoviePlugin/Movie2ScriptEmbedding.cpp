@@ -211,7 +211,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2ScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( _kernel, "Movie2", false )
+        pybind::interface_<Movie2, pybind::bases<Node, Animatable>>( _kernel, "Movie2", false )
             .def( "setResourceMovie2", &Movie2::setResourceMovie2 )
             .def( "getResourceMovie2", &Movie2::getResourceMovie2 )
             .def( "setCompositionName", &Movie2::setCompositionName )
@@ -243,16 +243,16 @@ namespace Mengine
             .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
             ;
 
-        pybind::interface_<Movie2Slot, pybind::bases<Node> >( _kernel, "Movie2Slot", false )
+        pybind::interface_<Movie2Slot, pybind::bases<Node>>( _kernel, "Movie2Slot", false )
             ;
 
-        pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable, Identity> >( _kernel, "Movie2SubComposition", false )
+        pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable, Identity>>( _kernel, "Movie2SubComposition", false )
             .def( "setEnable", &Movie2SubComposition::setEnable )
             .def( "getEnable", &Movie2SubComposition::getEnable )
             .def_static_native_kernel( "setEventListener", &Detail::s_Movie2SubComposition_setEventListener )
             ;
 
-        pybind::interface_<ResourceMovie2, pybind::bases<Resource> >( _kernel, "ResourceMovie2", false )
+        pybind::interface_<ResourceMovie2, pybind::bases<Resource>>( _kernel, "ResourceMovie2", false )
             .def( "hasComposition", &ResourceMovie2::hasComposition )
             .def( "hasCompositionLayer", &ResourceMovie2::hasCompositionLayer )
             .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
@@ -260,10 +260,10 @@ namespace Mengine
             .def_static_kernel( "getCompositionResources", &Detail::s_ResourceMovie2_getCompositionResources )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2Slot> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie2> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2Slot>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2SubComposition>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie2>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

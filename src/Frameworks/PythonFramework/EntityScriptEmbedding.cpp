@@ -282,12 +282,12 @@ namespace Mengine
     {
         pybind::allocator_interface * allocator = _kernel->get_allocator();
 
-        pybind::superclass_<Entity, pybind::bases<Node> >( _kernel, "Entity", nullptr, allocator->newT<superclass_new_Entity>(), allocator->newT<superclass_destroy_Entity>(), false )
+        pybind::superclass_<Entity, pybind::bases<Node>>( _kernel, "Entity", nullptr, allocator->newT<superclass_new_Entity>(), allocator->newT<superclass_destroy_Entity>(), false )
             .def_constructor( pybind::init<>() )
             .def( "getPrototype", &Entity::getPrototype )
             ;
 
-        pybind::superclass_<Arrow, pybind::bases<Entity> >( _kernel, "Arrow", nullptr, allocator->newT<superclass_new_Arrow>(), allocator->newT<superclass_destroy_Arrow>(), false )
+        pybind::superclass_<Arrow, pybind::bases<Entity>>( _kernel, "Arrow", nullptr, allocator->newT<superclass_new_Arrow>(), allocator->newT<superclass_destroy_Arrow>(), false )
             .def_constructor( pybind::init<>() )
             .def( "setOffsetClick", &Arrow::setOffsetClick )
             .def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -297,7 +297,7 @@ namespace Mengine
             .def( "getRadius", &Arrow::getRadius )
             ;
 
-        pybind::superclass_<Scene, pybind::bases<Entity> >( _kernel, "Scene", nullptr, allocator->newT<superclass_new_Scene>(), allocator->newT<superclass_destroy_Scene>(), false )
+        pybind::superclass_<Scene, pybind::bases<Entity>>( _kernel, "Scene", nullptr, allocator->newT<superclass_new_Scene>(), allocator->newT<superclass_destroy_Scene>(), false )
             .def_constructor( pybind::init<>() )
             ;
 
@@ -317,9 +317,9 @@ namespace Mengine
 
         m_implement = entityScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<PythonScriptWrapper<Arrow> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), Helper::makeFactorableUnique<PythonScriptWrapper<Entity> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), Helper::makeFactorableUnique<PythonScriptWrapper<Scene> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<PythonScriptWrapper<Arrow>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), Helper::makeFactorableUnique<PythonScriptWrapper<Entity>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), Helper::makeFactorableUnique<PythonScriptWrapper<Scene>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

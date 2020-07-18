@@ -49,12 +49,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<ResourceAstralax, pybind::bases<Resource> >( _kernel, "ResourceAstralax", false )
+        pybind::interface_<ResourceAstralax, pybind::bases<Resource>>( _kernel, "ResourceAstralax", false )
             .def( "getResourceImageCount", &ResourceAstralax::getResourceImageCount )
             .def( "getResourceImage", &ResourceAstralax::getResourceImage )
             ;
 
-        pybind::interface_<AstralaxEmitter, pybind::bases<Node, Eventable, Animatable> >( _kernel, "ParticleEmitter2", false )
+        pybind::interface_<AstralaxEmitter, pybind::bases<Node, Eventable, Animatable>>( _kernel, "ParticleEmitter2", false )
             .def_deprecated( "setResourceParticle", &AstralaxEmitter::setResourceAstralax, "use setResourceAstralax" )
             .def_deprecated( "getResourceParticle", &AstralaxEmitter::getResourceAstralax, "use getResourceAstralax" )
             .def( "setResourceAstralax", &AstralaxEmitter::setResourceAstralax )

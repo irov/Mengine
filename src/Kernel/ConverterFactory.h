@@ -51,7 +51,7 @@ namespace Mengine
         template<class T>
         MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type, const DocumentPtr & _doc )
         {
-            ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T> >( _doc );
+            ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T>>( _doc );
 
             if( converter->initialize() == false )
             {

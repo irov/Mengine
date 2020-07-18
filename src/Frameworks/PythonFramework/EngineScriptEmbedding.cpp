@@ -3961,7 +3961,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "addAffector", nodeScriptMethod, &EngineScriptMethod::s_addAffector );
         pybind::def_functor( _kernel, "removeAffector", nodeScriptMethod, &EngineScriptMethod::s_removeAffector );
 
-        pybind::interface_<EngineScriptMethod::AffectorFollower, pybind::bases<Affector> >( _kernel, "AffectorFollower" )
+        pybind::interface_<EngineScriptMethod::AffectorFollower, pybind::bases<Affector>>( _kernel, "AffectorFollower" )
             .def( "follow", &EngineScriptMethod::AffectorFollower::follow )
             ;
 
@@ -3973,10 +3973,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
         pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
-        pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable> >( _kernel, "PythonValueFollower" )
+        pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable>>( _kernel, "PythonValueFollower" )
             ;
 
-        pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower> >( _kernel, "PythonValueFollowerLinear" )
+        pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower>>( _kernel, "PythonValueFollowerLinear" )
             .def( "setSpeed", &PythonValueFollowerLinear::setSpeed )
             .def( "getSpeed", &PythonValueFollowerLinear::getSpeed )
             .def( "setValue", &PythonValueFollowerLinear::setValue )
@@ -3986,7 +3986,7 @@ namespace Mengine
             .def( "resetValue", &PythonValueFollowerLinear::resetValue )
             ;
 
-        pybind::interface_<PythonValueFollowerAcceleration, pybind::bases<PythonValueFollower> >( _kernel, "PythonValueFollowerAcceleration" )
+        pybind::interface_<PythonValueFollowerAcceleration, pybind::bases<PythonValueFollower>>( _kernel, "PythonValueFollowerAcceleration" )
             .def( "setSpeed", &PythonValueFollowerAcceleration::setSpeed )
             .def( "getSpeed", &PythonValueFollowerAcceleration::getSpeed )
             .def( "setAcceleration", &PythonValueFollowerAcceleration::setAcceleration )
@@ -4004,22 +4004,22 @@ namespace Mengine
 
         m_implement = nodeScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32> >( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
-        pybind::interface_<RandomizerInterface, pybind::bases<Mixin> >( _kernel, "Randomizer" )
+        pybind::interface_<RandomizerInterface, pybind::bases<Mixin>>( _kernel, "Randomizer" )
             .def( "setSeed", &RandomizerInterface::setSeed )
             .def( "getRandom", &RandomizerInterface::getRandom )
             .def( "getRandomRange", &RandomizerInterface::getRandomRange )
@@ -4027,7 +4027,7 @@ namespace Mengine
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;
 
-        pybind::interface_<SecureValue, pybind::bases<Mixin> >( _kernel, "SecureValue" )
+        pybind::interface_<SecureValue, pybind::bases<Mixin>>( _kernel, "SecureValue" )
             .def( "setupSecureValue", &SecureValue::setupSecureValue )
             .def( "setUnprotectedValue", &SecureValue::setUnprotectedValue )
             .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureValue_getUnprotectedValue )

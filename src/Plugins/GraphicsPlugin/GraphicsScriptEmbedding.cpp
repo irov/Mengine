@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GraphicsScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<Graphics, pybind::bases<Node, Eventable> >( _kernel, "Graphics", false )
+        pybind::interface_<Graphics, pybind::bases<Node, Eventable>>( _kernel, "Graphics", false )
             .def( "setLineWidth", &Graphics::setLineWidth )
             .def( "getLineWidth", &Graphics::getLineWidth )
             .def( "setLineSoft", &Graphics::setLineSoft )
@@ -54,7 +54,7 @@ namespace Mengine
             .def( "clear", &Graphics::clear )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Graphics" ), Helper::makeFactorableUnique<PythonScriptWrapper<Graphics> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Graphics" ), Helper::makeFactorableUnique<PythonScriptWrapper<Graphics>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

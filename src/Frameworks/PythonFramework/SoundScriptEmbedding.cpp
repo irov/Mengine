@@ -691,7 +691,7 @@ namespace Mengine
             return false;
         }
 
-        pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin> >( _kernel, "SoundIdentity" )
+        pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin>>( _kernel, "SoundIdentity" )
             .def( "getId", &SoundIdentityInterface::getId )
             .def( "isStreamable", &SoundIdentityInterface::isStreamable )
             .def( "getLoop", &SoundIdentityInterface::getLoop )

@@ -38,15 +38,15 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        virtual void addResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) = 0;
+        virtual void addResourceTexturepacker( const ResourcePtr & _resourceTexturepacker ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceSpineSkeletonInterface
         : public UnknownInterface
     {
     public:
-        virtual void setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas ) = 0;
-        virtual const ConstString & getResourceSpineAtlasName() const = 0;
+        virtual void setResourceSpineAtlas( const ResourcePtr & _resourceSpineAtlas ) = 0;
+        virtual const ResourcePtr & getResourceSpineAtlas() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class SamplerSpineAnimationInterface

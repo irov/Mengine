@@ -1,5 +1,7 @@
 #include "LoaderResourceSpineSkeleton.h"
 
+#include "Interface/ResourceBankInterface.h"
+
 #include "ResourceSpineSkeleton.h"
 
 #include "Metacode/Metacode.h"
@@ -27,7 +29,20 @@ namespace Mengine
         metadata->getm_File_Path( content, &ContentInterface::setFilePath );
         metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
 
-        metadata->getm_Atlas_Name( resource, &ResourceSpineSkeleton::setResourceSpineAtlasName );
+        ConstString resourceSpineAtlasName;
+        metadata->get_Atlas_Name( &resourceSpineAtlasName );
+
+        ResourceBankInterface * resourceBank = resource->getResourceBank();
+
+        const ResourcePtr & resourceSpineAtlas = resourceBank->getResourceReference( resourceSpineAtlasName );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas, "'%s' group '%s' invalid get resource '%s'"
+            , resource->getName().c_str()
+            , resource->getGroupName().c_str()
+            , resourceSpineAtlasName.c_str()
+        );
+
+        resource->setResourceSpineAtlas( resourceSpineAtlas );
 
         return true;
     }

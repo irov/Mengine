@@ -1,7 +1,5 @@
 #include "ResourceSpineAtlasTexturepacker.h"
 
-#include "Interface/ResourceServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/DocumentHelper.h"
@@ -23,11 +21,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceSpineAtlasTexturepacker::addResourceTexturepackerName( const ConstString & _resourceTexturepackerName )
+    void ResourceSpineAtlasTexturepacker::addResourceTexturepacker( const ResourcePtr & _resourceTexturepacker )
     {
         TexturepackerDesc desc;
-        desc.resourceTexturepackerName = _resourceTexturepackerName;
-        desc.resourceTexturepacker = nullptr;
+        desc.resourceTexturepacker = _resourceTexturepacker;
 
         m_texturepackers.push_back( desc );
     }
@@ -39,8 +36,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineAtlasTexturepacker::_compile()
     {
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
         spAtlas * atlas = NEW( spAtlas );
 
         MENGINE_ASSERTION_MEMORY_PANIC( atlas );
@@ -48,7 +43,7 @@ namespace Mengine
         spAtlasPage * lastPage = nullptr;
         spAtlasRegion * lastRegion = nullptr;
 
-        for( TexturepackerDesc & desc : m_texturepackers )
+        for( const TexturepackerDesc & desc : m_texturepackers )
         {
             char * page_name = MALLOC( char, 1 );
             page_name[0] = '\0';
@@ -66,11 +61,12 @@ namespace Mengine
 
             lastPage = page;
 
-            ResourcePtr resourceTexturepacker = resourceBank->getResource( desc.resourceTexturepackerName );
+            if( desc.resourceTexturepacker->compile() == false )
+            {
+                return false;
+            }
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker );
-
-            UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = resourceTexturepacker->getUnknown();
+            UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = desc.resourceTexturepacker->getUnknown();
 
             uint32_t atlasWidth = unknownResourceTexturepacker->getAtlasWidth();
             uint32_t atlasHeight = unknownResourceTexturepacker->getAtlasHeight();
@@ -162,8 +158,6 @@ namespace Mengine
 
                 lastRegion = region;
             }
-
-            desc.resourceTexturepacker = resourceTexturepacker;
         }
 
         m_atlas = atlas;
@@ -176,7 +170,6 @@ namespace Mengine
         for( TexturepackerDesc & desc : m_texturepackers )
         {
             desc.resourceTexturepacker->release();
-            desc.resourceTexturepacker = nullptr;
         }
 
         if( m_atlas != nullptr )

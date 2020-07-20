@@ -1,5 +1,7 @@
 #include "LoaderResourceSpineAtlasDefault.h"
 
+#include "Interface/ResourceBankInterface.h"
+
 #include "ResourceSpineAtlasDefault.h"
 
 #include "Metacode/Metacode.h"
@@ -27,6 +29,8 @@ namespace Mengine
         metadata->getm_File_Path( content, &ContentInterface::setFilePath );
         metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
 
+        ResourceBankInterface * resourceBank = resource->getResourceBank();
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlas::VectorMeta_Image & includes_images = metadata->get_Includes_Image();
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image & meta_image : includes_images )
@@ -34,7 +38,16 @@ namespace Mengine
             const ConstString & name = meta_image.get_Name();
             const ConstString & resourceName = meta_image.get_Resource();
 
-            resource->addResourceImageDesc( name, resourceName );
+            const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( resourceName );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+                , resource->getName().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , resource->getGroupName().c_str()
+                , resourceName.c_str()
+            );
+
+            resource->addResourceImageDesc( name, resourceImage );
         }
 
         return true;

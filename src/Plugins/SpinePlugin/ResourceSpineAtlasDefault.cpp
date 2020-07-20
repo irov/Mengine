@@ -1,7 +1,5 @@
 #include "ResourceSpineAtlasDefault.h"
 
-#include "Interface/ResourceServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/DocumentHelper.h"
@@ -57,12 +55,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceSpineAtlasDefault::addResourceImageDesc( const ConstString & _name, const ConstString & _resourceImageName )
+    void ResourceSpineAtlasDefault::addResourceImageDesc( const ConstString & _name, const ResourceImagePtr & _resourceImage )
     {
         ImageDesc desc;
         desc.name = _name;
-        desc.resourceImageName = _resourceImageName;
-        desc.resourceImage = nullptr;
+        desc.resourceImage = _resourceImage;
 
         m_images.emplace_back( desc );
     }
@@ -89,25 +86,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineAtlasDefault::_compile()
     {
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
         for( ImageDesc & desc : m_images )
         {
-            const ResourceImagePtr & resourceImage = resourceBank->getResource( desc.resourceImageName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' category '%s' group '%s' invalid get image resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , desc.resourceImageName.c_str()
-            );
+            const ResourceImagePtr & resourceImage = desc.resourceImage;
 
             if( resourceImage->compile() == false )
             {
                 return false;
             }
-
-            desc.resourceImage = resourceImage;
         }
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
@@ -136,7 +122,6 @@ namespace Mengine
             const ResourceImagePtr & resourceImage = desc.resourceImage;
 
             resourceImage->release();
-            desc.resourceImage = nullptr;
         }
 
         if( m_atlas != nullptr )

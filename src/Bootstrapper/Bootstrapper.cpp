@@ -24,6 +24,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -1287,6 +1288,9 @@ namespace Mengine
         SERVICE_FINALIZE( ThreadService );
         SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( EasingService );
+
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ) );
+
         SERVICE_FINALIZE( VocabularyService );
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );

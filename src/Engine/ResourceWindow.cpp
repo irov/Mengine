@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceWindow::_compile()
     {
-        for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
+        for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
         {
             WindowElement & element = m_elements[i];
 
@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::_release()
     {
-        for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
+        for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
         {
             WindowElement & element = m_elements[i];
 
@@ -54,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::setElementResourceImage( uint32_t _type, const ResourceImagePtr & _resourceImage )
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' set invalid type '%d' (resource)"
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' set invalid type '%u' (resource)"
             , this->getName().c_str()
             , _type
         );
@@ -66,7 +66,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceWindow::getElementResourceImage( uint32_t _type ) const
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' get invalid type '%d' (resource)"
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' get invalid type '%u' (resource)"
             , this->getName().c_str()
             , _type
         );
@@ -80,7 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::setElementOffset( uint32_t _type, const mt::vec2f & _offset )
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' set invalid type '%d' (offset)"
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' set invalid type '%u' (offset)"
             , this->getName().c_str()
             , _type
         );
@@ -92,7 +92,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & ResourceWindow::getElementOffset( uint32_t _type ) const
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' get invalid type '%d' (offset)"
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' get invalid type '%u' (offset)"
             , this->getName().c_str()
             , _type
         );

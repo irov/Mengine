@@ -30,14 +30,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMultiTexturepacker::addResourceTexturepackerName( const ConstString & _resourceTexturepackerName )
+    void ResourceMultiTexturepacker::addResourceTexturepacker( const ResourcePtr & _resourceTexturepacker )
     {
-        m_resourceTexturepackerNames.emplace_back( _resourceTexturepackerName );
+        m_resourceTexturepackers.emplace_back( _resourceTexturepacker );
     }
     //////////////////////////////////////////////////////////////////////////
-    const VectorConstString & ResourceMultiTexturepacker::getResourceTexturepackerNames() const
+    const VectorResources & ResourceMultiTexturepacker::getResourceTexturepackers() const
     {
-        return m_resourceTexturepackerNames;
+        return m_resourceTexturepackers;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMultiTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const
@@ -79,18 +79,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMultiTexturepacker::_compile()
     {
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
-        for( const ConstString & resourceTexturepackerName : m_resourceTexturepackerNames )
+        for( const ResourcePtr & resourceTexturepacker : m_resourceTexturepackers )
         {
-            const ResourcePtr & resourceTexturepacker = resourceBank->getResource( resourceTexturepackerName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker, "'%s' group '%s' invalid get texturepacker resource '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , resourceTexturepackerName.c_str()
-            );
-
             UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = resourceTexturepacker->getUnknown();
 
             unknownResourceTexturepacker->setStripFrameNameExtension( m_needStripFrameNameExtension );
@@ -99,8 +89,6 @@ namespace Mengine
             {
                 return false;
             }
-
-            m_resourceTexturepackers.emplace_back( resourceTexturepacker );
         }
 
         return true;
@@ -112,7 +100,5 @@ namespace Mengine
         {
             resourceTexturepacker->release();
         }
-
-        m_resourceTexturepackers.clear();
     }
 }

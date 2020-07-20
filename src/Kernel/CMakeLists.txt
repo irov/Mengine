@@ -497,6 +497,9 @@ Core
     
     Wrapper.h
     VectorBool.h
+    VectorResources.h
+    
+    ShuffleVector.h
 
     ConstString.h
     ConstString.cpp

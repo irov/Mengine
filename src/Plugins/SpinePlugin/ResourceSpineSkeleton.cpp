@@ -19,14 +19,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceSpineSkeleton::setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas )
+    void ResourceSpineSkeleton::setResourceSpineAtlas( const ResourcePtr & _resourceSpineAtlas )
     {
-        m_resourceSpineAtlasName = _resourceSpineAtlas;
+        m_resourceSpineAtlas = Helper::staticResourceCast<ResourceSpineAtlasPtr>( _resourceSpineAtlas );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceSpineSkeleton::getResourceSpineAtlasName() const
+    const ResourceSpineAtlasPtr & ResourceSpineSkeleton::getResourceSpineAtlas() const
     {
-        return m_resourceSpineAtlasName;
+        return m_resourceSpineAtlas;
     }
     //////////////////////////////////////////////////////////////////////////
     spSkeletonData * ResourceSpineSkeleton::getSkeletonData() const
@@ -43,13 +43,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineSkeleton::_compile()
     {
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
-        ResourceSpineAtlasPtr resourceSpineAtlas = resourceBank->getResource( m_resourceSpineAtlasName );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas );
-
-        m_resourceSpineAtlas = resourceSpineAtlas;
+        if( m_resourceSpineAtlas->compile() == false )
+        {
+            return false;
+        }
 
         const FilePath & filePath = this->getFilePath();
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
@@ -92,6 +89,6 @@ namespace Mengine
             m_skeletonData = nullptr;
         }
 
-        m_resourceSpineAtlas = nullptr;
+        m_resourceSpineAtlas->release();
     }
 }

@@ -2,9 +2,6 @@
 
 #include "TexturepackerInterface.h"
 
-#include "Kernel/Resource.h"
-#include "Kernel/Vector.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -20,8 +17,8 @@ namespace Mengine
         ~ResourceMultiTexturepacker() override;
 
     public:
-        void addResourceTexturepackerName( const ConstString & _resourceJSONName ) override;
-        const VectorConstString & getResourceTexturepackerNames() const override;
+        void addResourceTexturepacker( const ResourcePtr & _resourceTexturepacker ) override;
+        const VectorResources & getResourceTexturepackers() const override;
 
     public:
         bool findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const override;
@@ -35,10 +32,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        VectorConstString m_resourceTexturepackerNames;
-
-        typedef Vector<ResourcePtr> VectorResourceTexturepackers;
-        VectorResourceTexturepackers m_resourceTexturepackers;
+        VectorResources m_resourceTexturepackers;
 
         bool m_needStripFrameNameExtension;
     };

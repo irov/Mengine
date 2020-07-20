@@ -22,7 +22,7 @@ namespace Mengine
         ~ResourceSpineAtlasDefault() override;
 
     public:
-        void addResourceImageDesc( const ConstString & _name, const ConstString & _resourceImageName );
+        void addResourceImageDesc( const ConstString & _name, const ResourceImagePtr & _resourceImage );
 
     protected:
         const ResourceImagePtr & getResourceImage_( const Char * _name ) const;
@@ -38,7 +38,6 @@ namespace Mengine
         struct ImageDesc
         {
             ConstString name;
-            ConstString resourceImageName;
             ResourceImagePtr resourceImage;
         };
 

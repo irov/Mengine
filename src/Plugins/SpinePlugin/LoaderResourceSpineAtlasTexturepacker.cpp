@@ -1,5 +1,7 @@
 #include "LoaderResourceSpineAtlasTexturepacker.h"
 
+#include "Interface/ResourceBankInterface.h"
+
 #include "ResourceSpineAtlasTexturepacker.h"
 
 #include "Metacode/Metacode.h"
@@ -24,7 +26,20 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker *>(_meta);
 
-        metadata->getm_Texturepacker_Name( resource, &ResourceSpineAtlasTexturepacker::addResourceTexturepackerName );
+        ConstString resourceTexturepackerName;
+        metadata->get_Texturepacker_Name( &resourceTexturepackerName );
+
+        ResourceBankInterface * resourceBank = resource->getResourceBank();
+
+        const ResourcePtr & resourceTextupacker = resourceBank->getResourceReference( resourceTexturepackerName );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceTextupacker, "'%s' group '%s' invalid get resource '%s'"
+            , resource->getName().c_str()
+            , resource->getGroupName().c_str()
+            , resourceTexturepackerName.c_str()
+        );
+
+        resource->addResourceTexturepacker( resourceTextupacker );
 
         return true;
     }

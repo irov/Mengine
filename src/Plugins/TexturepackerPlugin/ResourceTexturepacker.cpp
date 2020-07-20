@@ -26,6 +26,7 @@ namespace Mengine
         , m_atlasHeight( 0 )
         , m_atlasWidthInv( 0.f )
         , m_atlasHeightInv( 0.f )
+        , m_extraResourceImage( false )
         , m_needStripFrameNameExtension( false )
     {
     }
@@ -54,24 +55,33 @@ namespace Mengine
         return m_atlasHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceTexturepacker::setResourceJSONName( const ConstString & _resourceJSONName )
+    void ResourceTexturepacker::setResourceJSON( const ResourcePtr & _resourceJSON )
     {
-        m_resourceJSONName = _resourceJSONName;
+        m_resourceJSON = _resourceJSON;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceTexturepacker::getResourceJSONName() const
+    const ResourcePtr & ResourceTexturepacker::getResourceJSON() const
     {
-        return m_resourceJSONName;
+        return m_resourceJSON;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceTexturepacker::setResourceImageName( const ConstString & _resourceImageName )
+    void ResourceTexturepacker::setResourceImage( const ResourceImagePtr & _resourceImage )
     {
-        m_resourceImageName = _resourceImageName;
+        m_resourceImage = _resourceImage;
+
+        if( m_resourceImage != nullptr )
+        {
+            m_extraResourceImage = true;
+        }
+        else
+        {
+            m_extraResourceImage = false;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceTexturepacker::getResourceImageName() const
+    const ResourceImagePtr & ResourceTexturepacker::getResourceImage() const
     {
-        return m_resourceImageName;
+        return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceTexturepacker::getAtlasImage() const
@@ -113,30 +123,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
     {
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
-        if( m_resourceImageName.empty() == false )
+        if( m_resourceImage != nullptr )
         {
-            const ResourceImagePtr & resourceImage = resourceBank->getResource( m_resourceImageName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get image resource '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageName.c_str()
-            );
-
-            m_resourceImage = resourceImage;
+            if( m_resourceImage->compile() == false )
+            {
+                return false;
+            }
         }
 
-        const ResourcePtr & resourceJSON = resourceBank->getResource( m_resourceJSONName );
+        if( m_resourceJSON->compile() == false )
+        {
+            return false;
+        }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, "'%s' group '%s' invalid get image resource '%s'"
-            , this->getName().c_str()
-            , this->getGroupName().c_str()
-            , m_resourceJSONName.c_str()
-        );
-
-        m_resourceJSON = resourceJSON;
+        ResourceBankInterface * resourceBank = this->getResourceBank();
 
         UnknownResourceJSONInterface * unknownResourceJSON = m_resourceJSON->getUnknown();
 
@@ -145,13 +145,13 @@ namespace Mengine
         const jpp::object & root = storage->getJSON();
 
         MENGINE_ASSERTION_FATAL( root != jpp::detail::invalid, "invalid json '%s'"
-            , m_resourceJSONName.c_str()
+            , m_resourceJSON->getName().c_str()
         );
 
         const ConstString & locale = this->getLocale();
         const ConstString & groupName = this->getGroupName();
 
-        if( m_resourceImageName.empty() == true )
+        if( m_resourceImage == nullptr )
         {
             jpp::object root_meta = root["meta"];
 
@@ -219,6 +219,7 @@ namespace Mengine
             }
 
             m_resourceImage = resource;
+            m_extraResourceImage = false;
         }
 
         const mt::vec2f & resourceImageMaxsize = m_resourceImage->getMaxSize();
@@ -359,16 +360,16 @@ namespace Mengine
         if( m_resourceJSON != nullptr )
         {
             m_resourceJSON->release();
-            m_resourceJSON = nullptr;
         }
 
         if( m_resourceImage != nullptr )
         {
             m_resourceImage->release();
 
-            resourceBank->removeResource( m_resourceImage );
-
-            m_resourceImage = nullptr;
+            if( m_extraResourceImage == false )
+            {
+                resourceBank->removeResource( m_resourceImage );
+            }
         }
 
         m_hashtableFrames.clear();

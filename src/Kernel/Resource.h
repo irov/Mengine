@@ -253,6 +253,28 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
+        T staticResourceCast( const ResourcePtr & _resource )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<typename T::value_type>>, "static resource cast use on non 'Resourcable' type");
+
+            if( _resource == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( stdex::intrusive_dynamic_cast<T>(_resource) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            T t = stdex::intrusive_static_cast<T>(_resource);
+
+            return t;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
         T dynamicResourceCast( Resource * _resource )
         {
 #ifdef MENGINE_DEBUG

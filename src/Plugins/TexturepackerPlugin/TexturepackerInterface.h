@@ -3,6 +3,8 @@
 #include "Interface/UnknownInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorResources.h"
+#include "Kernel/ResourceImage.h"
 #include "Kernel/VectorResourceImages.h"
 
 namespace Mengine
@@ -32,12 +34,12 @@ namespace Mengine
         virtual const VectorResourceImages & getFrames() const = 0;
 
     public:
-        virtual void setResourceJSONName( const ConstString & _resourceJSONName ) = 0;
-        virtual const ConstString & getResourceJSONName() const = 0;
+        virtual void setResourceJSON( const ResourcePtr & _resourceJSON ) = 0;
+        virtual const ResourcePtr & getResourceJSON() const = 0;
         
     public:
-        virtual void setResourceImageName( const ConstString & _resourceImageName ) = 0;
-        virtual const ConstString & getResourceImageName() const = 0;
+        virtual void setResourceImage( const ResourceImagePtr & _resourceImage ) = 0;
+        virtual const ResourceImagePtr & getResourceImage() const = 0;
 
     public:
         // means that from each frame name will be stripped extension (i.e. "some_frame.png" -> "some_frame")
@@ -49,11 +51,12 @@ namespace Mengine
         : public UnknownResourceTexturepackerGetterInterface
     {
     public:
-        virtual void addResourceTexturepackerName( const ConstString & _resourceJSONName ) = 0;
-        virtual const VectorConstString & getResourceTexturepackerNames() const = 0;
+        virtual void addResourceTexturepacker( const ResourcePtr & _resourceJSONName ) = 0;
+        virtual const VectorResources & getResourceTexturepackers() const = 0;
 
     public:
         virtual void setStripFrameNameExtension( bool _value ) = 0;
         virtual bool getStripFrameNameExtension() const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

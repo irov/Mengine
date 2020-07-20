@@ -1,5 +1,7 @@
 #include "LoaderResourceWindow.h"
 
+#include "Interface/ResourceBankInterface.h"
+
 #include "Engine/ResourceWindow.h"
 
 #include "Metacode/Metacode.h"
@@ -35,11 +37,20 @@ namespace Mengine
         resources[ResourceWindow_RightTop] = metadata->get_WindowRightTop_ResourceImageName();
         resources[ResourceWindow_Top] = metadata->get_WindowTop_ResourceImageName();
 
+        ResourceBankInterface * resourceBank = resource->getResourceBank();
+
         for( uint32_t index = 0; index != ResourceWindow_Count; ++index )
         {
-            const ConstString & resourceImageName = resources[index];
+            const ConstString & resourceImageName = resources[index];            
 
-            resource->setElementResourceImageName( index, resourceImageName );
+            const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( resourceImageName );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get image resource"
+                , resource->getName().c_str()
+                , resource->getGroupName().c_str()
+            );
+
+            resource->setElementResourceImage( index, resourceImage );
         }
 
         mt::vec2f offsets[ResourceWindow_Count];

@@ -28,6 +28,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_compile()
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' group '%s' invalid setup image resource"
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+        );
+
         if( ResourceImage::_compile() == false )
         {
             LOGGER_ERROR( "'%s' invalid compile base ResourceImage class"
@@ -37,10 +42,15 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' group '%s' invalid setup image resource"
-            , this->getName().c_str()
-            , this->getGroupName().c_str()
-        );
+        if( m_resourceImage->compile() == false )
+        {
+            LOGGER_ERROR( "'%s' invalid compile resource image '%s'"
+                , this->getName().c_str()
+                , m_resourceImage->getName().c_str()
+            );
+
+            return false;
+        }
 
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();

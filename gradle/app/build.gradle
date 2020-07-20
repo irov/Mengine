@@ -65,6 +65,9 @@ android {
         print 'ANDROID_APP_BUILD_PUBLISH = '
         println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH")
         
+        print 'ANDROID_APP_BUILD_NUMBER = '
+        println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", null);
+        
         def buildNumber = 0;
         if (project.hasProperty("ANDROID_APP_BUILD_NUMBER")) {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer

@@ -31,14 +31,11 @@ namespace Mengine
         ~ResourceWindow() override;
 
     public:
-        void setElementResourceImageName( uint32_t _type, const ConstString & _resourceImageName );
-        const ConstString & getElementResourceImageName( uint32_t _type ) const;
+        void setElementResourceImage( uint32_t _type, const ResourceImagePtr & _resourceImage );
+        const ResourceImagePtr & getElementResourceImage( uint32_t _type ) const;
 
         void setElementOffset( uint32_t _type, const mt::vec2f & _offset );
         const mt::vec2f & getElementOffset( uint32_t _type ) const;
-
-    public:
-        const ResourceImagePtr & getElementResourceImage( uint32_t _type ) const;
 
     protected:
         bool _compile() override;
@@ -46,10 +43,9 @@ namespace Mengine
 
     protected:
         struct WindowElement
-        {
-            ConstString resourceImageName;
+        {            
             ResourceImagePtr resourceImage;
-            mt::vec2f offset;
+            mt::vec2f offset = {0.f, 0.f};
         };
 
         WindowElement m_elements[ResourceWindow_Count];

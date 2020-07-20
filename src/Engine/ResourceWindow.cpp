@@ -11,10 +11,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceWindow::ResourceWindow()
     {
-        for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
-        {
-            m_elements[i].resourceImage = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceWindow::~ResourceWindow()
@@ -23,30 +19,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceWindow::_compile()
     {
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
         for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
         {
             WindowElement & element = m_elements[i];
 
-            element.resourceImage = nullptr;
-
-            if( element.resourceImageName.empty() == true )
+            if( element.resourceImage == nullptr )
             {
                 if( i == ResourceWindow_Background )
                 {
                     continue;
                 }
+
+                return false;
             }
 
-            const ResourceImagePtr & resourceImage = resourceBank->getResource( m_elements[i].resourceImageName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "window '%s' not found resource '%s'"
-                , this->getName().c_str()
-                , element.resourceImageName.c_str()
-            );
-
-            element.resourceImage = resourceImage;
+            element.resourceImage->compile();
         }
 
         return true;
@@ -61,12 +48,11 @@ namespace Mengine
             if( element.resourceImage != nullptr )
             {
                 element.resourceImage->release();
-                element.resourceImage = nullptr;
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceWindow::setElementResourceImageName( uint32_t _type, const ConstString & _resourceImageName )
+    void ResourceWindow::setElementResourceImage( uint32_t _type, const ResourceImagePtr & _resourceImage )
     {
         MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' set invalid type '%d' (resource)"
             , this->getName().c_str()
@@ -75,10 +61,10 @@ namespace Mengine
 
         WindowElement & element = m_elements[_type];
 
-        element.resourceImageName = _resourceImageName;
+        element.resourceImage = _resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceWindow::getElementResourceImageName( uint32_t _type ) const
+    const ResourceImagePtr & ResourceWindow::getElementResourceImage( uint32_t _type ) const
     {
         MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' get invalid type '%d' (resource)"
             , this->getName().c_str()
@@ -87,9 +73,9 @@ namespace Mengine
 
         const WindowElement & element = m_elements[_type];
 
-        const ConstString & resourceImageName = element.resourceImageName;
+        const ResourceImagePtr & resourceImage = element.resourceImage;
 
-        return resourceImageName;
+        return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::setElementOffset( uint32_t _type, const mt::vec2f & _offset )
@@ -117,19 +103,4 @@ namespace Mengine
 
         return offset;
     }
-    //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceWindow::getElementResourceImage( uint32_t _type ) const
-    {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count, "resource window '%s' get invalid type '%d' (image)"
-            , this->getName().c_str()
-            , _type
-        );
-
-        const WindowElement & element = m_elements[_type];
-
-        const ResourceImagePtr & resourceImage = element.resourceImage;
-
-        return resourceImage;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

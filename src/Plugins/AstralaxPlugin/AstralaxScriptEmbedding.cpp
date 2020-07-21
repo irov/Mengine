@@ -3,6 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ScriptWrapperInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -47,6 +48,24 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        static void s_AstralaxEmitter_changeEmitterImage( pybind::kernel_interface * _kernel, AstralaxEmitter * _emitter, const ConstString & _emitterImageName )
+        {
+            MENGINE_UNUSED( _kernel );
+
+            const ResourcePtr & resource = RESOURCE_SERVICE()
+                ->getResourceReference( _emitterImageName );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, "emitter '%s' can't get resource '%s'"
+                , _emitter->getName().c_str()
+                , _emitterImageName.c_str()
+            );
+
+            _emitter->changeEmitterImage( resource );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AstralaxScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
         pybind::interface_<ResourceAstralax, pybind::bases<Resource>>( _kernel, "ResourceAstralax", false )
@@ -65,7 +84,7 @@ namespace Mengine
             .def( "setEmitterCameraRelative", &AstralaxEmitter::setEmitterCameraRelative )
             .def( "setEmitterPositionProviderOriginOffset", &AstralaxEmitter::setEmitterPositionProviderOriginOffset )
 
-            .def( "changeEmitterImage", &AstralaxEmitter::changeEmitterImage )
+            .def_static_kernel( "changeEmitterImage", &Detail::s_AstralaxEmitter_changeEmitterImage )
             .def( "removeEmitterImage", &AstralaxEmitter::removeEmitterImage )
             .def( "changeEmitterPolygon", &AstralaxEmitter::changeEmitterPolygon )
             .def( "removeEmitterPolygon", &AstralaxEmitter::removeEmitterPolygon )

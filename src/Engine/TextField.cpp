@@ -346,6 +346,27 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::updateContext_() const
+    {
+        bool invalidate = false;
+        uint32_t enumerate = 0;
+        for( const LambdaFormatArgsContext & context : m_textFormatArgContexts )
+        {
+            if( context != nullptr )
+            {
+                String & arg = m_textFormatArgs[enumerate];
+                invalidate |= context( &arg );
+            }
+
+            ++enumerate;
+        }
+
+        if( invalidate == true )
+        {
+            this->invalidateTextLines();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         if( m_textId.empty() == true )
@@ -366,25 +387,9 @@ namespace Mengine
             return;
         }
 
-        bool invalidate = false;
-        uint32_t enumerate = 0;
-        for( const LambdaFormatArgsContext & context : m_textFormatArgContexts )
-        {   
-            if( context != nullptr )
-            {
-                String & arg = m_textFormatArgs[enumerate];
-                invalidate |= context( &arg );
-            }
+        this->updateContext_();
 
-            ++enumerate;
-        }
-
-        if( invalidate == true )
-        {
-            this->invalidateTextLines();
-        }
-
-        const VectorRenderVertex2D & textVertices = this->getTextVertices( font );
+        const VectorRenderVertex2D & textVertices = this->getTextVerticesWM( font );
 
         if( textVertices.empty() == true )
         {
@@ -399,7 +404,7 @@ namespace Mengine
         {
             const VectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
 
-            if( chunk_vertices[0].color == 16777215 )
+            if( (chunk_vertices[0].color & 0xFF000000) == 0 )
             {
                 continue;
             }
@@ -576,12 +581,6 @@ namespace Mengine
     {
         if( m_textId.empty() == true )
         {
-            mt::box2f box;
-            mt::insideout_box( box );
-
-            _viewport->begin = box.minimum;
-            _viewport->end = box.maximum;
-
             return false;
         }
 
@@ -589,23 +588,28 @@ namespace Mengine
 
         if( font == nullptr )
         {
-            mt::box2f box;
-            mt::insideout_box( box );
-
-            _viewport->begin = box.minimum;
-            _viewport->end = box.maximum;
-
             return false;
         }
 
-        float lineOffset = this->calcLineOffset();
+        this->updateContext_();
 
-        float linesOffset = this->calcLinesOffset( lineOffset, font );
+        const VectorRenderVertex2D & textVertices = this->getTextVertices( font );
 
-        const mt::vec2f & size = this->getTextSize();
+        if( textVertices.empty() == true )
+        {
+            return false;
+        }
 
-        _viewport->begin = mt::vec2f( 0.f, linesOffset ) - size;
-        _viewport->end = mt::vec2f( 0.f, linesOffset );
+        mt::box2f box;
+        mt::insideout_box( box );
+
+        for( const RenderVertex2D & vertex : textVertices )
+        {
+            mt::add_internal_point( box, vertex.position.x, vertex.position.y );
+        }
+
+        _viewport->begin = box.minimum;
+        _viewport->end = box.maximum;
 
         return true;
     }
@@ -919,7 +923,9 @@ namespace Mengine
 
         for( const TextLineChunk & tc : textChars )
         {
-            const CacheFont & cache = m_cacheFonts[tc.fontId];
+            uint32_t fontId = tc.fontId;
+
+            const CacheFont & cache = m_cacheFonts[fontId];
 
             const TextFontInterfacePtr & font = cache.font;
 
@@ -983,7 +989,9 @@ namespace Mengine
             VectorTextLines2 textLine2;
             for( const TextLineChunk & textChunk : textChunks )
             {
-                const CacheFont & cache = m_cacheFonts[textChunk.fontId];
+                uint32_t fontId = textChunk.fontId;
+
+                const CacheFont & cache = m_cacheFonts[fontId];
 
                 const TextFontInterfacePtr & chunkFont = cache.font;
 
@@ -993,7 +1001,7 @@ namespace Mengine
                 for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
                 {
                     TextLine tl( layoutIndex, charOffset );
-                    if( tl.initialize( textChunk.fontId, chunkFont, textChunk.value ) == false )
+                    if( tl.initialize( fontId, chunkFont, textChunk.value ) == false )
                     {
                         LOGGER_ERROR( "'%s' textID '%s' invalid setup line"
                             , this->getName().c_str()
@@ -1019,7 +1027,7 @@ namespace Mengine
     {
         m_invalidateFont = false;
 
-        ConstString fontName = this->calcFontName();
+        const ConstString & fontName = this->calcFontName();
 
         if( m_totalFont != nullptr )
         {

@@ -71,7 +71,7 @@ namespace Mengine
 
         void setEmitterPositionProviderOriginOffset( const mt::vec3f & _originOffset ) override;
 
-        void changeEmitterImage( const ConstString & _emitterImageName );
+        void changeEmitterImage( const ResourceImagePtr & _emitterResourceImage );
         void removeEmitterImage();
 
         bool changeEmitterPolygon( const Polygon & _polygon );
@@ -116,7 +116,7 @@ namespace Mengine
     protected:
         ResourceAstralaxPtr m_resourceAstralax;
 
-        ConstString m_emitterImageName;
+        ResourceImagePtr m_emitterResourceImage;
 
         AstralaxEmitterInterfacePtr m_emitter;
 

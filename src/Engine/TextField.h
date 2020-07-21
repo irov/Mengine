@@ -159,6 +159,7 @@ namespace Mengine
         void invalidateVerticesWM_() const;
 
         MENGINE_INLINE const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font ) const;
+        MENGINE_INLINE const VectorRenderVertex2D & getTextVerticesWM( const TextFontInterfacePtr & _font ) const;
 
         void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D * const _vertexData ) const;
 
@@ -197,6 +198,9 @@ namespace Mengine
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
+
+    protected:
+        void updateContext_() const;
 
     protected:
         ConstString m_textId;
@@ -270,6 +274,16 @@ namespace Mengine
     typedef IntrusiveNodePtr<TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font ) const
+    {
+        if( m_invalidateVertices == true )
+        {
+            this->updateVertices_( _font );
+        }
+
+        return m_vertexDataText;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVerticesWM( const TextFontInterfacePtr & _font ) const
     {
         if( m_invalidateVerticesWM == true )
         {

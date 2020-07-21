@@ -4,7 +4,6 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
-#include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -87,7 +86,7 @@ namespace Mengine
             emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
         }
 
-        if( m_emitterImageName.empty() == false )
+        if( m_emitterResourceImage != nullptr )
         {
             if( this->compileEmitterImage_( emitter ) == false )
             {
@@ -591,11 +590,14 @@ namespace Mengine
         m_positionProviderOriginOffset = _originOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::changeEmitterImage( const ConstString & _emitterImageName )
+    void AstralaxEmitter::changeEmitterImage( const ResourceImagePtr & _emitterResourceImage )
     {
-        m_emitterImageName = _emitterImageName;
+        if( m_emitterResourceImage == _emitterResourceImage )
+        {
+            return;
+        }
 
-        //this->removeEmitterPolygon();
+        m_emitterResourceImage = _emitterResourceImage;
 
         if( this->isCompile() == false )
         {
@@ -607,31 +609,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::removeEmitterImage()
     {
-        m_emitterImageName.clear();
+        m_emitterResourceImage = nullptr;
 
         if( this->isCompile() == false )
         {
             return;
         }
 
-        m_emitter->changeEmitterImage( 0, 0, 0, 1 );
+        m_emitter->changeEmitterImage( 0, 0, nullptr, 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter )
     {
-        const ResourcePtr & resourceHIT = RESOURCE_SERVICE()
-            ->getResource( m_emitterImageName );
+        if( m_emitterResourceImage->compile() == false )
+        {
+            return false;
+        }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT, "emitter '%s' can't compile emitter hit '%s'"
-            , this->getName().c_str()
-            , m_emitterImageName.c_str()
-        );
-
-        UnknownResourceImageDataInterface * unknownImageData = resourceHIT->getUnknown();
+        UnknownResourceImageDataInterface * unknownImageData = m_emitterResourceImage->getUnknown();
 
         MENGINE_ASSERTION_MEMORY_PANIC( unknownImageData, "emitter '%s' resource '%s' for emitter image don't base 'UnknownResourceImageDataInterface'"
             , this->getName().c_str()
-            , m_emitterImageName.c_str()
+            , m_emitterResourceImage->getName().c_str()
         );
 
         uint32_t alphaWidth = unknownImageData->getImageWidth();
@@ -643,15 +642,15 @@ namespace Mengine
         {
             LOGGER_ERROR( "emitter '%s' changeEmitterImage Error image '%s'"
                 , this->getName().c_str()
-                , m_emitterImageName.c_str()
+                , m_emitterResourceImage->getName().c_str()
             );
 
-            resourceHIT->release();
+            m_emitterResourceImage->release();
 
             return false;
         }
 
-        resourceHIT->release();
+        m_emitterResourceImage->release();
 
         return true;
     }

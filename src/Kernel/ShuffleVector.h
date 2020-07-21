@@ -6,16 +6,19 @@
 
 namespace Mengine
 {
-    template<class C>
-    void shuffleVector( C & _vector, const RandomizerInterfacePtr & _randomizer )
+    namespace Helper
     {
-        typename C::size_type size = _vector.size();
-
-        for( typename C::size_type index = 0; index != size; ++index )
+        template<class C>
+        void shuffleVector( C & _vector, const RandomizerInterfacePtr & _randomizer )
         {
-            uint32_t random_index = _randomizer->getRandom( size );
+            typename C::size_type size = _vector.size();
 
-            std::swap( _vector[index], _vector[random_index] );
+            for( typename C::size_type index = 0; index != size; ++index )
+            {
+                uint32_t random_index = _randomizer->getRandom( size );
+
+                std::swap( _vector[index], _vector[random_index] );
+            }
         }
     }
 }

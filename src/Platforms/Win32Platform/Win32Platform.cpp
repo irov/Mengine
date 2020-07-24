@@ -829,10 +829,10 @@ namespace Mengine
         }
 
         DWORD dwStyle = this->getWindowStyle_( false );
-        DWORD dwStyleEx = this->getWindowStyleEx_( false );
+        DWORD dwExStyle = this->getWindowExStyle_( false );
 
         RECT clientArea = workArea;
-        if( ::AdjustWindowRectEx( &clientArea, dwStyle, FALSE, dwStyleEx ) == FALSE )
+        if( ::AdjustWindowRectEx( &clientArea, dwStyle, FALSE, dwExStyle ) == FALSE )
         {
             DWORD error = ::GetLastError();
 
@@ -1017,7 +1017,10 @@ namespace Mengine
                 uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 EKeyCode code = (EKeyCode)vkc;
 
@@ -1028,7 +1031,10 @@ namespace Mengine
                 uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 EKeyCode code = (EKeyCode)vkc;
 
@@ -1201,7 +1207,10 @@ namespace Mengine
                     ::UpdateWindow( hWnd );
 
                     mt::vec2f point;
-                    this->calcCursorPosition_( point );
+                    if( this->calcCursorPosition_( &point ) == false )
+                    {
+                        return 0;
+                    }
 
                     Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
 
@@ -1232,7 +1241,10 @@ namespace Mengine
                 //::SetFocus( m_hWnd );
 
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return false;
+                }
 
                 if( m_clickOutAreaLeftButton == true )
                 {
@@ -1272,8 +1284,27 @@ namespace Mengine
                 if( m_lastMouse == false )
                 {
                     POINT p;
-                    ::GetCursorPos( &p );
-                    ::ScreenToClient( hWnd, &p );
+                    if( ::GetCursorPos( &p ) == FALSE )
+                    {
+                        DWORD error = ::GetLastError();
+
+                        LOGGER_ERROR( "invalid get cursor pos [error: %lu]"
+                            , error
+                        );
+
+                        return false;
+                    }
+
+                    if( ::ScreenToClient( hWnd, &p ) == FALSE )
+                    {
+                        DWORD error = ::GetLastError();
+
+                        LOGGER_ERROR( "invalid screen to client [error: %lu]"
+                            , error
+                        );
+
+                        return false;
+                    }
 
                     m_lastMouseX = p.x;
                     m_lastMouseY = p.y;
@@ -1298,6 +1329,12 @@ namespace Mengine
                 RECT rect;
                 if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
                 {
+                    DWORD error = ::GetLastError();
+
+                    LOGGER_ERROR( "invalid get client rect [error: %lu]"
+                        , error
+                    );
+
                     return false;
                 }
 
@@ -1317,7 +1354,10 @@ namespace Mengine
                 int32_t zDelta = (int32_t)(int16_t)(HIWORD( wParam ));
 
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 int32_t wheel = zDelta / WHEEL_DELTA;
 
@@ -1338,7 +1378,10 @@ namespace Mengine
         case WM_LBUTTONDOWN:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
@@ -1351,7 +1394,10 @@ namespace Mengine
                 if( m_isDoubleClick == false )
                 {
                     mt::vec2f point;
-                    this->calcCursorPosition_( point );
+                    if( this->calcCursorPosition_( &point ) == false )
+                    {
+                        return 0;
+                    }
 
                     Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
@@ -1364,7 +1410,10 @@ namespace Mengine
         case WM_RBUTTONDOWN:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
 
@@ -1376,7 +1425,10 @@ namespace Mengine
                 if( m_isDoubleClick == false )
                 {
                     mt::vec2f point;
-                    this->calcCursorPosition_( point );
+                    if( this->calcCursorPosition_( &point ) == false )
+                    {
+                        return 0;
+                    }
 
                     Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
@@ -1389,7 +1441,10 @@ namespace Mengine
         case WM_MBUTTONDOWN:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
@@ -1399,7 +1454,10 @@ namespace Mengine
         case WM_MBUTTONUP:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
 
@@ -1411,7 +1469,10 @@ namespace Mengine
                 UINT vkc = static_cast<UINT>(wParam);
 
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 EKeyCode code = (EKeyCode)vkc;
 
@@ -1425,7 +1486,10 @@ namespace Mengine
                 UINT vkc = static_cast<UINT>(wParam);
 
                 mt::vec2f point;
-                this->calcCursorPosition_( point );
+                if( this->calcCursorPosition_( &point ) == false )
+                {
+                    return 0;
+                }
 
                 EKeyCode code = (EKeyCode)vkc;
 
@@ -1446,7 +1510,10 @@ namespace Mengine
                 if( s_sonvertUTF32toUTF8( (uint32_t)wParam, utf8 ) == true )
                 {
                     mt::vec2f point;
-                    this->calcCursorPosition_( point );
+                    if( this->calcCursorPosition_( &point ) == false )
+                    {
+                        return 0;
+                    }
 
                     WChar text_code[2];
                     Helper::utf8ToUnicode( utf8, text_code, 2 );
@@ -1574,9 +1641,9 @@ namespace Mengine
             return false;
         }
 
-        DWORD exStyle = this->getWindowStyleEx_( _fullscreen );
+        DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
 
-        HWND hWnd = ::CreateWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
+        HWND hWnd = ::CreateWindowEx( dwExStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
             , NULL, NULL, m_hInstance, (LPVOID)this );
@@ -1647,6 +1714,7 @@ namespace Mengine
         m_cursorInArea = false;
 
         DWORD dwStyle = this->getWindowStyle_( m_fullscreen );
+        DWORD dwFullscreenExStyle = this->getWindowExStyle_( true );
 
         RECT rc;
         if( this->calcWindowsRect_( m_windowResolution, m_fullscreen, &rc ) == false )
@@ -1658,7 +1726,7 @@ namespace Mengine
 
         if( m_fullscreen == false )
         {
-            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
+            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~dwFullscreenExStyle) );
             ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
             ::SetWindowPos(
@@ -1673,7 +1741,7 @@ namespace Mengine
         }
         else
         {
-            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
+            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | dwFullscreenExStyle );
             ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
             ::SetWindowPos(
@@ -1861,16 +1929,16 @@ namespace Mengine
         return dwStyle;
     }
     //////////////////////////////////////////////////////////////////////////
-    DWORD Win32Platform::getWindowStyleEx_( bool _fullsreen ) const
+    DWORD Win32Platform::getWindowExStyle_( bool _fullsreen ) const
     {
-        DWORD exStyle = WS_EX_APPWINDOW;
+        DWORD dwExStyle = WS_EX_APPWINDOW;
 
         if( _fullsreen == false )
         {
-            exStyle |= WS_EX_WINDOWEDGE;
+            dwExStyle |= WS_EX_WINDOWEDGE;
         }
 
-        return exStyle;
+        return dwExStyle;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const
@@ -1890,7 +1958,7 @@ namespace Mengine
         if( _fullsreen == false )
         {
             DWORD dwStyle = this->getWindowStyle_( _fullsreen );
-            DWORD dwStyleEx = this->getWindowStyleEx_( _fullsreen );
+            DWORD dwStyleEx = this->getWindowExStyle_( _fullsreen );
 
             if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
             {
@@ -1948,7 +2016,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::calcCursorPosition_( mt::vec2f & _point ) const
+    bool Win32Platform::calcCursorPosition_( mt::vec2f * const _point ) const
     {
         POINT cPos;
         if( ::GetCursorPos( &cPos ) == FALSE )
@@ -1991,8 +2059,8 @@ namespace Mengine
         float width = static_cast<float>(rect.right - rect.left);
         float height = static_cast<float>(rect.bottom - rect.top);
 
-        _point.x = x / width;
-        _point.y = y / height;
+        _point->x = x / width;
+        _point->y = y / height;
 
         return true;
     }
@@ -3260,7 +3328,7 @@ namespace Mengine
         }
 
         mt::vec2f point;
-        if( this->calcCursorPosition_( point ) == true )
+        if( this->calcCursorPosition_( &point ) == true )
         {
             Helper::pushMousePositionEvent( 0, point.x, point.y, 0.f );
         }

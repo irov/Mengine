@@ -102,18 +102,18 @@ namespace Mengine
 
         if( (wc_size == 0 || wc_size == 0xFFFD) && _utf8Size != 0 )
         {
-            DWORD le = ::GetLastError();
+            DWORD error = ::GetLastError();
 
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
                 ->getPlatformExtention();
 
             Char str_le[1024];
-            win32Platform->getErrorMessage( le, str_le, 1024 );
+            win32Platform->getErrorMessage( error, str_le, 1024 );
 
             LOGGER_ERROR( "invalid convert utf8 '%s' to unicode error: %s [%lu]"
                 , _utf8
                 , str_le
-                , le
+                , error
             );
 
             return false;

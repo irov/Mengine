@@ -56,7 +56,7 @@ namespace Mengine
         rclient.right = pright.x;
         rclient.bottom = pright.y;
 
-        if( !::PtInRect( &rclient, pt ) )
+        if( ::PtInRect( &rclient, pt ) == FALSE )
         {
             ::KillTimer( m_hWnd, m_uTimer );
             m_uTimer = 0;

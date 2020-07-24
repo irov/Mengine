@@ -155,7 +155,8 @@ namespace Mengine
     protected:
         bool calcCursorPosition_( mt::vec2f & _point ) const;
         DWORD getWindowStyle_( bool _fullsreen ) const;
-        void calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const;
+        DWORD getWindowStyleEx_( bool _fullsreen ) const;
+        bool calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const;
 
     protected:
         void setActive_( bool _active );
@@ -177,7 +178,7 @@ namespace Mengine
         bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const override;
 
     protected:
-        bool getLastErrorMessage( DWORD * const _le, Char * const _out, size_t _capacity ) const;
+        bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
 
     protected:
         HINSTANCE m_hInstance;

@@ -819,23 +819,25 @@ namespace Mengine
         RECT workArea;
         if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
         {
-            DWORD le = ::GetLastError();
+            DWORD error = ::GetLastError();
 
             LOGGER_ERROR( "invalid get system parameters info [error: %lu]"
-                , le
+                , error
             );
 
-            return false
-                ;
+            return false;
         }
 
+        DWORD dwStyle = this->getWindowStyle_( false );
+        DWORD dwStyleEx = this->getWindowStyleEx_( false );
+
         RECT clientArea = workArea;
-        if( ::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE ) == FALSE )
+        if( ::AdjustWindowRectEx( &clientArea, dwStyle, FALSE, dwStyleEx ) == FALSE )
         {
-            DWORD le = ::GetLastError();
+            DWORD error = ::GetLastError();
 
             LOGGER_ERROR( "invalid adjust window rect [error: %lu]"
-                , le
+                , error
             );
 
             return false;
@@ -937,7 +939,7 @@ namespace Mengine
 
                 this->setActive_( active );
 
-                return FALSE;
+                return 0;
             }break;
         case WM_ACTIVATEAPP:
             {
@@ -1008,7 +1010,7 @@ namespace Mengine
             {
                 m_close = true;
 
-                return FALSE;
+                return 0;
             }break;
         case WM_SYSKEYDOWN:
             {
@@ -1051,17 +1053,19 @@ namespace Mengine
                             APPLICATION_SERVICE()
                                 ->setFullscreenMode( !fullscreen );
                         }
-
-                        //return FALSE;
+                        else
+                        {
+                            return 0;
+                        }
                     }break;
                 case SC_SCREENSAVE:
                     {
                         //Disable Screensave
-                        return TRUE;
+                        return 1;
                     }break;
                 case SC_MONITORPOWER:
                     {
-                        return TRUE;
+                        return 1;
                     }break;
                 }
             }break;
@@ -1086,7 +1090,7 @@ namespace Mengine
                     ::SetCursor( m_cursor );
                 }
 
-                return FALSE;
+                return 0;
             }break;
         case WM_DESTROY:
             m_close = true;
@@ -1174,8 +1178,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result )
     {
-        MENGINE_UNUSED( hWnd );
-
         bool handle = false;
 
         switch( uMsg )
@@ -1188,7 +1190,7 @@ namespace Mengine
                 }
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case UWM_MOUSE_LEAVE:
             {
@@ -1215,7 +1217,7 @@ namespace Mengine
                 }
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
             //case WM_TOUCH:
             //    {
@@ -1308,7 +1310,7 @@ namespace Mengine
                 Helper::pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case WM_MOUSEWHEEL:
             {
@@ -1322,7 +1324,7 @@ namespace Mengine
                 Helper::pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, wheel );
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case WM_RBUTTONDBLCLK:
         case WM_LBUTTONDBLCLK:
@@ -1330,7 +1332,7 @@ namespace Mengine
                 m_isDoubleClick = true;
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }
             break;
         case WM_LBUTTONDOWN:
@@ -1341,7 +1343,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }
             break;
         case WM_LBUTTONUP:
@@ -1357,7 +1359,7 @@ namespace Mengine
                 m_isDoubleClick = false;
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case WM_RBUTTONDOWN:
             {
@@ -1382,7 +1384,7 @@ namespace Mengine
                 m_isDoubleClick = false;
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case WM_MBUTTONDOWN:
             {
@@ -1392,7 +1394,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case WM_MBUTTONUP:
             {
@@ -1402,7 +1404,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case WM_KEYDOWN:
             {
@@ -1416,7 +1418,7 @@ namespace Mengine
                 Helper::pushKeyEvent( point.x, point.y, code, true, false );
 
                 handle = true;
-                *_result = FALSE;
+                *_result = 0;
             }break;
         case WM_KEYUP:
             {
@@ -1435,7 +1437,7 @@ namespace Mengine
         case WM_UNICHAR:
             if( wParam == UNICODE_NOCHAR )
             {
-                *_result = TRUE;
+                *_result = 1;
 
             }break;
         case WM_CHAR:
@@ -1452,7 +1454,7 @@ namespace Mengine
                     Helper::pushTextEvent( point.x, point.y, text_code[0] );
 
                     handle = true;
-                    *_result = FALSE;
+                    *_result = 0;
                 }
             }break;
         }
@@ -1567,10 +1569,12 @@ namespace Mengine
         dwStyle &= ~WS_VISIBLE;
 
         RECT rc;
-        this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc );
+        if( this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc ) == false )
+        {
+            return false;
+        }
 
-        DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
-        //DWORD exStyle = 0;
+        DWORD exStyle = this->getWindowStyleEx_( _fullscreen );
 
         HWND hWnd = ::CreateWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
             , dwStyle
@@ -1645,7 +1649,10 @@ namespace Mengine
         DWORD dwStyle = this->getWindowStyle_( m_fullscreen );
 
         RECT rc;
-        this->calcWindowsRect_( m_windowResolution, m_fullscreen, &rc );
+        if( this->calcWindowsRect_( m_windowResolution, m_fullscreen, &rc ) == false )
+        {
+            return;
+        }
 
         LONG dwExStyle = ::GetWindowLong( m_hWnd, GWL_EXSTYLE );
 
@@ -1847,24 +1854,66 @@ namespace Mengine
         }
         else
         {
+            dwStyle |= WS_POPUP;
             dwStyle |= WS_VISIBLE;
         }
 
         return dwStyle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const
+    DWORD Win32Platform::getWindowStyleEx_( bool _fullsreen ) const
+    {
+        DWORD exStyle = WS_EX_APPWINDOW;
+
+        if( _fullsreen == false )
+        {
+            exStyle |= WS_EX_WINDOWEDGE;
+        }
+
+        return exStyle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const
     {
         RECT rc;
-        ::SetRect( &rc, 0, 0, (int32_t)_resolution.getWidth(), (int32_t)_resolution.getHeight() );
+        if( ::SetRect( &rc, 0, 0, (int32_t)_resolution.getWidth(), (int32_t)_resolution.getHeight() ) == FALSE )
+        {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid set rect [error: %lu]"
+                , error
+            );
+
+            return false;
+        }
 
         if( _fullsreen == false )
         {
             DWORD dwStyle = this->getWindowStyle_( _fullsreen );
-            ::AdjustWindowRect( &rc, dwStyle, FALSE );
+            DWORD dwStyleEx = this->getWindowStyleEx_( _fullsreen );
+
+            if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
+            {
+                DWORD error = ::GetLastError();
+
+                LOGGER_ERROR( "invalid adjust window rect [error: %lu]"
+                    , error
+                );
+
+                return false;
+            }
 
             RECT workArea;
-            ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 );
+            if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
+            {
+                DWORD error = ::GetLastError();
+
+                LOGGER_ERROR( "invalid system parameters info [error: %lu]"
+                    , error
+                );
+
+                return false;
+            }
 
             LONG width = rc.right - rc.left;
             LONG height = rc.bottom - rc.top;
@@ -1895,6 +1944,8 @@ namespace Mengine
         }
 
         *_rect = rc;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::calcCursorPosition_( mt::vec2f & _point ) const
@@ -1902,11 +1953,23 @@ namespace Mengine
         POINT cPos;
         if( ::GetCursorPos( &cPos ) == FALSE )
         {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid get cursor pos [error: %lu]"
+                , error
+            );
+
             return false;
         }
 
         if( ::ScreenToClient( m_hWnd, &cPos ) == FALSE )
         {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid screen to client [error: %lu]"
+                , error
+            );
+
             return false;
         }
 
@@ -1916,6 +1979,12 @@ namespace Mengine
         RECT rect;
         if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
         {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid get client rect [error: %lu]"
+                , error
+            );
+
             return false;
         }
 
@@ -2208,16 +2277,16 @@ namespace Mengine
 
         if( ::MoveFile( oldFilePathCorrect, newFilePathCorrect ) == FALSE )
         {
-            DWORD le = ::GetLastError();
+            DWORD error = ::GetLastError();
 
             Char str_le[1024] = {'\0'};
-            this->getLastErrorMessage( &le, str_le, 1024 );
+            this->getLastErrorMessage( &error, str_le, 1024 );
 
             LOGGER_WARNING( "file '%ls' move to '%ls' error: %s [%lu]"
                 , oldFilePathCorrect
                 , newFilePathCorrect
                 , str_le
-                , le
+                , error
             );
 
             return false;
@@ -2667,13 +2736,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getLastErrorMessage( DWORD * const _le, Char * const _out, size_t _capacity ) const
+    bool Win32Platform::getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const
     {
-        DWORD le = ::GetLastError();
+        DWORD error = ::GetLastError();
 
-        *_le = le;
+        *_error = error;
 
-        bool result = this->getErrorMessage( le, _out, _capacity );
+        bool result = this->getErrorMessage( error, _out, _capacity );
 
         return result;
     }
@@ -2797,14 +2866,14 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD le;
-                Char str_le[1024] = {'\0'};
-                this->getLastErrorMessage( &le, str_le, 1024 );
+                DWORD error;
+                Char str_error[1024] = {'\0'};
+                this->getLastErrorMessage( &error, str_error, 1024 );
 
                 LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
                     , _process
-                    , str_le
-                    , le
+                    , str_error
+                    , error
                 );
 
                 return false;
@@ -2887,14 +2956,14 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD le;
-                Char str_le[1024] = {'\0'};
-                this->getLastErrorMessage( &le, str_le, 1024 );
+                DWORD error;
+                Char str_error[1024] = {'\0'};
+                this->getLastErrorMessage( &error, str_error, 1024 );
 
                 LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
                     , _process
-                    , str_le
-                    , le
+                    , str_error
+                    , error
                 );
 
                 return false;

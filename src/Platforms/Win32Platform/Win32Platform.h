@@ -153,9 +153,9 @@ namespace Mengine
         bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result );
 
     protected:
-        bool calcCursorPosition_( mt::vec2f & _point ) const;
+        bool calcCursorPosition_( mt::vec2f * const _point ) const;
         DWORD getWindowStyle_( bool _fullsreen ) const;
-        DWORD getWindowStyleEx_( bool _fullsreen ) const;
+        DWORD getWindowExStyle_( bool _fullsreen ) const;
         bool calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const;
 
     protected:

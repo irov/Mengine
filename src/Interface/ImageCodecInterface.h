@@ -11,28 +11,17 @@ namespace Mengine
     struct ImageCodecDataInfo
         : public CodecDataInfo
     {
-        ImageCodecDataInfo() noexcept
-            : mipmaps( 1 )
-            , width( 0 )
-            , height( 0 )
-            , channels( 0 )
-            , depth( 1 )
-            , quality( 100 )
-            , format( PF_UNKNOWN )
-        {
-        }
+        uint32_t mipmaps = 1;
+        uint32_t width = 0;
+        uint32_t height = 0;
+        uint32_t channels = 0;
+        uint32_t depth = 1;
 
-        uint32_t mipmaps;
-        uint32_t width;
-        uint32_t height;
-        uint32_t channels;
-        uint32_t depth;
+        int32_t quality = 100;
 
-        int32_t quality;
+        EPixelFormat format = PF_UNKNOWN;
 
-        EPixelFormat format;
-
-        uint32_t getFullSize() const
+        MENGINE_INLINE uint32_t getFullSize() const
         {
             uint32_t full_size = 0;
 
@@ -46,7 +35,7 @@ namespace Mengine
             return full_size;
         }
 
-        uint32_t getMipMapSize( uint32_t _level ) const
+        MENGINE_INLINE uint32_t getMipMapSize( uint32_t _level ) const
         {
             uint32_t mipmap_width = (width >> _level);
             uint32_t mipmap_height = (height >> _level);
@@ -56,7 +45,7 @@ namespace Mengine
             return mipmap_size;
         }
 
-        uint32_t getSize() const
+        MENGINE_INLINE uint32_t getSize() const
         {
             uint32_t size = Helper::getTextureMemorySize( width, height, channels, depth, format );
 
@@ -78,20 +67,12 @@ namespace Mengine
     struct ImageCodecOptions
         : public CodecOptions
     {
-        ImageCodecOptions() noexcept
-            : flags( DF_NONE )
-            , channels( 0 )
-            , mipmap( 0 )
-            , pitch( 0 )
-        {
-        }
+        uint32_t flags = DF_NONE;
+        uint32_t channels = 0;
+        uint32_t mipmap = 0;
+        size_t pitch = 0;
 
-        uint32_t flags;
-        uint32_t channels;
-        uint32_t mipmap;
-        size_t pitch;
-
-        bool hasFlag( uint32_t _flag ) const
+        MENGINE_INLINE bool hasFlag( uint32_t _flag ) const
         {
             return (flags & _flag) != 0;
         }

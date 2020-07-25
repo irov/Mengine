@@ -67,6 +67,12 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieKeyConverterXMLToAEK::_finalize()
+    {
+        m_archivator = nullptr;
+        m_dataflow = nullptr;
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::convert()
     {

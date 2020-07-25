@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class FrameworkServiceInterface
         : public ServiceInterface
     {

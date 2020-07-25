@@ -9,6 +9,7 @@ namespace pybind
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ScriptEmbeddingInterface
         : public Interface
     {

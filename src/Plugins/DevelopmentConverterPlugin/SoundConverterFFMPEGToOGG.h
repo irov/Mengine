@@ -13,6 +13,7 @@ namespace Mengine
 
     public:
         bool _initialize() override;
+        void _finalize() override;
 
     public:
         bool convert() override;

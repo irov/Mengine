@@ -162,7 +162,7 @@ namespace Mengine
         m_pD3DSurface = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::getData( void * const _buffer, size_t _pitch )
+    bool DX9RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
         MENGINE_UNUSED( _buffer );
         MENGINE_UNUSED( _pitch );

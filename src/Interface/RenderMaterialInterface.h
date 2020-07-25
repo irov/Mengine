@@ -12,51 +12,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct RenderTextureStage
     {
-        RenderTextureStage() noexcept
-            : mipmap( TF_NONE )
-            , magnification( TF_LINEAR )
-            , minification( TF_LINEAR )
-            , addressU( TAM_CLAMP )
-            , addressV( TAM_CLAMP )
-            , addressBorder( 0x00000000 )
-        {
-        }
+        ETextureFilter mipmap = TF_NONE;
+        ETextureFilter magnification = TF_LINEAR;
+        ETextureFilter minification = TF_LINEAR;
 
-        ETextureFilter mipmap;
-        ETextureFilter magnification;
-        ETextureFilter minification;
-
-        ETextureAddressMode addressU;
-        ETextureAddressMode addressV;
-        uint32_t addressBorder;
+        ETextureAddressMode addressU = TAM_CLAMP;
+        ETextureAddressMode addressV = TAM_CLAMP;
+        uint32_t addressBorder = 0x00000000;
     };
     //////////////////////////////////////////////////////////////////////////
     struct RenderMaterialStage
     {
-        RenderMaterialStage() noexcept
-            : id( 0 )
-            , blendSrc( BF_SOURCE_ALPHA )
-            , blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
-            , blendOp( BOP_ADD )
-            , alphaBlendEnable( false )
-            , depthBufferTestEnable( false )
-            , depthBufferWriteEnable( false )
-        {
-        }
-
-        uint32_t id;
+        uint32_t id = 0;
 
         RenderTextureStage textureStage[MENGINE_MAX_TEXTURE_STAGES];
 
         RenderProgramInterfacePtr program;
 
-        EBlendFactor blendSrc;
-        EBlendFactor blendDst;
-        EBlendOp blendOp;
+        EBlendFactor blendSrc = BF_SOURCE_ALPHA;
+        EBlendFactor blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+        EBlendOp blendOp = BOP_ADD;
 
-        bool alphaBlendEnable;
-        bool depthBufferTestEnable;
-        bool depthBufferWriteEnable;
+        bool alphaBlendEnable = false;
+        bool depthBufferTestEnable = false;
+        bool depthBufferWriteEnable = false;
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface

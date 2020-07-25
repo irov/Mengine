@@ -15,6 +15,7 @@ namespace Mengine
     public:
         virtual void setCategory( const ConstString & _category ) = 0;
         virtual const ConstString & getCategory() const = 0;
+
         virtual void setPrototype( const ConstString & _prototype ) = 0;
         virtual const ConstString & getPrototype() const = 0;
 

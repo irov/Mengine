@@ -264,6 +264,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
     {
+        if( m_viewport.equalViewport( _viewport ) == true )
+        {
+            return;
+        }
+
         m_viewport = _viewport;
 
         GLsizei xb = static_cast<GLsizei>(m_viewport.begin.x);
@@ -898,12 +903,17 @@ namespace Mengine
         {
             frameBufferFlags |= GL_COLOR_BUFFER_BIT;
 
-            GLCALL( glClearColor, (
-                _color.getR(),
-                _color.getG(),
-                _color.getB(),
-                _color.getA())
-            );
+            if( m_clearColor != _color )
+            {
+                m_clearColor = _color;
+
+                GLclampf r = m_clearColor.getR();
+                GLclampf g = m_clearColor.getG();
+                GLclampf b = m_clearColor.getB();
+                GLclampf a = m_clearColor.getA();
+
+                GLCALL( glClearColor, (r, g, b, a) );
+            }
         }
 
         if( (_frameBufferTypes & FBT_DEPTH) != 0 )
@@ -929,9 +939,12 @@ namespace Mengine
 
         GLCALL( glClear, (frameBufferFlags) );
 
-        if( m_depthMask == false )
+        if( (_frameBufferTypes & FBT_DEPTH) != 0 )
         {
-            GLCALL( glDepthMask, (GL_FALSE) );
+            if( m_depthMask == false )
+            {
+                GLCALL( glDepthMask, (GL_FALSE) );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

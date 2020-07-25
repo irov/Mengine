@@ -34,6 +34,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void HotspotImageConverterPNGToHIT::_finalize()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool HotspotImageConverterPNGToHIT::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()

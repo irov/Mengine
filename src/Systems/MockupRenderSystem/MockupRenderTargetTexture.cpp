@@ -112,7 +112,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderTargetTexture::getData( void * const _buffer, size_t _pitch )
+    bool MockupRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
         MENGINE_UNUSED( _buffer );
         MENGINE_UNUSED( _pitch );

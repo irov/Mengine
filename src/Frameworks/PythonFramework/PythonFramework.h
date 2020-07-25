@@ -21,5 +21,6 @@ namespace Mengine
     protected:
         void notifyBootstrapperInitializeGame();
         void notifyBootstrapperFinalizeGame();
+        void notifyEngineFinalize();
     };
 }

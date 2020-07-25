@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class GameServiceInterface
         : public ServiceInterface
         , public Eventable

@@ -34,6 +34,13 @@ namespace Mengine
             return true;
         }
 
+        void finalize() override
+        {
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+
+            m_factory = nullptr;
+        }
+
     protected:
         ConverterInterfacePtr createConverter( const DocumentPtr & _doc ) override
         {
@@ -65,7 +72,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE void unregisterConverter( const Char * _type )
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ) );
+            ConverterFactoryInterfacePtr converter = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ) );
+
+            converter->finalize();
         }
     }
 }

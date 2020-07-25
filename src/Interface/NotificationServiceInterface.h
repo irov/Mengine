@@ -48,7 +48,7 @@ namespace Mengine
         {
         }
 
-        ~MethodObserverCallable()
+        ~MethodObserverCallable() override
         {
         }
 
@@ -79,7 +79,7 @@ namespace Mengine
         {
         }
 
-        ~LambdaObserverCallable()
+        ~LambdaObserverCallable() override
         {
         }
 

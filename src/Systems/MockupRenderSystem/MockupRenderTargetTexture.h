@@ -42,7 +42,7 @@ namespace Mengine
         void end() override;
 
     public:
-        bool getData( void * const _buffer, size_t _pitch ) override;
+        bool getData( void * const _buffer, size_t _pitch ) const override;
 
     protected:
         uint32_t m_width;

@@ -16,9 +16,11 @@ namespace Mengine
 
     private:
         bool initialize() override;
+        void finalize() override;
 
     protected:
         virtual bool _initialize() = 0;
+        virtual void _finalize() = 0;
 
     public:
         const ConstString & getConvertExt() const override;

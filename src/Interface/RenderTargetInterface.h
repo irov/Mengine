@@ -29,7 +29,7 @@ namespace Mengine
         virtual void end() = 0;
 
     public:
-        virtual bool getData( void * const _buffer, size_t _pitch ) = 0;
+        virtual bool getData( void * const _buffer, size_t _pitch ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderTargetInterface> RenderTargetInterfacePtr;

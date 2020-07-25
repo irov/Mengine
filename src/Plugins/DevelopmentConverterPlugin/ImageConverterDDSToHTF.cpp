@@ -31,14 +31,12 @@ namespace Mengine
     {
         m_convertExt = STRINGIZE_STRING_LOCAL( ".htf" );
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
-
-        m_fileGroup = fileGroup;
-
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageConverterDDSToHTF::_finalize()
+    {
+        //Empty
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ImageConverterDDSToHTF::convert()

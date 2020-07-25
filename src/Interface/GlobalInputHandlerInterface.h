@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class GlobalInputHandlerInterface
         : public InputHandlerInterface
     {

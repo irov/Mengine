@@ -675,7 +675,10 @@ namespace Mengine
                     APPLICATION_SERVICE()
                         ->flush();
 
-                    SDL_GL_SwapWindow( m_window );
+                    if( m_window != nullptr )
+                    {
+                        SDL_GL_SwapWindow( m_window );
+                    }
                 }
             }
             else
@@ -799,7 +802,13 @@ namespace Mengine
         m_glContext = glContext;
 
         Resolution resoultion;
-        this->getDesktopResolution( &resoultion );
+        if( this->getDesktopResolution( &resoultion ) == false )
+        {
+            SDL_DestroyWindow( m_window );
+            m_window = nullptr;
+
+            return false;
+        }
 
         float dwf = resoultion.getWidthF();
         float dhf = resoultion.getHeightF();
@@ -1700,41 +1709,6 @@ namespace Mengine
     {
         MENGINE_UNUSED( _resolution );
         MENGINE_UNUSED( _fullscreen );
-
-        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to 8 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to 8 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to 8 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 0 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to 0 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_SHARE_WITH_CURRENT_CONTEXT to 1 error: %s"
-                , SDL_GetError()
-            );
-        }
 
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 

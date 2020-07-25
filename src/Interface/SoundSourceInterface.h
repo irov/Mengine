@@ -35,8 +35,9 @@ namespace Mengine
         virtual bool getLoop() const = 0;
 
         virtual float getDuration() const = 0;
-        virtual float getPosition() const = 0;
+
         virtual bool setPosition( float _posMs ) = 0;
+        virtual float getPosition() const = 0;
 
         virtual void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) = 0;
         virtual const SoundBufferInterfacePtr & getSoundBuffer() const = 0;

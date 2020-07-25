@@ -446,7 +446,7 @@ namespace Mengine
             ->sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t ThreadService::getCurrentThreadId()
+    uint64_t ThreadService::getCurrentThreadId() const
     {
         if( this->isAvailableService() == false )
         {

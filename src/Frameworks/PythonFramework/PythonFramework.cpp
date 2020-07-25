@@ -86,6 +86,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME, this, &PythonFramework::notifyBootstrapperInitializeGame, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, this, &PythonFramework::notifyBootstrapperFinalizeGame, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_FINALIZE, this, &PythonFramework::notifyEngineFinalize, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -113,5 +114,10 @@ namespace Mengine
     void PythonFramework::notifyBootstrapperFinalizeGame()
     {
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonFramework::notifyEngineFinalize()
+    {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EJECTING );
     }
 }

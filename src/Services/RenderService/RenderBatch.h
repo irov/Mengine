@@ -17,13 +17,13 @@ namespace Mengine
 
     public:
         void setVertexAttribute( const RenderVertexAttributeInterfacePtr & _vertexAttribute ) override;
-        const RenderVertexAttributeInterfacePtr & getVertexAttribute() override;
+        const RenderVertexAttributeInterfacePtr & getVertexAttribute() const override;
 
         void setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) override;
-        const RenderVertexBufferInterfacePtr & getVertexBuffer() override;
+        const RenderVertexBufferInterfacePtr & getVertexBuffer() const override;
 
         void setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
-        const RenderIndexBufferInterfacePtr & getIndexBuffer() override;
+        const RenderIndexBufferInterfacePtr & getIndexBuffer() const override;
 
     public:
         void restore();

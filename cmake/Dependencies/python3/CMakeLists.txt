@@ -359,7 +359,7 @@ add_definitions(-DBYTEORDER=1234)
 add_definitions(-DXML_CONTEXT_BYTES=1024)
 add_definitions(-DXML_STATIC)
 add_definitions(-DHAVE_MEMMOVE)
-
+add_definitions(-DPY3_DLLNAME="python3.dll")
 add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE_BUILTIN)

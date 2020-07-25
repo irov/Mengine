@@ -24,7 +24,7 @@ namespace Mengine
                 , _file
                 , _line
                 , error
-                , message
+                , message != nullptr ? message : "unknown"
                 );
 
             return false;

@@ -57,7 +57,6 @@ namespace Mengine
         Helper::unregisterConverter( "ffmpegToOGV" );
         Helper::unregisterConverter( "ffmpegToOGVA" );
         Helper::unregisterConverter( "xmlToAekMovie" );
-        Helper::unregisterConverter( "mdlToMdzModel" );
         Helper::unregisterConverter( "ptc2ptz" );
         Helper::unregisterConverter( "pvr2htf" );
         Helper::unregisterConverter( "dds2htf" );

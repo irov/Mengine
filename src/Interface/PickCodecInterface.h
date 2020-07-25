@@ -9,30 +9,17 @@ namespace Mengine
     struct PickCodecDataInfo
         : public CodecDataInfo
     {
-        PickCodecDataInfo()
-            : width( 0 )
-            , height( 0 )
-            , mipmaplevel( 0 )
-            , mipmapsize( 0 )
-        {
-        }
+        uint32_t width = 0;
+        uint32_t height = 0;
 
-        uint32_t width;
-        uint32_t height;
-
-        uint32_t mipmaplevel;
-        uint32_t mipmapsize;
+        uint32_t mipmaplevel = 0;
+        uint32_t mipmapsize = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     struct PickCodecOptions
         : public CodecOptions
     {
-        PickCodecOptions()
-            : pitch( 0 )
-        {
-        }
-
-        size_t pitch;
+        size_t pitch = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class PickDecoderInterface

@@ -82,9 +82,9 @@ namespace Mengine
         virtual bool setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
 
     public:
-        virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex
-            , uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) = 0;
+        virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 
+    public:
         virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
         virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) = 0;
         virtual void setTextureFactor( uint32_t _color ) = 0;

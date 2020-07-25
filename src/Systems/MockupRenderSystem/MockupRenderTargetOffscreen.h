@@ -17,7 +17,7 @@ namespace Mengine
         void _finalize() override;
 
     public:
-        bool getData( void * const _buffer, size_t _pitch ) override;
+        bool getData( void * const _buffer, size_t _pitch ) const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MockupRenderTargetOffscreen> MockupRenderTargetOffscreenPtr;

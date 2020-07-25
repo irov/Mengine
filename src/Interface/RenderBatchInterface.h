@@ -34,13 +34,13 @@ namespace Mengine
 
     public:
         virtual void setVertexAttribute( const RenderVertexAttributeInterfacePtr & _vertexAttribute ) = 0;
-        virtual const RenderVertexAttributeInterfacePtr & getVertexAttribute() = 0;
+        virtual const RenderVertexAttributeInterfacePtr & getVertexAttribute() const = 0;
 
         virtual void setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) = 0;
-        virtual const RenderVertexBufferInterfacePtr & getVertexBuffer() = 0;
+        virtual const RenderVertexBufferInterfacePtr & getVertexBuffer() const = 0;
 
         virtual void setIndexBuffer( const RenderIndexBufferInterfacePtr & _vertexBuffer ) = 0;
-        virtual const RenderIndexBufferInterfacePtr & getIndexBuffer() = 0;
+        virtual const RenderIndexBufferInterfacePtr & getIndexBuffer() const = 0;
 
     public:
         virtual RenderBatchLockData * getLockData() = 0;

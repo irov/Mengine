@@ -31,7 +31,6 @@
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
 #include "Interface/PluginServiceInterface.h"
-#include "Interface/EasingServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"

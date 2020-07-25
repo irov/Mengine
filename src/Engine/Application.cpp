@@ -304,8 +304,11 @@ namespace Mengine
         if( fullscreen == true )
         {
             Resolution desktopResolution;
-            PLATFORM_SERVICE()
-                ->getDesktopResolution( &desktopResolution );
+            if( PLATFORM_SERVICE()
+                ->getDesktopResolution( &desktopResolution ) == false )
+            {
+                return false;
+            }
 
             m_currentResolution = desktopResolution;
         }
@@ -1817,14 +1820,20 @@ namespace Mengine
         if( fullscreen == true )
         {
             Resolution desktopResolution;
-            PLATFORM_SERVICE()
-                ->getDesktopResolution( &desktopResolution );
+            if( PLATFORM_SERVICE()
+                ->getDesktopResolution( &desktopResolution ) == false )
+            {
+                return;
+            }
 
             m_currentResolution = desktopResolution;
         }
         else
         {
-            this->calcWindowResolution( &m_currentResolution );            
+            if( this->calcWindowResolution( &m_currentResolution ) == false )
+            {
+                return;
+            }
         }
 
         LOGGER_MESSAGE( "%d Current Resolution [%u %u]"

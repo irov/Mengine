@@ -4,10 +4,14 @@
 
 #include "Kernel/ConstString.h"
 
-#include "pybind/module.hpp"
+namespace pybind
+{
+    class module;
+}
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ScriptModuleInterface
         : public Interface
     {

@@ -30,6 +30,13 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevelopmentConverter::finalize()
+    {
+        this->_finalize();
+
+        m_fileGroup = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ConstString & DevelopmentConverter::getConvertExt() const
     {
         return m_convertExt;

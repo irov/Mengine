@@ -168,24 +168,14 @@ namespace Mengine
 
         struct TextureStage
         {
-            TextureStage()
-                : texture( nullptr )
-                , minFilter( 0 )
-                , magFilter( 0 )
-                , wrapS( 0 )
-                , wrapT( 0 )
-                , border( 0 )
-            {
-            }
+            OpenGLRenderImage * texture = nullptr;
 
-            OpenGLRenderImage * texture;
+            GLenum minFilter = 0;
+            GLenum magFilter = 0;
+            GLenum wrapS = 0;
+            GLenum wrapT = 0;
 
-            GLenum minFilter;
-            GLenum magFilter;
-            GLenum wrapS;
-            GLenum wrapT;
-
-            uint32_t border;
+            uint32_t border = 0;
         };
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
@@ -204,6 +194,8 @@ namespace Mengine
 
         bool m_renderWindowCreate;
         bool m_depthMask;
+
+        Color m_clearColor;
 
         FactoryPtr m_factoryRenderVertexBuffer;
         FactoryPtr m_factoryRenderIndexBuffer;

@@ -21,32 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32FileMappedStream::~Win32FileMappedStream()
     {
-        if( m_memory != NULL )
-        {
-            if( ::UnmapViewOfFile( m_memory ) == FALSE )
-            {
-                DWORD uError = ::GetLastError();
-
-                LOGGER_ERROR( "invalid UnmapViewOfFile %p error %lu"
-                    , m_memory
-                    , uError
-                );
-            }
-
-            m_memory = NULL;
-        }
-
-        if( m_hMapping != INVALID_HANDLE_VALUE )
-        {
-            ::CloseHandle( m_hMapping );
-            m_hMapping = INVALID_HANDLE_VALUE;
-        }
-
-        if( m_hFile != INVALID_HANDLE_VALUE )
-        {
-            ::CloseHandle( m_hFile );
-            m_hFile = INVALID_HANDLE_VALUE;
-        }
+        this->close();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
@@ -70,8 +45,11 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "file '%ls' invalid open"
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "file '%ls' invalid open error %lu"
                 , concatenatePath
+                , error
             );
 
             return false;
@@ -119,6 +97,38 @@ namespace Mengine
         }
 
         m_memory = memory;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileMappedStream::close()
+    {
+        if( m_memory != NULL )
+        {
+            if( ::UnmapViewOfFile( m_memory ) == FALSE )
+            {
+                DWORD uError = ::GetLastError();
+
+                LOGGER_ERROR( "invalid UnmapViewOfFile %p error %lu"
+                    , m_memory
+                    , uError
+                );
+            }
+
+            m_memory = NULL;
+        }
+
+        if( m_hMapping != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_hMapping );
+            m_hMapping = INVALID_HANDLE_VALUE;
+        }
+
+        if( m_hFile != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_hFile );
+            m_hFile = INVALID_HANDLE_VALUE;
+        }
 
         return true;
     }

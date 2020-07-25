@@ -34,7 +34,7 @@ namespace Mengine
         DXRELEASE( m_surfacePlain );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch )
+    bool DX9RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
         if( m_surfacePlain == nullptr )
         {

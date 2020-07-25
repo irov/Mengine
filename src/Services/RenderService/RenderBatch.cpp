@@ -49,7 +49,7 @@ namespace Mengine
         m_vertexAttribute = _vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderVertexAttributeInterfacePtr & RenderBatch::getVertexAttribute()
+    const RenderVertexAttributeInterfacePtr & RenderBatch::getVertexAttribute() const
     {
         return m_vertexAttribute;
     }
@@ -59,7 +59,7 @@ namespace Mengine
         m_vertexBuffer = _vertexBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderVertexBufferInterfacePtr & RenderBatch::getVertexBuffer()
+    const RenderVertexBufferInterfacePtr & RenderBatch::getVertexBuffer() const
     {
         return m_vertexBuffer;
     }
@@ -69,7 +69,7 @@ namespace Mengine
         m_indexBuffer = _indexBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderIndexBufferInterfacePtr & RenderBatch::getIndexBuffer()
+    const RenderIndexBufferInterfacePtr & RenderBatch::getIndexBuffer() const
     {
         return m_indexBuffer;
     }

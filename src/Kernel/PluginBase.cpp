@@ -120,7 +120,9 @@ namespace Mengine
 
         for( const ConstString & name : m_moduleFactories )
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Module" ), name );
+            ModuleFactoryInterfacePtr module = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Module" ), name );
+
+            module->finalize();
         }
 
         m_moduleFactories.clear();

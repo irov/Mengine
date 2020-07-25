@@ -956,6 +956,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewport( const Viewport & _viewport )
     {
+        if( m_viewport.equalViewport( _viewport ) == true )
+        {
+            return;
+        }
+
         m_viewport = _viewport;
 
         this->updateViewport_( m_viewport );

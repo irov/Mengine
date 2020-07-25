@@ -3,6 +3,7 @@
 #include "OpenGLRenderError.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "OpenGLRenderExtension.h"
 
@@ -133,7 +134,11 @@ namespace Mengine
         MENGINE_UNUSED( _FSAAQuality );
         MENGINE_UNUSED( _MultiSampleCount );
 
-        m_resolution = _resolution;
+        m_windowResolution = _resolution;
+
+        mt::vec2f windowSize;
+        m_windowResolution.calcSize( &windowSize );
+        m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
 #ifndef MENGINE_RENDER_OPENGL_ES
         Mengine::initialize_GLEXT();
@@ -266,7 +271,7 @@ namespace Mengine
         GLsizei w = static_cast<GLsizei>(m_viewport.getWidth());
         GLsizei h = static_cast<GLsizei>(m_viewport.getHeight());
 
-        GLsizei resolution_height = static_cast<GLsizei>(m_resolution.getHeight());
+        GLsizei resolution_height = static_cast<GLsizei>(m_windowResolution.getHeight());
 
         GLsizei x = xb;
         GLsizei y = resolution_height - ye;
@@ -934,7 +939,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
-        m_resolution = _resolution;
+        m_windowResolution = _resolution;
+
+        mt::vec2f windowSize;
+        m_windowResolution.calcSize( &windowSize );
+        m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::supportTextureFormat( EPixelFormat _format ) const

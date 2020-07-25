@@ -146,7 +146,8 @@ namespace Mengine
         mt::mat4f m_projectionMatrix;
         mt::mat4f m_totalWVPMatrix;
 
-        Resolution m_resolution;
+        Resolution m_windowResolution;
+        Viewport m_windowViewport;
 
         RenderVertexBufferInterfacePtr m_currentVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentIndexBuffer;

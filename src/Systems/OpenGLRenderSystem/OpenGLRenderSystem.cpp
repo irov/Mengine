@@ -1071,9 +1071,9 @@ namespace Mengine
             , hwFormat
         );
 
-        OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject( _doc );
+        OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
 
-        if( texture->initialize( ERIM_DYNAMIC
+        if( image->initialize( ERIM_DYNAMIC
             , 1
             , _width
             , _height
@@ -1089,7 +1089,10 @@ namespace Mengine
             return nullptr;
         }
 
-        return texture;
+        OpenGLRenderImage * image_ptr = image.get();
+        m_cacheRenderImages.push_back( image_ptr );
+
+        return image;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )

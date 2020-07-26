@@ -54,8 +54,7 @@ namespace Mengine
         bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
 
     public:
-        void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
-            uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) override;
+        void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex, uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) override;
 
     public:
         void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;

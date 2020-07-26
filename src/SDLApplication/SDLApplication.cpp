@@ -288,12 +288,15 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
-        Resolution windowResolution;
-        APPLICATION_SERVICE()
-            ->calcWindowResolution( &windowResolution );
-
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();
+
+        Resolution windowResolution;
+        if( APPLICATION_SERVICE()
+            ->calcWindowResolution( fullscreen, &windowResolution ) == false )
+        {
+            return false;
+        }
 
         if( PLATFORM_SERVICE()
             ->createWindow( windowResolution, fullscreen ) == false )

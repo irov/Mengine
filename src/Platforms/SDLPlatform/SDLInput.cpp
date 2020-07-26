@@ -12,6 +12,8 @@ namespace Mengine
     SDLInput::SDLInput()
         : m_width( 0.f )
         , m_height( 0.f )
+        , m_widthInv( 0.f )
+        , m_heightInv( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -35,13 +37,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLInput::calcCursorPosition_( int _mx, int _my, mt::vec2f & _point ) const
+    void SDLInput::calcCursorPosition_( int _mx, int _my, mt::vec2f * _point ) const
     {
         float x = static_cast<float>(_mx);
         float y = static_cast<float>(_my);
 
-        _point.x = x / m_width;
-        _point.y = y / m_height;
+        _point->x = x * m_widthInv;
+        _point->y = y * m_heightInv;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t SDLInput::acquireFingerIndex_( SDL_FingerID _fingerId )
@@ -100,7 +102,7 @@ namespace Mengine
         case SDL_MOUSEWHEEL:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, point );
+                this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, &point );
 
                 Helper::pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, _event.wheel.y );
             }break;
@@ -114,7 +116,7 @@ namespace Mengine
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
-                this->calcCursorPosition_( x, y, point );
+                this->calcCursorPosition_( x, y, &point );
 
                 EKeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
 
@@ -138,9 +140,9 @@ namespace Mengine
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
-                this->calcCursorPosition_( x, y, point );
+                this->calcCursorPosition_( x, y, &point );
 
-                WChar text_code[8] = { 0 };
+                WChar text_code[8] = { L'\0' };
                 size_t text_code_size;
                 UNICODE_SYSTEM()
                     ->utf8ToUnicode( _event.text.text, MENGINE_UNKNOWN_SIZE, text_code, 8, &text_code_size );
@@ -150,10 +152,10 @@ namespace Mengine
         case SDL_MOUSEMOTION:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( _event.motion.x, _event.motion.y, point );
+                this->calcCursorPosition_( _event.motion.x, _event.motion.y, &point );
 
                 mt::vec2f delta;
-                this->calcCursorPosition_( _event.motion.xrel, _event.motion.yrel, delta );
+                this->calcCursorPosition_( _event.motion.xrel, _event.motion.yrel, &delta );
 
                 Helper::pushMouseMoveEvent( 0, point.x, point.y, delta.x, delta.y, 0.f );
             }break;
@@ -161,7 +163,7 @@ namespace Mengine
         case SDL_MOUSEBUTTONUP:
             {
                 mt::vec2f point;
-                this->calcCursorPosition_( _event.button.x, _event.button.y, point );
+                this->calcCursorPosition_( _event.button.x, _event.button.y, &point );
 
                 EMouseCode code;
 
@@ -212,6 +214,9 @@ namespace Mengine
     {
         m_width = _width;
         m_height = _height;
+
+        m_widthInv = 1.f / m_width;
+        m_heightInv = 1.f / m_height;
     }
     //////////////////////////////////////////////////////////////////////////    
     void SDLInput::showKeyboard( bool _value )

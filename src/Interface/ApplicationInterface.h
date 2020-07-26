@@ -95,7 +95,7 @@ namespace Mengine
         virtual bool getFixedDisplayResolution() = 0;
 
     public:
-        virtual bool calcWindowResolution( Resolution * const _windowResolution ) const = 0;
+        virtual bool calcWindowResolution( bool _fullscreen, Resolution * const _windowResolution ) const = 0;
 
         virtual const Resolution & getCurrentResolution() const = 0;
         virtual const Viewport & getRenderViewport() const = 0;

@@ -40,7 +40,7 @@ namespace Mengine
         void fillKeys_();
 
     protected:
-        void calcCursorPosition_( int _mx, int _my, mt::vec2f & _point ) const;
+        void calcCursorPosition_( int _mx, int _my, mt::vec2f * _point ) const;
 
     protected:
         uint32_t acquireFingerIndex_( SDL_FingerID _fingerId );
@@ -57,6 +57,9 @@ namespace Mengine
 
         float m_width;
         float m_height;
+
+        float m_widthInv;
+        float m_heightInv;
 
     protected:
         EKeyCode getKeyCode_( SDL_Scancode _key ) const;

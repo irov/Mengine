@@ -301,25 +301,11 @@ namespace Mengine
 
         bool fullscreen = this->getFullscreenMode();
 
-        if( fullscreen == true )
+        if( this->calcWindowResolution( fullscreen, &m_currentResolution ) == false )
         {
-            Resolution desktopResolution;
-            if( PLATFORM_SERVICE()
-                ->getDesktopResolution( &desktopResolution ) == false )
-            {
-                return false;
-            }
-
-            m_currentResolution = desktopResolution;
+            return false;
         }
-        else
-        {
-            if( this->calcWindowResolution( &m_currentResolution ) == false )
-            {
-                return false;
-            }
-        }
-
+        
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
@@ -1635,8 +1621,19 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::calcWindowResolution( Resolution * const _windowResolution ) const
+    bool Application::calcWindowResolution( bool _fullscreen, Resolution * const _windowResolution ) const
     {
+        if( _fullscreen == true )
+        {
+            if( PLATFORM_SERVICE()
+                ->getDesktopResolution( _windowResolution ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         Resolution dres;
         if( PLATFORM_SERVICE()
             ->getMaxClientResolution( &dres ) == false )
@@ -1817,25 +1814,11 @@ namespace Mengine
     {
         bool fullscreen = this->getFullscreenMode();
 
-        if( fullscreen == true )
+        if( this->calcWindowResolution( fullscreen, &m_currentResolution ) == false )
         {
-            Resolution desktopResolution;
-            if( PLATFORM_SERVICE()
-                ->getDesktopResolution( &desktopResolution ) == false )
-            {
-                return;
-            }
-
-            m_currentResolution = desktopResolution;
+            return;
         }
-        else
-        {
-            if( this->calcWindowResolution( &m_currentResolution ) == false )
-            {
-                return;
-            }
-        }
-
+        
         LOGGER_MESSAGE( "%d Current Resolution [%u %u]"
             , fullscreen
             , m_currentResolution.getWidth()

@@ -545,9 +545,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type,
-        uint32_t _baseVertexIndex, uint32_t _minIndex,
-        uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
+    void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type
+        , uint32_t _baseVertexIndex
+        , uint32_t _minIndex
+        , uint32_t _verticesNum
+        , uint32_t _startIndex
+        , uint32_t _indexCount )
     {
         MENGINE_UNUSED( _baseVertexIndex );
         MENGINE_UNUSED( _minIndex );

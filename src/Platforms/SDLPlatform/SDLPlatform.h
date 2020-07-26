@@ -173,6 +173,8 @@ namespace Mengine
 
     protected:
         Tags m_platformTags;
+        Resolution m_windowResolution;
+        bool m_fullscreen;
 
         SDL_Window * m_window;
 

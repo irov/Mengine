@@ -70,7 +70,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
-        : m_window( nullptr )
+        : m_fullscreen( false )
+        , m_window( nullptr )
         , m_accelerometer( nullptr )
         , m_enumerator( 0 )
         , m_glContext( nullptr )
@@ -609,7 +610,7 @@ namespace Mengine
         m_prevTime = TIME_SYSTEM()
             ->getTimeMilliseconds();
 
-        while( true )
+        for( ;; )
         {
             uint64_t currentTime = TIME_SYSTEM()
                 ->getTimeMilliseconds();
@@ -658,8 +659,6 @@ namespace Mengine
             {
                 APPLICATION_SERVICE()
                     ->tick( frameTime );
-
-                SDL_Delay( 0 );
             }
             else
             {
@@ -677,6 +676,7 @@ namespace Mengine
 
                     if( m_window != nullptr )
                     {
+                        SDL_ShowWindow( m_window );
                         SDL_GL_SwapWindow( m_window );
                     }
                 }
@@ -778,13 +778,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
+        m_windowResolution = _resolution;
+        m_fullscreen = _fullscreen;
+
         LOGGER_MESSAGE( "create window size %u:%u fullscreen %d"
             , _resolution.getWidth()
             , _resolution.getHeight()
             , _fullscreen
         );
 
-        if( this->createWindow_( _resolution, _fullscreen ) == false )
+        if( this->createWindow_( m_windowResolution, m_fullscreen ) == false )
         {
             return false;
         }
@@ -801,6 +804,7 @@ namespace Mengine
 
         m_glContext = glContext;
 
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         Resolution resoultion;
         if( this->getDesktopResolution( &resoultion ) == false )
         {
@@ -810,27 +814,38 @@ namespace Mengine
             return false;
         }
 
-        float dwf = resoultion.getWidthF();
-        float dhf = resoultion.getHeightF();
+        APPLICATION_SERVICE()
+            ->changeWindowResolution( resoultion );
+#endif
+
+        if( m_fullscreen == true )
+        {
+            Resolution desktopResolution;
+            this->getDesktopResolution( &desktopResolution );
+
+            this->notifyWindowModeChanged( desktopResolution, true );
+        }
+        else
+        {
+            this->notifyWindowModeChanged( m_windowResolution, false );
+        }
+
+        SDL_DisplayMode mode;
+        SDL_GetWindowDisplayMode( m_window, &mode );
+
+        float dwf = static_cast<float>(mode.w);
+        float dhf = static_cast<float>(mode.h);
 
         m_sdlInput->updateSurfaceResolution( dwf, dhf );
-
-#if defined(MENGINE_PLATFORM_IOS)
-        APPLICATION_SERVICE()
-            ->changeWindowResolution( resoultion );
-#endif
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-        APPLICATION_SERVICE()
-            ->changeWindowResolution( resoultion );
-#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasPlatformTag( const ConstString & _tag ) const
     {
-        return m_platformTags.hasTag( _tag );
+        bool exist = m_platformTags.hasTag( _tag );
+
+        return exist;
     }
     //////////////////////////////////////////////////////////////////////////
     const Tags & SDLPlatform::getPlatformTags() const
@@ -876,12 +891,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getDesktopResolution( Resolution * const _resolution ) const
     {
+        int displayIndex;
+
         if( m_window == nullptr )
         {
-            return false;
+            displayIndex = 0;
         }
-
-        int displayIndex = SDL_GetWindowDisplayIndex( m_window );
+        else
+        {
+            displayIndex = SDL_GetWindowDisplayIndex( m_window );
+        }
 
         uint32_t width;
         uint32_t height;
@@ -1687,7 +1706,6 @@ namespace Mengine
         RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen );
 #else
-
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
 
@@ -1710,7 +1728,7 @@ namespace Mengine
         MENGINE_UNUSED( _resolution );
         MENGINE_UNUSED( _fullscreen );
 
-        Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+        Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN;
 
 #if defined(MENGINE_PLATFORM_IOS)
         windowFlags |= SDL_WINDOW_FULLSCREEN;
@@ -1831,19 +1849,34 @@ namespace Mengine
             return false;
         }
 
-        int width = static_cast<int>(_resolution.getWidth());
-        int height = static_cast<int>(_resolution.getHeight());
+        SDL_Window * window;
 
-        uint32_t window_x_mode = (mode.w > width) ? SDL_WINDOWPOS_CENTERED : 50;
-        uint32_t window_y_mode = (mode.h > height) ? SDL_WINDOWPOS_CENTERED : 50;
+        if( _fullscreen == false )
+        {
+            int width = static_cast<int>(_resolution.getWidth());
+            int height = static_cast<int>(_resolution.getHeight());
 
-        SDL_Window * window = SDL_CreateWindow( m_projectTitle
-            , window_x_mode
-            , window_y_mode
-            , width
-            , height
-            , windowFlags
-        );
+            uint32_t window_x_mode = (mode.w > width) ? SDL_WINDOWPOS_CENTERED : 50;
+            uint32_t window_y_mode = (mode.h > height) ? SDL_WINDOWPOS_CENTERED : 50;
+
+            window = SDL_CreateWindow( m_projectTitle
+                , window_x_mode
+                , window_y_mode
+                , width
+                , height
+                , windowFlags
+            );
+        }
+        else
+        {
+            window = SDL_CreateWindow( m_projectTitle
+                , SDL_WINDOWPOS_UNDEFINED
+                , SDL_WINDOWPOS_UNDEFINED
+                , mode.w
+                , mode.h
+                , windowFlags
+            );
+        }
 #endif
 
         if( window == nullptr )

@@ -153,6 +153,8 @@ namespace Mengine
             return false;
         }
 
+        this->clearFrameBuffer_();
+
         m_windowCreated = true;
 
         this->restoreRenderSystemStates_();
@@ -397,17 +399,8 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
+    void RenderService::clearFrameBuffer_()
     {
-        this->restoreRenderSystemStates_();
-
-        _renderPipeline->prepare();
-
-        if( m_renderSystem->beginScene() == false )
-        {
-            return false;
-        }
-
         bool RenderFrameClear = CONFIG_VALUE( "Engine", "RenderFrameClear", true );
 
         if( RenderFrameClear == true )
@@ -429,6 +422,20 @@ namespace Mengine
 
             m_renderSystem->clearFrameBuffer( frameBufferTypes, argb, 1.f, 0x00000000 );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
+    {
+        this->restoreRenderSystemStates_();
+
+        _renderPipeline->prepare();
+
+        if( m_renderSystem->beginScene() == false )
+        {
+            return false;
+        }
+
+        this->clearFrameBuffer_();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_SCENE_BEGIN, _renderPipeline );
 

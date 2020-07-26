@@ -308,18 +308,18 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
-        Resolution windowResolution;
-        if( APPLICATION_SERVICE()
-            ->calcWindowResolution( &windowResolution ) == false )
-        {
-            return false;
-        }
-
         PLATFORM_SERVICE()
             ->setIcon( IDI_MENGINE );
 
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();
+
+        Resolution windowResolution;
+        if( APPLICATION_SERVICE()
+            ->calcWindowResolution( fullscreen, &windowResolution ) == false )
+        {
+            return false;
+        }
 
         if( PLATFORM_SERVICE()
             ->createWindow( windowResolution, fullscreen ) == false )

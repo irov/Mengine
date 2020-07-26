@@ -102,6 +102,9 @@ namespace Mengine
         bool getVSync() const override;
 
     protected:
+        void clearFrameBuffer_();
+
+    protected:
         void restoreTextureStage_( uint32_t _stage );
 
         void restoreRenderSystemStates_();

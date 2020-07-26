@@ -194,6 +194,8 @@ namespace Mengine
 
         m_uid = tuid;
 
+        m_lockFirst = true;
+
         if( m_renderImageProvider == nullptr )
         {
             return true;

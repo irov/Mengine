@@ -68,7 +68,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutex;
 
-        uint32_t m_countMessage[LM_MAX];
+        uint32_t m_countMessage[__LM_MAX__];
 
         struct Record
         {

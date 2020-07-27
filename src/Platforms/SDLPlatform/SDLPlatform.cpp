@@ -231,43 +231,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void MySDL_LogOutputFunction( void * _userdata, int _category, SDL_LogPriority _priority, const char * _message )
-    {
-        MENGINE_UNUSED( _userdata );
-        MENGINE_UNUSED( _category );
-
-        ELoggerLevel level = LM_INFO;
-
-        switch( _priority )
-        {
-        case SDL_LOG_PRIORITY_VERBOSE:
-            level = LM_INFO;
-            break;
-        case SDL_LOG_PRIORITY_DEBUG:
-            level = LM_DEBUG;
-            break;
-        case SDL_LOG_PRIORITY_INFO:
-            level = LM_INFO;
-            break;
-        case SDL_LOG_PRIORITY_WARN:
-            level = LM_WARNING;
-            break;
-        case SDL_LOG_PRIORITY_ERROR:
-            level = LM_ERROR;
-            break;
-        case SDL_LOG_PRIORITY_CRITICAL:
-            level = LM_CRITICAL;
-            break;
-        default:
-            break;
-        }
-
-        size_t messageLen = MENGINE_STRLEN( _message );
-
-        LOGGER_SERVICE()
-            ->logMessage( level, 0, LCOLOR_NONE, _message, messageLen );
-    }
-    //////////////////////////////////////////////////////////////////////////
     static int s_RemoveMouse_EventFilter( void * userdata, SDL_Event * event )
     {
         MENGINE_UNUSED( userdata );
@@ -284,11 +247,87 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
+    static const Char * s_SDL_GetCategoryName( int category )
+    {
+        switch( category )
+        {
+        case SDL_LOG_CATEGORY_APPLICATION:
+            return "application";
+        case SDL_LOG_CATEGORY_ERROR:
+            return "error";
+        case SDL_LOG_CATEGORY_ASSERT:
+            return "assert";
+        case SDL_LOG_CATEGORY_SYSTEM:
+            return "system";
+        case SDL_LOG_CATEGORY_AUDIO:
+            return "audio";
+        case SDL_LOG_CATEGORY_VIDEO:
+            return "video";
+        case SDL_LOG_CATEGORY_RENDER:
+            return "render";
+        case SDL_LOG_CATEGORY_INPUT:
+            return "input";
+        case SDL_LOG_CATEGORY_TEST:
+            return "test";
+        case SDL_LOG_CATEGORY_CUSTOM:
+            return "custom";
+        default:
+            break;
+        }
+
+        return "unknown";
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ELoggerLevel s_SDL_GetLoggerLevel( SDL_LogPriority priority )
+    {
+        switch( priority )
+        {
+        case SDL_LOG_PRIORITY_VERBOSE:
+            return LM_VERBOSE;
+        case SDL_LOG_PRIORITY_DEBUG:
+            return LM_WARNING;
+        case SDL_LOG_PRIORITY_INFO:
+            return LM_INFO;
+        case SDL_LOG_PRIORITY_WARN:
+            return LM_WARNING;
+        case SDL_LOG_PRIORITY_ERROR:
+            return LM_ERROR;
+        case SDL_LOG_PRIORITY_CRITICAL:
+            return LM_CRITICAL;
+        default:
+            break;
+        }
+
+        return LM_ERROR;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void s_SDL_LogOutputFunction( void * userdata, int category, SDL_LogPriority priority, const char * message )
+    {
+        MENGINE_UNUSED( userdata );
+        MENGINE_UNUSED( category );
+        MENGINE_UNUSED( priority );
+
+        ELoggerLevel level = s_SDL_GetLoggerLevel( priority );
+
+        LOGGER_VERBOSE_LEVEL( level, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
+            , s_SDL_GetCategoryName( category )
+            , message
+            );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
+#ifdef MENGINE_DEBUG
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_DEBUG );
+#else
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
+#endif
+
+        SDL_LogSetOutputFunction( &s_SDL_LogOutputFunction, nullptr );
+
         if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) != 0 )
         {
-            LOGGER_ERROR( "invalid initialize %s"
+            LOGGER_ERROR( "invalid initialize error: %s"
                 , SDL_GetError()
             );
 
@@ -406,14 +445,6 @@ namespace Mengine
         {
             m_desktop = true;
         }
-
-        SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
-
-#ifdef MENGINE_DEBUG
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_INFO );
-#else
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
-#endif
 
         SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -802,7 +833,7 @@ namespace Mengine
             return false;
         }
 
-        m_glContext = glContext;
+        m_glContext = glContext;        
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         Resolution resoultion;
@@ -1839,6 +1870,13 @@ namespace Mengine
             , windowFlags );
 
 #else
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_CORE error: %s"
+                , SDL_GetError()
+            );
+        }
+
         SDL_DisplayMode mode;
         if( SDL_GetDesktopDisplayMode( 0, &mode ) != 0 )
         {
@@ -1889,6 +1927,42 @@ namespace Mengine
         }
 
         m_window = window;
+
+        int attribute_GL_CONTEXT_PROFILE_MASK;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_GL_CONTEXT_MAJOR_VERSION;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_GL_CONTEXT_MINOR_VERSION;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        LOGGER_MESSAGE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
+            , attribute_GL_CONTEXT_PROFILE_MASK
+        );
+
+        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
+            , attribute_GL_CONTEXT_MAJOR_VERSION
+        );
+
+        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
+            , attribute_GL_CONTEXT_MINOR_VERSION
+        );
 
         return true;
     }

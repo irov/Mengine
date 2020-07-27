@@ -28,7 +28,7 @@ namespace Mengine
         , m_silent( false )
         , m_historically( MENGINE_PUBLISH_VALUE( false, true ) )
     {
-        for( uint32_t i = 0; i != LM_MAX; ++i )
+        for( uint32_t i = 0; i != __LM_MAX__; ++i )
         {
             m_countMessage[i] = 0;
         }
@@ -106,7 +106,7 @@ namespace Mengine
 
         if( HAS_OPTION( "verbose" ) == true )
         {
-            this->setVerboseLevel( LM_MAX );
+            this->setVerboseLevel( LM_VERBOSE );
         }
 
         if( HAS_OPTION( "loghistory" ) == true )

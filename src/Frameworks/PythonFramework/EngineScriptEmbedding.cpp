@@ -3589,7 +3589,14 @@ namespace Mengine
             protected:
                 void accept( Resource * _resource ) override
                 {
-                    _resource->compile();
+                    if( _resource->compile() == false )
+                    {
+                        LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
+                            , _resource->getName().c_str()
+                            , _resource->getType().c_str()
+                            , _resource->getContent() ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                        );
+                    }
                 }
             };
             //////////////////////////////////////////////////////////////////////////
@@ -3630,7 +3637,14 @@ namespace Mengine
                 RESOURCE_SERVICE()
                     ->foreachTagsResources( _tags, []( const ResourcePtr & _resource )
                 {
-                    _resource->compile();
+                    if( _resource->compile() == false )
+                    {
+                        LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
+                            , _resource->getName().c_str()
+                            , _resource->getType().c_str()
+                            , _resource->getContent() ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                        );
+                    }
                 } );
             }
             //////////////////////////////////////////////////////////////////////////

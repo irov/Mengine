@@ -75,6 +75,19 @@ namespace Mengine
         m_doc = _doc;
 #endif
 
+        SDL_mutex * taskLock = SDL_CreateMutex();
+
+        if( taskLock == nullptr )
+        {
+            LOGGER_ERROR( "invalid create mutex error: %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
+        m_taskLock = taskLock;
+
         SDL_mutex * processLock = SDL_CreateMutex();
 
         if( processLock == nullptr )
@@ -133,11 +146,35 @@ namespace Mengine
     {
         for( ; m_exit == false; )
         {
-            SDL_LockMutex( m_conditionLock );
-            SDL_CondWaitTimeout( m_conditionVariable, m_conditionLock, 1000 );
-            SDL_UnlockMutex( m_conditionLock );
+            if( SDL_LockMutex( m_conditionLock ) != 0 )
+            {
+                LOGGER_ERROR( "invalid lock mutex error: %s"
+                    , SDL_GetError()
+                );
+            }
 
-            SDL_LockMutex( m_processLock );
+            int err = SDL_CondWaitTimeout( m_conditionVariable, m_conditionLock, 1000 );
+
+            if( err == -1 )
+            {
+                LOGGER_ERROR( "invalid cond wait timeout error: %s"
+                    , SDL_GetError()
+                );
+            }
+            
+            if( SDL_UnlockMutex( m_conditionLock ) != 0 )
+            {
+                LOGGER_ERROR( "invalid unlock mutex error: %s"
+                    , SDL_GetError()
+                );
+            }
+
+            if( SDL_LockMutex( m_processLock ) != 0 )
+            {
+                LOGGER_ERROR( "invalid lock mutex error: %s"
+                    , SDL_GetError()
+                );
+            }
 
             if( m_task != nullptr )
             {
@@ -148,12 +185,29 @@ namespace Mengine
                     m_mutex->unlock();
                 }
 
-                SDL_LockMutex( m_taskLock );
+                if( SDL_LockMutex( m_taskLock ) != 0 )
+                {
+                    LOGGER_ERROR( "invalid lock mutex error: %s"
+                        , SDL_GetError()
+                    );
+                }
+
                 m_task = nullptr;
-                SDL_UnlockMutex( m_taskLock );
+                
+                if( SDL_UnlockMutex( m_taskLock ) != 0 )
+                {
+                    LOGGER_ERROR( "invalid unlock mutex error: %s"
+                        , SDL_GetError()
+                    );
+                }
             }
 
-            SDL_UnlockMutex( m_processLock );
+            if( SDL_UnlockMutex( m_processLock ) != 0 )
+            {
+                LOGGER_ERROR( "invalid unlock mutex error: %s"
+                    , SDL_GetError()
+                );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -177,22 +231,43 @@ namespace Mengine
         {
             if( _task->run( m_mutex ) == true )
             {
-                SDL_LockMutex( m_taskLock );
+                if( SDL_LockMutex( m_taskLock ) != 0 )
+                {
+                    LOGGER_ERROR( "invalid lock mutex error: %s"
+                        , SDL_GetError()
+                    );
+                }
+
                 m_task = _task;
-                SDL_UnlockMutex( m_taskLock );
+                
+                if( SDL_UnlockMutex( m_taskLock ) != 0 )
+                {
+                    LOGGER_ERROR( "invalid unlock mutex error: %s"
+                        , SDL_GetError()
+                    );
+                }
             }
             else
             {
-                LOGGER_ERROR( "invalid run"
-                );
+                LOGGER_ERROR( "invalid run" );
             }
 
-            SDL_CondSignal( m_conditionVariable );
+            if( SDL_CondSignal( m_conditionVariable ) != 0 )
+            {
+                LOGGER_ERROR( "invalid cond signal error: %s"
+                    , SDL_GetError()
+                );
+            }
 
             successful = true;
         }
 
-        SDL_UnlockMutex( m_processLock );
+        if( SDL_UnlockMutex( m_processLock ) != 0 )
+        {
+            LOGGER_ERROR( "invalid unlock mutex error: %s"
+                , SDL_GetError()
+            );
+        }
 
         return successful;
     }
@@ -204,16 +279,40 @@ namespace Mengine
             return;
         }
 
-        SDL_LockMutex( m_taskLock );
+        if( SDL_LockMutex( m_taskLock ) != 0 )
+        {
+            LOGGER_ERROR( "invalid lock mutex error: %s"
+                , SDL_GetError()
+            );
+        }
+
         if( m_task != nullptr )
         {
             m_task->cancel();
         }
-        SDL_UnlockMutex( m_taskLock );
 
-        SDL_LockMutex( m_processLock );
+        if( SDL_UnlockMutex( m_taskLock ) != 0 )
+        {
+            LOGGER_ERROR( "invalid unlock mutex error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_LockMutex( m_processLock ) != 0 )
+        {
+            LOGGER_ERROR( "invalid lock mutex error: %s"
+                , SDL_GetError()
+            );
+        }
+
         m_task = nullptr;
-        SDL_UnlockMutex( m_processLock );
+        
+        if( SDL_UnlockMutex( m_processLock ) != 0 )
+        {
+            LOGGER_ERROR( "invalid unlock mutex error: %s"
+                , SDL_GetError()
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::join()
@@ -225,9 +324,14 @@ namespace Mengine
 
         m_exit = true;
 
-        SDL_CondSignal( m_conditionVariable );
+        if( SDL_CondSignal( m_conditionVariable ) != 0 )
+        {
+            LOGGER_ERROR( "invalid cond signal error: %s"
+                , SDL_GetError()
+            );
+        }
 
-        int status;
+        int status = 0;
         SDL_WaitThread( m_thread, &status );
 
         if( status != 0 )

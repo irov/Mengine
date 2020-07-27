@@ -166,7 +166,7 @@ namespace Mengine
 
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 
-        for( uint32_t i = 0; i < MENGINE_MAX_TEXTURE_STAGES; ++i )
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
             m_textureStage[i] = TextureStage();
         }

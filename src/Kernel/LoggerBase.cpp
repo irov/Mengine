@@ -5,7 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoggerBase::LoggerBase()
         : m_color( LCOLOR_NONE )
-        , m_verboseLevel( LM_MAX )
+        , m_verboseLevel( LM_VERBOSE )
         , m_verboseFlag( 0xFFFFFFFF )
     {
     }

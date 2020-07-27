@@ -5,7 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerLevel
     {
-        LM_FATAL,
+        LM_FATAL = 0,
         LM_CRITICAL,
         LM_ERROR,
         LM_PERFOMANCE,
@@ -14,7 +14,9 @@ namespace Mengine
         LM_MESSAGE,
         LM_INFO,
         LM_DEBUG,
-        LM_MAX
+        LM_VERBOSE,
+
+        __LM_MAX__
     };
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerColor

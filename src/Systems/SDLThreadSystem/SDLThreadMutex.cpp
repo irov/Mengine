@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadMutex::lock()
     {
-        if( SDL_LockMutex( m_cs ) == -1 )
+        if( SDL_LockMutex( m_cs ) != 0 )
         {
             const char * err_str = SDL_GetError();
 
@@ -54,9 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadMutex::unlock()
     {
-        int err = SDL_UnlockMutex( m_cs );
-
-        if( err != 0 )
+        if( SDL_UnlockMutex( m_cs ) != 0 )
         {
             const char * err_str = SDL_GetError();
 

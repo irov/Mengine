@@ -70,7 +70,7 @@ namespace Mengine
     {
         // SDL doesn't have this, so we're emulating ... ugly way :(
 
-        Char fullPath[MENGINE_MAX_PATH];
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
         if( this->getFullPath( _filePath, fullPath ) == false )
         {
             LOGGER_ERROR( "invalid get fullPath '%s'"
@@ -80,22 +80,11 @@ namespace Mengine
             return false;
         }
 
-        SDL_RWops * rwops = SDL_RWFromFile( fullPath, "rb" );
-
-        if( rwops != nullptr )
+        if( PLATFORM_SERVICE()
+            ->existFile( fullPath ) == true )
         {
-            if( SDL_RWclose( rwops ) != 0 )
-            {
-                LOGGER_ERROR( "invalid close file '%s' error: %s"
-                    , _filePath.c_str()
-                    , SDL_GetError()
-                );
-            }
-
             return true;
         }
-
-        SDL_ClearError();
 
         if( _recursive == true && m_parentFileGroup != nullptr )
         {

@@ -127,14 +127,14 @@ namespace Mengine
 
         const Char * matrix_uniforms[] = { "viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix" };
 
-        for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
+        for( uint32_t index = 0; index != EPML_MAX_COUNT; ++index )
         {
-            const Char * uniform = matrix_uniforms[i];
+            const Char * uniform = matrix_uniforms[index];
 
             GLint location;
             GLCALLR( location, glGetUniformLocation, (programId, uniform) );
 
-            m_matrixLocation[i] = location;
+            m_matrixLocation[index] = location;
         }
 
         for( uint32_t index = 0; index != m_samplerCount; ++index )

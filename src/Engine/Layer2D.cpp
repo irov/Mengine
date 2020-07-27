@@ -224,7 +224,7 @@ namespace Mengine
         texures[1] = renderTargetTextureMask;
 
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-            ->getMaterial3( EM_TEXTURE_ALPHAMASK_BLEND, PT_TRIANGLELIST, 2, texures, MENGINE_DOCUMENT_FACTORABLE );
+            ->getMaterial3( EM_TEXTURE_ALPHAMASK_BLEND, PT_TRIANGLELIST, texures, 2, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid get material" );
 

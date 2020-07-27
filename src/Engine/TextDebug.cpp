@@ -94,7 +94,7 @@ namespace Mengine
                     tl.advanceCharOffset( cd, 1.f, &offset );
 
                     RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                        ->getMaterial3( EM_TEXTURE_BLEND, PT_TRIANGLELIST, 1, &cd.texture, _doc );
+                        ->getMaterial3( EM_TEXTURE_BLEND, PT_TRIANGLELIST, &cd.texture, 1, _doc );
 
                     if( new_chunk.material == material )
                     {

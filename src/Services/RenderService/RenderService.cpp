@@ -567,6 +567,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::updateMaterial_( const RenderMaterialInterface * _material )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _material );
+
         uint32_t materialId = _material->getId();
 
         if( m_currentMaterialId == materialId )
@@ -615,11 +617,15 @@ namespace Mengine
         {
             if( material != nullptr )
             {
+                MENGINE_ASSERTION_FATAL( IntrusivePtrBase::intrusive_ptr_get_ref( material ) > 1, "not-cached material" );
+
                 IntrusivePtrBase::intrusive_ptr_dec_ref( material );
             }
 
             return;
-        }        
+        }
+
+        MENGINE_ASSERTION_MEMORY_PANIC( material );
 
         this->updateMaterial_( material );
 
@@ -645,11 +651,10 @@ namespace Mengine
             _renderPrimitive->indexCount
         );
 
-        if( material != nullptr )
-        {
-            IntrusivePtrBase::intrusive_ptr_dec_ref( material );
-        }
+        MENGINE_ASSERTION_FATAL( IntrusivePtrBase::intrusive_ptr_get_ref( material ) > 1, "not-cached material" );
 
+        IntrusivePtrBase::intrusive_ptr_dec_ref( material );
+        
         ++m_debugInfo.dips;
     }
     //////////////////////////////////////////////////////////////////////////

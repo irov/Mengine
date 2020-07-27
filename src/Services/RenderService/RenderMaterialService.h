@@ -71,19 +71,19 @@ namespace Mengine
     public:
         RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
-            , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) override;
+            , const RenderTextureInterfacePtr * _textures
+            , uint32_t _textureCount, const DocumentPtr & _doc ) override;
 
         RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
-            , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) override;
+            , const RenderTextureInterfacePtr * _textures
+            , uint32_t _textureCount, const DocumentPtr & _doc ) override;
 
         RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
-            , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) override;
+            , const RenderTextureInterfacePtr * _textures
+            , uint32_t _textureCount, const DocumentPtr & _doc ) override;
 
     public:
         const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const override;

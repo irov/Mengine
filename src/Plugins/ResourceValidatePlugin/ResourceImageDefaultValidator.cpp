@@ -251,7 +251,7 @@ namespace Mengine
 
             if( imageDecoder->setOptions( &options ) == false )
             {
-                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid optionizing"
+                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' invalid optionizing"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , content->getFileGroup()->getName().c_str()

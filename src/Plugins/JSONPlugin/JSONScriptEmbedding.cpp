@@ -47,7 +47,7 @@ namespace Mengine
                         a += jpp2pybind( _kernel, value );                        
                     }
 
-                    return a;
+                    return std::move(a);
                 }break;
             case jpp::e_type::JPP_STRING:
                 {

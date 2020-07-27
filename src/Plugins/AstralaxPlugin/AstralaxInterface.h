@@ -170,8 +170,7 @@ namespace Mengine
         virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual const RenderMaterialStage * getMaterialStage( int _index ) const = 0;
-        virtual const ResourceImagePtr & getResourceImage( int _index ) const = 0;
+        virtual const RenderMaterialInterfacePtr & getMaterial( const AstralaxMesh & _mesh ) const = 0;
 
     public:
         virtual uint32_t getEmitterCount() const = 0;

@@ -25,7 +25,7 @@ namespace Mengine
     AstralaxService::AstralaxService()
         : m_maxParticlesNum( 0 )
         , m_renderPlatform( RP_UNKNOWN )
-        , m_materialCount( 0 )
+        , m_stageCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -110,6 +110,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxService::_stopService()
     {
+        this->updateAtlas();
+
         m_atlases.clear();
 
         for( uint32_t index = 0; index != 256; ++index )
@@ -119,6 +121,10 @@ namespace Mengine
             RENDERMATERIAL_SERVICE()
                 ->uncacheMaterialStage( stage );
         }
+
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_materials );
+
+        m_materials.clear();
 
         m_renderFragmentShaderCache.clear();
     }
@@ -240,10 +246,26 @@ namespace Mengine
                 {
                     VectorAtlasDesc::iterator it_remove = m_atlases.begin();
                     std::advance( it_remove, c.index );
+
+                    const ResourceImagePtr & image = *it_remove;
+
+                    m_materials.erase( std::remove_if( m_materials.begin(), m_materials.end(), [image]( const MagicMaterialDesc & _desc )
+                    {
+                        for( uint32_t index = 0; index != _desc.imageCount; ++index )
+                        {
+                            if( _desc.images[index] == image )
+                            {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    } ), m_materials.end() );
+
                     m_atlases.erase( it_remove );
                 }break;
             default:
-                LOGGER_ERROR( "invalid atlas state" 
+                LOGGER_ERROR( "invalid atlas state"
                 );
 
                 return false;
@@ -257,7 +279,7 @@ namespace Mengine
     {
         int32_t newMaterialCount = Magic_GetMaterialCount();
 
-        for( int32_t i = m_materialCount; i != newMaterialCount; ++i )
+        for( int32_t i = m_stageCount; i != newMaterialCount; ++i )
         {
             MAGIC_MATERIAL m;
             if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
@@ -343,7 +365,7 @@ namespace Mengine
             {
                 const MAGIC_TEXTURE_STATES & state = m.states[stage];
 
-                const ETextureAddressMode dx_address[] = { TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER };
+                const ETextureAddressMode dx_address[] = {TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER};
 
                 RenderTextureStage & textureStage = rs.textureStage[stage];
 
@@ -358,14 +380,14 @@ namespace Mengine
             m_stages[i] = cache_stage;
         }
 
-        m_materialCount = newMaterialCount;
+        m_stageCount = newMaterialCount;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialStage * AstralaxService::getMaterialStage( int32_t _index ) const
     {
-        if( _index >= m_materialCount )
+        if( _index >= m_stageCount )
         {
             return nullptr;
         }
@@ -383,6 +405,88 @@ namespace Mengine
         const ResourceImagePtr & resourceImage = m_atlases[_index];
 
         return resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialInterfacePtr & AstralaxService::getMaterial( const AstralaxMesh & _mesh ) const
+    {
+        if( _mesh.textures >= MENGINE_MAX_TEXTURE_STAGES )
+        {
+            return RenderMaterialInterfacePtr::none();
+        }
+
+        const RenderMaterialStage * stage = this->getMaterialStage( _mesh.material );
+
+        for( const MagicMaterialDesc & desc : m_materials )
+        {
+            if( desc.stage != stage )
+            {
+                continue;
+            }
+
+            if( desc.imageCount != _mesh.textures )
+            {
+                continue;
+            }
+
+            bool test_textures = true;
+            for( uint32_t index = 0; index != _mesh.textures; ++index )
+            {
+                int32_t textureId = _mesh.texture[index];
+
+                const ResourceImagePtr & image = this->getResourceImage( textureId );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( image );
+
+                if( desc.images[index] != image )
+                {
+                    test_textures = false;
+                    break;
+                }
+            }
+
+            if( test_textures == false )
+            {
+                continue;
+            }
+
+            return desc.material;
+        }
+
+        MagicMaterialDesc desc;
+
+        desc.stage = stage;
+
+        RenderTextureInterfacePtr textures[MENGINE_MAX_TEXTURE_STAGES];
+
+        for( uint32_t index = 0; index != _mesh.textures; ++index )
+        {
+            int32_t textureId = _mesh.texture[index];
+
+            const ResourceImagePtr & image = this->getResourceImage( textureId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( image );
+
+            desc.images[index] = image;
+
+            const RenderTextureInterfacePtr & texture = image->getTexture();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( texture );
+
+            textures[index] = texture;
+        }
+
+        desc.imageCount = _mesh.textures;
+
+        const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
+            ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, textures, desc.imageCount, MENGINE_DOCUMENT_FORWARD );
+
+        desc.material = material;
+
+        const MagicMaterialDesc & emplace_desc = m_materials.emplace_back( desc );
+
+        const RenderMaterialInterfacePtr & new_material = emplace_desc.material;
+
+        return new_material;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t AstralaxService::getEmitterCount() const

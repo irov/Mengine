@@ -1312,13 +1312,13 @@ namespace Mengine
             if( is_debug == true )
             {
                 const RenderMaterialInterfacePtr & debugLineMaterial = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( name, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                    ->getMaterial( name, PT_LINELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE );
 
                 RENDERMATERIAL_SERVICE()
                     ->setDebugLineMaterial( debugLineMaterial );
 
                 const RenderMaterialInterfacePtr & debugTriangleMaterial = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( name, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                    ->getMaterial( name, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE );
 
                 RENDERMATERIAL_SERVICE()
                     ->setDebugTriangleMaterial( debugTriangleMaterial );

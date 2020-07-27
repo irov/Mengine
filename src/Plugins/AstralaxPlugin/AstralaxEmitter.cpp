@@ -376,35 +376,13 @@ namespace Mengine
         {
             const AstralaxMesh & mesh = meshes[it_mesh];
 
-            RenderTextureInterfacePtr textures[MENGINE_MAX_TEXTURE_STAGES];
+            const RenderMaterialInterfacePtr & material = ASTRALAX_SERVICE()
+                ->getMaterial( mesh );
 
-            for( uint32_t i = 0; i != mesh.textures; ++i )
+            if( material == nullptr )
             {
-                int32_t textureId = mesh.texture[i];
-
-                const ResourceImagePtr & image = ASTRALAX_SERVICE()
-                    ->getResourceImage( textureId );
-
-                if( image == nullptr )
-                {
-                    return;
-                }
-
-                const RenderTextureInterfacePtr & texture = image->getTexture();
-
-                if( texture == nullptr )
-                {
-                    return;
-                }
-
-                textures[i] = texture;
+                return;
             }
-
-            const RenderMaterialStage * stage = ASTRALAX_SERVICE()
-                ->getMaterialStage( mesh.material );
-
-            const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-                ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, mesh.textures, textures, MENGINE_DOCUMENT_FORWARD );
 
             _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false, MENGINE_DOCUMENT_FORWARD );
         }

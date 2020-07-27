@@ -165,7 +165,7 @@ namespace Mengine
             }
 
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                ->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures, MENGINE_DOCUMENT_FACTORABLE );
+                ->getMaterial3( materialId, PT_TRIANGLELIST, textures, textureCount, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( material );
 

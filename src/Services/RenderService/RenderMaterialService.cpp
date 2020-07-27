@@ -206,7 +206,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMaterial );
 
         m_factoryMaterial = nullptr;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     static bool s_equalMaterial( const RenderMaterial * _material
         , EPrimitiveType _primitiveType
@@ -397,16 +397,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialService::updateSolidRenderMaterial()
     {
-        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
-        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
-        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
-        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial( const ConstString & _materialName
         , EPrimitiveType _primitiveType
-        , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc )
+        , const RenderTextureInterfacePtr * _textures
+        , uint32_t _textureCount, const DocumentPtr & _doc )
     {
         const RenderMaterialStage * stage = m_materialStageIndexer.find( _materialName );
 
@@ -434,7 +434,7 @@ namespace Mengine
         }
 #endif
 
-        RenderMaterialInterfacePtr material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures, _doc );
+        RenderMaterialInterfacePtr material = this->getMaterial2( _materialName, stage, _primitiveType, _textures, _textureCount, _doc );
 
         return material;
     }
@@ -442,8 +442,8 @@ namespace Mengine
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial2( const ConstString & _materialName
         , const RenderMaterialStage * _stage
         , EPrimitiveType _primitiveType
-        , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc )
+        , const RenderTextureInterfacePtr * _textures
+        , uint32_t _textureCount, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stage, "invalid get stage for material '%s'"
             , _materialName.c_str()
@@ -486,8 +486,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial3( EMaterial _materialId
         , EPrimitiveType _primitiveType
-        , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc )
+        , const RenderTextureInterfacePtr * _textures
+        , uint32_t _textureCount, const DocumentPtr & _doc )
     {
         const RenderMaterialStage * stage = m_defaultStages[_materialId];
 

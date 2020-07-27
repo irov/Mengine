@@ -16,7 +16,7 @@ namespace Mengine
             if( _materialName.empty() == false )
             {
                 RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( _materialName, PT_TRIANGLELIST, 0, nullptr, _doc );
+                    ->getMaterial( _materialName, PT_TRIANGLELIST, nullptr, 0, _doc );
 
                 return material;
             }
@@ -51,7 +51,7 @@ namespace Mengine
             }
 
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                ->getMaterial3( materialId, PT_TRIANGLELIST, 0, nullptr, _doc );
+                ->getMaterial3( materialId, PT_TRIANGLELIST, nullptr, 0, _doc );
 
             return material;
         }
@@ -92,7 +92,7 @@ namespace Mengine
                 }
 
                 RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( _materialName, PT_TRIANGLELIST, texturesNum, textures, _doc );
+                    ->getMaterial( _materialName, PT_TRIANGLELIST, textures, texturesNum, _doc );
 
                 return material;
             }
@@ -296,7 +296,7 @@ namespace Mengine
             }
 
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                ->getMaterial3( materialId, PT_TRIANGLELIST, texturesNum, textures, _doc );
+                ->getMaterial3( materialId, PT_TRIANGLELIST, textures, texturesNum, _doc );
 
             return material;
         }
@@ -306,7 +306,7 @@ namespace Mengine
             if( _materialName.empty() == false )
             {
                 RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( _materialName, PT_TRIANGLELIST, _textureCount, _textures, _doc );
+                    ->getMaterial( _materialName, PT_TRIANGLELIST, _textures, _textureCount, _doc );
 
                 return material;
             }
@@ -481,7 +481,7 @@ namespace Mengine
             }
 
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                ->getMaterial3( materialId, PT_TRIANGLELIST, _textureCount, _textures, _doc );
+                ->getMaterial3( materialId, PT_TRIANGLELIST, _textures, _textureCount, _doc );
 
             return material;
         }
@@ -586,7 +586,7 @@ namespace Mengine
         , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) const
     {
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-            ->getMaterial3( _materialId, _primitiveType, _textureCount, _textures, _doc );
+            ->getMaterial3( _materialId, _primitiveType, _textures, _textureCount, _doc );
 
         return material;
     }

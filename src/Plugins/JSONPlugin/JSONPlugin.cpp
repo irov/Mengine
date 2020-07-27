@@ -72,7 +72,7 @@ namespace Mengine
             return true;
         } );
 
-        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, [this]()
+        PLUGIN_SERVICE_LEAVE( LoaderServiceInterface, []()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
         } );
@@ -86,7 +86,7 @@ namespace Mengine
             return true;
         } );
 
-        PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, [this]()
+        PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, []()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
         } );

@@ -16,10 +16,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceVideo::ResourceVideo()
-        : m_alpha( false )
-        , m_noSeek( false )
-        , m_frameRate( 0.f )
+        : m_frameRate( 0.f )
         , m_duration( 0.f )
+        , m_alpha( false )
+        , m_noSeek( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////

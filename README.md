@@ -28,7 +28,7 @@ Mengine is an multiple platforms engine for creating and running graphical games
 
 Удачи в сборке, и использованию!
 
-Для того что бы начал работать cppcheck нужно в .git/config добавить 
+Для того что бы начал работать [cppcheck](http://cppcheck.sourceforge.net/) нужно в .git/config добавить 
 
 ```
 [include]

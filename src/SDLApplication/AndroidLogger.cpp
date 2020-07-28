@@ -39,7 +39,7 @@ namespace Mengine
         case LM_INFO:
             prio = ANDROID_LOG_INFO;
             break;
-        case LM_MAX:
+        case LM_VERBOSE:
             prio = ANDROID_LOG_VERBOSE;
             break;
         default:

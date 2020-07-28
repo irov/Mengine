@@ -1,23 +1,28 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
-#include "Interface/MemoryInterface.h"
+#include "Interface/OpenGLRenderImageExtensionInterface.h"
+
+#include "OpenGLRenderTargetTexture.h"
 
 #include "Kernel/Factorable.h"
+
+#include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MockupRenderImage
+    class OpenGLRenderImageTarget
         : public RenderImageInterface
+        , public OpenGLRenderImageExtensionInterface
         , public Factorable
     {
     public:
-        MockupRenderImage();
-        ~MockupRenderImage() override;
+        OpenGLRenderImageTarget();
+        ~OpenGLRenderImageTarget() override;
 
     public:
-        void initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat );
+        void initialize( const OpenGLRenderTargetTexturePtr & _renderTarget );
         void finalize();
 
     public:
@@ -27,7 +32,7 @@ namespace Mengine
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 
-    public:
+    protected:
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
         uint32_t getHWChannels() const override;
@@ -40,7 +45,7 @@ namespace Mengine
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
 
-    public:
+    protected:
         Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( uint32_t _level, bool _successful ) override;
 
@@ -48,22 +53,12 @@ namespace Mengine
         UnknownPointer getRenderImageExtention() override;
 
     protected:
-        MemoryInterfacePtr m_memory;
+        GLuint getUID() const override;
 
-        RenderImageProviderInterfacePtr m_renderImageProvider;
-
-        uint32_t m_hwMipmaps;
-        uint32_t m_hwWidth;
-        uint32_t m_hwHeight;
-        uint32_t m_hwChannels;
-        uint32_t m_hwDepth;
-
-        EPixelFormat m_hwPixelFormat;
-
-        float m_hwWidthInv;
-        float m_hwHeightInv;
+    protected:
+        OpenGLRenderTargetTexturePtr m_renderTarget;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MockupRenderImage> MockupRenderImagePtr;
+    typedef IntrusivePtr<OpenGLRenderImageTarget> OpenGLRenderImageTargetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

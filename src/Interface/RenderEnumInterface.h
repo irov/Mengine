@@ -157,13 +157,6 @@ namespace Mengine
         BLF_LOCK_NOSYSLOCK
     };
     //////////////////////////////////////////////////////////////////////////
-    enum ERenderImageMode
-    {
-        ERIM_NORMAL = 0,
-        ERIM_DYNAMIC,
-        ERIM_RENDER_TARGET
-    };
-    //////////////////////////////////////////////////////////////////////////
     enum ERenderBatchMode
     {
         ERBM_NONE = 0,

@@ -159,33 +159,6 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
-    {
-        uint32_t HWWidth = _width;
-        uint32_t HWHeight = _height;
-        uint32_t HWChannels = _channels;
-        uint32_t HWDepth = _depth;
-        EPixelFormat HWFormat = _format;
-
-        this->updateImageParams_( &HWWidth, &HWHeight, &HWChannels, &HWDepth, &HWFormat );
-
-        RenderImageInterfacePtr image = RENDER_SYSTEM()
-            ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( image, "couldn't create image size %d:%d channels %d (doc %s)"            
-            , HWWidth
-            , HWHeight
-            , HWChannels
-            , MENGINE_DOCUMENT_STR( _doc )
-        );
-
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( texture );
-
-        return texture;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath )
     {
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );

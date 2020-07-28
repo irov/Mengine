@@ -7,7 +7,6 @@ namespace Mengine
     DX9RenderImage::DX9RenderImage()
         : m_pD3DDevice( nullptr )
         , m_pD3DTexture( nullptr )
-        , m_mode( ERIM_NORMAL )
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
@@ -24,12 +23,10 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( IDirect3DDevice9 * _pD3DDevice, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( IDirect3DDevice9 * _pD3DDevice, IDirect3DTexture9 * _d3dInterface, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
     {
         m_pD3DDevice = _pD3DDevice;
         m_pD3DTexture = _d3dInterface;
-
-        m_mode = _mode;
 
         m_hwMipmaps = _mipmaps;
         m_hwWidth = _hwWidth;
@@ -125,11 +122,6 @@ namespace Mengine
     IDirect3DTexture9 * DX9RenderImage::getD3DTexture() const
     {
         return m_pD3DTexture;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ERenderImageMode DX9RenderImage::getMode() const
-    {
-        return m_mode;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderImage::getHWWidth() const

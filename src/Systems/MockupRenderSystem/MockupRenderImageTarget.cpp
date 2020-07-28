@@ -56,11 +56,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ERenderImageMode MockupRenderImageTarget::getMode() const
-    {
-        return ERIM_RENDER_TARGET;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderImageTarget::getHWWidth() const
     {
         uint32_t HWWidth = m_target->getHWWidth();
@@ -77,7 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EPixelFormat MockupRenderImageTarget::getHWPixelFormat() const
     {
-        EPixelFormat HWPixelFormat = m_target->getPixelFormat();
+        EPixelFormat HWPixelFormat = m_target->getHWPixelFormat();
 
         return HWPixelFormat;
     }
@@ -98,14 +93,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderImageTarget::getHWChannels() const
     {
-        uint32_t HWChannels = m_target->getChannels();
+        uint32_t HWChannels = m_target->getHWChannels();
 
         return HWChannels;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderImageTarget::getHWDepth() const
     {
-        uint32_t HWDepth = m_target->getDepth();
+        uint32_t HWDepth = m_target->getHWDepth();
 
         return HWDepth;
     }

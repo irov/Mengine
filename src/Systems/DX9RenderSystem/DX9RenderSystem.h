@@ -96,12 +96,11 @@ namespace Mengine
         void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc ) override;
-        RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc ) override;
 
         RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc ) override;
         RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc ) override;
 
-        RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
+        RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
 
         bool beginScene() override;
         void endScene() override;
@@ -180,7 +179,7 @@ namespace Mengine
         //void createSyncTargets_();
 
         bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, EPixelFormat Format, D3DPOOL Pool, IDirect3DTexture9 ** const _ppD3DTexture );
-        DX9RenderImagePtr createDX9RenderImage_( IDirect3DTexture9 * _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc );
+        DX9RenderImagePtr createDX9RenderImage_( IDirect3DTexture9 * _pD3DTexture, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc );
 
     protected:
         void onDestroyDX9RenderImage_( DX9RenderImage * _image );

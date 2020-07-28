@@ -195,7 +195,7 @@ namespace Mengine
         render->setRenderTarget( renderTarget );
 
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
-            ->createRenderTargetImage( renderTarget, MENGINE_DOCUMENT_FACTORABLE );
+            ->createRenderImageTarget( renderTarget, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetImage, "invalid create render target image" );
 

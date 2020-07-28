@@ -26,6 +26,10 @@ src
     OpenGLRenderVertexShader.h
     OpenGLRenderImage.cpp
     OpenGLRenderImage.h
+    OpenGLRenderImageTarget.cpp
+    OpenGLRenderImageTarget.h
+    OpenGLRenderTargetTexture.cpp
+    OpenGLRenderTargetTexture.h
 )
 
 if(MENGINE_TARGET_IOS)

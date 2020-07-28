@@ -199,26 +199,7 @@ namespace Mengine
             , _depth
         );
 
-        MockupRenderImagePtr dxTexture = this->createRenderImage_( ERIM_NORMAL, _mipmaps, _width, _height, _channels, _depth, _format, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, "invalid create render texture" );
-
-        return dxTexture;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MockupRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
-    {
-        MENGINE_UNUSED( _depth );
-
-        LOGGER_INFO( "texture dynamic created %dx%d %d:%d depth '%d'"
-            , _width
-            , _height
-            , _format
-            , _channels
-            , _depth
-        );
-
-        MockupRenderImagePtr dxTexture = this->createRenderImage_( ERIM_DYNAMIC, 1, _width, _height, _channels, _depth, _format, _doc );
+        MockupRenderImagePtr dxTexture = this->createRenderImage_( _mipmaps, _width, _height, _channels, _depth, _format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, "invalid create render texture" );
 
@@ -277,7 +258,7 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MockupRenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
+    RenderImageInterfacePtr MockupRenderSystem::createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
     {
         MockupRenderTargetTexturePtr targetTexture = stdex::intrusive_static_cast<MockupRenderTargetTexturePtr>(_renderTarget);
 
@@ -824,7 +805,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
+    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
     {
 #ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
@@ -845,7 +826,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage );
 
-        dx9RenderImage->initialize( _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
+        dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 
 #ifdef MENGINE_DEBUG
         ++m_textureCount;

@@ -167,7 +167,7 @@ namespace Mengine
         const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
         RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
-            ->createDynamicTexture( dataInfo->width, dataInfo->height, channels, 1, dataInfo->format, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( 1, dataInfo->width, dataInfo->height, channels, 1, dataInfo->format, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicTexture, "'%s' resource '%s' can`t create dynamic texture"
             , this->getName().c_str()

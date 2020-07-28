@@ -82,29 +82,24 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getWidth() const
-    {
-        return m_width;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHeight() const
-    {
-        return m_height;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getChannels() const
+    uint32_t DX9RenderTargetTexture::getHWChannels() const
     {
         return m_channels;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getDepth() const
+    uint32_t DX9RenderTargetTexture::getHWDepth() const
     {
         return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
-    EPixelFormat DX9RenderTargetTexture::getPixelFormat() const
+    EPixelFormat DX9RenderTargetTexture::getHWPixelFormat() const
     {
         return m_format;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX9RenderTargetTexture::getHWMipmaps() const
+    {
+        return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderTargetTexture::getHWWidth() const

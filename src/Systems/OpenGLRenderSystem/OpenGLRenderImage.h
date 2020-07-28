@@ -6,8 +6,6 @@
 
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
-#include "Kernel/ServantBase.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,7 +19,7 @@ namespace Mengine
         ~OpenGLRenderImage() override;
 
     public:
-        bool initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
+        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
         void finalize();
 
     public:
@@ -40,8 +38,6 @@ namespace Mengine
         bool unlock( uint32_t _level, bool _successful ) override;
 
     public:
-        ERenderImageMode getMode() const override;
-
         uint32_t getHWMipmaps() const override;
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
@@ -83,7 +79,8 @@ namespace Mengine
 
         EPixelFormat m_hwPixelFormat;
 
-        ERenderImageMode m_mode;
+        uint32_t m_width;
+        uint32_t m_height;
 
         uint32_t m_hwMipmaps;
         uint32_t m_hwWidth;

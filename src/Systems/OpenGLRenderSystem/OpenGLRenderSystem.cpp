@@ -54,6 +54,8 @@ namespace Mengine
         m_factoryRenderVertexBuffer = Helper::makeFactoryDefault<OpenGLRenderVertexBuffer>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderIndexBuffer = Helper::makeFactoryDefault<OpenGLRenderIndexBuffer>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderImage = Helper::makeFactoryPoolWithListener<OpenGLRenderImage, 128>( this, &OpenGLRenderSystem::onRenderImageDestroy_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<OpenGLRenderImageTarget, 128>( this, &OpenGLRenderSystem::onRenderImageTargetDestroy_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<OpenGLRenderTargetTexture, 128>( this, &OpenGLRenderSystem::onRenderTargetTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexAttribute = Helper::makeFactoryPool<OpenGLRenderVertexAttribute, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<OpenGLRenderFragmentShader, 16>( this, &OpenGLRenderSystem::onRenderFragmentShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexShader, 16>( this, &OpenGLRenderSystem::onRenderVertexShaderDestroy_, MENGINE_DOCUMENT_FACTORABLE );
@@ -89,6 +91,8 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImageTarget );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetTexture );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
@@ -98,6 +102,8 @@ namespace Mengine
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
         m_factoryRenderImage = nullptr;
+        m_factoryRenderImageTarget = nullptr;
+        m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderVertexAttribute = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
@@ -614,12 +620,9 @@ namespace Mengine
         vertexAttribute->enable();
 
         GLenum mode = Helper::toGLPrimitiveMode( _type );
-        const RenderIndex * baseIndex = nullptr;
-        const RenderIndex * offsetIndex = baseIndex + _startIndex;
-
         GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
 
-        GLCALL( glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(offsetIndex)) );
+        GLCALL( glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(_startIndex)) );
 
         vertexAttribute->disable();
 
@@ -655,8 +658,7 @@ namespace Mengine
 
         if( _texture != nullptr )
         {
-            OpenGLRenderImage * texture = stdex::intrusive_get<OpenGLRenderImage *>( _texture );
-            IntrusivePtrBase::intrusive_ptr_setup( tStage.texture, texture );
+            IntrusivePtrBase::intrusive_ptr_setup( tStage.texture, _texture.get() );
         }
         else
         {
@@ -855,8 +857,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create" );
 
-        if( image->initialize( ERIM_NORMAL
-            , _mipmaps
+        if( image->initialize( _mipmaps
             , _width
             , _height
             , hwChannels
@@ -1044,9 +1045,12 @@ namespace Mengine
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
     {
-        MENGINE_UNUSED( _depth );
+        MENGINE_UNUSED( _width );
+        MENGINE_UNUSED( _height );
+        MENGINE_UNUSED( _channels );
+        MENGINE_UNUSED( _format );
         MENGINE_UNUSED( _doc );
 
         uint32_t hwChannels = 0;
@@ -1071,17 +1075,9 @@ namespace Mengine
             , hwFormat
         );
 
-        OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
+        OpenGLRenderTargetTexturePtr renderTarget = m_factoryRenderTargetTexture->createObject( _doc );
 
-        if( image->initialize( ERIM_DYNAMIC
-            , 1
-            , _width
-            , _height
-            , hwChannels
-            , hwFormat
-            , textureInternalFormat
-            , textureColorFormat
-            , textureColorDataType ) == false )
+        if( renderTarget->initialize( _width, _height, hwChannels, hwFormat, textureInternalFormat, textureColorFormat, textureColorDataType ) == false )
         {
             LOGGER_ERROR( "invalid initialize"
             );
@@ -1089,23 +1085,10 @@ namespace Mengine
             return nullptr;
         }
 
-        OpenGLRenderImage * image_ptr = image.get();
-        m_cacheRenderImages.push_back( image_ptr );
+        OpenGLRenderTargetTexture * renderTarget_ptr = renderTarget.get();
+        m_cacheRenderTargetTextures.push_back( renderTarget_ptr );
 
-        return image;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
-    {
-        MENGINE_UNUSED( _width );
-        MENGINE_UNUSED( _height );
-        MENGINE_UNUSED( _channels );
-        MENGINE_UNUSED( _format );
-        MENGINE_UNUSED( _doc );
-
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return nullptr;
+        return renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
@@ -1121,14 +1104,17 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
+    RenderImageInterfacePtr OpenGLRenderSystem::createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
     {
-        MENGINE_UNUSED( _renderTarget );
-        MENGINE_UNUSED( _doc );
+        OpenGLRenderTargetTexturePtr targetTexture = stdex::intrusive_static_cast<OpenGLRenderTargetTexturePtr>(_renderTarget);
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        OpenGLRenderImageTargetPtr imageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
-        return nullptr;
+        MENGINE_ASSERTION_MEMORY_PANIC( imageTarget );
+
+        imageTarget->initialize( targetTexture );
+
+        return imageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
@@ -1145,6 +1131,38 @@ namespace Mengine
 
         *it_found = m_cacheRenderImages.back();
         m_cacheRenderImages.pop_back();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _image )
+    {
+        VectorCacheRenderImageTargets::iterator it_found = std::find( m_cacheRenderImageTargets.begin(), m_cacheRenderImageTargets.end(), _image );
+
+        if( it_found == m_cacheRenderImageTargets.end() )
+        {
+            return;
+        }
+
+        OpenGLRenderImageTarget * image = *it_found;
+        image->finalize();
+
+        *it_found = m_cacheRenderImageTargets.back();
+        m_cacheRenderImageTargets.pop_back();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _renderTarget )
+    {
+        VectorCacheRenderTargetTextures::iterator it_found = std::find( m_cacheRenderTargetTextures.begin(), m_cacheRenderTargetTextures.end(), _renderTarget );
+
+        if( it_found == m_cacheRenderTargetTextures.end() )
+        {
+            return;
+        }
+
+        OpenGLRenderTargetTexture * renderTarget = *it_found;
+        renderTarget->finalize();
+
+        *it_found = m_cacheRenderTargetTextures.back();
+        m_cacheRenderTargetTextures.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader )

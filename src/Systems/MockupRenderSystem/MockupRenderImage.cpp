@@ -6,8 +6,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MockupRenderImage::MockupRenderImage()
-        : m_mode( ERIM_NORMAL )
-        , m_hwMipmaps( 0 )
+        : m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwChannels( 0 )
@@ -22,10 +21,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImage::initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
+    void MockupRenderImage::initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
     {
-        m_mode = _mode;
-
         m_hwMipmaps = _mipmaps;
         m_hwWidth = _hwWidth;
         m_hwHeight = _hwHeight;
@@ -88,11 +85,6 @@ namespace Mengine
         m_memory = nullptr;
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ERenderImageMode MockupRenderImage::getMode() const
-    {
-        return m_mode;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderImage::getHWWidth() const

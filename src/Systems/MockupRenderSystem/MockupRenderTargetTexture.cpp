@@ -6,12 +6,12 @@ namespace Mengine
     MockupRenderTargetTexture::MockupRenderTargetTexture()
         : m_width( 0 )
         , m_height( 0 )
-        , m_channels( 0 )
-        , m_format( PF_UNKNOWN )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
+        , m_hwChannels( 0 )
+        , m_hwPixelFormat( PF_UNKNOWN )
    {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -23,14 +23,14 @@ namespace Mengine
     {
         m_width = _width;
         m_height = _height;
-        m_channels = _channels;
-        m_format = _format;
-
-        m_hwWidth = _width;
-        m_hwHeight = _height;
+        m_hwWidth = Helper::getTexturePOW2( _width );
+        m_hwHeight = Helper::getTexturePOW2( _height );
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
+
+        m_hwChannels = _channels;
+        m_hwPixelFormat = _format;
 
         if( this->_initialize() == false )
         {
@@ -55,29 +55,9 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderTargetTexture::getWidth() const
+    uint32_t MockupRenderTargetTexture::getHWMipmaps() const
     {
-        return m_width;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderTargetTexture::getHeight() const
-    {
-        return m_height;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderTargetTexture::getChannels() const
-    {
-        return m_channels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderTargetTexture::getDepth() const
-    {
-        return 1U;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EPixelFormat MockupRenderTargetTexture::getPixelFormat() const
-    {
-        return m_format;
+        return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderTargetTexture::getHWWidth() const
@@ -88,6 +68,21 @@ namespace Mengine
     uint32_t MockupRenderTargetTexture::getHWHeight() const
     {
         return m_hwHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderTargetTexture::getHWChannels() const
+    {
+        return m_hwChannels;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderTargetTexture::getHWDepth() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EPixelFormat MockupRenderTargetTexture::getHWPixelFormat() const
+    {
+        return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
     float MockupRenderTargetTexture::getHWWidthInv() const

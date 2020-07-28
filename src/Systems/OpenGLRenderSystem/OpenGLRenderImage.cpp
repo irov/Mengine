@@ -15,7 +15,8 @@ namespace Mengine
     OpenGLRenderImage::OpenGLRenderImage()
         : m_uid( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
-        , m_mode( ERIM_NORMAL )
+        , m_width( 0 )
+        , m_height( 0 )
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
@@ -39,7 +40,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+    bool OpenGLRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
         MENGINE_ASSERTION_FATAL( _width != 0 );
         MENGINE_ASSERTION_FATAL( _height != 0 );
@@ -80,10 +81,12 @@ namespace Mengine
         }
 
         m_uid = tuid;
-        m_mode = _mode;
+
+        m_width = _width;
+        m_height = _height;
         m_hwMipmaps = _mipmaps;
-        m_hwWidth = _width;
-        m_hwHeight = _height;
+        m_hwWidth = Helper::getTexturePOW2( _width );
+        m_hwHeight = Helper::getTexturePOW2( _height );
         m_hwChannels = _channels;
         m_hwPixelFormat = _pixelFormat;
         m_internalFormat = _internalFormat;
@@ -93,7 +96,7 @@ namespace Mengine
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
 
-        m_pow2 = Helper::isTexturePOW2( m_hwWidth ) && Helper::isTexturePOW2( m_hwHeight );
+        m_pow2 = Helper::isTexturePOW2( _width ) && Helper::isTexturePOW2( _height );
 
         m_lockFirst = true;
 
@@ -104,11 +107,6 @@ namespace Mengine
     {
         m_renderImageProvider = nullptr;
         m_lockMemory = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ERenderImageMode OpenGLRenderImage::getMode() const
-    {
-        return m_mode;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderImage::getHWMipmaps() const
@@ -415,19 +413,14 @@ namespace Mengine
         return m_uid;
     }
     //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getMinFilter() const
-    {
-        return m_minFilter;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setMinFilter( GLenum _minFilter )
     {
         m_minFilter = _minFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getMagFilter() const
+    GLenum OpenGLRenderImage::getMinFilter() const
     {
-        return m_magFilter;
+        return m_minFilter;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setMagFilter( GLenum _magFilter )
@@ -435,9 +428,9 @@ namespace Mengine
         m_magFilter = _magFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getWrapS() const
+    GLenum OpenGLRenderImage::getMagFilter() const
     {
-        return m_wrapS;
+        return m_magFilter;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setWrapS( GLenum _wrapS )
@@ -445,14 +438,19 @@ namespace Mengine
         m_wrapS = _wrapS;
     }
     //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getWrapT() const
+    GLenum OpenGLRenderImage::getWrapS() const
     {
-        return m_wrapT;
+        return m_wrapS;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setWrapT( GLenum _wrapT )
     {
         m_wrapT = _wrapT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLenum OpenGLRenderImage::getWrapT() const
+    {
+        return m_wrapT;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -5,6 +5,8 @@
 #include "Interface/PlatformInterface.h"
 
 #include "OpenGLRenderImage.h"
+#include "OpenGLRenderImageTarget.h"
+#include "OpenGLRenderTargetTexture.h"
 #include "OpenGLRenderVertexAttribute.h"
 #include "OpenGLRenderVertexBuffer.h"
 #include "OpenGLRenderIndexBuffer.h"
@@ -85,12 +87,11 @@ namespace Mengine
 
     public:
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc ) override;
-        RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc ) override;
 
         RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc ) override;
         RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc ) override;
 
-        RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
+        RenderImageInterfacePtr createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc ) override;
 
     public:
         bool beginScene() override;
@@ -128,6 +129,8 @@ namespace Mengine
 
     protected:
         void onRenderImageDestroy_( OpenGLRenderImage * _image );
+        void onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _image );
+        void onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _renderTarget );
         void onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader );
         void onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader );
         void onRenderProgramDestroy_( OpenGLRenderProgram * _program );
@@ -167,7 +170,7 @@ namespace Mengine
 
         struct TextureStage
         {
-            OpenGLRenderImage * texture = nullptr;
+            RenderImageInterface * texture = nullptr;
 
             GLenum minFilter = 0;
             GLenum magFilter = 0;
@@ -181,6 +184,12 @@ namespace Mengine
 
         typedef Vector<OpenGLRenderImage *> VectorCacheRenderImages;
         VectorCacheRenderImages m_cacheRenderImages;
+
+        typedef Vector<OpenGLRenderImageTarget *> VectorCacheRenderImageTargets;
+        VectorCacheRenderImageTargets m_cacheRenderImageTargets;
+
+        typedef Vector<OpenGLRenderTargetTexture *> VectorCacheRenderTargetTextures;
+        VectorCacheRenderTargetTextures m_cacheRenderTargetTextures;
 
         typedef Vector<OpenGLRenderVertexShader *> VectorCacheRenderVertexShaders;
         VectorCacheRenderVertexShaders m_cacheRenderVertexShaders;
@@ -199,6 +208,8 @@ namespace Mengine
         FactoryPtr m_factoryRenderVertexBuffer;
         FactoryPtr m_factoryRenderIndexBuffer;
         FactoryPtr m_factoryRenderImage;
+        FactoryPtr m_factoryRenderImageTarget;
+        FactoryPtr m_factoryRenderTargetTexture;        
         FactoryPtr m_factoryRenderVertexAttribute;
         FactoryPtr m_factoryRenderFragmentShader;
         FactoryPtr m_factoryRenderVertexShader;

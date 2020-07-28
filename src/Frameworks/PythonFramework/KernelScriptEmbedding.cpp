@@ -2569,8 +2569,10 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderTargetInterface, pybind::bases<Mixin>>( _kernel, "RenderTargetInterface", false )
-            .def( "getWidth", &RenderTargetInterface::getWidth )
-            .def( "getHeight", &RenderTargetInterface::getHeight )
+            .def_deprecated( "getWidth", &RenderTargetInterface::getHWWidth, "use getHWWidth" )
+            .def_deprecated( "getHeight", &RenderTargetInterface::getHWHeight, "use getHWHeight" )
+            .def( "getHWWidth", &RenderTargetInterface::getHWWidth )
+            .def( "getHWHeight", &RenderTargetInterface::getHWHeight )
             ;
 
         pybind::interface_<SchedulerInterface, pybind::bases<Mixin>>( _kernel, "SchedulerInterface", true )

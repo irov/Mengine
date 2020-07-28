@@ -34,9 +34,6 @@ namespace Mengine
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 
     public:
-        ERenderImageMode getMode() const override;
-
-    public:
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
         uint32_t getHWChannels() const override;
@@ -65,4 +62,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderImageTarget> DX9RenderImageTargetPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

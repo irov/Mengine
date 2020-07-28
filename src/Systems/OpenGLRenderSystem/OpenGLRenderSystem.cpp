@@ -622,7 +622,7 @@ namespace Mengine
         GLenum mode = Helper::toGLPrimitiveMode( _type );
         GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
 
-        GLCALL( glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(_startIndex)) );
+        GLCALL( glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(_startIndex * sizeof( RenderIndex ))) );
 
         vertexAttribute->disable();
 

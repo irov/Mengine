@@ -15,6 +15,10 @@ namespace Mengine
     {
     public:
         virtual bool findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const = 0;
+
+    public:
+        typedef Lambda<bool( const ResourceImagePtr & )> LambdaFrames;
+        virtual bool visitFrames( const LambdaFrames & _lambdaFrames ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceTexturepackerInterface
@@ -29,9 +33,6 @@ namespace Mengine
 
     public:
         virtual const ResourceImagePtr & getAtlasImage() const = 0;
-
-    public:
-        virtual const VectorResourceImages & getFrames() const = 0;
 
     public:
         virtual void setResourceJSON( const ResourcePtr & _resourceJSON ) = 0;

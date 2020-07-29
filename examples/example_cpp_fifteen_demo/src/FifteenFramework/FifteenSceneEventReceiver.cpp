@@ -351,9 +351,7 @@ namespace Mengine
                 const int32_t randomIndexX = randomizer->getRandomRangei( 0, GRID_SIZE_X );
                 std::swap( _vector[ row ][ col ], _vector[ randomIndexY ][ randomIndexX ] );
             }
-
         }
-        
     }
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::calculateEmptyIndex()
@@ -369,7 +367,6 @@ namespace Mengine
                     m_emptyIndexY = row;
                     m_emptyIndexX = col;
                 }
-
             }
         }
     }
@@ -509,7 +506,6 @@ namespace Mengine
                 m_sprites.push_back( backgroundPart );
             }
         }
-
     }
     //////////////////////////////////////////////////////////////////////////
     bool FifteenSceneEventReceiver::setupBackground( const ConstString & _imagePath )
@@ -695,7 +691,6 @@ namespace Mengine
                 {
                     sum += this->checkBiggerGroups( row, col );
                 }
-                    
             }
         }
 

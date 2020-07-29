@@ -106,15 +106,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
+    bool ResourceTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
     {
         for( const ResourceImagePtr frame : m_frames )
         {
             if( _lambdaFrames( frame ) == false )
             {
-                return;
+                return false;
             }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceTexturepacker::setStripFrameNameExtension( bool _value )

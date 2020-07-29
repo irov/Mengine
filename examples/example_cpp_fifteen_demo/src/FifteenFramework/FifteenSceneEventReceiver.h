@@ -17,11 +17,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ShapeQuadFixedPtr>           VectorShapeQuadFixedPtr;
-    typedef Vector<Vector<HotSpotPolygonPtr>>   Vector2DHotSpotPolygonPtr;
-    typedef Vector<HotSpotPolygonPtr>           VectorHotSpotPolygonPtr;
-    typedef Vector<int32_t>                     VectorInt;
-    typedef Vector<VectorInt>                   GridVector;
+    typedef Vector<ShapeQuadFixedPtr> VectorShapeQuadFixedPtr;
+    typedef Vector<Vector<HotSpotPolygonPtr>> Vector2DHotSpotPolygonPtr;
+    typedef Vector<HotSpotPolygonPtr> VectorHotSpotPolygonPtr;
+    typedef Vector<int32_t> VectorInt;
+    typedef Vector<VectorInt> GridVector;
     //////////////////////////////////////////////////////////////////////////
     class FifteenSceneEventReceiver
         : public DummySceneEventReceiver
@@ -57,7 +57,7 @@ namespace Mengine
 
     // game
     protected:
-        bool setupGame( const ConstString _imagePath );
+        bool setupGame( const ConstString & _imagePath );
         bool setupBackground( const ConstString & _imagePath);
         void setupRandomMap();
         void setupHotspots();

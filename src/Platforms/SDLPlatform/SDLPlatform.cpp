@@ -950,11 +950,6 @@ namespace Mengine
         width = (uint32_t)rect.w;
         height = (uint32_t)rect.h;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if( m_window == nullptr )
-        {
-            return false;
-        }
-
         SDL_Rect rect;
         if( SDL_GetDisplayBounds( displayIndex, &rect ) != 0 )
         {

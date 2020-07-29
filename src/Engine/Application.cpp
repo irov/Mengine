@@ -184,31 +184,43 @@ namespace Mengine
     {
         if( this->registerBaseTypes_() == false )
         {
+            LOGGER_ERROR( "invalid register base types" );
+
             return false;
         }
 
         if( this->registerBaseNodeTypes_() == false )
         {
+            LOGGER_ERROR( "invalid register base node types" );
+
             return false;
         }
 
         if( this->registerBaseResourceTypes_() == false )
         {
+            LOGGER_ERROR( "invalid register resource types" );
+
             return false;
         }
 
         if( this->registerEntityGenerator_() == false )
         {
+            LOGGER_ERROR( "invalid register entity generator" );
+
             return false;
         }
 
         if( this->registerSceneGenerator_() == false )
         {
+            LOGGER_ERROR( "invalid register scene generator" );
+
             return false;
         }
 
         if( this->registerArrowGenerator_() == false )
         {
+            LOGGER_ERROR( "invalid register arrow generator" );
+
             return false;
         }
 
@@ -303,8 +315,15 @@ namespace Mengine
 
         if( this->calcWindowResolution( fullscreen, &m_currentResolution ) == false )
         {
+            LOGGER_ERROR( "invalid calc window resolution" );
+
             return false;
         }
+
+        LOGGER_MESSAGE( "current resolution [%u:%u]"
+            , m_currentResolution.getWidth()
+            , m_currentResolution.getHeight()
+        );
         
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {

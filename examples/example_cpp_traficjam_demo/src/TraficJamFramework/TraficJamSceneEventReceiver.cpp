@@ -625,14 +625,12 @@ namespace Mengine
             Cook::addFunction(race_end, this, &TraficJamSceneEventReceiver::resetGame);
 
             return true;
-
         });
 
         m_chain = GOAP_SERVICE()
             ->makeChain(source, nullptr, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE);
 
         m_chain->run();
-
     }
     //////////////////////////////////////////////////////////////////////////
     void TraficJamSceneEventReceiver::clearCars()

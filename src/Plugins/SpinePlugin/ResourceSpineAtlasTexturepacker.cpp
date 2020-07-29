@@ -87,15 +87,13 @@ namespace Mengine
             const ResourceImagePtr & atlasImage = unknownResourceTexturepacker->getAtlasImage();
             page->rendererObject = atlasImage.get();
 
-            const VectorResourceImages & frames = unknownResourceTexturepacker->getFrames();
-
-            for( const ResourceImagePtr & frame : frames )
+            unknownResourceTexturepacker->visitFrames( [&page, &atlasWidthF, &atlasHeightF, &atlasWidthInv, &atlasHeightInv, &lastRegion, &atlas]( const ResourceImagePtr & _frame )
             {
                 spAtlasRegion * region = spAtlasRegion_create();
 
                 region->page = page;
 
-                const ConstString & frame_name = frame->getName();
+                const ConstString & frame_name = _frame->getName();
 
                 ConstString::size_type frame_name_size = frame_name.size();
 
@@ -105,18 +103,18 @@ namespace Mengine
 
                 region->name = region_name;
 
-                bool uvImageRotate = frame->isUVImageRotate();
+                bool uvImageRotate = _frame->isUVImageRotate();
 
                 region->rotate = uvImageRotate;
 
                 region->flip = 0; //TODO
 
-                const mt::uv4f & uv = frame->getUVImage();
+                const mt::uv4f & uv = _frame->getUVImage();
 
                 region->x = (int)(uv.p0.x * atlasWidthF + 0.5f);
                 region->y = (int)(uv.p0.y * atlasHeightF + 0.5f);
 
-                const mt::vec2f & size = frame->getSize();
+                const mt::vec2f & size = _frame->getSize();
 
                 region->width = (int)(size.x + 0.5f);
                 region->height = (int)(size.y + 0.5f);
@@ -135,12 +133,12 @@ namespace Mengine
                     region->v2 = (region->y + region->height) * atlasHeightInv;
                 }
 
-                const mt::vec2f & maxSize = frame->getMaxSize();
+                const mt::vec2f & maxSize = _frame->getMaxSize();
 
                 region->originalWidth = (int)(maxSize.x + 0.5f);
                 region->originalHeight = (int)(maxSize.y + 0.5f);
 
-                const mt::vec2f & offset = frame->getOffset();
+                const mt::vec2f & offset = _frame->getOffset();
 
                 region->offsetX = (int)(maxSize.x - size.x - offset.x + 0.5f);
                 region->offsetY = (int)(maxSize.y - size.y - offset.y + 0.5f);
@@ -157,7 +155,9 @@ namespace Mengine
                 }
 
                 lastRegion = region;
-            }
+
+                return true;
+            } );
         }
 
         m_atlas = atlas;

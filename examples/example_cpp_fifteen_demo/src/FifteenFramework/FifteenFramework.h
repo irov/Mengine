@@ -17,5 +17,4 @@ namespace Mengine
         bool _initializeFramework() override;
         void _finalizeFramework() override;
     };
-    //////////////////////////////////////////////////////////////////////////
 }

@@ -35,10 +35,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    constexpr const int32_t GRID_SIZE_X = 8;
-    constexpr const int32_t GRID_SIZE_Y = 8;
-    constexpr const int32_t GRID_LENGTH = GRID_SIZE_Y * GRID_SIZE_X;
-    constexpr const uint32_t IMAGE_COUNT = 4;
+    static MENGINE_CONSTEXPR int32_t GRID_SIZE_X = 2;
+    static MENGINE_CONSTEXPR int32_t GRID_SIZE_Y = 2;
+    static MENGINE_CONSTEXPR int32_t GRID_LENGTH = GRID_SIZE_Y * GRID_SIZE_X;
+
+    static MENGINE_CONSTEXPR int32_t HIGHLIGHT_COUNT = 3;
+    static MENGINE_CONSTEXPR float HIGHLIGHT_INTERVAL = 100.f;
+
+    static MENGINE_CONSTEXPR uint32_t IMAGE_COUNT = 4;
     //////////////////////////////////////////////////////////////////////////
     FifteenSceneEventReceiver::FifteenSceneEventReceiver()
     {
@@ -114,8 +118,7 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-
-        this->setupGame(STRINGIZE_STRING_LOCAL("image_0.jpg"));
+        this->setupGame( STRINGIZE_STRING_LOCAL( "image_0.jpg" ) );
 
         return true;
     }
@@ -147,11 +150,11 @@ namespace Mengine
     void FifteenSceneEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
-        
+
         LOGGER_MESSAGE( "Scene onEntityDeactivate [%s]"
             , m_scene->getName().c_str()
         );
-        
+
         this->clearSprites();
         this->clearHotspots();
         this->clearGameNode();
@@ -223,7 +226,7 @@ namespace Mengine
         return hotspot;
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageDefaultPtr FifteenSceneEventReceiver::createImageSubstractResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::vec4f & _splitSize)
+    ResourceImageDefaultPtr FifteenSceneEventReceiver::createImageSubstractResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::vec4f & _splitSize )
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( _fileGroupName );
@@ -233,7 +236,7 @@ namespace Mengine
 
         mt::vec2f maxSize;
 
-        if (_maxSize.x < 0.f || _maxSize.y < 0.f)
+        if( _maxSize.x < 0.f || _maxSize.y < 0.f )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -244,15 +247,15 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder );
 
-            if ( imageDecoder->prepareData( stream ) == false)
+            if( imageDecoder->prepareData( stream ) == false )
             {
                 return nullptr;
             }
 
             const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-            maxSize.x = static_cast<float>( dataInfo->width );
-            maxSize.y = static_cast<float>( dataInfo->height );
+            maxSize.x = static_cast<float>(dataInfo->width);
+            maxSize.y = static_cast<float>(dataInfo->height);
         }
         else
         {
@@ -261,7 +264,7 @@ namespace Mengine
 
         ResourceImageDefaultPtr resource = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC ( resource );
+        MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
         resource->setName( _resourceName );
 
@@ -276,7 +279,7 @@ namespace Mengine
         maxSize.x *= gridSplit.x;
         maxSize.y *= gridSplit.y;
 
-        if ( resource->setup( fileGroup, _filePath, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
+        if( resource->setup( fileGroup, _filePath, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
         {
             return nullptr;
         }
@@ -312,8 +315,8 @@ namespace Mengine
 
             const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-            maxSize.x = static_cast<float>( dataInfo->width );
-            maxSize.y = static_cast<float>( dataInfo->height );
+            maxSize.x = static_cast<float>(dataInfo->width);
+            maxSize.y = static_cast<float>(dataInfo->height);
         }
         else
         {
@@ -342,27 +345,27 @@ namespace Mengine
         const RandomizerInterfacePtr randomizer = PLAYER_SERVICE()
             ->getRandomizer();
 
-        for ( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
-            const int32_t randomIndexY = randomizer->getRandomRangei( 0, GRID_SIZE_Y);
+            const int32_t randomIndexY = randomizer->getRandomRangei( 0, GRID_SIZE_Y );
 
-            for ( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
                 const int32_t randomIndexX = randomizer->getRandomRangei( 0, GRID_SIZE_X );
-                std::swap( _vector[ row ][ col ], _vector[ randomIndexY ][ randomIndexX ] );
+                std::swap( _vector[row][col], _vector[randomIndexY][randomIndexX] );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::calculateEmptyIndex()
     {
-        for (int32_t row = 0; row < GRID_SIZE_Y; row++)
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
-            for (int32_t col = 0; col < GRID_SIZE_X; col++)
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
-                const int32_t empty = m_map[ row ][ col ];
+                const int32_t empty = m_map[row][col];
 
-                if (empty == GRID_LENGTH - 1)
+                if( empty == GRID_LENGTH - 1 )
                 {
                     m_emptyIndexY = row;
                     m_emptyIndexX = col;
@@ -377,7 +380,7 @@ namespace Mengine
 
         bool solutionExist = false;
 
-        while ( !solutionExist )
+        while( !solutionExist )
         {
             this->shuffle( m_map );
 
@@ -395,13 +398,13 @@ namespace Mengine
         m_minimumDistanceX = hotspotSize.x;
         m_minimumDistanceY = hotspotSize.y;
 
-        for ( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
             Vector<HotSpotPolygonPtr> hotspotRow;
 
             m_hotspots.push_back( hotspotRow );
 
-            for ( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
                 ConstString name = Helper::stringizeStringFormat( "HotSpot_%d_%d", row, col );
 
@@ -411,28 +414,29 @@ namespace Mengine
 
                 hotspot->setLocalPosition( { col * hotspotSize.x, row * hotspotSize.y, 0.f } );
 
-                m_hotspots[ row ].push_back( hotspot );
+                m_hotspots[row].push_back( hotspot );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::setupSprites()
     {
-        for ( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
-            for ( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
-                int32_t index = m_map[ row ][ col ];
-                if ( index != GRID_LENGTH - 1 )
+                int32_t index = m_map[row][col];
+                if( index != GRID_LENGTH - 1 )
                 {
-                    m_hotspots[ row ][ col ]->addChild( m_sprites[ index ] );
+                    m_hotspots[row][col]->addChild( m_sprites[index] );
                 }
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FifteenSceneEventReceiver::setupGame( const ConstString  _imagePath )
+    bool FifteenSceneEventReceiver::setupGame( const ConstString & _imagePath )
     {
+
         // create game node
         NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -444,22 +448,22 @@ namespace Mengine
 
         m_scene->addChild( node );
 
-        const Resolution& resolution = APPLICATION_SERVICE()
-                ->getContentResolution();
+        const Resolution & resolution = APPLICATION_SERVICE()
+            ->getContentResolution();
 
         m_sceneSize.x = resolution.getWidthF();
         m_sceneSize.y = resolution.getHeightF();
 
-        for ( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
             VectorInt vectorRow;
 
             m_map.push_back( vectorRow );
-            for ( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
                 int32_t index = row * GRID_SIZE_X + col;
 
-                m_map[ row ].push_back( index  );
+                m_map[row].push_back( index );
             }
         }
 
@@ -469,14 +473,12 @@ namespace Mengine
         // setup background
         this->setupRandomMap();
         this->setupHotspots();
-        
-        bool setupBackgroundResult = this->setupBackground( _imagePath );
 
-        MENGINE_UNUSED( setupBackgroundResult );
+        bool setupBackgroundResult = this->setupBackground( _imagePath );
 
         MENGINE_ASSERTION_FATAL( setupBackgroundResult == true );
 
-        return true;
+        return setupBackgroundResult;
     }
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::createSplitBackgroundSprites( const ConstString & _name, const ConstString & _fileGroup, const FilePath & _filePath )
@@ -485,16 +487,16 @@ namespace Mengine
 
         mt::vec2f splitSize( { 1.f / GRID_SIZE_Y, 1.f / GRID_SIZE_X } );
 
-        for ( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
-            for ( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
                 ConstString name = Helper::stringizeStringFormat( "%s_%f_%f", _name.c_str(), row, col );
 
                 mt::vec2f spriteShiftMin = { splitSize.x * col, splitSize.y * row };
 
                 mt::vec2f spriteShiftMax = { spriteShiftMin.x + splitSize.x, spriteShiftMin.y + splitSize.y };
-                ResourceImageDefaultPtr substractResource = this->createImageSubstractResource( name, _fileGroup, _filePath, 
+                ResourceImageDefaultPtr substractResource = this->createImageSubstractResource( name, _fileGroup, _filePath,
                     { -1.f, -1.f }, { spriteShiftMin, spriteShiftMax } );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( substractResource );
@@ -520,22 +522,23 @@ namespace Mengine
         FilePath imagePath = Helper::stringizeFilePath( _imagePath.c_str() );
 
         // setup resource
-        ResourceImageDefaultPtr resourceImage = this->createImageResource( STRINGIZE_STRING_LOCAL("Background"),
-            STRINGIZE_STRING_LOCAL("Assets"), imagePath, { -1.f, -1.f } );
+        ResourceImageDefaultPtr resourceImage = this->createImageResource( STRINGIZE_STRING_LOCAL( "Background" ),
+            STRINGIZE_STRING_LOCAL( "Assets" ), imagePath, { -1.f, -1.f } );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
+        if( resourceImage == nullptr )
+            return false;
 
         m_backgroundSize = resourceImage->getMaxSize();
 
         // setup sprite
-        m_background = this->createSprite( STRINGIZE_STRING_LOCAL("BG"), resourceImage );
+        m_background = this->createSprite( STRINGIZE_STRING_LOCAL( "BG" ), resourceImage );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_background );
 
-        this->createSplitBackgroundSprites( STRINGIZE_STRING_LOCAL("Background_Sprites"), STRINGIZE_STRING_LOCAL("Assets"), imagePath );
+        this->createSplitBackgroundSprites( STRINGIZE_STRING_LOCAL( "Background_Sprites" ), STRINGIZE_STRING_LOCAL( "Assets" ), imagePath );
 
         this->setupSprites();
-            
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -544,9 +547,9 @@ namespace Mengine
         GOAP::SourceInterfacePtr source = GOAP_SERVICE()
             ->makeSource();
 
-        Cook::addWhile( source, [ this ]( const GOAP::SourceInterfacePtr & _scope_while )
+        Cook::addWhile( source, [this]( const GOAP::SourceInterfacePtr & _scope_while )
         {
-            auto && [ race_play, race_end ] = Cook::addRace<2>( _scope_while );
+            auto && [race_play, race_end] = Cook::addRace<2>( _scope_while );
 
             Cook::addPrint( race_play, "NEW TURN" );
             Cook::addScope( race_play, this, &FifteenSceneEventReceiver::calculateAroundEmpty );
@@ -555,6 +558,7 @@ namespace Mengine
             Cook::addSemaphoreEqual( race_end, m_semaphoreGameOver, 1 );
             Cook::addScope( race_end, this, &FifteenSceneEventReceiver::scopeGameOver );
             Cook::addFunction( race_end, this, &FifteenSceneEventReceiver::resetGame );
+
 
             return true;
         } );
@@ -567,14 +571,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::makeTurn( const GOAP::SourceInterfacePtr & _scope, const HotSpotPolygonPtr & _hotspot )
     {
-        HotSpotPolygonPtr empty = m_hotspots[ m_emptyIndexY ][ m_emptyIndexX ];
+        HotSpotPolygonPtr empty = m_hotspots[m_emptyIndexY][m_emptyIndexX];
 
         Cook::addFunction( _scope, this, &FifteenSceneEventReceiver::swapPositions, empty, _hotspot );
     }
+    //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::resetGame()
     {
         uint32_t currentImage = m_imageIndex % IMAGE_COUNT;
-        ConstString currentImageName = Helper::stringizeStringFormat("image_%d.jpg", currentImage);
+        ConstString currentImageName = Helper::stringizeStringFormat( "image_%d.jpg", currentImage );
 
         this->clearSprites();
         this->clearHotspots();
@@ -592,24 +597,24 @@ namespace Mengine
     }
 
     //////////////////////////////////////////////////////////////////////////
-    void FifteenSceneEventReceiver::swapPositions( const HotSpotPolygonPtr & _empty,const HotSpotPolygonPtr & _hotspot )
+    void FifteenSceneEventReceiver::swapPositions( const HotSpotPolygonPtr & _empty, const HotSpotPolygonPtr & _hotspot )
     {
-        int32_t newEmptyIndexX = static_cast<int32_t>( _hotspot->getLocalPositionX() / m_minimumDistanceX );
-        int32_t newEmptyIndexY = static_cast<int32_t>( _hotspot->getLocalPositionY() / m_minimumDistanceY );
-        int32_t newValue = m_map[ newEmptyIndexY ][ newEmptyIndexX ];
-        int32_t oldValue = m_map[ m_emptyIndexY ][ m_emptyIndexX ];
+        int32_t newEmptyIndexX = static_cast<int32_t>(_hotspot->getLocalPositionX() / m_minimumDistanceX);
+        int32_t newEmptyIndexY = static_cast<int32_t>(_hotspot->getLocalPositionY() / m_minimumDistanceY);
+        int32_t newValue = m_map[newEmptyIndexY][newEmptyIndexX];
+        int32_t oldValue = m_map[m_emptyIndexY][m_emptyIndexX];
 
         mt::vec3f emptyPosition = _empty->getLocalPosition();
         mt::vec3f hotspotPosition = _hotspot->getLocalPosition();
 
         // swap empty and click hotspots
-        m_hotspots[ m_emptyIndexY ][ m_emptyIndexX ].swap( m_hotspots[ newEmptyIndexY ][ newEmptyIndexX ] );
-        m_hotspots[ m_emptyIndexY ][ m_emptyIndexX ]->setLocalPosition( emptyPosition );
-        m_hotspots[ newEmptyIndexY ][ newEmptyIndexX ]->setLocalPosition( hotspotPosition );
+        m_hotspots[m_emptyIndexY][m_emptyIndexX].swap( m_hotspots[newEmptyIndexY][newEmptyIndexX] );
+        m_hotspots[m_emptyIndexY][m_emptyIndexX]->setLocalPosition( emptyPosition );
+        m_hotspots[newEmptyIndexY][newEmptyIndexX]->setLocalPosition( hotspotPosition );
 
         // swap values in map for checkWin
-        m_map[ newEmptyIndexY ][ newEmptyIndexX ] = oldValue;
-        m_map[ m_emptyIndexY ][ m_emptyIndexX ] = newValue;
+        m_map[newEmptyIndexY][newEmptyIndexX] = oldValue;
+        m_map[m_emptyIndexY][m_emptyIndexX] = newValue;
 
         // add current empty index
         m_emptyIndexX = newEmptyIndexX;
@@ -621,34 +626,31 @@ namespace Mengine
         m_hotspotsAroundEmpty.clear();
 
         //calculate Up HotSpot
-        if ( m_emptyIndexY - 1 >= 0 )
-        { 
-            m_hotspotsAroundEmpty.push_back ( m_hotspots[ m_emptyIndexY - 1][ m_emptyIndexX ] );
+        if( m_emptyIndexY - 1 >= 0 )
+        {
+            m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY - 1][m_emptyIndexX] );
         }
         //calculate Down HotSpot
-        if ( m_emptyIndexY + 1 < GRID_SIZE_Y )
+        if( m_emptyIndexY + 1 < GRID_SIZE_Y )
         {
-            m_hotspotsAroundEmpty.push_back( m_hotspots[ m_emptyIndexY + 1 ][ m_emptyIndexX ]);
+            m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY + 1][m_emptyIndexX] );
         }
         //calculate Left HotSpot
-        if ( m_emptyIndexX - 1 >= 0 )
+        if( m_emptyIndexX - 1 >= 0 )
         {
-            m_hotspotsAroundEmpty.push_back( m_hotspots[ m_emptyIndexY][ m_emptyIndexX - 1 ] );
+            m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY][m_emptyIndexX - 1] );
         }
         //calculate Right HotSpot
-        if ( m_emptyIndexX + 1 < GRID_SIZE_X )
+        if( m_emptyIndexX + 1 < GRID_SIZE_X )
         {
-            m_hotspotsAroundEmpty.push_back( m_hotspots[ m_emptyIndexY ][ m_emptyIndexX + 1 ] );
+            m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY][m_emptyIndexX + 1] );
         }
 
-        if ( _scope != nullptr )
+        for( auto && [race, hotspot] : Cook::addRaceZip( _scope, m_hotspotsAroundEmpty ) )
         {
-            for ( auto&& [ race, hotspot ] : Cook::addRaceZip( _scope, m_hotspotsAroundEmpty ) )
-            {
-                Cook::addPickerableMouseButton( race, hotspot, EMouseCode::MC_LBUTTON, true, true, nullptr );
+            Cook::addPickerableMouseButton( race, hotspot, EMouseCode::MC_LBUTTON, true, true, nullptr );
 
-                Cook::addScope( race, this, &FifteenSceneEventReceiver::makeTurn, hotspot );
-            }
+            Cook::addScope( race, this, &FifteenSceneEventReceiver::makeTurn, hotspot );
         }
     }
 
@@ -657,21 +659,21 @@ namespace Mengine
     {
         int32_t currSum = 0;
         int32_t firstEnter = -1;
-        int32_t currentNumber = m_map[ _row ][ _col ];
+        int32_t currentNumber = m_map[_row][_col];
 
-        for ( int32_t row = _row; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = _row; row < GRID_SIZE_Y; row++ )
         {
-            if ( firstEnter == -1 )
+            if( firstEnter == -1 )
                 firstEnter = _col + 1;
             else
                 firstEnter = 0;
 
-            for ( int32_t col = firstEnter; col < GRID_SIZE_X; col++ )
+            for( int32_t col = firstEnter; col < GRID_SIZE_X; col++ )
             {
-                int32_t nextNumber = m_map[ row ][ col ];
+                int32_t nextNumber = m_map[row][col];
 
-                if ( currentNumber > nextNumber )
-                   currSum++;
+                if( currentNumber > nextNumber )
+                    currSum++;
             }
         }
 
@@ -683,11 +685,11 @@ namespace Mengine
         bool solutionExist = false;
         int32_t sum = 0;
 
-        for ( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
-            for ( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
-                if ( row != m_emptyIndexY || col != m_emptyIndexX )
+                if( row != m_emptyIndexY || col != m_emptyIndexX )
                 {
                     sum += this->checkBiggerGroups( row, col );
                 }
@@ -695,7 +697,7 @@ namespace Mengine
         }
 
         sum += m_emptyIndexY + 1;
-        if ( sum % 2 == 0 )
+        if( sum % 2 == 0 )
         {
             solutionExist = true;
         }
@@ -705,14 +707,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::checkWin()
     {
-        for ( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
         {
-            for ( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
             {
-                int32_t hotspotId = m_map[ row ][ col ];
+                int32_t hotspotId = m_map[row][col];
                 int32_t currId = row * GRID_SIZE_Y + col;
 
-                if ( hotspotId != currId )
+                if( hotspotId != currId )
                     return;
             }
         }
@@ -737,7 +739,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::enableBackground( bool _value )
     {
-        if ( _value == true )
+        if( _value == true )
         {
             m_background->enable();
         }
@@ -749,14 +751,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FifteenSceneEventReceiver::scopeGameOver( const GOAP::SourceInterfacePtr & _scope )
     {
-        float delay = 100.f;
-        int32_t count = 3;
+        float delay = HIGHLIGHT_INTERVAL;
+        int32_t count = HIGHLIGHT_COUNT;
 
         m_gameNode->addChild( m_background );
 
         this->clearSprites();
 
-        Cook::addFor( _scope, count, [ this, delay ]( const GOAP::SourceInterfacePtr & _scope_for, uint32_t _iterator, uint32_t _count )
+        Cook::addFor( _scope, count, [this, delay]( const GOAP::SourceInterfacePtr & _scope_for, uint32_t _iterator, uint32_t _count )
         {
             MENGINE_UNUSED( _iterator );
 
@@ -764,7 +766,7 @@ namespace Mengine
             Cook::addFunction( _scope_for, this, &FifteenSceneEventReceiver::enableBackground, false );
             Cook::addLocalDelay( _scope_for, delay );
             Cook::addFunction( _scope_for, this, &FifteenSceneEventReceiver::enableBackground, true );
-            if ( _count == 3 )
+            if( _count == HIGHLIGHT_COUNT )
             {
                 Cook::addFunction( _scope_for, m_semaphoreGameOver, &GOAP::SemaphoreInterface::setValue, 0 );
             }
@@ -806,32 +808,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::clearMap()
     {
-        for ( VectorInt & row : m_map )
+        for( VectorInt & row : m_map )
         {
             row.clear();
-            row.~vector();
         }
 
         m_map.clear();
-        m_map.~vector();
     }
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::clearHotspots()
     {
         for( Vector<HotSpotPolygonPtr> & hotspots : m_hotspots )
         {
-            for ( HotSpotPolygonPtr & hotspot : hotspots )
+            for( HotSpotPolygonPtr & hotspot : hotspots )
             {
                 hotspot->removeFromParent();
                 hotspot = nullptr;
             }
 
             hotspots.clear();
-            hotspots.~vector();
         }
 
         m_hotspots.clear();
-        m_hotspots.~vector();
     }
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::clearTaskChain()

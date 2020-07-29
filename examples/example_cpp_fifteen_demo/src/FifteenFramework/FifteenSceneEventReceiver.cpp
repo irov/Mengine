@@ -345,11 +345,11 @@ namespace Mengine
         const RandomizerInterfacePtr randomizer = PLAYER_SERVICE()
             ->getRandomizer();
 
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
             const int32_t randomIndexY = randomizer->getRandomRangei( 0, GRID_SIZE_Y );
 
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 const int32_t randomIndexX = randomizer->getRandomRangei( 0, GRID_SIZE_X );
                 std::swap( _vector[row][col], _vector[randomIndexY][randomIndexX] );
@@ -359,9 +359,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::calculateEmptyIndex()
     {
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 const int32_t empty = m_map[row][col];
 
@@ -386,7 +386,7 @@ namespace Mengine
 
             this->calculateEmptyIndex();
 
-            solutionExist = checkSolution();
+            solutionExist = this->checkSolution();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -398,13 +398,13 @@ namespace Mengine
         m_minimumDistanceX = hotspotSize.x;
         m_minimumDistanceY = hotspotSize.y;
 
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
             Vector<HotSpotPolygonPtr> hotspotRow;
 
             m_hotspots.push_back( hotspotRow );
 
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 ConstString name = Helper::stringizeStringFormat( "HotSpot_%d_%d", row, col );
 
@@ -421,9 +421,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::setupSprites()
     {
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 int32_t index = m_map[row][col];
                 if( index != GRID_LENGTH - 1 )
@@ -453,12 +453,12 @@ namespace Mengine
         m_sceneSize.x = resolution.getWidthF();
         m_sceneSize.y = resolution.getHeightF();
 
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
             VectorInt vectorRow;
 
             m_map.push_back( vectorRow );
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 int32_t index = row * GRID_SIZE_X + col;
 
@@ -486,9 +486,9 @@ namespace Mengine
 
         mt::vec2f splitSize( { 1.f / GRID_SIZE_Y, 1.f / GRID_SIZE_X } );
 
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 ConstString name = Helper::stringizeStringFormat( "%s_%f_%f", _name.c_str(), row, col );
 
@@ -558,7 +558,6 @@ namespace Mengine
             Cook::addScope( race_end, this, &FifteenSceneEventReceiver::scopeGameOver );
             Cook::addFunction( race_end, this, &FifteenSceneEventReceiver::resetGame );
 
-
             return true;
         } );
 
@@ -586,7 +585,6 @@ namespace Mengine
         this->clearTaskChain();
         this->clearGameNode();
         this->clearMap();
-
 
         this->setupGame( currentImageName );
 
@@ -654,25 +652,29 @@ namespace Mengine
     }
 
     //////////////////////////////////////////////////////////////////////////
-    int32_t FifteenSceneEventReceiver::checkBiggerGroups( const int32_t & _row, const int32_t & _col )
+    int32_t FifteenSceneEventReceiver::checkBiggerGroups( int32_t _row, int32_t _col )
     {
         int32_t currSum = 0;
         int32_t firstEnter = -1;
         int32_t currentNumber = m_map[_row][_col];
 
-        for( int32_t row = _row; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = _row; row != GRID_SIZE_Y; row++ )
         {
             if( firstEnter == -1 )
+            {
                 firstEnter = _col + 1;
+            }
             else
                 firstEnter = 0;
 
-            for( int32_t col = firstEnter; col < GRID_SIZE_X; col++ )
+            for( int32_t col = firstEnter; col != GRID_SIZE_X; col++ )
             {
                 int32_t nextNumber = m_map[row][col];
 
                 if( currentNumber > nextNumber )
+                {
                     currSum++;
+                }
             }
         }
 
@@ -684,9 +686,9 @@ namespace Mengine
         bool solutionExist = false;
         int32_t sum = 0;
 
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 if( row != m_emptyIndexY || col != m_emptyIndexX )
                 {
@@ -706,15 +708,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::checkWin()
     {
-        for( int32_t row = 0; row < GRID_SIZE_Y; row++ )
+        for( int32_t row = 0; row != GRID_SIZE_Y; row++ )
         {
-            for( int32_t col = 0; col < GRID_SIZE_X; col++ )
+            for( int32_t col = 0; col != GRID_SIZE_X; col++ )
             {
                 int32_t hotspotId = m_map[row][col];
                 int32_t currId = row * GRID_SIZE_Y + col;
 
                 if( hotspotId != currId )
+                {
                     return;
+                }
             }
         }
 

@@ -45,28 +45,28 @@ namespace Mengine
         void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) override;
 
-    // utils
+        // utils
     public:
-        ShapeQuadFixedPtr createColor(const ConstString & _name, const SurfaceSolidColorPtr& _resource);
+        ShapeQuadFixedPtr createColor( const ConstString & _name, const SurfaceSolidColorPtr & _resource );
         HotSpotPolygonPtr createHotSpot( const ConstString & _name, const mt::vec2f & _size );
 
-    // game
+        // game
     protected:
         bool setupGame();
         bool setupBackground();
         bool setupCars();
-        bool setupCar(const uint32_t _xPos, const uint32_t _yPos, const uint32_t recourceImageId);
-        HotSpotPolygonPtr addHotspot(const uint32_t _row, const uint32_t _col, const uint32_t _id);
+        bool setupCar( const uint32_t _xPos, const uint32_t _yPos, const uint32_t recourceImageId );
+        HotSpotPolygonPtr addHotspot( const uint32_t _row, const uint32_t _col, const uint32_t _id );
 
         void runTaskChains();
-    
+
     protected:
-        void moveLeft(ShapeQuadFixedPtr _sprite);
-        void moveRight(ShapeQuadFixedPtr _sprite);
-        void moveUp(ShapeQuadFixedPtr _sprite);
-        void moveDown(ShapeQuadFixedPtr _sprite);
-        void movePlayerUp(ShapeQuadFixedPtr _sprite);
-        void movePlayerDown(ShapeQuadFixedPtr _sprite);;
+        void moveLeft( ShapeQuadFixedPtr _sprite );
+        void moveRight( ShapeQuadFixedPtr _sprite );
+        void moveUp( ShapeQuadFixedPtr _sprite );
+        void moveDown( ShapeQuadFixedPtr _sprite );
+        void movePlayerUp( ShapeQuadFixedPtr _sprite );
+        void movePlayerDown( ShapeQuadFixedPtr _sprite );
 
         void resetGame();
 
@@ -90,7 +90,7 @@ namespace Mengine
         GOAP::SemaphoreInterfacePtr m_semaphoreGameOver;
 
         TraficMap traficMap;
-        
+
         struct Car
         {
             ShapeQuadFixedPtr sprite;

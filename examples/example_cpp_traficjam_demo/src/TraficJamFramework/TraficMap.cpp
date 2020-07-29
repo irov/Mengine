@@ -3,6 +3,7 @@
 namespace Mengine
 {
     const uint32_t traficMapSize = 6;
+    const uint32_t mapSize = 36;
 
     TraficMap::TraficMap()
     {
@@ -18,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void        TraficMap::initMap()
     {
-        for( uint32_t i = 0; i < 36; i++ )
+        for( uint32_t i = 0; i != mapSize; i++ )
         {
             traficMap.push_back( ECellType::ECellType_EMPTY );
         }
@@ -33,7 +34,7 @@ namespace Mengine
         traficMap[index] = _cellType;
     }
     //////////////////////////////////////////////////////////////////////////
-    ECellType   TraficMap::getCell( int32_t _x, int32_t _y ) const
+    ECellType TraficMap::getCell( int32_t _x, int32_t _y ) const
     {
         uint32_t index = _y * traficMapSize + _x;
         ECellType returnValue = traficMap[index];

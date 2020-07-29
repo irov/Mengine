@@ -5,6 +5,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     enum ECellType
     {
         ECellType_EMPTY,
@@ -15,7 +16,7 @@ namespace Mengine
         ECellType_PLAYER_V_UP,
         ECellType_PLAYER_V_DOWN,
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class TraficMap
     {
     public:
@@ -31,4 +32,4 @@ namespace Mengine
         typedef Vector<ECellType> VectorECellType;
         VectorECellType traficMap;
     };
-}; 
+};

@@ -83,6 +83,11 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( argList );
 
+            if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+            {
+                NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
+            }
+
             if( _level == ASSERTION_LEVEL_EXCEPTION )
             {
                 MENGINE_THROW_EXCEPTION( "%s"
@@ -97,11 +102,6 @@ namespace Mengine
                     , _line
                     , _test
                     , str_info);
-            }
-
-            if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-            {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
             }
 
             if( _level == ASSERTION_LEVEL_FATAL )

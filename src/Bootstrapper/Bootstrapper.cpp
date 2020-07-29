@@ -286,56 +286,78 @@ namespace Mengine
     {
         if( this->createServices_() == false )
         {
+            LOGGER_ERROR( "invalid create create services" );
+
             return false;
         }
 
         if( this->createDynamicPriorityPlugins_() == false )
         {
+            LOGGER_ERROR( "invalid create dynamic priority plugins" );
+
             return false;
         }
 
         if( this->createDynamicPriorityDevPlugins_() == false )
         {
+            LOGGER_ERROR( "invalid create dynamic priority dev plugins" );
+
             return false;
         }
 
         if( this->createStaticPlugins_() == false )
         {
+            LOGGER_ERROR( "invalid create static plugins" );
+
             return false;
         }
 
         if( this->createDynamicPlugins_() == false )
         {
+            LOGGER_ERROR( "invalid create dynamic plugins" );
+
             return false;
         }
 
         if( this->createDynamicDevPlugins_() == false )
         {
+            LOGGER_ERROR( "invalid create dynamic dev plugins" );
+
             return false;
         }
 
         if( this->createApplication_() == false )
         {
+            LOGGER_ERROR( "invalid create application" );
+
             return false;
         }
 
         if( this->runModules_() == false )
         {
+            LOGGER_ERROR( "invalid run modules" );
+
             return false;
         }
 
         if( this->runDevModules_() == false )
         {
+            LOGGER_ERROR( "invalid run dev modules" );
+
             return false;
         }
 
         if( this->createFrameworks_() == false )
         {
+            LOGGER_ERROR( "invalid create frameworks" );
+
             return false;
         }
 
         if( this->runFrameworks_() == false )
         {
+            LOGGER_ERROR( "invalid run frameworks" );
+
             return false;
         }
         
@@ -947,7 +969,10 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "create Application..." );
 
-        SERVICE_CREATE( Application, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE_SAFE( Application, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 

@@ -19,6 +19,10 @@
 
 #include "SDL_rwops.h"
 
+#ifdef MENGINE_PLATFORM_ANDROID
+#   include "AndroidAssetServiceInterface.h"
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -68,8 +72,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        // SDL doesn't have this, so we're emulating ... ugly way :(
-
         Char fullPath[MENGINE_MAX_PATH] = {'\0'};
         if( this->getFullPath( _filePath, fullPath ) == false )
         {
@@ -85,6 +87,14 @@ namespace Mengine
         {
             return true;
         }
+
+#ifdef MENGINE_PLATFORM_ANDROID
+        if( ANDROIDASSET_SERVICE()
+            ->existFile( fullPath ) == true )
+        {
+            return true;
+        }
+#endif
 
         if( _recursive == true && m_parentFileGroup != nullptr )
         {

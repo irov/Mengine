@@ -98,6 +98,8 @@ namespace Mengine
 
         if( len == 0 )
         {
+            _currentPath[0] = '\0';
+
             return 0;
         }
 
@@ -109,6 +111,8 @@ namespace Mengine
         size_t pathLen;
         if( Helper::unicodeToUtf8( unicode_path, _currentPath, MENGINE_MAX_PATH, &pathLen ) == false )
         {
+            _currentPath[0] = '\0';
+
             return 0;
         }
 
@@ -118,6 +122,10 @@ namespace Mengine
         MENGINE_STRCPY( _currentPath, deploy_ios_data );
 
         return sizeof( deploy_ios_data ) - 1;
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        _currentPath[0] = L'\0';
+
+        return 0;
 #else  
         _currentPath[0] = L'\0';
 
@@ -1330,12 +1338,17 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         struct stat sb;
-        if( stat( pathCorrect, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
+        if( stat( pathCorrect, &sb ) != 0 )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        if( ((sb.st_mode) & S_IFMT) == S_IFDIR )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::removeFile( const Char * _filePath )
@@ -1754,7 +1767,7 @@ namespace Mengine
         MENGINE_UNUSED( _resolution );
         MENGINE_UNUSED( _fullscreen );
 
-        Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN;
+        Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
 #if defined(MENGINE_PLATFORM_IOS)
         windowFlags |= SDL_WINDOW_FULLSCREEN;
@@ -1792,6 +1805,16 @@ namespace Mengine
             );
         }
 
+        const Char * Engine_SDLOrientations = CONFIG_VALUE( "Engine", "SDLOrientations", "Portrait" );
+
+        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDLOrientations ) != SDL_TRUE )
+        {
+            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to '%s' error: %s"
+                , Engine_SDLOrientations
+                , SDL_GetError()
+            );
+        }
+
 #elif defined(MENGINE_PLATFORM_ANDROID)
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
@@ -1818,6 +1841,16 @@ namespace Mengine
             );
         }
 
+        const Char * Engine_SDLRenderScaleQuality = CONFIG_VALUE( "Engine", "SDLRenderScaleQuality", "linear" );
+
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDLRenderScaleQuality ) != SDL_TRUE )
+        {
+            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to '%s' error: %s"
+                , Engine_SDLRenderScaleQuality
+                , SDL_GetError()
+            );
+        }
+
         const Char * Engine_SDLOrientations = CONFIG_VALUE( "Engine", "SDLOrientations", "Portrait" );
 
         if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDLOrientations ) != SDL_TRUE )
@@ -1828,9 +1861,18 @@ namespace Mengine
             );
         }
 #else
+        windowFlags |= SDL_WINDOW_HIDDEN;
+
         if( _fullscreen == true )
         {
             windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_CORE error: %s"
+                , SDL_GetError()
+            );
         }
 #endif
 
@@ -1865,13 +1907,6 @@ namespace Mengine
             , windowFlags );
 
 #else
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_CORE error: %s"
-                , SDL_GetError()
-            );
-        }
-
         SDL_DisplayMode mode;
         if( SDL_GetDesktopDisplayMode( 0, &mode ) != 0 )
         {

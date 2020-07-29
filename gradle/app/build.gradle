@@ -233,6 +233,9 @@ android {
 
                 assets.srcDirs = [ASSETS_SRC_DIR]
             } else {
+                print 'ASSETS_SRC_DIR = '
+                println 'data'
+                
                 assets.srcDirs = ['data']
             }
         }

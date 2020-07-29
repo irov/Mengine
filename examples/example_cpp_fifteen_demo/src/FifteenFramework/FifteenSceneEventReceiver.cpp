@@ -436,7 +436,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FifteenSceneEventReceiver::setupGame( const ConstString & _imagePath )
     {
-
         // create game node
         NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
 

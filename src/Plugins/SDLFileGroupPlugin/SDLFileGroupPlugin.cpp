@@ -12,6 +12,10 @@
 #include "Kernel/FilePathHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+SERVICE_EXTERN( AndroidAssetService );
+#endif
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( SDLFileGroup, Mengine::SDLFileGroupPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -27,6 +31,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupPlugin::_initializePlugin()
     {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_CREATE( AndroidAssetService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<SDLFileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, STRINGIZE_FILEPATH_LOCAL( "" ) ), MENGINE_DOCUMENT_FACTORABLE );
 
         Char utf8_currentPath[MENGINE_MAX_PATH] = {0};
@@ -42,6 +50,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLFileGroupPlugin::_finalizePlugin()
     {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_FINALIZE( AndroidAssetService );
+#endif
+
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ) );
     }

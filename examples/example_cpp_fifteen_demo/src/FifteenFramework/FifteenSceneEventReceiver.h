@@ -71,7 +71,7 @@ namespace Mengine
         void calculateEmptyIndex();
         void checkWin();
         bool checkSolution();
-        int32_t checkBiggerGroups( const int32_t & _row, const int32_t & _col );
+        int32_t checkBiggerGroups( int32_t  _row, int32_t  _col );
 
     protected:
         void enableSprites( bool _value );
@@ -90,29 +90,29 @@ namespace Mengine
         void clearTaskChain();
 
     protected:
-        NodePtr                     m_gameNode;
-        GOAP::ChainInterfacePtr     m_chain;
+        NodePtr m_gameNode;
+        GOAP::ChainInterfacePtr m_chain;
         GOAP::SemaphoreInterfacePtr m_semaphoreGameOver;
 
-        ShapeQuadFixedPtr           m_background;
-        VectorShapeQuadFixedPtr     m_sprites;
-        Vector2DHotSpotPolygonPtr   m_hotspots;
-        VectorHotSpotPolygonPtr     m_hotspotsAroundEmpty;
-        GridVector                  m_map;
+        ShapeQuadFixedPtr m_background;
+        VectorShapeQuadFixedPtr m_sprites;
+        Vector2DHotSpotPolygonPtr m_hotspots;
+        VectorHotSpotPolygonPtr m_hotspotsAroundEmpty;
+        GridVector m_map;
 
-        mt::vec2f                   m_backgroundSize;
-        mt::vec2f                   m_sceneSize;
+        mt::vec2f m_backgroundSize;
+        mt::vec2f m_sceneSize;
 
-        float                       m_minimumDistanceX;
-        float                       m_minimumDistanceY;
+        float m_minimumDistanceX;
+        float m_minimumDistanceY;
 
-        int32_t                     m_emptyIndexX;
-        int32_t                     m_emptyIndexY;
+        int32_t  m_emptyIndexX;
+        int32_t  m_emptyIndexY;
 
-        uint32_t                    m_imageIndex;
+        uint32_t m_imageIndex;
 
     protected:
-        Scene *                     m_scene;
+        Scene * m_scene;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FifteenSceneEventReceiver> FifteenSceneEventReceiverPtr;

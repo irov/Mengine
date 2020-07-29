@@ -67,6 +67,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ResourceMultiTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
+    {
+        for( const ResourcePtr & resource : m_resourceTexturepackers )
+        {
+            UnknownResourceTexturepackerGetterInterface * unknownResourceTexturepacker = resource->getUnknown();
+
+            if( unknownResourceTexturepacker->visitFrames( _lambdaFrames ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ResourceMultiTexturepacker::setStripFrameNameExtension( bool _value )
     {
         m_needStripFrameNameExtension = _value;

@@ -3,14 +3,15 @@
 #include "Kernel/FrameworkBase.h"
 #include "Kernel/Observable.h"
 
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    class TraficJamFramework
+    class TrafficJamFramework
         : public FrameworkBase
     {
     public:
-        TraficJamFramework();
-        ~TraficJamFramework() override;
+        TrafficJamFramework();
+        ~TrafficJamFramework() override;
 
     protected:
         bool _initializeFramework() override;

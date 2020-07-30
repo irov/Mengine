@@ -1,15 +1,15 @@
-MENGINE_PROJECT(TraficJamFramework)
+MENGINE_PROJECT(TrafficJamFramework)
 
 ADD_FILTER(
-TraficJamFramework
-    TraficJamFramework.cpp
-    TraficJamFramework.h
-    TraficJamFrameworkPlugin.cpp
-    TraficJamFrameworkPlugin.h
-    TraficJamSceneEventReceiver.cpp
-    TraficJamSceneEventReceiver.h
-    TraficMap.cpp
-    TraficMap.h
+TrafficJamFramework
+    TrafficJamFramework.cpp
+    TrafficJamFramework.h
+    TrafficJamFrameworkPlugin.cpp
+    TrafficJamFrameworkPlugin.h
+    TrafficJamSceneEventReceiver.cpp
+    TrafficJamSceneEventReceiver.h
+    TrafficMap.cpp
+    TrafficMap.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)

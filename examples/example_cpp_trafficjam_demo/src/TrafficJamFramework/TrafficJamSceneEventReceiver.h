@@ -12,7 +12,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/Vector.h"
 
-#include "TraficMap.h"
+#include "TrafficMap.h"
 
 namespace Mengine
 {
@@ -22,13 +22,13 @@ namespace Mengine
     typedef Vector<HotSpotPolygonPtr> VectorHotSpotPolygonPtr;
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-    class TraficJamSceneEventReceiver
+    class TrafficJamSceneEventReceiver
         : public DummySceneEventReceiver
         , public Factorable
     {
     public:
-        TraficJamSceneEventReceiver();
-        ~TraficJamSceneEventReceiver() override;
+        TrafficJamSceneEventReceiver();
+        ~TrafficJamSceneEventReceiver() override;
 
     public:
         bool onSceneAppMouseLeave( const EntityBehaviorInterfacePtr & _behavior ) override;
@@ -55,8 +55,8 @@ namespace Mengine
         bool setupGame();
         bool setupBackground();
         bool setupCars();
-        bool setupCar( const uint32_t _xPos, const uint32_t _yPos, const uint32_t recourceImageId );
-        HotSpotPolygonPtr addHotspot( const uint32_t _row, const uint32_t _col, const uint32_t _id );
+        bool setupCar( uint32_t _xPos, uint32_t _yPos, uint32_t recourceImageId );
+        HotSpotPolygonPtr addHotspot( uint32_t _row, uint32_t _col, uint32_t _id );
 
         void runTaskChains();
 
@@ -89,13 +89,14 @@ namespace Mengine
 
         GOAP::SemaphoreInterfacePtr m_semaphoreGameOver;
 
-        TraficMap traficMap;
+        TrafficMap m_trafficMap;
 
         struct Car
         {
             ShapeQuadFixedPtr sprite;
             HotSpotPolygonPtr hotspotFirst;
             HotSpotPolygonPtr hotspotSecond;
+            int32_t carType;
         };
 
         typedef Vector<Car> VectorCar;
@@ -105,6 +106,6 @@ namespace Mengine
         Scene * m_scene;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TraficJamSceneEventReceiver> TraficJamSceneEventReceiverPtr;
+    typedef IntrusivePtr<TrafficJamSceneEventReceiver> TrafficJamSceneEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

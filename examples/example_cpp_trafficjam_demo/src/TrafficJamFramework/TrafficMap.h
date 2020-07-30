@@ -17,11 +17,11 @@ namespace Mengine
         ECellType_PLAYER_V_DOWN,
     };
     //////////////////////////////////////////////////////////////////////////
-    class TraficMap
+    class TrafficMap
     {
     public:
-        TraficMap();
-        ~TraficMap();
+        TrafficMap();
+        ~TrafficMap();
 
     public:
         void clearMap();
@@ -30,6 +30,6 @@ namespace Mengine
         ECellType getCell( int32_t _x, int32_t _y ) const;
     protected:
         typedef Vector<ECellType> VectorECellType;
-        VectorECellType traficMap;
+        VectorECellType m_trafficMap;
     };
 };

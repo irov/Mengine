@@ -13,6 +13,7 @@ namespace Mengine
     TrafficMap::~TrafficMap()
     {
     }
+    //////////////////////////////////////////////////////////////////////////
     void TrafficMap::clearMap()
     {
         m_trafficMap.clear();

@@ -1,4 +1,5 @@
-#include "TraficJamFramework.h"
+#include "TrafficJamFramework.h"
+#include "TrafficJamSceneEventReceiver.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -11,27 +12,24 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "TraficJamSceneEventReceiver.h"
-
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TraficJamFramework::TraficJamFramework()
+    TrafficJamFramework::TrafficJamFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TraficJamFramework::~TraficJamFramework()
+    TrafficJamFramework::~TrafficJamFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TraficJamFramework::_initializeFramework()
+    bool TrafficJamFramework::_initializeFramework()
     {
-        TraficJamSceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<TraficJamSceneEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
+        TrafficJamSceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<TrafficJamSceneEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FACTORABLE );
 
-        scene->setName( STRINGIZE_STRING_LOCAL( "TraficJam" ) );
+        scene->setName( STRINGIZE_STRING_LOCAL( "TrafficJam" ) );
 
         SCENE_SERVICE()
             ->setCurrentScene( scene, false, false, nullptr );
@@ -39,7 +37,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TraficJamFramework::_finalizeFramework()
+    void TrafficJamFramework::_finalizeFramework()
     {
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );

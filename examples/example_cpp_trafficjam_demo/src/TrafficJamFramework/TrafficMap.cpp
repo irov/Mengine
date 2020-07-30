@@ -3,9 +3,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    const uint32_t TRAFFIC_MAP_SIZE = 6;
-    const uint32_t MAP_SIZE = 36;
-
+    static MENGINE_CONSTEXPR uint32_t TRAFFIC_MAP_SIZE = 6;
+    static MENGINE_CONSTEXPR uint32_t MAP_SIZE = 36;
+    //////////////////////////////////////////////////////////////////////////
     TrafficMap::TrafficMap()
     {
     }

@@ -34,11 +34,11 @@ namespace Mengine
     static const Color BG_COLOR( 128.f, 128.f, 128.f );
     static const mt::vec2f BG_SIZE( 715, 715 );
 
-    static const int32_t BORDER_INDENT = 25;
-    static const int32_t PLAYER_CAR_ID = 2;
+    static MENGINE_CONSTEXPR int32_t BORDER_INDENT = 25;
+    static MENGINE_CONSTEXPR int32_t PLAYER_CAR_ID = 2;
 
-    static const int32_t HORIZONTAL_CAR_ID = 0;
-    static const int32_t VERTICAL_CAR_ID = 1;
+    static MENGINE_CONSTEXPR int32_t HORIZONTAL_CAR_ID = 0;
+    static MENGINE_CONSTEXPR int32_t VERTICAL_CAR_ID = 1;
 
     static const Color PLAYER_COLOR( 255.f, 0.f, 0.f );
     static const mt::vec2f PLAYER_SIZE( 110, 225 );
@@ -49,7 +49,7 @@ namespace Mengine
     static const Color VERTICAL_CAR_COLOR( 0.f, 0.f, 255.f );
     static const mt::vec2f VERTICAL_CAR_SIZE( 110, 225 );
 
-    const float CELL_IN_PIXELS = 115;
+    static MENGINE_CONSTEXPR float CELL_IN_PIXELS = 115;
     //////////////////////////////////////////////////////////////////////////
     TrafficJamSceneEventReceiver::TrafficJamSceneEventReceiver()
     {

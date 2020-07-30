@@ -44,8 +44,8 @@ namespace Mengine
         void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) override;
 
     public:
-        ShapeQuadFixedPtr  createSprite( const ConstString & _name, const ResourcePtr & _resource );
-        HotSpotPolygonPtr  createHotSpot( const ConstString & _name, const mt::vec2f & _size );
+        ShapeQuadFixedPtr createSprite( const ConstString & _name, const ResourcePtr & _resource );
+        HotSpotPolygonPtr createHotSpot( const ConstString & _name, const mt::vec2f & _size );
         ResourceImageDefaultPtr createImageSubstractResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::vec4f & _splitSize );
         ResourceImageDefaultPtr createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize );
         void createSplitBackgroundSprites( const ConstString & _name, const ConstString & _fileGroup, const FilePath & _filePath );

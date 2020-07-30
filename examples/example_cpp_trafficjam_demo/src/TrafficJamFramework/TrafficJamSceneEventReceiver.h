@@ -16,7 +16,6 @@
 
 namespace Mengine
 {
-    const float cellInPixels = 115;
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<ShapeQuadFixedPtr> VectorShapeQuadFixedPtr;
     typedef Vector<HotSpotPolygonPtr> VectorHotSpotPolygonPtr;

@@ -23,6 +23,8 @@ src
     TTFAtlasService.cpp
     TTFPrototypeGenerator.h
     TTFPrototypeGenerator.cpp
+    TTFFontTextureGlyphProvider.h
+    TTFFontTextureGlyphProvider.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/freetype/include)

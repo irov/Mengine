@@ -2,6 +2,7 @@
 
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -30,17 +31,16 @@ namespace Mengine
         m_maxAtlasPow = CONFIG_VALUE( "TTF", "MaxAtlasPow", 16U );
         m_maxAtlasWidth = CONFIG_VALUE( "TTF", "MaxAtlasWidth", 2048U );
 
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, this, &TTFAtlasService::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFAtlasService::_finalizeService()
     {
-        for( uint32_t i = 0; i != 3; ++i )
-        {
-            MapAtlasess & atlas = m_atlasess[i];
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
-            atlas.clear();
-        }
+        this->clearAtlasess_();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentPtr & _doc )
@@ -96,6 +96,16 @@ namespace Mengine
         _uv->p3 = mt::vec2f( float( rect.left + _border ) * atlas_width_inv, float( rect.bottom - _border ) * atlas_height_inv );
 
         return texture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFAtlasService::clearAtlasess_()
+    {
+        for( uint32_t i = 0; i != 3; ++i )
+        {
+            MapAtlasess & atlas = m_atlasess[i];
+
+            atlas.clear();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     TTFAtlasService::TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel, const DocumentPtr & _doc )
@@ -165,5 +175,10 @@ namespace Mengine
         TTFAtlas & atlas = atlases.back();
 
         return &atlas;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFAtlasService::notifyRenderDeviceLostPrepare()
+    {
+        this->clearAtlasess_();
     }
 }

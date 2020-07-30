@@ -90,6 +90,14 @@ namespace Mengine
         {
             logLevel = LM_FATAL;
         }
+        else if( HAS_OPTION( "silent" ) == true )
+        {
+            logLevel = LM_SILENT;
+        }
+        else if( HAS_OPTION( "verbose" ) == true )
+        {
+            logLevel = LM_VERBOSE;
+        }
 
         this->setVerboseLevel( logLevel );
 
@@ -104,18 +112,13 @@ namespace Mengine
 
         this->setVerboseFlag( verboseFlag );
 
-        if( HAS_OPTION( "verbose" ) == true )
-        {
-            this->setVerboseLevel( LM_VERBOSE );
-        }
-
         if( HAS_OPTION( "loghistory" ) == true )
         {
             m_historically = true;
         }
 
         ELoggerLevel level = this->getVerboseLevel();
-        const Char * loggerLevels[] = {"FATAL", "CRITICAL", "ERROR", "PERFOMANCE", "STATISTIC", "WARNING", "MESSAGE", "INFO", "MAX"};
+        const Char * loggerLevels[] = {"SILENT", "FATAL", "CRITICAL", "MESSAGE_RELEASE", "ERROR", "PERFOMANCE", "STATISTIC", "WARNING", "MESSAGE", "INFO", "DEBUG", "VERBOSE"};
 
         const Char * loggerLevel = loggerLevels[level];
 

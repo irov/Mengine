@@ -105,6 +105,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::finalize()
     {
+        this->release();
+
         m_renderImageProvider = nullptr;
         m_lockMemory = nullptr;
     }
@@ -400,12 +402,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::_destroy()
     {
-        if( m_uid != 0 )
-        {
-            GLCALL( glDeleteTextures, (1, &m_uid) );
-
-            m_uid = 0;
-        }
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderImage::getUID() const

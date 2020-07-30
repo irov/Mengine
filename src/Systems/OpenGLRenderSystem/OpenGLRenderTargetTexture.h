@@ -22,6 +22,10 @@ namespace Mengine
         void finalize();
 
     public:
+        void release();
+        bool reload();
+
+    public:
         uint32_t getHWMipmaps() const override;
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
@@ -42,6 +46,9 @@ namespace Mengine
 
     public:
         GLuint getUID() const;
+
+    public:
+        void _destroy() override;
 
     protected:
         GLuint m_uid;

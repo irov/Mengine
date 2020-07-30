@@ -3,6 +3,8 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
+#include "FifteenSceneEventReceiver.h"
+
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/Logger.h"
@@ -10,8 +12,6 @@
 #include "Kernel/SceneHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
-
-#include "FifteenSceneEventReceiver.h"
 
 namespace Mengine
 {

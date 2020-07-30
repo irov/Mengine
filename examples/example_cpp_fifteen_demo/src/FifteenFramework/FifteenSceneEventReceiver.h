@@ -1,18 +1,15 @@
 #pragma once
 
-#include "Plugins/GOAPPlugin/GOAPInterface.h"
-
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ResourceImageDefault.h"
+
+#include "Plugins/GOAPPlugin/GOAPInterface.h"
 
 #include "Kernel/DummySceneEventReceiver.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Vector.h"
-
-#include "Kernel/ConstStringProxy.h"
-#include "Kernel/FilePathProxy.h"
 
 namespace Mengine
 {
@@ -46,28 +43,26 @@ namespace Mengine
         void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) override;
 
-    // utils
     public:
         ShapeQuadFixedPtr  createSprite( const ConstString & _name, const ResourcePtr & _resource );
         HotSpotPolygonPtr  createHotSpot( const ConstString & _name, const mt::vec2f & _size );
-        ResourceImageDefaultPtr createImageSubstractResource( const ConstString& _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::vec4f & _splitSize );
+        ResourceImageDefaultPtr createImageSubstractResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::vec4f & _splitSize );
         ResourceImageDefaultPtr createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize );
-        void createSplitBackgroundSprites( const ConstString& _name, const ConstString& _fileGroup, const FilePath& _filePath );
-        void shuffle(GridVector & _vector);
+        void createSplitBackgroundSprites( const ConstString & _name, const ConstString & _fileGroup, const FilePath & _filePath );
+        void shuffle( GridVector & _vector );
 
-    // game
     protected:
         bool setupGame( const ConstString & _imagePath );
-        bool setupBackground( const ConstString & _imagePath);
+        bool setupBackground( const ConstString & _imagePath );
         void setupRandomMap();
         void setupHotspots();
         void setupSprites();
-    
+
     protected:
         void makeTurn( const GOAP::SourceInterfacePtr & _scope, const HotSpotPolygonPtr & _hotspot );
         void runTaskChains();
-        void swapPositions( const HotSpotPolygonPtr & _empty,const HotSpotPolygonPtr & _hotspot );
-        void calculateAroundEmpty( const GOAP::SourceInterfacePtr& _scope);
+        void swapPositions( const HotSpotPolygonPtr & _empty, const HotSpotPolygonPtr & _hotspot );
+        void calculateAroundEmpty( const GOAP::SourceInterfacePtr & _scope );
         void calculateEmptyIndex();
         void checkWin();
         bool checkSolution();

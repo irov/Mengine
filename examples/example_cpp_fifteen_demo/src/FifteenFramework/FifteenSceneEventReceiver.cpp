@@ -376,7 +376,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::setupRandomMap()
     {
-        const RandomizerInterfacePtr randomizer = PLAYER_SERVICE()->getRandomizer();
+        const RandomizerInterfacePtr randomizer = PLAYER_SERVICE()
+            ->getRandomizer();
 
         bool solutionExist = false;
 
@@ -511,25 +512,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FifteenSceneEventReceiver::setupBackground( const ConstString & _imagePath )
     {
-        //// create Hotspot
         mt::vec2f hotspotSize( { m_sceneSize.x / GRID_SIZE_X, m_sceneSize.y / GRID_SIZE_Y } );
 
-        //// calculate hotspot minimum size
         m_minimumDistanceX = hotspotSize.x;
         m_minimumDistanceY = hotspotSize.y;
 
         FilePath imagePath = Helper::stringizeFilePath( _imagePath.c_str() );
 
-        // setup resource
         ResourceImageDefaultPtr resourceImage = this->createImageResource( STRINGIZE_STRING_LOCAL( "Background" ),
             STRINGIZE_STRING_LOCAL( "Assets" ), imagePath, { -1.f, -1.f } );
 
         if( resourceImage == nullptr )
+        {
             return false;
+        }
 
         m_backgroundSize = resourceImage->getMaxSize();
 
-        // setup sprite
         m_background = this->createSprite( STRINGIZE_STRING_LOCAL( "BG" ), resourceImage );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_background );
@@ -592,7 +591,6 @@ namespace Mengine
 
         this->runTaskChains();
     }
-
     //////////////////////////////////////////////////////////////////////////
     void FifteenSceneEventReceiver::swapPositions( const HotSpotPolygonPtr & _empty, const HotSpotPolygonPtr & _hotspot )
     {
@@ -604,16 +602,13 @@ namespace Mengine
         mt::vec3f emptyPosition = _empty->getLocalPosition();
         mt::vec3f hotspotPosition = _hotspot->getLocalPosition();
 
-        // swap empty and click hotspots
         m_hotspots[m_emptyIndexY][m_emptyIndexX].swap( m_hotspots[newEmptyIndexY][newEmptyIndexX] );
         m_hotspots[m_emptyIndexY][m_emptyIndexX]->setLocalPosition( emptyPosition );
         m_hotspots[newEmptyIndexY][newEmptyIndexX]->setLocalPosition( hotspotPosition );
 
-        // swap values in map for checkWin
         m_map[newEmptyIndexY][newEmptyIndexX] = oldValue;
         m_map[m_emptyIndexY][m_emptyIndexX] = newValue;
 
-        // add current empty index
         m_emptyIndexX = newEmptyIndexX;
         m_emptyIndexY = newEmptyIndexY;
     }
@@ -622,22 +617,21 @@ namespace Mengine
     {
         m_hotspotsAroundEmpty.clear();
 
-        //calculate Up HotSpot
         if( m_emptyIndexY - 1 >= 0 )
         {
             m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY - 1][m_emptyIndexX] );
         }
-        //calculate Down HotSpot
+
         if( m_emptyIndexY + 1 < GRID_SIZE_Y )
         {
             m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY + 1][m_emptyIndexX] );
         }
-        //calculate Left HotSpot
+
         if( m_emptyIndexX - 1 >= 0 )
         {
             m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY][m_emptyIndexX - 1] );
         }
-        //calculate Right HotSpot
+
         if( m_emptyIndexX + 1 < GRID_SIZE_X )
         {
             m_hotspotsAroundEmpty.push_back( m_hotspots[m_emptyIndexY][m_emptyIndexX + 1] );

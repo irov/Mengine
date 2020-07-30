@@ -88,12 +88,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::finalize()
     {
+        this->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderTargetTexture::release()
+    {
         if( m_uid != 0 )
         {
             GLCALL( glDeleteTextures, (1, &m_uid) );
 
             m_uid = 0;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderTargetTexture::reload()
+    {
+        GLuint tuid = 0;
+        GLCALL( glGenTextures, (1, &tuid) );
+
+        m_uid = tuid;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderTargetTexture::getHWMipmaps() const
@@ -182,5 +197,10 @@ namespace Mengine
     GLuint OpenGLRenderTargetTexture::getUID() const
     {
         return m_uid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderTargetTexture::_destroy()
+    {
+        this->release();
     }
 }

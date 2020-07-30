@@ -71,7 +71,7 @@ namespace Mengine
 
         setOGGAllocatorEx( &allocator );
 
-        LOGGER_MESSAGE( "Video Theora Version: %s"
+        LOGGER_MESSAGE_RELEASE( "Video Theora Version: %s"
             , theora_version_string()
         );
 

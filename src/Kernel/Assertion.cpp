@@ -1,5 +1,6 @@
 #include "Assertion.h"
 
+#include "Kernel/Crash.h"
 #include "Kernel/Exception.h"
 #include "Kernel/Logger.h"
 
@@ -66,14 +67,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
-            if( _level == ASSERTION_LEVEL_CRITICAL )
-            {
-                volatile uint32_t * p = nullptr;
-                *p = 0xBADC0DE;
-
-                return;
-            }
-
             Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
 
             MENGINE_VA_LIST_TYPE argList;
@@ -86,6 +79,13 @@ namespace Mengine
             if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
             {
                 NOTIFICATION_NOTIFY( NOTIFICATOR_ASSERTION, _level, _test, _file, _line, str_info );
+            }
+
+            if( _level == ASSERTION_LEVEL_CRITICAL )
+            {
+                Helper::crash();
+
+                return;
             }
 
             if( _level == ASSERTION_LEVEL_EXCEPTION )

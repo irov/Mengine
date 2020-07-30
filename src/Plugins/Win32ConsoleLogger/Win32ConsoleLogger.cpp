@@ -87,8 +87,6 @@ namespace Mengine
         std::ios::sync_with_stdio();
 
         FreeLibrary( hKernel32 );
-
-        std::cout << "console ready.." << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::removeConsole_()

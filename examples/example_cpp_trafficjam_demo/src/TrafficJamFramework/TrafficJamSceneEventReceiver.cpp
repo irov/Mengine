@@ -30,6 +30,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     static const Color BG_COLOR( 128.f, 128.f, 128.f );
     static const mt::vec2f BG_SIZE( 715, 715 );
 
@@ -47,7 +48,6 @@ namespace Mengine
 
     static const Color VERTICAL_CAR_COLOR( 0.f, 0.f, 255.f );
     static const mt::vec2f VERTICAL_CAR_SIZE( 110, 225 );
-
     //////////////////////////////////////////////////////////////////////////
     TrafficJamSceneEventReceiver::TrafficJamSceneEventReceiver()
     {
@@ -504,7 +504,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::moveUp( ShapeQuadFixedPtr _sprite )
     {
-        mt::vec3f pos = _sprite->getLocalPosition();
+        const mt::vec3f & pos = _sprite->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
@@ -522,7 +522,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::moveDown( ShapeQuadFixedPtr _sprite )
     {
-        mt::vec3f pos = _sprite->getLocalPosition();
+        const mt::vec3f & pos = _sprite->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
@@ -540,7 +540,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::movePlayerUp( ShapeQuadFixedPtr _sprite )
     {
-        mt::vec3f pos = _sprite->getLocalPosition();
+        const mt::vec3f & pos = _sprite->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
         int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
@@ -558,10 +558,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TrafficJamSceneEventReceiver::movePlayerDown( ShapeQuadFixedPtr _sprite )
     {
-        mt::vec3f pos = _sprite->getLocalPosition();
+        const mt::vec3f & pos = _sprite->getLocalPosition();
 
         int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
-        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int>(cellInPixels);
+        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
 
         if( y_pos + 1 > 4 )
         {

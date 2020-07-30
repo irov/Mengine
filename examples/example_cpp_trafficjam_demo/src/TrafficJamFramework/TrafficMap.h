@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Kernel/DummySceneEventReceiver.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine

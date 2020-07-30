@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TrafficMap.h"
+
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
 
 #include "Engine/HotSpotPolygon.h"
@@ -12,15 +14,12 @@
 #include "Kernel/Resource.h"
 #include "Kernel/Vector.h"
 
-#include "TrafficMap.h"
-
 namespace Mengine
 {
     const float cellInPixels = 115;
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<ShapeQuadFixedPtr> VectorShapeQuadFixedPtr;
     typedef Vector<HotSpotPolygonPtr> VectorHotSpotPolygonPtr;
-    //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     class TrafficJamSceneEventReceiver
         : public DummySceneEventReceiver

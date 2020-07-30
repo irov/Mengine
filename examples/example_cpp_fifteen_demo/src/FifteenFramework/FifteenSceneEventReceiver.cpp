@@ -665,7 +665,9 @@ namespace Mengine
                 firstEnter = _col + 1;
             }
             else
+            {
                 firstEnter = 0;
+            }
 
             for( int32_t col = firstEnter; col != GRID_SIZE_X; col++ )
             {

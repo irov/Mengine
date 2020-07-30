@@ -48,6 +48,8 @@ namespace Mengine
 
     static const Color VERTICAL_CAR_COLOR( 0.f, 0.f, 255.f );
     static const mt::vec2f VERTICAL_CAR_SIZE( 110, 225 );
+
+    const float CELL_IN_PIXELS = 115;
     //////////////////////////////////////////////////////////////////////////
     TrafficJamSceneEventReceiver::TrafficJamSceneEventReceiver()
     {
@@ -360,7 +362,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HotSpotPolygonPtr TrafficJamSceneEventReceiver::addHotspot( uint32_t _row, uint32_t _col, uint32_t _id )
     {
-        mt::vec2f hotspotSize( { cellInPixels, cellInPixels } );
+        mt::vec2f hotspotSize( { CELL_IN_PIXELS, CELL_IN_PIXELS } );
 
         ConstString name = Helper::stringizeStringFormat( "HotSpot_%d", _id );
 
@@ -457,7 +459,7 @@ namespace Mengine
 
         m_gameNode->addChild( sprite );
 
-        const mt::vec3f spriteLocalPosition = { BORDER_INDENT + _row * cellInPixels, BORDER_INDENT + _col * cellInPixels, 0.f };
+        const mt::vec3f spriteLocalPosition = { BORDER_INDENT + _row * CELL_IN_PIXELS, BORDER_INDENT + _col * CELL_IN_PIXELS, 0.f };
 
         sprite->setLocalPosition( spriteLocalPosition );
 
@@ -470,14 +472,14 @@ namespace Mengine
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
-        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
-        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
+        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
+        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
 
         ECellType carType = m_trafficMap.getCell( x_pos - 1, y_pos );
 
         if( x_pos > 0 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionX( pos.x - cellInPixels );
+            _sprite->setLocalPositionX( pos.x - CELL_IN_PIXELS );
             m_trafficMap.setCell( x_pos - 1, y_pos, ECellType::ECellType_HORIZONTAL_LEFT );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_HORIZONTAL_RIGHT );
             m_trafficMap.setCell( x_pos + 1, y_pos, ECellType::ECellType_EMPTY );
@@ -488,14 +490,14 @@ namespace Mengine
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
-        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
-        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
+        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
+        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
 
         ECellType carType = m_trafficMap.getCell( x_pos + 2, y_pos );
 
         if( x_pos < 4 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionX( pos.x + cellInPixels );
+            _sprite->setLocalPositionX( pos.x + CELL_IN_PIXELS );
             m_trafficMap.setCell( x_pos + 1, y_pos, ECellType::ECellType_HORIZONTAL_LEFT );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_EMPTY );
             m_trafficMap.setCell( x_pos + 2, y_pos, ECellType::ECellType_HORIZONTAL_RIGHT );
@@ -506,14 +508,14 @@ namespace Mengine
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
-        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
-        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
+        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
+        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
 
         ECellType carType = m_trafficMap.getCell( x_pos, y_pos - 1 );
 
         if( y_pos > 0 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y - cellInPixels );
+            _sprite->setLocalPositionY( pos.y - CELL_IN_PIXELS );
             m_trafficMap.setCell( x_pos, y_pos - 1, ECellType::ECellType_VERTICAL_UP );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_VERTICAL_DOWN );
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_EMPTY );
@@ -524,14 +526,14 @@ namespace Mengine
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
-        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
-        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
+        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
+        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
 
         ECellType carType = m_trafficMap.getCell( x_pos, y_pos + 2 );
 
         if( y_pos < 4 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y + cellInPixels );
+            _sprite->setLocalPositionY( pos.y + CELL_IN_PIXELS );
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_VERTICAL_UP );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_EMPTY );
             m_trafficMap.setCell( x_pos, y_pos + 2, ECellType::ECellType_VERTICAL_DOWN );
@@ -542,14 +544,14 @@ namespace Mengine
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
-        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
-        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
+        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
+        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
 
         ECellType carType = m_trafficMap.getCell( x_pos, y_pos - 1 );
 
         if( y_pos > 0 && carType == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y - cellInPixels );
+            _sprite->setLocalPositionY( pos.y - CELL_IN_PIXELS );
             m_trafficMap.setCell( x_pos, y_pos - 1, ECellType::ECellType_VERTICAL_UP );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_VERTICAL_DOWN );
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_EMPTY );
@@ -560,8 +562,8 @@ namespace Mengine
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
-        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
-        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(cellInPixels);
+        int32_t x_pos = (static_cast<int32_t>(pos.x - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
+        int32_t y_pos = (static_cast<int32_t>(pos.y - BORDER_INDENT)) / static_cast<int32_t>(CELL_IN_PIXELS);
 
         if( y_pos + 1 > 4 )
         {
@@ -569,7 +571,7 @@ namespace Mengine
         }
         else if( y_pos < 4 && m_trafficMap.getCell( x_pos, y_pos + 2 ) == ECellType::ECellType_EMPTY )
         {
-            _sprite->setLocalPositionY( pos.y + cellInPixels );
+            _sprite->setLocalPositionY( pos.y + CELL_IN_PIXELS );
             m_trafficMap.setCell( x_pos, y_pos, ECellType::ECellType_EMPTY );
             m_trafficMap.setCell( x_pos, y_pos + 1, ECellType::ECellType_PLAYER_V_UP );
             m_trafficMap.setCell( x_pos, y_pos + 2, ECellType::ECellType_PLAYER_V_DOWN );

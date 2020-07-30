@@ -59,12 +59,12 @@ namespace Mengine
         void runTaskChains();
 
     protected:
-        void moveLeft( ShapeQuadFixedPtr _sprite );
-        void moveRight( ShapeQuadFixedPtr _sprite );
-        void moveUp( ShapeQuadFixedPtr _sprite );
-        void moveDown( ShapeQuadFixedPtr _sprite );
-        void movePlayerUp( ShapeQuadFixedPtr _sprite );
-        void movePlayerDown( ShapeQuadFixedPtr _sprite );
+        void moveLeft( const ShapeQuadFixedPtr & _sprite );
+        void moveRight( const ShapeQuadFixedPtr & _sprite );
+        void moveUp( const ShapeQuadFixedPtr & _sprite );
+        void moveDown( const ShapeQuadFixedPtr & _sprite );
+        void movePlayerUp( const ShapeQuadFixedPtr & _sprite );
+        void movePlayerDown( const ShapeQuadFixedPtr & _sprite );
 
         void resetGame();
 

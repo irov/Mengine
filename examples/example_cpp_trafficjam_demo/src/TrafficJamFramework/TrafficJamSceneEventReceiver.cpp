@@ -468,7 +468,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TrafficJamSceneEventReceiver::moveLeft( ShapeQuadFixedPtr _sprite )
+    void TrafficJamSceneEventReceiver::moveLeft( const ShapeQuadFixedPtr & _sprite )
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
@@ -486,7 +486,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TrafficJamSceneEventReceiver::moveRight( ShapeQuadFixedPtr _sprite )
+    void TrafficJamSceneEventReceiver::moveRight( const ShapeQuadFixedPtr & _sprite )
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
@@ -504,7 +504,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TrafficJamSceneEventReceiver::moveUp( ShapeQuadFixedPtr _sprite )
+    void TrafficJamSceneEventReceiver::moveUp( const ShapeQuadFixedPtr & _sprite )
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
@@ -522,7 +522,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TrafficJamSceneEventReceiver::moveDown( ShapeQuadFixedPtr _sprite )
+    void TrafficJamSceneEventReceiver::moveDown( const ShapeQuadFixedPtr & _sprite )
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
@@ -540,7 +540,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TrafficJamSceneEventReceiver::movePlayerUp( ShapeQuadFixedPtr _sprite )
+    void TrafficJamSceneEventReceiver::movePlayerUp( const ShapeQuadFixedPtr & _sprite )
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 
@@ -558,7 +558,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TrafficJamSceneEventReceiver::movePlayerDown( ShapeQuadFixedPtr _sprite )
+    void TrafficJamSceneEventReceiver::movePlayerDown( const ShapeQuadFixedPtr & _sprite )
     {
         const mt::vec3f & pos = _sprite->getLocalPosition();
 

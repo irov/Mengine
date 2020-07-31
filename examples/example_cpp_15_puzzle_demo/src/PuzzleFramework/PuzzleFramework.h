@@ -5,6 +5,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PuzzleFramework
         : public FrameworkBase
     {

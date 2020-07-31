@@ -225,7 +225,6 @@ namespace Mengine
         sentry_value_set_by_key( screen, "height", sentry_value_new_int32( 1080 ) );
         sentry_set_extra( "screen_size", screen );
 
-
         const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"

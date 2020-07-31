@@ -55,7 +55,7 @@ namespace Mengine
         TextFieldPtr createTextField( const ConstString & _name, const ConstString & _id, const VectorString & _args );
 
         bool getImageSize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, mt::vec2f * _out );
-        ResourceImageDefaultPtr createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, mt::uv4f _uvImage, mt::uv4f _uvAlpha );
+        ResourceImageDefaultPtr createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::uv4f & _uvImage, const mt::uv4f & _uvAlpha );
 
     // game
     protected:

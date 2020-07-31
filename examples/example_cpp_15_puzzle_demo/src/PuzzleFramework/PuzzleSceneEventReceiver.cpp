@@ -44,26 +44,26 @@ namespace Mengine
     static MENGINE_CONSTEXPR const int32_t DIRECTION_LEFT = -1;
     static MENGINE_CONSTEXPR const int32_t DIRECTION_RIGHT = 1;
     //////////////////////////////////////////////////////////////////////////
-    static const FilePath & IMAGE_PATH()
-    {
-        return STRINGIZE_FILEPATH_LOCAL( "image_0.png" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    namespace Helper
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE void convertRowColToIdx( int32_t _row, int32_t _col, int32_t * _idx )
+        static MENGINE_INLINE const FilePath & IMAGE_PATH()
+        {
+            return STRINGIZE_FILEPATH_LOCAL( "image_0.png" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static MENGINE_INLINE void convertRowColToIdx( int32_t _row, int32_t _col, int32_t * _idx )
         {
             *_idx = PUZZLE_COLS * _row + _col;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE void convertIdxToRowCol( int32_t _idx, int32_t * _row, int32_t * _col)
+        static MENGINE_INLINE void convertIdxToRowCol( int32_t _idx, int32_t * _row, int32_t * _col)
         {
             *_row = _idx / PUZZLE_COLS;
             *_col = _idx % PUZZLE_COLS;
         }
         //////////////////////////////////////////////////////////////////////////
-        void randomizeVectorIndexes( VectorIndexes * _vector, uint32_t _size, int32_t _min, int32_t _max )
+        static void randomizeVectorIndexes( VectorIndexes * _vector, uint32_t _size, int32_t _min, int32_t _max )
         {
             const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                 ->getRandomizer();
@@ -83,7 +83,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        bool checkVectorIndexes( const VectorIndexes & _vector )
+        static bool checkVectorIndexes( const VectorIndexes & _vector )
         {
             uint32_t sum = 0;
             uint32_t emptyIdx = 0;
@@ -94,7 +94,7 @@ namespace Mengine
                 {
                     int32_t row;
                     int32_t col;
-                    Helper::convertIdxToRowCol( i, &row, &col );
+                    Detail::convertIdxToRowCol( i, &row, &col );
                     emptyIdx = row + 1;
 
                     continue;
@@ -394,7 +394,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageDefaultPtr PuzzleSceneEventReceiver::createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, mt::uv4f _uvImage, mt::uv4f _uvAlpha )
+    ResourceImageDefaultPtr PuzzleSceneEventReceiver::createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::uv4f & _uvImage, const mt::uv4f & _uvAlpha )
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( _fileGroupName );
@@ -429,7 +429,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PuzzleSceneEventReceiver::setupGame()
     {
-        FilePath imageFilePath = IMAGE_PATH();
+        FilePath imageFilePath = Detail::IMAGE_PATH();
 
         // create game node
         NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -482,12 +482,12 @@ namespace Mengine
 
                 int32_t idx;
 
-                Helper::convertRowColToIdx( row, col, &idx );
+                Detail::convertRowColToIdx( row, col, &idx );
 
                 int32_t row_test;
                 int32_t col_test;
 
-                Helper::convertIdxToRowCol( idx, &row_test, &col_test );
+                Detail::convertIdxToRowCol( idx, &row_test, &col_test );
 
                 MENGINE_ASSERTION( row == row_test || col == col_test );
 
@@ -503,7 +503,7 @@ namespace Mengine
             {
                 int32_t idx;
 
-                Helper::convertRowColToIdx( row, col, &idx );
+                Detail::convertRowColToIdx( row, col, &idx );
 
                 mt::vec3f position = m_positions[idx];
 
@@ -653,7 +653,7 @@ namespace Mengine
 
             int32_t row;
             int32_t col;
-            Helper::convertIdxToRowCol( idx, &row, &col );
+            Detail::convertIdxToRowCol( idx, &row, &col );
 
             // border
             NodePtr graphicsCell = createGraphicsRect( Helper::stringizeStringFormat( "Graphics_%d_%d_Cell", row, col ), colorLine, imagePartSize );
@@ -752,7 +752,7 @@ namespace Mengine
 
                 Cook::addFunction( _scope_repeat, [this]()
                 {
-                    Helper::randomizeVectorIndexes( &m_indexes, PUZZLE_COLS * PUZZLE_ROWS, 0, PUZZLE_COLS * PUZZLE_ROWS );
+                    Detail::randomizeVectorIndexes( &m_indexes, PUZZLE_COLS * PUZZLE_ROWS, 0, PUZZLE_COLS * PUZZLE_ROWS );
 
                     for( uint32_t idx = 0; idx != (uint32_t)m_indexes.size(); idx++ )
                     {
@@ -766,7 +766,7 @@ namespace Mengine
 
                 auto && [source_true, source_false] = GOAP::Cook::addIf( _scope_repeat, [this]()
                 {
-                    return Helper::checkVectorIndexes( m_indexes ) == true && this->isGameOver() == false;
+                    return Detail::checkVectorIndexes( m_indexes ) == true && this->isGameOver() == false;
                 } );
 
                 Cook::addSemaphoreAssign( source_true, m_semaphoreRandomOver, 1 );
@@ -875,8 +875,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PuzzleSceneEventReceiver::scopeMakeTurn( const GOAP::SourceInterfacePtr & _scope, int32_t _position )
     {
-        MENGINE_UNUSED( _position );
-
         Cook::addPrint( _scope, "Click at idx '%d' hotspot", _position );
 
         // find index of empty cell
@@ -903,11 +901,11 @@ namespace Mengine
 
         int32_t fromRow;
         int32_t fromCol;
-        Helper::convertIdxToRowCol( emptyIdx, &fromRow, &fromCol );
+        Detail::convertIdxToRowCol( emptyIdx, &fromRow, &fromCol );
 
         int32_t toRow;
         int32_t toCol;
-        Helper::convertIdxToRowCol( _position, &toRow, &toCol );
+        Detail::convertIdxToRowCol( _position, &toRow, &toCol );
 
         if( (direction == DIRECTION_LEFT || direction == DIRECTION_RIGHT) && (fromRow != toRow) )
         {
@@ -966,11 +964,11 @@ namespace Mengine
 
         int32_t fromRow;
         int32_t fromCol;
-        Helper::convertIdxToRowCol( fromIdx, &fromRow, &fromCol );
+        Detail::convertIdxToRowCol( fromIdx, &fromRow, &fromCol );
 
         int32_t toRow;
         int32_t toCol;
-        Helper::convertIdxToRowCol( toIdx, &toRow, &toCol );
+        Detail::convertIdxToRowCol( toIdx, &toRow, &toCol );
 
         if( (_direction == DIRECTION_LEFT || _direction == DIRECTION_RIGHT) && (fromRow != toRow) )
         {
@@ -1031,9 +1029,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PuzzleSceneEventReceiver::resetGame()
     {
-        // reset model
-        // reset view
-
         m_semaphoreGameOver->setValue( 0 );
     }
     //////////////////////////////////////////////////////////////////////////

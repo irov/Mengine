@@ -1770,6 +1770,7 @@ namespace Mengine
         Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
 #if defined(MENGINE_PLATFORM_IOS)
+        windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
         windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
@@ -1816,6 +1817,7 @@ namespace Mengine
         }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
+        windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;

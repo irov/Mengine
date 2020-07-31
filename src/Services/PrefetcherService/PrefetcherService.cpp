@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_availableService() const
     {
-        bool available = CONFIG_VALUE( "Engine", "PrefetcherAvailable", true );
+        bool available = CONFIG_VALUE( "Engine", "PrefetcherServiceAvailable", true );
 
         return available;
     }

@@ -365,7 +365,7 @@ namespace Mengine
         return text;
     }
     /////////////////////////////////////////////////////////////////////////
-    bool PuzzleSceneEventReceiver::getImageSize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, mt::vec2f * _out )
+    bool PuzzleSceneEventReceiver::getImageSize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, mt::vec2f * _out ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _out );
         
@@ -983,7 +983,7 @@ namespace Mengine
         Cook::addScope( _scope, this, &PuzzleSceneEventReceiver::scopeMakeTurn, toIdx );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PuzzleSceneEventReceiver::isGameOver()
+    bool PuzzleSceneEventReceiver::isGameOver() const
     {
         for( uint32_t idx = 0; idx != m_indexes.size() - 1; idx++ )
         {

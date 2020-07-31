@@ -54,7 +54,7 @@ namespace Mengine
         NodePtr createGraphicsRectFill( const ConstString & _name, const Color & _color, const mt::vec2f & _size );
         TextFieldPtr createTextField( const ConstString & _name, const ConstString & _id, const VectorString & _args );
 
-        bool getImageSize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, mt::vec2f * _out );
+        bool getImageSize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, mt::vec2f * _out ) const;
         ResourceImageDefaultPtr createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize, const mt::uv4f & _uvImage, const mt::uv4f & _uvAlpha );
 
     // game
@@ -71,7 +71,7 @@ namespace Mengine
         void scopeMakeTurnToDirection( const GOAP::SourceInterfacePtr & _scope, int32_t _direction );
         bool scopeGameOver( const GOAP::SourceInterfacePtr & _scope );
 
-        bool isGameOver();
+        bool isGameOver() const;
         void resetGame();
 
     protected:

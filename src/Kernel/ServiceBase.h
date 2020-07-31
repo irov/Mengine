@@ -35,7 +35,9 @@ namespace Mengine
 
             if( m_availableService == false )
             {
-                return false;
+                m_initializeService = true;
+
+                return true;
             }
 
             bool successful = this->_initializeService();

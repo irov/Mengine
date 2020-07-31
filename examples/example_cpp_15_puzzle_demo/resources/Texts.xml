@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Texts>
+    <Text Font="Value" Key="ID_Value" Value="%s" HorizontAlign="Center" VerticalAlign="Center"/>
+    <Text Font="Value_Border" Key="ID_Value_Border" Value="%s" HorizontAlign="Center" VerticalAlign="Center"/>
+</Texts>

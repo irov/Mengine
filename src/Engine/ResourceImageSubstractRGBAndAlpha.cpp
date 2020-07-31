@@ -51,7 +51,7 @@ namespace Mengine
                 , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlphaName, "'%s' not setup alpha resource"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, "'%s' not setup alpha resource"
             , this->getName().c_str()
         );
 

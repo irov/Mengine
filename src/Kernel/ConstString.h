@@ -29,6 +29,9 @@ namespace Mengine
         {
         }
 
+    private:
+        explicit ConstString( nullptr_t ) = delete;
+
     public:
         static const ConstString & none();
 
@@ -128,6 +131,9 @@ namespace Mengine
                 return _left < _right;
             }
         };
+
+    private:
+        bool operator == ( nullptr_t ) const = delete;
 
     protected:
         const ConstStringHolder * m_holder;

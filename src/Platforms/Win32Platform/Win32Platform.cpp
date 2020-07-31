@@ -254,7 +254,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_runService()
     {
-#if defined(MENGINE_DEBUG)
         {
             bool developmentMode = HAS_OPTION( "dev" );
 
@@ -293,7 +292,6 @@ namespace Mengine
                 Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
             }
         }
-#endif
 
         DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
@@ -376,7 +374,6 @@ namespace Mengine
         MENGINE_UNUSED( _pExceptionPointers );
         MENGINE_UNUSED( _full );
 
-#if defined(MENGINE_DEBUG)
         if( ::IsDebuggerPresent() == TRUE )
         {
             return false;
@@ -450,9 +447,6 @@ namespace Mengine
         }
 
         return true;
-#endif
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )

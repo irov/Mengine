@@ -393,14 +393,7 @@ namespace Mengine
 
         m_d3dppFS.hDeviceWindow = windowHandle;
 
-        if( multiSampleType == D3DMULTISAMPLE_NONE )
-        {
-            m_d3dppFS.SwapEffect = D3DSWAPEFFECT_FLIP;
-        }
-        else
-        {
-            m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-        }
+        m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
         m_d3dppFS.BackBufferFormat = m_displayMode.Format;
 
@@ -417,7 +410,7 @@ namespace Mengine
             m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
         }
 
-        m_d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+        m_d3dppFS.FullScreen_RefreshRateInHz = m_displayMode.RefreshRate;
 
         this->updateVSyncDPP_();
 

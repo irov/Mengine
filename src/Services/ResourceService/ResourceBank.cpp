@@ -219,19 +219,6 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceBank::getResourceType( const ConstString & _name ) const
-    {
-        const ResourcePtr & resource = m_resources.find( _name );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
-            , _name.c_str()
-        );
-
-        const ConstString & type = resource->getType();
-
-        return type;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceBank::hasResource( const ConstString & _name, ResourcePtr * const _resource ) const
     {
         const ResourcePtr & resource = m_resources.find( _name );

@@ -1291,7 +1291,7 @@ namespace Mengine
     bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
     {
         const ResourceImageSolidPtr & resource = RESOURCE_SERVICE()
-            ->getResource( _layer.source );
+            ->getResourceReference( _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "'%s' resource '%s' can't compile sprite '%s' imageSolid resource = NULL"
             , this->getName().c_str()
@@ -1506,7 +1506,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( movie_internal );
 
         const ResourceInternalObjectPtr & resourceInternalObject = RESOURCE_SERVICE()
-            ->getResource( _layer.source );
+            ->getResourceReference( _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceInternalObject );
 

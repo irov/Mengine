@@ -1253,6 +1253,8 @@ namespace Mengine
 
                 RENDERTEXTURE_SERVICE()
                     ->saveImage( texture, fileGroup, STRINGIZE_STRING_LOCAL( "pngImage" ), _filePath );
+
+                resource->release();
             }
             //////////////////////////////////////////////////////////////////////////
             void setParticlesEnabled( bool _enabled )
@@ -1886,6 +1888,8 @@ namespace Mengine
 
                 if( stream == nullptr )
                 {
+                    resourceFile->release();
+
                     return false;
                 }
 
@@ -1895,6 +1899,8 @@ namespace Mengine
 
                 if( stream->read( memory_buffer, size ) != size )
                 {
+                    resourceFile->release();
+
                     return false;
                 }
 

@@ -817,24 +817,6 @@ namespace Mengine
 
         const ConstString & groupName = datablock.get_Name();
 
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include : includes_include )
-        {
-            const FilePath & path = meta_include.get_Path();
-
-            if( this->loadResources_( _locale, _fileGroup, path, _tags, _ignored ) == false )
-            {
-                LOGGER_ERROR( "load '%s:%s' resource invalid load include '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
-                    , path.c_str()
-                );
-
-                return false;
-            }
-        }
-
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource & includes_resource = datablock.get_Includes_Resource();
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource : includes_resource )
@@ -940,6 +922,24 @@ namespace Mengine
                 }
             }
 #endif
+        }
+
+        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
+
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include : includes_include )
+        {
+            const FilePath & path = meta_include.get_Path();
+
+            if( this->loadResources_( _locale, _fileGroup, path, _tags, _ignored ) == false )
+            {
+                LOGGER_ERROR( "load '%s:%s' resource invalid load include '%s'"
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
+                    , path.c_str()
+                );
+
+                return false;
+            }
         }
 
         return true;

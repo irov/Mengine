@@ -254,7 +254,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_runService()
     {
-#if defined(MENGINE_DEBUG)
         {
             bool developmentMode = HAS_OPTION( "dev" );
 
@@ -293,7 +292,6 @@ namespace Mengine
                 Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
             }
         }
-#endif
 
         DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
@@ -301,7 +299,7 @@ namespace Mengine
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
 
-        LOGGER_MESSAGE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
+        LOGGER_MESSAGE_RELEASE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -313,7 +311,7 @@ namespace Mengine
         MEMORYSTATUSEX mem_st;
         if( GlobalMemoryStatusEx( &mem_st ) == TRUE )
         {
-            LOGGER_MESSAGE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
+            LOGGER_MESSAGE_RELEASE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
                 , (uint32_t)(mem_st.ullTotalPhys / 1024UL)
                 , (uint32_t)(mem_st.ullAvailPhys / 1024UL)
                 , (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
@@ -323,7 +321,7 @@ namespace Mengine
 
         if( this->setProcessDPIAware() == false )
         {
-            LOGGER_ERROR( "Application not setup Process DPI Aware" );
+            LOGGER_MESSAGE_RELEASE( "Application not setup Process DPI Aware" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -376,7 +374,6 @@ namespace Mengine
         MENGINE_UNUSED( _pExceptionPointers );
         MENGINE_UNUSED( _full );
 
-#if defined(MENGINE_DEBUG)
         if( ::IsDebuggerPresent() == TRUE )
         {
             return false;
@@ -450,9 +447,6 @@ namespace Mengine
         }
 
         return true;
-#endif
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )

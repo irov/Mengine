@@ -8,6 +8,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathString.h"
@@ -89,7 +90,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_MESSAGE( "Sentry: %s"
+        LOGGER_MESSAGE_RELEASE( "Sentry: %s"
             , SENTRY_SDK_USER_AGENT
         );
 
@@ -101,6 +102,10 @@ namespace Mengine
 
             return true;
         }
+
+        LOGGER_MESSAGE( "Sentry DSN: %s"
+            , sentryDSN
+        );
 
         const Char * sentryHandler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
 
@@ -220,7 +225,6 @@ namespace Mengine
         sentry_value_set_by_key( screen, "height", sentry_value_new_int32( 1080 ) );
         sentry_set_extra( "screen_size", screen );
 
-
         const Char * sentryApplication = CONFIG_VALUE( "Sentry", "Application", "Mengine" );
 
         LOGGER_MESSAGE( "Sentry set extra [Application: %s]"
@@ -338,8 +342,7 @@ namespace Mengine
 
             sentry_capture_event( event );
 
-            volatile uint32_t * p = nullptr;
-            *p = 0xBADC0DE;
+            Helper::crash();
         }
     }
 }

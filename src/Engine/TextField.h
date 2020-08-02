@@ -148,6 +148,7 @@ namespace Mengine
         void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyDebugMode( bool _debugMode );
         void notifyChangeTextAliasArguments( const ConstString & _environment, const ConstString & _alias );
+        void notifyRenderDeviceLostPrepare();
 
     protected:
         void updateVertices_( const TextFontInterfacePtr & _font ) const;

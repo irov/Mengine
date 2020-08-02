@@ -30,10 +30,7 @@ namespace Mengine
         void correctUVTexture();
 
     protected:
-        ConstString m_resourceImageRGBName;
         ResourceImagePtr m_resourceImageRGB;
-
-        ConstString m_resourceImageAlphaName;
         ResourceImagePtr m_resourceImageAlpha;
     };
     //////////////////////////////////////////////////////////////////////////

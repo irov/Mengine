@@ -651,6 +651,9 @@ Core
     RandomizerHelper.h
     RandomizerHelper.cpp
     
+    Crash.h
+    Crash.cpp
+    
     UnknownPointer.h
 )
 

@@ -3,6 +3,8 @@
 #include "Kernel/ConstStringHolder.h"
 #include "Kernel/Hashgen.h"
 
+#include "Config/StdDef.h"
+
 namespace Mengine
 {
     class ConstString
@@ -28,6 +30,9 @@ namespace Mengine
             : m_holder( _holder )
         {
         }
+
+    private:
+        ConstString( std::nullptr_t ) = delete;
 
     public:
         static const ConstString & none();
@@ -128,6 +133,9 @@ namespace Mengine
                 return _left < _right;
             }
         };
+
+    private:
+        bool operator == ( std::nullptr_t ) const = delete;
 
     protected:
         const ConstStringHolder * m_holder;

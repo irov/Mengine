@@ -29,6 +29,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Base64.h"
+#include "Kernel/Crash.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -625,8 +626,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_crashEngine()
             {
-                volatile uint32_t * nullptr_crash = nullptr;
-                *nullptr_crash = 0xDEADC0DE;
+                Helper::crash();
             }
             //////////////////////////////////////////////////////////////////////////
             void s_freezeEngine()

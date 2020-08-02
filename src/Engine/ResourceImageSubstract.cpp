@@ -35,8 +35,9 @@ namespace Mengine
 
         if( ResourceImage::_compile() == false )
         {
-            LOGGER_ERROR( "'%s' invalid compile base ResourceImage class"
+            LOGGER_ERROR( "'%s' group '%s' invalid compile base ResourceImage class"
                 , this->getName().c_str()
+                , this->getGroupName().c_str()
             );
 
             return false;
@@ -81,4 +82,5 @@ namespace Mengine
             m_uvTextureAlpha[i] = m_uvAlpha[i];
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

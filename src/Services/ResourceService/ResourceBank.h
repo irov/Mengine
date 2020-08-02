@@ -29,7 +29,6 @@ namespace Mengine
     public:
         const ResourcePtr & getResource( const ConstString & _name ) const override;
         const ResourcePtr & getResourceReference( const ConstString & _name ) const override;
-        const ConstString & getResourceType( const ConstString & _name ) const override;
 
         bool hasResource( const ConstString & _name, ResourcePtr * const _resource ) const override;
         bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const override;

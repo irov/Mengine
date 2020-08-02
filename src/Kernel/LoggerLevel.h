@@ -5,8 +5,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerLevel
     {
-        LM_FATAL = 0,
+        LM_SILENT = 0,
+        LM_FATAL,
         LM_CRITICAL,
+        LM_MESSAGE_RELEASE,
         LM_ERROR,
         LM_PERFOMANCE,
         LM_STATISTIC,

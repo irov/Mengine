@@ -45,7 +45,6 @@ namespace Mengine
     public:
         virtual const ResourcePtr & getResource( const ConstString & _name ) const = 0;
         virtual const ResourcePtr & getResourceReference( const ConstString & _name ) const = 0;
-        virtual const ConstString & getResourceType( const ConstString & _name ) const = 0;
 
     public:
         virtual bool hasResource( const ConstString & _name, ResourcePtr * const _resource ) const = 0;

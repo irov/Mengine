@@ -11,6 +11,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionContainer.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/ConstStringHelper.h"
@@ -88,6 +89,20 @@ namespace Mengine
         m_deferredCompileFragmentShaders.clear();
         m_deferredCompilePrograms.clear();
 
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderImages );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderImageTargets );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderTargetTextures );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderVertexShaders );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderFragmentShaders );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderPrograms );
+
+        m_cacheRenderImages.clear();
+        m_cacheRenderImageTargets.clear();
+        m_cacheRenderTargetTextures.clear();
+        m_cacheRenderVertexShaders.clear();
+        m_cacheRenderFragmentShaders.clear();
+        m_cacheRenderPrograms.clear();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
@@ -109,11 +124,6 @@ namespace Mengine
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariable = nullptr;
-
-        m_cacheRenderImages.clear();
-        m_cacheRenderVertexShaders.clear();
-        m_cacheRenderFragmentShaders.clear();
-        m_cacheRenderPrograms.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
@@ -160,10 +170,12 @@ namespace Mengine
         MENGINE_UNUSED( versionStr );
         MENGINE_UNUSED( extensionsStr );
 
-        LOGGER_MESSAGE( "Vendor      : %s", vendorStr );
-        LOGGER_MESSAGE( "Renderer    : %s", rendererStr );
-        LOGGER_MESSAGE( "Version     : %s", versionStr );
-        LOGGER_MESSAGE( "Extensions  : %s", extensionsStr );
+        LOGGER_MESSAGE_RELEASE( "OpenGL driver properties" );
+
+        LOGGER_MESSAGE_RELEASE( "Vendor      : %s", vendorStr );
+        LOGGER_MESSAGE_RELEASE( "Renderer    : %s", rendererStr );
+        LOGGER_MESSAGE_RELEASE( "Version     : %s", versionStr );
+        LOGGER_MESSAGE_RELEASE( "Extensions  : %s", extensionsStr );
 
         OPENGL_RENDER_CHECK_ERROR();
 
@@ -997,6 +1009,11 @@ namespace Mengine
             image->release();
         }
 
+        for( OpenGLRenderTargetTexture * target : m_cacheRenderTargetTextures )
+        {
+            target->release();
+        }
+
         for( OpenGLRenderVertexShader * shader : m_cacheRenderVertexShaders )
         {
             shader->release();
@@ -1020,6 +1037,11 @@ namespace Mengine
         for( OpenGLRenderImage * image : m_cacheRenderImages )
         {
             image->reload();
+        }
+
+        for( OpenGLRenderTargetTexture * target : m_cacheRenderTargetTextures )
+        {
+            target->reload();
         }
 
         for( OpenGLRenderVertexShader * shader : m_cacheRenderVertexShaders )

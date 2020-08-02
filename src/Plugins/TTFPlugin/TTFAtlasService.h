@@ -3,6 +3,7 @@
 #include "TTFInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Observable.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Pair.h"
 #include "Kernel/Map.h"
@@ -12,6 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TTFAtlasService
         : public ServiceBase<TTFAtlasServiceInterface>
+        , public Observable
     {
     public:
         TTFAtlasService();
@@ -24,7 +26,13 @@ namespace Mengine
     public:
         RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentPtr & _doc ) override;
 
-    public:
+    protected:
+        void clearAtlasess_();
+
+    protected:
+        void notifyRenderDeviceLostPrepare();
+
+    protected:
         struct TTFAtlas
         {
             uint32_t width;

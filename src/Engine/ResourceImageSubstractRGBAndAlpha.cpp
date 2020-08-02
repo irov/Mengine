@@ -38,22 +38,45 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstractRGBAndAlpha::_compile()
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, "'%s' group '%s' not setup rgb resource"
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+        );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, "'%s' group '%s' not setup alpha resource"
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+        );
+
         if( ResourceImage::_compile() == false )
         {
-            LOGGER_ERROR( "'%s' invalid compile base ResourceImage class"
+            LOGGER_ERROR( "'%s' group '%s' invalid compile base ResourceImage class"
                 , this->getName().c_str()
+                , this->getGroupName().c_str()
             );
 
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, "'%s' not setup rgb resource"
+        if( m_resourceImageRGB->compile() == false )
+        {
+            LOGGER_ERROR( "'%s' invalid compile resource image rgb '%s'"
                 , this->getName().c_str()
-        );
+                , m_resourceImageRGB->getName().c_str()
+            );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlphaName, "'%s' not setup alpha resource"
-            , this->getName().c_str()
-        );
+            return false;
+        }
+
+        if( m_resourceImageAlpha->compile() == false )
+        {
+            LOGGER_ERROR( "'%s' invalid compile resource image alpha '%s'"
+                , this->getName().c_str()
+                , m_resourceImageAlpha->getName().c_str()
+            );
+
+            return false;
+        }
 
         m_texture = m_resourceImageRGB->getTexture();
         m_textureAlpha = m_resourceImageAlpha->getTexture();

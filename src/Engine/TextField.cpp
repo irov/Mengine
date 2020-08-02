@@ -60,6 +60,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_TEXT_ALIAS, this, &TextField::notifyChangeTextAliasArguments, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, this, &TextField::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateTextLines();
 
@@ -71,6 +72,7 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_TEXT_MODE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
         Node::_deactivate();
     }
@@ -135,6 +137,11 @@ namespace Mengine
             return;
         }
 
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::notifyRenderDeviceLostPrepare()
+    {
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////

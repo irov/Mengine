@@ -201,13 +201,6 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceService::getResourceType( const ConstString & _name ) const
-    {
-        const ConstString & type = m_globalBank->getResourceType( _name );
-
-        return type;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ResourceService::foreachResources( const LambdaResource & _lambda ) const
     {
         const ResourceBank::HashtableResources & resources = m_globalBank->getResources();

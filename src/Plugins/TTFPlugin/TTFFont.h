@@ -7,6 +7,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/TextFontInterface.h"
 
+#include "Kernel/Observable.h"
 #include "Kernel/String.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FontBase.h"
@@ -30,6 +31,7 @@ namespace Mengine
     class TTFFont
         : public FontBase
         , public UnknownTTFFontInterface
+        , public Observable
     {
         DECLARE_UNKNOWABLE();
 
@@ -101,6 +103,12 @@ namespace Mengine
 
     protected:
         bool loadFaceGlyph_( GlyphCode _code, FT_Face * const _face );
+
+    protected:
+        void notifyRenderDeviceLostPrepare();
+
+    protected:
+        void clearGlyphs_();
 
     protected:
         FT_Library m_ftlibrary;

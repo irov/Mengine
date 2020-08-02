@@ -471,8 +471,8 @@ namespace Mengine
         int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
         SDL_bool AndroidTV = SDL_IsAndroidTV();
 
-        LOGGER_MESSAGE( "Android SDK version: %d", AndroidSDKVersion );
-        LOGGER_MESSAGE( "Android TV: %d", AndroidTV );
+        LOGGER_MESSAGE_RELEASE( "Android SDK version: %d", AndroidSDKVersion );
+        LOGGER_MESSAGE_RELEASE( "Android TV: %d", AndroidTV );
 #endif
 
         return true;
@@ -486,7 +486,7 @@ namespace Mengine
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
 
-        LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
+        LOGGER_MESSAGE_RELEASE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -495,71 +495,71 @@ namespace Mengine
             , dateTime.second
         );
 
-        LOGGER_MESSAGE( "Device info:"
+        LOGGER_MESSAGE_RELEASE( "Device info:"
         );
 
-        LOGGER_MESSAGE( "Platform: %s"
+        LOGGER_MESSAGE_RELEASE( "Platform: %s"
             , SDL_GetPlatform()
         );
 
-        LOGGER_MESSAGE( "CPU: %d Count %d CacheLineSize"
+        LOGGER_MESSAGE_RELEASE( "CPU: %d Count %d CacheLineSize"
             , SDL_GetCPUCount()
             , SDL_GetCPUCacheLineSize()
         );
 
-        LOGGER_MESSAGE( "CPU RDTSC: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU RDTSC: %d"
             , SDL_HasRDTSC()
         );
 
-        LOGGER_MESSAGE( "CPU AltiVec: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU AltiVec: %d"
             , SDL_HasAltiVec()
         );
 
-        LOGGER_MESSAGE( "CPU MMX: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU MMX: %d"
             , SDL_HasMMX()
         );
 
-        LOGGER_MESSAGE( "CPU 3DNow: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU 3DNow: %d"
             , SDL_Has3DNow()
         );
 
-        LOGGER_MESSAGE( "CPU SSE: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU SSE: %d"
             , SDL_HasSSE()
         );
 
-        LOGGER_MESSAGE( "CPU SSE2: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU SSE2: %d"
             , SDL_HasSSE2()
         );
 
-        LOGGER_MESSAGE( "CPU SSE3: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU SSE3: %d"
             , SDL_HasSSE3()
         );
 
-        LOGGER_MESSAGE( "CPU SSE41: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU SSE41: %d"
             , SDL_HasSSE41()
         );
 
-        LOGGER_MESSAGE( "CPU SSE42: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU SSE42: %d"
             , SDL_HasSSE42()
         );
 
-        LOGGER_MESSAGE( "CPU AVX: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU AVX: %d"
             , SDL_HasAVX()
         );
 
-        LOGGER_MESSAGE( "CPU AVX2: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU AVX2: %d"
             , SDL_HasAVX2()
         );
 
-        LOGGER_MESSAGE( "CPU AVX512F: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU AVX512F: %d"
             , SDL_HasAVX512F()
         );
 
-        LOGGER_MESSAGE( "CPU NEON: %d"
+        LOGGER_MESSAGE_RELEASE( "CPU NEON: %d"
             , SDL_HasNEON()
         );
 
-        LOGGER_MESSAGE( "RAM: %d MB"
+        LOGGER_MESSAGE_RELEASE( "RAM: %d MB"
             , SDL_GetSystemRAM()
         );
 
@@ -1770,6 +1770,7 @@ namespace Mengine
         Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
 #if defined(MENGINE_PLATFORM_IOS)
+        windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
         windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
@@ -1816,6 +1817,7 @@ namespace Mengine
         }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
+        windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
@@ -1876,7 +1878,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE( "num video displays: %d"
+        LOGGER_MESSAGE_RELEASE( "num video displays: %d"
             , SDL_GetNumVideoDisplays()
         );
 
@@ -1982,15 +1984,15 @@ namespace Mengine
             );
         }
 
-        LOGGER_MESSAGE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
             , attribute_GL_CONTEXT_PROFILE_MASK
         );
 
-        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
             , attribute_GL_CONTEXT_MAJOR_VERSION
         );
 
-        LOGGER_MESSAGE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
             , attribute_GL_CONTEXT_MINOR_VERSION
         );
 

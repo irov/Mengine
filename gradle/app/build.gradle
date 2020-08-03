@@ -59,7 +59,7 @@ android {
         
         println applicationId
 
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 28
         
         print 'ANDROID_APP_BUILD_PUBLISH = '
@@ -151,7 +151,7 @@ android {
             
             externalNativeBuild {
                 cmake {
-                    arguments "-DANDROID_PLATFORM=android-18",
+                    arguments "-DANDROID_PLATFORM=android-19",
                         "-DANDROID_ARM_NEON=TRUE",
                         "-DANDROID_STL=c++_shared", 
                         "-DANDROID_TOOLCHAIN=clang",
@@ -174,7 +174,7 @@ android {
             
             externalNativeBuild {
                 cmake {
-                    arguments "-DANDROID_PLATFORM=android-18",
+                    arguments "-DANDROID_PLATFORM=android-19",
                         "-DANDROID_ARM_NEON=TRUE",
                         "-DANDROID_STL=c++_shared",
                         "-DANDROID_TOOLCHAIN=clang",

@@ -51,7 +51,8 @@ namespace Mengine
         void _destroy() override;
 
     protected:
-        GLuint m_uid;
+        GLuint m_tuid;
+        GLuint m_fuid;
 
         uint32_t m_width;
         uint32_t m_height;

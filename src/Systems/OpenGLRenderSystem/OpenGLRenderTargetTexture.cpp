@@ -1,5 +1,6 @@
 #include "OpenGLRenderTargetTexture.h"
 
+#include "OpenGLRenderExtension.h"
 #include "OpenGLRenderError.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -9,7 +10,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderTargetTexture::OpenGLRenderTargetTexture()
-        : m_uid( 0 )
+        : m_tuid( 0 )
+        , m_fuid( 0 )
         , m_width( 0 )
         , m_height( 0 )
         , m_hwWidth( 0 )
@@ -65,7 +67,47 @@ namespace Mengine
             return false;
         }
 
-        m_uid = tuid;
+        GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
+        GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
+
+        m_tuid = tuid;
+
+        GLuint fuid = 0;
+        GLCALL( glGenFramebuffers, (1, &fuid) );
+
+        if( fuid == 0 )
+        {
+            LOGGER_ERROR( "invalid gen framebuffer"
+            );
+
+            GLCALL( glDeleteTextures, (1, &m_tuid) );
+
+            m_tuid = 0;
+
+            return false;
+        }
+
+        m_fuid = fuid;
+
+        GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
+
+        GLCALL( glFramebufferTexture, (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_tuid, 0) );
+
+        GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+        GLCALL( glDrawBuffers, (1, DrawBuffers) );
+
+        if( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE )
+        {
+            GLCALL( glDeleteTextures, (1, &m_tuid) );
+
+            m_tuid = 0;
+
+            GLCALL( glDeleteFramebuffers, (1, &m_fuid) );
+
+            m_fuid = 0;
+
+            return false;
+        }
 
         m_width = _width;
         m_height = _height;
@@ -93,11 +135,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::release()
     {
-        if( m_uid != 0 )
+        if( m_tuid != 0 )
         {
-            GLCALL( glDeleteTextures, (1, &m_uid) );
+            GLCALL( glDeleteTextures, (1, &m_tuid) );
 
-            m_uid = 0;
+            m_tuid = 0;
+        }
+
+        if( m_fuid != 0 )
+        {
+            GLCALL( glDeleteFramebuffers, (1, &m_fuid) );
+
+            m_fuid = 0;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,7 +155,7 @@ namespace Mengine
         GLuint tuid = 0;
         GLCALL( glGenTextures, (1, &tuid) );
 
-        m_uid = tuid;
+        m_tuid = tuid;
 
         return true;
     }
@@ -153,37 +202,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::begin()
     {
-        //IDirect3DSurface9 * pD3DSurface;
-        //DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
-
-        //if( pD3DSurface == nullptr )
-        //{
-        //    return false;
-        //}
-
-        //IDirect3DSurface9 * pD3DSurfaceOld;
-        //DXCALL( m_pD3DDevice, GetRenderTarget, (0, &pD3DSurfaceOld) );
-
-        //DXCALL( m_pD3DDevice, SetRenderTarget, (0, pD3DSurface) );
-
-        //m_pD3DSurfaceOld = pD3DSurfaceOld;
-        //m_pD3DSurface = pD3DSurface;
+        GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::end()
     {
-        //DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
-
-        //if( m_pD3DSurfaceOld != nullptr )
-        //{
-        //    m_pD3DSurfaceOld->Release();
-        //    m_pD3DSurfaceOld = nullptr;
-        //}
-
-        //m_pD3DSurface->Release();
-        //m_pD3DSurface = nullptr;
+        GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
@@ -196,7 +222,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderTargetTexture::getUID() const
     {
-        return m_uid;
+        return m_tuid;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::_destroy()

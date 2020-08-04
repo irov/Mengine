@@ -21,6 +21,14 @@ PFNGLUNMAPBUFFERPROC                glUnmapBuffer = nullptr;
 PFNGLDELETEBUFFERSPROC              glDeleteBuffers = nullptr;
 PFNGLBUFFERSUBDATAPROC              glBufferSubData = nullptr;
 
+// framebuffer
+PFNGLGENFRAMEBUFFERSPROC             glGenFramebuffers = nullptr;
+PFNGLBINDFRAMEBUFFERPROC             glBindFramebuffer = nullptr;
+PFNGLFRAMEBUFFERTEXTUREPROC          glFramebufferTexture = nullptr;
+PFNGLDRAWBUFFERSPROC                 glDrawBuffers = nullptr;
+PFNGLCHECKFRAMEBUFFERSTATUSPROC      glCheckFramebufferStatus = nullptr;
+PFNGLDELETEFRAMEBUFFERSPROC          glDeleteFramebuffers = nullptr;
+
 // shaders
 PFNGLDELETEPROGRAMPROC              glDeleteProgram = nullptr;
 PFNGLDELETESHADERPROC               glDeleteShader = nullptr;
@@ -133,6 +141,14 @@ namespace Mengine
             GETGLPROC( PFNGLUNMAPBUFFERPROC, glUnmapBuffer );
             GETGLPROC( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
             GETGLPROC( PFNGLBUFFERSUBDATAPROC, glBufferSubData );
+
+            // framebuffer
+            GETGLPROC( PFNGLGENFRAMEBUFFERSPROC, glGenFramebuffers );
+            GETGLPROC( PFNGLBINDFRAMEBUFFERPROC, glBindFramebuffer );
+            GETGLPROC( PFNGLFRAMEBUFFERTEXTUREPROC, glFramebufferTexture );
+            GETGLPROC( PFNGLDRAWBUFFERSPROC, glDrawBuffers );
+            GETGLPROC( PFNGLCHECKFRAMEBUFFERSTATUSPROC, glCheckFramebufferStatus );
+            GETGLPROC( PFNGLDELETEFRAMEBUFFERSPROC, glDeleteFramebuffers );
 
             // shaders
             GETGLPROC( PFNGLDELETEPROGRAMPROC, glDeleteProgram );

@@ -22,7 +22,6 @@ namespace Mengine
         ~ThreadService() override;
 
     public:
-        bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 
@@ -80,7 +79,6 @@ namespace Mengine
 
         FactoryPtr m_factoryThreadQueue;
         FactoryPtr m_factoryThreadJob;
-        FactoryPtr m_factoryThreadMutexDummy;
 
         struct ThreadDesc
         {

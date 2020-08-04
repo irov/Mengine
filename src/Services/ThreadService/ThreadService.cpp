@@ -33,32 +33,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::_availableService() const
-    {
-        bool available = CONFIG_VALUE( "Engine", "ThreadServiceAvailable", true );
-
-        if( available == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_EXIST( ThreadSystemInterface ) == false )
-        {
-            return false;
-        }
-
-        if( THREAD_SYSTEM()
-            ->isAvailableService() == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ThreadService::_initializeService()
     {
-        m_factoryThreadMutexDummy = Helper::makeFactoryPool<ThreadMutexDummy, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadQueue = Helper::makeFactoryPool<ThreadQueue, 4>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadJob = Helper::makeFactoryPool<ThreadJob, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -66,7 +42,7 @@ namespace Mengine
 
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -105,11 +81,9 @@ namespace Mengine
         m_threads.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutexDummy );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadJob );
 
         m_factoryThreadQueue = nullptr;
-        m_factoryThreadMutexDummy = nullptr;
         m_factoryThreadJob = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -130,11 +104,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const DocumentPtr & _doc )
     {
-        if( this->isAvailableService() == false )
-        {
-            return false;
-        }
-
         if( this->hasThread( _threadName ) == true )
         {
             return false;
@@ -195,11 +164,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task )
     {
-        if( this->isAvailableService() == false )
-        {
-            return false;
-        }
-
         if( this->hasThread( _threadName ) == false )
         {
             return false;
@@ -294,11 +258,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const DocumentPtr & _doc )
     {
-        if( this->isAvailableService() == false )
-        {
-            return nullptr;
-        }
-
         ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( _doc );
 
         taskQueue->setPacketSize( _packetSize );
@@ -426,14 +385,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr ThreadService::createMutex( const DocumentPtr & _doc )
     {
-        if( this->isAvailableService() == false )
-        {
-            ThreadMutexDummyPtr mutex_dummy =
-                m_factoryThreadMutexDummy->createObject( _doc );
-
-            return mutex_dummy;
-        }
-
         ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
             ->createMutex( _doc );
 
@@ -448,11 +399,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t ThreadService::getCurrentThreadId() const
     {
-        if( this->isAvailableService() == false )
-        {
-            return 0U;
-        }
-
         uint64_t id = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
@@ -461,11 +407,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::isMainThread() const
     {
-        if( this->isAvailableService() == false )
-        {
-            return true;
-        }
-
         uint64_t id = THREAD_SYSTEM()
             ->getCurrentThreadId();
 

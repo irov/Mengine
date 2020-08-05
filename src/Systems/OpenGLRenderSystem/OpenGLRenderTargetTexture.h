@@ -22,6 +22,7 @@ namespace Mengine
         void finalize();
 
     public:
+        bool create();
         void release();
         bool reload();
 

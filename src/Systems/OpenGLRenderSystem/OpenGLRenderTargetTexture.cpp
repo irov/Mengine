@@ -52,23 +52,42 @@ namespace Mengine
             break;
         }
 
-        GLuint tuid = 0;
-        GLCALL( glGenTextures, (1, &tuid) );
+        m_width = _width;
+        m_height = _height;
+        m_hwWidth = Helper::getTexturePOW2( _width );
+        m_hwHeight = Helper::getTexturePOW2( _height );
 
-        if( tuid == 0 )
+        m_hwWidthInv = 1.f / (float)m_hwWidth;
+        m_hwHeightInv = 1.f / (float)m_hwHeight;
+
+        m_hwChannels = _channels;
+        m_hwPixelFormat = _pixelFormat;
+        m_internalFormat = _internalFormat;
+        m_format = _format;
+        m_type = _type;
+
+        m_pow2 = Helper::isTexturePOW2( _width ) && Helper::isTexturePOW2( _height );
+
+        if( this->create() == false )
         {
-            LOGGER_ERROR( "invalid gen texture for size %d:%d channel %d PF %d"
-                , _width
-                , _height
-                , _channels
-                , _format
-            );
-
             return false;
         }
 
+        return true;
+    }    
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderTargetTexture::finalize()
+    {
+        this->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderTargetTexture::create()
+    {
+        GLuint tuid = 0;
+        GLCALL( glGenTextures, (1, &tuid) );
+
         GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
-        GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
+        GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
 
         m_tuid = tuid;
 
@@ -98,6 +117,8 @@ namespace Mengine
 
         if( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE )
         {
+            OPENGL_RENDER_CHECK_ERROR();
+
             GLCALL( glDeleteTextures, (1, &m_tuid) );
 
             m_tuid = 0;
@@ -109,28 +130,7 @@ namespace Mengine
             return false;
         }
 
-        m_width = _width;
-        m_height = _height;
-        m_hwWidth = Helper::getTexturePOW2( _width );
-        m_hwHeight = Helper::getTexturePOW2( _height );
-
-        m_hwWidthInv = 1.f / (float)m_hwWidth;
-        m_hwHeightInv = 1.f / (float)m_hwHeight;
-
-        m_hwChannels = _channels;
-        m_hwPixelFormat = _pixelFormat;
-        m_internalFormat = _internalFormat;
-        m_format = _format;
-        m_type = _type;
-
-        m_pow2 = Helper::isTexturePOW2( _width ) && Helper::isTexturePOW2( _height );
-
         return true;
-    }    
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderTargetTexture::finalize()
-    {
-        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::release()
@@ -152,17 +152,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::reload()
     {
-        GLuint tuid = 0;
-        GLCALL( glGenTextures, (1, &tuid) );
-
-        m_tuid = tuid;
+        if( this->create() == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderTargetTexture::getHWMipmaps() const
     {
-        return 0U;
+        return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderTargetTexture::getHWWidth() const

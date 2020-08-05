@@ -65,10 +65,7 @@ namespace Mengine
             break;
         }
 
-        GLuint tuid = 0;
-        GLCALL( glGenTextures, (1, &tuid) );
-
-        if( tuid == 0 )
+        if( this->create() == false )
         {
             LOGGER_ERROR( "invalid gen texture for size %d:%d channel %d PF %d"
                 , _width
@@ -79,8 +76,6 @@ namespace Mengine
 
             return false;
         }
-
-        m_uid = tuid;
 
         m_width = _width;
         m_height = _height;
@@ -97,8 +92,6 @@ namespace Mengine
         m_hwHeightInv = 1.f / (float)m_hwHeight;
 
         m_pow2 = Helper::isTexturePOW2( _width ) && Helper::isTexturePOW2( _height );
-
-        m_lockFirst = true;
 
         return true;
     }
@@ -151,11 +144,6 @@ namespace Mengine
         return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer OpenGLRenderImage::getRenderImageExtention()
-    {
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::bind( uint32_t _stage )
     {
 #ifdef MENGINE_RENDER_OPENGL_ES
@@ -187,14 +175,29 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::reload()
+    bool OpenGLRenderImage::create()
     {
         GLuint tuid = 0;
         GLCALL( glGenTextures, (1, &tuid) );
 
+        if( tuid == 0 )
+        {
+            return false;
+        }
+
         m_uid = tuid;
 
         m_lockFirst = true;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderImage::reload()
+    {
+        if( this->create() == false )
+        {
+            return false;
+        }
 
         if( m_renderImageProvider == nullptr )
         {
@@ -405,11 +408,6 @@ namespace Mengine
         this->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    GLuint OpenGLRenderImage::getUID() const
-    {
-        return m_uid;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setMinFilter( GLenum _minFilter )
     {
         m_minFilter = _minFilter;
@@ -448,6 +446,16 @@ namespace Mengine
     GLenum OpenGLRenderImage::getWrapT() const
     {
         return m_wrapT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UnknownPointer OpenGLRenderImage::getRenderImageExtention()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLuint OpenGLRenderImage::getUID() const
+    {
+        return m_uid;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -30,6 +30,7 @@ namespace Mengine
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 
     public:
+        bool create();
         void release();
         bool reload();
 

@@ -1,5 +1,8 @@
 #include "OpenGLRenderImageTarget.h"
 
+#include "OpenGLRenderExtension.h"
+#include "OpenGLRenderError.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -25,20 +28,15 @@ namespace Mengine
     {
         MENGINE_UNUSED( _stage );
 
-//        IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
-//        IDirect3DTexture9 * pD3DTexture = m_target->getDirect3dTexture9();
-//
-//#ifdef MENGINE_DEBUG
-//        DWORD fillmode;
-//        DXCALL( pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
-//
-//        if( fillmode != D3DFILL_WIREFRAME )
-//        {
-//            DXCALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
-//        }
-//#else
-//        DXCALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
-//#endif
+#ifdef MENGINE_RENDER_OPENGL_ES
+        GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
+#else
+        GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
+#endif
+
+        GLuint uid = m_renderTarget->getUID();
+
+        GLCALL( glBindTexture, (GL_TEXTURE_2D, uid) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
@@ -120,7 +118,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderImageTarget::getHWMipmaps() const
     {
-        return 1U;
+        uint32_t HWMipmaps = m_renderTarget->getHWMipmaps();
+
+        return HWMipmaps;
     }
     //////////////////////////////////////////////////////////////////////////
     UnknownPointer OpenGLRenderImageTarget::getRenderImageExtention()

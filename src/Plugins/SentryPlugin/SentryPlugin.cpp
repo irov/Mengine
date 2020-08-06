@@ -316,14 +316,14 @@ namespace Mengine
 
         sentry_set_extra( "Publish", sentry_value_new_bool( publishMode ) );
 
-        const Char * GIT_SHA1 = MENGINE_GIT_SHA1;
+        const Char * GIT_SHA1 = MENGINE_ENGINE_GIT_SHA1;
 
         LOGGER_MESSAGE( "Sentry set extra [Commit: %s]"
             , GIT_SHA1
         );
 
-#ifdef MENGINE_GIT_SHA1
-        sentry_set_extra( "Commit", sentry_value_new_string( GIT_SHA1 ) );
+#ifdef MENGINE_ENGINE_GIT_SHA1
+        sentry_set_extra( "Engine Commit", sentry_value_new_string( GIT_SHA1 ) );
 #endif
 
         if( HAS_OPTION( "sentrycrash" ) == true )

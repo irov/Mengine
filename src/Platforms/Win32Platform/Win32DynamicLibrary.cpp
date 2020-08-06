@@ -16,11 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32DynamicLibrary::~Win32DynamicLibrary()
     {
-        if( m_hInstance != NULL )
-        {
-            ::FreeLibrary( m_hInstance );
-            m_hInstance = NULL;
-        }
+        this->unload();
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32DynamicLibrary::setName( const Char * _name )
@@ -58,6 +54,15 @@ namespace Mengine
         m_hInstance = hInstance;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32DynamicLibrary::unload()
+    {
+        if( m_hInstance != NULL )
+        {
+            ::FreeLibrary( m_hInstance );
+            m_hInstance = NULL;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     TDynamicLibraryFunction Win32DynamicLibrary::getSymbol( const Char * _name ) const

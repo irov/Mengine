@@ -18,6 +18,7 @@ namespace Mengine
     {
     public:
         virtual bool load() = 0;
+        virtual void unload() = 0;
 
     public:
         virtual TDynamicLibraryFunction getSymbol( const Char * _name ) const = 0;

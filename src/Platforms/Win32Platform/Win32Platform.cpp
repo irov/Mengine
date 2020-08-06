@@ -99,17 +99,50 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-        m_hInstance = GetModuleHandle( NULL );
+        HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
 
-        if( QueryPerformanceFrequency( &m_performanceFrequency ) == TRUE )
+        if( hm_ntdll != NULL )
+        {
+            LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
+            *(FARPROC *)&RtlGetVersion = GetProcAddress( hm_ntdll, "RtlGetVersion" );
+
+            if( RtlGetVersion != NULL )
+            {
+                OSVERSIONINFOEXW osInfo;
+                osInfo.dwOSVersionInfoSize = sizeof( osInfo );
+
+                RtlGetVersion( &osInfo );
+
+                LOGGER_MESSAGE_RELEASE( "Windows version: %u.%u (build %u)"
+                    , osInfo.dwMajorVersion
+                    , osInfo.dwMinorVersion
+                    , osInfo.dwBuildNumber
+                );
+
+                LOGGER_MESSAGE_RELEASE( "Windows platform: %u"
+                    , osInfo.dwPlatformId
+                );
+
+                LOGGER_MESSAGE_RELEASE( "Windows service pack: %u.%u "
+                    , (DWORD)osInfo.wServicePackMajor
+                    , (DWORD)osInfo.wServicePackMinor
+                );
+            }
+
+            ::FreeLibrary( hm_ntdll );
+        }
+
+        m_hInstance = ::GetModuleHandle( NULL );
+
+        if( ::QueryPerformanceFrequency( &m_performanceFrequency ) == TRUE )
         {
             m_performanceSupport = true;
         }
 
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = LoadCursor( NULL, IDC_ARROW );
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = LoadCursor( NULL, IDC_UPARROW );
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = LoadCursor( NULL, IDC_HAND );
-        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = LoadCursor( NULL, IDC_HELP );
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = ::LoadCursor( NULL, IDC_ARROW );
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = ::LoadCursor( NULL, IDC_UPARROW );
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = ::LoadCursor( NULL, IDC_HAND );
+        m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = ::LoadCursor( NULL, IDC_HELP );
 
         m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 

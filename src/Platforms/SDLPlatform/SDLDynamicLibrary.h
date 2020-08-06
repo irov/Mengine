@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         bool load() override;
+        void unload() override;
 
     public:
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;

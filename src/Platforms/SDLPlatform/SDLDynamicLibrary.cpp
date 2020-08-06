@@ -17,11 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLDynamicLibrary::~SDLDynamicLibrary()
     {
-        if( m_instance != nullptr )
-        {
-            SDL_UnloadObject( m_instance );
-            m_instance = nullptr;
-        }
+        this->unload();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLDynamicLibrary::setName( const Char * _name )
@@ -50,6 +46,15 @@ namespace Mengine
         m_instance = instance;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLDynamicLibrary::unload()
+    {
+        if( m_instance != nullptr )
+        {
+            SDL_UnloadObject( m_instance );
+            m_instance = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     TDynamicLibraryFunction SDLDynamicLibrary::getSymbol( const Char * _name ) const

@@ -18,14 +18,14 @@ namespace Mengine
                 WCHAR unicode_path[MENGINE_MAX_PATH] = { L'\0' };
                 HMODULE hm = NULL;
 
-                if( GetModuleHandleEx( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                if( ::GetModuleHandleEx( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
                     GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
                     L"dllCreatePlugin", &hm ) == 0 )
                 {
                     return false;
                 }
 
-                if( GetModuleFileName( hm, unicode_path, sizeof( unicode_path ) ) == 0 )
+                if( ::GetModuleFileName( hm, unicode_path, sizeof( unicode_path ) ) == 0 )
                 {
                     return false;
                 }

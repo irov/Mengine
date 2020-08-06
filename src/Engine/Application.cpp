@@ -295,11 +295,11 @@ namespace Mengine
 
         if( HAS_OPTION( "buildcommit" ) == true )
         {
-            LOGGER_CRITICAL( "build commit: %s", MENGINE_GIT_SHA1 );
+            LOGGER_CRITICAL( "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "build commit: %s", MENGINE_GIT_SHA1 );
+            LOGGER_MESSAGE_RELEASE( "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
 
         if( HAS_OPTION( "buildversion" ) == true )

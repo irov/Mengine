@@ -11,15 +11,6 @@ namespace Mengine
         : m_programId( 0 )
         , m_samplerCount( 0 )
     {
-        for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
-        {
-            m_matrixLocation[i] = -1;
-        }
-
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
-        {
-            m_samplerLocation[i] = -1;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderProgram::~OpenGLRenderProgram()
@@ -65,16 +56,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::compile()
     {
-        if( m_samplerCount > MENGINE_MAX_TEXTURE_STAGES )
-        {
-            LOGGER_ERROR( "program '%s' don't support sampler count %d max %d"
-                , m_name.c_str()
-                , m_samplerCount
-                , MENGINE_MAX_TEXTURE_STAGES
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( m_samplerCount <= MENGINE_MAX_TEXTURE_STAGES, "program '%s' don't support sampler count %d max %d"
+            , m_name.c_str()
+            , m_samplerCount
+            , MENGINE_MAX_TEXTURE_STAGES
+        );
 
         GLuint programId;
         GLCALLR( programId, glCreateProgram, () );
@@ -145,15 +131,10 @@ namespace Mengine
             GLint location;
             GLCALLR( location, glGetUniformLocation, (programId, samplerVar) );
 
-            if( location == -1 )
-            {
-                LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
-                    , m_name.c_str()
-                    , samplerVar
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_FATAL( location != -1, "program '%s' not found uniform sampler '%s'"
+                , m_name.c_str()
+                , samplerVar
+            );
 
             m_samplerLocation[index] = location;
         }
@@ -236,16 +217,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::bindTexture( uint32_t _textureInd ) const
     {
-        if( _textureInd >= m_samplerCount )
-        {
-            LOGGER_ERROR( "program '%s' invalid support sampler count %d max %d"
-                , m_name.c_str()
-                , _textureInd
-                , m_samplerCount
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( _textureInd < m_samplerCount, "program '%s' invalid support sampler count %d max %d"
+            , m_name.c_str()
+            , _textureInd
+            , m_samplerCount
+        );
 
         int location = m_samplerLocation[_textureInd];
 

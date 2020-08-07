@@ -288,18 +288,6 @@ namespace Mengine
         }
 
         m_viewport = _viewport;
-
-        GLsizei xb = static_cast<GLsizei>(m_viewport.begin.x);
-        GLsizei ye = static_cast<GLsizei>(m_viewport.end.y);
-        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth());
-        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight());
-
-        GLsizei resolution_height = static_cast<GLsizei>(m_windowResolution.getHeight());
-
-        GLsizei x = xb;
-        GLsizei y = resolution_height - ye;
-
-        GLCALL( glViewport, (x, y, w, h) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )
@@ -579,6 +567,18 @@ namespace Mengine
             return;
         }
 
+        GLsizei xb = static_cast<GLsizei>(m_viewport.begin.x);
+        GLsizei ye = static_cast<GLsizei>(m_viewport.end.y);
+        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth());
+        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight());
+
+        GLsizei resolution_height = static_cast<GLsizei>(m_windowResolution.getHeight());
+
+        GLsizei x = xb;
+        GLsizei y = resolution_height - ye;
+
+        GLCALL( glViewport, (x, y, w, h) );
+
         if( m_currentProgram->enable() == false )
         {
             return;
@@ -633,8 +633,9 @@ namespace Mengine
 
         GLenum mode = Helper::toGLPrimitiveMode( _type );
         GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
+        const GLvoid * indices = reinterpret_cast<const GLvoid *>(_startIndex * sizeof( RenderIndex ));
 
-        GLCALL( glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(_startIndex * sizeof( RenderIndex ))) );
+        GLCALL( glDrawElements, (mode, _indexCount, indexType, indices) );
 
         vertexAttribute->disable();
 

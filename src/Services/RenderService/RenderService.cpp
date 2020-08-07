@@ -102,7 +102,6 @@ namespace Mengine
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
         m_currentRenderProgramVariable = nullptr;
-        m_defaultRenderProgramVariable = nullptr;
         m_currentRenderProgram = nullptr;
 
         m_currentRenderViewport = nullptr;
@@ -987,17 +986,17 @@ namespace Mengine
             }
         }
 
+        if( m_currentRenderProgramVariable != _programVariable )
+        {
+            m_currentRenderProgramVariable = _programVariable;
+        }
+
         if( _target != nullptr )
         {
             if( _target->begin() == false )
             {
                 return false;
             }
-        }
-
-        if( m_currentRenderProgramVariable != _programVariable )
-        {
-            m_currentRenderProgramVariable = _programVariable;
         }
 
         return true;

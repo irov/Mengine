@@ -49,11 +49,6 @@ namespace Mengine
         , m_textureMemoryUse( 0U )
         , m_textureCount( 0U )
     {
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
-        {
-            m_textureEnable[i] = false;
-        }
-
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
@@ -779,12 +774,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
     {
+        MENGINE_UNUSED( _variable );
         MENGINE_UNUSED( _program );
-
-        if( _variable == nullptr )
-        {
-            return true;
-        }
 
         return true;
     }

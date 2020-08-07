@@ -1,6 +1,5 @@
 #include "OpenGLRenderTargetTexture.h"
 
-#include "OpenGLRenderSystem.h"
 #include "OpenGLRenderExtension.h"
 #include "OpenGLRenderError.h"
 
@@ -209,10 +208,6 @@ namespace Mengine
     bool OpenGLRenderTargetTexture::begin()
     {
         GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
-
-        RENDER_SYSTEM()
-            ->setViewport( {0.f, 0.f, 800.f, (float)m_height + 50.f} );
-        //GLCALL( glViewport, (100, 100, 300, 300) );
 
         return true;
     }

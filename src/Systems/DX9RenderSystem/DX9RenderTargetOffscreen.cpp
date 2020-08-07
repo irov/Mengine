@@ -57,7 +57,7 @@ namespace Mengine
         }
 
         uint8_t * dstData = reinterpret_cast<uint8_t *>(_buffer);
-        uint8_t * srcData = (uint8_t *)LockedRect.pBits;
+        uint8_t * srcData = reinterpret_cast<uint8_t *>(LockedRect.pBits);
 
         for( DWORD i = 0; i != m_height; ++i )
         {

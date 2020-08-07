@@ -157,7 +157,6 @@ namespace Mengine
         RenderVertexBufferInterfacePtr m_currentRenderVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentRenderIndexBuffer;
         RenderProgramVariableInterfacePtr m_currentRenderProgramVariable;
-        RenderProgramVariableInterfacePtr m_defaultRenderProgramVariable;
 
         uint32_t m_currentRenderTextureStage;
         RenderTextureStage m_renderTextureStages[MENGINE_MAX_TEXTURE_STAGES];

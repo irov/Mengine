@@ -46,6 +46,7 @@ namespace Mengine
 
     public:
         bool initialize( const ConstString & _name, const OpenGLRenderVertexShaderPtr & _vertexShader, const OpenGLRenderFragmentShaderPtr & _fragmentShader, const OpenGLRenderVertexAttributePtr & _vertexAttribute, uint32_t _samplerCount );
+        void finalize();
 
     public:
         bool compile();

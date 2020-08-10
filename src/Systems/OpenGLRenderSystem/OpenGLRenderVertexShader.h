@@ -23,6 +23,7 @@ namespace Mengine
 
     public:
         bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory );
+        void finalize();
 
     public:
         bool compile();

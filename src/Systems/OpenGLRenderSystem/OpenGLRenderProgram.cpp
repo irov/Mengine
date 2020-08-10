@@ -54,6 +54,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderProgram::finalize()
+    {
+        m_vertexShader = nullptr;
+        m_fragmentShader = nullptr;
+        m_vertexAttribute = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::compile()
     {
         MENGINE_ASSERTION_FATAL( m_samplerCount <= MENGINE_MAX_TEXTURE_STAGES, "program '%s' don't support sampler count %d max %d"

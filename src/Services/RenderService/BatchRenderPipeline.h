@@ -179,6 +179,9 @@ namespace Mengine
         typedef Vector<DebugRenderObject> VectorDebugRenderObjects;
         VectorDebugRenderObjects m_debugRenderObjects;
 
+        typedef Vector< RenderMaterialInterfacePtr> VectorDebugRenderMaterials;
+        VectorDebugRenderMaterials m_debugRenderMaterials;
+
 #ifdef MENGINE_DEBUG
         bool m_debugStepRenderMode;
         bool m_debugStopRenderObjects;

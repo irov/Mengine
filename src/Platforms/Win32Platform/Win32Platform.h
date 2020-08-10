@@ -5,7 +5,6 @@
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
-#include "Win32FPSMonitor.h"
 #include "Win32AntifreezeMonitor.h"
 
 #include "Kernel/ServiceBase.h"
@@ -192,7 +191,6 @@ namespace Mengine
         FactoryPtr m_factoryDateTimeProviders;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
-        Win32FPSMonitorPtr m_fpsMonitor;
         Win32AntifreezeMonitorPtr m_antifreezeMonitor;
 
         Win32MouseEvent m_mouseEvent;
@@ -229,9 +227,6 @@ namespace Mengine
         Tags m_platformTags;
         Resolution m_windowResolution;
         bool m_fullscreen;
-
-        float m_activeFrameTime;
-        float m_inactiveFrameTime;
 
         bool m_active;
         bool m_update;

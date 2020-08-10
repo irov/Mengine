@@ -108,15 +108,15 @@ namespace Mengine
 
         LOGGER_MESSAGE_RELEASE( "OpenAL driver properties" );
 
-        LOGGER_MESSAGE_RELEASE( "Version: %s"
+        LOGGER_MESSAGE_RELEASE( "OpenAL version: %s"
             , alGetString( AL_VERSION )
         );
 
-        LOGGER_MESSAGE_RELEASE( "Vendor: %s"
+        LOGGER_MESSAGE_RELEASE( "OpenAL vendor: %s"
             , alGetString( AL_VENDOR )
         );
 
-        LOGGER_MESSAGE_RELEASE( "Renderer: %s"
+        LOGGER_MESSAGE_RELEASE( "OpenAL renderer: %s"
             , alGetString( AL_RENDERER )
         );
 

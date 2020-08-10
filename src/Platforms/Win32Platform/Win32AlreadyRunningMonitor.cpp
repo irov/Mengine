@@ -6,7 +6,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32AlreadyRunningMonitor::Win32AlreadyRunningMonitor()
-        : m_mutex( INVALID_HANDLE_VALUE )
+        : m_mutex( NULL )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -58,10 +58,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AlreadyRunningMonitor::finalize()
     {
-        if( m_mutex != INVALID_HANDLE_VALUE )
+        if( m_mutex != NULL )
         {
             ::CloseHandle( m_mutex );
-            m_mutex = INVALID_HANDLE_VALUE;
+            m_mutex = NULL;
         }
     }
 }

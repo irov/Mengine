@@ -144,10 +144,18 @@ namespace Mengine
             , m_fullscreen
         );
 
-        bool RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
-        uint32_t RenderMultiSampleCount = CONFIG_VALUE( "Engine", "RenderMultiSampleCount", 2U );
+        bool Engine_RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
+        uint32_t Engine_RenderMultiSampleCount = CONFIG_VALUE( "Engine", "RenderMultiSampleCount", 2U );
 
-        if( m_renderSystem->createRenderWindow( m_windowResolution, _bits, m_fullscreen, RenderEnableAutoDepthStencil, m_vsync, _FSAAType, _FSAAQuality, RenderMultiSampleCount ) == false )
+        LOGGER_MESSAGE_RELEASE( "Render auto depth stencil: %s"
+            , Engine_RenderEnableAutoDepthStencil == true ? "true" : "false"
+        );
+
+        LOGGER_MESSAGE_RELEASE( "Render multi sample count: %u"
+            , Engine_RenderMultiSampleCount
+        );
+
+        if( m_renderSystem->createRenderWindow( m_windowResolution, _bits, m_fullscreen, Engine_RenderEnableAutoDepthStencil, m_vsync, _FSAAType, _FSAAQuality, Engine_RenderMultiSampleCount ) == false )
         {
             return false;
         }
@@ -425,7 +433,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-        this->restoreRenderSystemStates_();
+        this->restoreRenderFrameStates_();
 
         _renderPipeline->prepare();
 

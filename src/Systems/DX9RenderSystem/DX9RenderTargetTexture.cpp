@@ -35,7 +35,7 @@ namespace Mengine
         m_channels = _channels;
         m_format = _format;
 
-        D3DFORMAT d3dformat = s_toD3DFormat( m_format );
+        D3DFORMAT d3dformat = Helper::toD3DFormat( m_format );
 
         IDirect3DTexture9 * renderTexture;
         IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
@@ -182,7 +182,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     bool DX9RenderTargetTexture::onRenderRestore()
     {
-        D3DFORMAT d3dformat = s_toD3DFormat( m_format );
+        D3DFORMAT d3dformat = Helper::toD3DFormat( m_format );
 
         IDirect3DTexture9 * renderTexture;
         IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, nullptr) )

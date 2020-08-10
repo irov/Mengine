@@ -1022,7 +1022,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _vSync );
 
-        //ToDo
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )

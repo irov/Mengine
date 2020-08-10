@@ -633,8 +633,6 @@ namespace Mengine
         {
             this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, dro.doc );
         }
-
-        m_debugRenderObjects.clear();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -694,6 +692,10 @@ namespace Mengine
         }
         
         m_renderPrimitives.clear();
+
+#ifndef MENGINE_MASTER_RELEASE
+        m_debugRenderObjects.clear();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * const _vbPos, uint32_t * const _ibPos )

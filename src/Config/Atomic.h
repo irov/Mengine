@@ -11,4 +11,5 @@ namespace Mengine
 
     typedef Atomic<bool> AtomicBool;
     typedef Atomic<uint32_t> AtomicUInt32;
+    typedef Atomic<float> AtomicFloat;
 }

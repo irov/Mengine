@@ -268,7 +268,7 @@ namespace Mengine
         D3DMULTISAMPLE_TYPE MultiSampleType = D3DMULTISAMPLE_NONE;
         for( uint32_t MultiSampleIndex = _MultiSampleCount; MultiSampleIndex != 0; --MultiSampleIndex )
         {
-            D3DMULTISAMPLE_TYPE testMultiSampleType = s_getMultiSampleType( MultiSampleIndex );
+            D3DMULTISAMPLE_TYPE testMultiSampleType = Helper::getMultiSampleType( MultiSampleIndex );
 
             HRESULT hr_checkDeviceMultiSampleType = m_pD3D->CheckDeviceMultiSampleType(
                 m_adapterToUse, m_deviceType, m_displayMode.Format,
@@ -367,7 +367,7 @@ namespace Mengine
 
         m_d3dppW.Windowed = TRUE;
 
-        if( _depth == true )
+        if( m_depth == true )
         {
             D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppW.BackBufferFormat );
 
@@ -398,7 +398,7 @@ namespace Mengine
 
         m_d3dppFS.BackBufferFormat = m_displayMode.Format;
 
-        if( _depth == true )
+        if( m_depth == true )
         {
             D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppFS.BackBufferFormat );
 
@@ -547,10 +547,8 @@ namespace Mengine
         LOGGER_INFO( "Mode: resolution %d x %d x %s\n"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
-            , s_getD3DFormatName( m_displayMode.Format )
+            , Helper::getD3DFormatName( m_displayMode.Format )
         );
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHATESTENABLE, FALSE) );
 
         for( const DX9RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
@@ -999,7 +997,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
-        D3DFORMAT dxformat = s_toD3DFormat( _format );
+        D3DFORMAT dxformat = Helper::toD3DFormat( _format );
 
         HRESULT hresult = m_pD3D->CheckDeviceFormat( m_adapterToUse, m_deviceType, m_displayMode.Format, 0, D3DRTYPE_TEXTURE, dxformat );
 
@@ -1065,7 +1063,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DFORMAT dx_format = s_toD3DFormat( Format );
+        D3DFORMAT dx_format = Helper::toD3DFormat( Format );
 
         IF_DXCALL( m_pD3DDevice, CreateTexture, (Width, Height, MipLevels, Usage, dx_format, Pool, _ppD3DTexture, NULL) )
         {
@@ -1340,9 +1338,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DPRIMITIVETYPE primitiveType = s_toD3DPrimitiveType( _type );
+        D3DPRIMITIVETYPE primitiveType = Helper::toD3DPrimitiveType( _type );
 
-        UINT primCount = s_getPrimitiveCount( _type, _indexCount );
+        UINT primCount = Helper::getPrimitiveCount( _type, _indexCount );
 
         DXCALL( m_pD3DDevice, DrawIndexedPrimitive
             , (primitiveType, _vertexBase, _minIndex, _vertexCount, _indexStart, primCount)
@@ -1383,9 +1381,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DWORD src_factor = s_toD3DBlendFactor( _src );
-        DWORD dst_factor = s_toD3DBlendFactor( _dst );
-        DWORD blend_op = s_toD3DBlendOp( _op );
+        DWORD src_factor = Helper::toD3DBlendFactor( _src );
+        DWORD dst_factor = Helper::toD3DBlendFactor( _dst );
+        DWORD blend_op = Helper::toD3DBlendOp( _op );
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, src_factor) );
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dst_factor) );
@@ -1406,12 +1404,11 @@ namespace Mengine
             return;
         }
 
-        D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );
+        D3DTEXTUREADDRESS adrU = Helper::toD3DTextureAddress( _modeU );
+        D3DTEXTUREADDRESS adrV = Helper::toD3DTextureAddress( _modeV );
+
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSU, adrU) );
-
-        D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSV, adrV) );
-
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_BORDERCOLOR, _border) );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1428,7 +1425,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DCULL mode = s_toD3DCullMode( _mode );
+        D3DCULL mode = Helper::toD3DCullMode( _mode );
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_CULLMODE, mode) );
     }
@@ -1455,7 +1452,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DCMPFUNC func = s_toD3DCmpFunc( _depthFunction );
+        D3DCMPFUNC func = Helper::toD3DCmpFunc( _depthFunction );
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZFUNC, func) );
     }
@@ -1464,7 +1461,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DFILLMODE mode = s_toD3DFillMode( _mode );
+        D3DFILLMODE mode = Helper::toD3DFillMode( _mode );
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_FILLMODE, mode) );
     }
@@ -1521,9 +1518,9 @@ namespace Mengine
             return;
         }
 
-        D3DTEXTUREFILTERTYPE dx_minification = s_toD3DTextureFilter( _minification );
-        D3DTEXTUREFILTERTYPE dx_mipmap = s_toD3DTextureFilter( _mipmap );
-        D3DTEXTUREFILTERTYPE dx_magnification = s_toD3DTextureFilter( _magnification );
+        D3DTEXTUREFILTERTYPE dx_minification = Helper::toD3DTextureFilter( _minification );
+        D3DTEXTUREFILTERTYPE dx_mipmap = Helper::toD3DTextureFilter( _mipmap );
+        D3DTEXTUREFILTERTYPE dx_magnification = Helper::toD3DTextureFilter( _magnification );
 
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );

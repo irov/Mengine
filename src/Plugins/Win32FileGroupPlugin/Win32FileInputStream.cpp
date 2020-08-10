@@ -131,7 +131,7 @@ namespace Mengine
         {
             DWORD dwError = ::GetLastError();
 
-            LOGGER_ERROR( "invalid close '%s:%s' handle '%lu'"
+            LOGGER_ERROR( "invalid close '%s:%s' handle [error %lu]"
                 , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
                 , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                 , dwError
@@ -168,8 +168,11 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "file '%ls' invalid open"
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "file '%ls' invalid open error [%lu]"
                 , _fullPath
+                , error
             );
 
             return false;

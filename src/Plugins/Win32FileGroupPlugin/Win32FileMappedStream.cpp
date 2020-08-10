@@ -47,7 +47,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "file '%ls' invalid open error %lu"
+            LOGGER_ERROR( "file '%ls' invalid open [error %lu]"
                 , concatenatePath
                 , error
             );

@@ -53,8 +53,11 @@ namespace Mengine
 
             if( hFind == INVALID_HANDLE_VALUE )
             {
-                LOGGER_ERROR( "File invalid find ??? (%ls)\n"
+                DWORD error = ::GetLastError();
+
+                LOGGER_ERROR( "File invalid find ??? (%ls) [error %lu]"
                     , _path
+                    , error
                 );
 
                 return false;

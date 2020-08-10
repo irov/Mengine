@@ -74,8 +74,6 @@ namespace Mengine
         , m_close( false )
         , m_vsync( false )
         , m_pauseUpdatingTime( -1.f )
-        , m_activeFrameTime( 0.f )
-        , m_inactiveFrameTime( 100.f )
         , m_prevTime( 0 )
         , m_cursorInArea( false )
         , m_clickOutAreaLeftButton( false )
@@ -272,12 +270,6 @@ namespace Mengine
             m_hInstance = NULL;
         }
 
-        if( m_fpsMonitor != nullptr )
-        {
-            m_fpsMonitor->finalize();
-            m_fpsMonitor = nullptr;
-        }
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDateTimeProviders );
 
@@ -419,6 +411,13 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid create file for '%ls' [error %lu]"
+                , unicode_processDumpPath.c_str()
+                , error
+            );
+
             return false;
         }
 
@@ -615,15 +614,6 @@ namespace Mengine
 
                     APPLICATION_SERVICE()
                         ->tick( frameTime );
-
-                    if( m_fpsMonitor != nullptr )
-                    {
-                        m_fpsMonitor->monitor();
-                    }
-                    else
-                    {
-                        ::Sleep( 0 );
-                    }
                 }
                 else
                 {
@@ -1599,35 +1589,6 @@ namespace Mengine
             }
         }
 
-        const Char * option_fps = GET_OPTION_VALUE( "fps", nullptr );
-
-        float activeFrameTimeDefault = 1000.f / 60.f;
-
-        if( option_fps != nullptr )
-        {
-            float fps;
-            if( Helper::stringalized( option_fps, &fps ) == true )
-            {
-                activeFrameTimeDefault = 1000.f / fps;
-            }
-        }
-
-        m_activeFrameTime = CONFIG_VALUE2( "Engine", "MaxActiveFrameTime", activeFrameTimeDefault );
-
-        bool vsync = APPLICATION_SERVICE()
-            ->getVSync();
-
-        bool maxfps = HAS_OPTION( "maxfps" );
-
-        if( maxfps == false && vsync == false )
-        {
-            m_fpsMonitor = Helper::makeFactorableUnique<Win32FPSMonitor>( MENGINE_DOCUMENT_FACTORABLE );
-            m_fpsMonitor->initialize();
-
-            m_fpsMonitor->setActive( true );
-            m_fpsMonitor->setFrameTime( m_activeFrameTime );
-        }
-
         bool Platform_WithoutWindow = CONFIG_VALUE( "Platform", "WithoutWindow", false );
 
         if( Platform_WithoutWindow == true || HAS_OPTION( "norender" ) == true )
@@ -1789,20 +1750,10 @@ namespace Mengine
 
         if( novsync == true )
         {
-            if( m_fpsMonitor != nullptr )
-            {
-                m_fpsMonitor->setActive( true );
-            }
-
             return;
         }
 
         m_vsync = _vsync;
-
-        if( m_fpsMonitor != nullptr )
-        {
-            m_fpsMonitor->setActive( m_vsync == false );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::notifyCursorModeChanged( bool _mode )
@@ -2636,10 +2587,13 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "%ls:%ls invalid createFile %ls"
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "'%ls:%ls' invalid createFile '%ls' [error %lu]"
                 , pathCorrect
                 , fileCorrect
                 , szPath
+                , error
             );
 
             return false;
@@ -3341,18 +3295,6 @@ namespace Mengine
 
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
-
-        if( m_fpsMonitor != nullptr )
-        {
-            if( m_active == true || nopause == true )
-            {
-                m_fpsMonitor->setFrameTime( m_activeFrameTime );
-            }
-            else
-            {
-                m_fpsMonitor->setFrameTime( m_inactiveFrameTime );
-            }
-        }
 
         mt::vec2f point;
         if( this->calcCursorPosition_( &point ) == true )

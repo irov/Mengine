@@ -31,6 +31,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderVertexShader::finalize()
+    {
+        m_memory = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexShader::compile()
     {
         GLuint shaderId;

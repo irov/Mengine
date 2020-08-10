@@ -347,7 +347,6 @@ namespace Mengine
         D3DMULTISAMPLE_TYPE multiSampleType = this->findMatchingMultiSampleType_( _MultiSampleCount );
 
         ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
-        ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
 
         m_d3dppW.BackBufferWidth = m_windowResolution.getWidth();
         m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
@@ -383,6 +382,8 @@ namespace Mengine
 
         m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
+        ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
+
         m_d3dppFS.MultiSampleType = multiSampleType;
         m_d3dppFS.MultiSampleQuality = 0;
         m_d3dppFS.Windowed = FALSE;
@@ -412,16 +413,13 @@ namespace Mengine
 
         m_d3dppFS.FullScreen_RefreshRateInHz = m_displayMode.RefreshRate;
 
+        LOGGER_MESSAGE_RELEASE( "Fullscreen RefreshRate [%u]"
+            , m_d3dppFS.FullScreen_RefreshRateInHz
+        );
+
         this->updateVSyncDPP_();
 
-        if( _fullscreen == true )
-        {
-            m_d3dpp = &m_d3dppFS;
-        }
-        else
-        {
-            m_d3dpp = &m_d3dppW;
-        }
+        m_d3dpp = _fullscreen == true ? &m_d3dppFS : &m_d3dppW;
 
         // Create D3D Device
 
@@ -966,7 +964,7 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        m_d3dpp = _fullscreen ? &m_d3dppFS : &m_d3dppW;
+        m_d3dpp = _fullscreen == true ? &m_d3dppFS : &m_d3dppW;
         m_d3dpp->BackBufferWidth = m_windowResolution.getWidth();
         m_d3dpp->BackBufferHeight = m_windowResolution.getHeight();
 

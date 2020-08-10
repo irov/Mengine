@@ -29,6 +29,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderFragmentShader::finalize()
+    {
+        m_memory = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderFragmentShader::compile()
     {
         GLuint shaderId;
@@ -48,7 +53,6 @@ namespace Mengine
 
         GLCALL( glShaderSource, (shaderId, 1, &str_source, &str_size) );
         GLCALL( glCompileShader, (shaderId) );
-
 
         GLint status;
         GLCALL( glGetShaderiv, (shaderId, GL_COMPILE_STATUS, &status) );

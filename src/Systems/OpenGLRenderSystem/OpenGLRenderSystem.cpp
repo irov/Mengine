@@ -1154,6 +1154,9 @@ namespace Mengine
             return;
         }
 
+        OpenGLRenderVertexShader * renderVertexShader = *it_found;
+        renderVertexShader->finalize();
+
         *it_found = m_cacheRenderVertexShaders.back();
         m_cacheRenderVertexShaders.pop_back();
     }
@@ -1166,6 +1169,9 @@ namespace Mengine
         {
             return;
         }
+
+        OpenGLRenderFragmentShader * renderFragmentShader = *it_found;
+        renderFragmentShader->finalize();
 
         *it_found = m_cacheRenderFragmentShaders.back();
         m_cacheRenderFragmentShaders.pop_back();
@@ -1180,6 +1186,9 @@ namespace Mengine
             return;
         }
 
+        OpenGLRenderProgram * renderProgram = *it_found;
+        renderProgram->finalize();
+
         *it_found = m_cacheRenderPrograms.back();
         m_cacheRenderPrograms.pop_back();
     }
@@ -1188,4 +1197,5 @@ namespace Mengine
     {
         m_totalWVPMatrix = m_worldMatrix * m_viewMatrix * m_projectionMatrix;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

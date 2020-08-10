@@ -79,12 +79,6 @@ namespace Mengine
             }
         }
 
-        m_currentProgram = nullptr;
-        m_currentProgramVariable = nullptr;
-
-        m_currentIndexBuffer = nullptr;
-        m_currentVertexBuffer = nullptr;
-
         m_deferredCompileVertexShaders.clear();
         m_deferredCompileFragmentShaders.clear();
         m_deferredCompilePrograms.clear();
@@ -288,6 +282,18 @@ namespace Mengine
         }
 
         m_viewport = _viewport;
+
+        GLsizei xb = static_cast<GLsizei>(m_viewport.begin.x);
+        GLsizei ye = static_cast<GLsizei>(m_viewport.end.y);
+        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth());
+        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight());
+
+        GLsizei resolution_height = static_cast<GLsizei>(m_windowResolution.getHeight());
+
+        GLsizei x = xb;
+        GLsizei y = resolution_height - ye;
+
+        GLCALL( glViewport, (x, y, w, h) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )
@@ -345,7 +351,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
     {
-        m_currentVertexBuffer = _vertexBuffer;
+        if( _vertexBuffer == nullptr )
+        {
+            GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+
+            return true;
+        }
+
+        _vertexBuffer->enable();
 
         return true;
     }
@@ -368,7 +381,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )
     {
-        m_currentIndexBuffer = _indexBuffer;
+        if( _indexBuffer == nullptr )
+        {
+            GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
+
+            return true;
+        }
+
+        _indexBuffer->enable();
 
         return true;
     }
@@ -516,14 +536,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
     {
-        m_currentProgram = stdex::intrusive_static_cast<OpenGLRenderProgramPtr>(_program);
+        if( _program != nullptr )
+        {
+            OpenGLRenderProgramPtr ogl_program = stdex::intrusive_static_cast<OpenGLRenderProgramPtr>(_program);
+
+            ogl_program->enable();
+
+            const RenderVertexAttributeInterfacePtr & vertexAttribute = ogl_program->getVertexAttribute();
+
+            vertexAttribute->enable();
+        }
+        else
+        {
+            GLCALL( glUseProgram, (0) );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
     {
-        MENGINE_UNUSED( _program );
+        OpenGLRenderProgramPtr ogl_program = stdex::intrusive_static_cast<OpenGLRenderProgramPtr>(_program);
 
-        //ToDo
+        ogl_program->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )
@@ -546,9 +579,16 @@ namespace Mengine
     {
         MENGINE_UNUSED( _program );
 
-        m_currentProgramVariable = stdex::intrusive_static_cast<OpenGLRenderProgramVariablePtr>(_programVariable);
+        if( _programVariable == nullptr )
+        {
+            return true;
+        }
 
-        return true;
+        OpenGLRenderProgramVariablePtr ogl_programVariable = stdex::intrusive_static_cast<OpenGLRenderProgramVariablePtr>(_programVariable);
+
+        bool successful = ogl_programVariable->apply( _program );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type
@@ -562,120 +602,41 @@ namespace Mengine
         MENGINE_UNUSED( _minIndex );
         MENGINE_UNUSED( _verticesNum );
 
-        if( m_currentIndexBuffer == nullptr || m_currentVertexBuffer == nullptr )
-        {
-            return;
-        }
-
-        GLsizei xb = static_cast<GLsizei>(m_viewport.begin.x);
-        GLsizei ye = static_cast<GLsizei>(m_viewport.end.y);
-        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth());
-        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight());
-
-        GLsizei resolution_height = static_cast<GLsizei>(m_windowResolution.getHeight());
-
-        GLsizei x = xb;
-        GLsizei y = resolution_height - ye;
-
-        GLCALL( glViewport, (x, y, w, h) );
-
-        if( m_currentProgram->enable() == false )
-        {
-            return;
-        }
-
-        m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
-
-        if( m_currentProgramVariable != nullptr )
-        {
-            if( m_currentProgramVariable->apply( m_currentProgram ) == false )
-            {
-                return;
-            }
-        }
-
-        for( uint32_t stageId = 0; stageId != MENGINE_MAX_TEXTURE_STAGES; ++stageId )
-        {
-            const TextureStage & textureStage = m_textureStage[stageId];
-
-            if( textureStage.texture == nullptr )
-            {
-#ifdef MENGINE_RENDER_OPENGL_ES
-                GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
-#else
-                GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
-#endif
-
-                GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
-
-                continue;
-            }
-
-            textureStage.texture->bind( stageId );
-
-            if( m_currentProgram->bindTexture( stageId ) == false )
-            {
-                continue;
-            }
-
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
-            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
-        }
-
-        m_currentIndexBuffer->enable();
-        m_currentVertexBuffer->enable();
-
-        const RenderVertexAttributeInterfacePtr & vertexAttribute = m_currentProgram->getVertexAttribute();
-
-        vertexAttribute->enable();
-
         GLenum mode = Helper::toGLPrimitiveMode( _type );
         GLenum indexType = Helper::toGLIndexType( sizeof( RenderIndex ) );
         const GLvoid * indices = reinterpret_cast<const GLvoid *>(_startIndex * sizeof( RenderIndex ));
 
         GLCALL( glDrawElements, (mode, _indexCount, indexType, indices) );
-
-        vertexAttribute->disable();
-
-        m_currentIndexBuffer->disable();
-        m_currentVertexBuffer->disable();
-
-        for( uint32_t stageId = 0; stageId != MENGINE_MAX_TEXTURE_STAGES; ++stageId )
-        {
-            TextureStage & textureStage = m_textureStage[stageId];
-
-            if( textureStage.texture == nullptr )
-            {
-                break;
-            }
-
-#ifdef MENGINE_RENDER_OPENGL_ES
-            GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
-#else
-            GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
-#endif
-
-            GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
-        }
-
-        m_currentProgram->disable();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
+    void OpenGLRenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture )
     {
-        TextureStage & tStage = m_textureStage[_stage];
+        TextureStage & tStage = m_textureStage[_stageId];
 
         IntrusivePtrBase::intrusive_ptr_release( tStage.texture );
 
         if( _texture != nullptr )
         {
-            IntrusivePtrBase::intrusive_ptr_setup( tStage.texture, _texture.get() );
+            _texture->bind( _stageId );
+
+            OpenGLRenderProgramPtr ogl_program = stdex::intrusive_static_cast<OpenGLRenderProgramPtr>(_program);
+
+            ogl_program->bindTexture( _stageId );
+
+            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tStage.wrapS) );
+            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tStage.wrapT) );
+            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, tStage.minFilter) );
+            GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, tStage.magFilter) );
         }
         else
         {
-            tStage.texture = nullptr;
+#ifdef MENGINE_RENDER_OPENGL_ES
+            GLCALL( glActiveTexture, (GL_TEXTURE0 + _stageId) );
+#else
+            GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stageId) );
+#endif
+
+            GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -893,11 +854,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::beginScene()
     {
-        m_currentIndexBuffer = nullptr;
-        m_currentVertexBuffer = nullptr;
-
-        m_currentProgram = nullptr;
-        m_currentProgramVariable = nullptr;
+        //Empty
 
         return true;
     }

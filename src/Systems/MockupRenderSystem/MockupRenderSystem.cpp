@@ -528,8 +528,10 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
+    void MockupRenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
     {
+        MENGINE_UNUSED( _program );
+
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
             LOGGER_ERROR( "no support stage %d (max %d)"

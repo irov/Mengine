@@ -85,7 +85,7 @@ namespace Mengine
         virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 
     public:
-        virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
+        virtual void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
         virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) = 0;
         virtual void setTextureFactor( uint32_t _color ) = 0;
         virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) = 0;

@@ -560,7 +560,7 @@ namespace Mengine
 
             const RenderImageInterfacePtr & image = _texture->getImage();
 
-            m_renderSystem->setTexture( _stageId, image );
+            m_renderSystem->setTexture( m_currentRenderProgram, _stageId, image );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -574,6 +574,10 @@ namespace Mengine
         {
             return;
         }
+
+        const RenderMaterialStage * stage = _material->getStage();
+
+        this->updateStage_( stage );
 
         m_currentMaterialId = materialId;
 
@@ -602,10 +606,6 @@ namespace Mengine
                 this->updateTexture_( stageId, texture );
             }
         }
-
-        const RenderMaterialStage * stage = _material->getStage();
-
-        this->updateStage_( stage );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::renderPrimitive_( const RenderPrimitive * _renderPrimitive )
@@ -663,7 +663,7 @@ namespace Mengine
 
         m_currentTexturesID[_stage] = 0;
 
-        m_renderSystem->setTexture( _stage, nullptr );
+        m_renderSystem->setTexture( m_currentRenderProgram, _stage, nullptr );
 
         m_renderSystem->setTextureAddressing( _stage
             , m_defaultRenderTextureStage.addressU

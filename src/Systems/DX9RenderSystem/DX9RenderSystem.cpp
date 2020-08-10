@@ -1351,8 +1351,10 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
+    void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
     {
+        MENGINE_UNUSED( _program );
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )

@@ -506,6 +506,12 @@ if(MENGINE_DEPENDENCE_CURL)
 	
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/curl ${CMAKE_TEMP_DIR}/curl)
     
+    set(CURL_LIBRARY curl CACHE STRING "CURL_LIBRARY" FORCE)
+    set(CURL_INCLUDE_DIR "${THIRDPARTY_DIR}/curl/include" CACHE INTERNAL "CURL_INCLUDE_DIR" FORCE)
+    
+    message("CURL_LIBRARY: ${CURL_LIBRARY}")
+    message("CURL_INCLUDE_DIR: ${CURL_INCLUDE_DIR}")
+    
     add_dependencies(libcurl zlib)
 endif()
 

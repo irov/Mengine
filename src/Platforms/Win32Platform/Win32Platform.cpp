@@ -1065,7 +1065,6 @@ namespace Mengine
                     {
                         m_close = true;
                     }break;
-
                 case SC_KEYMENU:
                     {
                         if( lParam == 13 )

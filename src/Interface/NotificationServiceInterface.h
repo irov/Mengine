@@ -185,7 +185,7 @@ namespace Mengine
 #define NOTIFICATION_ADDOBSERVERLAMBDA( ID, Observer, L, Doc )\
     NOTIFICATION_SERVICE()->addObserverLambda<ID>( Observer, L, Doc )
 //////////////////////////////////////////////////////////////////////////
-#define NOTIFICATION_ADDOBSERVERLAMBDA_THIS( ID, this, L, Doc )\
+#define NOTIFICATION_ADDOBSERVERLAMBDA_THIS( ID, L, Doc )\
     NOTIFICATION_SERVICE()->addObserverLambda<ID>( this, L, Doc )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\

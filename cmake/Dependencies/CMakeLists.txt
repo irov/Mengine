@@ -516,7 +516,7 @@ if(MENGINE_DEPENDENCE_CURL)
 endif()
 
 #dependencies sentry
-if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW OR MENGINE_TARGET_UNIX)
+if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/CMakeLists.txt COPYONLY)

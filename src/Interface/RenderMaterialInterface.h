@@ -13,11 +13,11 @@ namespace Mengine
     struct RenderTextureStage
     {
         ETextureFilter mipmap = TF_NONE;
-        ETextureFilter magnification = TF_LINEAR;
-        ETextureFilter minification = TF_LINEAR;
+        ETextureFilter magnification = TF_POINT;
+        ETextureFilter minification = TF_POINT;
 
-        ETextureAddressMode addressU = TAM_CLAMP;
-        ETextureAddressMode addressV = TAM_CLAMP;
+        ETextureAddressMode addressU = TAM_WRAP;
+        ETextureAddressMode addressV = TAM_WRAP;
         uint32_t addressBorder = 0x00000000;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -29,8 +29,8 @@ namespace Mengine
 
         RenderProgramInterfacePtr program;
 
-        EBlendFactor blendSrc = BF_SOURCE_ALPHA;
-        EBlendFactor blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+        EBlendFactor blendSrc = BF_ONE;
+        EBlendFactor blendDst = BF_ZERO;
         EBlendOp blendOp = BOP_ADD;
 
         bool alphaBlendEnable = false;

@@ -143,59 +143,16 @@ namespace Mengine
             RenderContext self_context;
 
             const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
-
-            if( renderViewport != nullptr )
-            {
-                self_context.viewport = renderViewport.get();
-            }
-            else
-            {
-                self_context.viewport = _context->viewport;
-            }
-
             const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
-
-            if( renderCamera != nullptr )
-            {
-                self_context.camera = renderCamera.get();
-            }
-            else
-            {
-                self_context.camera = _context->camera;
-            }
-
             const RenderTransformationInterfacePtr & renderTransformation = selfRender->getRenderTransformation();
-
-            if( renderTransformation != nullptr )
-            {
-                self_context.transformation = renderTransformation.get();
-            }
-            else
-            {
-                self_context.transformation = _context->transformation;
-            }
-
             const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
-
-            if( renderScissor != nullptr )
-            {
-                self_context.scissor = renderScissor.get();
-            }
-            else
-            {
-                self_context.scissor = _context->scissor;
-            }
-
             const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
 
-            if( renderTarget != nullptr )
-            {
-                self_context.target = renderTarget.get();
-            }
-            else
-            {
-                self_context.target = _context->target;
-            }
+            self_context.viewport = renderViewport != nullptr ? renderViewport.get() : _context->viewport;
+            self_context.camera = renderCamera != nullptr ? renderCamera.get() : _context->camera;
+            self_context.transformation = renderTransformation != nullptr ? renderTransformation.get() : _context->transformation;
+            self_context.scissor = renderScissor != nullptr ? self_context.scissor = renderScissor.get() : _context->scissor;
+            self_context.target = renderTarget != nullptr ? self_context.target = renderTarget.get() : _context->target;
 
             if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
             {
@@ -229,11 +186,6 @@ namespace Mengine
         }
         else
         {
-            _node->foreachChildrenUnslug( [this, &_renderPipeline, _context]( const NodePtr & _child )
-            {
-                this->renderDebugNode( _child, _renderPipeline, _context, false );
-            } );
-
             const ConstString & type = _node->getType();
 
             const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
@@ -242,6 +194,11 @@ namespace Mengine
             {
                 nodeDebugRender->render( _renderPipeline, _context, _node.get() );
             }
+
+            _node->foreachChildrenUnslug( [this, &_renderPipeline, _context]( const NodePtr & _child )
+            {
+                this->renderDebugNode( _child, _renderPipeline, _context, false );
+            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////

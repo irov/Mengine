@@ -164,8 +164,6 @@ namespace Mengine
 
         m_windowCreated = true;
 
-        this->restoreRenderSystemStates_();
-
         if( this->createNullTexture_() == false )
         {
             LOGGER_ERROR( "invalid create __null__ texture"
@@ -191,15 +189,25 @@ namespace Mengine
         m_defaultRenderTextureStage.magnification = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMagnification();
 
+        this->restoreRenderSystemStates_();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::destroyRenderWindow()
     {
-        this->restoreRenderSystemStates_();
-
         m_nullTexture = nullptr;
         m_whitePixelTexture = nullptr;
+
+        m_currentRenderVertexBuffer = nullptr;
+        m_currentRenderIndexBuffer = nullptr;
+        m_currentRenderProgramVariable = nullptr;
+
+        m_currentRenderViewport = nullptr;
+        m_currentRenderCamera = nullptr;
+        m_currentRenderTransformation = nullptr;
+        m_currentRenderScissor = nullptr;
+        m_currentRenderProgram = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createNullTexture_()

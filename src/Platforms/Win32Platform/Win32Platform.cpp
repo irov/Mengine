@@ -1576,7 +1576,7 @@ namespace Mengine
 
         bool Platform_AlreadyRunning = CONFIG_VALUE( "Platform", "AlreadyRunning", true );
 
-        if( Platform_AlreadyRunning == true )
+        if( Platform_AlreadyRunning == true && HAS_OPTION( "noalreadyrunning" ) == false )
         {
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 

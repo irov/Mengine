@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::registerScriptWrapperObserver()
     {
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING_END, this, [this]()
+        NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END, [this]()
         {
             const ConstString & prototype = this->getPrototype();
 

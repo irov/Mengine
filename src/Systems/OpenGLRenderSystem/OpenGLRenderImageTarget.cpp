@@ -26,8 +26,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::bind( uint32_t _stage )
     {
-        MENGINE_UNUSED( _stage );
-
 #ifdef MENGINE_RENDER_OPENGL_ES
         GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
 #else
@@ -37,6 +35,17 @@ namespace Mengine
         GLuint uid = m_renderTarget->getUID();
 
         GLCALL( glBindTexture, (GL_TEXTURE_2D, uid) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImageTarget::unbind( uint32_t _stage )
+    {
+#ifdef MENGINE_RENDER_OPENGL_ES
+        GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
+#else
+        GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
+#endif
+
+        GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

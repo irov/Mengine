@@ -969,17 +969,6 @@ namespace Mengine
             }break;
         case WM_PAINT:
             {
-                if( m_update == false )
-                {
-                    bool fullscreen = APPLICATION_SERVICE()
-                        ->getFullscreenMode();
-
-                    if( fullscreen == false )
-                    {
-                        APPLICATION_SERVICE()
-                            ->paint();
-                    }
-                }
             }break;
         case WM_DISPLAYCHANGE:
             {
@@ -1688,7 +1677,7 @@ namespace Mengine
         return m_hWnd;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
+    bool Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
         LOGGER_MESSAGE( "resolution %d:%d fullscreen %d"
             , _resolution.getWidth()
@@ -1706,7 +1695,7 @@ namespace Mengine
         RECT rc;
         if( this->calcWindowsRect_( m_windowResolution, m_fullscreen, &rc ) == false )
         {
-            return;
+            return false;
         }
 
         LONG dwExStyle = ::GetWindowLong( m_hWnd, GWL_EXSTYLE );
@@ -1741,6 +1730,8 @@ namespace Mengine
                 , SWP_NOACTIVATE
             );
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::notifyVsyncChanged( bool _vsync )

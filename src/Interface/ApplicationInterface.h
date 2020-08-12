@@ -57,9 +57,6 @@ namespace Mengine
         virtual void mouseLeave( const InputMouseLeaveEvent & _event ) = 0;
 
     public:
-        virtual void paint() = 0;
-
-    public:
         virtual bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths, const VectorFilePath & _settingsPaths ) = 0;
         virtual void finalizeGame() = 0;
 

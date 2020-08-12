@@ -127,6 +127,8 @@ namespace Mengine
         void flush() override;
         void batch() override;
         void render() override;
+        void clear() override;
+        bool isEmpty() const override;
 
     protected:
         bool testRenderPass_( const RenderContext * _context

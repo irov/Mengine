@@ -67,7 +67,7 @@ namespace Mengine
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
         RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc ) override;
-        bool setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) override;
+        bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) override;
 
     public:
         void drawIndexedPrimitive( EPrimitiveType _type
@@ -120,7 +120,7 @@ namespace Mengine
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
         void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
-        void onWindowChangeFullscreen( bool _fullscreen ) override;
+        bool onWindowChangeFullscreen( bool _fullscreen ) override;
         void onWindowMovedOrResized() override;
         void onWindowClose() override;
 

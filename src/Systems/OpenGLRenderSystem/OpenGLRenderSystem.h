@@ -83,7 +83,7 @@ namespace Mengine
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
         RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc ) override;
-        bool setProgramVariable( const RenderProgramVariableInterfacePtr & _programVariable, const RenderProgramInterfacePtr & _program ) override;
+        bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _programVariable ) override;
 
     public:
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc ) override;
@@ -114,7 +114,7 @@ namespace Mengine
         void onWindowClose() override;
 
         void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
-        void onWindowChangeFullscreen( bool _fullscreen ) override;
+        bool onWindowChangeFullscreen( bool _fullscreen ) override;
 
         void setVSync( bool _vSync ) override;
 
@@ -151,6 +151,12 @@ namespace Mengine
         Resolution m_windowResolution;
         Viewport m_windowViewport;
 
+        OpenGLRenderProgramPtr m_currentProgram;
+        OpenGLRenderProgramVariablePtr m_currentProgramVariable;
+        OpenGLRenderVertexAttributePtr m_currentVertexAttribute;
+        OpenGLRenderIndexBufferPtr m_currentIndexBuffer;
+        OpenGLRenderVertexBufferPtr m_currentVertexBuffer;
+
         typedef Vector<OpenGLRenderVertexShaderPtr> VectorRenderVertexShaders;
         VectorRenderVertexShaders m_deferredCompileVertexShaders;
 
@@ -175,6 +181,12 @@ namespace Mengine
         };
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
+
+        typedef Vector<OpenGLRenderIndexBuffer *> VectorCacheRenderIndexBuffers;
+        VectorCacheRenderIndexBuffers m_cacheRenderIndexBuffers;
+
+        typedef Vector<OpenGLRenderVertexBuffer *> VectorCacheRenderVertexBuffers;
+        VectorCacheRenderVertexBuffers m_cacheRenderVertexBuffers;
 
         typedef Vector<OpenGLRenderImage *> VectorCacheRenderImages;
         VectorCacheRenderImages m_cacheRenderImages;

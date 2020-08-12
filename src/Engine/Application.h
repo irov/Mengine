@@ -110,9 +110,6 @@ namespace Mengine
         void mouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     public:
-        void paint() override;
-
-    public:
         void setParticleEnable( bool _enabled ) override;
         bool getParticleEnable() const override;
 

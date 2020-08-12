@@ -370,11 +370,13 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::onWindowChangeFullscreen( bool _fullscreen )
+    bool MockupRenderSystem::onWindowChangeFullscreen( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::onWindowMovedOrResized()
@@ -774,10 +776,10 @@ namespace Mengine
         return variable;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderSystem::setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
+    bool MockupRenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )
     {
-        MENGINE_UNUSED( _variable );
         MENGINE_UNUSED( _program );
+        MENGINE_UNUSED( _variable );        
 
         return true;
     }

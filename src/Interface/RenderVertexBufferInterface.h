@@ -24,7 +24,7 @@ namespace Mengine
         virtual void disable() = 0;
 
     public:
-        virtual bool resize( uint32_t _count ) = 0;
+        virtual bool resize( uint32_t _vertexCount ) = 0;
 
     public:
         virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) = 0;

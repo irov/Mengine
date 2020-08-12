@@ -78,6 +78,8 @@ namespace Mengine
         virtual void flush() = 0;
         virtual void batch() = 0;
         virtual void render() = 0;
+        virtual void clear() = 0;
+        virtual bool isEmpty() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderPipelineInterface> RenderPipelineInterfacePtr;

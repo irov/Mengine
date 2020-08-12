@@ -39,7 +39,12 @@ namespace Mengine
         void enable() override;
         void disable() override;
 
+    public:
+        void release();
+        bool reload();
+
     protected:
+        uint32_t m_vertexCapacity;
         uint32_t m_vertexCount;
         uint32_t m_vertexSize;
 

@@ -1278,10 +1278,8 @@ namespace Mengine
 
             const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::VectorMeta_TextureStages & include_TextureStages = meta_Material.get_Includes_TextureStages();
 
-            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages : include_TextureStages )
+            for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
             {
-                uint32_t index = meta_TextureStages.get_Stage();
-
                 RenderTextureStage & textureStage = stage.textureStage[index];
 
                 textureStage.mipmap = RENDERMATERIAL_SERVICE()
@@ -1292,6 +1290,13 @@ namespace Mengine
 
                 textureStage.minification = RENDERMATERIAL_SERVICE()
                     ->getDefaultTextureFilterMinification();
+            }
+
+            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages : include_TextureStages )
+            {
+                uint32_t index = meta_TextureStages.get_Stage();
+
+                RenderTextureStage & textureStage = stage.textureStage[index];
 
                 meta_TextureStages.get_AddressMode_U( &textureStage.addressU );
                 meta_TextureStages.get_AddressMode_V( &textureStage.addressV );

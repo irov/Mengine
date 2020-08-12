@@ -862,11 +862,23 @@ namespace Mengine
             Resolution desktopResolution;
             this->getDesktopResolution( &desktopResolution );
 
-            this->notifyWindowModeChanged( desktopResolution, true );
+            if( this->notifyWindowModeChanged( desktopResolution, true ) == false )
+            {
+                SDL_DestroyWindow( m_window );
+                m_window = nullptr;
+
+                return false;
+            }
         }
         else
         {
-            this->notifyWindowModeChanged( m_windowResolution, false );
+            if( this->notifyWindowModeChanged( m_windowResolution, false ) == false )
+            {
+                SDL_DestroyWindow( m_window );
+                m_window = nullptr;
+
+                return false;
+            }
         }
 
         SDL_DisplayMode mode;
@@ -1072,23 +1084,31 @@ namespace Mengine
         SDL_StopTextInput();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
+    bool SDLPlatform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
         if( m_window == nullptr )
         {
-            return;
+            return true;
         }
 
         Uint32 flags = SDL_GetWindowFlags( m_window );
 
         if( _fullscreen == true && !(flags & SDL_WINDOW_FULLSCREEN) )
         {
-            this->changeWindow_( _resolution, _fullscreen );
+            if( this->changeWindow_( _resolution, _fullscreen ) == false )
+            {
+                return false;
+            }
         }
         else if( _fullscreen == false && (flags & SDL_WINDOW_FULLSCREEN) )
         {
-            this->changeWindow_( _resolution, _fullscreen );
+            if( this->changeWindow_( _resolution, _fullscreen ) == false )
+            {
+                return false;
+            }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::notifyVsyncChanged( bool _vsync )
@@ -1736,14 +1756,20 @@ namespace Mengine
         m_sdlEventHandlers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
+    bool SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
 #if defined(MENGINE_PLATFORM_IOS)
-        RENDER_SYSTEM()
-            ->onWindowChangeFullscreen( _fullscreen );
+        if( RENDER_SYSTEM()
+            ->onWindowChangeFullscreen( _fullscreen ) == false )
+        {
+            return false;
+        }
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        RENDER_SYSTEM()
-            ->onWindowChangeFullscreen( _fullscreen );
+        if( RENDER_SYSTEM()
+            ->onWindowChangeFullscreen( _fullscreen ) == false )
+        {
+            return false;
+        }
 #else
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
@@ -1757,9 +1783,14 @@ namespace Mengine
         RENDER_SERVICE()
             ->onDeviceLostRestore();
 
-        RENDER_SYSTEM()
-            ->onWindowChangeFullscreen( _fullscreen );
+        if( RENDER_SYSTEM()
+            ->onWindowChangeFullscreen( _fullscreen ) == false )
+        {
+            return false;
+        }
 #endif
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
@@ -1873,6 +1904,48 @@ namespace Mengine
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE ) != 0 )
         {
             LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_CORE error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+        
+        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to 24 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to 1 error: %s"
                 , SDL_GetError()
             );
         }

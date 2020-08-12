@@ -42,6 +42,13 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderImageTarget::unbind( uint32_t _stage )
+    {
+        IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
+
+        DXCALL( pD3DDevice, SetTexture, (_stage, nullptr) );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         MENGINE_UNUSED( _renderImageProvider );

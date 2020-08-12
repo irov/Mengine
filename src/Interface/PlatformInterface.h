@@ -89,7 +89,7 @@ namespace Mengine
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;
 
-        virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
+        virtual bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;
         virtual bool notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _memory ) = 0;

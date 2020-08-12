@@ -99,7 +99,7 @@ namespace Mengine
         void showKeyboard() override;
         void hideKeyboard() override;
 
-        void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
+        bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
         void notifyVsyncChanged( bool _vsync ) override;
         void notifyCursorModeChanged( bool _mode ) override;
         bool notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer ) override;
@@ -161,7 +161,7 @@ namespace Mengine
         void removeSDLEventHandler( uint32_t _handlerId ) override;
 
     protected:
-        void changeWindow_( const Resolution & _resolution, bool _fullscreen );
+        bool changeWindow_( const Resolution & _resolution, bool _fullscreen );
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
         void destroyWindow_();
 

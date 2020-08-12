@@ -350,7 +350,7 @@ namespace Mengine
 
         m_d3dppW.BackBufferWidth = m_windowResolution.getWidth();
         m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
-        m_d3dppW.BackBufferFormat = m_displayMode.Format;
+        m_d3dppW.BackBufferFormat = D3DFMT_UNKNOWN;
         m_d3dppW.BackBufferCount = 1;
 
         m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
@@ -599,16 +599,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetX", 0.f );
-        float DirectX_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetY", 0.f );
-
-        float perfect_x = DirectX_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        float perfect_y = DirectX_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
-
-        mt::mat4f vmperfect;
-        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
-
-        mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+        m_projectionMatrix = _projectionMatrix;
 
         this->updateWVPInvMatrix_();
     }
@@ -617,7 +608,16 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        m_modelViewMatrix = _modelViewMatrix;
+        float DirectX_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetX", -0.5f );
+        float DirectX_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetY", -0.5f );
+
+        float perfect_x = DirectX_PerfectPixelOffsetX;
+        float perfect_y = DirectX_PerfectPixelOffsetY;
+
+        mt::mat4f vmperfect;
+        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
+
+        mt::mul_m4_m4( m_modelViewMatrix, _modelViewMatrix, vmperfect );
 
         this->updateWVPInvMatrix_();
     }
@@ -1042,11 +1042,13 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onWindowChangeFullscreen( bool _fullscreen )
+    bool DX9RenderSystem::onWindowChangeFullscreen( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onWindowMovedOrResized()
@@ -1714,7 +1716,7 @@ namespace Mengine
         return variable;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
+    bool DX9RenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )
     {
         if( _variable == nullptr )
         {

@@ -155,6 +155,17 @@ namespace Mengine
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImage::unbind( uint32_t _stage )
+    {
+#ifdef MENGINE_RENDER_OPENGL_ES
+        GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
+#else
+        GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
+#endif
+
+        GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         m_renderImageProvider = _renderImageProvider;

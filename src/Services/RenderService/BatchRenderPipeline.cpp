@@ -690,12 +690,22 @@ namespace Mengine
             RENDER_SERVICE()
                 ->endRenderPass( renderPass->target );
         }
-        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::clear()
+    {
         m_renderPrimitives.clear();
 
 #ifndef MENGINE_MASTER_RELEASE
         m_debugRenderObjects.clear();
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BatchRenderPipeline::isEmpty() const
+    {
+        bool empty = m_renderPrimitives.empty();
+
+        return empty;
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * const _vbPos, uint32_t * const _ibPos )

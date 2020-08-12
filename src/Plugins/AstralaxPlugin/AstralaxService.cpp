@@ -371,6 +371,15 @@ namespace Mengine
 
                 RenderTextureStage & textureStage = rs.textureStage[stage];
 
+                textureStage.mipmap = RENDERMATERIAL_SERVICE()
+                    ->getDefaultTextureFilterMipmap();
+
+                textureStage.magnification = RENDERMATERIAL_SERVICE()
+                    ->getDefaultTextureFilterMagnification();
+
+                textureStage.minification = RENDERMATERIAL_SERVICE()
+                    ->getDefaultTextureFilterMinification();
+
                 textureStage.addressU = dx_address[state.address_u];
                 textureStage.addressV = dx_address[state.address_v];
                 textureStage.addressBorder = 0x00000000;

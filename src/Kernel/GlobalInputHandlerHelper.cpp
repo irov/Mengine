@@ -97,10 +97,11 @@ namespace Mengine
                 : public GlobalBaseHandler
             {
             public:
-                GlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event )
+                GlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, bool _once )
                     : m_code( _code )
                     , m_isDown( _isDown )
                     , m_event( _event )
+                    , m_once( _once )
                 {
                 }
 
@@ -116,6 +117,11 @@ namespace Mengine
                         return false;
                     }
 
+                    if( m_once == true && _event.isRepeat == true )
+                    {
+                        return false;
+                    }
+
                     m_event( _event );
 
                     return false;
@@ -126,6 +132,8 @@ namespace Mengine
                 bool m_isDown;
 
                 LambdaInputKeyEvent m_event;
+
+                bool m_once;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<GlobalKeyHandler> GlobalKeyHandlerPtr;
@@ -228,7 +236,19 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _doc, _code, _isDown, _event );
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _doc, _code, _isDown, _event, false );
+
+            uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t addGlobalKeyOnceHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc )
+        {
+            const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
+
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _doc, _code, _isDown, _event, true );
 
             uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
 

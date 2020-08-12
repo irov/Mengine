@@ -28,6 +28,11 @@ namespace Mengine
         MENGINE_UNUSED( _stage );
     }
     //////////////////////////////////////////////////////////////////////////
+    void MockupRenderImageTarget::unbind( uint32_t _stage )
+    {
+        MENGINE_UNUSED( _stage );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MockupRenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         MENGINE_UNUSED( _renderImageProvider );

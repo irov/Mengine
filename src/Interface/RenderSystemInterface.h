@@ -79,7 +79,7 @@ namespace Mengine
         virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc ) = 0;
-        virtual bool setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
+        virtual bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) = 0;
 
     public:
         virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) = 0;
@@ -125,7 +125,7 @@ namespace Mengine
         virtual void onWindowClose() = 0;
 
         virtual void onWindowChangeFullscreenPrepare( bool _fullscreen ) = 0;
-        virtual void onWindowChangeFullscreen( bool _fullscreen ) = 0;
+        virtual bool onWindowChangeFullscreen( bool _fullscreen ) = 0;
 
         virtual void setVSync( bool _vSync ) = 0;
 

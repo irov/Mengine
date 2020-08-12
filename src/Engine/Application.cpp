@@ -1563,6 +1563,15 @@ namespace Mengine
         RENDER_SERVICE()
             ->endScene( m_renderPipeline );
 
+        bool pipelineEmpty = m_renderPipeline->isEmpty();
+
+        m_renderPipeline->clear();
+
+        if( pipelineEmpty == true )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1849,8 +1858,11 @@ namespace Mengine
         RENDER_SERVICE()
             ->setVSync( vsync );
 
-        PLATFORM_SERVICE()
-            ->notifyWindowModeChanged( m_currentResolution, fullscreen );
+        if( PLATFORM_SERVICE()
+            ->notifyWindowModeChanged( m_currentResolution, fullscreen ) == false )
+        {
+            return;
+        }
 
         this->calcRenderViewport_( m_currentResolution, &m_renderViewport );
 
@@ -1920,42 +1932,6 @@ namespace Mengine
     uint32_t Application::getDebugMask() const
     {
         return m_debugMask;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::paint()
-    {
-        if( m_createRenderWindow == false )
-        {
-            return;
-        }
-
-        if( m_focus == true )
-        {
-            return;
-        }
-
-        if( SERVICE_EXIST( RenderServiceInterface ) == false )
-        {
-            return;
-        }
-
-        if( SERVICE_EXIST( GameServiceInterface ) == false )
-        {
-            return;
-        }
-
-        if( RENDER_SERVICE()
-            ->beginScene( m_renderPipeline ) == true )
-        {
-            GAME_SERVICE()
-                ->render( m_renderPipeline );
-
-            RENDER_SERVICE()
-                ->endScene( m_renderPipeline );
-
-            RENDER_SERVICE()
-                ->swapBuffers();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Application::getCompanyName( Char * const _companyName ) const

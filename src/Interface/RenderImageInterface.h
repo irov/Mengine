@@ -16,6 +16,7 @@ namespace Mengine
     {
     public:
         virtual void bind( uint32_t _stage ) = 0;
+        virtual void unbind( uint32_t _stage ) = 0;
 
     public:
         virtual void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) = 0;

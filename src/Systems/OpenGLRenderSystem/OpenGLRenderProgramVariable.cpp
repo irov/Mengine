@@ -127,19 +127,24 @@ namespace Mengine
         GLuint programId = openglProgram->getProgramId();
 
         uint32_t vertexEnumerator = 0;
-        for( const ProgramVariableDesc & v : m_vertexVariables )
+        for( ProgramVariableDesc & v : m_vertexVariables )
         {
-            GLint location;
-            GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
-
-            if( location == -1 )
+            if( v.location == -1 )
             {
-                LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
-                    , openglProgram->getName().c_str()
-                    , v.uniform
-                );
+                GLint location;
+                GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
 
-                return false;
+                if( location == -1 )
+                {
+                    LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
+                        , openglProgram->getName().c_str()
+                        , v.uniform
+                    );
+
+                    return false;
+                }
+
+                v.location = location;
             }
 
             switch( v.type )
@@ -152,19 +157,19 @@ namespace Mengine
                     {
                     case 1:
                         {
-                            GLCALL( glUniform1fv, (location, v.count, buff) );
+                            GLCALL( glUniform1fv, (v.location, v.count, buff) );
                         }break;
                     case 2:
                         {
-                            GLCALL( glUniform2fv, (location, v.count, buff) );
+                            GLCALL( glUniform2fv, (v.location, v.count, buff) );
                         }break;
                     case 3:
                         {
-                            GLCALL( glUniform3fv, (location, v.count, buff) );
+                            GLCALL( glUniform3fv, (v.location, v.count, buff) );
                         }break;
                     case 4:
                         {
-                            GLCALL( glUniform4fv, (location, v.count, buff) );
+                            GLCALL( glUniform4fv, (v.location, v.count, buff) );
                         }break;
                     default:
                         return false;
@@ -178,19 +183,19 @@ namespace Mengine
                     {
                     case 1:
                         {
-                            GLCALL( glUniform1iv, (location, v.count, buff) );
+                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
                         }break;
                     case 2:
                         {
-                            GLCALL( glUniform2iv, (location, v.count, buff) );
+                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
                         }break;
                     case 3:
                         {
-                            GLCALL( glUniform3iv, (location, v.count, buff) );
+                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
                         }break;
                     case 4:
                         {
-                            GLCALL( glUniform4iv, (location, v.count, buff) );
+                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
                         }break;
                     default:
                         return false;
@@ -204,19 +209,19 @@ namespace Mengine
                     {
                     case 1:
                         {
-                            GLCALL( glUniform1iv, (location, v.count, buff) );
+                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
                         }break;
                     case 2:
                         {
-                            GLCALL( glUniform2iv, (location, v.count, buff) );
+                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
                         }break;
                     case 3:
                         {
-                            GLCALL( glUniform3iv, (location, v.count, buff) );
+                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
                         }break;
                     case 4:
                         {
-                            GLCALL( glUniform4iv, (location, v.count, buff) );
+                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
                         }break;
                     default:
                         return false;
@@ -232,19 +237,24 @@ namespace Mengine
         }
 
         uint32_t pixelEnumerator = 0;
-        for( const ProgramVariableDesc & v : m_pixelVariables )
+        for( ProgramVariableDesc & v : m_pixelVariables )
         {
-            GLint location;
-            GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
-
-            if( location == -1 )
+            if( v.location == -1 )
             {
-                LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
-                    , openglProgram->getName().c_str()
-                    , v.uniform
-                );
+                GLint location;
+                GLCALLR( location, glGetUniformLocation, (programId, v.uniform) );
 
-                return false;
+                if( location == -1 )
+                {
+                    LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
+                        , openglProgram->getName().c_str()
+                        , v.uniform
+                    );
+
+                    return false;
+                }
+
+                v.location = location;
             }
 
             switch( v.type )
@@ -257,19 +267,19 @@ namespace Mengine
                     {
                     case 1:
                         {
-                            GLCALL( glUniform1fv, (location, v.count, buff) );
+                            GLCALL( glUniform1fv, (v.location, v.count, buff) );
                         }break;
                     case 2:
                         {
-                            GLCALL( glUniform2fv, (location, v.count, buff) );
+                            GLCALL( glUniform2fv, (v.location, v.count, buff) );
                         }break;
                     case 3:
                         {
-                            GLCALL( glUniform3fv, (location, v.count, buff) );
+                            GLCALL( glUniform3fv, (v.location, v.count, buff) );
                         }break;
                     case 4:
                         {
-                            GLCALL( glUniform4fv, (location, v.count, buff) );
+                            GLCALL( glUniform4fv, (v.location, v.count, buff) );
                         }break;
                     default:
                         return false;
@@ -283,19 +293,19 @@ namespace Mengine
                     {
                     case 1:
                         {
-                            GLCALL( glUniform1iv, (location, v.count, buff) );
+                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
                         }break;
                     case 2:
                         {
-                            GLCALL( glUniform2iv, (location, v.count, buff) );
+                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
                         }break;
                     case 3:
                         {
-                            GLCALL( glUniform3iv, (location, v.count, buff) );
+                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
                         }break;
                     case 4:
                         {
-                            GLCALL( glUniform4iv, (location, v.count, buff) );
+                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
                         }break;
                     default:
                         return false;
@@ -309,19 +319,19 @@ namespace Mengine
                     {
                     case 1:
                         {
-                            GLCALL( glUniform1iv, (location, v.count, buff) );
+                            GLCALL( glUniform1iv, (v.location, v.count, buff) );
                         }break;
                     case 2:
                         {
-                            GLCALL( glUniform2iv, (location, v.count, buff) );
+                            GLCALL( glUniform2iv, (v.location, v.count, buff) );
                         }break;
                     case 3:
                         {
-                            GLCALL( glUniform3iv, (location, v.count, buff) );
+                            GLCALL( glUniform3iv, (v.location, v.count, buff) );
                         }break;
                     case 4:
                         {
-                            GLCALL( glUniform4iv, (location, v.count, buff) );
+                            GLCALL( glUniform4iv, (v.location, v.count, buff) );
                         }break;
                     default:
                         return false;

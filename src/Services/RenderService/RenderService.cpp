@@ -646,14 +646,7 @@ namespace Mengine
 
         m_renderSystem->updateProgram( m_currentRenderProgram );
 
-        if( m_currentRenderProgramVariable != nullptr )
-        {
-            m_renderSystem->setProgramVariable( m_currentRenderProgramVariable, m_currentRenderProgram );
-        }
-        else
-        {
-            m_renderSystem->setProgramVariable( nullptr, m_currentRenderProgram );
-        }
+        m_renderSystem->setProgramVariable( m_currentRenderProgram, m_currentRenderProgramVariable );
 
         EPrimitiveType primitiveType = material->getPrimitiveType();
 

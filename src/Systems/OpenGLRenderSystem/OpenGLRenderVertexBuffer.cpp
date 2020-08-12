@@ -13,7 +13,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexBuffer::OpenGLRenderVertexBuffer()
-        : m_vertexCount( 0 )
+        : m_vertexCapacity( 0 )
+        , m_vertexCount( 0 )
         , m_vertexSize( 0 )
         , m_usage( GL_STATIC_DRAW )
         , m_id( 0 )
@@ -32,15 +33,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::initialize( uint32_t _elementSize, EBufferType _bufferType )
     {
-        GLuint bufId = 0;
-        GLCALL( glGenBuffers, (1, &bufId) );
+        GLuint id = 0;
+        GLCALL( glGenBuffers, (1, &id) );
 
-        if( bufId == 0 )
+        if( id == 0 )
         {
             return false;
         }
 
-        m_id = bufId;
+        m_id = id;
 
         m_vertexSize = _elementSize;
         m_usage = Helper::toGLBufferType( _bufferType );
@@ -85,7 +86,14 @@ namespace Mengine
     {
         m_vertexCount = _vertexCount;
 
-        const uint32_t bufferSize = _vertexCount * m_vertexSize;
+        if( m_vertexCapacity >= _vertexCount )
+        {
+            return true;
+        }
+
+        m_vertexCapacity = _vertexCount;
+
+        const uint32_t bufferSize = m_vertexCount * m_vertexSize;
 
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
@@ -119,6 +127,8 @@ namespace Mengine
         GLCALLR( buffer, glMapBuffer, (GL_ARRAY_BUFFER, GL_WRITE_ONLY) );
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid map buffer" );
+
         const uint32_t bufferOffset = m_lockOffset * m_vertexSize;
         const uint32_t bufferSize = m_lockCount * m_vertexSize;
 
@@ -146,7 +156,7 @@ namespace Mengine
 
         m_lockOffset = 0;
         m_lockCount = 0;
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -168,5 +178,37 @@ namespace Mengine
     void OpenGLRenderVertexBuffer::disable()
     {
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderVertexBuffer::release()
+    {
+        if( m_id != 0 )
+        {
+            GLCALL( glDeleteBuffers, (1, &m_id) );
+            m_id = 0;
+        }
+
+        m_vertexCapacity = 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexBuffer::reload()
+    {
+        GLuint id = 0;
+        GLCALL( glGenBuffers, (1, &id) );
+
+        if( id == 0 )
+        {
+            return false;
+        }
+
+        m_id = id;
+
+        const uint32_t bufferSize = m_vertexCount * m_vertexSize;
+
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+
+        return true;
     }
 }

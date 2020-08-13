@@ -62,7 +62,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line )
         {
-            Helper::Assertion( _level, _test, _file, _line, "" );
+            Helper::Assertion( _level, _test, _file, _line, "Unknown" );
         }
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )

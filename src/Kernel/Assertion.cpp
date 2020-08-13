@@ -39,7 +39,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()() const
         {
-            Helper::Assertion( m_level, m_test, m_file, m_line, "" );
+            Helper::Assertion( m_level, m_test, m_file, m_line );
 
             return *this;
         }

@@ -19,6 +19,7 @@ namespace Mengine
         : m_pD3DDevice( nullptr )
         , m_bufferType( BT_STATIC )
         , m_vertexSize( 0 )
+        , m_vertexCapacity( 0 )
         , m_vertexCount( 0 )
         , m_usage( 0 )
         , m_format( D3DFMT_UNKNOWN )
@@ -90,19 +91,21 @@ namespace Mengine
         return m_vertexSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::resize( uint32_t _count )
+    bool DX9RenderVertexBuffer::resize( uint32_t _vertexCount )
     {
-        if( m_vertexCount >= _count )
+        m_vertexCount = _vertexCount;
+
+        if( m_vertexCapacity >= m_vertexCount )
         {
             return true;
         }
         
         DXRELEASE( m_pVB );
 
-        m_vertexCount = _count;
+        m_vertexCapacity = m_vertexCount;
 
         IDirect3DVertexBuffer9 * pVB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCount * m_vertexSize, m_usage, 0, m_pool, &pVB, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCapacity * m_vertexSize, m_usage, 0, m_pool, &pVB, NULL) )
         {
             return false;
         }

@@ -1,5 +1,5 @@
 if(WIN32)
-	cmake_minimum_required (VERSION 3.15)
+	cmake_minimum_required (VERSION 3.16.4)
 
 	# enables support for CMAKE_MSVC_RUNTIME_LIBRARY
 	cmake_policy(SET CMP0091 NEW)
@@ -99,8 +99,8 @@ endif()
 option(SENTRY_ENABLE_INSTALL "Enable sentry installation" "${SENTRY_MAIN_PROJECT}")
 
 if(MSVC AND CMAKE_GENERATOR_TOOLSET MATCHES "_xp$")
-	message(WARNING "Crashpad is not supported for MSVC with XP toolset. Default backend was switched to 'none'")
-	set(SENTRY_DEFAULT_BACKEND "none")
+	message(WARNING "Crashpad is not supported for MSVC with XP toolset. Default backend was switched to 'breakpad'")
+	set(SENTRY_DEFAULT_BACKEND "breakpad")
 elseif(APPLE OR WIN32)
 	set(SENTRY_DEFAULT_BACKEND "crashpad")
 elseif(LINUX)
@@ -124,14 +124,11 @@ else()
 	message(FATAL_ERROR "SENTRY_BACKEND must be one of 'crashpad', 'inproc', 'breakpad' or 'none'")
 endif()
 
-if(SENTRY_BACKEND_CRASHPAD AND NOT (APPLE OR WIN32))
-	message(FATAL_ERROR "The Crashpad backend is currently only supported on macOS and Windows")
+if(SENTRY_BACKEND_CRASHPAD AND ANDROID)
+	message(FATAL_ERROR "The Crashpad backend is not currently supported on Android")
 endif()
-if(SENTRY_BACKEND_BREAKPAD AND NOT LINUX)
-	message(FATAL_ERROR "The Breakpad backend is currently only supported on Linux")
-endif()
-if(SENTRY_BACKEND_INPROC AND WIN32)
-	message(FATAL_ERROR "The in-process backend is not supported on Windows")
+if(SENTRY_BACKEND_BREAKPAD AND NOT (LINUX OR WIN32))
+	message(FATAL_ERROR "The Breakpad backend is currently only supported on Linux and Windows")
 endif()
 
 message(STATUS "SENTRY_TRANSPORT=${SENTRY_TRANSPORT}")
@@ -204,6 +201,10 @@ add_subdirectory(src)
 
 set_target_properties(sentry PROPERTIES PUBLIC_HEADER "include/sentry.h")
 
+# check size type
+include(CheckTypeSize)
+check_type_size("long" CMAKE_SIZEOF_LONG)
+
 # https://gitlab.kitware.com/cmake/cmake/issues/18393
 if(BUILD_SHARED_LIBS)
 	if(APPLE)
@@ -219,6 +220,7 @@ if(BUILD_SHARED_LIBS)
 else()
 	target_compile_definitions(sentry PUBLIC SENTRY_BUILD_STATIC)
 endif()
+target_compile_definitions(sentry PRIVATE SIZEOF_LONG=${CMAKE_SIZEOF_LONG})
 
 if(SENTRY_TRANSPORT_CURL)
 	find_package(CURL REQUIRED)
@@ -255,6 +257,9 @@ if(MSVC)
 	endif()
 else()
 	target_compile_options(sentry PRIVATE $<BUILD_INTERFACE:-Wall -Wextra -Wpedantic>)
+	# The crashpad and breakpad headers generate the following warnings that we
+	# ignore specifically
+	target_compile_options(sentry PRIVATE $<BUILD_INTERFACE:-Wno-variadic-macros -Wno-gnu-include-next -Wno-multichar>)
 	# ignore all warnings for mpack
 	set_source_files_properties(
 		"${PROJECT_SOURCE_DIR}/vendor/mpack.c"
@@ -286,7 +291,10 @@ endif()
 
 #respect CMAKE_SYSTEM_VERSION
 if(WIN32)
-	if(${CMAKE_SYSTEM_VERSION} MATCHES "^10")
+	if(MSVC AND CMAKE_GENERATOR_TOOLSET MATCHES "_xp$")
+		#force WINNT to 5.1 for Windows XP toolchain
+		target_compile_definitions(sentry PRIVATE "_WIN32_WINNT=0x0501")
+	elseif(${CMAKE_SYSTEM_VERSION} MATCHES "^10")
 		target_compile_definitions(sentry PRIVATE "_WIN32_WINNT=0x0A00")
 	elseif(${CMAKE_SYSTEM_VERSION} MATCHES "^6.3")
 		target_compile_definitions(sentry PRIVATE "_WIN32_WINNT=0x0603")
@@ -383,18 +391,26 @@ if(SENTRY_BACKEND_CRASHPAD)
 	endif()
 	add_dependencies(sentry crashpad::handler)
 elseif(SENTRY_BACKEND_BREAKPAD)
-	add_subdirectory(external)
-	target_include_directories(sentry PRIVATE
-		"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/breakpad/src>"
-	)
-	target_link_libraries(sentry PRIVATE
-		breakpad_client
-	)
-	if(NOT BUILD_SHARED_LIBS)
-		sentry_install(TARGETS breakpad_client EXPORT sentry
-			LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-			ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+	option(SENTRY_BREAKPAD_SYSTEM "Use system breakpad" OFF)
+	if(SENTRY_BREAKPAD_SYSTEM)
+		# system breakpad is using pkg-config, see `external/breakpad/breakpad-client.pc.in`
+		find_package(PkgConfig REQUIRED)
+		pkg_check_modules(BREAKPAD REQUIRED IMPORTED_TARGET breakpad-client)
+		target_link_libraries(sentry PUBLIC PkgConfig::BREAKPAD)
+	else()
+		add_subdirectory(external)
+		target_include_directories(sentry PRIVATE
+			"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/breakpad/src>"
 		)
+		target_link_libraries(sentry PRIVATE
+			breakpad_client
+		)
+		if(NOT BUILD_SHARED_LIBS)
+			sentry_install(TARGETS breakpad_client EXPORT sentry
+				LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+				ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+			)
+		endif()
 	endif()
 elseif(SENTRY_BACKEND_INPROC)
 	target_compile_definitions(sentry PRIVATE SENTRY_WITH_INPROC_BACKEND)

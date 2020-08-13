@@ -34,7 +34,7 @@ namespace Mengine
         void disable() override;
 
     protected:
-        bool resize( uint32_t _count ) override;
+        bool resize( uint32_t _indexCount ) override;
 
     protected:
         MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) override;
@@ -52,6 +52,7 @@ namespace Mengine
 
         EBufferType m_bufferType;
         uint32_t m_indexSize;
+        uint32_t m_indexCapacity;
         uint32_t m_indexCount;
 
         DWORD m_usage;

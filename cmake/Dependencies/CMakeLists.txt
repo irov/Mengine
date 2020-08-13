@@ -516,11 +516,10 @@ if(MENGINE_DEPENDENCE_CURL)
 endif()
 
 #dependencies sentry
-if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
+if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW OR MENGINE_TARGET_UNIX)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/CMakeLists.txt COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/sentry_sync.c ${THIRDPARTY_DIR}/sentry/src/sentry_sync.c COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/exception_handler_server.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/util/win/exception_handler_server.cc COPYONLY)
         
         set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)

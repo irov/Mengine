@@ -28,8 +28,10 @@ PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void sentry_logger_func( sentry_level_t _level, const char * _format, va_list _args )
+    static void sentry_logger_func( sentry_level_t _level, const char * _format, va_list _args, void * _ud )
     {
+        MENGINE_UNUSED( _ud );
+
         ELoggerLevel level;
         switch( _level )
         {
@@ -115,7 +117,7 @@ namespace Mengine
 
         sentry_options_t * options = sentry_options_new();
 
-        sentry_options_set_logger( options, &sentry_logger_func );
+        sentry_options_set_logger( options, &sentry_logger_func, nullptr );
 
         Char userPath[MENGINE_MAX_PATH] = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()

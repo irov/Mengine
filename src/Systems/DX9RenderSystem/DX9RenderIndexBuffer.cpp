@@ -19,6 +19,7 @@ namespace Mengine
         : m_pD3DDevice( nullptr )
         , m_bufferType( BT_STATIC )
         , m_indexSize( 0 )
+        , m_indexCapacity( 0 )
         , m_indexCount( 0 )
         , m_usage( 0 )
         , m_format( D3DFMT_UNKNOWN )
@@ -92,16 +93,18 @@ namespace Mengine
         return m_indexSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::resize( uint32_t _count )
+    bool DX9RenderIndexBuffer::resize( uint32_t _indexCount )
     {
-        if( m_indexCount >= _count )
+        m_indexCount = _indexCount;
+
+        if( m_indexCapacity >= m_indexCount )
         {
             return true;
         }
 
         DXRELEASE( m_pIB );
 
-        m_indexCount = _count;
+        m_indexCapacity = m_indexCount;
 
         IDirect3DIndexBuffer9 * pIB = nullptr;
         IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, NULL) )

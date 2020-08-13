@@ -36,7 +36,7 @@ namespace Mengine
         void disable() override;
 
     protected:
-        bool resize( uint32_t _count ) override;
+        bool resize( uint32_t _vertexCount ) override;
 
     protected:
         MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) override;
@@ -54,6 +54,7 @@ namespace Mengine
 
         EBufferType m_bufferType;
         uint32_t m_vertexSize;
+        uint32_t m_vertexCapacity;
         uint32_t m_vertexCount;
 
         DWORD m_usage;

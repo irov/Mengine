@@ -97,8 +97,8 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceSpineSkeleton, pybind::bases<Resource>>( _kernel, "ResourceSpineSkeleton", false )
-            .def( "setResourceSpineAtlasName", &ResourceSpineSkeleton::setResourceSpineAtlasName )
-            .def( "getResourceSpineAtlasName", &ResourceSpineSkeleton::getResourceSpineAtlasName )
+            .def( "setResourceSpineAtlas", &ResourceSpineSkeleton::setResourceSpineAtlas )
+            .def( "getResourceSpineAtlas", &ResourceSpineSkeleton::getResourceSpineAtlas )
             ;
 
         VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Spine" ), Helper::makeFactorableUnique<PythonScriptWrapper<Spine> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );

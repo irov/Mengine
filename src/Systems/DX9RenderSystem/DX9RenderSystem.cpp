@@ -599,7 +599,16 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        m_projectionMatrix = _projectionMatrix;
+        float DirectX_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetX", -0.5f );
+        float DirectX_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetY", -0.5f );
+
+        float perfect_x = DirectX_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        float perfect_y = DirectX_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
+
+        mt::mat4f vmperfect;
+        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
+
+        mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
 
         this->updateWVPInvMatrix_();
     }
@@ -608,16 +617,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetX", -0.5f );
-        float DirectX_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetY", -0.5f );
-
-        float perfect_x = DirectX_PerfectPixelOffsetX;
-        float perfect_y = DirectX_PerfectPixelOffsetY;
-
-        mt::mat4f vmperfect;
-        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
-
-        mt::mul_m4_m4( m_modelViewMatrix, _modelViewMatrix, vmperfect );
+        m_modelViewMatrix = _modelViewMatrix;
 
         this->updateWVPInvMatrix_();
     }

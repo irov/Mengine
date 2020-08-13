@@ -604,26 +604,26 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     
     if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)
         if(MENGINE_TOOLCHAIN_MSVC)			
-            SET(LIBTYPE STATIC)
+            SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
             SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
             SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)
         endif()
         
         if(MENGINE_TOOLCHAIN_MINGW)
-            SET(LIBTYPE STATIC)
+            SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
             SET(ALSOFT_STATIC_LIBGCC ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
         endif()
         
         if(MENGINE_TARGET_ANDROID)
-            SET(LIBTYPE SHARED)
+            SET(OPENAL_SHARED ON CACHE BOOL "OPENAL_SHARED" FORCE)
         endif()
         
         if(MENGINE_TARGET_MACOS)
-            SET(LIBTYPE STATIC)
+            SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
         endif()
         
         if(MENGINE_TARGET_UNIX)
-            SET(LIBTYPE STATIC)
+            SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
         endif()
 
         SET(ALSOFT_DLOPEN OFF CACHE BOOL "Check for the dlopen API for loading optional libs" FORCE)

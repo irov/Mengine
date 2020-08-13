@@ -614,11 +614,15 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
             SET(ALSOFT_STATIC_LIBGCC ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
         endif()
         
-        if(MENGINE_TOOLCHAIN_GRADLE)
+        if(MENGINE_TARGET_ANDROID)
             SET(LIBTYPE SHARED CACHE STRING "LIBTYPE" FORCE)
         endif()
         
-        if(MENGINE_TOOLCHAIN_UNIX)
+        if(MENGINE_TARGET_MACOS)
+            SET(LIBTYPE STATIC CACHE STRING "LIBTYPE" FORCE)
+        endif()
+        
+        if(MENGINE_TARGET_UNIX)
             SET(LIBTYPE STATIC CACHE STRING "LIBTYPE" FORCE)
         endif()
 

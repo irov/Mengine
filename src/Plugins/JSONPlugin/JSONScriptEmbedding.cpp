@@ -82,7 +82,7 @@ namespace Mengine
             }
 
             MENGINE_ERROR_FATAL( "invalid jpp type '%u'"
-                , type
+                , static_cast<std::underlying_type<jpp::e_type>::type>(type)
             );
 
             return pybind::make_invalid_object_t();

@@ -35,6 +35,7 @@ src
     StdIO.h
     StdLib.h
     StdString.h
+    Limits.h
     UInt32ToPointer.h
     Metaprogramming.h
     GitSHA1.h

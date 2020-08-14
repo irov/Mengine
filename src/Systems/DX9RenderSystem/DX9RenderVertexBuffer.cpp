@@ -104,8 +104,10 @@ namespace Mengine
 
         m_vertexCapacity = m_vertexCount;
 
+        uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
+
         IDirect3DVertexBuffer9 * pVB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCapacity * m_vertexSize, m_usage, 0, m_pool, &pVB, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pVB, NULL) )
         {
             return false;
         }
@@ -141,8 +143,11 @@ namespace Mengine
             return nullptr;
         };
 
+        uint32_t offsetSize = _offset * m_vertexSize;
+        uint32_t lockSize = _count * m_vertexSize;
+
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pVB, Lock, (_offset * m_vertexSize, _count * m_vertexSize, &lock_memory, d3d_flag) )
+        IF_DXCALL( m_pVB, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
             LOGGER_ERROR( "%d offset %d invalid lock doc '%s'"
                 , _count
@@ -153,7 +158,7 @@ namespace Mengine
             return nullptr;
         }
 
-        m_memory->setBuffer( lock_memory, _count * m_vertexSize );
+        m_memory->setBuffer( lock_memory, lockSize );
 
         return m_memory;
     }
@@ -226,6 +231,13 @@ namespace Mengine
         }
 
         m_pVB = pVB;
+
+        size_t memory_size = m_memory->getSize();
+
+        if( memory_size != 0 )
+        {
+            return false;
+        }
 
         return true;
     }

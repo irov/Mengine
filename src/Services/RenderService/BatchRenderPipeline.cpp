@@ -917,7 +917,9 @@ namespace Mengine
         void * memory_buffer = _vertexBuffer->getBuffer();
         size_t memory_size = _vertexBuffer->getSize();
 
-        if( stdex::memorycopy_safe( memory_buffer, _vbPos * _vertexSize, memory_size, _renderObject->vertexData, _renderObject->vertexCount * _vertexSize ) == false )
+        size_t memory_offset = _vbPos * _vertexSize;
+
+        if( stdex::memorycopy_safe( memory_buffer, memory_offset, memory_size, _renderObject->vertexData, _renderObject->vertexCount * _vertexSize ) == false )
         {
             LOGGER_ERROR( "vertex buffer overrlow!"
             );

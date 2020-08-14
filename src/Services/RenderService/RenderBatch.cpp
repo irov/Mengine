@@ -31,17 +31,8 @@ namespace Mengine
 
         m_vertexAttribute = nullptr;
 
-        if( m_vertexBuffer != nullptr )
-        {
-            m_vertexBuffer->finalize();
-            m_vertexBuffer = nullptr;
-        }
-
-        if( m_indexBuffer != nullptr )
-        {
-            m_indexBuffer->finalize();
-            m_indexBuffer = nullptr;
-        }
+        m_vertexBuffer = nullptr;
+        m_indexBuffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderBatch::setVertexAttribute( const RenderVertexAttributeInterfacePtr & _vertexAttribute )
@@ -194,4 +185,5 @@ namespace Mengine
     {
         return &m_lockData;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

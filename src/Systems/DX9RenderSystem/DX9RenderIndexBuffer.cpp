@@ -106,8 +106,10 @@ namespace Mengine
 
         m_indexCapacity = m_indexCount;
 
+        uint32_t bufferSize = m_indexCount * m_indexSize;
+
         IDirect3DIndexBuffer9 * pIB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pIB, NULL) )
         {
             return false;
         }
@@ -144,8 +146,11 @@ namespace Mengine
             return nullptr;
         };
 
+        uint32_t offsetSize = _offset * m_indexSize;
+        uint32_t lockSize = _count * m_indexSize;
+
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pIB, Lock, (_offset * m_indexSize, _count * m_indexSize, &lock_memory, d3d_flag) )
+        IF_DXCALL( m_pIB, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
             LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
                 , _count
@@ -156,7 +161,7 @@ namespace Mengine
             return nullptr;
         }
 
-        m_memory->setBuffer( lock_memory, _count * m_indexSize );
+        m_memory->setBuffer( lock_memory, lockSize );
 
         return m_memory;
     }

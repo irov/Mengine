@@ -348,6 +348,7 @@ namespace Mengine
         {
             m_desktop = true;
             m_touchpad = false;
+
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
         }
@@ -355,12 +356,14 @@ namespace Mengine
         {
             m_desktop = true;
             m_touchpad = false;
+
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
         else if( MENGINE_STRCMP( sdlPlatform, "Android" ) == 0 )
         {
             m_desktop = false;
             m_touchpad = true;
+
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
             SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
         }
@@ -368,8 +371,16 @@ namespace Mengine
         {
             m_desktop = false;
             m_touchpad = true;
+
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
             SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
+        }
+        else if( MENGINE_STRCMP( sdlPlatform, "Linux" ) == 0 )
+        {
+            m_desktop = true;
+            m_touchpad = false;
+
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "LINUX" ) );
         }
         else
         {
@@ -380,57 +391,65 @@ namespace Mengine
 
         if( HAS_OPTION( "win32" ) )
         {
+            m_touchpad = false;
+            m_desktop = true;
+
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
         }
         else if( HAS_OPTION( "win64" ) )
         {
+            m_touchpad = false;
+            m_desktop = true;
+
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
         }
         else if( HAS_OPTION( "mac" ) )
         {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
-
             m_touchpad = false;
             m_desktop = true;
+
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
         else if( HAS_OPTION( "ios" ) )
         {
+            m_touchpad = true;
+            m_desktop = false;
+
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #endif
-
-            m_touchpad = true;
-            m_desktop = false;
         }
         else if( HAS_OPTION( "android" ) )
         {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-
             m_touchpad = true;
             m_desktop = false;
+
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+        }
+        else if( HAS_OPTION( "linux" ) )
+        {
+            m_touchpad = false;
+            m_desktop = true;
+
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "LINUX" ) );
         }
         else if( HAS_OPTION( "wp" ) )
         {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
-
             m_touchpad = true;
             m_desktop = false;
+
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
         }
 
         const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );

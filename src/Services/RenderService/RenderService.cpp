@@ -393,6 +393,15 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
+        m_renderBatches.clear();
+
+        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
+        {
+            batch->finalize();
+        }
+
+        m_cacheRenderBatches.clear();
+
         this->restoreRenderSystemStates_();
 
         m_nullTexture = nullptr;

@@ -30,19 +30,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ErrorOperator::operator () ( const Char * _format, ... ) const
     {
-        Char str_info[MENGINE_ERROR_MAX_MESSAGE] = {0};
+        Char str_info[MENGINE_ERROR_MAX_MESSAGE] = {'\0'};
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ERROR_MAX_MESSAGE - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ERROR_MAX_MESSAGE - 2, _format, args );
 
         MENGINE_VA_LIST_END( args );
 
         if( size_vsnprintf >= 0 )
         {
+            str_info[size_vsnprintf] = '\n';
+            str_info[size_vsnprintf + 1] = '\0';
+
             LoggerOperator( LM_ERROR, 0, LCOLOR_RED, m_file, m_line )
-                .logMessage( str_info, (size_t)size_vsnprintf );
+                .logMessage( str_info, (size_t)size_vsnprintf + 1 );
         }
 
         switch( m_level )

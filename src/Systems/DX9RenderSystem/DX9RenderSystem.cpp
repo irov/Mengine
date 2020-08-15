@@ -31,6 +31,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Error.h"
 
 #include "math/uv4.h"
 
@@ -460,7 +461,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%ld) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%x) Try another"
                     , hr
                 );
 
@@ -472,7 +473,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%ld) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%x) Try another"
                     , hr
                 );
 
@@ -484,7 +485,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%ld) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%x) Try another"
                     , hr
                 );
 
@@ -496,7 +497,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%ld) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%x) Try another"
                     , hr
                 );
 
@@ -508,7 +509,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%ld) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%x) Try another"
                     , hr
                 );
 
@@ -520,7 +521,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%ld) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%x) Try another"
                     , hr
                 );
 
@@ -533,7 +534,7 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "Can't create D3D device (hr:%ld, hwnd:%p) BackBuffer Size %u:%u Format %u"
+            LOGGER_ERROR( "Can't create D3D device (hr:%x, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , hr
                 , (void *)windowHandle
                 , m_d3dpp->BackBufferWidth
@@ -1193,9 +1194,23 @@ namespace Mengine
 
             return false;
         }
+        else if( hr == D3DERR_INVALIDCALL )
+        {
+            const Char * message = Helper::getDX9ErrorMessage( hr );
+
+            MENGINE_ERROR_FATAL( "failed to reset device: %s (hr:%x)"
+                , message
+                , hr
+            );
+
+            return false;
+        }
         else if( FAILED( hr ) == true )
         {
-            LOGGER_ERROR( "failed to reset device (hr:%ld)"
+            const Char * message = Helper::getDX9ErrorMessage( hr );
+
+            LOGGER_ERROR( "failed to reset device: %s (hr:%x)"
+                , message
                 , hr
             );
 

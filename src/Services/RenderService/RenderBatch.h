@@ -36,6 +36,10 @@ namespace Mengine
         bool unlock();
 
     public:
+        void deviceLostPrepare();
+        void deviceLostRestore();
+
+    public:
         RenderBatchLockData * getLockData() override;
 
     protected:

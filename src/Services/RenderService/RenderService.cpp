@@ -397,7 +397,7 @@ namespace Mengine
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
-            batch->finalize();
+            batch->deviceLostPrepare();
         }
 
         m_cacheRenderBatches.clear();
@@ -413,6 +413,11 @@ namespace Mengine
         if( m_windowCreated == false )
         {
             return;
+        }
+
+        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
+        {
+            batch->deviceLostRestore();
         }
 
         this->restoreRenderSystemStates_();

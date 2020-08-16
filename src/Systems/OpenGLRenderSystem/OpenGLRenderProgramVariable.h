@@ -55,7 +55,7 @@ namespace Mengine
             uint32_t offset;
             uint32_t size;
             uint32_t count;
-            GLint location;
+            GLint location = -1;
         };
 
     protected:

@@ -52,8 +52,8 @@ namespace Mengine
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
 #endif
 
-        m_factoryRenderVertexBuffer = Helper::makeFactoryDefault<OpenGLRenderVertexBuffer>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderIndexBuffer = Helper::makeFactoryDefault<OpenGLRenderIndexBuffer>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderVertexBuffer = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexBuffer, 8>( this, &OpenGLRenderSystem::onRenderVertexBufferDestroy_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderIndexBuffer = Helper::makeFactoryPoolWithListener<OpenGLRenderIndexBuffer, 8>( this, &OpenGLRenderSystem::onRenderIndexBufferDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderImage = Helper::makeFactoryPoolWithListener<OpenGLRenderImage, 128>( this, &OpenGLRenderSystem::onRenderImageDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<OpenGLRenderImageTarget, 128>( this, &OpenGLRenderSystem::onRenderImageTargetDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<OpenGLRenderTargetTexture, 128>( this, &OpenGLRenderSystem::onRenderTargetTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
@@ -1194,17 +1194,46 @@ namespace Mengine
         return imageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _buffer )
+    {
+        _buffer->finalize();
+
+        VectorCacheRenderVertexBuffers::iterator it_found = std::find( m_cacheRenderVertexBuffers.begin(), m_cacheRenderVertexBuffers.end(), _buffer );
+
+        if( it_found == m_cacheRenderVertexBuffers.end() )
+        {
+            return;
+        }        
+
+        *it_found = m_cacheRenderVertexBuffers.back();
+        m_cacheRenderVertexBuffers.pop_back();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _buffer )
+    {
+        _buffer->finalize();
+
+        VectorCacheRenderIndexBuffers::iterator it_found = std::find( m_cacheRenderIndexBuffers.begin(), m_cacheRenderIndexBuffers.end(), _buffer );
+
+        if( it_found == m_cacheRenderIndexBuffers.end() )
+        {
+            return;
+        }
+
+        *it_found = m_cacheRenderIndexBuffers.back();
+        m_cacheRenderIndexBuffers.pop_back();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
     {
+        _image->finalize();
+
         VectorCacheRenderImages::iterator it_found = std::find( m_cacheRenderImages.begin(), m_cacheRenderImages.end(), _image );
 
         if( it_found == m_cacheRenderImages.end() )
         {
             return;
-        }
-
-        OpenGLRenderImage * image = *it_found;
-        image->finalize();
+        }        
 
         *it_found = m_cacheRenderImages.back();
         m_cacheRenderImages.pop_back();
@@ -1212,15 +1241,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _image )
     {
+        _image->finalize();
+
         VectorCacheRenderImageTargets::iterator it_found = std::find( m_cacheRenderImageTargets.begin(), m_cacheRenderImageTargets.end(), _image );
 
         if( it_found == m_cacheRenderImageTargets.end() )
         {
             return;
-        }
-
-        OpenGLRenderImageTarget * image = *it_found;
-        image->finalize();
+        }        
 
         *it_found = m_cacheRenderImageTargets.back();
         m_cacheRenderImageTargets.pop_back();
@@ -1228,15 +1256,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _renderTarget )
     {
+        _renderTarget->finalize();
+
         VectorCacheRenderTargetTextures::iterator it_found = std::find( m_cacheRenderTargetTextures.begin(), m_cacheRenderTargetTextures.end(), _renderTarget );
 
         if( it_found == m_cacheRenderTargetTextures.end() )
         {
             return;
-        }
-
-        OpenGLRenderTargetTexture * renderTarget = *it_found;
-        renderTarget->finalize();
+        }        
 
         *it_found = m_cacheRenderTargetTextures.back();
         m_cacheRenderTargetTextures.pop_back();
@@ -1244,15 +1271,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader )
     {
+        _vertexShader->finalize();
+
         VectorCacheRenderVertexShaders::iterator it_found = std::find( m_cacheRenderVertexShaders.begin(), m_cacheRenderVertexShaders.end(), _vertexShader );
 
         if( it_found == m_cacheRenderVertexShaders.end() )
         {
             return;
-        }
-
-        OpenGLRenderVertexShader * renderVertexShader = *it_found;
-        renderVertexShader->finalize();
+        }        
 
         *it_found = m_cacheRenderVertexShaders.back();
         m_cacheRenderVertexShaders.pop_back();
@@ -1260,15 +1286,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader )
     {
+        _fragmentShader->finalize();
+
         VectorCacheRenderFragmentShaders::iterator it_found = std::find( m_cacheRenderFragmentShaders.begin(), m_cacheRenderFragmentShaders.end(), _fragmentShader );
 
         if( it_found == m_cacheRenderFragmentShaders.end() )
         {
             return;
-        }
-
-        OpenGLRenderFragmentShader * renderFragmentShader = *it_found;
-        renderFragmentShader->finalize();
+        }        
 
         *it_found = m_cacheRenderFragmentShaders.back();
         m_cacheRenderFragmentShaders.pop_back();
@@ -1276,15 +1301,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramDestroy_( OpenGLRenderProgram * _program )
     {
+        _program->finalize();
+
         VectorCacheRenderPrograms::iterator it_found = std::find( m_cacheRenderPrograms.begin(), m_cacheRenderPrograms.end(), _program );
 
         if( it_found == m_cacheRenderPrograms.end() )
         {
             return;
-        }
-
-        OpenGLRenderProgram * renderProgram = *it_found;
-        renderProgram->finalize();
+        }        
 
         *it_found = m_cacheRenderPrograms.back();
         m_cacheRenderPrograms.pop_back();

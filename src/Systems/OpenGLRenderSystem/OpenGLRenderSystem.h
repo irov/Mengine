@@ -128,6 +128,8 @@ namespace Mengine
         void findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat * const _hwFormat, uint32_t * const _hwChannels ) const;
 
     protected:
+        void onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _buffer );
+        void onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _buffer );
         void onRenderImageDestroy_( OpenGLRenderImage * _image );
         void onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _image );
         void onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _renderTarget );

@@ -12,8 +12,8 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        Char message[2048] = { 0 };
-        int32_t message_size = MENGINE_VSNPRINTF( message, 2047, _format, args );
+        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        int32_t message_size = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, args );
 
         MENGINE_VA_LIST_END( args );
 
@@ -22,8 +22,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TaskReleasePrint::TaskReleasePrint( const Char * _format, MENGINE_VA_LIST_TYPE _args )
     {
-        Char message[2048] = { 0 };
-        int32_t message_size = MENGINE_VSNPRINTF( message, 2047, _format, _args );
+        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        int32_t message_size = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, _args );
 
         m_message.assign( message, message_size );
     }
@@ -42,4 +42,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

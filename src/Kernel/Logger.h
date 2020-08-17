@@ -6,6 +6,10 @@
 #include "Config/Char.h"
 #include "Config/StdArg.h"
 
+#ifndef MENGINE_LOGGER_MAX_MESSAGE
+#define MENGINE_LOGGER_MAX_MESSAGE 16384
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -6,12 +6,14 @@
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_VSNPRINTF
-#if defined(MENGINE_TOOLCHAIN_MSVC)
+#if defined(MENGINE_COMPILER_MSVC)
 #   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsnprintf( Buffer, Capacity, Format, Args )
-#elif defined(MENGINE_TOOLCHAIN_MINGW)
+#elif defined(MENGINE_COMPILER_CLANG)
+#   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsnprintf( Buffer, Capacity, Format, Args )
+#elif defined(MENGINE_COMPILER_GCC)
 #   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsnprintf( Buffer, Capacity, Format, Args )
 #else
-#   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsprintf( Buffer, Format, Args )
+#   error "undefined MENGINE_VSNPRINTF"
 #endif
 #endif
 //////////////////////////////////////////////////////////////////////////

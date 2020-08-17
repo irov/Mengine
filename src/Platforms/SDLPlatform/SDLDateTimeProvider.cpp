@@ -4,6 +4,8 @@
 
 #include "Kernel/AssertionNotImplemented.h"
 
+#define _GNU_SOURCE
+
 #include <ctime>
 
 namespace Mengine
@@ -64,8 +66,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t SDLDateTimeProvider::getTimeZoneOffset() const
     {
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        const std::time_t epoch_plus_11h = 60 * 60 * 11;
 
-        return 0;
+        int32_t local_time = localtime( &epoch_plus_11h )->tm_hour;
+        int32_t gm_time = gmtime( &epoch_plus_11h )->tm_hour;
+        int32_t tz_diff = gm_time - local_time;
+        int32_t tz_diff60 = tz_diff * 60;
+
+        return tz_diff60;
     }
 }

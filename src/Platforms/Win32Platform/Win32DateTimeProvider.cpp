@@ -56,7 +56,7 @@ namespace Mengine
     {
         TIME_ZONE_INFORMATION TimeZoneInformation;
         
-        DWORD zoneId = GetTimeZoneInformation( &TimeZoneInformation );
+        DWORD zoneId = ::GetTimeZoneInformation( &TimeZoneInformation );
 
         switch( zoneId )
         {

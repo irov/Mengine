@@ -4,8 +4,6 @@
 
 #include "Kernel/AssertionNotImplemented.h"
 
-#define _GNU_SOURCE
-
 #include <ctime>
 
 namespace Mengine

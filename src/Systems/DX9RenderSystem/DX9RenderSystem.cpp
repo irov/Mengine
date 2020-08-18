@@ -63,11 +63,6 @@ namespace Mengine
         , m_textureMemoryUse( 0U )
         , m_textureCount( 0U )
     {
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
-        {
-            m_textureEnable[i] = false;
-        }
-
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
@@ -1162,6 +1157,8 @@ namespace Mengine
                 continue;
             }
 
+            m_textureEnable[i] = false;
+
             IF_DXCALL( m_pD3DDevice, SetTexture, (i, nullptr) )
             {
                 LOGGER_ERROR( "texture %d not reset"
@@ -1170,8 +1167,6 @@ namespace Mengine
 
                 //return false;
             }
-
-            m_textureEnable[i] = false;
         }
 
         IF_DXCALL( m_pD3DDevice, SetVertexShader, (nullptr) )

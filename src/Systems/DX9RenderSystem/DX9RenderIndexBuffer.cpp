@@ -221,11 +221,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     void DX9RenderIndexBuffer::onRenderReset()
     {
+        if( m_pool == D3DPOOL_MANAGED )
+        {
+            return;
+        }
+
         DXRELEASE( m_pIB );
     }
     //////////////////////////////////////////////////////////////////////////        
     bool DX9RenderIndexBuffer::onRenderRestore()
     {
+        if( m_pool == D3DPOOL_MANAGED )
+        {
+            return true;
+        }
+
         IDirect3DIndexBuffer9 * pIB = nullptr;
         IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, nullptr) )
         {

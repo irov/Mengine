@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ThreadTaskPrefetchImageDecoder
         : public ThreadTaskPrefetch
     {

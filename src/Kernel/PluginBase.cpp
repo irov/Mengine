@@ -79,7 +79,6 @@ namespace Mengine
             return true;
         }
 
-
         bool successful = this->_initializePlugin();
 
         if( successful == false )
@@ -97,7 +96,11 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_INITIALIZE, this->getPluginName() );
 
-        return m_initializePlugin;
+        LOGGER_INFO( "plugin '%s' initialize"
+            , this->getPluginName()
+        );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::finalizePlugin()
@@ -126,6 +129,10 @@ namespace Mengine
         }
 
         m_moduleFactories.clear();
+
+        LOGGER_INFO( "plugin '%s' finalize"
+            , this->getPluginName()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::isInitializePlugin() const

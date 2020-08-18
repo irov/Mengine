@@ -461,8 +461,11 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%x) Try another"
-                    , hr
+                const Char * message = Helper::getDX9ErrorMessage( hr );
+
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                    , message
+                    , (uint32_t)hr
                 );
 
                 Sleep( 100 );
@@ -473,8 +476,11 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%x) Try another"
-                    , hr
+                const Char * message = Helper::getDX9ErrorMessage( hr );
+
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                    , message
+                    , (uint32_t)hr
                 );
 
                 Sleep( 100 );
@@ -485,8 +491,11 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%x) Try another"
-                    , hr
+                const Char * message = Helper::getDX9ErrorMessage( hr );
+
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                    , message
+                    , (uint32_t)hr
                 );
 
                 Sleep( 100 );
@@ -497,8 +506,11 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%x) Try another"
-                    , hr
+                const Char * message = Helper::getDX9ErrorMessage( hr );
+
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                    , message
+                    , (uint32_t)hr
                 );
 
                 Sleep( 100 );
@@ -509,8 +521,11 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%x) Try another"
-                    , hr
+                const Char * message = Helper::getDX9ErrorMessage( hr );
+
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                    , message
+                    , (uint32_t)hr
                 );
 
                 Sleep( 100 );
@@ -521,8 +536,11 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%x) Try another"
-                    , hr
+                const Char * message = Helper::getDX9ErrorMessage( hr );
+
+                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                    , message
+                    , (uint32_t)hr
                 );
 
                 Sleep( 100 );
@@ -534,8 +552,11 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "Can't create D3D device (hr:%x, hwnd:%p) BackBuffer Size %u:%u Format %u"
-                , hr
+            const Char * message = Helper::getDX9ErrorMessage( hr );
+
+            LOGGER_ERROR( "Can't create D3D device error: %s (hr:%x, hwnd:%p) BackBuffer Size %u:%u Format %u"
+                , message
+                , (uint32_t)hr
                 , (void *)windowHandle
                 , m_d3dpp->BackBufferWidth
                 , m_d3dpp->BackBufferHeight
@@ -1200,7 +1221,7 @@ namespace Mengine
 
             MENGINE_ERROR_FATAL( "failed to reset device: %s (hr:%x)"
                 , message
-                , hr
+                , (uint32_t)hr
             );
 
             return false;
@@ -1211,7 +1232,7 @@ namespace Mengine
 
             LOGGER_ERROR( "failed to reset device: %s (hr:%x)"
                 , message
-                , hr
+                , (uint32_t)hr
             );
 
             return false;

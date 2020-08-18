@@ -219,11 +219,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     void DX9RenderVertexBuffer::onRenderReset()
     {
+        if( m_pool == D3DPOOL_MANAGED )
+        {
+            return;
+        }
+
         DXRELEASE( m_pVB );
     }
     //////////////////////////////////////////////////////////////////////////        
     bool DX9RenderVertexBuffer::onRenderRestore()
     {
+        if( m_pool == D3DPOOL_MANAGED )
+        {
+            return true;
+        }
+
         IDirect3DVertexBuffer9 * pVB = nullptr;
         IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCount * m_vertexSize, m_usage, 0, m_pool, &pVB, nullptr) )
         {

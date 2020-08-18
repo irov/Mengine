@@ -400,8 +400,6 @@ namespace Mengine
             batch->deviceLostPrepare();
         }
 
-        m_cacheRenderBatches.clear();
-
         this->restoreRenderSystemStates_();
 
         m_nullTexture = nullptr;

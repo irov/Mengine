@@ -145,7 +145,9 @@ namespace Mengine
         TF_LINEAR,
         TF_ANISOTROPIC,
         TF_FLATCUBIC,
-        TF_GAUSSIANCUBIC
+        TF_GAUSSIANCUBIC,
+
+        __MAX_TEXTURE_FILTER__
     };
     //////////////////////////////////////////////////////////////////////////
     enum EBufferLockFlag

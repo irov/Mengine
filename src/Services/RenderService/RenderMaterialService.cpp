@@ -143,18 +143,20 @@ namespace Mengine
         uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMagnification", 2U );
         uint32_t defaultTextureFilterMinification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMinification", 2U );
 
-        if( defaultTextureFilterMipmap > 2 )
+        if( defaultTextureFilterMipmap >= __MAX_TEXTURE_FILTER__ )
         {
-            LOGGER_ERROR( "[DefaultTextureFilterMipmap] undefined great 2 current '%u'"
+            LOGGER_ERROR( "[DefaultTextureFilterMipmap] undefined great %u current '%u'"
+                , __MAX_TEXTURE_FILTER__
                 , defaultTextureFilterMipmap
             );
 
             return false;
         }
 
-        if( defaultTextureFilterMagnification > 2 )
+        if( defaultTextureFilterMagnification >= __MAX_TEXTURE_FILTER__ )
         {
-            LOGGER_ERROR( "[DefaultTextureFilterMagnification] undefined great 2 current '%u'"
+            LOGGER_ERROR( "[DefaultTextureFilterMagnification] undefined great %u current '%u'"
+                , __MAX_TEXTURE_FILTER__
                 , defaultTextureFilterMagnification
             );
 

@@ -61,6 +61,13 @@ namespace Mengine
                     return true;
                 }
 
+#ifdef MENGINE_MASTER_RELEASE
+                if( Detail::s_hasValueString2( ini, "Master-", _platform, _section, _key, _value ) == true )
+                {
+                    return true;
+                }
+#endif
+
                 if( Detail::s_hasValueString2( ini, "", _platform, _section, _key, _value ) == true )
                 {
                     return true;
@@ -119,6 +126,13 @@ namespace Mengine
                     return true;
                 }
 
+#ifdef MENGINE_MASTER_RELEASE
+                if( Detail::s_hasValueT2( ini, "Master-", _platform, _section, _key, _value ) == true )
+                {
+                    return true;
+                }
+#endif
+
                 if( Detail::s_hasValueT2( ini, "", _platform, _section, _key, _value ) == true )
                 {
                     return true;
@@ -176,6 +190,13 @@ namespace Mengine
                 {
                     return value;
                 }
+
+#ifdef MENGINE_MASTER_RELEASE
+                if( Detail::s_getValueString2( ini, "Master-", _platform, _section, _key, &value ) == true )
+                {
+                    return value;
+                }
+#endif
 
                 if( Detail::s_getValueString2( ini, "", _platform, _section, _key, &value ) == true )
                 {
@@ -237,6 +258,13 @@ namespace Mengine
                     return value;
                 }
 
+#ifdef MENGINE_MASTER_RELEASE
+                if( Detail::s_getValueT2( ini, "Master-", _platform, _section, _key, &value ) == true )
+                {
+                    return value;
+                }
+#endif
+
                 if( Detail::s_getValueT2( ini, "", _platform, _section, _key, &value ) == true )
                 {
                     return value;
@@ -253,7 +281,7 @@ namespace Mengine
             platform_section.append( _prefix );
             platform_section.append( _section );
 
-            const VectorConstString & tags = _platform.getValues();            
+            const VectorConstString & tags = _platform.getValues();
 
             for( const ConstString & tag : tags )
             {
@@ -288,7 +316,11 @@ namespace Mengine
 #endif
 
                 Detail::s_calcValuesT2( ini, MENGINE_MASTER_VALUE( "Alpha-", "Develop-" ), _platform, _section, _key, _value );
-               
+
+#ifdef MENGINE_MASTER_RELEASE
+                Detail::s_calcValuesT2( ini, "Master-", _platform, _section, _key, _value );
+#endif
+
                 Detail::s_calcValuesT2( ini, "", _platform, _section, _key, _value );
             }
         }

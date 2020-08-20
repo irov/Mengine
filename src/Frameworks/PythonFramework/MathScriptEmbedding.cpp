@@ -684,6 +684,11 @@ namespace Mengine
             .def_constructor( pybind::init<>() )
             .def_convert( &ScriptMethod::Polygon_convert, nullptr )
             .def( "getPoints", &Polygon::getPoints )
+            .def( "empty", &Polygon::empty )
+            .def( "size", &Polygon::size )
+            .def( "area", &Polygon::area )
+            .def( "append", &Polygon::append )
+            .def( "clear", &Polygon::clear )
             ;
 
         pybind::struct_<Viewport>( _kernel, "Viewport" )

@@ -106,7 +106,7 @@ namespace Mengine
 
         m_indexCapacity = m_indexCount;
 
-        uint32_t bufferSize = m_indexCount * m_indexSize;
+        uint32_t bufferSize = m_indexCapacity * m_indexSize;
 
         IDirect3DIndexBuffer9 * pIB = nullptr;
         IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pIB, NULL) )
@@ -218,7 +218,7 @@ namespace Mengine
     {
         DXCALL( m_pD3DDevice, SetIndices, (nullptr) );
     }
-    //////////////////////////////////////////////////////////////////////////        
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::onRenderReset()
     {
         if( m_pool == D3DPOOL_MANAGED )
@@ -226,9 +226,11 @@ namespace Mengine
             return;
         }
 
+        m_memory->setBuffer( nullptr, 0 );
+
         DXRELEASE( m_pIB );
     }
-    //////////////////////////////////////////////////////////////////////////        
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::onRenderRestore()
     {
         if( m_pool == D3DPOOL_MANAGED )
@@ -236,8 +238,10 @@ namespace Mengine
             return true;
         }
 
+        uint32_t bufferSize = m_indexCapacity * m_indexSize;
+
         IDirect3DIndexBuffer9 * pIB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, nullptr) )
+        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pIB, nullptr) )
         {
             return false;
         }

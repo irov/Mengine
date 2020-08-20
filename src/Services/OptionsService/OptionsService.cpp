@@ -1,5 +1,7 @@
 #include "OptionsService.h"
 
+#include "Interface/LoggerServiceInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/Stringalized.h"
 
@@ -22,6 +24,27 @@ namespace Mengine
     bool OptionsService::_initializeService()
     {
         //Empty
+        SERVICE_WAIT( LoggerServiceInterface, [this]()
+        {
+            for( const Option & option : m_options )
+            {
+                if( MENGINE_STRLEN( option.value ) == 0 )
+                {
+                    LOGGER_MESSAGE_RELEASE( "option: -%s"
+                        , option.key
+                    );
+                }
+                else
+                {
+                    LOGGER_MESSAGE_RELEASE( "option: -%s=%s"
+                        , option.key
+                        , option.value
+                    );
+                }
+            }
+
+            return true;
+        } );
 
         return true;
     }
@@ -46,7 +69,12 @@ namespace Mengine
                 continue;
             }
 
-            option_key_str += 1;
+            ++option_key_str;
+
+            if( *option_key_str == '-' )
+            {
+                ++option_key_str;
+            }
 
             const Char * option_value_str = MENGINE_STRCHR( option_key_str, ':' );
 

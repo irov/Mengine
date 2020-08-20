@@ -93,7 +93,7 @@ namespace Mengine
 
         m_vertexCapacity = _vertexCount;
 
-        const uint32_t bufferSize = m_vertexCount * m_vertexSize;
+        const uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
@@ -203,7 +203,7 @@ namespace Mengine
 
         m_id = id;
 
-        const uint32_t bufferSize = m_vertexCount * m_vertexSize;
+        const uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );

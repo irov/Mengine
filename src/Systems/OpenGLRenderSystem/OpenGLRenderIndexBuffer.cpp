@@ -89,7 +89,7 @@ namespace Mengine
 
         m_indexCapacity = _indexCount;
 
-        const uint32_t bufferSize = m_indexCount * m_indexSize;
+        const uint32_t bufferSize = m_indexCapacity * m_indexSize;
 
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ELEMENT_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
@@ -199,7 +199,7 @@ namespace Mengine
 
         m_id = id;
 
-        const uint32_t bufferSize = m_indexCount * m_indexSize;
+        const uint32_t bufferSize = m_indexCapacity * m_indexSize;
 
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ELEMENT_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );

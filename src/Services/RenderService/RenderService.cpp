@@ -453,7 +453,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-        this->restoreRenderFrameStates_();
+        this->restoreRenderSystemStates_();
 
         _renderPipeline->prepare();
 
@@ -720,12 +720,12 @@ namespace Mengine
     {
         this->restoreRenderFrameStates_();
 
-        m_currentRenderCamera = nullptr;
-
         mt::mat4f viewMatrix;
         mt::ident_m4( viewMatrix );
 
         m_renderSystem->setViewMatrix( viewMatrix );
+
+        m_currentRenderCamera = nullptr;
 
         mt::mat4f projectionMatrix;
         mt::ident_m4( projectionMatrix );

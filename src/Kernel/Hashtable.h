@@ -429,10 +429,10 @@ namespace Mengine
 
         static const element_type_ptr & push_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -463,10 +463,10 @@ namespace Mengine
 
         static element_type_ptr change_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -504,10 +504,10 @@ namespace Mengine
 
         static element_type_ptr pop_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -531,10 +531,10 @@ namespace Mengine
 
         static const element_type_ptr & find_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = _hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -559,10 +559,10 @@ namespace Mengine
 
         static bool exist_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1016,10 +1016,10 @@ namespace Mengine
 
         static void push_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, element_type_ptr _element )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1040,10 +1040,10 @@ namespace Mengine
 
         static element_type_ptr change_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, element_type_ptr _element )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1080,10 +1080,10 @@ namespace Mengine
 
         static element_type_ptr pop_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1107,10 +1107,10 @@ namespace Mengine
 
         static element_type_ptr find_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
@@ -1135,10 +1135,10 @@ namespace Mengine
 
         static bool exist_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
-            size_type hash_mask = _capacity - 1;
-            size_type mask = (size_type)_hash;
+            uint64_t hash_mask = _capacity - 1;
+            uint64_t mask = (uint64_t)_hash;
 
-            for( size_type probe = (size_type)_hash; ; probe >>= 5 )
+            for( uint64_t probe = (uint64_t)_hash; ; probe >>= 5 )
             {
                 value_type * record = _buffer + (mask & hash_mask);
 

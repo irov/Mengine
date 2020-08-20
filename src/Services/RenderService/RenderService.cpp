@@ -674,7 +674,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( IntrusivePtrBase::intrusive_ptr_get_ref( material ) > 1, "not-cached material" );
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( material );
-        
+
         ++m_debugInfo.dips;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1090,6 +1090,7 @@ namespace Mengine
         new_batch->setIndexBuffer( indexBuffer );
 
         m_cacheRenderBatches.emplace_back( new_batch );
+        m_renderBatches.emplace_back( new_batch );
 
         const RenderBatchPtr & batch = m_cacheRenderBatches.back();
 

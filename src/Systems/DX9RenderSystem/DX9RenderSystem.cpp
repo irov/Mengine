@@ -1378,6 +1378,11 @@ namespace Mengine
         DXCALL( m_pD3DDevice, DrawIndexedPrimitive
             , (primitiveType, _vertexBase, _minIndex, _vertexCount, _indexStart, primCount)
         );
+
+#ifdef MENGINE_DEBUG
+        DWORD pNumPasses;
+        DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )

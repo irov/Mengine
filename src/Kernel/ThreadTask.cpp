@@ -198,15 +198,20 @@ namespace Mengine
             return;
         }
 
+        bool completeProcess = false;
+
         m_mutex->lock();
+        if( m_complete == false )
+        {
+            m_complete = true;
+            completeProcess = true;
+        }
         m_mutex->unlock();
 
         m_mutex = nullptr;
 
-        if( m_complete == false )
+        if( completeProcess == true )
         {
-            m_complete = true;
-
             this->_onComplete( false );
         }
     }

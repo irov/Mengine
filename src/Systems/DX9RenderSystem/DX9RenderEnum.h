@@ -374,6 +374,8 @@ namespace Mengine
                 return D3DTEXF_PYRAMIDALQUAD;
             case TF_GAUSSIANCUBIC:
                 return D3DTEXF_GAUSSIANQUAD;
+            case __MAX_TEXTURE_FILTER__:
+                break;
             }
 
             return D3DTEXF_NONE;

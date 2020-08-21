@@ -87,6 +87,7 @@ namespace Mengine
         , m_touchpad( false )
         , m_desktop( false )
         , m_fullscreen( false )
+        , m_sessionLock( false )
     {
         m_projectTitle[0] = '\0';
     }
@@ -111,17 +112,17 @@ namespace Mengine
 
                 RtlGetVersion( &osInfo );
 
-                LOGGER_MESSAGE_RELEASE( "Windows version: %u.%u (build %u)"
+                LOGGER_MESSAGE_RELEASE( "Windows version: %lu.%lu (build %lu)"
                     , osInfo.dwMajorVersion
                     , osInfo.dwMinorVersion
                     , osInfo.dwBuildNumber
                 );
 
-                LOGGER_MESSAGE_RELEASE( "Windows platform: %u"
+                LOGGER_MESSAGE_RELEASE( "Windows platform: %lu"
                     , osInfo.dwPlatformId
                 );
 
-                LOGGER_MESSAGE_RELEASE( "Windows service pack: %u.%u "
+                LOGGER_MESSAGE_RELEASE( "Windows service pack: %lu.%lu"
                     , (DWORD)osInfo.wServicePackMajor
                     , (DWORD)osInfo.wServicePackMinor
                 );
@@ -580,6 +581,13 @@ namespace Mengine
                     ::DispatchMessage( &msg );
                 }
 
+                if( m_sessionLock == true )
+                {
+                    ::Sleep( 100 );
+
+                    continue;
+                }
+
                 for( TimerDesc & desc : m_timers )
                 {
                     if( desc.id == 0 )
@@ -969,6 +977,20 @@ namespace Mengine
             }break;
         case WM_PAINT:
             {
+            }break;
+        case WM_WTSSESSION_CHANGE:
+            {
+                switch( wParam )
+                {
+                case WTS_SESSION_LOCK:
+                    {
+                        m_sessionLock = true;
+                    }break;
+                case WTS_SESSION_UNLOCK:
+                    {
+                        m_sessionLock = false;
+                    }break;
+                }
             }break;
         case WM_DISPLAYCHANGE:
             {
@@ -1651,6 +1673,15 @@ namespace Mengine
             ::ShowWindow( m_hWnd, SW_SHOW );
         }
 
+        if( WTSRegisterSessionNotification( m_hWnd, NOTIFY_FOR_ALL_SESSIONS ) == FALSE )
+        {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid register session notification: %lu"
+                , error
+            );
+        }
+
         if( _fullscreen == true )
         {
             Resolution desktopResolution;
@@ -1841,14 +1872,14 @@ namespace Mengine
 
             if( cursor == NULL )
             {
-                DWORD errCode = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                if( errCode != 0 )
+                if( error != 0 )
                 {
                     LOGGER_ERROR( "icon '%s' for file '%ls' errCode %lu"
                         , _name.c_str()
                         , unicode_icoFullFile.c_str()
-                        , errCode
+                        , error
                     );
 
                     return false;

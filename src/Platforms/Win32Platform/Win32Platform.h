@@ -253,5 +253,6 @@ namespace Mengine
         bool m_isDoubleClick;
         bool m_touchpad;
         bool m_desktop;
+        bool m_sessionLock;
     };
 }

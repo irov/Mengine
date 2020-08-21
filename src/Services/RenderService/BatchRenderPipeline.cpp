@@ -708,7 +708,7 @@ namespace Mengine
         return empty;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BatchRenderPipeline::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * const _vbPos, uint32_t * const _ibPos )
+    void BatchRenderPipeline::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * const _vbPos, uint32_t * const _ibPos )
     {
         uint32_t vbPos = *_vbPos;
         uint32_t ibPos = *_ibPos;
@@ -731,7 +731,7 @@ namespace Mengine
             rp->startIndex = ibPos;
             rp->minIndex = vbPos;
 
-            if( this->insertRenderObject_( ro, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos ) == false )
+            if( this->insertRenderObject_( ro, _vertexMemory, _vertexSize, _indexMemory, vbPos, ibPos ) == false )
             {
                 break;
             }
@@ -752,13 +752,13 @@ namespace Mengine
                 }break;
             case ERBM_NORMAL:
                 {
-                    this->batchRenderObjectNormal_( it_object, it_object_end, it_primitive, rp, _vertexBuffer, _vertexSize, _indexBuffer, &vbPos, &ibPos );
+                    this->batchRenderObjectNormal_( it_object, it_object_end, it_primitive, rp, _vertexMemory, _vertexSize, _indexMemory, &vbPos, &ibPos );
                 }break;
             case ERBM_SMART:
                 {
-                    this->batchRenderObjectNormal_( it_object, it_object_end, it_primitive, rp, _vertexBuffer, _vertexSize, _indexBuffer, &vbPos, &ibPos );
+                    this->batchRenderObjectNormal_( it_object, it_object_end, it_primitive, rp, _vertexMemory, _vertexSize, _indexMemory, &vbPos, &ibPos );
 
-                    this->batchRenderObjectSmart_( _renderPass, it_object, it_primitive, ro, rp, _vertexBuffer, _vertexSize, _indexBuffer, &vbPos, &ibPos );
+                    this->batchRenderObjectSmart_( _renderPass, it_object, it_primitive, ro, rp, _vertexMemory, _vertexSize, _indexMemory, &vbPos, &ibPos );
                 }break;
             }
         }
@@ -767,7 +767,7 @@ namespace Mengine
         *_ibPos = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BatchRenderPipeline::batchRenderObjectNormal_( DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderObjects::iterator _roEnd, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderPrimitive * const _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * const _vbPos, uint32_t * const _ibPos )
+    void BatchRenderPipeline::batchRenderObjectNormal_( DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderObjects::iterator _roEnd, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderPrimitive * const _rp, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * const _vbPos, uint32_t * const _ibPos )
     {
         uint32_t vbPos = *_vbPos;
         uint32_t ibPos = *_ibPos;
@@ -797,7 +797,7 @@ namespace Mengine
                 break;
             }
 
-            if( this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos ) == false )
+            if( this->insertRenderObject_( ro_bath_begin, _vertexMemory, _vertexSize, _indexMemory, vbPos, ibPos ) == false )
             {
                 break;
             }
@@ -841,7 +841,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BatchRenderPipeline::batchRenderObjectSmart_( const RenderPass * _renderPass, DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderObject * _ro, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * _vbPos, uint32_t * _ibPos )
+    void BatchRenderPipeline::batchRenderObjectSmart_( const RenderPass * _renderPass, DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderObject * _ro, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * _vbPos, uint32_t * _ibPos )
     {
         uint32_t vbPos = *_vbPos;
         uint32_t ibPos = *_ibPos;
@@ -887,7 +887,7 @@ namespace Mengine
                 break;
             }
 
-            if( this->insertRenderObject_( ro_bath, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos ) == false )
+            if( this->insertRenderObject_( ro_bath, _vertexMemory, _vertexSize, _indexMemory, vbPos, ibPos ) == false )
             {
                 break;
             }
@@ -912,10 +912,10 @@ namespace Mengine
         *_ibPos = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BatchRenderPipeline::insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t _vbPos, uint32_t _ibPos ) const
+    bool BatchRenderPipeline::insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t _vbPos, uint32_t _ibPos ) const
     {
-        void * memory_buffer = _vertexBuffer->getBuffer();
-        size_t memory_size = _vertexBuffer->getSize();
+        void * memory_buffer = _vertexMemory->getBuffer();
+        size_t memory_size = _vertexMemory->getSize();
 
         size_t memory_offset = _vbPos * _vertexSize;
 
@@ -927,9 +927,9 @@ namespace Mengine
             return false;
         }
 
-        RenderIndex * indexMemory = _indexBuffer->getBuffer();
+        RenderIndex * indexBuffer = _indexMemory->getBuffer();
 
-        RenderIndex * offsetIndicesBuffer = indexMemory + _ibPos;
+        RenderIndex * offsetIndicesBuffer = indexBuffer + _ibPos;
 
         RenderIndex * src = offsetIndicesBuffer;
         RenderIndex * src_end = offsetIndicesBuffer + _renderObject->indexCount;

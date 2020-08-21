@@ -49,4 +49,6 @@
 #include <tlhelp32.h>
 #include <shellapi.h>
 #include <shlobj.h>
+
+#include <wtsapi32.h>
 #pragma warning(pop) 

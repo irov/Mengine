@@ -18,6 +18,9 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        void AssertionSetNotDebugBreak( bool _debugBreak );
+        bool AssertionGetNotDebugBreak();
+        //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line );
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 5, 6 );
         //////////////////////////////////////////////////////////////////////////

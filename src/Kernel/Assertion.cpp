@@ -3,18 +3,15 @@
 #include "Kernel/Crash.h"
 #include "Kernel/Exception.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Abort.h"
+#include "Kernel/DebugBreak.h"
 
-#include "Interface/OptionsServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-#   include "Environment/Windows/WindowsIncluder.h"
-#endif
-
 #include "Config/StdIO.h"
+#include "Config/StdLib.h"
 
 #ifndef MENGINE_ASSERTION_MAX_MESSAGE
 #define MENGINE_ASSERTION_MAX_MESSAGE 8192
@@ -24,6 +21,18 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        bool Assertion_NotDebugBreak = true;
+        //////////////////////////////////////////////////////////////////////////
+        void AssertionSetNotDebugBreak( bool _debugBreak )
+        {
+            Assertion_NotDebugBreak = _debugBreak;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool AssertionGetNotDebugBreak()
+        {
+            return Assertion_NotDebugBreak;
+        }
         //////////////////////////////////////////////////////////////////////////
         AssertionOperator::AssertionOperator( uint32_t _level, const Char * _test, const Char * _file, uint32_t _line )
             : m_level( _level )
@@ -106,24 +115,15 @@ namespace Mengine
 
             if( _level == ASSERTION_LEVEL_FATAL )
             {
-                if( SERVICE_IS_INITIALIZE( PlatformInterface ) == true )
-                {
-                    PLATFORM_SERVICE()
-                        ->abort();
-                }
+                Helper::abort();
             }
 
-            if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level >= ASSERTION_LEVEL_WARNING )
+            if( Assertion_NotDebugBreak == true && _level >= ASSERTION_LEVEL_WARNING )
             {
                 return;
             }
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-            if( ::IsDebuggerPresent() == TRUE )
-            {
-                ::DebugBreak();
-            }
-#endif
+            Helper::debugBreak();
         }
     }
 }

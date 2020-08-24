@@ -1,5 +1,8 @@
 #include "Error.h"
-#include "Logger.h"
+
+#include "Kernel/Logger.h"
+#include "Kernel/Abort.h"
+#include "Kernel/DebugBreak.h"
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/NotificationServiceInterface.h"
@@ -59,16 +62,10 @@ namespace Mengine
             }break;
         case ERROR_LEVEL_FATAL:
             {
-                PLATFORM_SERVICE()
-                    ->abort();
+                Helper::abort();
             }break;
         }
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-        if( ::IsDebuggerPresent() == TRUE )
-        {
-            ::DebugBreak();
-        }
-#endif
+        Helper::debugBreak();
     }
 }

@@ -598,6 +598,10 @@ namespace Mengine
             return false;
         }
 
+        bool Assertion_NoDebugBreak = HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false;
+
+        Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
+
         if( this->mountUserFileGroup_() == false )
         {
             return false;

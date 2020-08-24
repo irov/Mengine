@@ -654,6 +654,12 @@ Core
     Crash.h
     Crash.cpp
     
+    Abort.h
+    Abort.cpp
+    
+    DebugBreak.h
+    DebugBreak.cpp
+    
     UnknownPointer.h
 )
 

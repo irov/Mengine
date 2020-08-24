@@ -57,4 +57,11 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ) );
     }
+    ///////////////////////////////////////////////////////////////////////
+    void SDLFileGroupPlugin::_destroyPlugin()
+    {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_DESTROY( AndroidAssetService );
+#endif
+    }
 }

@@ -323,8 +323,50 @@ namespace Mengine
             );
     }
     //////////////////////////////////////////////////////////////////////////
+    static void * s_SDL_malloc_func( size_t size )
+    {
+        void * p = Helper::allocateMemory( size, "SDL" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * s_SDL_calloc_func( size_t nmemb, size_t size )
+    {
+        void * p = Helper::callocateMemory( nmemb, size, "SDL" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * s_SDL_realloc_func( void * mem, size_t size )
+    {
+        void * p = Helper::reallocateMemory( mem, size, "SDL" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void s_SDL_free_func( void * mem )
+    {
+        Helper::deallocateMemory( mem, "SDL" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
+        SDL_version ver;
+        SDL_GetVersion( &ver );
+
+        LOGGER_MESSAGE_RELEASE( "SDL version %u.%u.%u"
+            , ver.major
+            , ver.minor
+            , ver.patch
+        );
+
+        SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
+
+        if( SDL_SetMemoryFunctions( &s_SDL_malloc_func, &s_SDL_calloc_func, &s_SDL_realloc_func, &s_SDL_free_func ) != 0 )
+        {
+            return false;
+        }
+
 #ifdef MENGINE_DEBUG
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_DEBUG );
 #else
@@ -654,6 +696,8 @@ namespace Mengine
 
         m_factoryDynamicLibraries = nullptr;
         m_factoryDateTimeProviders = nullptr;
+
+        SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()

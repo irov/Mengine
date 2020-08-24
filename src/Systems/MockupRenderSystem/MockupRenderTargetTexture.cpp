@@ -95,6 +95,15 @@ namespace Mengine
         return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MockupRenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
+    {
+        float uv_width = _size.x * m_hwWidthInv;
+        float uv_height = _size.y * m_hwHeightInv;
+
+        _viewport->begin = mt::vec2f( 0.f, 0.f );
+        _viewport->end = mt::vec2f( uv_width, uv_height );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MockupRenderTargetTexture::begin()
     {
         //Empty

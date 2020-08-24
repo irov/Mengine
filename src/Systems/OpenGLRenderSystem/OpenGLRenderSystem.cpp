@@ -293,15 +293,10 @@ namespace Mengine
 
         m_viewport = _viewport;
 
-        GLsizei xb = static_cast<GLsizei>(m_viewport.begin.x);
-        GLsizei ye = static_cast<GLsizei>(m_viewport.end.y);
-        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth());
-        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight());
-
-        GLsizei resolution_height = static_cast<GLsizei>(m_windowResolution.getHeight());
-
-        GLsizei x = xb;
-        GLsizei y = resolution_height - ye;
+        GLsizei x = static_cast<GLsizei>(m_viewport.begin.x + 0.5f);
+        GLsizei y = static_cast<GLsizei>(m_windowResolution.getHeight() - m_viewport.end.y + 0.5f);
+        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth() + 0.5f);
+        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight() + 0.5f);
 
         GLCALL( glViewport, (x, y, w, h) );
     }
@@ -985,6 +980,8 @@ namespace Mengine
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
+
+        m_viewport = Viewport( 0.f, 0.f, 0.f, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::supportTextureFormat( EPixelFormat _format ) const

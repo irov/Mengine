@@ -2,23 +2,18 @@
 
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Config/StdInt.h"
-
 namespace Mengine
 {
     namespace Helper
     {
-        void crash()
+        void abort()
         {
             if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
             {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_ABORT );
             }
 
-            volatile uint32_t * p = nullptr;
-
-            // cppcheck-suppress nullPointer
-            *p = 0xBADC0DE;
+            ::abort();
         }
     }
 }

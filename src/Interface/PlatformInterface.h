@@ -138,10 +138,6 @@ namespace Mengine
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual void abort() = 0;
-        virtual void debugBreak() = 0;
-
-    public:
         virtual UnknownPointer getPlatformExtention() = 0;
     };
 }

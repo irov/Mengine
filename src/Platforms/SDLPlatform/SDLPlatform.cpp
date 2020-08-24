@@ -1763,21 +1763,6 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::abort()
-    {
-        ::abort();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::debugBreak()
-    {
-#ifdef MENGINE_PLATFORM_WINDOWS
-        if( ::IsDebuggerPresent() == TRUE )
-        {
-            ::DebugBreak();
-        }
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
     UnknownPointer SDLPlatform::getPlatformExtention()
     {
         return this;

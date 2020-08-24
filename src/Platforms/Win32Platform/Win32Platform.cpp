@@ -3043,21 +3043,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::abort()
-    {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_ABORT );
-
-        ::abort();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::debugBreak()
-    {
-        if( ::IsDebuggerPresent() == TRUE )
-        {
-            ::DebugBreak();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32Platform::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "load dynamic library '%s'"

@@ -230,16 +230,13 @@ namespace Mengine
 
         m_materialImageMask = material;
 
-        float hwWidthInv = renderTarget->getHWWidthInv();
-        float hwHeightInv = renderTarget->getHWHeightInv();
+        Viewport v;
+        renderTarget->calcViewport( m_size, &v );
 
-        float uv_width = m_size.x * hwWidthInv;
-        float uv_height = m_size.y * hwHeightInv;
-
-        m_verticesImageMaskWM[0].uv[0] = mt::vec2f( 0.f, 0.f );
-        m_verticesImageMaskWM[1].uv[0] = mt::vec2f( uv_width, 0.f );
-        m_verticesImageMaskWM[2].uv[0] = mt::vec2f( uv_width, uv_height );
-        m_verticesImageMaskWM[3].uv[0] = mt::vec2f( 0.f, uv_height );
+        m_verticesImageMaskWM[0].uv[0] = mt::vec2f( v.begin.x, v.begin.y );
+        m_verticesImageMaskWM[1].uv[0] = mt::vec2f( v.end.x, v.begin.y );
+        m_verticesImageMaskWM[2].uv[0] = mt::vec2f( v.end.x, v.end.y );
+        m_verticesImageMaskWM[3].uv[0] = mt::vec2f( v.begin.x, v.end.y );
 
         const mt::uv4f & uv_mask = renderTargetTextureMask->getUV();
 

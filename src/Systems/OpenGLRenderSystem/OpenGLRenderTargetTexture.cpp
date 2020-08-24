@@ -1,5 +1,7 @@
 #include "OpenGLRenderTargetTexture.h"
 
+#include "Interface/RenderSystemInterface.h"
+
 #include "OpenGLRenderExtension.h"
 #include "OpenGLRenderError.h"
 
@@ -87,7 +89,7 @@ namespace Mengine
         GLCALL( glGenTextures, (1, &tuid) );
 
         GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
-        GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
+        GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
 
         m_tuid = tuid;
 
@@ -205,9 +207,21 @@ namespace Mengine
         return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
+    {
+        float uv_width = _size.x * m_hwWidthInv;
+        float uv_height = _size.y * m_hwHeightInv;
+
+        _viewport->begin = mt::vec2f( 0.f, uv_height );
+        _viewport->end = mt::vec2f( uv_width, 0.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::begin()
     {
         GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
+
+        RENDER_SYSTEM()
+            ->setViewport( Viewport( 0.f, 0.f, (float)m_width, (float)m_height ) );
 
         return true;
     }

@@ -74,10 +74,9 @@ endif()
 
 if(MENGINE_TARGET_MACOS)
     set(myApp_ICON "$ENV{HOME}/Desktop/deploy-mac-icons/icon.icns")
-    set_source_files_properties(${myApp_ICON} PROPERTIES
-           MACOSX_PACKAGE_LOCATION "Resources")
+    set_source_files_properties(${myApp_ICON} PROPERTIES 
+        MACOSX_PACKAGE_LOCATION "Resources")
 
-		   message("MENGINE_PLUGIN_ASTRALAX: ${MENGINE_PLUGIN_ASTRALAX}")
     if(MENGINE_PLUGIN_ASTRALAX)
     	set(myApp_ASTRALAX "$ENV{HOME}/Desktop/magic3d.dylib")
     	set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
@@ -93,10 +92,25 @@ if(MENGINE_TARGET_MACOS)
     else()
         set(myApp_STEAM)
     endif()
+    
+    set(DEPLOY_DATA "$ENV{HOME}/Desktop/deploy-mac-data")
+    file(GLOB_RECURSE myApp_DATAS "${DEPLOY_DATA}/*")
+    list(FILTER myApp_DATAS EXCLUDE REGEX ".*.DS_Store$")
+    foreach(myApp_DATA ${myApp_DATAS})
+        file(RELATIVE_PATH RES ${DEPLOY_DATA} ${myApp_DATA})
+        get_filename_component(RES_LOC ${RES} PATH)
+
+        set_source_files_properties(${myApp_DATA} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy-mac-data/${RES_LOC}" HEADER_FILE_ONLY 1)
+        string(REPLACE "/" "\\" ide_group_name "Data/${RES_LOC}")
+        source_group(${ide_group_name} FILES ${myApp_DATA})
+    endforeach()
 
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{HOME}/Desktop/deploy-mac-plist")
+    
+    string(TIMESTAMP MACOSX_FRAMEWORK_BUNDLE_VERSION "%Y.%m.%d.%H%M%S")
+    string(TIMESTAMP MACOSX_FRAMEWORK_SHORT_VERSION_STRING "%Y.%m.%d")
            
-    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${myApp_ICON} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES} )
+    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${myApp_DATAS} ${myApp_ICON} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES} )
 
     set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE icon.icns )
     set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST info.plist.in)

@@ -1508,6 +1508,35 @@ namespace Mengine
         return key;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TextField::calcText( String * _text ) const
+    {
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s:%s' invalid get text entry can't setup text ID"
+            , this->getName().c_str()
+            , m_textId.c_str()
+        );
+
+        size_t textSize;
+        const Char * textValue = textEntry->getValue( &textSize );
+
+        TEXT_SERVICE()
+            ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_textFormatArgs );
+
+        if( Helper::getStringFormat( _text, textValue, textSize, m_textFormatArgs ) == false )
+        {
+            LOGGER_ERROR( "invalid string '%s:%s' format with args %" PRIuPTR ""
+                , this->getName().c_str()
+                , this->getTotalTextId().c_str()
+                , m_textFormatArgs.size()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::setTextAliasEnvironment( const ConstString & _aliasEnvironment )
     {
         m_aliasEnvironment = _aliasEnvironment;

@@ -55,6 +55,9 @@ namespace Mengine
         const ConstString & getTotalTextId() const;
 
     public:
+        bool calcText( String * _text ) const;
+
+    public:
         void setTextAliasEnvironment( const ConstString & _aliasEnvironment );
         const ConstString & getTextAliasEnvironment() const;
 

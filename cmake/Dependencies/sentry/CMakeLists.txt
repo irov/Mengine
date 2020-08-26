@@ -15,7 +15,7 @@ foreach(flag_var
     endif()
 endforeach()
 
-project(Sentry-Native LANGUAGES C CXX ASM)
+project(Sentry-Native LANGUAGES ASM C CXX)
 
 set(SENTRY_MAIN_PROJECT OFF)
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)

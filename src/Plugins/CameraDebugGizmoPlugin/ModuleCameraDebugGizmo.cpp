@@ -77,7 +77,7 @@ namespace Mengine
             camera->setCameraScale( new_camera_scale );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_mouseMoveEventHandle = Helper::addGlobalMouseMoveEvent( [this]( const InputMouseMoveEvent & _event )
+        m_mouseMoveEventHandle = Helper::addGlobalMouseMoveEvent( []( const InputMouseMoveEvent & _event )
         {
             if( INPUT_SERVICE()->isControlDown() == false ||
                 INPUT_SERVICE()->isMouseButtonDown( MC_RBUTTON ) == false )

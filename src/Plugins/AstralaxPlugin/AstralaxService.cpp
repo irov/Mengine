@@ -514,7 +514,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxService::createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
     {
-        MAGIC_VERTEX_FORMAT vertex_format = m->format;
+        //MAGIC_VERTEX_FORMAT vertex_format = m->format;
 
         int32_t textures = m->textures;
 
@@ -750,7 +750,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxService::createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m )
     {
-        MAGIC_VERTEX_FORMAT vertex_format = m->format;
+        //MAGIC_VERTEX_FORMAT vertex_format = m->format;
 
         int32_t textures = m->textures;
 

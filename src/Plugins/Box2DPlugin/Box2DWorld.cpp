@@ -472,7 +472,7 @@ namespace Mengine
         b2Vec2 localAxis = m_scaler.toBox2DWorldNormal( _localAxis );
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody );
 
-        b2Vec2 positionBody1 = b2_body1->GetPosition();
+        //b2Vec2 positionBody1 = b2_body1->GetPosition();
         b2Vec2 anchor1 = offsetBody1;
 
         b2WheelJointDef jointDef;

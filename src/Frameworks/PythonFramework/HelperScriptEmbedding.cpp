@@ -31,6 +31,9 @@
 #include "Kernel/Base64.h"
 #include "Kernel/Crash.h"
 
+#include "Config/BuildVersion.h"
+#include "Config/GitSHA1.h"
+
 #include "math/vec2.h"
 #include "math/vec3.h"
 
@@ -1492,6 +1495,21 @@ namespace Mengine
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PythonAccountSettingProvider> PyAccountSettingProviderPtr;
+            //////////////////////////////////////////////////////////////////////////
+            const Char * s_getBuildVersion()
+            {
+                return MENGINE_BUILD_VERSION;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const Char * s_getEngineGitSHA1()
+            {
+                return MENGINE_ENGINE_GIT_SHA1;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const Char * s_getResourceGitSHA1()
+            {
+                return MENGINE_RESOURCE_GIT_SHA1;
+            }
             //////////////////////////////////////////////////////////////////////////
             bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3496,6 +3514,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::projectionPointToLine );
 
         pybind::def_functor( _kernel, "isPointInsidePolygon", helperScriptMethod, &HelperScriptMethod::s_isPointInsidePolygon );
+
+        pybind::def_functor( _kernel, "getBuildVersion", helperScriptMethod, &HelperScriptMethod::s_getBuildVersion );
+        pybind::def_functor( _kernel, "getEngineGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getEngineGitSHA1 );
+        pybind::def_functor( _kernel, "getResourceGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getResourceGitSHA1 );
 
         pybind::def_functor( _kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );

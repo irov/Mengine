@@ -791,7 +791,7 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->endUpdate();
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
             SDL_Delay( 1 );
 #endif
         }

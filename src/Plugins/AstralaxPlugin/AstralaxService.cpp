@@ -408,9 +408,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxService::getResourceImage( int32_t _index ) const
     {
-        MENGINE_ASSERTION_FATAL( (VectorAtlasDesc::size_type)_index < m_atlases.size(), "index %d but size is %llu"
+        MENGINE_ASSERTION_FATAL( (VectorAtlasDesc::size_type)_index < m_atlases.size(), "index %d but size is %u"
             , _index
-            , m_atlases.size()
+            , (uint32_t)m_atlases.size()
         );
 
         const ResourceImagePtr & resourceImage = m_atlases[_index];

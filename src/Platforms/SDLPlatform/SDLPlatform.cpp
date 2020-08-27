@@ -898,6 +898,10 @@ namespace Mengine
 
         if( glContext == nullptr )
         {
+            LOGGER_ERROR( "invalid create GL context error: %s"
+                , SDL_GetError()
+            );
+            
             SDL_DestroyWindow( m_window );
             m_window = nullptr;
 
@@ -1938,6 +1942,76 @@ namespace Mengine
         {
             LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to '%s' error: %s"
                 , Engine_SDLOrientations
+                , SDL_GetError()
+            );
+        }
+#elif defined(MENGINE_PLATFORM_OSX)
+        windowFlags |= SDL_WINDOW_HIDDEN;
+
+        if( _fullscreen == true )
+        {
+            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_CORE error: %s"
+                , SDL_GetError()
+            );
+        }
+        
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to 3 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to 2 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+        
+        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to 8 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to 24 error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to 1 error: %s"
                 , SDL_GetError()
             );
         }

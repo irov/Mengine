@@ -31,7 +31,14 @@
 #   define MENGINE_RENDER_OPENGL_ES
 #endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_LINUX)
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_LINUX)
+#   include "SDL_opengl.h"
+#   include "SDL_opengl_glext.h"
+
+#   define MENGINE_RENDER_OPENGL
+#endif
+
+#if defined(MENGINE_PLATFORM_OSX)
 #   include "SDL_opengl.h"
 #   include "SDL_opengl_glext.h"
 

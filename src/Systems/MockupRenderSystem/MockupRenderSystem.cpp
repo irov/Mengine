@@ -41,13 +41,13 @@ namespace Mengine
     MockupRenderSystem::MockupRenderSystem()
         : m_fullscreen( true )
         , m_depth( false )
-        , m_waitForVSync( false )
-        , m_vertexBufferEnable( false )
-        , m_indexBufferEnable( false )
         , m_frames( 0 )
         , m_dxMaxCombinedTextureImageUnits( 0 )
         , m_textureMemoryUse( 0U )
         , m_textureCount( 0U )
+        , m_vertexBufferEnable( false )
+        , m_indexBufferEnable( false )
+        , m_waitForVSync( false )
     {
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );

@@ -6,13 +6,13 @@ namespace Mengine
     MockupRenderTargetTexture::MockupRenderTargetTexture()
         : m_width( 0 )
         , m_height( 0 )
+        , m_hwChannels( 0 )
+        , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
-        , m_hwChannels( 0 )
-        , m_hwPixelFormat( PF_UNKNOWN )
-   {
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     MockupRenderTargetTexture::~MockupRenderTargetTexture()

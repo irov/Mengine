@@ -24,14 +24,14 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitter::AstralaxEmitter()
-        : m_randomMode( false )
+        : m_positionProviderOriginOffset( 0.f, 0.f, 0.f )
+        , m_emitterPositionRelative( false )
+        , m_emitterCameraRelative( false )
+        , m_randomMode( false )
         , m_renderVertices( nullptr )
         , m_renderVertexCount( 0U )
         , m_renderIndicies( nullptr )
         , m_renderIndexCount( 0U )
-        , m_positionProviderOriginOffset( 0.f, 0.f, 0.f )
-        , m_emitterPositionRelative( false )
-        , m_emitterCameraRelative( false )
         , m_emitterTranslateWithParticle( true )
         , m_emitterTranslateWithParticleSetup( false )
     {

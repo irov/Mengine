@@ -2319,7 +2319,7 @@ namespace Mengine
                 return affector;
             }
             //////////////////////////////////////////////////////////////////////////
-            AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addAffector( const pybind::object & _cb, const pybind::args & _args )
             {
                 AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
 
@@ -2331,12 +2331,12 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_removeAffector( AFFECTOR_ID _id )
+            bool s_removeAffector( UniqueId _id )
             {
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();
@@ -2389,7 +2389,7 @@ namespace Mengine
             protected:
                 void _stop() override
                 {
-                    AFFECTOR_ID id = this->getId();
+                    UniqueId id = this->getId();
 
                     const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
@@ -2507,7 +2507,7 @@ namespace Mengine
 
                     const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
 
-                    if( affectorHub->addAffector( affector ) == INVALID_AFFECTOR_ID )
+                    if( affectorHub->addAffector( affector ) == INVALIDATE_UNIQUE_ID )
                     {
                         return nullptr;
                     }
@@ -2645,7 +2645,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_destroyValueFollower( const PythonValueFollowerPtr & _follower )
             {
-                AFFECTOR_ID id = _follower->getId();
+                UniqueId id = _follower->getId();
 
                 const AffectorHubInterfacePtr & affectorHub = PLAYER_SERVICE()
                     ->getGlobalAffectorHub();

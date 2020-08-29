@@ -313,7 +313,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
     {
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         InputMousePositionProviderDesc desc;
         desc.id = new_id;

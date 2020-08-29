@@ -49,14 +49,14 @@ namespace Mengine
         ~Node() override;
 
     public:
-        void setUniqueIdentity( uint32_t _uniqueIdentity );
-        uint32_t getUniqueIdentity() const;
+        void setUniqueIdentity( UniqueId _uniqueIdentity );
+        UniqueId getUniqueIdentity() const;
 
     public:
         NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
 
     protected:
-        uint32_t m_uniqueIdentity;
+        UniqueId m_uniqueIdentity;
 
     protected:
         void refreshRenderRelation_( Node * _parent );

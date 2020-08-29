@@ -105,8 +105,11 @@ namespace Mengine
         //    m_debugText = nullptr;
         //}
 
-        PLATFORM_SERVICE()
-            ->removeTimer( m_timerFPS );
+        if( m_timerFPS != 0 )
+        {
+            PLATFORM_SERVICE()
+                ->removeTimer( m_timerFPS );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external )

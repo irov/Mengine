@@ -31,7 +31,7 @@ namespace Mengine
     {
         m_timepipe.erase( std::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
         {
-            return _desc.id == ~0U;
+            return _desc.id == REMOVE_UNIQUE_ID;
         } ), m_timepipe.end() );
 
 #ifdef MENGINE_DEBUG
@@ -49,7 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
     {
-        uint32_t newid = GENERATE_UNIQUE_IDENTITY();
+        UniqueId newid = GENERATE_UNIQUE_IDENTITY();
 
         TimepipeDesc desc;
         desc.id = newid;
@@ -72,7 +72,7 @@ namespace Mengine
         {
             TimepipeDesc & desc = *it_find;
 
-            desc.id = ~0U;
+            desc.id = REMOVE_UNIQUE_ID;
 
             TimepipeInterfacePtr old_timepipe = desc.timepipe;
             desc.timepipe = nullptr;
@@ -106,7 +106,7 @@ namespace Mengine
         
         for( const TimepipeDesc & desc : m_timepipe )
         {
-            if( desc.id == ~0U )
+            if( desc.id == REMOVE_UNIQUE_ID )
             {
                 continue;
             }
@@ -116,7 +116,7 @@ namespace Mengine
 
         m_timepipe.erase( std::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
         {
-            return _desc.id == ~0U;
+            return _desc.id == REMOVE_UNIQUE_ID;
         } ), m_timepipe.end() );
     }
 }

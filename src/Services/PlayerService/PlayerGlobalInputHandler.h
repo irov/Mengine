@@ -3,9 +3,10 @@
 #include "Interface/GlobalInputHandlerInterface.h"
 
 #include "Kernel/Factorable.h"
-
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
+
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
@@ -53,7 +54,7 @@ namespace Mengine
     protected:
         struct GlobalHandlerDesc
         {
-            uint32_t id;
+            UniqueId id;
 
             InputHandlerInterfacePtr handler;
             bool enable;

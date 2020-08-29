@@ -12,15 +12,12 @@
 #include "MemoryInput.h"
 
 #include "Kernel/FactoryWithMutex.h"
-
 #include "Kernel/Vector.h"
+
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
-    typedef uint32_t CacheBufferID;
-
-    static constexpr CacheBufferID INVALID_CACHE_BUFFER_ID = 0;
-
     class MemoryService
         : public ServiceBase<MemoryServiceInterface>
     {
@@ -34,8 +31,8 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        CacheBufferID lockBuffer( size_t _size, void ** const _memory, const DocumentPtr & _doc );
-        void unlockBuffer( CacheBufferID _bufferId );
+        UniqueId lockBuffer( size_t _size, void ** const _memory, const DocumentPtr & _doc );
+        void unlockBuffer( UniqueId _bufferId );
 
     public:
         void clearCacheBuffers() override;
@@ -49,12 +46,12 @@ namespace Mengine
         MemoryInputInterfacePtr createMemoryInput( const DocumentPtr & _doc ) override;
 
     protected:
-        CacheBufferID lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentPtr & _doc );
+        UniqueId lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentPtr & _doc );
 
     protected:
         struct CacheBufferMemory
         {
-            CacheBufferID id;
+            UniqueId id;
             void * memory;
             size_t size;
             bool lock;

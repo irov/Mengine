@@ -26,7 +26,7 @@ namespace Mengine
         float m_to;
         float m_speed;
 
-        AFFECTOR_ID m_id;
+        UniqueId m_id;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskTransformationRotateY> TaskTransformationRotateYPtr;

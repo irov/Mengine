@@ -359,7 +359,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( emitter );
 
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
         emitter->setId( new_id );
 
         emitter->setSoundSource( source );

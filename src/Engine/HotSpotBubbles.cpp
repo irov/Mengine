@@ -21,7 +21,8 @@ namespace Mengine
     {
         Bubble bubble;
 
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+
         bubble.id = new_id;
         bubble.pos = _pos;
         bubble.pos_wm = _pos;

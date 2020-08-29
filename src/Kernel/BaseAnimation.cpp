@@ -187,7 +187,7 @@ namespace Mengine
 
         m_playIterator = m_playCount;
 
-        uint32_t id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         m_playId = id;
 

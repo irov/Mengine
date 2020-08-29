@@ -92,7 +92,7 @@ namespace Mengine
             , _delay
         );
 
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         SchedulerEventDesc desc;
 
@@ -122,7 +122,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
     {
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         SchedulerEventDesc desc;
 

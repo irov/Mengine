@@ -47,7 +47,7 @@ namespace Mengine
             const ConstString & prototype = this->getPrototype();
             node->setType( prototype );
 
-            uint32_t uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
+            UniqueId uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
             node->setUniqueIdentity( uniqueIdentity );
 
 #ifdef MENGINE_DEBUG

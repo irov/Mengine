@@ -46,12 +46,12 @@ namespace Mengine
         state = ESS_STOP;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundIdentity::setId( uint32_t _id )
+    void SoundIdentity::setId( UniqueId _id )
     {
         m_id = _id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SoundIdentity::getId() const
+    UniqueId SoundIdentity::getId() const
     {
         return m_id;
     }

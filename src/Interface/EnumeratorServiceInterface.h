@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     class EnumeratorServiceInterface
@@ -10,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "EnumeratorService" )
 
     public:
-        virtual uint32_t generateUniqueIdentity() = 0;
+        virtual UniqueId generateUniqueIdentity() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

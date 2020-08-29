@@ -3,6 +3,8 @@
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderImageInterface.h"
 
+#include "Config/UniqueId.h"
+
 #include "math/vec4.h"
 
 namespace Mengine
@@ -15,7 +17,7 @@ namespace Mengine
         ~RenderTexture() override;
 
     public:
-        void initialize( uint32_t _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height );
+        void initialize( UniqueId _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height );
 
     public:
         void release() override;
@@ -46,7 +48,7 @@ namespace Mengine
         bool isPow2() const override;
 
     protected:
-        uint32_t m_id;
+        UniqueId m_id;
 
         RenderImageInterfacePtr m_image;
 

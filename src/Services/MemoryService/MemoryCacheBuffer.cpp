@@ -32,7 +32,7 @@ namespace Mengine
         if( m_bufferId != 0 )
         {
             m_memoryManager->unlockBuffer( m_bufferId );
-            m_bufferId = INVALID_CACHE_BUFFER_ID;
+            m_bufferId = INVALIDATE_UNIQUE_ID;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ namespace Mengine
         void * memory;
         uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( bufferId == INVALID_CACHE_BUFFER_ID )
+        if( bufferId == INVALIDATE_UNIQUE_ID )
         {
             return nullptr;
         }

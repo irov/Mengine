@@ -5,6 +5,8 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/MixerValue.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -44,7 +46,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual uint32_t getId() const = 0;
+        virtual UniqueId getId() const = 0;
 
     public:
         virtual void setSoundSource( const SoundSourceInterfacePtr & _source ) = 0;

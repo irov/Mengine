@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::initialize( uint32_t _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
+    void RenderTexture::initialize( UniqueId _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
     {
         MENGINE_ASSERTION_FATAL( _image != nullptr );
         MENGINE_ASSERTION_FATAL( _width != 0 );

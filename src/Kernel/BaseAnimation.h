@@ -4,6 +4,8 @@
 
 #include "Kernel/UpdateContext.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -101,7 +103,7 @@ namespace Mengine
         virtual bool _interrupt( uint32_t _enumerator ) = 0;
 
     protected:
-        uint32_t m_playId;
+        UniqueId m_playId;
 
         float m_playTime;
 

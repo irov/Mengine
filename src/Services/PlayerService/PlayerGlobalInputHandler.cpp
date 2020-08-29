@@ -249,7 +249,7 @@ namespace Mengine
 
         GlobalHandlerDesc desc;
 
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
         desc.id = new_id;
 
         desc.handler = _handler;

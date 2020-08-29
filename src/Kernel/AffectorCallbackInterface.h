@@ -15,7 +15,7 @@ namespace Mengine
         : public Factorable
     {
     public:
-        virtual void onAffectorEnd( AFFECTOR_ID _id, bool _isEnd ) = 0;
+        virtual void onAffectorEnd( UniqueId _id, bool _isEnd ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AffectorCallbackInterface> AffectorCallbackInterfacePtr;

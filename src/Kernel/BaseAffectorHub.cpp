@@ -29,11 +29,11 @@ namespace Mengine
         return m_provider;
     }
     //////////////////////////////////////////////////////////////////////////
-    AFFECTOR_ID BaseAffectorHub::addAffector( const AffectorPtr & _affector )
+    UniqueId BaseAffectorHub::addAffector( const AffectorPtr & _affector )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _affector, "affector is nullptr" );
 
-        AFFECTOR_ID id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         _affector->setId( id );
 
@@ -42,7 +42,7 @@ namespace Mengine
 
         if( _affector->prepare( updatableMode, updatableDeep ) == false )
         {
-            return INVALID_AFFECTOR_ID;
+            return INVALIDATE_UNIQUE_ID;
         }
 
         m_affectors.push_back( _affector );
@@ -50,11 +50,11 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseAffectorHub::hasAffector( AFFECTOR_ID _id ) const
+    bool BaseAffectorHub::hasAffector( UniqueId _id ) const
     {
         for( const AffectorPtr & affector : m_affectors )
         {
-            AFFECTOR_ID id = affector->getId();
+            UniqueId id = affector->getId();
 
             if( id != _id )
             {
@@ -67,7 +67,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseAffectorHub::stopAffector( AFFECTOR_ID _id )
+    bool BaseAffectorHub::stopAffector( UniqueId _id )
     {
         IntrusivePtrScope ankh( this );
 
@@ -77,7 +77,7 @@ namespace Mengine
 
             it.next_shuffle();
 
-            AFFECTOR_ID id = affector->getId();
+            UniqueId id = affector->getId();
 
             if( id != _id )
             {

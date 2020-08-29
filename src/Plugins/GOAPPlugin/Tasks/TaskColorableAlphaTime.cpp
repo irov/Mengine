@@ -116,7 +116,7 @@ namespace Mengine
 
         const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
-        AFFECTOR_ID id = affectorHub->addAffector( affector );
+        UniqueId id = affectorHub->addAffector( affector );
 
         if( id == 0 )
         {

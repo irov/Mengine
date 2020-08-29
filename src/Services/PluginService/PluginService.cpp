@@ -97,7 +97,7 @@ namespace Mengine
             return false;
         }
 
-        uint32_t id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 

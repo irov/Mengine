@@ -223,5 +223,7 @@ namespace Mengine
         FactoryPtr m_factoryRenderVertexShader;
         FactoryPtr m_factoryRenderProgram;
         FactoryPtr m_factoryRenderProgramVariable;
+
+        GLuint m_vertexArrayId;
     };
 }

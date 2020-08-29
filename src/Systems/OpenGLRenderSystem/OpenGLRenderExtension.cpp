@@ -12,6 +12,10 @@ PFNGLCOMPRESSEDTEXIMAGE2DPROC       glCompressedTexImage2D_ = nullptr;
 // blending
 PFNGLBLENDEQUATIONPROC              glBlendEquation_ = nullptr;
 
+PFNGLGENVERTEXARRAYSPROC             glGenVertexArrays = nullptr;
+PFNGLBINDVERTEXARRAYPROC             glBindVertexArray = nullptr;
+PFNGLDELETEVERTEXARRAYSPROC          glDeleteVertexArrays = nullptr;
+
 // vbo
 PFNGLGENBUFFERSPROC                 glGenBuffers = nullptr;
 PFNGLBINDBUFFERPROC                 glBindBuffer = nullptr;
@@ -132,6 +136,11 @@ namespace Mengine
 
             // blending
             GETGLPROC_( PFNGLBLENDEQUATIONPROC, glBlendEquation );
+
+            GETGLPROC( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
+            GETGLPROC( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
+            GETGLPROC( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
+
 
             // vbo
             GETGLPROC( PFNGLGENBUFFERSPROC, glGenBuffers );

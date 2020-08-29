@@ -287,9 +287,6 @@ namespace Mengine
             return true;
         }
 
-#ifndef MENGINE_RENDER_OPENGL_ES
-        GLCALL( glEnable, (GL_TEXTURE_2D) );
-#endif
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
         LOGGER_INFO( "l %d r %d:%d-%d:%d"

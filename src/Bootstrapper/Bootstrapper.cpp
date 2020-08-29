@@ -113,7 +113,7 @@ PLUGIN_EXPORT( ExternalBootstrapper );
 #endif
 
 #ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
-PLUGIN_EXPORT( AstralaxFont );
+PLUGIN_EXPORT( Astralax );
 #endif
 
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC

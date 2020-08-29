@@ -40,6 +40,7 @@ src
     Metaprogramming.h
     GitSHA1.h
     BuildVersion.h
+    UniqueId.h
 )
 
 ADD_MENGINE_INTERFACE()

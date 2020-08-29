@@ -30,8 +30,8 @@ namespace Mengine
         EAffectorType getAffectorType() const noexcept;
 
     public:
-        void setId( AFFECTOR_ID _id ) noexcept;
-        AFFECTOR_ID getId() const noexcept;
+        void setId( UniqueId _id ) noexcept;
+        UniqueId getId() const noexcept;
 
     public:
         void setFreeze( bool _value ) noexcept;
@@ -73,7 +73,7 @@ namespace Mengine
 
     protected:
         EAffectorType m_type;
-        AFFECTOR_ID m_id;
+        UniqueId m_id;
 
         EasingInterfacePtr m_easing;
 

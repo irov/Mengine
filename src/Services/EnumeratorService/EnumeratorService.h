@@ -16,7 +16,7 @@ namespace Mengine
         ~EnumeratorService() override;
 
     public:
-        uint32_t generateUniqueIdentity() override;
+        UniqueId generateUniqueIdentity() override;
 
     protected:
         AtomicUInt32 m_enumerator;

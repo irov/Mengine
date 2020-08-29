@@ -280,12 +280,12 @@ namespace Mengine
         }
     }        
     //////////////////////////////////////////////////////////////////////////
-    void Node::setUniqueIdentity( uint32_t _uniqueIdentity )
+    void Node::setUniqueIdentity( UniqueId _uniqueIdentity )
     {
         m_uniqueIdentity = _uniqueIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Node::getUniqueIdentity() const
+    UniqueId Node::getUniqueIdentity() const
     {
         return m_uniqueIdentity;
     }

@@ -123,6 +123,7 @@ namespace Mengine
 
         return sizeof( deploy_mac_data ) - 1;
 #elif defined(MENGINE_PLATFORM_OSX)
+        SDL_GetBasePath
         const char deploy_mac_data[] = "deploy-mac-data/";
         MENGINE_STRCPY( _currentPath, deploy_mac_data );
 

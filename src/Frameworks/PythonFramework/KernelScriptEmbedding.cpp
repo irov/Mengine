@@ -398,16 +398,16 @@ namespace Mengine
                 _animation->resume( time );
             }
             //////////////////////////////////////////////////////////////////////////
-            AFFECTOR_ID s_Affectorable_addAffector( Affectorable * _affectorable, const AffectorPtr & _affector )
+            UniqueId s_Affectorable_addAffector( Affectorable * _affectorable, const AffectorPtr & _affector )
             {
                 const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( _affector );
+                UniqueId id = affectorHub->addAffector( _affector );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_Affectorable_stopAffector( Affectorable * _affectorable, AFFECTOR_ID _id )
+            bool s_Affectorable_stopAffector( Affectorable * _affectorable, UniqueId _id )
             {
                 const AffectorHubInterfacePtr & affectorHub = _affectorable->getAffectorHub();
 
@@ -631,7 +631,7 @@ namespace Mengine
 
                 affectorHub->setLinearSpeed( linearSpeed );
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -780,7 +780,7 @@ namespace Mengine
 
                 affectorHub->setLinearSpeed( _velocity );
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -832,7 +832,7 @@ namespace Mengine
 
                 affectorHub->setLinearSpeed( linearSpeed );
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -879,7 +879,7 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -944,7 +944,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1011,7 +1011,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1076,7 +1076,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1142,7 +1142,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1359,7 +1359,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1622,7 +1622,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1828,7 +1828,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1891,7 +1891,7 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
                 affectorHub->setAngularSpeed( angularSpeed );
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1944,7 +1944,7 @@ namespace Mengine
                     return 0;
                 }
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -1996,7 +1996,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 return id;
             }
@@ -2078,7 +2078,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 if( id == 0 )
                 {
@@ -2160,7 +2160,7 @@ namespace Mengine
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 if( id == 0 )
                 {

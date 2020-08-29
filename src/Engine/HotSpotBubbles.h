@@ -33,7 +33,7 @@ namespace Mengine
     protected:
         struct Bubble
         {
-            uint32_t id;
+            UniqueId id;
             mt::vec2f pos;
             mutable mt::vec2f pos_wm;
             float radius;

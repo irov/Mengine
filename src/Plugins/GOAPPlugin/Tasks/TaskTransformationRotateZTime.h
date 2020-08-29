@@ -31,7 +31,7 @@ namespace Mengine
         float m_time;
         ETransformationRotateMode m_mode;
 
-        AFFECTOR_ID m_id;
+        UniqueId m_id;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskTransformationRotateZTime> TaskTransformationRotateZTimePtr;

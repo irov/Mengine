@@ -31,6 +31,7 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
+        , m_vertexArrayId( 0 )
     {
         mt::ident_m4( m_worldMatrix );
         mt::ident_m4( m_viewMatrix );
@@ -68,6 +69,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::_finalizeService()
     {
+        if( m_vertexArrayId != 0 )
+        {
+            GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
+        }
+
         m_currentProgram = nullptr;
         m_currentProgramVariable = nullptr;
         m_currentVertexAttribute = nullptr;
@@ -164,24 +170,25 @@ namespace Mengine
         Mengine::initialize_GLEXT();
 #endif
 
-        const char * vendorStr = reinterpret_cast<const char *>(glGetString( GL_VENDOR ));
-        const char * rendererStr = reinterpret_cast<const char *>(glGetString( GL_RENDERER ));
-        const char * versionStr = reinterpret_cast<const char *>(glGetString( GL_VERSION ));
-        const char * extensionsStr = reinterpret_cast<const char *>(glGetString( GL_EXTENSIONS ));
-
-        MENGINE_UNUSED( vendorStr );
-        MENGINE_UNUSED( rendererStr );
-        MENGINE_UNUSED( versionStr );
-        MENGINE_UNUSED( extensionsStr );
-
         LOGGER_MESSAGE_RELEASE( "OpenGL driver properties" );
 
+        const char * vendorStr = reinterpret_cast<const char *>(glGetString( GL_VENDOR ));
         LOGGER_MESSAGE_RELEASE( "Vendor      : %s", vendorStr );
-        LOGGER_MESSAGE_RELEASE( "Renderer    : %s", rendererStr );
-        LOGGER_MESSAGE_RELEASE( "Version     : %s", versionStr );
-        LOGGER_MESSAGE_RELEASE( "Extensions  : %s", extensionsStr );
-
         OPENGL_RENDER_CHECK_ERROR();
+
+        const char * rendererStr = reinterpret_cast<const char *>(glGetString( GL_RENDERER ));
+        LOGGER_MESSAGE_RELEASE( "Renderer    : %s", rendererStr );
+        OPENGL_RENDER_CHECK_ERROR();
+
+        const char * versionStr = reinterpret_cast<const char *>(glGetString( GL_VERSION ));
+        LOGGER_MESSAGE_RELEASE( "Version     : %s", versionStr );
+        OPENGL_RENDER_CHECK_ERROR();
+
+#ifdef MENGINE_RENDER_OPENGL_ES
+        const char * extensionsStr = reinterpret_cast<const char *>(glGetString( GL_EXTENSIONS ));
+        LOGGER_MESSAGE_RELEASE( "Extensions  : %s", extensionsStr );
+        OPENGL_RENDER_CHECK_ERROR();
+#endif
 
         GLint maxCombinedTextureImageUnits;
         glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
@@ -203,16 +210,15 @@ namespace Mengine
         GLCALL( glDepthMask, (GL_FALSE) );
         GLCALL( glDepthFunc, (GL_LESS) );
 
-#ifndef MENGINE_RENDER_OPENGL_ES
-        GLCALL( glMatrixMode, (GL_MODELVIEW) );
-        GLCALL( glLoadIdentity, () );
+        GLuint vertexArrayId;
+        glGenVertexArrays( 1, &vertexArrayId );
 
-        GLCALL( glMatrixMode, (GL_PROJECTION) );
-        GLCALL( glLoadIdentity, () );
+        if( vertexArrayId == 0 )
+        {
+            return false;
+        }
 
-        GLCALL( glMatrixMode, (GL_TEXTURE) );
-        GLCALL( glLoadIdentity, () );
-#endif
+        m_vertexArrayId = vertexArrayId;
 
         for( const OpenGLRenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
@@ -632,6 +638,8 @@ namespace Mengine
             }
         }
 
+        GLCALL( glBindVertexArray, (m_vertexArrayId) );
+
         m_currentIndexBuffer->enable();
         m_currentVertexBuffer->enable();
 
@@ -665,6 +673,8 @@ namespace Mengine
         }
 
         m_currentProgram->disable();
+
+        GLCALL( glBindVertexArray, (0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture )

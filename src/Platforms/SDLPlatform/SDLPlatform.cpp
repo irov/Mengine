@@ -1950,76 +1950,6 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
-#elif defined(MENGINE_PLATFORM_OSX)
-        windowFlags |= SDL_WINDOW_HIDDEN;
-
-        if( _fullscreen == true )
-        {
-            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_CORE error: %s"
-                , SDL_GetError()
-            );
-        }
-        
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to 3 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to 2 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to 8 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to 8 error: %s"
-                , SDL_GetError()
-            );
-        }
-        
-        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to 8 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to 8 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to 24 error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to 1 error: %s"
-                , SDL_GetError()
-            );
-        }
 #else
         windowFlags |= SDL_WINDOW_HIDDEN;
 
@@ -2028,51 +1958,94 @@ namespace Mengine
             windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE ) != 0 )
+        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengl" );
+
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_CORE error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to %u error: %s"
+                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MINOR_VERSION", 1 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to 8 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to %u error: %s"
+                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_CORE );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to 8 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to %u error: %s"
+                , Engine_SDL_GL_CONTEXT_PROFILE_MASK
                 , SDL_GetError()
             );
         }
+
+        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_RED_SIZE", 8 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to %u error: %s"
+                , Engine_SDL_GL_RED_SIZE
+                , SDL_GetError()
+            );
+        }
+
+        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_GREEN_SIZE", 8 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to %u error: %s"
+                , Engine_SDL_GL_GREEN_SIZE
+                , SDL_GetError()
+            );
+        }
+
+        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_BLUE_SIZE", 8 );
         
-        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 ) != 0 )
+        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to 8 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to %u error: %s"
+                , Engine_SDL_GL_BLUE_SIZE
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 ) != 0 )
+        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_ALPHA_SIZE", 8 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to 8 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to %u error: %s"
+                , Engine_SDL_GL_ALPHA_SIZE
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 ) != 0 )
+        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_DEPTH_SIZE", 24 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to 24 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to %u error: %s"
+                , Engine_SDL_GL_DEPTH_SIZE
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 ) != 0 )
+        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE( "Engine", "SDL_GL_DOUBLEBUFFER", 1 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to 1 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to %u error: %s"
+                , Engine_SDL_GL_DOUBLEBUFFER
                 , SDL_GetError()
             );
         }

@@ -914,6 +914,42 @@ namespace Mengine
             return false;
         }
 
+        int attribute_GL_CONTEXT_PROFILE_MASK;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_GL_CONTEXT_MAJOR_VERSION;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_GL_CONTEXT_MINOR_VERSION;
+        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
+            , attribute_GL_CONTEXT_PROFILE_MASK
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
+            , attribute_GL_CONTEXT_MAJOR_VERSION
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
+            , attribute_GL_CONTEXT_MINOR_VERSION
+        );
+
         m_glContext = glContext;        
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
@@ -1961,7 +1997,7 @@ namespace Mengine
 
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengl" );
 
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MAJOR_VERSION", 3 );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
@@ -1971,7 +2007,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MINOR_VERSION", 1 );
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MINOR_VERSION", 2 );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
@@ -2133,42 +2169,6 @@ namespace Mengine
         }
 
         m_window = window;
-
-        int attribute_GL_CONTEXT_PROFILE_MASK;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) != 0 )
-        {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_GL_CONTEXT_MAJOR_VERSION;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) != 0 )
-        {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_GL_CONTEXT_MINOR_VERSION;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) != 0 )
-        {
-            LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_PROFILE_MASK: %d"
-            , attribute_GL_CONTEXT_PROFILE_MASK
-        );
-
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
-            , attribute_GL_CONTEXT_MAJOR_VERSION
-        );
-
-        LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
-            , attribute_GL_CONTEXT_MINOR_VERSION
-        );
 
         return true;
     }

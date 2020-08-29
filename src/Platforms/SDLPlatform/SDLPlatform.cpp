@@ -126,7 +126,6 @@ namespace Mengine
         const char * basePath = SDL_GetBasePath();
         
         MENGINE_STRCPY( _currentPath, basePath );
-        MENGINE_STRCAT( _currentPath, "../deploy-mac-data/" );
 
         return MENGINE_STRLEN( _currentPath );
 #elif defined(MENGINE_PLATFORM_ANDROID)

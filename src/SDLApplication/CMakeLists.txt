@@ -100,8 +100,8 @@ if(MENGINE_TARGET_MACOS)
         file(RELATIVE_PATH RES ${DEPLOY_DATA} ${myApp_DATA})
         get_filename_component(RES_LOC ${RES} PATH)
 
-        set_source_files_properties(${myApp_DATA} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy-mac-data/${RES_LOC}" HEADER_FILE_ONLY 1)
-        string(REPLACE "/" "\\" ide_group_name "Data/${RES_LOC}")
+        set_source_files_properties(${myApp_DATA} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/${RES_LOC}" HEADER_FILE_ONLY 1)
+        string(REPLACE "/" "\\" ide_group_name "Resources/${RES_LOC}")
         source_group(${ide_group_name} FILES ${myApp_DATA})
     endforeach()
 

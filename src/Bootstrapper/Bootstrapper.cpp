@@ -112,6 +112,10 @@ PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( ExternalBootstrapper );
 #endif
 
+#ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
+PLUGIN_EXPORT( AstralaxFont );
+#endif
+
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC
 PLUGIN_EXPORT( BitmapFont );
 #endif
@@ -788,6 +792,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_MOVIE1_STATIC
         MENGINE_ADD_PLUGIN( Movie1, "initialize Plugin Movie1...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
+        MENGINE_ADD_PLUGIN( Astralax, "initialize Plugin Astralax...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC

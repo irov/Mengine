@@ -4,6 +4,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/Char.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -53,7 +54,28 @@ namespace Mengine
         const Char * str_source = m_memory->getBuffer();
         GLint str_size = (GLint)m_memory->getSize();
 
-        GLCALL( glShaderSource, (shaderId, 1, &str_source, &str_size) );
+        GLint str_lengths[2];
+        const GLchar * str_sources[2];
+        GLsizei str_count;
+
+#ifdef MENGINE_RENDER_OPENGL_MACOS
+        const GLchar * str_header = "#version 130";
+
+        str_lengths[0] = (GLint)MENGINE_STRLEN( str_header );
+        str_lengths[1] = (GLint)str_size;
+
+        str_sources[0] = str_header;
+        str_sources[1] = str_source;
+        
+        str_count = 2;
+#else
+        str_lengths[0] = str_size;
+        str_sources[0] = str_source;
+
+        str_count = 1;
+#endif
+
+        GLCALL( glShaderSource, (shaderId, str_count, str_sources, str_lengths) );
         GLCALL( glCompileShader, (shaderId) );
 
         GLint status;

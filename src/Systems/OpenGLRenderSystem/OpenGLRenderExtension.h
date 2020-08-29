@@ -17,6 +17,11 @@ typedef void (APIENTRYP PFNGLBLENDEQUATIONPROC) (GLenum mode);
 
 extern PFNGLBLENDEQUATIONPROC               glBlendEquation_;
 
+// tt
+extern PFNGLGENVERTEXARRAYSPROC             glGenVertexArrays;
+extern PFNGLBINDVERTEXARRAYPROC             glBindVertexArray;
+extern PFNGLDELETEVERTEXARRAYSPROC          glDeleteVertexArrays;
+
 // vbo
 extern PFNGLGENBUFFERSPROC                  glGenBuffers;
 extern PFNGLBINDBUFFERPROC                  glBindBuffer;

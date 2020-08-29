@@ -245,7 +245,7 @@ namespace Mengine
                 return callback;
             }
             //////////////////////////////////////////////////////////////////////////
-            AFFECTOR_ID m_affectorMusicID;
+            UniqueId m_affectorMusicID;
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorMusic;
             //////////////////////////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ namespace Mengine
                     }
                 }
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 m_affectorMusicID = id;
 
@@ -337,7 +337,7 @@ namespace Mengine
                     }
                 }
 
-                AFFECTOR_ID id = affectorHub->addAffector( affector );
+                UniqueId id = affectorHub->addAffector( affector );
 
                 m_affectorMusicID = id;
 

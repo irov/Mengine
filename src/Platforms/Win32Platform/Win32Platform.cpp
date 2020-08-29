@@ -486,7 +486,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         TimerDesc desc;
         desc.id = new_id;
@@ -590,7 +590,7 @@ namespace Mengine
 
                 for( TimerDesc & desc : m_timers )
                 {
-                    if( desc.id == 0 )
+                    if( desc.id == INVALIDATE_UNIQUE_ID )
                     {
                         continue;
                     }
@@ -3363,7 +3363,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda )
     {
-        uint32_t id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         Win32ProcessDesc desc;
         desc.id = id;

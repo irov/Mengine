@@ -7,6 +7,8 @@
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/Vector.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -81,7 +83,7 @@ namespace Mengine
 
         struct SchedulerEventDesc
         {
-            uint32_t id;
+            UniqueId id;
 
             SchedulerEventInterfacePtr event;
             SchedulerTimingInterfacePtr timer;

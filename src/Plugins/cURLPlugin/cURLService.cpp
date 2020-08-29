@@ -193,7 +193,7 @@ namespace Mengine
             return 0;
         }
 
-        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -232,7 +232,7 @@ namespace Mengine
             return 0;
         }
 
-        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -271,7 +271,7 @@ namespace Mengine
             return 0;
         }
 
-        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -323,7 +323,7 @@ namespace Mengine
 
         FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", _filePath.c_str() );
 
-        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FACTORABLE );
 

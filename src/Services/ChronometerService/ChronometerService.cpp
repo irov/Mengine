@@ -45,7 +45,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         ChronometerDesc desc;
         desc.id = new_id;

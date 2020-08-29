@@ -5,6 +5,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     class TimepipeService
@@ -28,7 +30,7 @@ namespace Mengine
     protected:
         struct TimepipeDesc
         {
-            uint32_t id;
+            UniqueId id;
             TimepipeInterfacePtr timepipe;
             DocumentPtr doc;
         };

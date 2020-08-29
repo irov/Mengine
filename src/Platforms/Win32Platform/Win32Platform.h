@@ -10,6 +10,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     class Win32Platform
@@ -204,7 +206,7 @@ namespace Mengine
 
         struct TimerDesc
         {
-            uint32_t id;
+            UniqueId id;
             float milliseconds;
             float time;
             LambdaTimer lambda;

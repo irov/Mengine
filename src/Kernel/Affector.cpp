@@ -33,12 +33,12 @@ namespace Mengine
         return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Affector::setId( AFFECTOR_ID _id ) noexcept
+    void Affector::setId( UniqueId _id ) noexcept
     {
         m_id = _id;
     }
     //////////////////////////////////////////////////////////////////////////
-    AFFECTOR_ID Affector::getId() const noexcept
+    UniqueId Affector::getId() const noexcept
     {
         return m_id;
     }

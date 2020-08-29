@@ -26,9 +26,9 @@ namespace Mengine
         const AffectorHubProviderInterface * getAffectorHubProvider() const override;
 
     public:
-        AFFECTOR_ID addAffector( const AffectorPtr & _affector ) override;
-        bool hasAffector( AFFECTOR_ID _id ) const override;
-        bool stopAffector( AFFECTOR_ID _id ) override;
+        UniqueId addAffector( const AffectorPtr & _affector ) override;
+        bool hasAffector( UniqueId _id ) const override;
+        bool stopAffector( UniqueId _id ) override;
 
     public:
         void stopAffectors( EAffectorType _type ) override;

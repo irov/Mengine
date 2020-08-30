@@ -323,13 +323,20 @@ namespace Mengine
         float OpenGL_PerfectPixelOffsetX = CONFIG_VALUE( "OpenGL", "PerfectPixelOffsetX", 0.f );
         float OpenGL_PerfectPixelOffsetY = CONFIG_VALUE( "OpenGL", "PerfectPixelOffsetY", 0.f );
 
-        float perfect_x = OpenGL_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        float perfect_y = OpenGL_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
+        if( OpenGL_PerfectPixelOffsetX != 0.f || OpenGL_PerfectPixelOffsetY != 0.f )
+        {
+            float perfect_x = OpenGL_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
+            float perfect_y = OpenGL_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
-        mt::mat4f vmperfect;
-        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
+            mt::mat4f vmperfect;
+            mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
 
-        mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+            mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+        }
+        else
+        {
+            m_projectionMatrix = _projectionMatrix;
+        }
 
         this->updatePMWMatrix_();
     }

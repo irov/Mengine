@@ -217,13 +217,15 @@ namespace Mengine
         FactoryPtr m_factoryRenderIndexBuffer;
         FactoryPtr m_factoryRenderImage;
         FactoryPtr m_factoryRenderImageTarget;
-        FactoryPtr m_factoryRenderTargetTexture;        
+        FactoryPtr m_factoryRenderTargetTexture;
         FactoryPtr m_factoryRenderVertexAttribute;
         FactoryPtr m_factoryRenderFragmentShader;
         FactoryPtr m_factoryRenderVertexShader;
         FactoryPtr m_factoryRenderProgram;
         FactoryPtr m_factoryRenderProgramVariable;
 
+#ifdef MENGINE_RENDER_OPENGL
         GLuint m_vertexArrayId;
+#endif
     };
 }

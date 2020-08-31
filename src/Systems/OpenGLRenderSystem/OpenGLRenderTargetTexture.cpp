@@ -76,7 +76,7 @@ namespace Mengine
         }
 
         return true;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::finalize()
     {

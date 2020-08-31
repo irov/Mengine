@@ -1511,6 +1511,20 @@ namespace Mengine
                 return MENGINE_RESOURCE_GIT_SHA1;
             }
             //////////////////////////////////////////////////////////////////////////
+            const Char * s_getBuildMode()
+            {
+                bool publish = MENGINE_PUBLISH_VALUE( true, false );
+
+                if( publish == true )
+                {
+                    return "publish";
+                }
+
+                const Char * mode = MENGINE_MASTER_VALUE( "alpha", "develop" );
+
+                return mode;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
             {
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
@@ -3515,6 +3529,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "isPointInsidePolygon", helperScriptMethod, &HelperScriptMethod::s_isPointInsidePolygon );
 
+        pybind::def_functor( _kernel, "getBuildMode", helperScriptMethod, &HelperScriptMethod::s_getBuildMode );
         pybind::def_functor( _kernel, "getBuildVersion", helperScriptMethod, &HelperScriptMethod::s_getBuildVersion );
         pybind::def_functor( _kernel, "getEngineGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getEngineGitSHA1 );
         pybind::def_functor( _kernel, "getResourceGitSHA1", helperScriptMethod, &HelperScriptMethod::s_getResourceGitSHA1 );

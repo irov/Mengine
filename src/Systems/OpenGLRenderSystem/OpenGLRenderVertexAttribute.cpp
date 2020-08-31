@@ -31,16 +31,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
-        Attribute attr;
+        AttributeDesc attr;
         attr.uniform = _uniform;
         attr.location = -1;
         attr.size = _size;
         attr.type = _type;
-        attr.normalized = _normalized == true ? GL_TRUE : GL_FALSE;
         attr.stride = _stride;
         attr.offset = _offset;
+        attr.normalized = _normalized == true ? GL_TRUE : GL_FALSE;
 
-        m_attributes.push_back( attr );
+        m_attributes.emplace_back( attr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
@@ -53,7 +53,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexAttribute::compile( GLuint _program )
     {
-        for( Attribute & attribute : m_attributes )
+        for( AttributeDesc & attribute : m_attributes )
         {
             const Char * attribute_uniform_str = attribute.uniform.c_str();
 
@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexAttribute::enable()
     {
-        for( const Attribute & attribute : m_attributes )
+        for( const AttributeDesc & attribute : m_attributes )
         {
             GLint attribute_location = attribute.location;
 
@@ -98,7 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexAttribute::disable()
     {
-        for( const Attribute & attribute : m_attributes )
+        for( const AttributeDesc & attribute : m_attributes )
         {
             GLCALL( glDisableVertexAttribArray, (attribute.location) );
         }

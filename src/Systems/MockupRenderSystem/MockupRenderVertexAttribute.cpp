@@ -54,9 +54,9 @@ namespace Mengine
         desc.uniform = _uniform;
         desc.size = _size;
         desc.type = _type;
-        desc.normalized = _normalized;
         desc.stride = _stride;
         desc.offset = _offset;
+        desc.normalized = _normalized;
 
         m_attributes.emplace_back( desc );
     }

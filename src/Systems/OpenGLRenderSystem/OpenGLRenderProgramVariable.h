@@ -50,7 +50,7 @@ namespace Mengine
 
         struct ProgramVariableDesc
         {
-            Char uniform[32];
+            Char uniform[32] = {'\0'};
             EProgramVariableType type;
             uint32_t offset;
             uint32_t size;

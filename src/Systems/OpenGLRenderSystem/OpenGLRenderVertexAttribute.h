@@ -39,7 +39,7 @@ namespace Mengine
         ConstString m_name;
         uint32_t m_elementSize;
 
-        struct Attribute
+        struct AttributeDesc
         {
             ConstString uniform;
             GLint location;
@@ -52,7 +52,7 @@ namespace Mengine
             GLboolean normalized;
         };
 
-        typedef Vector<Attribute> VectorAttribute;
+        typedef Vector<AttributeDesc> VectorAttribute;
         VectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////

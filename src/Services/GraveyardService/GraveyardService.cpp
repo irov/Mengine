@@ -17,7 +17,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     GraveyardService::GraveyardService()
-        : m_count( 0 )
+        : m_timepipe( 0 )
+        , m_count( 0 )
         , m_graveyardTime( 1000.f )
     {
     }

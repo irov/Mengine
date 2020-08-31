@@ -31,7 +31,9 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
+#ifdef MENGINE_RENDER_OPENGL
         , m_vertexArrayId( 0 )
+#endif
     {
         mt::ident_m4( m_worldMatrix );
         mt::ident_m4( m_viewMatrix );
@@ -69,10 +71,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::_finalizeService()
     {
+#ifdef MENGINE_RENDER_OPENGL
         if( m_vertexArrayId != 0 )
         {
             GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
+            m_vertexArrayId = 0;
         }
+#endif
 
         m_currentProgram = nullptr;
         m_currentProgramVariable = nullptr;
@@ -189,8 +194,8 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "Extensions  : %s", extensionsStr );
         OPENGL_RENDER_CHECK_ERROR();
 #endif
-        
-        const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+        const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
         LOGGER_MESSAGE_RELEASE( "Shading Language Version     : %s", shadingLanguageVersion );
         OPENGL_RENDER_CHECK_ERROR();
 
@@ -214,6 +219,7 @@ namespace Mengine
         GLCALL( glDepthMask, (GL_FALSE) );
         GLCALL( glDepthFunc, (GL_LESS) );
 
+#ifdef MENGINE_RENDER_OPENGL
         GLuint vertexArrayId;
         glGenVertexArrays( 1, &vertexArrayId );
 
@@ -223,6 +229,7 @@ namespace Mengine
         }
 
         m_vertexArrayId = vertexArrayId;
+#endif
 
         for( const OpenGLRenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
@@ -601,7 +608,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_currentIndexBuffer != nullptr );
         MENGINE_ASSERTION_FATAL( m_currentVertexBuffer != nullptr );
         MENGINE_ASSERTION_FATAL( m_currentProgram != nullptr );
-        
+
         if( m_currentProgram->enable() == false )
         {
             return;
@@ -649,7 +656,9 @@ namespace Mengine
             }
         }
 
+#ifdef MENGINE_RENDER_OPENGL
         GLCALL( glBindVertexArray, (m_vertexArrayId) );
+#endif
 
         m_currentIndexBuffer->enable();
         m_currentVertexBuffer->enable();
@@ -685,7 +694,9 @@ namespace Mengine
 
         m_currentProgram->disable();
 
+#ifdef MENGINE_RENDER_OPENGL
         GLCALL( glBindVertexArray, (0) );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture )
@@ -1221,7 +1232,7 @@ namespace Mengine
         if( it_found == m_cacheRenderVertexBuffers.end() )
         {
             return;
-        }        
+        }
 
         *it_found = m_cacheRenderVertexBuffers.back();
         m_cacheRenderVertexBuffers.pop_back();
@@ -1251,7 +1262,7 @@ namespace Mengine
         if( it_found == m_cacheRenderImages.end() )
         {
             return;
-        }        
+        }
 
         *it_found = m_cacheRenderImages.back();
         m_cacheRenderImages.pop_back();
@@ -1266,7 +1277,7 @@ namespace Mengine
         if( it_found == m_cacheRenderImageTargets.end() )
         {
             return;
-        }        
+        }
 
         *it_found = m_cacheRenderImageTargets.back();
         m_cacheRenderImageTargets.pop_back();
@@ -1281,7 +1292,7 @@ namespace Mengine
         if( it_found == m_cacheRenderTargetTextures.end() )
         {
             return;
-        }        
+        }
 
         *it_found = m_cacheRenderTargetTextures.back();
         m_cacheRenderTargetTextures.pop_back();
@@ -1296,7 +1307,7 @@ namespace Mengine
         if( it_found == m_cacheRenderVertexShaders.end() )
         {
             return;
-        }        
+        }
 
         *it_found = m_cacheRenderVertexShaders.back();
         m_cacheRenderVertexShaders.pop_back();
@@ -1311,7 +1322,7 @@ namespace Mengine
         if( it_found == m_cacheRenderFragmentShaders.end() )
         {
             return;
-        }        
+        }
 
         *it_found = m_cacheRenderFragmentShaders.back();
         m_cacheRenderFragmentShaders.pop_back();
@@ -1326,7 +1337,7 @@ namespace Mengine
         if( it_found == m_cacheRenderPrograms.end() )
         {
             return;
-        }        
+        }
 
         *it_found = m_cacheRenderPrograms.back();
         m_cacheRenderPrograms.pop_back();

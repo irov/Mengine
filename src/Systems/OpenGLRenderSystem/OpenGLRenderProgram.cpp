@@ -98,7 +98,7 @@ namespace Mengine
 
         if( linked == GL_FALSE )
         {
-            GLchar errorLog[1024] = { 0 };
+            GLchar errorLog[1024] = {0};
             GLCALL( glGetProgramInfoLog, (programId, 1023, NULL, errorLog) );
 
             LOGGER_ERROR( "program '%s' linking error '%s'"
@@ -118,7 +118,7 @@ namespace Mengine
             return false;
         }
 
-        const Char * matrix_uniforms[] = { "viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix" };
+        const Char * matrix_uniforms[] = {"viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix"};
 
         for( uint32_t index = 0; index != EPML_MAX_COUNT; ++index )
         {

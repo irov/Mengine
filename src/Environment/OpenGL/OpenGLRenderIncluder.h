@@ -18,6 +18,7 @@
 #   include "SDL_opengles2.h"
 
 #   define MENGINE_RENDER_OPENGL_ES
+#   define MENGINE_RENDER_OPENGL_ES_IOS
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
@@ -29,18 +30,29 @@
 #   include "SDL_opengles2_gl2ext.h"
 
 #   define MENGINE_RENDER_OPENGL_ES
+#   define MENGINE_RENDER_OPENGL_ES_ANDROID
 #endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_LINUX)
+#if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "SDL_opengl.h"
 #   include "SDL_opengl_glext.h"
 
 #   define MENGINE_RENDER_OPENGL
+#   define MENGINE_RENDER_OPENGL_WINDOWS
+#endif
+
+#if defined(MENGINE_PLATFORM_LINUX)
+#   include "SDL_opengl.h"
+#   include "SDL_opengl_glext.h"
+
+#   define MENGINE_RENDER_OPENGL
+#   define MENGINE_RENDER_OPENGL_LINUX
 #endif
 
 #if defined(MENGINE_PLATFORM_OSX)
 #   include "SDL_opengl.h"
 #   include "SDL_opengl_glext.h"
 
+#   define MENGINE_RENDER_OPENGL
 #   define MENGINE_RENDER_OPENGL_OSX
 #endif

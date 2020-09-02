@@ -952,6 +952,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
     {
+        MENGINE_UNUSED( _depth );
+
         GLbitfield frameBufferFlags = 0;
 
         if( (_frameBufferTypes & FBT_COLOR) != 0 )

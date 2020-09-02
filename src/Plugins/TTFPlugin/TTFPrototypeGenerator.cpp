@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer TTFPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
-        const FactoryPtr & factory = this->getFactory();
+        const FactoryPtr & factory = this->getPrototypeFactory();
 
         TTFFontPtr font = factory->createObject( _doc );
 

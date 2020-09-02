@@ -14,6 +14,8 @@ namespace Mengine
         {
             static bool __Win32GetCurrentDllPath( Char * const _path )
             {
+                MENGINE_UNUSED( _path );
+
 #ifdef MENGINE_PLATFORM_WINDOWS
                 WCHAR unicode_path[MENGINE_MAX_PATH] = { L'\0' };
                 HMODULE hm = NULL;

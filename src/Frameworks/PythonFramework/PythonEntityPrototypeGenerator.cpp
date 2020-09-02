@@ -138,7 +138,7 @@ namespace Mengine
 
         entity->setBehaviorEventable( m_eventable );
 
-        const FactoryPtr & factory = this->getFactory();
+        const FactoryPtr & factory = this->getPrototypeFactory();
 
         PythonEntityBehaviorPtr behavior = factory->createObject( _doc );
         behavior->setScriptObject( py_entity );

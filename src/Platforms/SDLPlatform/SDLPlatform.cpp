@@ -145,8 +145,6 @@ namespace Mengine
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 
-        FilePath userPat1h;
-        FilePath userPat2h;
         if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
             Char currentPath[MENGINE_MAX_PATH];
@@ -1629,6 +1627,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
+        MENGINE_UNUSED( _base );
+        MENGINE_UNUSED( _path );
+        MENGINE_UNUSED( _mask );
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_base[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
@@ -1731,6 +1733,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t SDLPlatform::getFileTime( const Char * _filePath ) const
     {
+        MENGINE_UNUSED( _filePath );
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_filePath[MENGINE_MAX_PATH];
         Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );

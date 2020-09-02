@@ -20,7 +20,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
-        m_factory = factory;
+        m_prototypeFactory = factory;
 
         return true;
     }
@@ -29,13 +29,13 @@ namespace Mengine
     {
         this->_finalizeFactory();
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
-        m_factory = nullptr;
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_prototypeFactory );
+        m_prototypeFactory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t FactoryPrototypeGenerator::count() const
     {
-        uint32_t count = m_factory->getCountObject();
+        uint32_t count = m_prototypeFactory->getCountObject();
 
         return count;
     }

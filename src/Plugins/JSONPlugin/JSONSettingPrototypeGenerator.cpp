@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer JSONSettingPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
-        const FactoryPtr & factory = this->getFactory();
+        const FactoryPtr & factory = this->getPrototypeFactory();
 
         TypePtr setting = factory->createObject( _doc );
 

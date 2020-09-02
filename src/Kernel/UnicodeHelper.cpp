@@ -29,7 +29,9 @@ namespace Mengine
 
             _utf8->resize( utf8Size );
 
-            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, _utf8->data(), utf8Size, nullptr ) == false )
+            Char * utf8_data = _utf8->data();
+
+            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, utf8_data, utf8Size, nullptr ) == false )
             {
                 _utf8->clear();
 
@@ -117,7 +119,9 @@ namespace Mengine
 
             _unicode->resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, _unicode->data(), unicodeSize, nullptr ) == false )
+            WChar * unicode_data = _unicode->data();
+
+            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, unicode_data, unicodeSize, nullptr ) == false )
             {
                 _unicode->clear();
 
@@ -155,7 +159,9 @@ namespace Mengine
 
             _unicode->resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode->data(), unicodeSize, nullptr ) == false )
+            WChar * unicode_data = _unicode->data();
+
+            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, unicode_data, unicodeSize, nullptr ) == false )
             {
                 _unicode->clear();
 

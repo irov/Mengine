@@ -709,14 +709,14 @@ namespace Mengine
             public:
                 bool initialize()
                 {
-                    m_factory = Helper::makeFactoryPool<AffectorVelocity2, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                    m_affectorFactory = Helper::makeFactoryPool<AffectorVelocity2, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                     return true;
                 }
 
                 void finalize()
                 {
-                    m_factory = nullptr;
+                    m_affectorFactory = nullptr;
                 }
 
             public:
@@ -725,7 +725,7 @@ namespace Mengine
                     , const AffectorCallbackInterfacePtr & _cb
                     , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const DocumentPtr & _doc )
                 {
-                    AffectorVelocity2Ptr affector = m_factory->createObject( _doc );
+                    AffectorVelocity2Ptr affector = m_affectorFactory->createObject( _doc );
 
                     affector->setAffectorType( _type );
                     affector->setEasing( _easing );
@@ -738,7 +738,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_factory;
+                FactoryPtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorVelocity2> FactoryAffectorVelocity2Ptr;
@@ -1283,14 +1283,14 @@ namespace Mengine
             public:
                 bool initialize()
                 {
-                    m_factory = Helper::makeFactoryPool<AffectorCreatorInterpolateParabolic, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                    m_affectorFactory = Helper::makeFactoryPool<AffectorCreatorInterpolateParabolic, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                     return true;
                 }
 
                 void finalize()
                 {
-                    m_factory = nullptr;
+                    m_affectorFactory = nullptr;
                 }
 
             public:
@@ -1299,7 +1299,7 @@ namespace Mengine
                     , const AffectorCallbackInterfacePtr & _cb
                     , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const DocumentPtr & _doc )
                 {
-                    AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
+                    AffectorCreatorInterpolateParabolicPtr affector = m_affectorFactory->createObject( _doc );
 
                     affector->setAffectorType( _type );
                     affector->setEasing( _easing );
@@ -1312,7 +1312,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_factory;
+                FactoryPtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorInterpolateParabolic> FactoryAffectorInterpolateParabolicPtr;
@@ -1532,14 +1532,14 @@ namespace Mengine
             public:
                 bool initialize()
                 {
-                    m_factory = Helper::makeFactoryPool<AffectorCreatorFollowTo, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                    m_affectorFactory = Helper::makeFactoryPool<AffectorCreatorFollowTo, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                     return true;
                 }
 
                 void finalize()
                 {
-                    m_factory = nullptr;
+                    m_affectorFactory = nullptr;
                 }
 
             public:
@@ -1550,7 +1550,7 @@ namespace Mengine
                     , bool _rotate
                     , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const DocumentPtr & _doc )
                 {
-                    AffectorCreatorFollowToPtr affector = m_factory->createObject( _doc );
+                    AffectorCreatorFollowToPtr affector = m_affectorFactory->createObject( _doc );
 
                     affector->setAffectorType( _type );
                     affector->setEasing( _easing );
@@ -1565,7 +1565,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_factory;
+                FactoryPtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorFollowTo> FactoryAffectorFollowToPtr;
@@ -1744,15 +1744,15 @@ namespace Mengine
             public:
                 bool initialize()
                 {
-                    m_factory = Helper::makeFactoryPool<AffectorCreatorFollowToW, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                    m_affectorFactory = Helper::makeFactoryPool<AffectorCreatorFollowToW, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                     return true;
                 }
 
                 void finalize()
                 {
-                    MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
-                    m_factory = nullptr;
+                    MENGINE_ASSERTION_FACTORY_EMPTY( m_affectorFactory );
+                    m_affectorFactory = nullptr;
                 }
 
             public:
@@ -1762,7 +1762,7 @@ namespace Mengine
                     , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset
                     , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const DocumentPtr & _doc )
                 {
-                    AffectorCreatorFollowToWPtr affector = m_factory->createObject( _doc );
+                    AffectorCreatorFollowToWPtr affector = m_affectorFactory->createObject( _doc );
 
                     affector->setAffectorType( _type );
                     affector->setEasing( _easing );
@@ -1777,7 +1777,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_factory;
+                FactoryPtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<FactoryAffectorFollowToW> FactoryAffectorFollowToWPtr;

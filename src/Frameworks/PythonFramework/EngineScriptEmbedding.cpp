@@ -2482,21 +2482,21 @@ namespace Mengine
             public:
                 bool initialize()
                 {
-                    m_factory = Helper::makeFactoryPool<TAffectorNodeFollowerMethod, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                    m_affectorFactory = Helper::makeFactoryPool<TAffectorNodeFollowerMethod, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                     return true;
                 }
 
                 void finalize()
                 {
-                    MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
-                    m_factory = nullptr;
+                    MENGINE_ASSERTION_FACTORY_EMPTY( m_affectorFactory );
+                    m_affectorFactory = nullptr;
                 }
 
             public:
                 AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed, const DocumentPtr & _doc )
                 {
-                    TAffectorNodeFollowerMethodPtr affector = m_factory->createObject( _doc );
+                    TAffectorNodeFollowerMethodPtr affector = m_affectorFactory->createObject( _doc );
 
                     affector->setAffectorable( _affectorable );
 
@@ -2516,7 +2516,7 @@ namespace Mengine
                 }
 
             protected:
-                FactoryPtr m_factory;
+                FactoryPtr m_affectorFactory;
             };
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<AffectorNodeFollowerCreator<Node, float>> m_creatorAffectorNodeFollowerLocalAlpha;

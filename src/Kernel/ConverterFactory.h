@@ -29,28 +29,28 @@ namespace Mengine
     protected:
         bool initialize() override
         {
-            m_factory = Helper::makeFactoryPool<T, 8>( MENGINE_DOCUMENT_FACTORABLE );
+            m_converterFactory = Helper::makeFactoryPool<T, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         }
 
         void finalize() override
         {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_converterFactory );
 
-            m_factory = nullptr;
+            m_converterFactory = nullptr;
         }
 
     protected:
         ConverterInterfacePtr createConverter( const DocumentPtr & _doc ) override
         {
-            IntrusivePtr<T> converter = m_factory->createObject( _doc );
+            IntrusivePtr<T> converter = m_converterFactory->createObject( _doc );
 
             return converter;
         }
 
     protected:
-        FactoryPtr m_factory;
+        FactoryPtr m_converterFactory;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

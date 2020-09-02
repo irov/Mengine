@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer BitmapFontPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
-        const FactoryPtr & factory = this->getFactory();
+        const FactoryPtr & factory = this->getPrototypeFactory();
 
         BitmapFontPtr font = factory->createObject( _doc );
 

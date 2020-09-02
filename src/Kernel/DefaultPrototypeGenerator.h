@@ -42,7 +42,7 @@ namespace Mengine
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
         {
-            const FactoryPtr & factory = this->getFactory();
+            const FactoryPtr & factory = this->getPrototypeFactory();
 
             TypePtr object = factory->createObject( _doc );
 

@@ -5,19 +5,19 @@ apply plugin: 'io.sentry.android.gradle'
 
 android {
     buildToolsVersion '29.0.3'
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     ext.getBooleanProperty = { name ->
-        def p = project.getProperties().get(name, null);
+        def p = project.getProperties().get(name, null)
 
         if( p == null )
         {
-            return false;
+            return false
         }
 
         if( p as Integer == 0 )
         {
-            return false;
+            return false
         }
 
         return true
@@ -66,17 +66,17 @@ android {
         println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH")
         
         print 'ANDROID_APP_BUILD_NUMBER = '
-        println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", null);
+        println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", null)
         
-        def buildNumber = 0;
+        def buildNumber = 0
         if (project.hasProperty("ANDROID_APP_BUILD_NUMBER")) {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
         }
 
         if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
-            versionCode = 400000000 + buildNumber;
+            versionCode = 400000000 + buildNumber
         } else {
-            versionCode = 300000000 + buildNumber;
+            versionCode = 300000000 + buildNumber
         }
         
         if (project.hasProperty("ANDROID_APP_VERSION_NAME")) {

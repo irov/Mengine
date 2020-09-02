@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     buildToolsVersion '29.0.3'
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 19

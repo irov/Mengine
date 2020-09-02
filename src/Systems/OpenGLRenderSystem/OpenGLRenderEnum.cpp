@@ -320,6 +320,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLFillMode( EFillMode _op )
         {
+            MENGINE_UNUSED( _op );
+
 #ifndef MENGINE_RENDER_OPENGL_ES
             switch( _op )
             {

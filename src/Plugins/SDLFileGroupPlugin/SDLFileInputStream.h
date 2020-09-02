@@ -40,7 +40,6 @@ namespace Mengine
 
     protected:
         bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _fullPath );
-        void close_();
         bool read_( void * _buf, size_t _size, size_t & _read );
         bool seek_( size_t _pos );
 

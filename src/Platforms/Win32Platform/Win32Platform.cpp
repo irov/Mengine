@@ -31,7 +31,9 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Stringstream.h"
+
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -3354,6 +3356,21 @@ namespace Mengine
         {
             ::SetCursor( NULL );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::messageBox( const Char * _format, ... ) const
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
+
+        Char str[MENGINE_LOGGER_MAX_MESSAGE];
+        int32_t size_sprintf = MENGINE_SPRINTF( str, "%s", _format );
+        MENGINE_VA_LIST_END( args );
+
+        if( size_sprintf > 0 )
+        {
+            ::MessageBoxA( NULL, str, "Message", MB_OK );
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     UnknownPointer Win32Platform::getPlatformExtention()

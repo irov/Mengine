@@ -290,21 +290,34 @@ namespace Mengine
 
         if( HAS_OPTION( "author" ) == true || HAS_OPTION( "support" ) == true )
         {
-            LOGGER_CRITICAL( "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
+            PLATFORM_SERVICE()
+                ->messageBox( "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
         if( HAS_OPTION( "buildcommit" ) == true )
         {
-            LOGGER_CRITICAL( "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
+            PLATFORM_SERVICE()
+                ->messageBox( "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
         else
         {
             LOGGER_MESSAGE_RELEASE( "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
 
+        if( HAS_OPTION( "resourcecommit" ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->messageBox( "resource commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "resource commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+        }
+
         if( HAS_OPTION( "buildversion" ) == true )
         {
-            LOGGER_CRITICAL( "build version: %s", MENGINE_BUILD_VERSION );
+            PLATFORM_SERVICE()
+                ->messageBox( "build version: %s", MENGINE_BUILD_VERSION );
         }
         else
         {

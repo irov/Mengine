@@ -147,6 +147,9 @@ namespace Mengine
     public:
         void sleep( uint32_t _ms ) override;
 
+    protected:
+        void messageBox( const Char * _format, ... ) const override;
+
     public:
         UnknownPointer getPlatformExtention() override;
 

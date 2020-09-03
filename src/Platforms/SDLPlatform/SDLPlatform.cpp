@@ -38,6 +38,7 @@
 #include "Kernel/StringHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
 #   include "TargetConditionals.h"
@@ -1811,6 +1812,21 @@ namespace Mengine
         MENGINE_UNUSED( _ms );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::messageBox( const Char * _format, ... ) const
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
+
+        Char str[MENGINE_LOGGER_MAX_MESSAGE];
+        int32_t size_sprintf = MENGINE_SPRINTF( str, "%s", _format );
+        MENGINE_VA_LIST_END( args );
+
+        if( size_sprintf > 0 )
+        {
+            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, "message", str, nullptr );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     UnknownPointer SDLPlatform::getPlatformExtention()

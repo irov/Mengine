@@ -316,7 +316,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ndk:17.2.1'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'io.sentry:sentry-android:2.1.6'
+    implementation 'io.sentry:sentry-android:2.3.1'
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')

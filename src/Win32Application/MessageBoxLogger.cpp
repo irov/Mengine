@@ -20,6 +20,6 @@ namespace Mengine
         MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _count );
 
-        MessageBoxA( NULL, _data, "Critical Error", MB_OK );
+        ::MessageBoxA( NULL, _data, "Critical Error", MB_OK );
     }
 }

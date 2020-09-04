@@ -3588,13 +3588,10 @@ namespace Mengine
                     ->visitGroupResources( _groupName, rv_gac );
             }
             //////////////////////////////////////////////////////////////////////////
-            class IncrefResourceVisitor
-                : public Visitor
-                , public Factorable
-                , public ConcreteVisitor<Resource>
+            void s_incrementResources( const ConstString & _groupName )
             {
-            protected:
-                void accept( Resource * _resource ) override
+                RESOURCE_SERVICE()
+                    ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
                 {
                     if( _resource->compile() == false )
                     {
@@ -3604,39 +3601,16 @@ namespace Mengine
                             , _resource->getContent() ? _resource->getContent()->getFilePath().c_str() : "[no content]"
                         );
                     }
-                }
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<IncrefResourceVisitor> IncrefResourceVisitorPtr;
-            //////////////////////////////////////////////////////////////////////////
-            void s_incrementResources( const ConstString & _groupName )
-            {
-                IncrefResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<IncrefResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
-
-                RESOURCE_SERVICE()
-                    ->visitGroupResources( _groupName, rv_gac );
+                } );
             }
-            //////////////////////////////////////////////////////////////////////////
-            class DecrementResourceVisitor
-                : public Visitor
-                , public Factorable
-                , public ConcreteVisitor<Resource>
-            {
-            protected:
-                void accept( Resource * _resource ) override
-                {
-                    _resource->release();
-                }
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<DecrementResourceVisitor> DecrementResourceVisitorPtr;
             //////////////////////////////////////////////////////////////////////////
             void s_decrementResources( const ConstString & _groupName )
             {
-                DecrementResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<DecrementResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
-
                 RESOURCE_SERVICE()
-                    ->visitGroupResources( _groupName, rv_gac );
+                    ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
+                {
+                    _resource->release();
+                } );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_incrementResourcesTags( const Tags & _tags )

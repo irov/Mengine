@@ -58,7 +58,8 @@
 #include "Engine/HotSpotCircle.h"
 #include "Engine/HotSpotBubbles.h"
 #include "Engine/HotSpotImage.h"
-#include "Engine/HotSpotShape.h"
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
 
@@ -374,7 +375,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_destroyScheduler( const SchedulerInterfacePtr & _sm )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _sm, "destroy scheduler is NULL" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _sm, "destroy scheduler is nullptr" );
 
                 bool successful = PLAYER_SERVICE()
                     ->destroySchedulerManager( _sm );
@@ -1056,7 +1057,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ShapeQuadFixedPtr s_createSprite( const ConstString & _name, const ResourcePtr & _resource )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is NULL"
+                MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is nullptr"
                     , _name.c_str()
                     );
 

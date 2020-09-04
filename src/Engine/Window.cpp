@@ -68,7 +68,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceWindow, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceWindow, "'%s' resource is nullptr"
             , this->getName().c_str()
         );
 

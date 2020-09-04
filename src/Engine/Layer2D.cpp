@@ -153,7 +153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _resourceImageMask, "image mask is null" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _resourceImageMask, "image mask is nullptr" );
 
         m_resourceImageMask = _resourceImageMask;
 

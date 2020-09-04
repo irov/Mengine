@@ -24,7 +24,8 @@
 #include "Kernel/ArrayString.h"
 
 #include "Engine/HotSpot.h"
-#include "Engine/HotSpotShape.h"
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
 
 #include "pybind/pybind.hpp"
 
@@ -561,7 +562,7 @@ namespace Mengine
 
             const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( framePack, "sub_movie '%s' not found layer '%s' frame pack is null"
+            MENGINE_ASSERTION_MEMORY_PANIC( framePack, "sub_movie '%s' not found layer '%s' frame pack is nullptr"
                 , sub_movie->getName().c_str()
                 , _name.c_str()
             );
@@ -950,8 +951,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_intersectsMoviesHotspot( Movie * _movie1, const ConstString & _socket1, Movie * _movie2, const ConstString & _socket2 )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _movie1, "movie1 is NULL" );
-            MENGINE_ASSERTION_MEMORY_PANIC( _movie2, "movie2 is NULL" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie1, "movie1 is nullptr" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie2, "movie2 is nullptr" );
 
             if( _movie1->enable() == false )
             {
@@ -995,7 +996,7 @@ namespace Mengine
                 return false;
             }
 
-            HotSpotShapePtr shape1 = stdex::intrusive_static_cast<HotSpotShapePtr>(node1);
+            HotSpotResourceShapePtr shape1 = stdex::intrusive_static_cast<HotSpotResourceShapePtr>(node1);
 
             if( shape1->enable() == false )
             {
@@ -1007,7 +1008,7 @@ namespace Mengine
                 return false;
             }
 
-            HotSpotShapePtr shape2 = stdex::intrusive_static_cast<HotSpotShapePtr>(node2);
+            HotSpotResourceShapePtr shape2 = stdex::intrusive_static_cast<HotSpotResourceShapePtr>(node2);
 
             if( shape2->enable() == false )
             {
@@ -1048,7 +1049,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, const Polygon & _polygon )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _movie, "movie is NULL" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie, "movie is nullptr" );
 
             if( _movie->enable() == false )
             {
@@ -1071,7 +1072,7 @@ namespace Mengine
                 return false;
             }
 
-            HotSpotShapePtr shape = stdex::intrusive_static_cast<HotSpotShapePtr>(node);
+            HotSpotResourceShapePtr shape = stdex::intrusive_static_cast<HotSpotResourceShapePtr>(node);
 
             if( shape->enable() == false )
             {

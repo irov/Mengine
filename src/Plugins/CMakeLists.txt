@@ -82,6 +82,10 @@ if(MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS)
     ADD_SUBDIRECTORY(AndroidNativeLocalNotificationsPlugin)
 endif()
 
+if(MENGINE_PLUGIN_DAZZLE)
+    ADD_SUBDIRECTORY(DazzlePlugin)
+endif()
+
 if(MENGINE_PLUGIN_ASTRALAX)
     ADD_SUBDIRECTORY(AstralaxPlugin)
 endif()

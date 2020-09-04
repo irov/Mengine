@@ -174,7 +174,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' resource is nullptr"
             , this->getName().c_str()
         );
 
@@ -188,7 +188,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTrackMatteImage, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTrackMatteImage, "'%s' resource is nullptr"
             , this->getName().c_str()
         );
 

@@ -19,8 +19,8 @@
 #include "HotSpotGlobal.h"
 #include "HotSpotImage.h"
 #include "HotSpotPolygon.h"
-#include "HotSpotShape.h"
-#include "HotSpotShape.h"
+#include "HotSpotResourceShape.h"
+#include "HotSpotSurface.h"
 #include "Landscape2D.h"
 #include "Line.h"
 #include "Meshget.h"
@@ -68,7 +68,8 @@ MENGINE_NODE_GENERATE( HotSpotCircle )
 MENGINE_NODE_GENERATE( HotSpotGlobal )
 MENGINE_NODE_GENERATE( HotSpotImage )
 MENGINE_NODE_GENERATE( HotSpotPolygon )
-MENGINE_NODE_GENERATE( HotSpotShape )
+MENGINE_NODE_GENERATE( HotSpotResourceShape )
+MENGINE_NODE_GENERATE( HotSpotSurface )
 MENGINE_NODE_GENERATE( Landscape2D )
 MENGINE_NODE_GENERATE( Line )
 MENGINE_NODE_GENERATE( Meshget )

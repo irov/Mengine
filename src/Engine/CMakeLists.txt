@@ -108,8 +108,10 @@ Object\\\\HotSpot
     HotSpotImage.h
     HotSpotBubbles.cpp
     HotSpotBubbles.h
-    HotSpotShape.cpp
-    HotSpotShape.h
+    HotSpotResourceShape.cpp
+    HotSpotResourceShape.h
+    HotSpotSurface.cpp
+    HotSpotSurface.h
     HotSpotCircle.cpp
     HotSpotCircle.h
     HotSpotGlobal.cpp

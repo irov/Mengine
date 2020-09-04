@@ -52,7 +52,8 @@
 #include "Engine/HotSpotCircle.h"
 #include "Engine/HotSpotBubbles.h"
 #include "Engine/HotSpotImage.h"
-#include "Engine/HotSpotShape.h"
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
 
@@ -1007,9 +1008,14 @@ namespace Mengine
                 .def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_HotSpotPolygon_getWorldPolygon )
                 ;
 
-            pybind::interface_<HotSpotShape, pybind::bases<HotSpotPolygon>>( _kernel, "HotSpotShape", false )
-                .def( "setResourceShape", &HotSpotShape::setResourceShape )
-                .def( "getResourceShape", &HotSpotShape::getResourceShape )
+            pybind::interface_<HotSpotResourceShape, pybind::bases<HotSpotPolygon>>( _kernel, "HotSpotResourceShape", false )
+                .def( "setResourceShape", &HotSpotResourceShape::setResourceShape )
+                .def( "getResourceShape", &HotSpotResourceShape::getResourceShape )
+                ;
+
+            pybind::interface_<HotSpotSurface, pybind::bases<HotSpotPolygon>>( _kernel, "HotSpotSurface", false )
+                .def( "setSurface", &HotSpotSurface::setSurface )
+                .def( "getSurface", &HotSpotSurface::getSurface )
                 ;
 
             pybind::interface_<HotSpotImage, pybind::bases<HotSpot>>( _kernel, "HotSpotImage", false )
@@ -1144,7 +1150,8 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( HotSpotCircle );
         SCRIPT_CLASS_WRAPPING( HotSpotBubbles );
         SCRIPT_CLASS_WRAPPING( HotSpotImage );
-        SCRIPT_CLASS_WRAPPING( HotSpotShape );
+        SCRIPT_CLASS_WRAPPING( HotSpotResourceShape );
+        SCRIPT_CLASS_WRAPPING( HotSpotSurface );
 
         SCRIPT_CLASS_WRAPPING( ScriptHolder );
 
@@ -1223,7 +1230,8 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( HotSpotCircle );
         UNSCRIPT_CLASS_WRAPPING( HotSpotBubbles );
         UNSCRIPT_CLASS_WRAPPING( HotSpotImage );
-        UNSCRIPT_CLASS_WRAPPING( HotSpotShape );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotResourceShape );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotSurface );
 
         UNSCRIPT_CLASS_WRAPPING( ScriptHolder );
 

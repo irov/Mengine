@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Kernel/Resource.h"
-
 #include "Kernel/Polygon.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceShape
         : public Resource
     {

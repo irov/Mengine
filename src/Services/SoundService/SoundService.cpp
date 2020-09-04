@@ -813,8 +813,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return false;
         }
@@ -926,8 +925,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return false;
         }
@@ -984,8 +982,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return false;
         }
@@ -1056,8 +1053,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return false;
         }
@@ -1116,8 +1112,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return false;
         }
@@ -1131,8 +1126,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return false;
         }
@@ -1146,8 +1140,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return false;
         }
@@ -1245,8 +1238,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr"
-            );
+            LOGGER_ERROR( "identity is nullptr" );
 
             return 0.f;
         }

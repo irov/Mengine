@@ -95,7 +95,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTestPick, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTestPick, "'%s' resource is nullptr"
             , this->getName().c_str()
         );
 

@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImage::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' resource is nullptr"
             , this->getName().c_str()
         );
 
@@ -198,7 +198,7 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' resource '%s' m_material is NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' resource '%s' m_material is nullptr"
             , this->getName().c_str()
             , m_resourceImage->getName().c_str()
         );

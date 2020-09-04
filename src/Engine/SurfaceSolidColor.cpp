@@ -93,7 +93,7 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = this->makeSolidMaterial( false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' m_material is NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' m_material is nullptr"
             , this->getName().c_str()
         );
 

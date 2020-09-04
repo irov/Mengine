@@ -1,0 +1,3 @@
+LIBRARY "DazzlePlugin"
+EXPORTS
+    dllCreatePlugin @1

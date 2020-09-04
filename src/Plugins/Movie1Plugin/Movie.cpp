@@ -17,7 +17,8 @@
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/TextField.h"
 #include "Engine/HotSpotImage.h"
-#include "Engine/HotSpotShape.h"
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"
@@ -1377,19 +1378,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
     {
-        HotSpotShapePtr layer_hotspotshape = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotShape" ), MENGINE_DOCUMENT_FACTORABLE );
+        HotSpotResourceShapePtr layer_hotspotresourceshape = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotResourceShape" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( layer_hotspotshape );
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_hotspotresourceshape );
 
         ResourceShapePtr resourceShape = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceShape );
 
-        layer_hotspotshape->setResourceShape( resourceShape );
+        layer_hotspotresourceshape->setResourceShape( resourceShape );
 
-        if( this->addMovieNode_( _layer, layer_hotspotshape, nullptr, nullptr, nullptr ) == false )
+        if( this->addMovieNode_( _layer, layer_hotspotresourceshape, nullptr, nullptr, nullptr ) == false )
         {
             return false;
         }

@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceAstralax, "emitter '%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceAstralax, "emitter '%s' resource is nullptr"
             , this->getName().c_str()
         );
 

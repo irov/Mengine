@@ -112,7 +112,7 @@ namespace Mengine
 
         if( plugin == nullptr )
         {
-            LOGGER_ERROR( "can't create plugin [plugin is NULL]"
+            LOGGER_ERROR( "can't create plugin [plugin is nullptr]"
             );
 
             return false;

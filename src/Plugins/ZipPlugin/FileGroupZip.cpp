@@ -447,7 +447,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "zip '%s' file '%s' stream is NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "zip '%s' file '%s' stream is nullptr"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );

@@ -19,7 +19,7 @@
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Engine/HotSpot.h"
-#include "Engine/HotSpotShape.h"
+#include "Engine/HotSpotResourceShape.h"
 #include "Engine/ResourceShape.h"
 
 #include "Kernel/RenderScissor.h"

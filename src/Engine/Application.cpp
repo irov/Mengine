@@ -83,7 +83,8 @@
 #include "HotSpotCircle.h"
 #include "HotSpotBubbles.h"
 #include "HotSpotImage.h"
-#include "HotSpotShape.h"
+#include "HotSpotResourceShape.h"
+#include "HotSpotSurface.h"
 #include "Gyroscope.h"
 #include "Point.h"
 #include "Line.h"
@@ -496,7 +497,8 @@ namespace Mengine
         NODE_FACTORY( HotSpotCircle );
         NODE_FACTORY( HotSpotBubbles );
         NODE_FACTORY( HotSpotImage );
-        NODE_FACTORY( HotSpotShape );
+        NODE_FACTORY( HotSpotResourceShape );
+        NODE_FACTORY( HotSpotSurface );
         NODE_FACTORY( Point );
         NODE_FACTORY( Line );
         NODE_FACTORY( SoundEmitter );
@@ -557,7 +559,8 @@ namespace Mengine
         NODE_FACTORY( HotSpotCircle );
         NODE_FACTORY( HotSpotBubbles );
         NODE_FACTORY( HotSpotImage );
-        NODE_FACTORY( HotSpotShape );
+        NODE_FACTORY( HotSpotResourceShape );
+        NODE_FACTORY( HotSpotSurface );
         NODE_FACTORY( Point );
         NODE_FACTORY( Line );
         NODE_FACTORY( SoundEmitter );

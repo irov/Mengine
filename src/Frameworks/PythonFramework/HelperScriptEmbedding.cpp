@@ -45,7 +45,8 @@
 #include "Kernel/UID.h"
 #include "Kernel/VectorRenderIndex.h"
 
-#include "Engine/HotSpotShape.h"
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
 
 #include "Kernel/Logger.h"
 
@@ -579,7 +580,7 @@ namespace Mengine
                 mt::box2f bb;
                 mt::insideout_box( bb );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is NULL" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is nullptr" );
 
                 const Polygon & polygon = _hotspotPolygon->getPolygon();
 
@@ -2923,7 +2924,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getNodeScreenPosition( Node * _node )
             {
-                MENGINE_ASSERTION_MEMORY_PANIC( _node, "node is null" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, "node is nullptr" );
 
                 RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node );
 

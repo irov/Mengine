@@ -3370,7 +3370,7 @@ namespace Mengine
         if( size_sprintf > 0 )
         {
             ::MessageBoxA( NULL, str, "Message", MB_OK );
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     UnknownPointer Win32Platform::getPlatformExtention()

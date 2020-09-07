@@ -21,6 +21,10 @@
 #define MENGINE_SSCANF(Buffer, ...) ::sscanf( Buffer, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_WSPRINTF
+#define MENGINE_WSPRINTF(Buffer, ...) ::wsprintf(Buffer, __VA_ARGS__ )
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SPRINTF
 #define MENGINE_SPRINTF(Buffer, ...) ::sprintf(Buffer, __VA_ARGS__ )
 #endif

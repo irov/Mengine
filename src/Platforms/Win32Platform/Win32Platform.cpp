@@ -825,7 +825,7 @@ namespace Mengine
         ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
 
         WCHAR fullDir[MENGINE_MAX_PATH] = {L'\0'};
-        ::wsprintf( fullDir, L"%s\\Fonts\\%s"
+        MENGINE_WSPRINTF( fullDir, L"%s\\Fonts\\%s"
             , winDir
             , unicode_fontPath
         );

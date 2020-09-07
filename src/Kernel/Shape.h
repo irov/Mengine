@@ -3,11 +3,10 @@
 #include "Kernel/Node.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/Surface.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Surface> SurfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class Shape
         : public Node

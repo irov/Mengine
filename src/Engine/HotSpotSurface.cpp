@@ -31,14 +31,18 @@ namespace Mengine
             return false;
         }
 
+        const mt::vec2f & maxSize = m_surface->getMaxSize();
         const mt::vec2f & size = m_surface->getSize();
         const mt::vec2f & offset = m_surface->getOffset();
+        const mt::vec2f & anchor = m_surface->getAnchor();
+
+        mt::vec2f total_offset = offset - anchor * maxSize;
 
         Polygon polygon;
-        polygon.append( {offset.x + 0.f, offset.y + 0.f} );
-        polygon.append( {offset.x + size.x, offset.y + 0.f} );
-        polygon.append( {offset.x + size.x, offset.y + size.y} );
-        polygon.append( {offset.x + 0.f, offset.y + size.y} );
+        polygon.append( {total_offset.x + 0.f, total_offset.y + 0.f} );
+        polygon.append( {total_offset.x + size.x, total_offset.y + 0.f} );
+        polygon.append( {total_offset.x + size.x, total_offset.y + size.y} );
+        polygon.append( {total_offset.x + 0.f, total_offset.y + size.y} );
 
         this->setPolygon( polygon );
 

@@ -106,6 +106,8 @@ public class FacebookInteractionLayer {
             public void onCompleted(GraphResponse graphResponse) {
                 AndroidNativeFacebook_onLogoutSuccess();
                 LoginManager.getInstance().logOut();
+                AccessToken.setCurrentAccessToken(null);
+                _accessToken = AccessToken.getCurrentAccessToken();
             }
         }).executeAsync();
     }

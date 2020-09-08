@@ -109,7 +109,7 @@ namespace Mengine
             {
                 if( dynamic_cast<typename Detail::reinterpret_surface_cast_void_t<T>::type>(static_cast<T>(_surface)) == nullptr )
                 {
-                    throw;
+                    throw std::runtime_error( "reinterpret surface cast" );
                 }
             }
             catch( const std::exception & )

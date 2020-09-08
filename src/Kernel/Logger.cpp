@@ -85,8 +85,7 @@ namespace Mengine
         {
             size += size_vsnprintf;
         }
-        
-        if( size < 0 )
+        else
         {
             const Char msg[] = "invalid message :(\n";
             this->logMessage( msg, sizeof( msg ) );

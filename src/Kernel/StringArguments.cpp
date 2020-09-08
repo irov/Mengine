@@ -13,7 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StringArguments::addArgument( const Char * _argument )
     {
-        m_arguments.push_back( String( _argument ) );
+        m_arguments.emplace_back( _argument );
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * StringArguments::getArgument( uint32_t _index ) const

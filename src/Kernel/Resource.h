@@ -18,6 +18,7 @@
 
 #ifdef MENGINE_DEBUG
 #include <type_traits>
+#include <exception>
 #endif
 
 namespace Mengine
@@ -200,7 +201,7 @@ namespace Mengine
             {
                 if( dynamic_cast<typename Detail::reinterpret_resource_cast_void_t<T>::type>(static_cast<T>(_resource)) == nullptr )
                 {
-                    throw;
+                    throw std::runtime_error( "reinterpret resource cast" );
                 }
             }
             catch( const std::exception & )

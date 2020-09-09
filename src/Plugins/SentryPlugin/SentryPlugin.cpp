@@ -14,6 +14,7 @@
 #include "Kernel/PathString.h"
 #include "Kernel/Logger.h"
 #include "Kernel/UID.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildVersion.h"
@@ -294,7 +295,7 @@ namespace Mengine
 
         sentry_set_extra( "Debug", sentry_value_new_bool( debugMode ) );
 
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         LOGGER_MESSAGE( "Sentry set extra [Development: %d]"
             , developmentMode

@@ -13,6 +13,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/BuildMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );
@@ -238,7 +239,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::addPackage( const PackageDesc & _desc, const DocumentPtr & _doc )
     {
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == false && _desc.dev == true )
         {

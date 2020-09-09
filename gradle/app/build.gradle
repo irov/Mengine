@@ -157,6 +157,7 @@ android {
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
+                        "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON",
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
                         
                 }
@@ -180,6 +181,7 @@ android {
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
+                        "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
                         "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
                 

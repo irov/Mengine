@@ -12,6 +12,13 @@ src
     DazzleEffect.h
     ResourceDazzleEffect.cpp
     ResourceDazzleEffect.h
+    DataflowDZZ.cpp
+    DataflowDZZ.h
+    
+    DazzleDataInterface.h
+    
+    DazzleData.cpp
+    DazzleData.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/dazzle/include)

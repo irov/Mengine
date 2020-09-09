@@ -14,13 +14,14 @@
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
+#include "Engine/TextDebug.h"
+
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Engine/TextDebug.h"
-
+#include "Kernel/BuildMode.h"
 #include "Kernel/Stringstream.h"
 
 #include "stdex/allocator_report.h"
@@ -47,7 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebugRenderService::_availableService() const
     {
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == false )
         {
@@ -226,7 +227,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _context );
 
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == false )
         {

@@ -2,6 +2,8 @@
 
 #include "DazzleInterface.h"
 
+#include "ResourceDazzleEffect.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
@@ -59,6 +61,8 @@ namespace Mengine
         void _updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const override;
 
     protected:
-        dz_effect_t * m_effect;
+        ResourceDazzleEffectPtr m_resourceDazzleEffect;
+
+        dz_instance_t * m_instance;
     };
 }

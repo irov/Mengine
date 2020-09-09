@@ -9,6 +9,7 @@
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/BuildMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceValidateService, Mengine::ResourceValidateService );
@@ -70,7 +71,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidateService::visitableResources_() const
     {
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
         if( developmentMode == true && noresourceCheck == false )

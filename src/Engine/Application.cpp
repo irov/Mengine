@@ -68,6 +68,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/ViewportHelper.h"
 #include "Kernel/List.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/Config.h"
 #include "Config/StdString.h"
@@ -836,7 +837,7 @@ namespace Mengine
         }
 
 #ifndef MENGINE_MASTER_RELEASE
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
         if( developmentMode == true && noresourceCheck == false )
@@ -871,7 +872,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::keyEvent( const InputKeyEvent & _event )
     {
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == true )
         {

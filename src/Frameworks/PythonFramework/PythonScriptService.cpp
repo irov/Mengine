@@ -33,6 +33,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringstream.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/StdString.h"
 
@@ -244,7 +245,7 @@ namespace Mengine
             return false;
         }
 
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
             ->getKernel();

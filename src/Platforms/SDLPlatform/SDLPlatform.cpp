@@ -31,11 +31,11 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/UnicodeHelper.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/StringHelper.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -142,7 +142,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getUserPath( Char * const _userPath ) const
     {
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 

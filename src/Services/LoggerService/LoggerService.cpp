@@ -8,9 +8,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/DocumentHelper.h"
-
 #include "Kernel/String.h"
 #include "Kernel/StringRegex.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/StdIO.h"
 
@@ -49,7 +49,7 @@ namespace Mengine
 
         ELoggerLevel logLevel;
 
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 

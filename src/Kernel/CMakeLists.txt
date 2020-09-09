@@ -661,6 +661,9 @@ Core
     DebugBreak.cpp
     
     UnknownPointer.h
+    
+    BuildMode.h
+    BuildMode.cpp
 )
 
 ADD_FILTER(

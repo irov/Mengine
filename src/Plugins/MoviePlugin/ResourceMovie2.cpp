@@ -186,7 +186,7 @@ namespace Mengine
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "resource movie '%s' group '%s' don`t set file path"
+            LOGGER_ERROR( "resource '%s' group '%s' don`t set file path"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );
@@ -199,7 +199,7 @@ namespace Mengine
 
         Movie2DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data, "resource movie '%s' group '%s' invalid compile data"
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "resource '%s' group '%s' invalid compile data"
             , this->getName().c_str()
             , this->getGroupName().c_str()
         );
@@ -216,10 +216,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie2::_release()
     {
-        if( m_data != nullptr )
-        {
-            m_data->release();
-            m_data = nullptr;
-        }
+        m_data->release();
+        m_data = nullptr;
     }
 }

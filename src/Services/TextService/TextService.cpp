@@ -19,8 +19,8 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringalized.h"
-
 #include "Kernel/String.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -121,9 +121,7 @@ namespace Mengine
         }
 
     protected:
-        void operator = ( const TextManagerLoadSaxCallback & )
-        {
-        }
+        void operator = ( const TextManagerLoadSaxCallback & ) = delete;
 
     public:
         void parse( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
@@ -625,7 +623,7 @@ namespace Mengine
         config->getValues( "GAME_FONTS", "Font", &fonts );
 
 #ifndef MENGINE_MASTER_RELEASE
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == true )
         {
@@ -733,7 +731,7 @@ namespace Mengine
         config->getValues( "GAME_FONTS", "Font", &fonts );
 
 #ifndef MENGINE_MASTER_RELEASE
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == true )
         {

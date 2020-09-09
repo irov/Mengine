@@ -27,6 +27,7 @@
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/StringHelper.h"
+#include "Kernel/BuildMode.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -232,7 +233,7 @@ namespace Mengine
             m_desktop = true;
         }
 
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == true )
         {
@@ -283,7 +284,7 @@ namespace Mengine
     void Win32Platform::_runService()
     {
         {
-            bool developmentMode = HAS_OPTION( "dev" );
+            bool developmentMode = Helper::isDevelopmentMode();
 
             bool roamingMode = HAS_OPTION( "roaming" );
             bool noroamingMode = HAS_OPTION( "noroaming" );
@@ -3121,7 +3122,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getUserPath( Char * const _userPath ) const
     {
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 

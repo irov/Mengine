@@ -32,6 +32,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/FileLogger.h"
+#include "Kernel/BuildMode.h"
 
 #include <iomanip>
 
@@ -526,7 +527,7 @@ namespace Mengine
         WString unicode_logFilename;
         unicode_logFilename += L"Game";
 
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 
@@ -884,7 +885,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         bool devplugins = true;
 #else
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool devplugins = developmentMode;
 #endif
 #endif
@@ -945,7 +946,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         bool devplugins = true;
 #else
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool devplugins = developmentMode;
 #endif
 #endif
@@ -1045,7 +1046,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         bool devmodules = true;
 #else
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool devmodules = developmentMode;
 #endif
 #endif
@@ -1143,7 +1144,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         bool devmodules = true;
 #else
-        bool developmentMode = HAS_OPTION( "dev" );
+        bool developmentMode = Helper::isDevelopmentMode();
         bool devmodules = developmentMode;
 #endif
 #endif

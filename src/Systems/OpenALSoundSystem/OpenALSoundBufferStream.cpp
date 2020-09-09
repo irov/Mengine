@@ -101,15 +101,10 @@ namespace Mengine
         const SoundCodecDataInfo * dataInfo = m_soundDecoder->getCodecDataInfo();
         m_frequency = dataInfo->frequency;
 
-        if( dataInfo->channels != 2 )
-        {
-            LOGGER_ERROR( "invalid channels %d must be %d"
-                , dataInfo->channels
-                , 2
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( dataInfo->channels == 2, "invalid channels %d must be %d"
+            , dataInfo->channels
+            , 2
+        );
 
         m_channels = dataInfo->channels;
         m_length = dataInfo->length;

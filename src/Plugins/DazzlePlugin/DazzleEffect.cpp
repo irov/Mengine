@@ -127,6 +127,11 @@ namespace Mengine
     {
         const DazzleDataInterfacePtr & data = m_resourceDazzleEffect->getData();
 
+        const dz_service_t * service = data->getDazzleService();
+
+        dz_instance_destroy( service, m_instance );
+        m_instance = nullptr;
+
         data->release();
 
         m_resourceDazzleEffect->release();

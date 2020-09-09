@@ -314,7 +314,7 @@ namespace Mengine
         jointDef.collideConnected = _collideBodies;
 
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
-        b2Vec2 positionBody1 = b2_body1->GetPosition();
+        const b2Vec2 & positionBody1 = b2_body1->GetPosition();
 
         b2Vec2 anchor1 = positionBody1 + offsetBody1;
         jointDef.enableLimit = false;
@@ -385,8 +385,8 @@ namespace Mengine
         b2Body * b2_body1 = body1->getBody();
         b2Body * b2_body2 = body2->getBody();
 
-        b2Vec2 centerBody1 = b2_body1->GetWorldCenter();
-        b2Vec2 centerBody2 = b2_body2->GetWorldCenter();
+        const b2Vec2 & centerBody1 = b2_body1->GetWorldCenter();
+        const b2Vec2 & centerBody2 = b2_body2->GetWorldCenter();
 
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
         b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );

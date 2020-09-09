@@ -1228,8 +1228,11 @@ namespace Mengine
         m_packagesPaths.clear();
         m_settingsPaths.clear();
 
-        SCENE_SERVICE()
-            ->destroyCurrentScene();
+        if( SERVICE_EXIST( SceneServiceInterface ) == true )
+        {
+            SCENE_SERVICE()
+                    ->destroyCurrentScene();
+        }
 
         if( SERVICE_EXIST( ApplicationInterface ) == true )
         {

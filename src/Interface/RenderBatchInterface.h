@@ -18,11 +18,11 @@ namespace Mengine
         MemoryInterfacePtr vertexMemory;
         MemoryInterfacePtr indexMemory;
 
-        uint32_t vertexSize;
-        uint32_t indexSize;
+        uint32_t vertexSize = 0;
+        uint32_t indexSize = 0;
 
-        uint32_t vbPos;
-        uint32_t ibPos;
+        uint32_t vbPos = 0;
+        uint32_t ibPos = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderBatchInterface

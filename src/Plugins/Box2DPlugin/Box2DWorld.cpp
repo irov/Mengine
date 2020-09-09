@@ -269,6 +269,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createDistanceJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2
+        , float _minlength
+        , float _maxlength
         , bool _collideBodies, const DocumentPtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
@@ -278,13 +280,15 @@ namespace Mengine
         b2Body * b2_body2 = body2->getBody();
 
         b2DistanceJointDef jointDef;
+        jointDef.minLength = m_scaler.toBox2DWorld( _minlength );
+        jointDef.maxLength = m_scaler.toBox2DWorld( _maxlength );
         jointDef.collideConnected = _collideBodies;
 
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
         b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
 
-        b2Vec2 positionBody1 = b2_body1->GetPosition();
-        b2Vec2 positionBody2 = b2_body2->GetPosition();
+        const b2Vec2 & positionBody1 = b2_body1->GetPosition();
+        const b2Vec2 & positionBody2 = b2_body2->GetPosition();
 
         b2Vec2 anchor1 = positionBody1 + offsetBody1;
         b2Vec2 anchor2 = positionBody2 + offsetBody2;
@@ -426,33 +430,6 @@ namespace Mengine
         jointDef.joint2 = b2_joint2;
         jointDef.ratio = _ratio;
         jointDef.collideConnected = _collideConnected;
-
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
-
-        return joint;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Box2DJointInterfacePtr Box2DWorld::createRopeJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
-        , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2, float _maxlength
-        , bool _collideConnected, const DocumentPtr & _doc )
-    {
-        Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
-        Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
-
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
-
-        b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
-        b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
-
-        b2RopeJointDef jointDef;
-
-        jointDef.localAnchorA = offsetBody1;
-        jointDef.localAnchorB = offsetBody2;
-        jointDef.collideConnected = _collideConnected;
-        jointDef.maxLength = m_scaler.toBox2DWorld( _maxlength );
-        jointDef.bodyA = b2_body1;
-        jointDef.bodyB = b2_body2;
 
         Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
 

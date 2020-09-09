@@ -18,6 +18,7 @@
 
 #ifdef MENGINE_DEBUG
 #include <type_traits>
+#include <exception>
 #endif
 
 namespace Mengine
@@ -216,7 +217,7 @@ namespace Mengine
             {
                 if( dynamic_cast<typename Detail::reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
                 {
-                    throw;
+                    throw std::runtime_error("reinterpret node cast");
                 }
             }
             catch( const std::exception & )

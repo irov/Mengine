@@ -48,13 +48,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct RenderServiceDebugInfo
     {
-        uint32_t frameCount;
-        uint32_t dips;
+        uint32_t frameCount = 0;
+        uint32_t dips = 0;
 
-        float fillrate;
-        uint32_t object;
-        uint32_t triangle;
-        uint32_t batch;
+        float fillrate = 0.f;
+        uint32_t object = 0;
+        uint32_t triangle = 0;
+        uint32_t batch = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderServiceInterface

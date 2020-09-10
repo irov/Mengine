@@ -142,6 +142,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getUserPath( Char * const _userPath ) const
     {
+#ifdef MENGINE_PLATFORM_WINDOWS
         bool developmentMode = Helper::isDevelopmentMode();
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
@@ -164,6 +165,7 @@ namespace Mengine
 
             return pathLen;
         }
+#endif
 
         const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );

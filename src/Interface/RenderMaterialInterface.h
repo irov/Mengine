@@ -16,8 +16,8 @@ namespace Mengine
         ETextureFilter magnification = TF_POINT;
         ETextureFilter minification = TF_POINT;
 
-        ETextureAddressMode addressU = TAM_WRAP;
-        ETextureAddressMode addressV = TAM_WRAP;
+        ETextureAddressMode addressU = TAM_CLAMP;
+        ETextureAddressMode addressV = TAM_CLAMP;
         uint32_t addressBorder = 0x00000000;
     };
     //////////////////////////////////////////////////////////////////////////

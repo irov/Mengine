@@ -94,7 +94,7 @@ namespace Mengine
         void serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode );
         void serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode );
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
-        void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
+        void serializeAnimation( const Compilable * _compilable, const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
         void serializeMovie2( const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode );
         void serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode );

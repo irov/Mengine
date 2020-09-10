@@ -631,14 +631,23 @@ namespace Mengine
         Detail::serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeAnimation( const Compilable * _compilable, const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Animation" );
 
         Detail::serializeNodeProp( _animation->isLoop(), "loop", xmlNode );
         Detail::serializeNodeProp( _animation->isPlay(), "play", xmlNode );
         Detail::serializeNodeProp( _animation->isPause(), "pause", xmlNode );
-        Detail::serializeNodeProp( _animation->getTime(), "time", xmlNode );
+
+        if( _compilable->isCompile() == true )
+        {
+            Detail::serializeNodeProp( _animation->getTime(), "time", xmlNode );
+        }
+        else
+        {
+            Detail::serializeNodeProp( 0.f, "time", xmlNode );
+        }
+
         Detail::serializeNodeProp( _animation->getDuration(), "duration", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -768,7 +777,7 @@ namespace Mengine
 
         if( animation != nullptr )
         {
-            this->serializeAnimation( animation, xmlNode );
+            this->serializeAnimation( surface.get(), animation, xmlNode );
         }
 
         SurfaceImagePtr surfaceImage = stdex::intrusive_dynamic_cast<SurfaceImagePtr>(surface);
@@ -888,7 +897,7 @@ namespace Mengine
 
         if( animation != nullptr )
         {
-            this->serializeAnimation( animation, _xmlNode );
+            this->serializeAnimation( _node.get(), animation, _xmlNode );
         }
 
         ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_node);

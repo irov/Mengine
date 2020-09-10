@@ -872,6 +872,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::keyEvent( const InputKeyEvent & _event )
     {
+#ifdef MENGINE_PLATFORM_DESKTOP
         bool developmentMode = Helper::isDevelopmentMode();
 
         if( developmentMode == true )
@@ -1160,6 +1161,7 @@ namespace Mengine
             //{
             //}
         }
+#endif
 
         bool handle = GAME_SERVICE()
             ->handleKeyEvent( _event );

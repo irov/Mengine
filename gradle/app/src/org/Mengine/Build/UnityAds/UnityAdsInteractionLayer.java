@@ -7,7 +7,6 @@ import android.os.Looper;
 
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
-import com.unity3d.ads.webview.WebView;
 
 import org.Mengine.Build.ThreadUtil;
 
@@ -38,10 +37,6 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
     private HashSet<String> _alreadyInitializedPlacements;
 
     public UnityAdsInteractionLayer(String gameId) {
-        if (Build.VERSION.SDK_INT >= 19) {
-            WebView.setWebContentsDebuggingEnabled(true);
-        }
-
         _gameId = gameId;
 
         UnityAds.setListener(this);

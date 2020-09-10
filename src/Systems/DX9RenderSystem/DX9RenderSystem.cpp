@@ -170,7 +170,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "DirectX Driver: %s", AdID.Driver );
+        LOGGER_MESSAGE_RELEASE( "Driver: %s", AdID.Driver );
         LOGGER_MESSAGE_RELEASE( "Description: %s", AdID.Description );
         LOGGER_MESSAGE_RELEASE( "DeviceName: %s", AdID.DeviceName );
 
@@ -607,7 +607,7 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
-        LOGGER_MESSAGE( "DirectX 9 render initalized successfully!" );
+        LOGGER_MESSAGE( "DirectX9 render initalized successfully!" );
 
         return true;
     }
@@ -616,8 +616,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetX", -0.5f );
-        float DirectX_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX", "PerfectPixelOffsetY", -0.5f );
+        float DirectX_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetX", -0.5f );
+        float DirectX_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetY", -0.5f );
 
         float perfect_x = DirectX_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
         float perfect_y = DirectX_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);

@@ -3,7 +3,6 @@
 #include "TTFInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Pair.h"
 #include "Kernel/Map.h"
@@ -13,7 +12,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TTFAtlasService
         : public ServiceBase<TTFAtlasServiceInterface>
-        , public Observable
     {
     public:
         TTFAtlasService();

@@ -48,4 +48,40 @@ namespace Mengine
             }
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    AnimationInterface * ShapeQuadFixed::getAnimation()
+    {
+        const SurfacePtr & surface = this->getSurface();
+
+        AnimationInterface * animation = surface->getAnimation();
+
+        return animation;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    const AnimationInterface * ShapeQuadFixed::getAnimation() const
+    {
+        const SurfacePtr & surface = this->getSurface();
+
+        const AnimationInterface * animation = surface->getAnimation();
+
+        return animation;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    EventationInterface * ShapeQuadFixed::getEventation()
+    {
+        const SurfacePtr & surface = this->getSurface();
+
+        EventationInterface * eventation = surface->getEventation();
+
+        return eventation;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    const EventationInterface * ShapeQuadFixed::getEventation() const
+    {
+        const SurfacePtr & surface = this->getSurface();
+
+        const EventationInterface * eventation = surface->getEventation();
+
+        return eventation;
+    };
 }

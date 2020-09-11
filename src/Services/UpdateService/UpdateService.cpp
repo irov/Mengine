@@ -39,7 +39,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UpdateService::UpdateService()
         : m_timepipe( 0 )
-        , m_timeFactor( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -160,16 +159,6 @@ namespace Mengine
         return free_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void UpdateService::setTimeFactor( float _timeFactor )
-    {
-        m_timeFactor = _timeFactor;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float UpdateService::getTimeFactor() const
-    {
-        return m_timeFactor;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t UpdateService::createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
     {
         uint32_t id = this->placeProxy_( _mode, _deep, _updation );
@@ -282,14 +271,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::onTimepipe( const UpdateContext * _context )
     {
-        UpdateContext context;
-        context = *_context;
-        context.time *= m_timeFactor;
-
         uint32_t enumerateBeforeDeep = 0U;
         for( LeafUpdatable & leaf : m_beforeLeaf )
         {
-            this->updateLeaf_( enumerateBeforeDeep, &leaf, &context );
+            this->updateLeaf_( enumerateBeforeDeep, &leaf, _context );
 
             ++enumerateBeforeDeep;
         }
@@ -297,7 +282,7 @@ namespace Mengine
         uint32_t enumerateDeep = 0U;
         for( LeafUpdatable & leaf : m_leafs )
         {
-            this->updateLeaf_( enumerateDeep, &leaf, &context );
+            this->updateLeaf_( enumerateDeep, &leaf, _context );
 
             ++enumerateDeep;
         }
@@ -305,7 +290,7 @@ namespace Mengine
         uint32_t enumerateAfterDeep = 0U;
         for( LeafUpdatable & leaf : m_afterLeaf )
         {
-            this->updateLeaf_( enumerateAfterDeep, &leaf, &context );
+            this->updateLeaf_( enumerateAfterDeep, &leaf, _context );
 
             ++enumerateAfterDeep;
         }

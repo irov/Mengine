@@ -11,7 +11,6 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Resolution.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -21,7 +20,6 @@ namespace Mengine
 {
     class PlayerService
         : public ServiceBase<PlayerServiceInterface>
-        , public Observable
     {
     public:
         PlayerService();

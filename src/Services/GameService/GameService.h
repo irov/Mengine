@@ -77,9 +77,8 @@ namespace Mengine
 
         void turnSound( bool _turn ) override;
 
-    public:
-        float getTimeFactor() const override;
-        void setTimeFactor( float _timeFactor ) override;
+    protected:
+        void onTimeFactorChange_( float _timeFactor );
 
     protected:
         ConstString m_currentPackName;

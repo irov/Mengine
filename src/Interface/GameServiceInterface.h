@@ -33,10 +33,6 @@ namespace Mengine
         virtual void setCursorMode( bool _mode ) = 0;
 
     public:
-        virtual float getTimeFactor() const = 0;
-        virtual void setTimeFactor( float _factor ) = 0;
-
-    public:
         virtual bool loadPersonality() = 0;
         virtual void removePersonality() = 0;
 

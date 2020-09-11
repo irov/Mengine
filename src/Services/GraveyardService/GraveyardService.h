@@ -4,7 +4,6 @@
 #include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine
@@ -14,7 +13,6 @@ namespace Mengine
     class GraveyardService
         : public ServiceBase<GraveyardServiceInterface>
         , public TimepipeInterface
-        , public Observable
     {
     public:
         GraveyardService();

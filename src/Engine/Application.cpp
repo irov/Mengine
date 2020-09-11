@@ -33,6 +33,7 @@
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
+#include "Interface/UpdateServiceInterface.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
@@ -1012,14 +1013,14 @@ namespace Mengine
 
             if( _event.code == KC_OEM_6 && _event.isDown == true )
             {
-                float timeFactor = GAME_SERVICE()
+                float timeFactor = TIMELINE_SERVICE()
                     ->getTimeFactor();
 
                 float TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
 
                 timeFactor += TimeFactorStep;
 
-                GAME_SERVICE()
+                TIMELINE_SERVICE()
                     ->setTimeFactor( timeFactor );
 
                 LOGGER_MESSAGE( "time factor: %f"
@@ -1029,7 +1030,7 @@ namespace Mengine
 
             if( _event.code == KC_OEM_4 && _event.isDown == true )
             {
-                float timeFactor = GAME_SERVICE()
+                float timeFactor = TIMELINE_SERVICE()
                     ->getTimeFactor();
 
                 float TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
@@ -1041,7 +1042,7 @@ namespace Mengine
                     timeFactor = 0.f;
                 }
 
-                GAME_SERVICE()
+                TIMELINE_SERVICE()
                     ->setTimeFactor( timeFactor );
 
                 LOGGER_MESSAGE( "time factor: %f"
@@ -1543,6 +1544,11 @@ namespace Mengine
         {
             time = m_maxFrameTime;
         }
+
+        float timeFactor = TIMELINE_SERVICE()
+            ->getTimeFactor();
+
+        time *= timeFactor;
 
         float current = TIMELINE_SERVICE()
             ->getTotalTime();

@@ -35,12 +35,18 @@ namespace Mengine
         void begin( const UpdateContext * _context ) override;
         void end() override;
 
+    public:
+        void setTimeFactor( float _timeFactor ) override;
+        float getTimeFactor() const override;
+
     protected:
         uint32_t m_revision;
         float m_current;
         float m_time;
 
         float m_total;
+
+        float m_timeFactor;
 
         typedef Vector<float> VectorTime;
         VectorTime m_offsets;

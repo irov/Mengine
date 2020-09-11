@@ -650,7 +650,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_setTimeFactor( float _factor )
             {
-                GAME_SERVICE()
+                TIMELINE_SERVICE()
                     ->setTimeFactor( _factor );
             }
             //////////////////////////////////////////////////////////////////////////
@@ -667,7 +667,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float s_getTimeFactor()
             {
-                float factor = GAME_SERVICE()
+                float factor = TIMELINE_SERVICE()
                     ->getTimeFactor();
 
                 return factor;

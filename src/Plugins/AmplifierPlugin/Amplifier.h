@@ -6,7 +6,6 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Map.h"
 
 #include "Config/Typedef.h"
@@ -15,7 +14,6 @@ namespace Mengine
 {
     class Amplifier
         : public ServiceBase<AmplifierInterface>
-        , public Observable
     {
     public:
         Amplifier();

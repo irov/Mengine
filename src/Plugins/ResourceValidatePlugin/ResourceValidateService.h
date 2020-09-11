@@ -3,14 +3,12 @@
 #include "ResourceValidateServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ResourceValidateService
         : public ServiceBase<ResourceValidateServiceInterface>
-        , public Observable
     {
     public:
         ResourceValidateService();

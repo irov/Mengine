@@ -1,5 +1,7 @@
 #include "TimelineService.h"
 
+#include "Interface/NotificationServiceInterface.h"
+
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -13,6 +15,7 @@ namespace Mengine
         , m_current( 0.f )
         , m_time( 0.f )
         , m_total( 0.f )
+        , m_timeFactor( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -115,5 +118,17 @@ namespace Mengine
         m_revision = ~0U;
         m_current = -1.f;
         m_time = -1.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TimelineService::setTimeFactor( float _timeFactor )
+    {
+        m_timeFactor = _timeFactor;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_TIME_FACTOR_CHANGE, m_timeFactor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TimelineService::getTimeFactor() const
+    {
+        return m_timeFactor;
     }
 }

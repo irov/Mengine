@@ -2,7 +2,6 @@
 
 #include "Interface/ApplicationInterface.h"
 
-#include "Kernel/Observable.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/ConstString.h"
@@ -19,7 +18,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Application
         : public ServiceBase<ApplicationInterface>
-        , public Observable
     {
     public:
         Application();

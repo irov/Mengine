@@ -2,7 +2,6 @@
 
 #include "Interface/PackageServiceInterface.h"
 
-#include "Kernel/Observable.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
@@ -12,7 +11,6 @@ namespace Mengine
 {
     class PackageService
         : public ServiceBase<PackageServiceInterface>
-        , public Observable
     {
     public:
         PackageService();

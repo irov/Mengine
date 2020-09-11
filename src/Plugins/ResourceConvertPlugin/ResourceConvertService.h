@@ -3,7 +3,6 @@
 #include "ResourceConvertServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Resource.h"
 
 namespace Mengine
@@ -11,7 +10,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceConvertService
         : public ServiceBase<ResourceConvertServiceInterface>
-        , public Observable
     {
     public:
         ResourceConvertService();

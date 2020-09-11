@@ -5,6 +5,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -395,11 +396,15 @@ namespace Mengine
         SOUND_SERVICE()
             ->addSoundVolumeProvider( soundVolumeProvider );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::onTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
+
         this->removeEvents();
 
         m_userEventsAdd.clear();
@@ -518,19 +523,8 @@ namespace Mengine
             ->onGameCursorMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
-    float GameService::getTimeFactor() const
+    void GameService::onTimeFactorChange_( float _timeFactor )
     {
-        float timeFactor = UPDATE_SERVICE()
-            ->getTimeFactor();
-
-        return timeFactor;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void GameService::setTimeFactor( float _timeFactor )
-    {
-        UPDATE_SERVICE()
-            ->setTimeFactor( _timeFactor );
-
         EVENTABLE_METHOD( EVENT_GAME_ON_TIME_FACTOR )
             ->onGameTimeFactor( _timeFactor );
     }

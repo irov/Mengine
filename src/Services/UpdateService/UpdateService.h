@@ -29,10 +29,6 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        void setTimeFactor( float _timeFactor ) override;
-        float getTimeFactor() const override;
-
-    public:
         uint32_t createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation ) override;
         void replaceUpdatater( uint32_t _id, uint32_t _deep ) override;
         void removeUpdatater( uint32_t _id ) override;
@@ -42,8 +38,6 @@ namespace Mengine
 
     protected:
         uint32_t m_timepipe;
-
-        float m_timeFactor;
 
         struct UpdatableProxy
         {

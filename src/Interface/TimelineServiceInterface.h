@@ -27,6 +27,10 @@ namespace Mengine
     public:
         virtual void begin( const UpdateContext * _context ) = 0;
         virtual void end() = 0;
+
+    public:
+        virtual void setTimeFactor( float _timeFactor ) = 0;
+        virtual float getTimeFactor() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

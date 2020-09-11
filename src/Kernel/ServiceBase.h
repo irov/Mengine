@@ -2,12 +2,15 @@
 
 #include "Interface/ServiceProviderInterface.h"
 
+#include "Kernel/Observable.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ServiceBase
         : public T
+        , public Observable
     {
     public:
         ServiceBase() noexcept

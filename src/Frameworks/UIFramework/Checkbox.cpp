@@ -11,6 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Checkbox::Checkbox()
         : m_value( false )
+        , m_waitChange( true )
         , m_state( ECS_APPEAR )
         , m_semaphoreBlock( GOAP_SERVICE()->makeSemaphore( 0 ) )
         , m_semaphoreValue( GOAP_SERVICE()->makeSemaphore( 0 ) )
@@ -48,6 +49,16 @@ namespace Mengine
         int value = m_semaphoreBlock->getValue();
 
         return value == 1 ? true : false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Checkbox::setWaitChange( bool _waitChange )
+    {
+        m_waitChange = _waitChange;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Checkbox::getWaitChange() const
+    {
+        return m_waitChange;
     }
     //////////////////////////////////////////////////////////////////////////
     void Checkbox::setPickerable( const PickerablePtr & _pickerable )
@@ -412,7 +423,16 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeClick );
-        Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick );
+        Cook::addAnimatableRewind( _source, _nodeClick );
+
+        if( m_waitChange == true )
+        {
+            Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick );
+        }
+        else
+        {
+            Cook::addAnimatablePlay( _source, _nodeClick );
+        }        
         
         Cook::addFunction( _source, this, &Checkbox::__setState, changeValue, ECS_IDLE );
         Cook::addEventable( _source, this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );

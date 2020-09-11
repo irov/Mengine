@@ -46,6 +46,10 @@ namespace Mengine
         bool isBlock() const;
 
     public:
+        void setWaitChange( bool _waitChange );
+        bool getWaitChange() const;
+
+    public:
         void setPickerable( const PickerablePtr & _pickerable );
         const PickerablePtr & getPickerable() const;
 
@@ -76,6 +80,8 @@ namespace Mengine
 
     protected:
         bool m_value;
+
+        bool m_waitChange;
 
         ECheckboxState m_state;
 

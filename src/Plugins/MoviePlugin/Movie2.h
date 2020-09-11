@@ -84,8 +84,9 @@ namespace Mengine
         const mt::box2f & getCompositionBounds() const override;
 
     public:
-        bool hasSubComposition( const ConstString & _name ) const;
-        const Movie2SubCompositionPtr & getSubComposition( const ConstString & _name ) const;
+        bool hasSubComposition( const ConstString & _name ) const override;
+        const Movie2SubCompositionPtr & getSubComposition( const ConstString & _name ) const override;
+        void foreachSubComposition( const LambdaSubCompositions & _lambda ) const override;
 
     public:
         bool hasMovieLayers( const ConstString & _name ) const override;
@@ -136,47 +137,58 @@ namespace Mengine
         void _hierarchyAddChild( const NodePtr & _node ) override;
         void _hierarchyRemoveChild( const NodePtr & _node ) override;
 
-    public:
+    protected:
         void addSurface_( const SurfacePtr & _surface, bool _compile );
         void removeSurface_( const SurfacePtr & _surface );
-
-    public:
+    
+    protected:
         void addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite );
         const ShapeQuadFixedPtr & getSprite_( uint32_t _index ) const;
-        const ShapeQuadFixedPtr & findSprite( const ConstString & _name ) const;
-        bool hasSprite( const ConstString & _name ) const;
 
     public:
+        const ShapeQuadFixedPtr & findSprite( const ConstString & _name ) const;
+        bool hasSprite( const ConstString & _name ) const;
+            
+    protected:
         void addParticle_( uint32_t _index, const NodePtr & _particleEmitter );
         const NodePtr & getParticle_( uint32_t _index ) const;
+
+    public:
         const NodePtr & findParticle( const ConstString & _name ) const;
         bool hasParticle( const ConstString & _name ) const;
 
-    public:
+    protected:
         void addSlot_( uint32_t _index, const Movie2SlotPtr & _slot );
         const Movie2SlotPtr & getSlot_( uint32_t _index ) const;
+
+    public:
         const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
         bool hasSlot( const ConstString & _name ) const;
         void visitSlots( const VisitorMovie2LayerInterfacePtr & _visitor );
 
-    public:
+    protected:
         void addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot );
         const HotSpotPolygonPtr & getSocket_( uint32_t _index ) const;
+
+    public:
         const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
         void visitSockets( const VisitorMovie2LayerInterfacePtr & _visitor );
 
-    public:
+    
+    protected:
         void addText_( uint32_t _index, const TextFieldPtr & _text );
         const TextFieldPtr & getText_( uint32_t _index ) const;
+
+    public:
         const TextFieldPtr & findText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
         void visitTexts( const VisitorMovie2LayerInterfacePtr & _visitor );
 
-    public:
+    protected:
         void addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition );
 
-    public:
+    protected:
         void addMatrixProxy_( const MatrixProxyPtr & _matrixProxy );
 
     public:

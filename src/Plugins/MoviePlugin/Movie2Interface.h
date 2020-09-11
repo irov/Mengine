@@ -17,6 +17,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DECLARE_MAGIC_NUMBER( MAGIC_AEZ, 'A', 'E', 'Z', '1', 1 );
     //////////////////////////////////////////////////////////////////////////
+    class Movie2SubCompositionInterface
+        : public Factorable
+        , public Identity
+        , public Eventable
+        , public Animatable
+        , public Scriptable
+    {
+    public:
+        virtual void setSubCompositionEnable( bool _enable ) = 0;
+        virtual bool getSubCompositionEnable() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Movie2SubCompositionInterface> Movie2SubCompositionInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class UnknownMovie2Interface
         : public UnknownInterface
     {
@@ -37,6 +51,13 @@ namespace Mengine
         virtual bool removeWorkArea() = 0;
 
     public:
+        virtual bool hasSubComposition( const ConstString & _name ) const = 0;
+        virtual const Movie2SubCompositionInterfacePtr & getSubComposition( const ConstString & _name ) const = 0;
+
+        typedef Lambda<void( const Movie2SubCompositionInterfacePtr & )> LambdaSubCompositions;
+        virtual void foreachSubComposition( const LambdaSubCompositions & _lambda ) const = 0;
+
+    public:
         virtual bool hasCompositionBounds() const = 0;
         virtual const mt::box2f & getCompositionBounds() const = 0;
 
@@ -51,4 +72,5 @@ namespace Mengine
         typedef Lambda<void( Node * _node, const RenderPipelineInterfacePtr &, const RenderContext * _context )> LambdaMovieRenderSlot;
         virtual void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

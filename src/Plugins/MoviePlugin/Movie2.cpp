@@ -728,6 +728,16 @@ namespace Mengine
         return subComposition;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::foreachSubComposition( const LambdaSubCompositions & _lambda ) const
+    {
+        for( const HashtableSubCompositions::value_type & element : m_subCompositions )
+        {
+            const Movie2SubCompositionPtr & value = element.element;
+
+            _lambda( value );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasMovieLayers( const ConstString & _name ) const
     {
         if( m_composition == nullptr )
@@ -3388,4 +3398,5 @@ namespace Mengine
 
         Node::_destroy();
     }
+    //////////////////////////////////////////////////////////////////////////
 }

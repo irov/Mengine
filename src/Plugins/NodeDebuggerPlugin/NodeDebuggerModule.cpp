@@ -712,12 +712,29 @@ namespace Mengine
         Detail::serializeNodeProp( _textField->getPixelsnap(), "Pixelsnap", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeMovie2( const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeMovie2( const Compilable * _compilable, const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:Movie2" );
 
         Detail::serializeNodeProp( _unknownMovie2->getCompositionName(), "CompositionName", xmlNode );
         Detail::serializeNodeProp( _unknownMovie2->getTextAliasEnvironment(), "TextAliasEnvironment", xmlNode );
+
+        pugi::xml_node xmlSubCompositions = xmlNode.append_child( "SubCompositions" );
+
+        _unknownMovie2->foreachSubComposition( [this, _compilable, &xmlSubCompositions]( const Movie2SubCompositionInterfacePtr & _subComposition )
+        {
+            pugi::xml_node xmlElement = xmlSubCompositions.append_child( "Element" );
+
+            Detail::serializeNodeProp( _subComposition->getName(), "SubCompositionName", xmlElement );
+            Detail::serializeNodeProp( _subComposition->getSubCompositionEnable(), "SubCompositionEnable", xmlElement );
+
+            AnimationInterface * animation = _subComposition->getAnimation();
+
+            if( animation != nullptr )
+            {
+                this->serializeAnimation( _compilable, animation, xmlElement );
+            }
+        });
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode )
@@ -918,7 +935,7 @@ namespace Mengine
 
         if( unknownMovie2 != nullptr )
         {
-            this->serializeMovie2( unknownMovie2, _xmlNode );
+            this->serializeMovie2( _node.get(), unknownMovie2, _xmlNode );
         }
 
         const UnknownSpineInterface * unknownSpine = _node->getDynamicUnknown();
@@ -1442,6 +1459,28 @@ namespace Mengine
                 {
                     unknownMovie2->setTextAliasEnvironment( _value );
                 } );
+
+                pugi::xml_node xmlSubCompositions = typeNodeMovie2.child( "SubCompositions" );
+
+                if( xmlSubCompositions )
+                {
+                    for( pugi::xml_node xmlElement : xmlSubCompositions.children( "Element" ) )
+                    {
+                        const Char * SubCompositionName = xmlElement.attribute( "SubCompositionName" ).as_string();
+
+                        const Movie2SubCompositionInterfacePtr & subComposition = unknownMovie2->getSubComposition( Helper::stringizeString( SubCompositionName ) );
+
+                        Detail::deserializeNodeProp<bool>( "SubCompositionEnable", xmlElement, [subComposition]( bool _value )
+                        {
+                            subComposition->setSubCompositionEnable( _value );
+                        } );
+
+                        //Detail::serializeNodeProp( _subComposition->getName(), "SubCompositionName", xmlElement );
+                        //Detail::serializeNodeProp( _subComposition->getSubCompositionEnable(), "SubCompositionEnable", xmlElement );
+
+                        //AnimationInterface * animation = _subComposition->getAnimation();
+                    }
+                }
             }
         }
     }

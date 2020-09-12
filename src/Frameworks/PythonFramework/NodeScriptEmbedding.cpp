@@ -332,11 +332,11 @@ namespace Mengine
                 const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _hs );
                 const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _hs );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' rencer camera inheritance"
+                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' render camera inheritance"
                     , _hs->getName().c_str() 
                 );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' rencer viewport inheritance"
+                MENGINE_ASSERTION_MEMORY_PANIC( viewport, "invalid get node '%s' render viewport inheritance"
                     , _hs->getName().c_str()
                 );
 

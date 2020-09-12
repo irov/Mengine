@@ -80,6 +80,7 @@ namespace Mengine
         uint32_t HWWidth = Helper::getTexturePOW2( image_width );
         uint32_t HWHeight = Helper::getTexturePOW2( image_height );
 
+        //ToDo
         uint32_t mipmap = 0;
 
         uint32_t mipmap_width = HWWidth >> mipmap;

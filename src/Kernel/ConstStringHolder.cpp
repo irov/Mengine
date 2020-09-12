@@ -21,13 +21,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder::ConstStringHolder( ConstStringHolder && _holder )
-        : m_data( _holder.m_data )
-        , m_size( _holder.m_size )
-        , m_hash( _holder.m_hash )
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
     ConstStringHolder & ConstStringHolder::operator = ( const ConstStringHolder & _holder )
     {
         this->m_data = _holder.m_data;

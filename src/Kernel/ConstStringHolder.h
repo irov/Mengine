@@ -19,7 +19,6 @@ namespace Mengine
 
     public:
         ConstStringHolder( const ConstStringHolder & _holder );
-        ConstStringHolder( ConstStringHolder && _holder );
 
     protected:
         ConstStringHolder & operator = ( const ConstStringHolder & _holder );

@@ -19,10 +19,6 @@
 
 #include "SDL_rwops.h"
 
-#ifdef MENGINE_PLATFORM_ANDROID
-#   include "AndroidAssetServiceInterface.h"
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -87,14 +83,6 @@ namespace Mengine
         {
             return true;
         }
-
-#ifdef MENGINE_PLATFORM_ANDROID
-        if( ANDROIDASSET_SERVICE()
-            ->existFile( fullPath ) == true )
-        {
-            return true;
-        }
-#endif
 
         if( _recursive == true && m_parentFileGroup != nullptr )
         {

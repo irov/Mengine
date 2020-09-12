@@ -367,10 +367,20 @@ namespace Mengine
             , ver.patch
         );
 
+        SDL_bool isTablet = SDL_IsTablet();
+
+        LOGGER_MESSAGE_RELEASE( "SDL Tablet: %s"
+            , isTablet == SDL_TRUE ? "true" : "false"
+        );
+
         SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
 
         if( SDL_SetMemoryFunctions( &s_SDL_malloc_func, &s_SDL_calloc_func, &s_SDL_realloc_func, &s_SDL_free_func ) != 0 )
         {
+            LOGGER_ERROR( "invalid set memory functions: %s"
+                , SDL_GetError()
+            );
+
             return false;
         }
 
@@ -390,6 +400,8 @@ namespace Mengine
 
             return false;
         }
+
+
 
         const Char * sdlPlatform = SDL_GetPlatform();
 
@@ -704,7 +716,12 @@ namespace Mengine
         m_factoryDynamicLibraries = nullptr;
         m_factoryDateTimeProviders = nullptr;
 
-        SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func );
+        if( SDL_SetMemoryFunctions( m_old_SDL_malloc_func, m_old_SDL_calloc_func, m_old_SDL_realloc_func, m_old_SDL_free_func ) != 0 )
+        {
+            LOGGER_ERROR( "invalid set memory functions: %s"
+                , SDL_GetError()
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()
@@ -1467,14 +1484,20 @@ namespace Mengine
         Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
-        struct stat sb;
-        if( stat( pathCorrect, &sb ) != 0 )
+        SDL_RWops * rwops = SDL_RWFromFile( pathCorrect, "rb" );
+
+        if( rwops == nullptr )
         {
             return false;
         }
 
-        if( ((sb.st_mode) & S_IFMT) == S_IFDIR )
+        if( SDL_RWclose( rwops ) != 0 )
         {
+            LOGGER_ERROR( "invalid close '%s' get error: %s"
+                , pathCorrect
+                , SDL_GetError()
+            );
+
             return false;
         }
 

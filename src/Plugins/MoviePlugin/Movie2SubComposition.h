@@ -49,8 +49,8 @@ namespace Mengine
         float getFrameDuration() const;
 
     public:
-        void setSubCompositionEnable( bool _enable );
-        bool getSubCompositionEnable() const;
+        void setSubCompositionEnable( bool _enable ) override;
+        bool getSubCompositionEnable() const override;
 
     protected:
         void updateEnable_();

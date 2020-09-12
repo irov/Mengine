@@ -2,6 +2,7 @@
 
 #include "Config/Config.h"
 #include "Config/Char.h"
+#include "Config/StdInt.h"
 #include "Config/StdDef.h"
 
 namespace Mengine
@@ -23,7 +24,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T * allocateMemoryNT( int _count, const Char * _doc )
+        T * allocateMemoryNT( uint32_t _count, const Char * _doc )
         {
             void * ptr = Helper::allocateMemory( sizeof( T ) * _count, _doc );
 

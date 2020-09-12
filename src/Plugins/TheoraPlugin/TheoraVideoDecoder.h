@@ -42,6 +42,10 @@ namespace Mengine
         bool seekToFrame( float _timing );
 
     protected:
+        size_t read_buffer_data_();
+        bool decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _pitch );
+
+    protected:
         ogg_stream_state m_oggStreamState;
         ogg_sync_state m_oggSyncState;
 
@@ -53,11 +57,5 @@ namespace Mengine
 
         float m_time;
         bool m_readyFrame;
-
-    private:
-        bool readHeader_();
-        size_t read_buffer_data_();
-        bool decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _pitch );
-        int32_t readFrame_();
     };
 }

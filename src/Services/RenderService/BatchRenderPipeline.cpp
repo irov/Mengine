@@ -445,8 +445,6 @@ namespace Mengine
 
         renderPass->flags = RENDER_PASS_FLAG_SINGLE;
 
-        renderPass->countRenderObject = 0;
-
         m_renderPasses.emplace_back( renderPass );
     }
     //////////////////////////////////////////////////////////////////////////

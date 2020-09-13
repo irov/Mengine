@@ -441,6 +441,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::unfetch( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
+        if( this->isAvailableService() == false )
+        {
+            return false;
+        }
+
         const PrefetchReceiverPtr & receiver = m_prefetchReceivers.find( _fileGroup->getName(), _filePath );
 
         if( receiver == nullptr )
@@ -467,6 +472,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrefetcherService::visitPrefetches( const VisitorPtr & _visitor ) const
     {
+        if( this->isAvailableService() == false )
+        {
+            return;
+        }
+
         for( const HashtablePrefetchReceiver::value_type & value : m_prefetchReceivers )
         {
             const ThreadTaskPrefetchPtr & prefetcher = value.element->getPrefetcher();

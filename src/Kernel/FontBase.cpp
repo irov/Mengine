@@ -79,6 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
     {
+        _observer->onPrefetchPreparation();
         _observer->onPrefetchComplete( true );
 
         return true;

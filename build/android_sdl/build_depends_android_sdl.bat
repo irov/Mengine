@@ -107,10 +107,11 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     
 @popd
 
-if errorlevel 1 (
+if %errorlevel% NEQ 0 (
     @echo %ESC%[91m*****************************************%ESC%[0m
     @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
     @echo %ESC%[91m*****************************************%ESC%[0m
+    goto :end
 ) else (
     @echo %ESC%[92m=========================================%ESC%[0m
     @echo %ESC%[92m=============  Successful  ==============%ESC%[0m

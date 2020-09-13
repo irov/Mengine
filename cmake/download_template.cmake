@@ -47,6 +47,23 @@ macro(DOWNLOAD_URL NAME URL)
     add_library(${NAME} STATIC IMPORTED)
 endmacro()
 
+macro(DOWNLOAD_URL_FOLDER NAME URL FOLDER)
+    MESSAGE("Download ${NAME}: ${URL}")
+    ExternalProject_Add(${NAME}_download PREFIX ${NAME}
+        SOURCE_DIR ${THIRDPARTY_DIR}/${FOLDER}
+        
+        URL ${URL}
+        DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
+
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        UPDATE_COMMAND ""
+        INSTALL_COMMAND ""
+    )
+    
+    add_library(${NAME} STATIC IMPORTED)
+endmacro()
+
 macro(DOWNLOAD_URL_HASH NAME URL HASH_ALGO HASH)
     MESSAGE("Download ${NAME}: ${URL}")
     ExternalProject_Add(${NAME}_download PREFIX ${NAME}

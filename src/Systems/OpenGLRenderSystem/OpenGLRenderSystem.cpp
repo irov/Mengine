@@ -1047,6 +1047,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
+#ifdef MENGINE_RENDER_OPENGL
+        if( m_vertexArrayId != 0 )
+        {
+            GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
+            m_vertexArrayId = 0;
+        }
+#endif
+
         for( OpenGLRenderIndexBuffer * buffer : m_cacheRenderIndexBuffers )
         {
             buffer->release();
@@ -1086,6 +1094,18 @@ namespace Mengine
     bool OpenGLRenderSystem::onWindowChangeFullscreen( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );
+
+#ifdef MENGINE_RENDER_OPENGL
+        GLuint vertexArrayId;
+        glGenVertexArrays( 1, &vertexArrayId );
+
+        if( vertexArrayId == 0 )
+        {
+            return false;
+        }
+
+        m_vertexArrayId = vertexArrayId;
+#endif
 
         for( OpenGLRenderIndexBuffer * buffer : m_cacheRenderIndexBuffers )
         {

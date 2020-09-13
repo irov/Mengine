@@ -1484,7 +1484,11 @@ namespace Mengine
         Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
+        SDL_SuppressError( SDL_TRUE );
+
         SDL_RWops * rwops = SDL_RWFromFile( pathCorrect, "rb" );
+
+        SDL_SuppressError( SDL_FALSE );
 
         if( rwops == nullptr )
         {

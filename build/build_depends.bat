@@ -1,3 +1,8 @@
+@echo off
+
+setlocal
+call :setESC
+
 for %%O in (%*) do for /f "tokens=1,2 delims==" %%a in (%%O) do set "%%~a=%%~b"
 
 echo **********************************************************************
@@ -37,18 +42,38 @@ CMake -G "%GENERATOR%" %CMAKE_PLATFORM_TOOLSET% %CMAKE_ARCHITECTURE% -S "%SOURCE
 
 @popd
 
-if errorlevel 1 (
-    echo Failure Generate CMake is %errorlevel%
-    exit /b %errorlevel%
+if %errorlevel% NEQ 0 (
+    @echo %ESC%[91m*****************************************%ESC%[0m
+    @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
+    @echo %ESC%[91m*****************************************%ESC%[0m
+    goto end
+) else (
+    @echo %ESC%[92m=========================================%ESC%[0m
+    @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
+    @echo %ESC%[92m=========================================%ESC%[0m
 )
 
 @pushd "%BUILD_TEMP_DIR%"
-
 CMake --build .\ -j 8 --config %CONFIGURATION% %CMAKE_VERBOSITY%
-
 @popd
 
-if errorlevel 1 (
-    echo Failure Build CMake is %errorlevel%
-    exit /b %errorlevel%
+if %errorlevel% NEQ 0 (
+    @echo %ESC%[91m*****************************************%ESC%[0m
+    @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
+    @echo %ESC%[91m*****************************************%ESC%[0m
+    goto end
+) else (
+    @echo %ESC%[92m=========================================%ESC%[0m
+    @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
+    @echo %ESC%[92m=========================================%ESC%[0m
+)
+
+:end
+
+exit /b %errorlevel%
+
+:setESC
+for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
+  set ESC=%%b
+  exit /B 0
 )

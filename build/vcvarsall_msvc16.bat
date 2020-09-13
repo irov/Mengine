@@ -8,7 +8,7 @@ if not exist %cmd_vcvars% goto vs_not_found
 :vs_vars_found
 
 call %cmd_vcvars% x86
-if errorlevel 1 goto error
+if %errorlevel% NEQ 0 goto error
 
 goto successful
 
@@ -18,3 +18,4 @@ echo Visual Studio 2019 not found. Make sure it is installed to standard directo
 exit /b 1
 
 :successful
+exit /b 0

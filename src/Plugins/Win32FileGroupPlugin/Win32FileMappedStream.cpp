@@ -57,7 +57,7 @@ namespace Mengine
 
         m_hFile = hFile;
 
-        HANDLE hMapping = CreateFileMapping( m_hFile, NULL, PAGE_READONLY, 0, 0, NULL );
+        HANDLE hMapping = ::CreateFileMapping( m_hFile, NULL, PAGE_READONLY, 0, 0, NULL );
 
         if( hMapping == NULL )
         {

@@ -57,7 +57,7 @@ namespace Mengine
         _size->y = 1.f / height;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resolution::calcScale( const Resolution & _resolution, mt::vec2f * _scale ) const
+    void Resolution::calcScale( const Resolution & _resolution, mt::vec2f * const _scale ) const
     {
         mt::vec2f self_size;
         this->calcSize( &self_size );

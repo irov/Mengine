@@ -10,7 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        void centroid( const Polygon & _polygon, mt::vec2f * _point );
+        void centroid( const Polygon & _polygon, mt::vec2f * const _point );
         bool triangulate( const Polygon & _polygon, VectorPoints * const _result );
         bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices * const _result );
         bool intersects( const Polygon & _polygon, const mt::vec2f & _point );

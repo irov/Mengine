@@ -38,17 +38,17 @@ namespace Mengine
         float getRadius() const;
 
     public:
-        void calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint ) const;
-        void calcPointClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint ) const;
+        void calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
+        void calcPointClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
         void calcPointDeltha( const RenderCameraInterfacePtr & _camera, const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha ) const;
 
     public:
-        void calcMouseScreenPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _worldPoint, mt::vec2f * _screenPoint ) const;
+        void calcMouseScreenPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const;
 
     public:
-        void adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f * _adaptScreenPoint ) const;
-        void adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f * _adaptScreenDeltha ) const;
-        void adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f * _adaptScreenPoint ) const;
+        void adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
+        void adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha ) const;
+        void adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint ) const;
 
     public:
         void onAppMouseLeave();

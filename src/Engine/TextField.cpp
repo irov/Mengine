@@ -1390,7 +1390,7 @@ namespace Mengine
         return offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
+    void TextField::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         //mt::vec2f offset = mt::zero_v2;
 
@@ -1508,7 +1508,7 @@ namespace Mengine
         return key;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::calcText( String * _text ) const
+    bool TextField::calcText( String * const _text ) const
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 

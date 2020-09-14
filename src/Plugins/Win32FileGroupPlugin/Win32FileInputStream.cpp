@@ -373,7 +373,9 @@ namespace Mengine
     {
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::eof" );
 
-        return (m_reading - m_capacity + m_carriage) == m_size;
+        size_t current = m_reading - m_capacity + m_carriage;
+
+        return current == m_size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::time( uint64_t * const _time ) const
@@ -403,7 +405,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::memory( void ** const _memory, size_t * _size )
+    bool Win32FileInputStream::memory( void ** const _memory, size_t * const _size )
     {
         MENGINE_UNUSED( _memory );
         MENGINE_UNUSED( _size );

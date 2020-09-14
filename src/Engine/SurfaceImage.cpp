@@ -172,7 +172,7 @@ namespace Mengine
         return color;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImage::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
+    void SurfaceImage::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * const _out ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup texture"
             , this->getName().c_str()

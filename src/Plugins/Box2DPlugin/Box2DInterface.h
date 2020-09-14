@@ -180,8 +180,6 @@ namespace Mengine
             , const Box2DBodyInterfacePtr & _body2
             , const mt::vec2f & _offsetBody1
             , const mt::vec2f & _offsetBody2
-            , float _minlength
-            , float _maxlength
             , bool _collideBodies
             , const DocumentPtr & _doc ) = 0;
 
@@ -220,6 +218,15 @@ namespace Mengine
             , float _ratio
             , bool _collideConnected
             , const DocumentPtr & _doc ) = 0;
+
+        virtual Box2DJointInterfacePtr createRopeJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const mt::vec2f & _offsetBody1
+            , const mt::vec2f & _offsetBody2
+            , float _maxlength
+            , bool _collideConnected
+            , const DocumentPtr & _doc ) = 0;
+
 
         virtual Box2DJointInterfacePtr createWheelJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2

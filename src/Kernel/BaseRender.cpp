@@ -23,6 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseRender::~BaseRender()
     {
+        MENGINE_ASSERTION_FATAL( m_extraRelationRender == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRelationRender( RenderInterface * _relationRender )
@@ -381,7 +382,7 @@ namespace Mengine
     {
         Colorable::invalidateColor();
 
-        for( BaseRender * child : m_renderChildren )
+        for( const BaseRender * child : m_renderChildren )
         {
             child->invalidateColor();
         }

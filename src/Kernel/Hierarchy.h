@@ -66,7 +66,7 @@ namespace Mengine
         void setParent_( Node * _parent );
 
     protected:
-        void addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _node );
+        void addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _node, bool _end );
 
     protected:
         void insertChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _node );

@@ -53,6 +53,11 @@ namespace Mengine
     {
         const SurfacePtr & surface = this->getSurface();
 
+        if( surface == nullptr )
+        {
+            return nullptr;
+        }
+
         AnimationInterface * animation = surface->getAnimation();
 
         return animation;
@@ -61,6 +66,11 @@ namespace Mengine
     const AnimationInterface * ShapeQuadFixed::getAnimation() const
     {
         const SurfacePtr & surface = this->getSurface();
+
+        if( surface == nullptr )
+        {
+            return nullptr;
+        }
 
         const AnimationInterface * animation = surface->getAnimation();
 
@@ -71,6 +81,11 @@ namespace Mengine
     {
         const SurfacePtr & surface = this->getSurface();
 
+        if( surface == nullptr )
+        {
+            return nullptr;
+        }
+
         EventationInterface * eventation = surface->getEventation();
 
         return eventation;
@@ -79,6 +94,11 @@ namespace Mengine
     const EventationInterface * ShapeQuadFixed::getEventation() const
     {
         const SurfacePtr & surface = this->getSurface();
+
+        if( surface == nullptr )
+        {
+            return nullptr;
+        }
 
         const EventationInterface * eventation = surface->getEventation();
 

@@ -66,7 +66,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImage::correctUVImage( const mt::vec2f & _in, mt::vec2f * _out ) const
+    void ResourceImage::correctUVImage( const mt::vec2f & _in, mt::vec2f * const _out ) const
     {
         if( m_uvImageRotate == false )
         {
@@ -78,7 +78,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImage::correctUVAlpha( const mt::vec2f & _in, mt::vec2f * _out ) const
+    void ResourceImage::correctUVAlpha( const mt::vec2f & _in, mt::vec2f * const _out ) const
     {
         if( m_uvAlphaRotate == false )
         {

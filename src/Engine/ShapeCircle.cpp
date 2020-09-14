@@ -125,7 +125,7 @@ namespace Mengine
         _renderPipeline->addRenderObject( _context, material, nullptr, vertices, vertexCount, indices, indexCount, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeCircle::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
+    void ShapeCircle::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         uint32_t vertexCount;
         const RenderVertex2D * vertices = this->getVerticesWM( &vertexCount );

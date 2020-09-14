@@ -12,7 +12,7 @@ namespace Mengine
         ~RenderCameraOrthogonal() override;
 
     public:
-        void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * _screenPosition ) const override;
+        void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * const _screenPosition ) const override;
 
     public:
         void setCameraPosition( const mt::vec3f & _pos );

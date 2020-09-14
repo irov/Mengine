@@ -117,7 +117,7 @@ namespace Mengine
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraProjection::fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * _screenPosition ) const
+    void RenderCameraProjection::fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * const _screenPosition ) const
     {
         const mt::mat4f & vpm = this->getCameraViewProjectionMatrix();
 

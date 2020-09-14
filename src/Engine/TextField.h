@@ -55,7 +55,7 @@ namespace Mengine
         const ConstString & getTotalTextId() const;
 
     public:
-        bool calcText( String * _text ) const;
+        bool calcText( String * const _text ) const;
 
     public:
         void setTextAliasEnvironment( const ConstString & _aliasEnvironment );
@@ -144,7 +144,7 @@ namespace Mengine
         void _release() override;
 
         void _invalidateWorldMatrix() const override;
-        void _updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const override;
+        void _updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const override;
         void _invalidateColor() const override;
 
     protected:

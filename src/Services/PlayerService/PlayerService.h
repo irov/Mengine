@@ -35,8 +35,8 @@ namespace Mengine
         const ArrowPtr & getArrow() const override;
 
     public:
-        void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint ) override;
-        void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha ) override;
+        void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) override;
+        void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) override;
 
     public:
         SchedulerInterfacePtr createSchedulerManager( const ConstString & _name, const DocumentPtr & _doc ) override;

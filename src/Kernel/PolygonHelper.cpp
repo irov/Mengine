@@ -288,7 +288,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        void centroid( const Polygon & _polygon, mt::vec2f * _point )
+        void centroid( const Polygon & _polygon, mt::vec2f * const _point )
         {
             mt::vec2f centroid_point( 0.f, 0.f );
             float centroid_area = 0.f;

@@ -284,12 +284,12 @@ namespace Mengine
         return m_arrow;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint )
+    void PlayerService::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint )
     {
         Helper::screenToWorldPosition( m_renderCamera, _screenPoint, _worldPoint );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha )
+    void PlayerService::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha )
     {
         Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
     }

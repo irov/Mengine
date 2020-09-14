@@ -433,7 +433,7 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
+    void SurfaceImageSequence::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * const _out ) const
     {
         MENGINE_ASSERTION_FATAL( this->isCompile() == true, "'%s' not compile"
             , this->getName().c_str()

@@ -24,7 +24,7 @@ namespace Mengine
         void setCameraFar( float _far );
 
     protected:
-        void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * _screenPosition ) const override;
+        void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * const _screenPosition ) const override;
 
     protected:
         void _updateViewMatrix() const override;

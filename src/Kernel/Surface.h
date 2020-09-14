@@ -52,7 +52,7 @@ namespace Mengine
         virtual uint32_t getUVCount() const = 0;
         virtual const mt::uv4f & getUV( uint32_t _index ) const = 0;
 
-        virtual void correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const = 0;
+        virtual void correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * const _out ) const = 0;
 
         virtual const Color & getColor() const = 0;
 

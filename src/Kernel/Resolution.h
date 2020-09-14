@@ -26,7 +26,7 @@ namespace Mengine
 
         void calcSize( mt::vec2f * _size ) const;
         void calcInvSize( mt::vec2f * _size ) const;
-        void calcScale( const Resolution & _resolution, mt::vec2f * _scale ) const;
+        void calcScale( const Resolution & _resolution, mt::vec2f * const _scale ) const;
 
     public:
         bool operator == ( const Resolution & _resolution ) const;

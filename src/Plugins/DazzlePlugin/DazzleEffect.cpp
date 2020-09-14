@@ -148,7 +148,7 @@ namespace Mengine
         MENGINE_UNUSED( _context );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DazzleEffect::_updateBoundingBox( mt::box2f * _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
+    void DazzleEffect::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
         MENGINE_UNUSED( _boundingBox );
         MENGINE_UNUSED( _boundingBoxCurrent );

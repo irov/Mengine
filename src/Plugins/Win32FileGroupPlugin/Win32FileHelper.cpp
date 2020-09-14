@@ -83,11 +83,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t Win32ConcatenateFilePathA( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _concatenatePath, size_t _capacity )
         {
-            size_t relationSize = _relationPath.size();
-            size_t folderSize = _folderPath.size();
-            size_t fileSize = _filePath.size();
+            FilePath::size_type relationSize = _relationPath.size();
+            FilePath::size_type folderSize = _folderPath.size();
+            FilePath::size_type fileSize = _filePath.size();
 
-            size_t filePathSize = relationSize + folderSize + fileSize;
+            FilePath::size_type filePathSize = relationSize + folderSize + fileSize;
 
             if( filePathSize >= MENGINE_MAX_PATH )
             {
@@ -108,7 +108,7 @@ namespace Mengine
         size_t Win32ConcatenateFilePathW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _concatenatePath, size_t _capacity )
         {
             Char utf8_filePath[MENGINE_MAX_PATH] = { '\0' };
-            size_t utf8_filePathLen = Win32ConcatenateFilePathA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
+            size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
 
             if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
             {
@@ -126,11 +126,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t Win32ConcatenateFilePathTempA( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _concatenatePath, size_t _capacity )
         {
-            size_t relationSize = _relationPath.size();
-            size_t folderSize = _folderPath.size();
-            size_t fileSize = _filePath.size();
+            FilePath::size_type relationSize = _relationPath.size();
+            FilePath::size_type folderSize = _folderPath.size();
+            FilePath::size_type fileSize = _filePath.size();
 
-            size_t filePathSize = relationSize + folderSize + fileSize + 5;
+            FilePath::size_type filePathSize = relationSize + folderSize + fileSize + 5;
 
             if( filePathSize >= MENGINE_MAX_PATH )
             {
@@ -152,7 +152,7 @@ namespace Mengine
         size_t Win32ConcatenateFilePathTempW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _concatenatePath, size_t _capacity )
         {
             Char utf8_filePath[MENGINE_MAX_PATH] = {'\0'};
-            size_t utf8_filePathLen = Win32ConcatenateFilePathTempA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
+            size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathTempA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
 
             if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
             {

@@ -45,7 +45,7 @@ namespace Mengine
             , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
-        this->addChild_( m_children.end(), _node );
+        this->addChild_( m_children.end(), _node, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::addChildFront( const NodePtr & _node )
@@ -58,7 +58,7 @@ namespace Mengine
             , Detail::getHierarchyReceiverName( this ).c_str()
         );
 
-        this->addChild_( m_children.begin(), _node );
+        this->addChild_( m_children.begin(), _node, m_children.empty() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Hierarchy::addChildAfter( const NodePtr & _node, const NodePtr & _after )
@@ -83,12 +83,12 @@ namespace Mengine
 
         IntrusiveSlugListHierarchyChild::iterator it_after( NodePtr::from( _after ) );
 
-        this->addChild_( it_after, _node );
+        this->addChild_( it_after, _node, false );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Hierarchy::addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _child )
+    void Hierarchy::addChild_( const IntrusiveSlugListHierarchyChild::iterator & _insert, const NodePtr & _child, bool _end )
     {
         IntrusivePtrScope ankh( this );
 
@@ -96,11 +96,14 @@ namespace Mengine
 
         if( child_parent == this )
         {
-            const NodePtr & insert_hierarchy = *_insert;
-
-            if( insert_hierarchy == _child )
+            if( _end == false )
             {
-                return;
+                const NodePtr & insert_hierarchy = *_insert;
+
+                if( insert_hierarchy == _child )
+                {
+                    return;
+                }
             }
 
             child_parent->eraseChild_( _child );

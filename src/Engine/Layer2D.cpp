@@ -183,12 +183,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::createRenderTarget_()
     {
-        RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
-            ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, 3, PF_A8R8G8B8, MENGINE_DOCUMENT_FACTORABLE );
+        uint32_t width = (uint32_t)m_size.x;
+        uint32_t height = (uint32_t)m_size.y;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture [%f, %f]"
-            , m_size.x
-            , m_size.y
+        RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
+            ->createRenderTargetTexture( width, height, 3, PF_A8R8G8B8, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, "invalid create render target texture [%u, %u]"
+            , width
+            , height
         );
 
         RenderInterface * render = this->getRender();
@@ -200,11 +203,11 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetImage, "invalid create render target image" );
 
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
-            ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y, MENGINE_DOCUMENT_FACTORABLE );
+            ->createRenderTexture( renderTargetImage, width, height, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, "invalid create render texture [%f, %f]"
-            , m_size.x
-            , m_size.y
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, "invalid create render texture [%u, %u]"
+            , width
+            , height
         );
 
         if( m_resourceImageMask->compile() == false )

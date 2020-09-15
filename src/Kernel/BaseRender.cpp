@@ -53,15 +53,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()
     {
-        if( m_relationRender == nullptr )
+        if( m_extraRelationRender != nullptr )
         {
+            m_extraRelationRender->removeRelationRenderChildren_( this );
+            m_extraRelationRender = nullptr;
+
+            m_relationRender = nullptr;
+
             return;
         }
 
-        if( m_extraRelationRender != nullptr )
+        if( m_relationRender == nullptr )
         {
-            m_relationRender = nullptr;
-
             return;
         }
 
@@ -122,6 +125,7 @@ namespace Mengine
     {
         for( BaseRender * child : m_renderChildren )
         {
+            child->m_extraRelationRender = nullptr;
             child->m_relationRender = nullptr;
         }
 

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "GOAP/Config.h"
+
 #include <array>
 
 namespace GOAP

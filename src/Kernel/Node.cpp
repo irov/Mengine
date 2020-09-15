@@ -233,7 +233,6 @@ namespace Mengine
         if( render != nullptr )
         {
             render->removeRelationRender();
-            render->removeExtraRelationRender();
         }
         else
         {
@@ -244,7 +243,6 @@ namespace Mengine
                 this->foreachRenderCloseChildren_( []( RenderInterface * _render )
                 {
                     _render->removeRelationRender();
-                    _render->removeExtraRelationRender();
                 } );
             }
         }

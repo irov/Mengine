@@ -1006,11 +1006,12 @@ namespace Mengine
             }
         }
 
-        SDL_DisplayMode mode;
-        SDL_GetWindowDisplayMode( m_window, &mode );
+        int win_width;
+        int win_height;
+        SDL_GetWindowSize( m_window, &win_width, &win_height );
 
-        float dwf = static_cast<float>(mode.w);
-        float dhf = static_cast<float>(mode.h);
+        float dwf = static_cast<float>(win_width);
+        float dhf = static_cast<float>(win_height);
 
         m_sdlInput->updateSurfaceResolution( dwf, dhf );
 

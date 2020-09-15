@@ -401,8 +401,6 @@ namespace Mengine
             return false;
         }
 
-
-
         const Char * sdlPlatform = SDL_GetPlatform();
 
         if( MENGINE_STRCMP( sdlPlatform, "Windows" ) == 0 )

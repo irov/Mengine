@@ -70,13 +70,6 @@ namespace Mengine
         this->releaseMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImage::update( const UpdateContext * _context )
-    {
-        MENGINE_UNUSED( _context );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getMaxSize() const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' not setup resource"

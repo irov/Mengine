@@ -6,7 +6,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Surface::Surface()
-        : m_anchor( 0.f, 0.f )
+        : m_revision( 0 )
+        , m_anchor( 0.f, 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -58,12 +59,22 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Surface::update( const UpdateContext * _context )
+    uint32_t Surface::update( const UpdateContext * _context )
+    {
+        this->_update( _context );
+
+        return m_revision;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Surface::_update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );
 
-        //Empty;
-
-        return false;
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Surface::_invalidateMaterial() const
+    {
+        ++m_revision;
     }
 }

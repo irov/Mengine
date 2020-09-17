@@ -65,6 +65,9 @@ namespace Mengine
         MENGINE_INLINE bool isInvalidateMaterial() const;
 
     protected:
+        virtual void _invalidateMaterial() const;
+
+    protected:
         RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
@@ -89,6 +92,8 @@ namespace Mengine
     MENGINE_INLINE void Materialable::invalidateMaterial() const
     {
         m_invalidateMaterial = true;
+
+        this->_invalidateMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Materialable::isInvalidateMaterial() const

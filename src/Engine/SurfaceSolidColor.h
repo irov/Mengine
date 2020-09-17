@@ -32,9 +32,6 @@ namespace Mengine
         const Color & getColor() const override;
 
     protected:
-        bool update( const UpdateContext * _context ) override;
-
-    protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:

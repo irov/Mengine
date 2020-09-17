@@ -163,15 +163,6 @@ namespace Mengine
         *_out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceTrackMatte::update( const UpdateContext * _context )
-    {
-        MENGINE_UNUSED( _context );
-
-        //Empty
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' resource is nullptr"

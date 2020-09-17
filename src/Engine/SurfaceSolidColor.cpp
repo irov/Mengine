@@ -70,15 +70,6 @@ namespace Mengine
         return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSolidColor::update( const UpdateContext * _context )
-    {
-        MENGINE_UNUSED( _context );
-
-        //Empty
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SurfaceSolidColor::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * const _out ) const
     {
         MENGINE_UNUSED( _index );

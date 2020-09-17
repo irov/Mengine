@@ -105,13 +105,6 @@ namespace Mengine
         *_out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::update( const UpdateContext * _context )
-    {
-        MENGINE_UNUSED( _context );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::setResourceSound( const ResourceSoundPtr & _resourceSound )
     {
         if( m_resourceSound == _resourceSound )

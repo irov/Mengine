@@ -67,13 +67,21 @@ namespace Mengine
         void deactivate();
 
     public:
-        virtual bool update( const UpdateContext * _context ) = 0;
+        uint32_t update( const UpdateContext * _context );
+
+    protected:
+        virtual void _update( const UpdateContext * _context );
 
     protected:
         virtual void _activate();
         virtual void _deactivate();
 
     protected:
+        void _invalidateMaterial() const override;
+
+    protected:
+        mutable uint32_t m_revision;
+
         mt::vec2f m_anchor;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -217,7 +217,7 @@ namespace Mengine
             {
                 if( dynamic_cast<typename Detail::reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
                 {
-                    throw std::runtime_error("reinterpret node cast");
+                    throw std::runtime_error( "reinterpret node cast" );
                 }
             }
             catch( const std::exception & )
@@ -307,7 +307,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         T dynamicNodeCast( const Node * _node )
-        {            
+        {
 #ifdef MENGINE_DEBUG
             static_assert(std::is_base_of_v<Node, std::remove_pointer_t<T>>, "dynamic node cast use on non 'Nodeable' type");
 #endif
@@ -315,6 +315,18 @@ namespace Mengine
             T t = dynamic_cast<T>(_node);
 
             return t;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicNodeCast( const NodePtr & _node )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Node, std::remove_pointer_t<typename T::value_type>>, "dynamic node cast use on non 'Nodeable' type");
+#endif
+
+            T t = stdex::intrusive_dynamic_cast<T>(_node);
+
+            return std::move( t );
         }
     }
     //////////////////////////////////////////////////////////////////////////

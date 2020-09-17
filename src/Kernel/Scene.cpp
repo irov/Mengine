@@ -26,7 +26,7 @@ namespace Mengine
         {
             this->foreachChildrenSlug( []( const NodePtr & _hierarchy )
             {
-                Scene * subScene = stdex::intrusive_dynamic_get<Scene *>( _hierarchy );
+                ScenePtr subScene = Helper::dynamicNodeCast<ScenePtr>( _hierarchy );
 
                 if( subScene != nullptr )
                 {
@@ -45,7 +45,7 @@ namespace Mengine
         {
             this->foreachChildrenSlug( []( const NodePtr & _hierarchy )
             {
-                Scene * subScene = stdex::intrusive_dynamic_get<Scene *>( _hierarchy );
+                ScenePtr subScene = Helper::dynamicNodeCast<ScenePtr>( _hierarchy );
 
                 if( subScene != nullptr )
                 {

@@ -580,6 +580,11 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Materialable::_invalidateMaterial() const
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Materialable::getMaterial3( EMaterial _materialId
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
@@ -598,4 +603,5 @@ namespace Mengine
 
         return material;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

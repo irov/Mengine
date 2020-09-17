@@ -20,7 +20,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     struct RenderObject
-    {        
+    {
         uint32_t materialSmartId;
 
         const RenderVertex2D * vertexData;
@@ -32,10 +32,9 @@ namespace Mengine
         mt::box2f bb;
 
         uint32_t flags;
-    };    
+    };
     //////////////////////////////////////////////////////////////////////////
     struct RenderPass
-        : public Factorable
     {
         uint32_t beginRenderObject;
         uint32_t countRenderObject;
@@ -55,7 +54,7 @@ namespace Mengine
 
         RenderExternalInterfacePtr external;
 
-        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];        
+        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 
         uint32_t flags;
     };
@@ -137,7 +136,7 @@ namespace Mengine
             , const RenderVertexAttributeInterfacePtr & _vertexAttribute
             , const RenderProgramVariableInterfacePtr & _programVariable ) const;
 
-        RenderPass * requestRenderPass_( const RenderContext * _context
+        RenderPass & requestRenderPass_( const RenderContext * _context
             , const RenderBatchInterfacePtr & _batch
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
@@ -145,7 +144,7 @@ namespace Mengine
             , const RenderProgramVariableInterfacePtr & _programVariable );
 
     protected:
-        void insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * const _vbPos, uint32_t * const _ibPos );
+        void insertRenderObjects_( const RenderPass & _renderPass, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * const _vbPos, uint32_t * const _ibPos );
         bool insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t _vbPos, uint32_t _ibPos ) const;
             
     protected:
@@ -157,16 +156,14 @@ namespace Mengine
         typedef DynamicArray<RenderPrimitive> DynamicArrayRenderPrimitives;
         DynamicArrayRenderPrimitives m_renderPrimitives;
 
-        typedef Pool<RenderPass, 128> PoolRenderPass;
-        PoolRenderPass m_poolRenderPass;
-
-        typedef Vector<RenderPass *> VectorRenderPass;
+        typedef Vector<RenderPass> VectorRenderPass;
         VectorRenderPass m_renderPasses;
 
         typedef DynamicArray<RenderIndex> DynamicArrayRenderIndices;
         DynamicArrayRenderIndices m_indicesQuad;
         DynamicArrayRenderIndices m_indicesLine;
 
+#ifndef MENGINE_MASTER_RELEASE
         struct DebugRenderObject
         {
             RenderContext context;
@@ -180,9 +177,7 @@ namespace Mengine
 
         typedef Vector<DebugRenderObject> VectorDebugRenderObjects;
         VectorDebugRenderObjects m_debugRenderObjects;
-
-        typedef Vector< RenderMaterialInterfacePtr> VectorDebugRenderMaterials;
-        VectorDebugRenderMaterials m_debugRenderMaterials;
+#endif
 
 #ifdef MENGINE_DEBUG
         bool m_debugStepRenderMode;
@@ -193,6 +188,6 @@ namespace Mengine
 
     protected:
         void batchRenderObjectNormal_( DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderObjects::iterator _roEnd, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * _vbPos, uint32_t * _ibPos );
-        void batchRenderObjectSmart_( const RenderPass * _renderPass, DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderObject * _ro, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * _vbPos, uint32_t * _ibPos );
+        void batchRenderObjectSmart_( const RenderPass & _renderPass, DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderObject * _ro, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * _vbPos, uint32_t * _ibPos );
     };
 }

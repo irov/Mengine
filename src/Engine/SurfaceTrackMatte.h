@@ -55,9 +55,6 @@ namespace Mengine
         const Color & getColor() const override;
 
     protected:
-        bool update( const UpdateContext * _context ) override;
-
-    protected:
         bool _compile() override;
         void _release() override;
 

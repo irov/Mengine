@@ -52,6 +52,8 @@ namespace Mengine
     protected:
         SurfacePtr m_surface;
 
+        uint32_t m_surfaceRevision;
+
         mutable bool m_invalidateVerticesLocal;
         mutable bool m_invalidateVerticesWM;
         mutable bool m_invalidateVerticesColor;

@@ -139,6 +139,6 @@ namespace Mengine
         bool m_emitterTranslateWithParticleSetup;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AstralaxEmitter> ParticleEmitter2Ptr;
+    typedef IntrusivePtr<AstralaxEmitter> AstralaxEmitterPtr;
     //////////////////////////////////////////////////////////////////////////
 }

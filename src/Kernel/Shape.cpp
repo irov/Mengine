@@ -8,7 +8,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Shape::Shape()
-        : m_invalidateVerticesLocal( true )
+        : m_surfaceRevision( 0 )
+        , m_invalidateVerticesLocal( true )
         , m_invalidateVerticesWM( true )
         , m_invalidateVerticesColor( true )
     {
@@ -28,6 +29,7 @@ namespace Mengine
         this->recompile( [this, &_surface]()
         {
             m_surface = _surface;
+            m_surfaceRevision = 0;
 
             if( m_surface == nullptr )
             {
@@ -72,12 +74,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Shape::update( const UpdateContext * _context )
     {
-        bool invalidate = m_surface->update( _context );
+        uint32_t revision = m_surface->update( _context );
 
-        if( invalidate == true )
+        if( m_surfaceRevision < revision )
         {
             this->invalidateVerticesLocal();
             this->invalidateVerticesColor();
+
+            m_surfaceRevision = revision;
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -48,13 +48,11 @@ namespace Mengine
         return m_resourceImageSequence;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImageSequence::update( const UpdateContext * _context )
+    void SurfaceImageSequence::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
-            bool invalidate = this->isInvalidateMaterial();
-
-            return invalidate;
+            return;
         }
 
         float totalTime = this->calcTotalTime( _context );
@@ -113,12 +111,10 @@ namespace Mengine
 
         if( lastFrame == m_currentFrame )
         {
-            return false;
+            return;
         }
 
         this->invalidateMaterial();
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_compile()

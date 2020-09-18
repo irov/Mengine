@@ -61,7 +61,7 @@ namespace Mengine
 
     protected:
         void _activate() override;
-        uint32_t update( const UpdateContext * _context ) override;
+        uint32_t _update( const UpdateContext * _context ) override;
 
     protected:
         void _setTime( float _time ) override;

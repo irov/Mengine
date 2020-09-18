@@ -103,7 +103,7 @@ namespace Mengine
         this->updateVideoBuffer_();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SurfaceVideo::update( const UpdateContext * _context )
+    uint32_t SurfaceVideo::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {

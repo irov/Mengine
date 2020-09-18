@@ -103,11 +103,11 @@ namespace Mengine
         this->updateVideoBuffer_();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SurfaceVideo::_update( const UpdateContext * _context )
+    void SurfaceVideo::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
-            return 0;
+            return;
         }
 
         bool enabled = APPLICATION_SERVICE()
@@ -115,7 +115,7 @@ namespace Mengine
 
         if( enabled == false )
         {
-            return 0;
+            return;
         }
 
         float totalTime = this->calcTotalTime( _context );
@@ -123,8 +123,6 @@ namespace Mengine
         m_needUpdateVideoBuffer = this->sync_( totalTime );
 
         this->updateVideoBuffer_();
-
-        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_compile()

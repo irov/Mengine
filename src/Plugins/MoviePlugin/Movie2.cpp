@@ -1126,12 +1126,12 @@ namespace Mengine
     {
         Movie2 * movie2 = static_cast<Movie2 *>( _ud );
 
-        const aeMovieLayerData * layer = _callbackData->layer;
+        const aeMovieLayerData * layer_data = _callbackData->layer_data;
 
         ae_uint32_t node_index = _callbackData->index;
-        const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
+        const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer_data );
 
-        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
+        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer_data );
 
         if( is_track_matte == AE_TRUE )
         {
@@ -1140,7 +1140,7 @@ namespace Mengine
             return AE_TRUE;
         }
 
-        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer );
+        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer_data );
 
         switch( type )
         {
@@ -1157,7 +1157,7 @@ namespace Mengine
 
                 const SurfacePtr & surface = node->getSurface();
 
-                EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer );
+                EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer_data );
 
                 surface->setBlendMode( blend_mode );
 
@@ -1173,44 +1173,44 @@ namespace Mengine
 
                 Detail::updateMatrixProxy( movie2, node.get(), AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'r' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'h', 'r' ) ) == AE_TRUE )
                 {
                     node->setHorizontalRightAlign();
                 }
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'c' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'h', 'c' ) ) == AE_TRUE )
                 {
                     node->setHorizontalCenterAlign();
                 }
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'l' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'h', 'l' ) ) == AE_TRUE )
                 {
                     node->setHorizontalLeftAlign();
                 }
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 't' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 't' ) ) == AE_TRUE )
                 {
                     node->setVerticalTopAlign();
                 }
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 'c' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 'c' ) ) == AE_TRUE )
                 {
                     node->setVerticalCenterAlign();
                 }
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 'b' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 'b' ) ) == AE_TRUE )
                 {
                     node->setVerticalBottomAlign();
                 }
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'a', 's' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'a', 's' ) ) == AE_TRUE )
                 {
                     node->setWrap( false );
                     node->setAutoScale( true );
                 }
 
                 ae_aabb_t aabb;
-                if( ae_get_movie_layer_data_dimension( layer, &aabb ) == AE_TRUE )
+                if( ae_get_movie_layer_data_dimension( layer_data, &aabb ) == AE_TRUE )
                 {
                     float maxLength = aabb.maximal_x - aabb.minimal_x;
 
@@ -1238,7 +1238,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 const ae_polygon_t * polygon;
-                if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
+                if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer_data, 0, &polygon ) == AE_FALSE )
                 {
                     return false;
                 }
@@ -1267,7 +1267,7 @@ namespace Mengine
 
                 UnknownAstralaxEmitterInterface * unknownAstralaxEmitter = node->getUnknown();
 
-                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', '\0', 't' ) ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', '\0', 't' ) ) == AE_TRUE )
                 {
                     unknownAstralaxEmitter->setEmitterPositionRelative( true );
                     unknownAstralaxEmitter->setEmitterCameraRelative( false );
@@ -1280,7 +1280,7 @@ namespace Mengine
                     //unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
                 }
 
-                Resource * resourceParticle = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
+                Resource * resourceParticle = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ) );
 
                 unknownAstralaxEmitter->setResourceAstralax( ResourcePtr::from( resourceParticle ) );
 
@@ -1288,7 +1288,7 @@ namespace Mengine
 
                 AnimationInterface * animation = node->getAnimation();
 
-                ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
+                ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer_data );
                 animation->setStretch( layer_stretch );
                 animation->setLoop( _callbackData->incessantly );
 
@@ -1314,7 +1314,7 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
+                    Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ));
                     const ResourceImagePtr & resourceImage = imageDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceImage( resourceImage );
@@ -1324,7 +1324,7 @@ namespace Mengine
 
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
 
-                    ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer );
+                    ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer_data );
 
                     switch( track_matte_mode )
                     {
@@ -1348,7 +1348,7 @@ namespace Mengine
                         break;
                     }
 
-                    EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer );
+                    EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer_data );
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
 
@@ -1373,7 +1373,7 @@ namespace Mengine
 
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
 
-                    ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer );
+                    ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer_data );
 
                     switch( track_matte_mode )
                     {
@@ -1397,7 +1397,7 @@ namespace Mengine
                         break;
                     }
 
-                    EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer );
+                    EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer_data );
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
 
@@ -1426,13 +1426,13 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surface->setName( c_name );
 
-                    Resource * resourceVideo = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
+                    Resource * resourceVideo = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ) );
 
                     UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
 
                     unknownVideoSurface->setResourceVideo( ResourcePtr( resourceVideo ) );
 
-                    EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer );
+                    EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer_data );
 
                     AnimationInterface * surface_animation = surface->getAnimation();
 
@@ -1460,17 +1460,17 @@ namespace Mengine
                     surfaceSound->setLoop( _callbackData->incessantly );
                     surfaceSound->setInterpolateVolume( false );
 
-                    if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 'o' ) ) == AE_TRUE )
+                    if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 'o' ) ) == AE_TRUE )
                     {
                         surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_VOICE );
                     }
 
-                    if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'm', 'u' ) ) == AE_TRUE )
+                    if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'm', 'u' ) ) == AE_TRUE )
                     {
                         surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_MUSIC );
                     }
 
-                    ResourceSound * resourceSound = Helper::reinterpretResourceCast<ResourceSound *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer ) );
+                    ResourceSound * resourceSound = Helper::reinterpretResourceCast<ResourceSound *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ) );
 
                     surfaceSound->setResourceSound( Helper::makeIntrusivePtr( resourceSound ) );
 
@@ -1494,14 +1494,14 @@ namespace Mengine
     {
         AE_UNUSED( _ud );
 
-        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
+        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer_data );
 
         if( is_track_matte == AE_TRUE )
         {
             return;
         }
 
-        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
+        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer_data );
 
         if( _callbackData->track_matte_layer != AE_NULLPTR )
         {
@@ -1622,7 +1622,7 @@ namespace Mengine
     {
         Movie2 * movie2 = static_cast<Movie2 *>(_ud);
 
-        aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer );
+        aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer_data );
 
         switch( layer_type )
         {
@@ -2015,9 +2015,9 @@ namespace Mengine
     {
         Movie2 * m2 = Helper::reinterpretNodeCast<Movie2 *>( _ud );
 
-        const aeMovieLayerData * layer = _callbackData->layer;
+        const aeMovieLayerData * layer_data = _callbackData->layer_data;
 
-        const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
+        const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer_data );
 
         ConstString c_name = Helper::stringizeString( layer_name );
 

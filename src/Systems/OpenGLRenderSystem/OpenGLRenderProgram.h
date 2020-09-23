@@ -9,6 +9,7 @@
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/CompilableReference.h"
 
 namespace Mengine
 {
@@ -26,6 +27,7 @@ namespace Mengine
     class OpenGLRenderProgram
         : public RenderProgramInterface
         , public Factorable
+        , public CompilableReference
     {
     public:
         OpenGLRenderProgram();
@@ -49,8 +51,8 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile();
-        void release();
+        bool _compile() override;
+        void _release() override;
 
     public:
         bool enable() const;

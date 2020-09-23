@@ -4,6 +4,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
 #include "cURLPostMessageThreadTask.h"
@@ -130,11 +131,15 @@ namespace Mengine
         m_factoryTaskHeaderData = Helper::makeFactoryPool<cURLHeaderDataThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskDownloadAsset = Helper::makeFactoryPool<cURLGetAssetThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &cURLService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP );
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
@@ -157,16 +162,21 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLService::_stopService()
+    void cURLService::notifyEngineStop_()
     {
         for( const ReceiverDesc & desc : m_receiverDescs )
         {
+            const ThreadTaskPtr & task = desc.task;
+
             THREAD_SERVICE()
-                ->joinTask( desc.task );
+                ->joinTask( task );
         }
 
         m_receiverDescs.clear();
-
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLService::_stopService()
+    {
         for( const ConstString & threadName : m_threads )
         {
             THREAD_SERVICE()

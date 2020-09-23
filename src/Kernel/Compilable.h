@@ -32,7 +32,7 @@ namespace Mengine
         virtual void _recompile();
         virtual void _uncompile();
 
-    protected:
+    private:
         bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -42,4 +42,5 @@ namespace Mengine
     {
         return m_compile;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

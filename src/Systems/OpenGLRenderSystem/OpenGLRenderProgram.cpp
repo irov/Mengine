@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderProgram::~OpenGLRenderProgram()
     {
-        this->release();
+        MENGINE_ASSERTION_FATAL( m_programId == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderProgram::getProgramId() const
@@ -61,7 +61,7 @@ namespace Mengine
         m_vertexAttribute = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderProgram::compile()
+    bool OpenGLRenderProgram::_compile()
     {
         MENGINE_ASSERTION_FATAL( m_samplerCount <= MENGINE_MAX_TEXTURE_STAGES, "program '%s' don't support sampler count %d max %d"
             , m_name.c_str()
@@ -83,11 +83,31 @@ namespace Mengine
 
         if( m_vertexShader != nullptr )
         {
+            if( m_vertexShader->compile() == false )
+            {
+                LOGGER_ERROR( "invalid create program '%s' invalid compile vertex shader '%s'"
+                    , m_name.c_str()
+                    , m_vertexShader->getName().c_str()
+                );
+
+                return false;
+            }
+
             m_vertexShader->attach( programId );
         }
 
         if( m_fragmentShader != nullptr )
         {
+            if( m_fragmentShader->compile() == false )
+            {
+                LOGGER_ERROR( "invalid create program '%s' invalid compile fragment shader '%s'"
+                    , m_name.c_str()
+                    , m_fragmentShader->getName().c_str()
+                );
+
+                return false;
+            }
+
             m_fragmentShader->attach( programId );
         }
 
@@ -151,7 +171,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgram::release()
+    void OpenGLRenderProgram::_release()
     {
         for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
         {
@@ -167,6 +187,16 @@ namespace Mengine
         {
             GLCALL( glDeleteProgram, (m_programId) );
             m_programId = 0;
+        }
+
+        if( m_vertexShader != nullptr )
+        {
+            m_vertexShader->release();
+        }
+
+        if( m_fragmentShader != nullptr )
+        {
+            m_fragmentShader->release();
         }
     }
     //////////////////////////////////////////////////////////////////////////

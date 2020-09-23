@@ -35,8 +35,11 @@ namespace Mengine
     protected:
         bool cancelRequest( HttpRequestID _id ) override;
 
-    private:
+    protected:
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override;
+
+    protected:
+        void notifyEngineStop_();
 
     protected:
         ThreadQueueInterfacePtr m_threadQueue;

@@ -293,6 +293,8 @@ ADD_FILTER(
 Resource
     Compilable.cpp
     Compilable.h
+    CompilableReference.cpp
+    CompilableReference.h
     ResourceCacher.h
     Resource.cpp
     Resource.h

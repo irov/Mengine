@@ -47,7 +47,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onCancel()
     {
-        m_observer->onPrefetchCancel();
+        if( m_observer != nullptr )
+        {
+            m_observer->onPrefetchCancel();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onComplete( bool _successful )

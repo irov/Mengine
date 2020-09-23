@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexShader::~OpenGLRenderVertexShader()
     {
-        this->release();
+        MENGINE_ASSERTION_FATAL( m_shaderId == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderVertexShader::getName() const
@@ -36,7 +36,7 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexShader::compile()
+    bool OpenGLRenderVertexShader::_compile()
     {
         GLuint shaderId;
         GLCALLR( shaderId, glCreateShader, (GL_VERTEX_SHADER) );
@@ -77,7 +77,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderVertexShader::release()
+    void OpenGLRenderVertexShader::_release()
     {
         if( m_shaderId != 0 )
         {

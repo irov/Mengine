@@ -140,7 +140,17 @@ namespace Mengine
     protected:
         void updatePMWMatrix_();
 
-    private:
+    protected:
+        GLuint genTexture() override;
+        void deleteTexture( GLuint _id ) override;
+
+        GLuint genFramebuffer() override;
+        void deleteFramebuffer( GLuint _id ) override;
+
+        GLuint genBuffer() override;
+        void deleteBuffer( GLuint _id ) override;
+
+    protected:
         ConstString m_renderPlatform;
 
         Viewport m_viewport;
@@ -158,12 +168,6 @@ namespace Mengine
         OpenGLRenderVertexAttributePtr m_currentVertexAttribute;
         OpenGLRenderIndexBufferPtr m_currentIndexBuffer;
         OpenGLRenderVertexBufferPtr m_currentVertexBuffer;
-
-        typedef Vector<OpenGLRenderVertexShaderPtr> VectorRenderVertexShaders;
-        VectorRenderVertexShaders m_deferredCompileVertexShaders;
-
-        typedef Vector<OpenGLRenderFragmentShaderPtr> VectorRenderFragmentShaders;
-        VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
         typedef Vector<OpenGLRenderProgramPtr> VectorDeferredRenderPrograms;
         VectorDeferredRenderPrograms m_deferredCompilePrograms;
@@ -199,12 +203,6 @@ namespace Mengine
         typedef Vector<OpenGLRenderTargetTexture *> VectorCacheRenderTargetTextures;
         VectorCacheRenderTargetTextures m_cacheRenderTargetTextures;
 
-        typedef Vector<OpenGLRenderVertexShader *> VectorCacheRenderVertexShaders;
-        VectorCacheRenderVertexShaders m_cacheRenderVertexShaders;
-
-        typedef Vector<OpenGLRenderFragmentShader *> VectorCacheRenderFragmentShaders;
-        VectorCacheRenderFragmentShaders m_cacheRenderFragmentShaders;
-
         typedef Vector<OpenGLRenderProgram *> VectorCacheRenderPrograms;
         VectorCacheRenderPrograms m_cacheRenderPrograms;
 
@@ -227,5 +225,9 @@ namespace Mengine
 #ifdef MENGINE_RENDER_OPENGL
         GLuint m_vertexArrayId;
 #endif
+
+        uint32_t m_counterTexture;
+        uint32_t m_counterFramebuffer;
+        uint32_t m_counterBuffer;
     };
 }

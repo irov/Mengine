@@ -13,7 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderFragmentShader::~OpenGLRenderFragmentShader()
     {
-        this->release();
+        MENGINE_ASSERTION_FATAL( m_shaderId == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderFragmentShader::getName() const
@@ -34,7 +34,7 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderFragmentShader::compile()
+    bool OpenGLRenderFragmentShader::_compile()
     {
         GLuint shaderId;
         GLCALLR( shaderId, glCreateShader, (GL_FRAGMENT_SHADER) );
@@ -75,7 +75,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderFragmentShader::release()
+    void OpenGLRenderFragmentShader::_release()
     {
         if( m_shaderId != 0 )
         {

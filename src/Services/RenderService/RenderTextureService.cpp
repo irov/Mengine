@@ -282,7 +282,7 @@ namespace Mengine
 
         if( texture != nullptr )
         {
-            return RenderTextureInterfacePtr( texture );
+            return RenderTextureInterfacePtr::from( texture );
         }
 
         if( SERVICE_EXIST( GraveyardServiceInterface ) == true )

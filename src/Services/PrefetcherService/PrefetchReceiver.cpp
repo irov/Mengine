@@ -4,7 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PrefetchReceiver::PrefetchReceiver()
-        :m_refcount( 1 )
+        : m_prefetchRefcount( 1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -19,20 +19,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::finalize()
     {
-        m_prefetcher->finalize();
         m_prefetcher = nullptr;
 
-        m_refcount = 0;
+        m_prefetchRefcount = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::acquire()
     {
-        ++m_refcount;
+        ++m_prefetchRefcount;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetchReceiver::release()
     {
-        if( --m_refcount == 0 )
+        MENGINE_ASSERTION_FATAL( m_prefetchRefcount != 0 );
+
+        if( --m_prefetchRefcount == 0 )
         {
             return false;
         }

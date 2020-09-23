@@ -365,7 +365,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
 
         LOGGER_INFO( "initialize Game..." );
@@ -1231,7 +1231,7 @@ namespace Mengine
         if( SERVICE_EXIST( SceneServiceInterface ) == true )
         {
             SCENE_SERVICE()
-                    ->destroyCurrentScene();
+                ->destroyCurrentScene();
         }
 
         if( SERVICE_EXIST( ApplicationInterface ) == true )
@@ -1260,6 +1260,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP );
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
         }
 
@@ -1301,14 +1302,14 @@ namespace Mengine
         }
 
         SERVICE_FINALIZE( LoaderService );
-        SERVICE_FINALIZE( TimelineService );        
+        SERVICE_FINALIZE( TimelineService );
         SERVICE_FINALIZE( WatchdogService );
         SERVICE_FINALIZE( ModuleService );
         SERVICE_FINALIZE( FrameworkService );
         SERVICE_FINALIZE( PlayerService );
         SERVICE_FINALIZE( PickerService );
         SERVICE_FINALIZE( UpdateService );
-        SERVICE_FINALIZE( InputService );        
+        SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
         SERVICE_FINALIZE( SoundSystem );

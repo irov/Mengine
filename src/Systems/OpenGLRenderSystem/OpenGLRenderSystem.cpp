@@ -34,6 +34,9 @@ namespace Mengine
 #ifdef MENGINE_RENDER_OPENGL
         , m_vertexArrayId( 0 )
 #endif
+        , m_counterTexture( 0 )
+        , m_counterFramebuffer( 0 )
+        , m_counterBuffer( 0 )
     {
         mt::ident_m4( m_worldMatrix );
         mt::ident_m4( m_viewMatrix );
@@ -43,6 +46,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::~OpenGLRenderSystem()
     {
+#ifdef MENGINE_RENDER_OPENGL
+        MENGINE_ASSERTION_FATAL( m_vertexArrayId == 0 );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::_initializeService()
@@ -96,8 +102,6 @@ namespace Mengine
             }
         }
 
-        m_deferredCompileVertexShaders.clear();
-        m_deferredCompileFragmentShaders.clear();
         m_deferredCompilePrograms.clear();
 
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderIndexBuffers );
@@ -105,8 +109,6 @@ namespace Mengine
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderImages );
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderImageTargets );
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderTargetTextures );
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderVertexShaders );
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderFragmentShaders );
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderPrograms );
 
         m_cacheRenderIndexBuffers.clear();
@@ -114,8 +116,6 @@ namespace Mengine
         m_cacheRenderImages.clear();
         m_cacheRenderImageTargets.clear();
         m_cacheRenderTargetTextures.clear();
-        m_cacheRenderVertexShaders.clear();
-        m_cacheRenderFragmentShaders.clear();
         m_cacheRenderPrograms.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexBuffer );
@@ -139,6 +139,10 @@ namespace Mengine
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariable = nullptr;
+
+        MENGINE_ASSERTION_FATAL( m_counterTexture == 0 );
+        MENGINE_ASSERTION_FATAL( m_counterFramebuffer == 0 );
+        MENGINE_ASSERTION_FATAL( m_counterBuffer == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
@@ -221,7 +225,7 @@ namespace Mengine
 
 #ifdef MENGINE_RENDER_OPENGL
         GLuint vertexArrayId;
-        glGenVertexArrays( 1, &vertexArrayId );
+        GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
         if( vertexArrayId == 0 )
         {
@@ -231,32 +235,15 @@ namespace Mengine
         m_vertexArrayId = vertexArrayId;
 #endif
 
-        for( const OpenGLRenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
-        {
-            if( shader->compile() == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileVertexShaders.clear();
-
-        for( const OpenGLRenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
-        {
-            if( shader->compile() == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileFragmentShaders.clear();
-
         for( const OpenGLRenderProgramPtr & program : m_deferredCompilePrograms )
         {
             if( program->compile() == false )
             {
                 return false;
             }
+
+            OpenGLRenderProgram * program_ptr = program.get();
+            m_cacheRenderPrograms.push_back( program_ptr );
         }
 
         m_deferredCompilePrograms.clear();
@@ -453,25 +440,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_renderWindowCreate == true )
-        {
-            if( shader->compile() == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileFragmentShaders.push_back( shader );
-        }
-
-        OpenGLRenderFragmentShader * shader_ptr = shader.get();
-        m_cacheRenderFragmentShaders.push_back( shader_ptr );
-
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -493,25 +461,6 @@ namespace Mengine
 
             return nullptr;
         }
-
-        if( m_renderWindowCreate == true )
-        {
-            if( shader->compile() == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexShaders.push_back( shader );
-        }
-
-        OpenGLRenderVertexShader * shader_ptr = shader.get();
-        m_cacheRenderVertexShaders.push_back( shader_ptr );
 
         return shader;
     }
@@ -543,14 +492,14 @@ namespace Mengine
 
                 return nullptr;
             }
+
+            OpenGLRenderProgram * program_ptr = program.get();
+            m_cacheRenderPrograms.push_back( program_ptr );
         }
         else
         {
             m_deferredCompilePrograms.push_back( program );
         }
-
-        OpenGLRenderProgram * program_ptr = program.get();
-        m_cacheRenderPrograms.push_back( program_ptr );
 
         return program;
     }
@@ -1075,16 +1024,6 @@ namespace Mengine
             target->release();
         }
 
-        for( OpenGLRenderVertexShader * shader : m_cacheRenderVertexShaders )
-        {
-            shader->release();
-        }
-
-        for( OpenGLRenderFragmentShader * shader : m_cacheRenderFragmentShaders )
-        {
-            shader->release();
-        }
-
         for( OpenGLRenderProgram * program : m_cacheRenderPrograms )
         {
             program->release();
@@ -1097,7 +1036,7 @@ namespace Mengine
 
 #ifdef MENGINE_RENDER_OPENGL
         GLuint vertexArrayId;
-        glGenVertexArrays( 1, &vertexArrayId );
+        GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
         if( vertexArrayId == 0 )
         {
@@ -1134,22 +1073,6 @@ namespace Mengine
         for( OpenGLRenderTargetTexture * target : m_cacheRenderTargetTextures )
         {
             if( target->reload() == false )
-            {
-                return false;
-            }
-        }
-
-        for( OpenGLRenderVertexShader * shader : m_cacheRenderVertexShaders )
-        {
-            if( shader->compile() == false )
-            {
-                return false;
-            }
-        }
-
-        for( OpenGLRenderFragmentShader * shader : m_cacheRenderFragmentShaders )
-        {
-            if( shader->compile() == false )
             {
                 return false;
             }
@@ -1322,44 +1245,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader )
     {
+        MENGINE_ASSERTION_FATAL( _vertexShader->isCompile() == false );
+
         _vertexShader->finalize();
-
-        VectorCacheRenderVertexShaders::iterator it_found = std::find( m_cacheRenderVertexShaders.begin(), m_cacheRenderVertexShaders.end(), _vertexShader );
-
-        if( it_found == m_cacheRenderVertexShaders.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderVertexShaders.back();
-        m_cacheRenderVertexShaders.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader )
     {
+        MENGINE_ASSERTION_FATAL( _fragmentShader->isCompile() == false );
+
         _fragmentShader->finalize();
-
-        VectorCacheRenderFragmentShaders::iterator it_found = std::find( m_cacheRenderFragmentShaders.begin(), m_cacheRenderFragmentShaders.end(), _fragmentShader );
-
-        if( it_found == m_cacheRenderFragmentShaders.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderFragmentShaders.back();
-        m_cacheRenderFragmentShaders.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramDestroy_( OpenGLRenderProgram * _program )
     {
-        _program->finalize();
-
         VectorCacheRenderPrograms::iterator it_found = std::find( m_cacheRenderPrograms.begin(), m_cacheRenderPrograms.end(), _program );
 
         if( it_found == m_cacheRenderPrograms.end() )
         {
+            _program->finalize();
+
             return;
         }
+
+        _program->release();
+
+        MENGINE_ASSERTION_FATAL( _program->isCompile() == false );
+
+        _program->finalize();
 
         *it_found = m_cacheRenderPrograms.back();
         m_cacheRenderPrograms.pop_back();
@@ -1368,6 +1281,57 @@ namespace Mengine
     void OpenGLRenderSystem::updatePMWMatrix_()
     {
         m_totalWVPMatrix = m_worldMatrix * m_viewMatrix * m_projectionMatrix;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLuint OpenGLRenderSystem::genTexture()
+    {
+        GLuint id = 0;
+        GLCALL( glGenTextures, (1, &id) );
+
+        ++m_counterTexture;
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::deleteTexture( GLuint _id )
+    {
+        GLCALL( glDeleteTextures, (1, &_id) );
+
+        --m_counterTexture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLuint OpenGLRenderSystem::genFramebuffer()
+    {
+        GLuint id = 0;
+        GLCALL( glGenFramebuffers, (1, &id) );
+
+        ++m_counterFramebuffer;
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::deleteFramebuffer( GLuint _id )
+    {
+        GLCALL( glDeleteFramebuffers, (1, &_id) );
+
+        --m_counterFramebuffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLuint OpenGLRenderSystem::genBuffer()
+    {
+        GLuint id = 0;
+        GLCALL( glGenBuffers, (1, &id) );
+
+        ++m_counterBuffer;
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::deleteBuffer( GLuint _id )
+    {
+        GLCALL( glDeleteBuffers, (1, &_id) );
+
+        --m_counterBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
 }

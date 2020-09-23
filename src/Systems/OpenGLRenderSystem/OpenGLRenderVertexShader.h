@@ -6,13 +6,15 @@
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/CompilableReference.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderVertexShader
-        : public RenderVertexShaderInterface
+        : public RenderVertexShaderInterface        
         , public Factorable
+        , public CompilableReference
     {
     public:
         OpenGLRenderVertexShader();
@@ -26,8 +28,8 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile();
-        void release();
+        bool _compile() override;
+        void _release() override;
 
     public:
         void attach( GLuint _program );

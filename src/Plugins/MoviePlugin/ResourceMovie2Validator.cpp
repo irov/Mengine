@@ -179,6 +179,88 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
+    {
+        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
+
+        const aeMovieLayerData * layer_data = _callbackData->layer_data;
+
+        if( _callbackData->track_matte_layer != AE_NULLPTR )
+        {
+            aeMovieLayerTypeEnum layer_data_type = ae_get_movie_layer_data_type( layer_data );
+
+            switch( layer_data_type )
+            {
+            case AE_MOVIE_LAYER_TYPE_IMAGE:
+                {
+                    aeMovieLayerTypeEnum track_matte_layer_type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer );
+
+                    if( track_matte_layer_type != AE_MOVIE_LAYER_TYPE_IMAGE )
+                    {
+                        const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _callbackData->composition_data );
+                        const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
+
+                        LOGGER_ERROR( "'%s' composition '%s' layer '%s' has track matte non-image type"
+                            , resourceMovie2->getName().c_str()
+                            , compositionDataName
+                            , layerDataName
+                        );
+
+                        return AE_FALSE;
+                    }
+
+                    return AE_TRUE;
+                }break;
+            case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+                {
+                    aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer );
+
+                    if( type != AE_MOVIE_LAYER_TYPE_IMAGE )
+                    {
+                        const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _callbackData->composition_data );
+                        const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
+
+                        LOGGER_ERROR( "'%s' composition '%s' text layer '%s' has track matte non-image type"
+                            , resourceMovie2->getName().c_str()
+                            , compositionDataName
+                            , layerDataName
+                        );
+
+                        return AE_FALSE;
+                    }
+
+                    return AE_TRUE;
+                }break;
+            default:
+                {
+                }break;
+            }
+        }
+
+        *_nd = AE_NULLPTR;
+
+        return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __movie_composition_data_visitor( const aeMovieData * _movieData, const aeMovieCompositionData * _compositionData, ae_userdata_t _ud )
+    {
+        aeMovieCompositionProviders composition_providers;
+        ae_initialize_movie_composition_providers( &composition_providers );
+
+        composition_providers.node_provider = &__movie_composition_node_provider;
+
+        const aeMovieComposition * composition = ae_create_movie_composition( _movieData, _compositionData, AE_TRUE, &composition_providers, _ud );
+
+        if( composition == AE_NULLPTR )
+        {
+            return AE_FALSE;
+        }
+
+        ae_delete_movie_composition( composition );
+
+        return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource )
     {
         const ContentInterface * content = _resource->getContent();
@@ -266,7 +348,27 @@ namespace Mengine
             return false;
         }
 
-        ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, (ae_voidptr_t)_resource.get() );
+        if( ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
+        {
+            LOGGER_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , content->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        if( ae_visit_movie_composition_data( movieData, __movie_composition_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
+        {
+            LOGGER_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , content->getFilePath().c_str()
+            );
+
+            return false;
+        }
 
         ae_delete_movie_data( movieData );
         ae_delete_movie_stream( movieStream );

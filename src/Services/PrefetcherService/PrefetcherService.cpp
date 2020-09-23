@@ -79,9 +79,6 @@ namespace Mengine
             return;
         }
 
-        m_threads.clear();
-        m_prefetchReceivers.clear();
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchImageDecoder );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchSoundDecoder );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchDataflow );
@@ -103,6 +100,17 @@ namespace Mengine
         {
             return;
         }
+
+        m_threads.clear();
+
+        for( const HashtablePrefetchReceiver::value_type & value : m_prefetchReceivers )
+        {
+            const PrefetchReceiverPtr & receiver = value.element;
+
+            receiver->finalize();
+        }
+
+        m_prefetchReceivers.clear();
 
         for( const ConstString & threadName : m_threads )
         {
@@ -156,7 +164,9 @@ namespace Mengine
 
         new_receiver->initialize( task );
 
-        m_prefetchReceivers.emplace( _fileGroup->getName(), _filePath, new_receiver );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        m_prefetchReceivers.emplace( fileGroupName, _filePath, new_receiver );
 
         m_threadQueue->addTask( task );
 
@@ -227,7 +237,9 @@ namespace Mengine
 
         new_receiver->initialize( task );
 
-        m_prefetchReceivers.emplace( _fileGroup->getName(), _filePath, new_receiver );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        m_prefetchReceivers.emplace( fileGroupName, _filePath, new_receiver );
 
         m_threadQueue->addTask( task );
 
@@ -304,7 +316,9 @@ namespace Mengine
 
         new_receiver->initialize( task );
 
-        m_prefetchReceivers.emplace( _fileGroup->getName(), _filePath, new_receiver );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        m_prefetchReceivers.emplace( fileGroupName, _filePath, new_receiver );
 
         m_threadQueue->addTask( task );
 
@@ -405,7 +419,9 @@ namespace Mengine
 
         new_receiver->initialize( task );
 
-        m_prefetchReceivers.emplace( _fileGroup->getName(), _filePath, new_receiver );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        m_prefetchReceivers.emplace( fileGroupName, _filePath, new_receiver );
 
         m_threadQueue->addTask( task );
 
@@ -446,7 +462,9 @@ namespace Mengine
             return false;
         }
 
-        const PrefetchReceiverPtr & receiver = m_prefetchReceivers.find( _fileGroup->getName(), _filePath );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        const PrefetchReceiverPtr & receiver = m_prefetchReceivers.find( fileGroupName, _filePath );
 
         if( receiver == nullptr )
         {
@@ -465,7 +483,7 @@ namespace Mengine
             prefetcher->join();
         }
 
-        m_prefetchReceivers.erase( _fileGroup->getName(), _filePath );
+        m_prefetchReceivers.erase( fileGroupName, _filePath );
 
         return true;
     }
@@ -487,7 +505,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::hasPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiverPtr * const _receiver ) const
     {
-        const PrefetchReceiverPtr & receiver = m_prefetchReceivers.find( _fileGroup->getName(), _filePath );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        const PrefetchReceiverPtr & receiver = m_prefetchReceivers.find( fileGroupName, _filePath );
 
         if( receiver == nullptr )
         {
@@ -526,7 +546,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::popPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ThreadTaskPrefetchPtr * const _prefetch )
     {
-        const PrefetchReceiverPtr & receiver = m_prefetchReceivers.find( _fileGroup->getName(), _filePath );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        const PrefetchReceiverPtr & receiver = m_prefetchReceivers.find( fileGroupName, _filePath );
 
         if( receiver == nullptr )
         {
@@ -543,16 +565,16 @@ namespace Mengine
             if( prefetcher->cancel() == true )
             {
                 prefetcher->join();
-            }
+            }            
 
-            m_prefetchReceivers.erase( _fileGroup->getName(), _filePath );
+            m_prefetchReceivers.erase( fileGroupName, _filePath );
 
             return false;
         }
 
         *_prefetch = prefetcher;
 
-        m_prefetchReceivers.erase( _fileGroup->getName(), _filePath );
+        m_prefetchReceivers.erase( fileGroupName, _filePath );
 
         return true;
     }

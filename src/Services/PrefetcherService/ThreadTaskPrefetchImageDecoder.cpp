@@ -35,6 +35,11 @@ namespace Mengine
         return m_imageDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetchImageDecoder::_finalize()
+    {
+        m_imageDecoder = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchImageDecoder::_onRun()
     {
         if( ThreadTaskPrefetch::_onRun() == false )

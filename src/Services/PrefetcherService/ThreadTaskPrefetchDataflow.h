@@ -21,6 +21,9 @@ namespace Mengine
         const DataInterfacePtr & getData() const;
 
     protected:
+        void _finalize() override;
+
+    protected:
         bool _onRun() override;
         bool _onMain() override;
         void _onComplete( bool _successful ) override;

@@ -22,6 +22,9 @@ namespace Mengine
         const ImageDecoderInterfacePtr & getDecoder() const;
 
     protected:
+        void _finalize() override;
+
+    protected:
         bool _onRun() override;
         bool _onMain() override;
 

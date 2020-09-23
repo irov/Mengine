@@ -21,6 +21,9 @@ namespace Mengine
         const SoundDecoderInterfacePtr & getDecoder() const;
 
     protected:
+        void _finalize() override;
+
+    protected:
         bool _onRun() override;
         bool _onMain() override;
 

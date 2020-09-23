@@ -19,6 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::finalize()
     {
+        m_prefetcher->finalize();
         m_prefetcher = nullptr;
 
         m_refcount = 0;

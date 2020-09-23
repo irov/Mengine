@@ -19,6 +19,20 @@ namespace Mengine
         m_observer = _observer;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetch::finalize()
+    {
+        this->_finalize();
+
+        m_fileGroup = nullptr;
+        m_stream = nullptr;
+        m_observer = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetch::_finalize()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onPreparation()
     {
         m_observer->onPrefetchPreparation();

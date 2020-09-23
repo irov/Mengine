@@ -16,6 +16,10 @@ namespace Mengine
 
     public:
         void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const PrefetcherObserverInterfacePtr & _observer );
+        void finalize();
+
+    protected:
+        virtual void _finalize();
 
     public:
         MENGINE_INLINE const FilePath & getFilePath() const;
@@ -28,12 +32,11 @@ namespace Mengine
         void _onComplete( bool _successful ) override;
 
     protected:
-        FilePath m_filePath;
-
-    protected:
         FileGroupInterfacePtr m_fileGroup;
-        InputStreamInterfacePtr m_stream;
+        FilePath m_filePath;
         PrefetcherObserverInterfacePtr m_observer;
+
+        InputStreamInterfacePtr m_stream;
 
         FileGroupInterface * m_realFileGroup;
     };

@@ -56,6 +56,12 @@ namespace Mengine
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetchStream::_finalize()
+    {
+        m_archivator = nullptr;
+        m_memory = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchStream::_onRun()
     {
         if( ThreadTaskPrefetch::_onRun() == false )

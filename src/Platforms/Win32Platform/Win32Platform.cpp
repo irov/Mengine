@@ -281,46 +281,49 @@ namespace Mengine
         m_factoryDateTimeProviders = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::runCriticalErrorsMonitor_()
+    {
+        bool developmentMode = Helper::isDevelopmentMode();
+
+        bool roamingMode = HAS_OPTION( "roaming" );
+        bool noroamingMode = HAS_OPTION( "noroaming" );
+
+        if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
+        {
+            Char userPath[MENGINE_MAX_PATH] = {'\0'};
+            this->getUserPath( userPath );
+
+            String dumpPath;
+            dumpPath += userPath;
+            dumpPath += "Dump";
+            dumpPath += "_";
+
+            DateTimeProviderInterfacePtr dateTimeProvider =
+                this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
+
+            PlatformDateTime dateTime;
+            dateTimeProvider->getLocalDateTime( &dateTime );
+
+            Stringstream ss_date;
+            ss_date << dateTime.year
+                << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+            String str_date = ss_date.str();
+
+            dumpPath += str_date;
+            dumpPath += ".dmp";
+
+            Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_runService()
     {
-        {
-            bool developmentMode = Helper::isDevelopmentMode();
-
-            bool roamingMode = HAS_OPTION( "roaming" );
-            bool noroamingMode = HAS_OPTION( "noroaming" );
-
-            if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
-            {
-                Char userPath[MENGINE_MAX_PATH] = {'\0'};
-                this->getUserPath( userPath );
-
-                String dumpPath;
-                dumpPath += userPath;
-                dumpPath += "Dump";
-                dumpPath += "_";
-
-                DateTimeProviderInterfacePtr dateTimeProvider =
-                    this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
-                PlatformDateTime dateTime;
-                dateTimeProvider->getLocalDateTime( &dateTime );
-
-                Stringstream ss_date;
-                ss_date << dateTime.year
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-                String str_date = ss_date.str();
-
-                dumpPath += str_date;
-                dumpPath += ".dmp";
-
-                Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
-            }
-        }
+        this->runCriticalErrorsMonitor_();
 
         DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );

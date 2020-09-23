@@ -183,6 +183,9 @@ namespace Mengine
         bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
 
     protected:
+        void runCriticalErrorsMonitor_();
+
+    protected:
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;

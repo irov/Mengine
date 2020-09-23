@@ -87,6 +87,11 @@ namespace Mengine
             return true;
         }
 
+        if( HAS_OPTION( "nosentry" ) == true )
+        {
+            return true;
+        }
+
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {
@@ -172,6 +177,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::_finalizePlugin()
     {
+        if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
+        {
+            return;
+        }
+
+        if( HAS_OPTION( "nosentry" ) == true )
+        {
+            return;
+        }
+
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {

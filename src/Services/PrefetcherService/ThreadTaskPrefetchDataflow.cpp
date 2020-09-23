@@ -34,6 +34,14 @@ namespace Mengine
         return m_data;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetchDataflow::_finalize()
+    {
+        m_dataflow = nullptr;
+
+        m_data = nullptr;
+        m_memory = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchDataflow::_onRun()
     {
         if( ThreadTaskPrefetch::_onRun() == false )

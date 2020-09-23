@@ -35,6 +35,11 @@ namespace Mengine
         return m_soundDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetchSoundDecoder::_finalize()
+    {
+        m_soundDecoder = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchSoundDecoder::_onRun()
     {
         if( ThreadTaskPrefetch::_onRun() == false )

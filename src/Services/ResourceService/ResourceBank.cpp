@@ -118,6 +118,7 @@ namespace Mengine
         resource->setLocale( _locale );
         resource->setGroupName( _groupName );
         resource->setName( _name );
+
         resource->setKeep( _keep );
 
         if( _name.empty() == false )

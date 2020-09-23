@@ -1,6 +1,8 @@
 #include "OpenGLRenderIndexBuffer.h"
 
 #include "Interface/MemoryServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/OpenGLRenderSystemExtensionInterface.h"
 
 #include "OpenGLRenderError.h"
 #include "OpenGLRenderEnum.h"
@@ -25,12 +27,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderIndexBuffer::~OpenGLRenderIndexBuffer()
     {
+        MENGINE_ASSERTION_FATAL( m_id == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
     {
-        GLuint id = 0;
-        GLCALL( glGenBuffers, (1, &id) );
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
+        GLuint id = extension->genBuffer();
 
         if( id == 0 )
         {
@@ -63,7 +68,11 @@ namespace Mengine
 
         if( m_id != 0 )
         {
-            GLCALL( glDeleteBuffers, (1, &m_id) );
+            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+                ->getRenderSystemExtention();
+
+            extension->deleteBuffer( m_id );
+
             m_id = 0;
         }
     }
@@ -180,7 +189,11 @@ namespace Mengine
     {
         if( m_id != 0 )
         {
-            GLCALL( glDeleteBuffers, (1, &m_id) );
+            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+                ->getRenderSystemExtention();
+
+            extension->deleteBuffer( m_id );
+
             m_id = 0;
         }
 
@@ -189,8 +202,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderIndexBuffer::reload()
     {
-        GLuint id = 0;
-        GLCALL( glGenBuffers, (1, &id) );
+        MENGINE_ASSERTION_FATAL( m_id == 0 );
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
+        GLuint id = extension->genBuffer();
 
         if( id == 0 )
         {

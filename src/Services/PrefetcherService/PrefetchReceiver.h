@@ -25,7 +25,7 @@ namespace Mengine
         MENGINE_INLINE const ThreadTaskPrefetchPtr & getPrefetcher() const;
 
     protected:
-        uint32_t m_refcount;
+        uint32_t m_prefetchRefcount;
         ThreadTaskPrefetchPtr m_prefetcher;
     };
     //////////////////////////////////////////////////////////////////////////

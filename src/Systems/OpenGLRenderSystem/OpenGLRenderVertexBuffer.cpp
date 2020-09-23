@@ -1,6 +1,8 @@
 #include "OpenGLRenderVertexBuffer.h"
 
 #include "Interface/MemoryServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/OpenGLRenderSystemExtensionInterface.h"
 
 #include "OpenGLRenderError.h"
 #include "OpenGLRenderEnum.h"
@@ -25,16 +27,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexBuffer::~OpenGLRenderVertexBuffer()
     {
-        if( m_id != 0 )
-        {
-            GLCALL( glDeleteBuffers, (1, &m_id) );
-        }
+        MENGINE_ASSERTION_FATAL( m_id == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::initialize( uint32_t _elementSize, EBufferType _bufferType )
     {
-        GLuint id = 0;
-        GLCALL( glGenBuffers, (1, &id) );
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
+        GLuint id = extension->genBuffer();
 
         if( id == 0 )
         {
@@ -65,7 +66,11 @@ namespace Mengine
     {
         if( m_id != 0 )
         {
-            GLCALL( glDeleteBuffers, (1, &m_id) );
+            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+                ->getRenderSystemExtention();
+
+            extension->deleteBuffer( m_id );
+
             m_id = 0;
         }
 
@@ -184,7 +189,11 @@ namespace Mengine
     {
         if( m_id != 0 )
         {
-            GLCALL( glDeleteBuffers, (1, &m_id) );
+            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+                ->getRenderSystemExtention();
+
+            extension->deleteBuffer( m_id );
+
             m_id = 0;
         }
 
@@ -193,8 +202,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::reload()
     {
-        GLuint id = 0;
-        GLCALL( glGenBuffers, (1, &id) );
+        MENGINE_ASSERTION_FATAL( m_id == 0 );
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
+        GLuint id = extension->genBuffer();
 
         if( id == 0 )
         {

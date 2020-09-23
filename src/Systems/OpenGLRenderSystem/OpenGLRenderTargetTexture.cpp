@@ -1,6 +1,7 @@
 #include "OpenGLRenderTargetTexture.h"
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/OpenGLRenderSystemExtensionInterface.h"
 
 #include "OpenGLRenderExtension.h"
 #include "OpenGLRenderError.h"
@@ -35,6 +36,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderTargetTexture::~OpenGLRenderTargetTexture()
     {
+        MENGINE_ASSERTION_FATAL( m_tuid == 0 );
+        MENGINE_ASSERTION_FATAL( m_fuid == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
@@ -85,16 +88,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::create()
     {
-        GLuint tuid = 0;
-        GLCALL( glGenTextures, (1, &tuid) );
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
+        GLuint tuid = extension->genTexture();
 
         GLCALL( glBindTexture, (GL_TEXTURE_2D, tuid) );
         GLCALL( glTexImage2D, (GL_TEXTURE_2D, 0, GL_RGB, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0) );
 
         m_tuid = tuid;
 
-        GLuint fuid = 0;
-        GLCALL( glGenFramebuffers, (1, &fuid) );
+        GLuint fuid = extension->genFramebuffer();
 
         if( fuid == 0 )
         {
@@ -142,16 +146,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::release()
     {
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
         if( m_tuid != 0 )
         {
-            GLCALL( glDeleteTextures, (1, &m_tuid) );
+            extension->deleteTexture( m_tuid );
 
             m_tuid = 0;
         }
 
         if( m_fuid != 0 )
         {
-            GLCALL( glDeleteFramebuffers, (1, &m_fuid) );
+            extension->deleteFramebuffer( m_fuid );
 
             m_fuid = 0;
         }
@@ -159,6 +166,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::reload()
     {
+        MENGINE_ASSERTION_FATAL( m_tuid == 0 );
+        MENGINE_ASSERTION_FATAL( m_fuid == 0 );
+
         if( this->create() == false )
         {
             return false;

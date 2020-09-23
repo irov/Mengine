@@ -146,7 +146,7 @@ namespace Mengine
         PrefetchReceiverPtr receiver;
         if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
         {
-            receiver->release();
+            receiver->acquire();
 
             _observer->onPrefetchAlreadyExist();
 
@@ -219,7 +219,7 @@ namespace Mengine
         PrefetchReceiverPtr receiver;
         if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
         {
-            receiver->release();
+            receiver->acquire();
 
             _observer->onPrefetchAlreadyExist();
 
@@ -297,7 +297,7 @@ namespace Mengine
         PrefetchReceiverPtr receiver;
         if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
         {
-            receiver->release();
+            receiver->acquire();
 
             _observer->onPrefetchAlreadyExist();
 
@@ -398,7 +398,7 @@ namespace Mengine
         PrefetchReceiverPtr receiver;
         if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
         {
-            receiver->release();
+            receiver->acquire();
 
             _observer->onPrefetchAlreadyExist();
 

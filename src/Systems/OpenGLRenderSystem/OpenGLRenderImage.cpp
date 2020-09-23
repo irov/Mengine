@@ -1,6 +1,8 @@
 #include "OpenGLRenderImage.h"
 
 #include "Interface/MemoryServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/OpenGLRenderSystemExtensionInterface.h"
 
 #include "OpenGLRenderExtension.h"
 #include "OpenGLRenderError.h"
@@ -38,6 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::~OpenGLRenderImage()
     {
+        MENGINE_ASSERTION_FATAL( m_uid == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
@@ -65,18 +68,6 @@ namespace Mengine
             break;
         }
 
-        if( this->create() == false )
-        {
-            LOGGER_ERROR( "invalid gen texture for size %d:%d channel %d PF %d"
-                , _width
-                , _height
-                , _channels
-                , _format
-            );
-
-            return false;
-        }
-
         m_width = _width;
         m_height = _height;
         m_hwMipmaps = _mipmaps;
@@ -92,6 +83,18 @@ namespace Mengine
         m_hwHeightInv = 1.f / (float)m_hwHeight;
 
         m_pow2 = Helper::isTexturePOW2( _width ) && Helper::isTexturePOW2( _height );
+
+        if( this->create() == false )
+        {
+            LOGGER_ERROR( "invalid gen texture for size %d:%d channel %d PF %d"
+                , _width
+                , _height
+                , _channels
+                , _format
+            );
+
+            return false;
+        }
 
         return true;
     }
@@ -180,7 +183,10 @@ namespace Mengine
     {
         if( m_uid != 0 )
         {
-            GLCALL( glDeleteTextures, (1, &m_uid) );
+            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+                ->getRenderSystemExtention();
+
+            extension->deleteTexture( m_uid );
 
             m_uid = 0;
         }
@@ -188,8 +194,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::create()
     {
-        GLuint tuid = 0;
-        GLCALL( glGenTextures, (1, &tuid) );
+        MENGINE_ASSERTION_FATAL( m_uid == 0 );
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getRenderSystemExtention();
+
+        GLuint tuid = extension->genTexture();
 
         if( tuid == 0 )
         {

@@ -420,9 +420,6 @@ namespace Mengine
 
         this->restoreRenderSystemStates_();
 
-        this->createNullTexture_();
-        this->createWhitePixelTexture_();
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
     }
     //////////////////////////////////////////////////////////////////////////

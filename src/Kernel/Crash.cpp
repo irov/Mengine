@@ -18,7 +18,7 @@ namespace Mengine
             volatile uint32_t * p = nullptr;
 
             // cppcheck-suppress nullPointer
-            *p = 0xBADC0DE;
+            *p = 0x7BADC0DE;
         }
     }
 }

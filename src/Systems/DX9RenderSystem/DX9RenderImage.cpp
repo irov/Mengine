@@ -1,5 +1,9 @@
 #include "DX9RenderImage.h"
+
 #include "DX9ErrorHelper.h"
+#include "DX9RenderEnum.h"
+
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -23,20 +27,48 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( IDirect3DDevice9 * _pD3DDevice, IDirect3DTexture9 * _d3dInterface, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
+    void DX9RenderImage::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
     {
         m_pD3DDevice = _pD3DDevice;
-        m_pD3DTexture = _d3dInterface;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    IDirect3DDevice9 * DX9RenderImage::getDirect3DDevice9() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat )
+    {
+        D3DFORMAT D3DFormat = Helper::toD3DFormat( _pixelFormat );
+
+        IDirect3DTexture9 * pD3DTexture = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (_width, _height, _mipmaps, 0, D3DFormat, D3DPOOL_MANAGED, &pD3DTexture, NULL) )
+        {
+            return false;
+        }
+
+        D3DSURFACE_DESC texDesc;
+        IF_DXCALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
+        {
+            return false;
+        }
+
+        MENGINE_ASSERTION_FATAL( texDesc.Width != 0 );
+        MENGINE_ASSERTION_FATAL( texDesc.Height != 0 );
+
+        m_pD3DTexture = pD3DTexture;
 
         m_hwMipmaps = _mipmaps;
-        m_hwWidth = _hwWidth;
-        m_hwHeight = _hwHeight;
-        m_hwChannels = _hwChannels;
-        m_hwDepth = _hwDepth;
-        m_hwPixelFormat = _hwPixelFormat;
+        m_hwWidth = texDesc.Width;
+        m_hwHeight = texDesc.Height;
+        m_hwChannels = _channels;
+        m_hwDepth = _depth;
+        m_hwPixelFormat = _pixelFormat;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::finalize()

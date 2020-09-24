@@ -802,12 +802,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
     {
+        MockupRenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage );
+
+        dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
+
 #ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
 
         if( logcreateimage == true )
         {
-            LOGGER_STATISTIC( "create texture size %d:%d channels %d format %d (doc %s)"
+            LOGGER_STATISTIC( "create texture size %u:%u channels %u format %u (doc %s)"
                 , _hwWidth
                 , _hwHeight
                 , _hwChannels
@@ -816,12 +822,6 @@ namespace Mengine
             );
         }
 #endif
-
-        MockupRenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage );
-
-        dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 
 #ifdef MENGINE_DEBUG
         ++m_textureCount;

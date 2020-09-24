@@ -2746,8 +2746,6 @@ namespace Mengine
 
                         animation->setTime( timing );
 
-                        //float movieTiming = this->getTiming();
-
                         if( animation->isPlay() == false )
                         {
                             float playTime = TIMELINE_SERVICE()

@@ -22,6 +22,8 @@ namespace Mengine
     typedef IntrusivePtr<class DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
     typedef IntrusivePtr<class DX9RenderProgram> DX9RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
+    class DX9RenderVertexBuffer;
+    class DX9RenderIndexBuffer;
     class DX9RenderImageTarget;
     class DX9RenderTargetTexture;
     class DX9RenderTargetOffscreen;
@@ -176,12 +178,9 @@ namespace Mengine
         void release_();
         bool restore_();
 
-        //void createSyncTargets_();
-
-        bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, EPixelFormat Format, D3DPOOL Pool, IDirect3DTexture9 ** const _ppD3DTexture );
-        DX9RenderImagePtr createDX9RenderImage_( IDirect3DTexture9 * _pD3DTexture, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc );
-
     protected:
+        void onDestroyDX9VertexBuffer_( DX9RenderVertexBuffer * _buffer );
+        void onDestroyDX9IndexBuffer_( DX9RenderIndexBuffer * _buffer );
         void onDestroyDX9RenderImage_( DX9RenderImage * _image );
         void onDestroyDX9RenderImageTarget_( DX9RenderImageTarget * _imageTarget );
         void onDestroyDX9RenderTargetTexture_( DX9RenderTargetTexture * _targetTexture );
@@ -238,6 +237,8 @@ namespace Mengine
 
         uint32_t m_textureMemoryUse;
         uint32_t m_textureCount;
+        uint32_t m_vertexBufferCount;
+        uint32_t m_indexBufferCount;
 
         bool m_vertexBufferEnable;
         bool m_indexBufferEnable;

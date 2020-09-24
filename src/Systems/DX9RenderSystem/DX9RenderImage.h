@@ -22,7 +22,11 @@ namespace Mengine
         ~DX9RenderImage() override;
 
     public:
-        void initialize( IDirect3DDevice9 * _pD3DDevice, IDirect3DTexture9 * _d3dInterface, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat );
+        void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );
+        IDirect3DDevice9 * getDirect3DDevice9() const;
+
+    public:
+        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat );
         void finalize();
 
     public:

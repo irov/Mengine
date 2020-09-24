@@ -26,10 +26,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
+    void DX9RenderTargetTexture::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
     {
-        m_pD3DDevice = _device;
-
+        m_pD3DDevice = _pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    IDirect3DDevice9 * DX9RenderTargetTexture::getDirect3DDevice9() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
+    {
         m_width = _width;
         m_height = _height;
         m_channels = _channels;

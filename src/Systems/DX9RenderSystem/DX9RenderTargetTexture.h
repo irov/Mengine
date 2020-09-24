@@ -20,7 +20,11 @@ namespace Mengine
         ~DX9RenderTargetTexture() override;
 
     public:
-        bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format );
+        void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );
+        IDirect3DDevice9 * getDirect3DDevice9() const;
+
+    public:
+        bool initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format );
         void finalize();
 
     protected:
@@ -58,6 +62,8 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
+        IDirect3DDevice9 * m_pD3DDevice;
+
         uint32_t m_width;
         uint32_t m_height;
         uint32_t m_channels;
@@ -68,8 +74,7 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
-
-        IDirect3DDevice9 * m_pD3DDevice;
+        
         IDirect3DTexture9 * m_pD3DTexture;
         IDirect3DSurface9 * m_pD3DSurface;
         IDirect3DSurface9 * m_pD3DSurfaceOld;

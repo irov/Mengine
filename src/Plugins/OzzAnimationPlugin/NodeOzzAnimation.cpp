@@ -300,18 +300,8 @@ namespace Mengine
         m_blendedLocals.clear();
 
         m_vertexMemory = nullptr;
-        
-        if( m_vertexBuffer != nullptr )
-        {
-            m_vertexBuffer->finalize();
-            m_vertexBuffer = nullptr;
-        }
-
-        if( m_indexBuffer != nullptr )
-        {
-            m_indexBuffer->finalize();
-            m_indexBuffer = nullptr;
-        }
+        m_vertexBuffer = nullptr;
+        m_indexBuffer = nullptr;
 
         m_material = nullptr;
 

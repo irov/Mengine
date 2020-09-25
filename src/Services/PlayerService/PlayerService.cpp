@@ -49,9 +49,6 @@
 
 #include "math/mat3.h"
 
-#include "stdex/allocator_report.h"
-
-#include <iomanip>
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////

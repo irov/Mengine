@@ -104,16 +104,14 @@ namespace Mengine
         PluginInterface * plugin;
         if( _create( serviceProvider, &plugin, id, _dynamic ) == false )
         {
-            LOGGER_ERROR( "can't create plugin [invalid create]"
-            );
+            LOGGER_ERROR( "can't create plugin [invalid create]" );
 
             return false;
         }
 
         if( plugin == nullptr )
         {
-            LOGGER_ERROR( "can't create plugin [plugin is nullptr]"
-            );
+            LOGGER_ERROR( "can't create plugin [plugin is nullptr]" );
 
             return false;
         }
@@ -122,7 +120,7 @@ namespace Mengine
         plugin->setDocument( _doc );
 #endif
 
-        if( this->addPlugin( _dynamicLibrary, PluginInterfacePtr( plugin ) ) == false )
+        if( this->addPlugin( _dynamicLibrary, PluginInterfacePtr::from( plugin ) ) == false )
         {
             return false;
         }

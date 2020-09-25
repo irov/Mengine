@@ -17,7 +17,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Factory
-        : public FactorableUnique<Factorable>
+        : public Factorable
     {
     public:
         Factory( const Char * _name );
@@ -39,9 +39,6 @@ namespace Mengine
         virtual void _destroyObject( Factorable * _object ) = 0;
 
     protected:
-        void destroy() override;
-
-    protected:
         const Char * m_name;
 
         uint32_t m_count;
@@ -60,15 +57,9 @@ namespace Mengine
         template<class T, class ... Args>
         FactoryPtr makeFactory( const DocumentPtr & _doc, Args && ... _args )
         {
-            MENGINE_UNUSED( _doc );
+            FactoryPtr factory = Helper::makeFactorableUnique<T>( _doc, std::forward<Args>( _args ) ... );
 
-            Factory * factory = Helper::newT<T>( std::forward<Args>( _args ) ... );
-
-#ifdef MENGINE_DEBUG
-            factory->setDocument( _doc );
-#endif
-
-            return FactoryPtr::from( factory );
+            return factory;
         }
     }
 }

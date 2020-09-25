@@ -55,13 +55,9 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            FrameworkFactoryInterface * factory = Helper::newT<FactorableUnique<FrameworkFactory<T>>>();
+            FrameworkFactoryInterfacePtr factory = Helper::makeFactorableUnique<FrameworkFactory<T>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
-
-#ifdef MENGINE_DEBUG
-            factory->setDocument( _doc );
-#endif
 
             if( factory->initialize() == false )
             {
@@ -72,7 +68,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            return FrameworkFactoryInterfacePtr( factory );
+            return factory;
         }
     }
     //////////////////////////////////////////////////////////////////////////

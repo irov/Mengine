@@ -158,8 +158,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::convertDotToSlash_( pybind::kernel_interface * _kernel, Char * const _cache, uint32_t _cacheSize, PyObject * _module, uint32_t * const _modulePathCacheLen )
     {
-        uint32_t module_size;
-        const char * module_str = _kernel->string_to_char_and_size( _module, module_size );
+        size_t module_size;
+        const char * module_str = _kernel->string_to_char_and_size( _module, &module_size );
 
         if( stdex::memorycopy_safe( _cache, 0, _cacheSize, module_str, module_size ) == false )
         {

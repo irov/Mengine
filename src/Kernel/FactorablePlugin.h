@@ -20,6 +20,14 @@ namespace Mengine
         ~FactorablePlugin() override
         {
         }
+
+    protected:
+        void destroy() override
+        {
+            this->_destroy();
+
+            Helper::deleteT( this );
+        }
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

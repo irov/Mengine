@@ -28,6 +28,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FileGroupDirectoryFactory::_destroyObject( Factorable * _obj )
     {
-        Helper::deleteT( _obj );
+        Helper::deleteT( static_cast<Win32FileGroupDirectory *>(_obj) );
     }
 }

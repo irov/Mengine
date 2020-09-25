@@ -18,6 +18,7 @@
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
 #include "Interface/SettingsServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
 #   include "Interface/Win32PlatformExtensionInterface.h"
@@ -46,8 +47,6 @@
 #include "Kernel/Blobject.h"
 
 #include "Config/StdString.h"
-
-#include "stdex/allocator_report.h"
 
 #include <iomanip>
 
@@ -308,6 +307,7 @@ namespace Mengine
             this->sendPickerable( m_scene );
             this->sendRenderable( m_scene );
             this->sendSettings();
+            this->sendMemory();
             this->sendObjectsLeak();
         }
     }
@@ -316,7 +316,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _focus );
 
-        if( m_shouldRecreateServer )
+        if( m_shouldRecreateServer == true )
         {
             this->recreateServer();
         }
@@ -1119,6 +1119,56 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendMemory()
+    {
+        pugi::xml_document xml_doc;
+
+        pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Memory" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        size_t allocator_report_total = ALLOCATOR_SERVICE()
+            ->get_report_total();
+
+        payloadNode.append_attribute( "Total" ).set_value( allocator_report_total );
+
+        pugi::xml_node allocatorsNode = payloadNode.append_child( "Allocators" );
+
+        uint32_t allocator_report_count = ALLOCATOR_SERVICE()
+            ->get_report_count();
+
+        for( uint32_t index = 0; index != allocator_report_count; ++index )
+        {
+            const char * report_name;
+            size_t report_count = ALLOCATOR_SERVICE()
+                ->get_report_info( index, &report_name );
+
+            if( report_name[0] == 0 )
+            {
+                continue;
+            }
+
+            pugi::xml_node allocatorNode = allocatorsNode.append_child( "Allocator" );
+
+            allocatorNode.append_attribute( "Name" ).set_value( report_name );
+            allocatorNode.append_attribute( "Count" ).set_value( report_count );
+        }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef MENGINE_DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::sendObjectsLeak()
     {
         uint32_t generation = FACTORY_SERVICE()
@@ -1159,9 +1209,11 @@ namespace Mengine
             ++leakcount;
         } );
 
+        pugi::xml_node xml_leaks = payloadNode.append_child( "Leaks" );
+
         for( auto && [factory, objects] : objectLeaks )
         {
-            pugi::xml_node xml_objects = payloadNode.append_child( "Objects" );
+            pugi::xml_node xml_objects = xml_leaks.append_child( "Objects" );
 
             xml_objects.append_attribute( "Factory" ).set_value( factory.c_str() );
 

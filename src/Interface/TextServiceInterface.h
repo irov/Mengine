@@ -92,6 +92,9 @@ namespace Mengine
 
     public:
         virtual bool validate() const = 0;
+
+    public:
+        virtual const VectorU32String & getLineDelims() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

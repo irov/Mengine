@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLFileGroupDirectoryFactory::_destroyObject( Factorable * _obj )
     {
-        Helper::deleteT( _obj );
+        Helper::deleteT( static_cast<SDLFileGroupDirectory *>(_obj) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

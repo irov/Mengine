@@ -56,11 +56,17 @@ namespace Mengine
         m_texts.reserve( TextServiceReserveTexts );
         m_fonts.reserve( TextServiceReserveFonts );
 
+        m_lineDelims.emplace_back( U"\n" );
+        m_lineDelims.emplace_back( U"\r\n" );
+        m_lineDelims.emplace_back( U"\n\r" );
+        m_lineDelims.emplace_back( U"\n\r\t" );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextService::_finalizeService()
     {
+        m_lineDelims.clear();
         m_texts.clear();
 
         for( const HashtableTextFont::value_type & value : m_fonts )
@@ -1137,5 +1143,10 @@ namespace Mengine
         {
             m_holdersLocalString.push_back( holder );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const VectorU32String & TextService::getLineDelims() const
+    {
+        return m_lineDelims;
     }
 }

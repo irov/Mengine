@@ -39,7 +39,7 @@ namespace Mengine
         bool isSystemPlugin() const override;
 
     protected:
-        void destroy() override;
+        void _destroy() override;
 
     protected:
         virtual bool _initializePlugin();

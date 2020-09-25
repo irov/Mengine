@@ -114,6 +114,9 @@ namespace Mengine
         bool directFontRelease( const ConstString & _fontName ) override;
 
     protected:
+        const VectorU32String & getLineDelims() const override;
+
+    protected:
         typedef Hashtable<ConstString, TextEntryPtr> HashtableTextEntry;
         HashtableTextEntry m_texts;
 
@@ -141,6 +144,8 @@ namespace Mengine
 
         typedef stdex::intrusive_list<ConstStringHolderLocalString> IntrusiveListConstStringHolderLocalString;
         IntrusiveListConstStringHolderLocalString m_holdersLocalString;
+
+        VectorU32String m_lineDelims;
 
     protected:
         class TextManagerLoadSaxCallback;

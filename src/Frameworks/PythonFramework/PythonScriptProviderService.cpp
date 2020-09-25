@@ -104,7 +104,7 @@ namespace Mengine
         m_kernel->destroy();
         m_kernel = nullptr;
 
-        Helper::deleteT( allocator );
+        Helper::deleteT( static_cast<Detail::MyPythonAllocator *>(allocator) );
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * PythonScriptProviderService::getKernel() const

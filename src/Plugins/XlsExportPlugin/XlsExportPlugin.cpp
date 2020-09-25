@@ -189,7 +189,7 @@ namespace Mengine
 
         kernel->destroy();
 
-        Helper::deleteT( allocator );
+        Helper::deleteT( static_cast<Detail::MyXlsAllocator *>(allocator) );
 
         Helper::deleteT( m_warninglogger );
         Helper::deleteT( m_errorLogger );

@@ -28,14 +28,11 @@ namespace Mengine
                 return;
             }
 
-            VectorU32String line_delims;
-            line_delims.emplace_back( U"\n" );
-            line_delims.emplace_back( U"\r\n" );
-            line_delims.emplace_back( U"\n\r" );
-            line_delims.emplace_back( U"\n\r\t" );
+            const VectorU32String & lineDelims = TEXT_SERVICE()
+                ->getLineDelims();
 
             VectorU32String drawTexts;
-            if( Helper::u32split3( &drawTexts, cacheText, line_delims ) == false )
+            if( Helper::u32split3( &drawTexts, cacheText, lineDelims ) == false )
             {
                 return;
             }

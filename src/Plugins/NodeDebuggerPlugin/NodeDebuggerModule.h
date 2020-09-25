@@ -85,6 +85,7 @@ namespace Mengine
         void sendPickerable( const ScenePtr & _scene );
         void sendRenderable( const ScenePtr & _scene );
         void sendSettings();
+        void sendMemory();
         void sendObjectsLeak();
 
     protected:

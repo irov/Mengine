@@ -30,5 +30,13 @@ namespace Mengine
 
             return static_cast<T *>(ptr);
         }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T * callocateMemoryNT( uint32_t _count, const Char * _doc )
+        {
+            void * ptr = Helper::callocateMemory( _count, sizeof( T ), _doc );
+
+            return static_cast<T *>(ptr);
+        }
     }
 }

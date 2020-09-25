@@ -497,7 +497,7 @@ namespace Mengine
                 return textId;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_setTextAliasArguments( pybind::kernel_interface * _kernel, const ConstString & _aliasEnvironment, const ConstString & _aliasId, const pybind::args & _args )
+            bool s_setTextAliasArguments( const ConstString & _aliasEnvironment, const ConstString & _aliasId, const pybind::args & _args )
             {
                 size_t args_count = _args.size();
 
@@ -525,19 +525,14 @@ namespace Mengine
                     }
                     else
                     {
-                        PyObject * value = py_obj.str();
-
-                        MENGINE_ASSERTION_MEMORY_PANIC( value, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
-                            , py_obj.repr()
-                            , _args.repr()
+                        MENGINE_ASSERTION_FATAL( py_obj.is_invalid() == false, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
+                            , py_obj.repr().c_str()
+                            , _args.repr().c_str()
                         );
 
-                        size_t size = 0;
-                        const Char * str = _kernel->string_to_char_and_size( value, &size );
+                        const Char * str = py_obj.str().c_str();
 
-                        arguments.emplace_back( str, size );
-
-                        _kernel->decref( value );
+                        arguments.emplace_back( str );
                     }
                 }
 
@@ -1545,7 +1540,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' default value is not UNICODE '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        , _kernel->object_repr( _defaultValue )
+                        , _kernel->object_repr( _defaultValue ).c_str()
                     );
 
                     return false;
@@ -1603,7 +1598,7 @@ namespace Mengine
                     LOGGER_ERROR( "account '%s' setting '%s' value is not UNICODE '%s'"
                         , _accountID.c_str()
                         , _setting.c_str()
-                        , _kernel->object_repr( _value )
+                        , _kernel->object_repr( _value ).c_str()
                     );
 
                     return false;
@@ -3754,7 +3749,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "hasTextAlias", helperScriptMethod, &HelperScriptMethod::s_hasTextAlias );
         pybind::def_functor( _kernel, "getTextAlias", helperScriptMethod, &HelperScriptMethod::s_getTextAlias );
 
-        pybind::def_functor_kernel_args( _kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
+        pybind::def_functor_args( _kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
         pybind::def_functor( _kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
 
         pybind::def_functor( _kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );

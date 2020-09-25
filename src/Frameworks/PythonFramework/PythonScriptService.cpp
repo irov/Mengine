@@ -171,7 +171,7 @@ namespace Mengine
                 {
                     for( const pybind::object & obj : pybind::tuple( _kernel, _args ) )
                     {
-                        ss_args << _kernel->object_repr( obj.ptr() ) << ", ";
+                        ss_args << _kernel->object_repr( obj.ptr() ).c_str() << ", ";
                     }
                 }
 
@@ -183,7 +183,7 @@ namespace Mengine
                         pybind::object key = obj.key();
                         pybind::object value = obj.value();
 
-                        ss_kwds << _kernel->object_repr( key.ptr() ) << " = " << _kernel->object_repr( value.ptr() ) << ", ";
+                        ss_kwds << _kernel->object_repr( key.ptr() ).c_str() << " = " << _kernel->object_repr( value.ptr() ).c_str() << ", ";
                     }
                 }
 
@@ -881,7 +881,7 @@ namespace Mengine
         if( m_kernel->string_check( _object ) == false )
         {
             LOGGER_ERROR( "invalid stringize object '%s'"
-                , m_kernel->object_repr( _object )
+                , m_kernel->object_repr( _object ).c_str()
             );
 
             return false;
@@ -974,8 +974,8 @@ namespace Mengine
             { 
                 LOGGER_STATISTIC( "Debug call '%s' args '%s' kwds '%s':"
                     , _functionName
-                    , m_kernel->object_repr( _args )
-                    , m_kernel->object_repr( _kwds )
+                    , m_kernel->object_repr( _args ).c_str()
+                    , m_kernel->object_repr( _kwds ).c_str()
                 );
 
                 Char traceback[4096];

@@ -28,7 +28,7 @@ namespace Mengine
         if( _kernel->is_object_bindable( _embed ) == false )
         {
             MENGINE_THROW_EXCEPTION( "'%s' but scope not settup bindable"
-                , _kernel->object_repr_type( _embed )
+                , _kernel->object_repr_type( _embed ).c_str()
             );
         }
 #endif

@@ -185,7 +185,7 @@ namespace Mengine
                         {
                             LOGGER_ERROR( "'%s' invalid get str '%s'"
                                     , _textField->getName().c_str()
-                                , _kernel->object_repr( py_string )
+                                , _kernel->object_repr( py_string ).c_str()
                                 );
 
                             return _kernel->ret_false();
@@ -200,7 +200,7 @@ namespace Mengine
                         {
                             LOGGER_ERROR( "'%s' invalid get unicode '%s'"
                             , _textField->getName().c_str()
-                                , _kernel->object_repr( py_string )
+                                , _kernel->object_repr( py_string ).c_str()
                                 );
 
                             return _kernel->ret_false();
@@ -213,28 +213,21 @@ namespace Mengine
                     }
                     else
                     {
-                        PyObject * py_value_str = _kernel->object_str( py_string );
+                        pybind::string_view py_value_str = _kernel->object_str( py_string );
 
-                        if( py_value_str == nullptr )
+                        if( py_value_str.is_invalid() == true )
                         {
-                            PyObject * py_value_repr = _kernel->object_repr( py_string );
-
                             LOGGER_ERROR( "'%s' not suport arg '%s'"
                                 , _textField->getName().c_str()
-                                , _kernel->string_to_char( py_value_repr )
+                                , _kernel->object_repr( py_string ).c_str()
                                 );
-
-                            _kernel->decref( py_value_repr );
 
                             return _kernel->ret_false();
                         }
 
-                        size_t value_size;
-                        const Char * value_str = _kernel->string_to_char_and_size( py_value_str, &value_size );
+                        const Char * value_str = py_value_str.c_str();
 
-                        cs_args.emplace_back( value_str, value_size );
-
-                        _kernel->decref( py_value_str );
+                        cs_args.emplace_back( value_str );
                     }
                 }
 

@@ -738,7 +738,7 @@ namespace Mengine
                         LOGGER_ERROR( "prototype '%s' name '%s' cb '%s' not callable"
                             , _prototype.c_str()
                             , _name.c_str()
-                            , _cb.repr()
+                            , _cb.repr().c_str()
                             );
 
                         return false;
@@ -794,7 +794,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "scene name '%s' cb '%s' not callable"
                             , _name.c_str()
-                            , _cb.repr()
+                            , _cb.repr().c_str()
                             );
 
                         return false;
@@ -855,7 +855,7 @@ namespace Mengine
 
                     MENGINE_ASSERTION_MEMORY_PANIC( eventable, "scene '%s' invalid eventable '%s'"
                         , _name.c_str()
-                        , _type.repr()
+                        , _type.repr().c_str()
                         );
 
                     scene->setBehaviorEventable( eventable );
@@ -866,7 +866,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "scene '%s' invalid create type '%s'"
                             , _name.c_str()
-                            , _type.repr()
+                            , _type.repr().c_str()
                             );
 
                         return nullptr;
@@ -2878,7 +2878,7 @@ namespace Mengine
                 if( _cb.is_callable() == false )
                 {
                     LOGGER_ERROR( "cb '%s' not callable"
-                        , _cb.repr()
+                        , _cb.repr().c_str()
                         );
 
                     return false;
@@ -3027,8 +3027,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
                 }
@@ -3075,8 +3075,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
 
@@ -3120,8 +3120,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
 
@@ -3166,8 +3166,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
 
@@ -3206,8 +3206,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
 
@@ -3254,8 +3254,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
 
@@ -3295,8 +3295,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
 
@@ -3336,8 +3336,8 @@ namespace Mengine
                     if( py_result.is_none() == false )
                     {
                         LOGGER_ERROR( "'%s' return value '%s' not None"
-                            , m_cb.repr()
-                            , py_result.repr()
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
                             );
                     }
 

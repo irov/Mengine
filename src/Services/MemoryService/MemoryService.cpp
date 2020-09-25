@@ -163,9 +163,9 @@ namespace Mengine
         {
             CacheBufferMemory & buffer = m_buffers[minIndex];
 
-            Helper::deallocateMemory( buffer.memory, MENGINE_DOCUMENT_STR( buffer.doc ) );
+            Helper::deallocateMemory( buffer.memory, "memory" );
 
-            void * memory = Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
+            void * memory = Helper::allocateMemory( _size, "memory" );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid realloc %p memory %zu to %zu (doc: %s)"
                 , buffer.memory
@@ -187,7 +187,7 @@ namespace Mengine
             return buffer.id;
         }
 
-        void * memory = Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
+        void * memory = Helper::allocateMemory( _size, "memory" );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid malloc memory %zu (doc: %s)"
             , _size
@@ -243,7 +243,7 @@ namespace Mengine
                 return false;
             }
 
-            Helper::deallocateMemory( _buffer.memory, MENGINE_DOCUMENT_STR( _buffer.doc ) );
+            Helper::deallocateMemory( _buffer.memory, "memory" );
 
             return true;
         } ), m_buffers.end() );

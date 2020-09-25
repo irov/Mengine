@@ -39,7 +39,9 @@ namespace Mengine
 #endif
     //////////////////////////////////////////////////////////////////////////
     AllocatorService::AllocatorService()
+#ifdef MENGINE_ALLOCATOR_DEBUG
         : m_reportTotal( 0 )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -73,8 +75,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void * AllocatorService::malloc( size_t _size, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
 #ifndef MENGINE_ALLOCATOR_DEBUG
-        void * p = stdex_malloc( _size, _doc );
+        void * p = stdex_malloc( _size );
 #else
         void * p = ::malloc( _size );
 
@@ -86,8 +90,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::free( void * _mem, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
 #ifndef MENGINE_ALLOCATOR_DEBUG
-        stdex_free( _mem, _doc );
+        stdex_free( _mem );
 #else
         size_t size = _mem == nullptr ? 0 : _msize( _mem );
 
@@ -99,8 +105,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void * AllocatorService::calloc( size_t _num, size_t _size, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
 #ifndef MENGINE_ALLOCATOR_DEBUG
-        void * p = stdex_calloc( _num, _size, _doc );
+        void * p = stdex_calloc( _num, _size );
 #else
         size_t total = _num * _size;
         void * p = ::malloc( total );
@@ -114,8 +122,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void * AllocatorService::realloc( void * _mem, size_t _size, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
 #ifndef MENGINE_ALLOCATOR_DEBUG
-        void * p = stdex_realloc( _mem, _size, _doc );
+        void * p = stdex_realloc( _mem, _size );
 #else
         size_t size = _mem == nullptr ? 0 : _msize( _mem );
 
@@ -165,6 +175,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AllocatorService::get_report_info( uint32_t _index, const char ** _doc ) const
     {
+        MENGINE_UNUSED( _index );
+
 #ifdef MENGINE_ALLOCATOR_DEBUG
         const ReportDesc & r = m_reports[_index];
 
@@ -172,7 +184,7 @@ namespace Mengine
 
         return r.count;
 #else
-        * _name = '\0';
+        *_doc = "";
 
         return 0;
 #endif        
@@ -180,11 +192,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AllocatorService::get_report_total() const
     {
+#ifdef MENGINE_ALLOCATOR_DEBUG
         return m_reportTotal;
+#else
+        return 0;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AllocatorService::find_alloc_count( const Char * _doc ) const
     {
+        MENGINE_UNUSED( _doc );
+
 #ifdef MENGINE_ALLOCATOR_DEBUG
         for( uint32_t index = 0; index != 2048; ++index )
         {

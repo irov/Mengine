@@ -116,6 +116,10 @@ namespace Mengine
         {
             m_historically = true;
         }
+        else if( HAS_OPTION( "nologhistory" ) == true )
+        {
+            m_historically = false;
+        }
 
         ELoggerLevel level = this->getVerboseLevel();
         const Char * loggerLevels[] = {"SILENT", "FATAL", "CRITICAL", "MESSAGE_RELEASE", "ERROR", "PERFOMANCE", "STATISTIC", "WARNING", "MESSAGE", "INFO", "DEBUG", "VERBOSE"};

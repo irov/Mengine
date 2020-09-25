@@ -238,6 +238,10 @@ namespace Mengine
 
         uint32_t m_maxCharCount;
 
+        mutable U32String m_cacheText;
+        mutable VectorTextLineChunks m_cacheTextChars;
+        mutable VectorTextLineChunks2 m_cacheTextLines;
+
         mutable uint32_t m_charCount;
         mutable uint32_t m_layoutCount;
         mutable mt::vec2f m_textSize;

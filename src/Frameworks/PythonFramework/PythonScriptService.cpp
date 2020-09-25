@@ -437,7 +437,7 @@ namespace Mengine
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
         Detail::My_observer_bind_call * observer_bind_call = static_cast<Detail::My_observer_bind_call *>(observer);
-        Helper::deleteT( observer_bind_call );
+        Helper::deleteT( static_cast<Detail::My_observer_bind_call *>(observer_bind_call) );
 
         m_kernel->set_observer_bind_call( nullptr );
 

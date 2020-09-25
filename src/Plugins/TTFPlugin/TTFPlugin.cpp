@@ -17,7 +17,6 @@
 #include "FEDataflow.h"
 
 #include "fe/fe.h"
-#include "stdex/allocator_report.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _fe_alloc( size_t _size )

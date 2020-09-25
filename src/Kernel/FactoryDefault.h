@@ -30,7 +30,7 @@ namespace Mengine
 
         void _destroyObject( Factorable * _obj ) override
         {
-            Helper::deleteT<Type>( static_cast<Type *>(_obj) );
+            Helper::deleteT( static_cast<Type *>(_obj) );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -41,15 +41,11 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            Factory * factory = Helper::newT<FactoryDefault<T>>();
+            FactoryPtr factory = Helper::makeFactorableUnique<FactoryDefault<T>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
-#ifdef MENGINE_DEBUG
-            factory->setDocument( _doc );
-#endif
-
-            return FactoryPtr( factory );
+            return factory;
         }
     }
 }

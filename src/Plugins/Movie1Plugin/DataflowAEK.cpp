@@ -97,7 +97,7 @@ namespace Mengine
             size_t binary_read = 0;
             stdex::memory_reader ar( _buffer, _size, binary_read );
 
-            uint32_t metacode_version;
+            uint32_t metacode_version = 0;
             ar << metacode_version;
 
             uint32_t true_metacode_version = Metacode::get_metacode_version();
@@ -112,7 +112,7 @@ namespace Mengine
                 return false;
             }
 
-            uint32_t format_version;
+            uint32_t format_version = 0;
             ar << format_version;
 
             if( format_version != MOVIE_KEY_FRAME_FORMAT_VERSION )
@@ -125,7 +125,7 @@ namespace Mengine
                 return false;
             }
 
-            uint32_t maxIndex;
+            uint32_t maxIndex = 0;
             ar << maxIndex;
 
             if( maxIndex != 0 )
@@ -134,10 +134,10 @@ namespace Mengine
 
                 for( uint32_t it_layer = 0; it_layer != maxIndex; ++it_layer )
                 {
-                    uint32_t frames_size;
+                    uint32_t frames_size = 0;
                     ar << frames_size;
 
-                    uint8_t immutable;
+                    uint8_t immutable = 0;
                     ar << immutable;
 
                     MovieLayerFrame & frame = _pack->setupLayer( it_layer, frames_size, !!immutable );
@@ -160,7 +160,7 @@ namespace Mengine
                     {
 #define READ_FRAME_SOURCE( Type, Member1, Member2, Mask )\
                     { \
-                        uint8_t value_immutable; \
+                        uint8_t value_immutable = 0; \
                         ar << value_immutable; \
                         if( value_immutable == 1 ) \
                         { \
@@ -169,7 +169,7 @@ namespace Mengine
                         } \
                         else \
                         { \
-                            frame.Member2 = (Type *)Helper::allocateMemory( sizeof(Type) * frames_size, "DataflowAEK" ); \
+                            frame.Member2 = (Type *)Helper::allocateMemory( sizeof(Type) * frames_size, "MovieFramePack" ); \
                             ar.readPODs( frame.Member2, frames_size ); \
                         } \
                     }
@@ -188,7 +188,7 @@ namespace Mengine
                 }
             }
 
-            uint32_t times_count;
+            uint32_t times_count = 0;
             ar << times_count;
 
             if( times_count != 0 )
@@ -199,12 +199,12 @@ namespace Mengine
                 {
                     MovieLayerTimeRemap & timeremap = _pack->mutableLayerTimeRemap( i );
 
-                    uint32_t layerId;
+                    uint32_t layerId = 0;
                     ar << layerId;
 
                     timeremap.layerId = layerId;
 
-                    uint32_t times_size;
+                    uint32_t times_size = 0;
                     ar << times_size;
 
                     if( times_size == 0 )
@@ -212,14 +212,14 @@ namespace Mengine
                         continue;
                     }
 
-                    timeremap.times = Helper::allocateMemoryNT<float>( times_size, "DataflowAEK" );
+                    timeremap.times = Helper::allocateMemoryNT<float>( times_size, "MovieFramePack" );
 
                     float * times_buff = &timeremap.times[0];
                     ar.readPODs( times_buff, times_size );
                 }
             }
 
-            uint32_t shapes_count;
+            uint32_t shapes_count = 0;
             ar << shapes_count;
 
             if( shapes_count != 0 )
@@ -230,12 +230,12 @@ namespace Mengine
                 {
                     MovieLayerShapes & shapes = _pack->mutableLayerShape( i );
 
-                    uint32_t layerId;
+                    uint32_t layerId = 0;
                     ar << layerId;
 
                     shapes.layerId = layerId;
 
-                    uint32_t shapes_size;
+                    uint32_t shapes_size = 0;
                     ar << shapes_size;
 
                     if( shapes_size == 0 )
@@ -244,7 +244,7 @@ namespace Mengine
                     }
 
                     shapes.shapes_size = shapes_size;
-                    shapes.shapes = Helper::allocateMemoryNT<MovieFrameShape>( shapes_size, "DataflowAEK" );
+                    shapes.shapes = Helper::callocateMemoryNT<MovieFrameShape>( shapes_size, "MovieFramePack" );
 
                     for( uint32_t j = 0; j != shapes_size; ++j )
                     {
@@ -254,15 +254,15 @@ namespace Mengine
 
                         if( shape.vertexCount > 0 )
                         {
-                            shape.pos = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "DataflowAEK" );
-                            shape.uv = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "DataflowAEK" );
+                            shape.pos = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "MovieFramePack" );
+                            shape.uv = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "MovieFramePack" );
 
                             ar.readPODs( shape.pos, shape.vertexCount );
                             ar.readPODs( shape.uv, shape.vertexCount );
 
                             ar << shape.indexCount;
 
-                            shape.indices = Helper::allocateMemoryNT<RenderIndex>( shape.indexCount, "DataflowAEK" );
+                            shape.indices = Helper::allocateMemoryNT<RenderIndex>( shape.indexCount, "MovieFramePack" );
 
                             ar.readPODs( shape.indices, shape.indexCount );
                         }
@@ -278,7 +278,7 @@ namespace Mengine
                 }
             }
 
-            uint32_t polygons_count;
+            uint32_t polygons_count = 0;
             ar << polygons_count;
 
             if( polygons_count != 0 )
@@ -289,16 +289,16 @@ namespace Mengine
                 {
                     MovieLayerPolygon & polygon = _pack->mutableLayerPolygon( i );
 
-                    uint32_t layerId;
+                    uint32_t layerId = 0;
                     ar << layerId;
 
                     polygon.layerId = layerId;
 
-                    uint8_t vertexCount;
+                    uint8_t vertexCount = 0;
                     ar << vertexCount;
 
                     polygon.vertexCount = vertexCount;
-                    polygon.polygon = Helper::allocateMemoryNT<mt::vec2f>( vertexCount, "DataflowAEK" );
+                    polygon.polygon = Helper::allocateMemoryNT<mt::vec2f>( vertexCount, "MovieFramePack" );
 
                     for( uint32_t j = 0; j != vertexCount; ++j )
                     {

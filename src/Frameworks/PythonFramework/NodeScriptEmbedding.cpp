@@ -213,19 +213,28 @@ namespace Mengine
                     }
                     else
                     {
-                        const char * value = _kernel->object_str( py_string );
+                        PyObject * py_value_str = _kernel->object_str( py_string );
 
-                        if( value == nullptr )
+                        if( py_value_str == nullptr )
                         {
+                            PyObject * py_value_repr = _kernel->object_repr( py_string );
+
                             LOGGER_ERROR( "'%s' not suport arg '%s'"
-                            , _textField->getName().c_str()
-                                , _kernel->object_repr( py_string )
+                                , _textField->getName().c_str()
+                                , _kernel->string_to_char( py_value_repr )
                                 );
+
+                            _kernel->decref( py_value_repr );
 
                             return _kernel->ret_false();
                         }
 
-                        cs_args.emplace_back( String( value ) );
+                        size_t value_size;
+                        const Char * value_str = _kernel->string_to_char_and_size( py_value_str, &value_size );
+
+                        cs_args.emplace_back( value_str, value_size );
+
+                        _kernel->decref( py_value_str );
                     }
                 }
 

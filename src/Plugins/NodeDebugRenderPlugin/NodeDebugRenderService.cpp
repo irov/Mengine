@@ -11,6 +11,7 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
@@ -23,8 +24,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/Stringstream.h"
-
-#include "stdex/allocator_report.h"
 
 #include <iomanip>
 
@@ -557,13 +556,16 @@ namespace Mengine
                 typedef Map<int32_t, VectorString> MapPybindScope;
                 MapPybindScope scopes;
 
-                uint32_t count = stdex_allocator_report_count();
+                uint32_t count = ALLOCATOR_SERVICE()
+                    ->get_report_count();
 
                 for( uint32_t i = 0; i != count; ++i )
                 {
-                    stdex_memory_report_t * report = stdex_allocator_report_info( i );
+                    const char * report_name;
+                    uint32_t report_count = ALLOCATOR_SERVICE()
+                        ->get_report_info( i, &report_name );
 
-                    scopes[report->count].emplace_back( report->name );
+                    scopes[report_count].emplace_back( report_name );
                 }
 
                 Stringstream ss2;

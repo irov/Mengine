@@ -61,7 +61,7 @@ namespace Mengine
     {
         m_kernel = nullptr;
 
-        Helper::deleteT( m_allocator );
+        Helper::deleteT( static_cast<MengineGOAPAllocator *>(m_allocator) );
         m_allocator = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

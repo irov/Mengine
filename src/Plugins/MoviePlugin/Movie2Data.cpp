@@ -55,10 +55,10 @@ namespace Mengine
 
         if( ++image_desc->refcount == 1 )
         {
-            image_desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
-            image_desc->materials[EMB_ADD] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
-            image_desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
-            image_desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FACTORABLE_PTR( _data ) );
+            image_desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
+            image_desc->materials[EMB_ADD] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
+            image_desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
+            image_desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
         }
 
         return AE_TRUE;
@@ -340,4 +340,5 @@ namespace Mengine
     {
         m_poolImageDesc.destroyT( _desc );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

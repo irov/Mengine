@@ -120,7 +120,10 @@ namespace Mengine
                 return;
             }
         }
-
+        else
+        {
+            return;
+        }
 
         CONSOLE_SCREEN_BUFFER_INFO coninfo;
 
@@ -574,15 +577,15 @@ namespace Mengine
 
             if( _kernel->string_check( arg ) == true )
             {
-                uint32_t size;
-                const char * str = _kernel->string_to_char_and_size( arg, size );
+                size_t size;
+                const char * str = _kernel->string_to_char_and_size( arg, &size );
 
                 this->write( str, size );
             }
             else if( _kernel->unicode_check( arg ) == true )
             {
-                uint32_t size;
-                const char * utf8 = _kernel->unicode_to_utf8_and_size( arg, size );
+                size_t size;
+                const char * utf8 = _kernel->unicode_to_utf8_and_size( arg, &size );
 
                 this->write( utf8, size );
             }
@@ -738,8 +741,8 @@ public:
             return false;
         }
 
-        uint32_t size;
-        const Mengine::String::value_type * string_char = _kernel->string_to_char_and_size( _obj, size );
+        size_t size = 0;
+        const Mengine::String::value_type * string_char = _kernel->string_to_char_and_size( _obj, &size );
 
         if( string_char == nullptr )
         {
@@ -779,8 +782,8 @@ public:
             return false;
         }
 
-        uint32_t size = 0;
-        const Mengine::WString::value_type * value_char = _kernel->unicode_to_wchar_and_size( _obj, size );
+        size_t size = 0;
+        const Mengine::WString::value_type * value_char = _kernel->unicode_to_wchar_and_size( _obj, &size );
 
         if( value_char == nullptr )
         {

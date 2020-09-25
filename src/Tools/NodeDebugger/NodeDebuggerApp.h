@@ -431,6 +431,7 @@ namespace Mengine
         void ReceiveScene( const pugi::xml_node & _xmlContainer );
         void ReceivePickerable( const pugi::xml_node & _xmlContainer );
         void ReceiveRenderable( const pugi::xml_node & _xmlContainer );
+        void ReceiveMemory( const pugi::xml_node & _xmlContainer );
         void ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer );
         void ReceiveSettings( const pugi::xml_node & _xmlContainer );
 
@@ -448,6 +449,7 @@ namespace Mengine
         const NodeIcon * GetIconForNodeType( const String & _nodeType );
         void DoUI();
         void DoUISceneDebuggerTab();
+        void DoUIMemoryTab();
         void DoUIObjectsLeakTab();
         void DoUISettingsTab();
         String DoIPInput( const String & _title, const String & _inIP );
@@ -499,6 +501,8 @@ namespace Mengine
 
         typedef Vector<LeakDesc> VectorLeaks;
         Map<String, VectorLeaks> m_objectLeaks;
+        uint32_t m_memoryTotal;
+        Map<String, uint32_t> m_memory;
         String m_objectLeakGeneration;
         size_t m_currentTab;
 

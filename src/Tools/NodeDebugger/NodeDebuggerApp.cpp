@@ -77,6 +77,7 @@ namespace Mengine
         , m_sceneUpdateTimer( 0.0 )
         , m_updateSceneOnChange( false )
         , m_pauseRequested( false )
+        , m_memoryTotal( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -153,18 +154,31 @@ namespace Mengine
         m_tabs.push_back({
             "Scene Debugger",
             true,
-            [this]() { this->DoUISceneDebuggerTab(); }
-        });
+            [this]()
+        {
+            this->DoUISceneDebuggerTab();
+        }} );
+        m_tabs.push_back( {
+            "Memory",
+            true, 
+            [this]()
+        {
+            this->DoUIMemoryTab();
+        }} );
         m_tabs.push_back({
             "Objects Leak",
             true,
-            [this]() { this->DoUIObjectsLeakTab(); }
-        });
+            [this]()
+        {
+            this->DoUIObjectsLeakTab();
+        }} );
         m_tabs.push_back({
             "Settings",
             true,
-            [this]() { this->DoUISettingsTab(); }
-        });
+            [this]()
+        {
+            this->DoUISettingsTab();
+        }} );
 
         // if requested to auto-connect, then do so
         if( _address.empty() == false && _port != 0 )
@@ -407,6 +421,11 @@ namespace Mengine
             this->ReceiveRenderable( payloadNode );
         }
 
+        if( typeStr == "Memory" )
+        {
+            this->ReceiveMemory( payloadNode );
+        }
+
         if( typeStr == "ObjectsLeak" )
         {
             this->ReceiveObjectsLeak( payloadNode );
@@ -478,15 +497,30 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveMemory( const pugi::xml_node & _xmlContainer )
+    {
+        m_memoryTotal = _xmlContainer.attribute( "Total" ).as_uint();
+
+        pugi::xml_node xml_allocators = _xmlContainer.child( "Allocators" );
+
+        for( const pugi::xml_node & child : xml_allocators )
+        {
+            const pugi::char_t * name = child.attribute( "Name" ).value();
+            uint32_t count = child.attribute( "Count" ).as_uint();
+
+            m_memory[name] = count;
+        }        
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer )
     {
-        MENGINE_UNUSED( _xmlContainer );
-
         m_objectLeaks.clear();
 
         m_objectLeakGeneration = _xmlContainer.attribute( "Generation" ).value();
 
-        for( const pugi::xml_node & child : _xmlContainer.children() )
+        pugi::xml_node xml_leaks = _xmlContainer.child( "Leaks" );
+
+        for( const pugi::xml_node & child : xml_leaks )
         {
             const pugi::char_t * type = child.attribute( "Factory" ).value();
 
@@ -1096,6 +1130,45 @@ namespace Mengine
         ImGui::EndChild();
 
         ImGui::Columns( 1 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUIMemoryTab()
+    {
+        ImGui::Separator();
+
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Total: %um %ukb %ub"
+            , m_memoryTotal / 1000000
+            , (m_memoryTotal % 1000000) / 1000
+            , m_memoryTotal % 1000
+        );
+
+        ImGui::Separator();
+
+        struct MemoryDesc
+        {
+            String name;
+            uint32_t count;
+        };
+
+        Vector<MemoryDesc> vmemory;
+
+        for( auto && [name, count] : m_memory )
+        {
+            vmemory.emplace_back( MemoryDesc{name, count} );
+        }
+
+        std::stable_sort( vmemory.begin(), vmemory.end(), []( const MemoryDesc & l, const MemoryDesc & r )
+        {
+            return l.count > r.count;
+        } );
+
+        for( const MemoryDesc & desc : vmemory )
+        {
+            ImGui::TextColored( ImVec4( 0.f, 1.f, 1.f, 1.f ), "Allocator: %s [total %u]"
+                , desc.name.c_str()
+                , desc.count
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUIObjectsLeakTab()

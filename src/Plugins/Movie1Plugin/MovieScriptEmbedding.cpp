@@ -1259,7 +1259,7 @@ namespace Mengine
 
             for( const MovieLayer & layer : layers )
             {
-                if( layer.type == "Movie" )
+                if( layer.type == STRINGIZE_STRING_LOCAL( "Movie" ) )
                 {
                     if( s_hasMovieElement( layer.source, _slotName, _typeName ) == true )
                     {

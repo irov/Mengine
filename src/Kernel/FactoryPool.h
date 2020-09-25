@@ -47,15 +47,9 @@ namespace Mengine
         template<class Type, uint32_t Count, class F = Factory>
         IntrusivePtr<F> makeFactoryPool( const DocumentPtr & _doc )
         {
-            MENGINE_UNUSED( _doc );
-
-            Factory * factory = Helper::newT<FactoryPool<Type, Count, F>>();
+            IntrusivePtr<F> factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
-
-#ifdef MENGINE_DEBUG
-            factory->setDocument( _doc );
-#endif
 
             return IntrusivePtr<F>( factory );
         }

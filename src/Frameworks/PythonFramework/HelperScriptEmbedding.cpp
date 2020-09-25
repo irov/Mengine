@@ -497,7 +497,7 @@ namespace Mengine
                 return textId;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_setTextAliasArguments( const ConstString & _aliasEnvironment, const ConstString & _aliasId, const pybind::args & _args )
+            bool s_setTextAliasArguments( pybind::kernel_interface * _kernel, const ConstString & _aliasEnvironment, const ConstString & _aliasId, const pybind::args & _args )
             {
                 size_t args_count = _args.size();
 
@@ -525,14 +525,19 @@ namespace Mengine
                     }
                     else
                     {
-                        const Char * value = py_obj.str();
+                        PyObject * value = py_obj.str();
 
                         MENGINE_ASSERTION_MEMORY_PANIC( value, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
                             , py_obj.repr()
                             , _args.repr()
                         );
 
-                        arguments.emplace_back( String( value ) );
+                        size_t size = 0;
+                        const Char * str = _kernel->string_to_char_and_size( value, &size );
+
+                        arguments.emplace_back( str, size );
+
+                        _kernel->decref( value );
                     }
                 }
 
@@ -3042,8 +3047,8 @@ namespace Mengine
 
                 if( _kernel->string_check( _obj ) == true )
                 {
-                    uint32_t size;
-                    const Char * value_char = _kernel->string_to_char_and_size( _obj, size );
+                    size_t size = 0;
+                    const Char * value_char = _kernel->string_to_char_and_size( _obj, &size );
 
                     if( value_char == 0 )
                     {
@@ -3134,8 +3139,8 @@ namespace Mengine
 
                 if( _kernel->string_check( _obj ) == true )
                 {
-                    uint32_t size;
-                    const String::value_type * string_char = _kernel->string_to_char_and_size( _obj, size );
+                    size_t size = 0;
+                    const String::value_type * string_char = _kernel->string_to_char_and_size( _obj, &size );
 
                     if( string_char == 0 )
                     {
@@ -3177,8 +3182,8 @@ namespace Mengine
 
                 if( _kernel->unicode_check( _obj ) == true )
                 {
-                    uint32_t size = 0;
-                    const WString::value_type * value_char = _kernel->unicode_to_wchar_and_size( _obj, size );
+                    size_t size = 0;
+                    const WString::value_type * value_char = _kernel->unicode_to_wchar_and_size( _obj, &size );
 
                     if( value_char == nullptr )
                     {
@@ -3749,7 +3754,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "hasTextAlias", helperScriptMethod, &HelperScriptMethod::s_hasTextAlias );
         pybind::def_functor( _kernel, "getTextAlias", helperScriptMethod, &HelperScriptMethod::s_getTextAlias );
 
-        pybind::def_functor_args( _kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
+        pybind::def_functor_kernel_args( _kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
         pybind::def_functor( _kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
 
         pybind::def_functor( _kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );

@@ -363,12 +363,12 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 {
     node_provider_t * np = (node_provider_t *)_ud;
 
-    const aeMovieLayerData * layer = _callbackData->layer;
+    const aeMovieLayerData * layer_data = _callbackData->layer_data;
 
     ae_uint32_t node_index = _callbackData->index;
-    const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
+    const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer_data );
 
-    ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
+    ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer_data );
 
     if( is_track_matte == AE_TRUE )
     {
@@ -377,7 +377,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         return AE_TRUE;
     }
 
-    aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer );
+    aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer_data );
 
     switch( type )
     {

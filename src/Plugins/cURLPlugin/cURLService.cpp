@@ -154,7 +154,7 @@ namespace Mengine
 
 #ifdef STDEX_ALLOCATOR_REPORT_ENABLE
         uint32_t report_count = ALLOCATOR_SERVICE()
-            ->count( "curl" );
+            ->find_alloc_count( "curl" );
 
         MENGINE_ASSERTION( report_count == 0, "cURL memleak [%d]"
             , report_count

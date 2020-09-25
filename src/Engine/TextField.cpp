@@ -890,8 +890,9 @@ namespace Mengine
             return false;
         }
 
-        U32String cacheText;
-        if( this->updateTextCache_( &cacheText ) == false )
+        m_cacheText.clear();
+
+        if( this->updateTextCache_( &m_cacheText ) == false )
         {
             LOGGER_ERROR( "font '%s' invalid update text cache '%s'"
                 , this->getName().c_str()
@@ -915,8 +916,8 @@ namespace Mengine
 
         m_cacheFonts.emplace_back( baseCacheFont );
 
-        VectorTextLineChunks textChars;
-        Helper::test( &textChars, cacheText, &m_cacheFonts, 0 );
+        m_cacheTextChars.clear();
+        Helper::test( &m_cacheTextChars, m_cacheText, &m_cacheFonts, 0 );
 
         for( const CacheFont & cache : m_cacheFonts )
         {
@@ -928,7 +929,7 @@ namespace Mengine
             }
         }
 
-        for( const TextLineChunk & tc : textChars )
+        for( const TextLineChunk & tc : m_cacheTextChars )
         {
             uint32_t fontId = tc.fontId;
 
@@ -942,22 +943,19 @@ namespace Mengine
             }
         }
 
-        VectorU32String line_delims;
-        line_delims.emplace_back( U"\n" );
-        line_delims.emplace_back( U"\r\n" );
-        line_delims.emplace_back( U"\n\r" );
-        line_delims.emplace_back( U"\n\r\t" );
+        const VectorU32String & lineDelims = TEXT_SERVICE()
+            ->getLineDelims();
 
-        VectorTextLineChunks2 textLines;
-        Helper::split( &textLines, textChars, line_delims );
+        m_cacheTextLines.clear();
+        Helper::split( &m_cacheTextLines, m_cacheTextChars, lineDelims );
 
         MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != ~0U)), "text '%s' invalid enable together attributes 'wrap' and 'scaleFactor'"
             , this->getName().c_str()
         );
 
-        this->updateTextLinesWrap_( &textLines );
+        this->updateTextLinesWrap_( &m_cacheTextLines );
 
-        if( this->updateTextLinesDimension_( baseFont, textLines, &m_textSize, &m_charCount, &m_layoutCount ) == false )
+        if( this->updateTextLinesDimension_( baseFont, m_cacheTextLines, &m_textSize, &m_charCount, &m_layoutCount ) == false )
         {
             return false;
         }
@@ -972,7 +970,7 @@ namespace Mengine
             }
         }
 
-        this->updateTextLinesMaxCount_( &textLines );
+        this->updateTextLinesMaxCount_( &m_cacheTextLines );
 
         //if( m_debugMode == true )
         //{
@@ -991,7 +989,7 @@ namespace Mengine
 
         float charOffset = this->calcCharOffset();
 
-        for( const VectorTextLineChunks & textChunks : textLines )
+        for( const VectorTextLineChunks & textChunks : m_cacheTextLines )
         {
             VectorTextLines2 textLine2;
             for( const TextLineChunk & textChunk : textChunks )

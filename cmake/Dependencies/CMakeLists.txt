@@ -220,7 +220,7 @@ endif()
 #dependencies libwebp
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/webp/CMakeLists.txt ${THIRDPARTY_DIR}/webp/CMakeLists.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libwebp/CMakeLists.txt ${THIRDPARTY_DIR}/libwebp/CMakeLists.txt COPYONLY)
     
     set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
     set(WEBP_BUILD_ANIM_UTILS OFF CACHE BOOL "WEBP_BUILD_ANIM_UTILS" FORCE)

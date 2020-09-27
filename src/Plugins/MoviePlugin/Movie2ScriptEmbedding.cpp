@@ -51,43 +51,6 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovie2Socket
-            : public VisitorMovie2LayerInterface
-            , public Factorable
-        {
-        public:
-            PythonVisitorMovie2Socket( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
-
-            ~PythonVisitorMovie2Socket() override
-            {
-            }
-
-        protected:
-            void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) override
-            {
-                MENGINE_UNUSED( _index );
-
-                HotSpotPolygonPtr hotspot = stdex::intrusive_static_cast<HotSpotPolygonPtr>(_node);
-
-                if( hotspot == nullptr )
-                {
-                    return;
-                }
-
-                const ConstString & name = _node->getName();
-
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
-        //////////////////////////////////////////////////////////////////////////
         static mt::box2f s_Movie2_getCompositionBoundsWM( Movie2 * _movie )
         {
             const mt::box2f & bounds = _movie->getCompositionBounds();
@@ -104,29 +67,30 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Socket>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
-            _movie->visitSockets( visitor );
+            _movie->foreachSockets( [_kernel, &py_list]( Movie2 * _movie, uint32_t _index, const NodePtr & _node )
+            {
+                MENGINE_UNUSED( _index );
+
+                HotSpotPolygonPtr hotspot = stdex::intrusive_static_cast<HotSpotPolygonPtr>(_node);
+
+                if( hotspot == nullptr )
+                {
+                    return;
+                }
+
+                const ConstString & name = _node->getName();
+
+                py_list.append( pybind::make_tuple_t( _kernel, _movie, name, hotspot ) );
+            } );
 
             return py_list;
         }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovie2Slots
-            : public VisitorMovie2LayerInterface
-            , public Factorable
+        //////////////////////////////////////////////////////////////////////////    
+        static pybind::list s_Movie2_getSlots( pybind::kernel_interface * _kernel, Movie2 * _movie )
         {
-        public:
-            PythonVisitorMovie2Slots( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
+            pybind::list py_list( _kernel );
 
-            ~PythonVisitorMovie2Slots() override
-            {
-            }
-
-        protected:
-            void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) override
+            _movie->foreachSlots( [_kernel, &py_list]( Movie2 * _movie, uint32_t _index, const NodePtr & _node )
             {
                 MENGINE_UNUSED( _index );
 
@@ -139,20 +103,8 @@ namespace Mengine
 
                 const ConstString & name = _node->getName();
 
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
-        //////////////////////////////////////////////////////////////////////////    
-        static pybind::list s_Movie2_getSlots( pybind::kernel_interface * _kernel, Movie2 * _movie )
-        {
-            pybind::list py_list( _kernel );
-
-            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Slots>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
-            _movie->visitSlots( visitor );
+                py_list.append( pybind::make_tuple_t( _kernel, _movie, name, hotspot ) );
+            } );
 
             return py_list;
         }

@@ -21,7 +21,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void drawTextDebug2( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, uint32_t _argb, const Char * _message, size_t _size, const DocumentPtr & _doc )
         {
-            U32String cacheText = _font->prepareText( _message, _size );
+            U32String cacheText;
+            _font->prepareText( _message, _size, &cacheText );
 
             if( _font->prepareGlyph( cacheText, _doc ) == false )
             {

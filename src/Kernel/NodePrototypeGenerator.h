@@ -50,7 +50,7 @@ namespace Mengine
             UniqueId uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
             node->setUniqueIdentity( uniqueIdentity );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node '%s' type '%s'"
                 , node->getName().c_str()
                 , node->getType().c_str()

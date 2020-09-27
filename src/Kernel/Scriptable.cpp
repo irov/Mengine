@@ -27,7 +27,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG) && defined(MENGINE_USE_SCRIPT_SERVICE)
         if( _kernel->is_object_bindable( _embed ) == false )
         {
-            MENGINE_THROW_EXCEPTION( "'%s' but scope not settup bindable"
+            MENGINE_THROW_EXCEPTION( "'%s' but scope not setup bindable"
                 , _kernel->object_repr_type( _embed ).c_str()
             );
         }

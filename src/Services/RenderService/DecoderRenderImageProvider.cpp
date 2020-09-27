@@ -1,5 +1,7 @@
 #include "DecoderRenderImageProvider.h"
 
+#include "Interface/RenderTextureServiceInterface.h"
+
 #include "DecoderRenderImageLoader.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -27,14 +29,10 @@ namespace Mengine
         m_codecFlags = _codecFlags;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader() const
+    RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader( const DocumentPtr & _doc ) const
     {
-        DecoderRenderImageLoaderPtr loader = Helper::makeFactorableUnique<DecoderRenderImageLoader>( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( loader->initialize( m_fileGroup, m_filePath, m_codecType, m_codecFlags ) == false )
-        {
-            return nullptr;
-        }
+        RenderImageLoaderInterfacePtr loader = RENDERTEXTURE_SERVICE()
+            ->createDecoderRenderImageLoader( m_fileGroup, m_filePath, m_codecType, m_codecFlags, _doc );
 
         return loader;
     }

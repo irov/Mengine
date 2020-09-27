@@ -11,6 +11,7 @@
 
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"
+#include "DecoderRenderImageLoader.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -59,6 +60,7 @@ namespace Mengine
         m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureService::onRenderTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDecoderRenderImageLoader = Helper::makeFactoryPool<DecoderRenderImageLoader, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t TextureHashTableSize = CONFIG_VALUE( "Engine", "TextureHashTableSize", 1024 * 8 );
 
@@ -86,9 +88,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTexture );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDecoderRenderImageProvider );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDecoderRenderImageLoader );
 
         m_factoryRenderTexture = nullptr;
         m_factoryDecoderRenderImageProvider = nullptr;
+        m_factoryDecoderRenderImageLoader = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * const _texture ) const
@@ -256,6 +260,17 @@ namespace Mengine
             _lambda( RenderTextureInterfacePtr( texture ) );
         }
     }
+    RenderImageLoaderInterfacePtr RenderTextureService::createDecoderRenderImageLoader( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentPtr & _doc )
+    {
+        DecoderRenderImageLoaderPtr loader = Helper::makeFactorableUnique<DecoderRenderImageLoader>( _doc );
+
+        if( loader->initialize( _fileGroup, _filePath, _codecType, _codecFlags ) == false )
+        {
+            return nullptr;
+        }
+
+        return loader;
+    }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureService::cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture )
     {
@@ -304,7 +319,7 @@ namespace Mengine
 
         imageProvider->initialize( _fileGroup, _filePath, _codecType, _codecFlags );
 
-        RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader();
+        RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageLoader, "invalid get image loader" );
 

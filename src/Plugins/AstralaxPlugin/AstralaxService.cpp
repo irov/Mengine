@@ -166,7 +166,7 @@ namespace Mengine
             AstralaxEmitterContainerDesc new_desc;
             new_desc.reference = 0;
             new_desc.container = container.get();
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             new_desc.doc = _doc;
 #endif
 
@@ -176,7 +176,7 @@ namespace Mengine
         {
             container->finalize();
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             const AstralaxEmitterContainerDesc & old_desc = it_found->second;
 
             LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"

@@ -8,9 +8,7 @@
 
 #include "stdex/allocator.h"
 
-#ifdef MENGINE_WINDOWS_DEBUG
-#   define MENGINE_ALLOCATOR_DEBUG
-
+#if MENGINE_ALLOCATOR_DEBUG
 #   include "Kernel/ThreadMutexScope.h"
 #endif
 

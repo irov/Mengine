@@ -471,7 +471,7 @@ namespace Mengine
 
             jboolean jReturnValue = env->CallStaticBooleanMethod(mActivityClass, jmethodID_performLogin, nullptr);
 
-            return (bool) jReturnValue;
+            return (bool)jReturnValue;
         }
 
         VectorString::size_type permissionsCount = _permissions.size();
@@ -487,9 +487,13 @@ namespace Mengine
             jstring jpermission = env->NewStringUTF( permission_str );
 
             env->SetObjectArrayElement( jpermissions, jpermissionIterator++, jpermission );
+
+            env->DeleteLocalRef( jpermission );
         }
 
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_performLogin, jpermissions );
+
+        env->DeleteLocalRef( jpermissions );
 
         return (bool)jReturnValue;
     }

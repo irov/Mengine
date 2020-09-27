@@ -1644,7 +1644,7 @@ namespace Mengine
             return false;
         }
 
-        *_cacheText = font->prepareText( fmt.c_str(), fmt.size() );
+        font->prepareText( fmt.c_str(), fmt.size(), _cacheText );
 
         return true;
     }

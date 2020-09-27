@@ -55,7 +55,7 @@ namespace Mengine
         uint32_t index = 0;
         for( VectorObservers & observers : m_mapObserves )
         {
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             for( const ObserverDesc & desc : observers )
             {
                 LOGGER_MESSAGE( "Notification '%s' not clear"

@@ -237,10 +237,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    U32String FontBase::prepareText( const Char * _text, size_t _size )
+    void FontBase::prepareText( const Char * _text, size_t _size, U32String * const _out )
     {
-        U32String result;
-
         const Char * text_str = _text;
         size_t text_len = _size;
 
@@ -283,10 +281,8 @@ namespace Mengine
                 break;
             }
 
-            result.push_back( (Char32)code );
+            _out->push_back( (Char32)code );
         }
-
-        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::prepareGlyph( const U32String & _text, const DocumentPtr & _doc )

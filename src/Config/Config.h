@@ -98,6 +98,12 @@
 #define MENGINE_DEBUG_ARGUMENTS(...)
 #endif
 
+#ifndef MENGINE_DOCUMENT_ENABLE
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_DOCUMENT_ENABLE 1
+#   endif
+#endif
+
 #define MENGINE_CONSTEXPR constexpr
 #define MENGINE_INLINE inline
 

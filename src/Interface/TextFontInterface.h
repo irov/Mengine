@@ -87,7 +87,7 @@ namespace Mengine
 
     public:
         virtual bool validateText( const ConstString & _key, const Char * _text, size_t _size ) const = 0;
-        virtual U32String prepareText( const Char * _text, size_t _size ) = 0;
+        virtual void prepareText( const Char * _text, size_t _size, U32String * const _out ) = 0;
         virtual bool prepareGlyph( const U32String & _code, const DocumentPtr & _doc ) = 0;
 
     public:

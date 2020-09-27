@@ -165,13 +165,15 @@ namespace Mengine
 
         public:
             //////////////////////////////////////////////////////////////////////////
+            VectorString cs_args;
+            //////////////////////////////////////////////////////////////////////////
             PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _kwds );
 
                 size_t args_count = _kernel->tuple_size( _args );
 
-                VectorString cs_args;
+                cs_args.clear();
                 cs_args.reserve( args_count );
 
                 for( uint32_t it = 0; it != args_count; ++it )

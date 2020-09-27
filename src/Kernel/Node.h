@@ -17,8 +17,8 @@
 #include "Kernel/Viewport.h"
 
 #ifdef MENGINE_DEBUG
-#include <type_traits>
-#include <exception>
+#   include <type_traits>
+#   include <stdexcept>
 #endif
 
 namespace Mengine

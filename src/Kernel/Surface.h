@@ -18,7 +18,8 @@
 #include "math/uv4.h"
 
 #ifdef MENGINE_DEBUG
-#include <type_traits>
+#   include <type_traits>
+#   include <stdexcept>
 #endif
 
 namespace Mengine

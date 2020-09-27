@@ -21,7 +21,7 @@ namespace Mengine
         void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags );
 
     public:
-        RenderImageLoaderInterfacePtr getLoader() const override;
+        RenderImageLoaderInterfacePtr getLoader( const DocumentPtr & _doc ) const override;
 
     protected:
         FileGroupInterfacePtr m_fileGroup;

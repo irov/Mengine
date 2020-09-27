@@ -36,6 +36,9 @@ namespace Mengine
         bool hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * const _texture ) const override;
 
     public:
+        RenderImageLoaderInterfacePtr createDecoderRenderImageLoader( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentPtr & _doc ) override;
+
+    public:
         void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
@@ -57,6 +60,7 @@ namespace Mengine
 
         FactoryPtr m_factoryRenderTexture;
         FactoryPtr m_factoryDecoderRenderImageProvider;
+        FactoryPtr m_factoryDecoderRenderImageLoader;
 
         bool m_supportA8;
         bool m_supportL8;

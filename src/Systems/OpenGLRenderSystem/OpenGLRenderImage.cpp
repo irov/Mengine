@@ -225,7 +225,7 @@ namespace Mengine
             return true;
         }
 
-        RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader();
+        RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader( MENGINE_DOCUMENT_FACTORABLE );
 
         if( loader->load( RenderImageInterfacePtr( this ) ) == false )
         {

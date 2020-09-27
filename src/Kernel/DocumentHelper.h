@@ -5,7 +5,7 @@
 #include "Kernel/Win32Helper.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
 #   include "Kernel/Document.h"
 #   include "Kernel/BufferHelper.h"
 

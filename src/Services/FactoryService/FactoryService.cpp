@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::_finalizeService()
     {
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         if( m_memleakDetection == false )
         {
             return;

@@ -162,9 +162,12 @@ namespace Mengine
         const Movie2SlotPtr & getSlot_( uint32_t _index ) const;
 
     public:
+        typedef Lambda<void( Movie2 * _movie, uint32_t _index, const NodePtr & _node )> LambdaNodes;
+
+    public:
         const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
         bool hasSlot( const ConstString & _name ) const;
-        void visitSlots( const VisitorMovie2LayerInterfacePtr & _visitor );
+        void foreachSlots( const LambdaNodes & _lambda );
 
     protected:
         void addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot );
@@ -172,8 +175,8 @@ namespace Mengine
 
     public:
         const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
-        bool hasSocket( const ConstString & _name ) const;
-        void visitSockets( const VisitorMovie2LayerInterfacePtr & _visitor );
+        bool hasSocket( const ConstString & _name ) const;                
+        void foreachSockets( const LambdaNodes & _lambda );
 
     
     protected:
@@ -183,7 +186,7 @@ namespace Mengine
     public:
         const TextFieldPtr & findText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
-        void visitTexts( const VisitorMovie2LayerInterfacePtr & _visitor );
+        void foreachTexts( const LambdaNodes & _lambda );
 
     protected:
         void addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition );

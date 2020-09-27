@@ -5,9 +5,13 @@
 
 #include "Kernel/ServiceBase.h"
 
-#ifdef MENGINE_WINDOWS_DEBUG
-#   define MENGINE_ALLOCATOR_DEBUG
+#ifndef MENGINE_ALLOCATOR_DEBUG
+#   ifdef MENGINE_WINDOWS_DEBUG
+#       define MENGINE_ALLOCATOR_DEBUG 1
+#   endif
+#endif
 
+#if MENGINE_ALLOCATOR_DEBUG
 #   include "Config/Atomic.h"
 #endif
 

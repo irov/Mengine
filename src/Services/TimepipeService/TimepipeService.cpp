@@ -34,7 +34,7 @@ namespace Mengine
             return _desc.id == REMOVE_UNIQUE_ID;
         } ), m_timepipe.end() );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         for( const TimepipeDesc & desc : m_timepipe )
         {
             LOGGER_ERROR( "Not remove timepipe '%s'"

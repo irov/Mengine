@@ -3257,14 +3257,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::visitSlots( const VisitorMovie2LayerInterfacePtr & _visitor )
+    void Movie2::foreachSlots( const LambdaNodes & _lambda )
     {
         for( const HashtableSlots::value_type & value : m_slots )
         {
             uint32_t index = value.key;
             const Movie2SlotPtr & node = value.element;
 
-            _visitor->visitMovieLayer( this, index, node );
+            _lambda( this, index, node );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3314,14 +3314,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::visitSockets( const VisitorMovie2LayerInterfacePtr & _visitor )
+    void Movie2::foreachSockets( const LambdaNodes & _lambda )
     {
         for( const HashtableSockets::value_type & value : m_sockets )
         {
             uint32_t key = value.key;
             const HotSpotPolygonPtr & hotspot = value.element;
 
-            _visitor->visitMovieLayer( this, key, hotspot );
+            _lambda( this, key, hotspot );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3371,14 +3371,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::visitTexts( const VisitorMovie2LayerInterfacePtr & _visitor )
+    void Movie2::foreachTexts( const LambdaNodes & _lambda )
     {
         for( const HashtableTexts::value_type & value : m_texts )
         {
             uint32_t index = value.key;
             const TextFieldPtr & node = value.element;
 
-            _visitor->visitMovieLayer( this, index, node );
+            _lambda( this, index, node );
         }
     }
     //////////////////////////////////////////////////////////////////////////

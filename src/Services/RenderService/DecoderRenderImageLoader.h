@@ -35,6 +35,6 @@ namespace Mengine
         uint32_t m_codecFlags;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DecoderRenderImageLoader> DecoderRenderImageLoaderPtr;
+    typedef IntrusivePtr<DecoderRenderImageLoader, RenderImageLoaderInterface> DecoderRenderImageLoaderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

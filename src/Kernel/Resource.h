@@ -17,8 +17,8 @@
 #include "Kernel/Tags.h"
 
 #ifdef MENGINE_DEBUG
-#include <type_traits>
-#include <exception>
+#   include <type_traits>
+#   include <stdexcept>
 #endif
 
 namespace Mengine

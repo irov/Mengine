@@ -62,4 +62,5 @@ namespace Mengine
     {
         DXCALL( _pD3DDevice, SetVertexShader, (m_shader) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

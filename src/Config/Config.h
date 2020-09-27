@@ -141,6 +141,12 @@
 #   endif
 #endif
 
+#ifdef MENGINE_WINDOWS_DEBUG
+#define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (X)
+#else
+#define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (Y)
+#endif
+
 #ifndef MENGINE_ASSERTION_DEBUG
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_ASSERTION_DEBUG

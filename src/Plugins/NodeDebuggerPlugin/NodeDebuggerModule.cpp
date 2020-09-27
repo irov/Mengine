@@ -102,14 +102,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION );
 
-        m_scene = nullptr;
-
-        if( m_socket != nullptr )
-        {
-            m_socket->disconnect();
-            m_socket = nullptr;
-        }
-
         if( m_threadJob != nullptr )
         {
             m_threadJob->removeWorker( m_workerId );
@@ -122,6 +114,14 @@ namespace Mengine
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ) );
+
+        m_scene = nullptr;
+
+        if( m_socket != nullptr )
+        {
+            m_socket->disconnect();
+            m_socket = nullptr;
+        }
 
         m_dataMutex = nullptr;
 
@@ -200,8 +200,8 @@ namespace Mengine
                 m_dataMutex->unlock();
 
                 // now check if we received something (100 ms)
-                const bool haveSomeData = m_socket->waitForData( 100u );
-                if( haveSomeData )
+                bool haveSomeData = m_socket->waitForData( 100u );
+                if( haveSomeData == true )
                 {
                     ThreadMutexScope mutexLock( m_dataMutex );
 

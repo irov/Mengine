@@ -26,7 +26,7 @@ namespace Mengine
         : m_verboseLevel( LM_ERROR )
         , m_verboseFlag( 0 )
         , m_silent( false )
-        , m_historically( MENGINE_PUBLISH_VALUE( false, true ) )
+        , m_historically( MENGINE_WINDOWS_DEBUG_VALUE( true, false ) )
     {
         for( uint32_t i = 0; i != __LM_MAX__; ++i )
         {

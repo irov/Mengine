@@ -571,14 +571,14 @@ namespace Mengine
                 }break;
             case MAGIC_VERTEX_FORMAT_POSITION:
                 {
-                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, offsetof( RenderVertex2D, position ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
+                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, MENGINE_OFFSETOF( RenderVertex2D, position ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
                     {
                         return false;
                     }
                 }break;
             case MAGIC_VERTEX_FORMAT_COLOR:
                 {
-                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, offsetof( RenderVertex2D, color ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
+                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, MENGINE_OFFSETOF( RenderVertex2D, color ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
                     {
                         return false;
                     }
@@ -590,7 +590,7 @@ namespace Mengine
                         return false;
                     }
 
-                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * array_info.index, sizeof( RenderVertex2D ) ) == false )
+                    if( Magic_SetRenderArrayData( _flush->context, i, _vertices, MENGINE_OFFSETOF( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * array_info.index, sizeof( RenderVertex2D ) ) == false )
                     {
                         return false;
                     }

@@ -34,6 +34,10 @@ namespace Mengine
         ~DazzleEffect() override;
 
     public:
+        void setDazzleService( const dz_service_t * _service );
+        const dz_service_t * getDazzleService() const;
+
+    public:
         bool _play( uint32_t _enumerator, float _time ) override;
         bool _restart( uint32_t _enumerator, float _time ) override;
         void _pause( uint32_t _enumerator ) override;
@@ -61,8 +65,23 @@ namespace Mengine
         void _updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const override;
 
     protected:
+        void updateVertexColor_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const;
+        void updateVertexWM_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const;
+
+    protected:
         ResourceDazzleEffectPtr m_resourceDazzleEffect;
 
+        const dz_service_t * m_service;
+        
         dz_instance_t * m_instance;
+
+        mutable RenderVertex2D * m_renderVertices;
+        mutable uint16_t m_renderVertexCount;
+
+        mutable RenderIndex * m_renderIndicies;
+        mutable uint16_t m_renderIndexCount;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DazzleEffect, Node> DazzleEffectPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

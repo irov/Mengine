@@ -436,12 +436,12 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const mt::vec3f & pos = _vertices[it].position;
+            RenderVertex2D & r = _vertices[it];
 
             mt::vec3f wm_pos;
-            mt::mul_v3_v3_m4( wm_pos, pos, wm );
+            mt::mul_v3_v3_m4( wm_pos, r.position, wm );
 
-            _vertices[it].position = wm_pos;
+            r.position = wm_pos;
         }
     }
     //////////////////////////////////////////////////////////////////////////

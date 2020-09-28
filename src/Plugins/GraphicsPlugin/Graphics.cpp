@@ -320,11 +320,11 @@ namespace Mengine
         VectorRenderVertex2D::value_type * vertices = m_renderVertex2D.data();
 
         mesh.positions_buffer = vertices;
-        mesh.positions_offset = offsetof( VectorRenderVertex2D::value_type, position );
+        mesh.positions_offset = MENGINE_OFFSETOF( VectorRenderVertex2D::value_type, position );
         mesh.positions_stride = sizeof( VectorRenderVertex2D::value_type );
 
         mesh.colors_buffer = vertices;
-        mesh.colors_offset = offsetof( VectorRenderVertex2D::value_type, color );
+        mesh.colors_offset = MENGINE_OFFSETOF( VectorRenderVertex2D::value_type, color );
         mesh.colors_stride = sizeof( VectorRenderVertex2D::value_type );
 
         mesh.uv_buffer = GP_NULLPTR;

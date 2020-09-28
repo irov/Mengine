@@ -10,6 +10,8 @@ src
 
     DazzleEffect.cpp
     DazzleEffect.h
+    DazzleEffectPrototypeGenerator.cpp
+    DazzleEffectPrototypeGenerator.h
     ResourceDazzleEffect.cpp
     ResourceDazzleEffect.h
     DataflowDZZ.cpp

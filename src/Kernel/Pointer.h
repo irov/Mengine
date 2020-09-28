@@ -214,7 +214,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    class PointerT<IntrusivePtr<T> >
+    class PointerT<IntrusivePtr<T>>
     {
     public:
         PointerT( std::nullptr_t )

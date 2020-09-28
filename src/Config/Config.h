@@ -12,6 +12,10 @@
 #define MENGINE_PATH_WDELIM L'/'
 #endif
 
+#ifndef MENGINE_OFFSETOF
+#define MENGINE_OFFSETOF(T, V) offsetof(T, V)
+#endif
+
 #ifndef MENGINE_MAX
 #define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif

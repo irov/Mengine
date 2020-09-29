@@ -38,8 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::_initializeService()
     {
-        LOGGER_INFO( "Initializing Account manager..."
-        );
+        LOGGER_INFO( "Initializing Account manager..." );
 
         m_factoryAccounts = Helper::makeFactoryPool<Account, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -627,8 +626,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_INFO( "invalid set any accounts"
-            );
+            LOGGER_INFO( "invalid set any accounts" );
         }
 
         m_invalidateAccounts = true;

@@ -46,7 +46,7 @@ namespace Mengine
         uint32_t relativeOffset;
     };
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_get_uint32( uint8_t * const _buff )
+    static uint32_t s_get_uint32( const uint8_t * _buff )
     {
         uint32_t x;
         x = (uint32_t)_buff[0];
@@ -353,7 +353,7 @@ namespace Mengine
 
         uInt total = _items * _size;
 
-        void * p = Helper::allocateMemory( total, "FileGroupZip" );
+        void * p = Helper::allocateMemory( total, "zip" );
 
         return p;
     }
@@ -362,7 +362,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _opaque );
 
-        Helper::deallocateMemory( _address, "FileGroupZip" );
+        Helper::deallocateMemory( _address, "zip" );
     }
     //////////////////////////////////////////////////////////////////////////
     static bool s_inflate_memory( void * const _buffer, size_t _capacity, z_const void * _src, size_t _size )
@@ -370,12 +370,9 @@ namespace Mengine
         z_stream zs;
         zs.next_in = static_cast<z_const Bytef *>(_src);
         zs.avail_in = (uInt)_size;
-        /* Check for source > 64K on 16-bit machine: */
-        //if ((uLong)stream.avail_in != sourceLen) return Z_BUF_ERROR;
 
         zs.next_out = static_cast<Bytef *>(_buffer);
         zs.avail_out = (uInt)_capacity;
-        //if ((uLong)stream.avail_out != *destLen) return Z_BUF_ERROR;
 
         zs.zalloc = &s_alloc_func;
         zs.zfree = &s_free_func;

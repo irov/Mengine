@@ -117,6 +117,10 @@ PLUGIN_EXPORT( ExternalBootstrapper );
 PLUGIN_EXPORT( Astralax );
 #endif
 
+#ifdef MENGINE_PLUGIN_DAZZLE_STATIC
+PLUGIN_EXPORT( Dazzle );
+#endif
+
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC
 PLUGIN_EXPORT( BitmapFont );
 #endif
@@ -478,7 +482,7 @@ namespace Mengine
 
         FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, (FilePath::size_type)userPathLen );
 
-        LOGGER_MESSAGE( "mount user file group: %s"
+        LOGGER_MESSAGE_RELEASE( "User Folder: %s"
             , cs_userPath.c_str()
         );
 
@@ -797,6 +801,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
         MENGINE_ADD_PLUGIN( Astralax, "initialize Plugin Astralax...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_DAZZLE_STATIC
+        MENGINE_ADD_PLUGIN( Dazzle, "initialize Plugin Dazzle...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC

@@ -4,27 +4,29 @@
 #include "DazzleDataInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 
 #include "dazzle/dazzle.hpp"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ResourceDazzleEffect
+    class ResourceDazzleEffectCustom
         : public Resource
-        , private BaseContent
-        , public UnknownResourceDazzleEffectInterface
+        , private DazzleDataInterface
+        , public UnknownResourceDazzleEffectCustomInterface
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
-        DECLARE_CONTENTABLE();
 
     public:
-        ResourceDazzleEffect();
-        ~ResourceDazzleEffect() override;
+        ResourceDazzleEffectCustom();
+        ~ResourceDazzleEffectCustom() override;
 
     public:
+        void setDazzleEffect( const dz_effect_t * _effect ) override;
+        const dz_effect_t * getDazzleEffect() const override;
+
+    protected:
         DataInterfacePtr getData() const override;
 
     protected:
@@ -32,9 +34,9 @@ namespace Mengine
         void _release() override;
 
     protected:
-        DazzleDataInterfacePtr m_data;
+        const dz_effect_t * m_effect;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveResourcePtr<ResourceDazzleEffect> ResourceDazzleEffectPtr;
+    typedef IntrusiveResourcePtr<ResourceDazzleEffectCustom> ResourceDazzleEffectJSONPtr;
     //////////////////////////////////////////////////////////////////////////
 }

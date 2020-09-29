@@ -172,21 +172,21 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "Driver: %s", AdID.Driver );
-        LOGGER_MESSAGE_RELEASE( "Description: %s", AdID.Description );
-        LOGGER_MESSAGE_RELEASE( "DeviceName: %s", AdID.DeviceName );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter Driver: %s", AdID.Driver );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter Description: %s", AdID.Description );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceName: %s", AdID.DeviceName );
 
-        LOGGER_MESSAGE_RELEASE( "Version: %hu.%hu.%hu.%hu"
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
             , HIWORD( AdID.DriverVersion.HighPart )
             , LOWORD( AdID.DriverVersion.HighPart )
             , HIWORD( AdID.DriverVersion.LowPart )
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_MESSAGE_RELEASE( "VendorId: %lu", AdID.VendorId );
-        LOGGER_MESSAGE_RELEASE( "DeviceId: %lu", AdID.DeviceId );
-        LOGGER_MESSAGE_RELEASE( "SubSysId: %lu", AdID.SubSysId );
-        LOGGER_MESSAGE_RELEASE( "Revision: %lu", AdID.Revision );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter VendorId: %lu", AdID.VendorId );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceId: %lu", AdID.DeviceId );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdID.Revision );
 
         IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_caps) )
         {
@@ -431,12 +431,12 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "VertexShaderVersion [%lu] [%s]"
+        LOGGER_MESSAGE_RELEASE( "Vertex Shader Version [%lu] [%s]"
             , caps.VertexShaderVersion
             , caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
         );
 
-        LOGGER_MESSAGE_RELEASE( "PixelShaderVersion [%lu] [%s] [%s]"
+        LOGGER_MESSAGE_RELEASE( "Pixel Shader Version [%lu] [%s] [%s]"
             , caps.PixelShaderVersion
             , caps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
             , caps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"

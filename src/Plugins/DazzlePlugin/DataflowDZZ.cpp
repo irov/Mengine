@@ -33,55 +33,55 @@ namespace Mengine
         return DZ_SUCCESSFUL;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataflowDDZ::DataflowDDZ()
+    DataflowDZZ::DataflowDZZ()
         : m_service( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DataflowDDZ::~DataflowDDZ()
+    DataflowDZZ::~DataflowDZZ()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataflowDDZ::setDazzleService( const dz_service_t * _service )
+    void DataflowDZZ::setDazzleService( const dz_service_t * _service )
     {
         m_service = _service;
     }
     //////////////////////////////////////////////////////////////////////////
-    const dz_service_t * DataflowDDZ::getDazzleService() const
+    const dz_service_t * DataflowDZZ::getDazzleService() const
     {
         return m_service;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataflowDDZ::setArchivator( const ArchivatorInterfacePtr & _archivator )
+    void DataflowDZZ::setArchivator( const ArchivatorInterfacePtr & _archivator )
     {
         m_archivator = _archivator;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ArchivatorInterfacePtr & DataflowDDZ::getArchivator() const
+    const ArchivatorInterfacePtr & DataflowDZZ::getArchivator() const
     {
         return m_archivator;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowDDZ::initialize()
+    bool DataflowDZZ::initialize()
     {
         m_factoryDazzleData = Helper::makeFactoryPool<DazzleData, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataflowDDZ::finalize()
+    void DataflowDZZ::finalize()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDazzleData );
 
         m_factoryDazzleData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowDDZ::isThreadFlow() const
+    bool DataflowDZZ::isThreadFlow() const
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowDDZ::create( const DocumentPtr & _doc )
+    DataInterfacePtr DataflowDZZ::create( const DocumentPtr & _doc )
     {
         DazzleDataPtr data = m_factoryDazzleData->createObject( _doc );
 
@@ -90,7 +90,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DataflowDDZ::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    MemoryInterfacePtr DataflowDZZ::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), _doc );
 
@@ -99,7 +99,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowDDZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
+    bool DataflowDZZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );

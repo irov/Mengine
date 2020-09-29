@@ -29,6 +29,16 @@ namespace Mengine
         return m_service;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DazzleEffect::setResourceDazzle( const ResourcePtr & _resourceDazzleEffect )
+    {
+        m_resourceDazzleEffect = _resourceDazzleEffect;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourcePtr & DazzleEffect::getResourceDazzle() const
+    {
+        return m_resourceDazzleEffect;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_play( uint32_t _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
@@ -93,7 +103,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_deactivate()
     {
-
     }
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_compile()
@@ -112,7 +121,9 @@ namespace Mengine
             return false;
         }
 
-        const DazzleDataInterfacePtr & data = m_resourceDazzleEffect->getData();
+        UnknownResourceDazzleEffectInterface * unknownResourceDazzleEffect = m_resourceDazzleEffect->getUnknown();
+
+        DazzleDataInterfacePtr data = unknownResourceDazzleEffect->getData();
 
         if( data->acquire() == false )
         {
@@ -142,7 +153,9 @@ namespace Mengine
         dz_instance_destroy( m_service, m_instance );
         m_instance = nullptr;
 
-        const DazzleDataInterfacePtr & data = m_resourceDazzleEffect->getData();
+        UnknownResourceDazzleEffectInterface * unknownResourceDazzleEffect = m_resourceDazzleEffect->getUnknown();
+
+        DazzleDataInterfacePtr data = unknownResourceDazzleEffect->getData();
         data->release();
 
         m_resourceDazzleEffect->release();

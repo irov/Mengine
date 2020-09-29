@@ -97,13 +97,14 @@ namespace Mengine
 
         if( currentPathLen == 0 )
         {
-            LOGGER_ERROR( "failed to get current directory"
-            );
+            LOGGER_ERROR( "failed to get current directory" );
 
             return false;
         }
 
-        LOGGER_MESSAGE( "Current Path '%s'", currentPath );
+        LOGGER_MESSAGE_RELEASE( "Current Path: %s"
+            , currentPath 
+        );
 
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
@@ -297,8 +298,7 @@ namespace Mengine
         if( TEXT_SERVICE()
             ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {
-            LOGGER_INFO( "Application not setup title 'APPLICATION_TITLE'"
-            );
+            LOGGER_INFO( "Application not setup title 'APPLICATION_TITLE'" );
         }
         else
         {   

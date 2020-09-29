@@ -38,6 +38,10 @@ namespace Mengine
         const dz_service_t * getDazzleService() const;
 
     public:
+        void setResourceDazzle( const ResourcePtr & _resourceDazzleEffect ) override;
+        const ResourcePtr & getResourceDazzle() const override;
+
+    public:
         bool _play( uint32_t _enumerator, float _time ) override;
         bool _restart( uint32_t _enumerator, float _time ) override;
         void _pause( uint32_t _enumerator ) override;
@@ -69,7 +73,7 @@ namespace Mengine
         void updateVertexWM_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const;
 
     protected:
-        ResourceDazzleEffectPtr m_resourceDazzleEffect;
+        ResourcePtr m_resourceDazzleEffect;
 
         const dz_service_t * m_service;
         

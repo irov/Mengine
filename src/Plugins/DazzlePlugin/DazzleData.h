@@ -22,7 +22,7 @@ namespace Mengine
 
     public:
         void setDazzleService( const dz_service_t * _service );
-        const dz_service_t * getDazzleService() const override;
+        const dz_service_t * getDazzleService() const;
 
     public:
         void setDazzleEffect( const dz_effect_t * _effect );

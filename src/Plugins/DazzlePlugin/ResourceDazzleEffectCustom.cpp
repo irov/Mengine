@@ -1,0 +1,42 @@
+#include "ResourceDazzleEffectCustom.h"
+
+#include "Kernel/Logger.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    ResourceDazzleEffectCustom::ResourceDazzleEffectCustom()
+        : m_effect( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ResourceDazzleEffectCustom::~ResourceDazzleEffectCustom()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceDazzleEffectCustom::setDazzleEffect( const dz_effect_t * _effect )
+    {
+        m_effect = _effect;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const dz_effect_t * ResourceDazzleEffectCustom::getDazzleEffect() const
+    {
+        return m_effect;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    DataInterfacePtr ResourceDazzleEffectCustom::getData() const
+    {
+        return DataInterfacePtr::from( (const DazzleDataInterface *)this );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceDazzleEffectCustom::_compile()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceDazzleEffectCustom::_release()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

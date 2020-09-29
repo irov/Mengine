@@ -331,7 +331,7 @@ namespace Mengine
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
 
-        LOGGER_MESSAGE_RELEASE( "Date: %02u.%02u.%u, %02u:%02u:%02u"
+        LOGGER_MESSAGE_RELEASE( "Start Date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
             , dateTime.month
             , dateTime.year
@@ -341,13 +341,15 @@ namespace Mengine
         );
 
         MEMORYSTATUSEX mem_st;
-        if( GlobalMemoryStatusEx( &mem_st ) == TRUE )
+        mem_st.dwLength = sizeof( mem_st );
+
+        if( ::GlobalMemoryStatusEx( &mem_st ) == TRUE )
         {
-            LOGGER_MESSAGE_RELEASE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
-                , (uint32_t)(mem_st.ullTotalPhys / 1024UL)
-                , (uint32_t)(mem_st.ullAvailPhys / 1024UL)
-                , (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
-                , (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
+            LOGGER_MESSAGE_RELEASE( "Start Memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
+                , (uint32_t)(mem_st.ullTotalPhys / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullTotalPhys / (1024UL * 1024UL) % 1024UL)
+                , (uint32_t)(mem_st.ullAvailPhys / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullAvailPhys / (1024UL * 1024UL) % 1024UL)
+                , (uint32_t)(mem_st.ullTotalPageFile / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullTotalPageFile / (1024UL * 1024UL) % 1024UL)
+                , (uint32_t)(mem_st.ullAvailPageFile / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullAvailPageFile / (1024UL * 1024UL) % 1024UL)
             );
         }
 

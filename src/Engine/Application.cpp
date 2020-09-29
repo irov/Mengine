@@ -304,7 +304,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
+            LOGGER_MESSAGE_RELEASE( "Build Commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
 
         if( HAS_OPTION( "resourcecommit" ) == true )
@@ -314,7 +314,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "resource commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+            LOGGER_MESSAGE_RELEASE( "Content Commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
         }
 
         if( HAS_OPTION( "buildversion" ) == true )
@@ -324,7 +324,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "build version: %s", MENGINE_BUILD_VERSION );
+            LOGGER_MESSAGE_RELEASE( "Build Version: %s", MENGINE_BUILD_VERSION );
         }
 
         bool fullscreen = this->getFullscreenMode();

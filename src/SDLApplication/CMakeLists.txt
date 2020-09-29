@@ -74,15 +74,15 @@ if(MENGINE_TARGET_IOS AND MENGINE_BUILD_ONLY_EXECUTABLE_MODULE)
 endif()
 
 if(MENGINE_TARGET_MACOS)
-    set(myApp_ICON "$ENV{HOME}/Desktop/deploy-mac-icons/icon.icns")
-    set_source_files_properties(${myApp_ICON} PROPERTIES 
+    set(myApp_ICONS "$ENV{HOME}/Desktop/deploy-mac-icons.icns")
+    set_source_files_properties(${myApp_ICONS} PROPERTIES 
         MACOSX_PACKAGE_LOCATION "Resources")
 
     if(MENGINE_PLUGIN_ASTRALAX)
     	set(myApp_ASTRALAX "$ENV{HOME}/Desktop/magic3d.dylib")
     	set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
 			MACOSX_PACKAGE_LOCATION "MacOS")
-	else()
+    else()
         set(myApp_ASTRALAX)
     endif()
 
@@ -111,7 +111,7 @@ if(MENGINE_TARGET_MACOS)
     string(TIMESTAMP MACOSX_FRAMEWORK_BUNDLE_VERSION "%Y.%m.%d.%H%M%S")
     string(TIMESTAMP MACOSX_FRAMEWORK_SHORT_VERSION_STRING "%Y.%m.%d")
 	
-    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${myApp_DATAS} ${myApp_ICON} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES} )
+    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${myApp_DATAS} ${myApp_ICONS} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES} )
 
 	SET_XCODE_PROPERTY( ${PROJECT_NAME} OTHER_CODE_SIGN_FLAGS "--deep" )
     

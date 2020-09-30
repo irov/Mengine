@@ -55,6 +55,9 @@ namespace Mengine
         const ConstString & getTotalTextId() const;
 
     public:
+        void setText( const String & _text );
+
+    public:
         bool calcText( String * const _text ) const;
 
     public:
@@ -209,6 +212,8 @@ namespace Mengine
     protected:
         ConstString m_textId;
         ConstString m_aliasEnvironment;
+
+        String m_text;
 
         mutable TextEntryInterfacePtr m_totalTextEntry;
         mutable VectorString m_textFormatArgs;

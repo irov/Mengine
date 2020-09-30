@@ -73,7 +73,7 @@ namespace Mengine
         m_poolHolderStringMemory.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr )
+    void StringizeService::stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash, ConstString * const _cstr )
     {
         MENGINE_ASSERTION_FATAL( _str != nullptr );
 
@@ -101,7 +101,7 @@ namespace Mengine
         *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr )
+    void StringizeService::stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash, ConstString * const _cstr )
     {
         if( _size == 0 )
         {
@@ -150,7 +150,7 @@ namespace Mengine
         *_cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString * const _cstr )
+    void StringizeService::stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash, ConstString * const _cstr )
     {
         if( _size == 0 )
         {
@@ -312,7 +312,7 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash )
+    void StringizeService::addHolder_( ConstStringHolder * _holder, ConstStringHolder::hash_type _hash )
     {
         IntrusiveListConstStringHolder & list = this->getList_( _hash );
 

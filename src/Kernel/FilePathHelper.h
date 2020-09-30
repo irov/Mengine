@@ -18,13 +18,42 @@ namespace Mengine
         FilePath stringizeFilePathFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
         FilePath stringizeFileHashUnique( const Char * _value, FilePath::size_type _size, FilePath::hash_type _hash );
         //////////////////////////////////////////////////////////////////////////
+        namespace Detail
+        {
+            //////////////////////////////////////////////////////////////////////////
+            template<class T>
+            struct FilePathHelper
+            {
+                FilePath operator() ( const T & _value )
+                {
+                    const FilePath::value_type * value_str = _value.c_str();
+                    FilePath::size_type value_size = _value.size();
+
+                    FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
+
+                    return fp;
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            template<size_t N>
+            struct FilePathHelper<Char[N]>
+            {
+                FilePath operator() ( const Char * _value )
+                {
+                    const FilePath::value_type * value_str = _value;
+                    FilePath::size_type value_size = N;
+
+                    FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
+
+                    return fp;
+                }
+            };
+        }
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         FilePath stringizeFilePath( const T & _value )
         {
-            const Char * value_str = _value.c_str();
-            String::size_type value_size = _value.size();
-
-            FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
+            FilePath fp = Detail::FilePathHelper<T>()(_value);
 
             return fp;
         }
@@ -32,8 +61,8 @@ namespace Mengine
         template<class T>
         FilePath stringizeFilePathLocal( const T & _value )
         {
-            const Char * value_str = _value.c_str();
-            PathString::size_type value_size = _value.size();
+            const FilePath::value_type * value_str = _value.c_str();
+            FilePath::size_type value_size = _value.size();
 
             FilePath fp = Helper::stringizeFilePathLocal( value_str, value_size );
 

@@ -509,7 +509,6 @@ namespace Mengine
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
                     m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &text_key );
-                    //text_key = Helper::stringizeString( str_value, (size_t)-1 );
                 }
             }
 

@@ -3229,7 +3229,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getUserName( Char * const _userName ) const
     {
-        WChar unicode_userName[UNLEN + 1] = {0};
+        WChar unicode_userName[UNLEN + 1] = {L'\0'};
         DWORD unicode_userNameLen = UNLEN + 1;
         if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
         {

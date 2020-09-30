@@ -59,16 +59,6 @@ namespace Mengine
             return constString;
         }
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeString( const String & _value )
-        {
-            const String::value_type * value_str = _value.c_str();
-            String::size_type value_size = _value.size();
-
-            ConstString constString = Helper::stringizeStringSize( value_str, (ConstStringHolder::size_type)value_size );
-
-            return constString;
-        }
-        //////////////////////////////////////////////////////////////////////////
         ConstString stringizeStringLocal( const Char * _value, ConstStringHolder::size_type _size )
         {
             ConstString constString;

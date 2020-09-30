@@ -251,7 +251,7 @@ namespace Mengine
 
         sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
 
-        Char companyName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {0};
+        Char companyName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
 
@@ -261,7 +261,7 @@ namespace Mengine
 
         sentry_set_extra( "Company", sentry_value_new_string( companyName ) );
 
-        Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {0};
+        Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
@@ -271,7 +271,7 @@ namespace Mengine
 
         sentry_set_extra( "Project", sentry_value_new_string( projectName ) );
 
-        Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {0};
+        Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserName( userName );
 
@@ -284,7 +284,7 @@ namespace Mengine
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
 
-        Char projectVersionString[32] = {0};
+        Char projectVersionString[32] = {'\0'};
         if( Helper::stringalized( projectVersion, projectVersionString, 32 ) == false )
         {
             LOGGER_MESSAGE( "Sentry set extra [Version: %s]"

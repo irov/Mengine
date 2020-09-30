@@ -2,10 +2,7 @@
 
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/PathString.h"
 #include "Kernel/HashHelper.h"
-#include "Kernel/String.h"
-#include "Kernel/Vector.h"
 
 #include "Config/Typedef.h"
 
@@ -16,13 +13,32 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePath( const Char * _value );
-        FilePath stringizeFilePath( const String & _filePath );
-        FilePath stringizeFilePath( const PathString & _filePath );
         FilePath stringizeFilePathSize( const Char * _value, FilePath::size_type _size );
         FilePath stringizeFilePathLocal( const Char * _value, FilePath::size_type _size );
-        FilePath stringizeFilePathLocal( const PathString & _filePath );
         FilePath stringizeFilePathFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
         FilePath stringizeFileHashUnique( const Char * _value, FilePath::size_type _size, FilePath::hash_type _hash );
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        FilePath stringizeFilePath( const T & _value )
+        {
+            const Char * value_str = _value.c_str();
+            String::size_type value_size = _value.size();
+
+            FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
+
+            return fp;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        FilePath stringizeFilePathLocal( const T & _value )
+        {
+            const Char * value_str = _value.c_str();
+            PathString::size_type value_size = _value.size();
+
+            FilePath fp = Helper::stringizeFilePathLocal( value_str, value_size );
+
+            return fp;
+        }
         //////////////////////////////////////////////////////////////////////////
         ConstString getFilePathExt( const FilePath & _filePath );
         //////////////////////////////////////////////////////////////////////////

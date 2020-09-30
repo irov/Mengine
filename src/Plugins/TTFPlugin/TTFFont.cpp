@@ -126,7 +126,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::initialize()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, this, &TTFFont::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TTFFont::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

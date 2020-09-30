@@ -31,7 +31,7 @@ namespace Mengine
         m_maxAtlasPow = CONFIG_VALUE( "TTF", "MaxAtlasPow", 16U );
         m_maxAtlasWidth = CONFIG_VALUE( "TTF", "MaxAtlasWidth", 2048U );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, this, &TTFAtlasService::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TTFAtlasService::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -1231,7 +1231,7 @@ namespace Mengine
     {
         if( m_debugFileOpen == true )
         {
-            NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_, MENGINE_DOCUMENT_FACTORABLE );
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_OPEN_FILE, &Application::notifyDebugOpenFile_, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {

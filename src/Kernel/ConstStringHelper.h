@@ -23,7 +23,7 @@ namespace Mengine
             template<class T>
             struct StringizeStringHelper
             {
-                ConstString operator() ( const T & _value )
+                ConstString operator() ( const T & _value ) const
                 {
                     const ConstString::value_type * value_str = _value.c_str();
                     ConstString::size_type value_size = _value.size();
@@ -37,7 +37,7 @@ namespace Mengine
             template<size_t N>
             struct StringizeStringHelper<Char[N]>
             {
-                ConstString operator() ( const Char * _value )
+                ConstString operator() ( const Char * _value ) const
                 {
                     const ConstString::value_type * value_str = _value;
                     ConstString::size_type value_size = N;

@@ -33,7 +33,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_MESSAGE( "resource '%s' group '%s' can't open sound file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't open sound file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -50,7 +50,7 @@ namespace Mengine
 
         if( decoder == nullptr )
         {
-            LOGGER_MESSAGE( "resource '%s' group '%s' can't create sound decoder for file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't create sound decoder for file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -62,7 +62,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_MESSAGE( "resource '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -78,7 +78,7 @@ namespace Mengine
 
         if( (dataInfo->length <= limitMinimalStreamSoundDuration && limitMinimalStreamSoundDuration != 0.f) && streamable == true )
         {
-            LOGGER_MESSAGE( "resource '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
+            LOGGER_ERROR( "resource '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
@@ -108,7 +108,7 @@ namespace Mengine
 
         if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && streamable == false )
         {
-            LOGGER_MESSAGE( "resource '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+            LOGGER_ERROR( "resource '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
@@ -127,7 +127,7 @@ namespace Mengine
 
         if( soundBuffer == nullptr )
         {
-            LOGGER_MESSAGE( "resource '%s' group '%s' can't create buffer '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't create buffer '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()

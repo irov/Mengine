@@ -77,7 +77,7 @@ namespace Mengine
         String full_output = folderPath.c_str();
         full_output += m_options.outputFilePath.c_str();
 
-        Char buffer[2048] = {0};
+        Char buffer[2048] = {'\0'};
         MENGINE_SPRINTF( buffer, "/nologo /T vs_1_1 /O3 /Fo \"%s\" \"%s\""
             , full_output.c_str()
             , full_input.c_str()

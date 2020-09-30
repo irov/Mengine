@@ -476,7 +476,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::mountUserFileGroup_()
     {
-        Char userPath[MENGINE_MAX_PATH] = {0};
+        Char userPath[MENGINE_MAX_PATH] = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 

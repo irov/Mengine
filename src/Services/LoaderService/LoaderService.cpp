@@ -15,9 +15,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/AllocatorHelper.h"
-
-#include "metabuf/Metadata.hpp"
-#include "Metacode/Metacode.h"
+#include "Kernel/PathString.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -27,6 +25,8 @@
 #endif
 
 #include "metabuf/Memory.hpp"
+#include "metabuf/Metadata.hpp"
+#include "Metacode/Metacode.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( LoaderService, Mengine::LoaderService );

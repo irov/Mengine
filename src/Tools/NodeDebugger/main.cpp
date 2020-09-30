@@ -20,7 +20,7 @@ static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
 {
     Mengine::String result;
 
-    int inSize = static_cast<int>( wideStr.size() );
+    int inSize = static_cast<int>(wideStr.size());
     int outSize = ::WideCharToMultiByte( CP_UTF8, 0, wideStr.c_str(), inSize, nullptr, 0, nullptr, nullptr );
 
     if( outSize > 0 )
@@ -40,52 +40,54 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     stdex_allocator_initialize();
 
-    Mengine::ServiceProviderInterface * serviceProvider;
-    if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
     {
-        return false;
-    }
-
-    SERVICE_PROVIDER_SETUP( serviceProvider );
-
-    SERVICE_CREATE( AllocatorService, nullptr );
-    SERVICE_CREATE( DocumentService, nullptr );
-
-    {
-        Mengine::String address;
-        uint16_t port = 0;
-
-        Mengine::WString cmdLine( lpCmdLine );
-        if( !cmdLine.empty() )
+        Mengine::ServiceProviderInterface * serviceProvider;
+        if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
         {
-            Mengine::WString::size_type columnPos = cmdLine.find( TEXT( ':' ) );
-            if( Mengine::WString::npos != columnPos )
-            {
-                Mengine::WString wideAddress = cmdLine.substr( 0, columnPos );
-                Mengine::WString widePort = cmdLine.substr( columnPos + 1 );
+            return false;
+        }
 
-                Mengine::WChar * ptr;
-                port = static_cast<uint16_t>(::wcstol( widePort.c_str(), &ptr, 10 ) & 0xFFFF);
-                address = WideToUtf8( wideAddress );
+        SERVICE_PROVIDER_SETUP( serviceProvider );
+
+        SERVICE_CREATE( AllocatorService, nullptr );
+        SERVICE_CREATE( DocumentService, nullptr );
+
+        {
+            Mengine::String address;
+            uint16_t port = 0;
+
+            Mengine::WString cmdLine( lpCmdLine );
+            if( !cmdLine.empty() )
+            {
+                Mengine::WString::size_type columnPos = cmdLine.find( TEXT( ':' ) );
+                if( Mengine::WString::npos != columnPos )
+                {
+                    Mengine::WString wideAddress = cmdLine.substr( 0, columnPos );
+                    Mengine::WString widePort = cmdLine.substr( columnPos + 1 );
+
+                    Mengine::WChar * ptr;
+                    port = static_cast<uint16_t>(::wcstol( widePort.c_str(), &ptr, 10 ) & 0xFFFF);
+                    address = WideToUtf8( wideAddress );
+                }
+            }
+
+            Mengine::NodeDebuggerApp app;
+
+            if( app.Initialize( address, port ) )
+            {
+                app.Loop();
+                app.Shutdown();
             }
         }
 
-        Mengine::NodeDebuggerApp app;
+        SERVICE_FINALIZE( DocumentService );
+        SERVICE_DESTROY( DocumentService );
 
-        if( app.Initialize( address, port ) )
-        {
-            app.Loop();
-            app.Shutdown();
-        }
+        SERVICE_FINALIZE( AllocatorService );
+        SERVICE_DESTROY( AllocatorService );
+
+        SERVICE_PROVIDER_FINALIZE( serviceProvider );
     }
-
-    SERVICE_FINALIZE( DocumentService );
-    SERVICE_DESTROY( DocumentService );
-
-    SERVICE_FINALIZE( AllocatorService );
-    SERVICE_DESTROY( AllocatorService );
-
-    SERVICE_PROVIDER_FINALIZE( serviceProvider );
 
     stdex_allocator_finalize();
 

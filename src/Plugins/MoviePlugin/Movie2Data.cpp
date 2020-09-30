@@ -310,7 +310,7 @@ namespace Mengine
         return m_movieData;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & Movie2Data::getResource( const ae_string_t _resourceName )
+    const ResourcePtr & Movie2Data::getResource( const Char * _resourceName )
     {
         const ResourcePtr & resource = RESOURCE_SERVICE()
             ->getResourceReference( Helper::stringizeString( _resourceName ) );

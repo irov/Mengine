@@ -5,7 +5,6 @@
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
-#include "Win32AntifreezeMonitor.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
@@ -197,7 +196,6 @@ namespace Mengine
         FactoryPtr m_factoryDateTimeProviders;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
-        Win32AntifreezeMonitorPtr m_antifreezeMonitor;
 
         Win32MouseEvent m_mouseEvent;
 

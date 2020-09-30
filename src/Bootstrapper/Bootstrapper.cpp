@@ -237,6 +237,10 @@ PLUGIN_EXPORT( ImGUI );
 PLUGIN_EXPORT( CameraDebugGizmo );
 #endif
 
+#ifdef MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC
+PLUGIN_EXPORT( Win32AntifreezeMonitor );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC
 PLUGIN_EXPORT( AndroidNativeKernel );
 #endif
@@ -828,7 +832,15 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_CAMERADEBUGGIZMO
-        MENGINE_ADD_PLUGIN( CameraDebugGizmo, "initialize Plugin CameraDebugGizmo...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( CameraDebugGizmo, "initialize Plugin Camera Debug Gizmo...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_WIN32_CONSOLELOGGER_STATIC
+        MENGINE_ADD_PLUGIN( Win32ConsoleLogger, "initialize Plugin Win32 Console Logger...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC
+        MENGINE_ADD_PLUGIN( Win32AntifreezeMonitor, "initialize Plugin Win32 Antifreeze Monitor...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL_STATIC

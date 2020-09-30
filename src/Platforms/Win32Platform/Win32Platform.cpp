@@ -11,7 +11,6 @@
 
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
-#include "Win32AntifreezeMonitor.h"
 #include "Win32CriticalErrorsMonitor.h"
 
 #include "Kernel/UnicodeHelper.h"
@@ -231,13 +230,6 @@ namespace Mengine
         if( HAS_OPTION( "desktop" ) )
         {
             m_desktop = true;
-        }
-
-        bool developmentMode = Helper::isDevelopmentMode();
-
-        if( developmentMode == true )
-        {
-            m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>( MENGINE_DOCUMENT_FACTORABLE );
         }
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
@@ -542,20 +534,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()
     {
-        if( m_antifreezeMonitor != nullptr )
-        {
-            if( CONFIG_VALUE( "Platform", "AntifreezeMonitor", true ) == true )
-            {
-                if( m_antifreezeMonitor->initialize() == false )
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                m_antifreezeMonitor = nullptr;
-            }
-        }
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
         return true;
     }
@@ -577,17 +556,14 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                if( m_antifreezeMonitor != nullptr )
-                {
-                    m_antifreezeMonitor->ping();
-                }
-
                 MSG  msg;
                 while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
                 {
                     ::TranslateMessage( &msg );
                     ::DispatchMessage( &msg );
                 }
+
+                NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
 
                 if( m_sessionLock == true )
                 {
@@ -675,11 +651,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "stop platform" );
 
-        if( m_antifreezeMonitor != nullptr )
-        {
-            m_antifreezeMonitor->finalize();
-            m_antifreezeMonitor = nullptr;
-        }
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
         if( m_alreadyRunningMonitor != nullptr )
         {

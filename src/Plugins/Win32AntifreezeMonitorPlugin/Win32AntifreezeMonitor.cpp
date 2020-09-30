@@ -5,6 +5,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -83,9 +84,9 @@ namespace Mengine
 
         m_dateTimeProvider = dateTimeProvider;
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_BEGIN, this, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_END, this, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ABORT, this, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_BEGIN, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_END, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ABORT, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -139,7 +140,7 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true )
+            ->isDebuggerPresent() == true && HAS_OPTION( "antifreezemonitordebug" ) == false )
         {
             return true;
         }
@@ -169,8 +170,13 @@ namespace Mengine
         processDumpPath += str_date;
         processDumpPath += ".dmp";
 
-        PLATFORM_SERVICE()
-            ->createProcessDump( processDumpPath.c_str(), nullptr, true );
+        if( PLATFORM_SERVICE()
+            ->createProcessDump( processDumpPath.c_str(), nullptr, true ) == false )
+        {
+            LOGGER_ERROR( "Antifreeze monitor invalid create process dump '%s'"
+                , processDumpPath.c_str()
+            );
+        }
 
         bool sceneProcess = SCENE_SERVICE()
             ->isProcess();

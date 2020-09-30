@@ -36,7 +36,7 @@ namespace Mengine
             uint32_t size = m_kernel->string_size( m_value );
             int64_t hash = m_kernel->string_hash( m_value );
 
-            this->setup( data, (ConstString::size_type)size, (ConstString::hash_type)hash );
+            this->setup( data, (ConstStringHolder::size_type)size, (ConstStringHolder::hash_type)hash );
         }
         else
         {

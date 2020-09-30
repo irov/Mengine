@@ -172,11 +172,11 @@ namespace Mengine
                 MENGINE_VA_LIST_TYPE args;
                 MENGINE_VA_LIST_START( args, _format );
 
-                Char msg[2048] = { 0 };
-                int size = MENGINE_VSNPRINTF( msg, 2047, _format, args );
+                Char msg[2048] = {'\0'};
+                int32_t size = MENGINE_VSNPRINTF( msg, 2047, _format, args );
 
                 Helper::drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size, _doc );
-                
+
                 MENGINE_VA_LIST_END( args );
             }
 

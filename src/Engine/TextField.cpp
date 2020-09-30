@@ -232,7 +232,7 @@ namespace Mengine
             };
         }
 
-        uint32_t cacheFontARGB[16] = { 0 };
+        uint32_t cacheFontARGB[16] = {'\0'};
 
         const Color & paramsFontColor = this->calcFontColor();
         Color colorBaseFont = paramsFontColor * _color;
@@ -1557,7 +1557,7 @@ namespace Mengine
         m_textFormatArgs = _args;
 
         m_textFormatArgContexts.resize( _args.size() );
-            
+
         this->invalidateFont();
         this->invalidateTextLines();
     }

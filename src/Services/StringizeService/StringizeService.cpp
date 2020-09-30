@@ -22,16 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StringizeService::_initializeService()
     {
-        for( uint32_t i = 0; i != MENGINE_STRINGIZE_INTERNAL_COUNT; ++i )
-        {
-            for( uint32_t j = 0; j != 8; ++j )
-            {
-                InternalHolder & holder = m_internals[i][j];
-
-                holder.str = nullptr;
-                holder.holder = nullptr;
-            }
-        }
+        //Empty
 
         return true;
     }

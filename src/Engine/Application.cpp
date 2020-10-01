@@ -1355,7 +1355,7 @@ namespace Mengine
     void Application::quit()
     {
         PLATFORM_SERVICE()
-            ->stopPlatform();
+            ->closeWindow();
 
         RENDER_SERVICE()
             ->onWindowClose();
@@ -1618,7 +1618,7 @@ namespace Mengine
 
         if( needQuit == true )
         {
-            quit();
+            this->quit();
         }
     }
     //////////////////////////////////////////////////////////////////////////

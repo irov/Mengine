@@ -312,14 +312,14 @@ namespace Mengine
         GAME_SERVICE()
             ->run();
 
+        PLATFORM_SERVICE()
+            ->runPlatform();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::loop()
     {
-        PLATFORM_SERVICE()
-            ->runPlatform();
-
         PLATFORM_SERVICE()
             ->updatePlatform();
     }

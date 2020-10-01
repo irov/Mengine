@@ -1177,6 +1177,12 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::closeWindow()
+    {
+        m_running = false;
+        m_shouldQuit = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
     {
         SDL_MinimizeWindow( m_window );

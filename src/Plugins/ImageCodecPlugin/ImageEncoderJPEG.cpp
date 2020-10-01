@@ -34,7 +34,7 @@ namespace Mengine
     {
         EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
 
-        char buffer[JMSG_LENGTH_MAX] = { 0 };
+        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
 
         (*mErr->pub.format_message)(_cinfo, buffer);
 
@@ -56,7 +56,7 @@ namespace Mengine
     {
         EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
 
-        char buffer[JMSG_LENGTH_MAX] = { 0 };
+        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
 
         (*mErr->pub.format_message)(_cinfo, buffer);
 

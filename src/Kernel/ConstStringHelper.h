@@ -26,7 +26,7 @@ namespace Mengine
                 ConstString operator() ( const T & _value ) const
                 {
                     const ConstString::value_type * value_str = _value.c_str();
-                    ConstString::size_type value_size = _value.size();
+                    ConstString::size_type value_size = (ConstString::size_type)_value.size();
 
                     ConstString constString = Helper::stringizeStringSize( value_str, (ConstString::size_type)value_size );
 

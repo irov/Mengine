@@ -1260,12 +1260,6 @@ namespace Mengine
                 ->finalizeGame();
         }
 
-        if( SERVICE_EXIST( PlatformInterface ) == true )
-        {
-            PLATFORM_SERVICE()
-                ->stopPlatform();
-        }
-
         if( SERVICE_EXIST( AccountServiceInterface ) == true )
         {
             ACCOUNT_SERVICE()

@@ -93,11 +93,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::finalize()
     {
+        bool enable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
+
+        if( enable == false )
+        {
+            return;
+        }
+
+        uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
+
+        if( seconds == 0U )
+        {
+            return;
+        }
+
         if( m_workerId != 0 )
         {
             m_threadJob->removeWorker( m_workerId );
-            m_threadJob = nullptr;
+            m_workerId = 0;
         }
+
+        m_threadJob = nullptr;
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
@@ -145,7 +161,7 @@ namespace Mengine
             return true;
         }
 
-        Char userPath[MENGINE_MAX_PATH] = { '\0' };
+        Char userPath[MENGINE_MAX_PATH] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
 

@@ -204,8 +204,6 @@ namespace Mengine
 
         VectorObservers & observers = m_mapObserves[_id];
 
-        MENGINE_ASSERTION( observers.empty() == false );
-
         for( ObserverDesc & desc : observers )
         {
             if( desc.observer != _observer )
@@ -215,7 +213,11 @@ namespace Mengine
 
             desc = observers.back();
             observers.pop_back();
-            break;
+            return;
         }
+
+        MENGINE_ASSERTION( false, "alredy remove observer for notificator %u"
+            , _id
+        );
     }
 }

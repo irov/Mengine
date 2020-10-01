@@ -563,6 +563,11 @@ namespace Mengine
                     ::DispatchMessage( &msg );
                 }
 
+                if( m_close == true )
+                {
+                    break;
+                }
+
                 NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_UPDATE );
 
                 if( m_sessionLock == true )
@@ -1107,6 +1112,8 @@ namespace Mengine
             }break;
         case WM_DESTROY:
             m_close = true;
+
+            ::PostQuitMessage( 0 );
 
             return 0;
         }
@@ -3215,6 +3222,11 @@ namespace Mengine
         }
 
         return userNameLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::closeWindow()
+    {
+        m_close = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::minimizeWindow()

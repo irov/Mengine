@@ -11,10 +11,15 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdIntTypes.h"
+#include "Config/StdIO.h"
 
 #include "TextLine.h"
 
 #include "math/box2.h"
+
+#ifndef MENGINE_TEXT_FIELD_MAX_TEXT
+#define MENGINE_TEXT_FIELD_MAX_TEXT 1024
+#endif
 
 #include <algorithm>
 
@@ -1525,6 +1530,29 @@ namespace Mengine
         m_textFormatArgs.clear();
 
         this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setTextFormat( const Char * _format, ... )
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
+
+        Char str[MENGINE_TEXT_FIELD_MAX_TEXT] = {'\0'};
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_TEXT_FIELD_MAX_TEXT, _format, args );
+
+        MENGINE_VA_LIST_END( args );
+
+        if( size_vsnprintf < 0 )
+        {
+            LOGGER_ERROR( "'%s' invalid set text format '%s'"
+                , this->getName().c_str()
+                , _format
+            );
+
+            return;
+        }        
+
+        this->setText( String( str, size_vsnprintf ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::calcText( String * const _text ) const

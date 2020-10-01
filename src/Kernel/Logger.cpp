@@ -59,7 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const
     {
-        Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
+        Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
         size_t size = 0;
 
@@ -129,7 +129,7 @@ namespace Mengine
             str[size + 0] = '\0';
 
             this->logMessage( str, size );
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessage( const Char * _msg, size_t _size ) const

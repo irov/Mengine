@@ -12,25 +12,25 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeStringSizeHash( const Char * _value, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
+        ConstString stringizeString( const Char * _value )
         {
-            ConstString cstr;
-            STRINGIZE_SERVICE()
-                ->stringize( _value, _size, _hash, &cstr );
+            ConstString cstr = Helper::stringizeStringSize( _value, MENGINE_STRINGIZE_UNKNOWN_SIZE );
 
             return cstr;
         }
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeStringSize( const Char * _value, ConstStringHolder::size_type _size )
+        ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size )
         {
             ConstString cstr = Helper::stringizeStringSizeHash( _value, _size, MENGINE_STRINGIZE_UNKNOWN_HASH );
 
             return cstr;
         }
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeString( const Char * _value )
+        ConstString stringizeStringSizeHash( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash )
         {
-            ConstString cstr = Helper::stringizeStringSize( _value, MENGINE_STRINGIZE_UNKNOWN_SIZE );
+            ConstString cstr;
+            STRINGIZE_SERVICE()
+                ->stringize( _value, _size, _hash, &cstr );
 
             return cstr;
         }
@@ -59,17 +59,7 @@ namespace Mengine
             return constString;
         }
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeString( const String & _value )
-        {
-            const String::value_type * value_str = _value.c_str();
-            String::size_type value_size = _value.size();
-
-            ConstString constString = Helper::stringizeStringSize( value_str, (ConstStringHolder::size_type)value_size );
-
-            return constString;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeStringLocal( const Char * _value, ConstStringHolder::size_type _size )
+        ConstString stringizeStringLocal( const Char * _value, ConstString::size_type _size )
         {
             ConstString constString;
             STRINGIZE_SERVICE()
@@ -78,7 +68,7 @@ namespace Mengine
             return constString;
         }
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeStringHashLocal( const Char * _value, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
+        ConstString stringizeStringHashLocal( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash )
         {
             ConstString constString;
             STRINGIZE_SERVICE()
@@ -87,7 +77,7 @@ namespace Mengine
             return constString;
         }
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeStringHashUnique( const Char * _value, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
+        ConstString stringizeStringHashUnique( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash )
         {
             ConstString constString;
             STRINGIZE_SERVICE()

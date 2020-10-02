@@ -17,11 +17,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceUselessCompileChecker::initialize()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, this, &ResourceUselessCompileChecker::notifyChangeScenePrepareEnable, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, this, &ResourceUselessCompileChecker::notifyChangeSceneEnableFinally, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, &ResourceUselessCompileChecker::notifyChangeScenePrepareEnable, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, &ResourceUselessCompileChecker::notifyChangeSceneEnableFinally, MENGINE_DOCUMENT_FACTORABLE );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, this, &ResourceUselessCompileChecker::notifyRestartScenePrepareEnable, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, this, &ResourceUselessCompileChecker::notifyRestartSceneEnableFinally, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, &ResourceUselessCompileChecker::notifyRestartScenePrepareEnable, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, &ResourceUselessCompileChecker::notifyRestartSceneEnableFinally, MENGINE_DOCUMENT_FACTORABLE );
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,8 +38,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this, &ResourceUselessCompileChecker::notifyResourceCompile, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this, &ResourceUselessCompileChecker::notifyResourceRelease, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &ResourceUselessCompileChecker::notifyResourceCompile, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &ResourceUselessCompileChecker::notifyResourceRelease, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyChangeSceneEnableFinally( const ScenePtr & _scene )
@@ -54,8 +54,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this, &ResourceUselessCompileChecker::notifyResourceCompile, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this, &ResourceUselessCompileChecker::notifyResourceRelease, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &ResourceUselessCompileChecker::notifyResourceCompile, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &ResourceUselessCompileChecker::notifyResourceRelease, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyRestartSceneEnableFinally( const ScenePtr & _scene )

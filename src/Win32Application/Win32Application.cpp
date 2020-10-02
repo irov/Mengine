@@ -350,20 +350,23 @@ namespace Mengine
         GAME_SERVICE()
             ->run();
 
+        PLATFORM_SERVICE()
+            ->runPlatform();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::loop()
     {
         PLATFORM_SERVICE()
-            ->runPlatform();
-
-        PLATFORM_SERVICE()
             ->updatePlatform();
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()
     {
+        PLATFORM_SERVICE()
+            ->stopPlatform();
+
         BOOTSTRAPPER_SERVICE()
             ->stop();
 

@@ -1,0 +1,16 @@
+MENGINE_PROJECT(Win32AntifreezeMonitorPlugin)
+
+ADD_FILTER(
+src
+    Win32AntifreezeMonitorPlugin.h
+    Win32AntifreezeMonitorPlugin.cpp
+    Win32AntifreezeMonitorPlugin.def
+    
+    Win32AntifreezeMonitor.h
+    Win32AntifreezeMonitor.cpp
+)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})

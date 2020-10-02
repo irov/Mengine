@@ -75,12 +75,12 @@ namespace Mengine
 
             font->finalize();
         }
-        
+
         m_fonts.clear();
 
         m_aliases.clear();
         m_aliasesArguments.clear();
-        
+
         for( const TextLocalePackagePtr & package : m_packages )
         {
             package->finalize();
@@ -140,7 +140,7 @@ namespace Mengine
             ConstString text_key;
 
 
-            Char text_str_value[4096] = { 0 };
+            Char text_str_value[4096] = {'\0'};
             size_t text_str_size = 0;
             ConstString fontName;
 
@@ -509,7 +509,6 @@ namespace Mengine
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
                     m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &text_key );
-                    //text_key = Helper::stringizeString( str_value, (size_t)-1 );
                 }
             }
 
@@ -605,7 +604,7 @@ namespace Mengine
     bool TextService::removeFont( const ConstString & _fontName )
     {
         TextFontInterfacePtr textFont = m_fonts.erase( _fontName );
-        
+
         if( textFont == nullptr )
         {
             return false;

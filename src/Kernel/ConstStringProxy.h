@@ -4,11 +4,11 @@
 
 namespace Mengine
 {
-    template<ConstString::hash_type Hash>
+    template<ConstStringHolder::hash_type Hash>
     class ConstStringProxy
     {
     public:
-        ConstStringProxy( const Char * _string, ConstString::size_type _size )
+        ConstStringProxy( const Char * _string, ConstStringHolder::size_type _size )
             : m_string( _string )
             , m_size( _size )
         {
@@ -40,6 +40,6 @@ namespace Mengine
 
     protected:
         const Char * m_string;
-        ConstString::size_type m_size;
+        ConstStringHolder::size_type m_size;
     };
 }

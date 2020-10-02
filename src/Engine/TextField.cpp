@@ -11,10 +11,15 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdIntTypes.h"
+#include "Config/StdIO.h"
 
 #include "TextLine.h"
 
 #include "math/box2.h"
+
+#ifndef MENGINE_TEXT_FIELD_MAX_TEXT
+#define MENGINE_TEXT_FIELD_MAX_TEXT 1024
+#endif
 
 #include <algorithm>
 
@@ -57,10 +62,10 @@ namespace Mengine
             return false;
         }
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_TEXT_ALIAS, this, &TextField::notifyChangeTextAliasArguments, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, this, &TextField::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &TextField::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_TEXT_MODE, &TextField::notifyDebugMode, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS, &TextField::notifyChangeTextAliasArguments, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TextField::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateTextLines();
 
@@ -232,7 +237,7 @@ namespace Mengine
             };
         }
 
-        uint32_t cacheFontARGB[16] = { 0 };
+        uint32_t cacheFontARGB[16] = {'\0'};
 
         const Color & paramsFontColor = this->calcFontColor();
         Color colorBaseFont = paramsFontColor * _color;
@@ -376,7 +381,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
-        if( m_textId.empty() == true )
+        if( m_textId.empty() == true && m_text.empty() == true )
         {
             return;
         }
@@ -586,7 +591,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextField::calcTextViewport( Viewport * const _viewport ) const
     {
-        if( m_textId.empty() == true )
+        if( m_textId.empty() == true && m_text.empty() == true )
         {
             return false;
         }
@@ -803,9 +808,10 @@ namespace Mengine
                     TextLine tl( layoutIndex, charOffset );
                     if( tl.initialize( textChunk.fontId, chunkFont, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "'%s' textID '%s' invalid setup line"
+                        LOGGER_ERROR( "'%s' textID '%s' text '%s' invalid setup line"
                             , this->getName().c_str()
                             , m_textId.c_str()
+                            , m_text.c_str()
                         );
 
                         return false;
@@ -878,7 +884,7 @@ namespace Mengine
         m_textSize.y = 0.f;
         m_charCount = 0;
 
-        if( m_textId.empty() == true )
+        if( m_textId.empty() == true && m_text.empty() == true )
         {
             return true;
         }
@@ -894,9 +900,10 @@ namespace Mengine
 
         if( this->updateTextCache_( &m_cacheText ) == false )
         {
-            LOGGER_ERROR( "font '%s' invalid update text cache '%s'"
+            LOGGER_ERROR( "font '%s' invalid update text cache id '%s' text '%s'"
                 , this->getName().c_str()
                 , m_textId.c_str()
+                , m_text.c_str()
             );
 
             return false;
@@ -1008,9 +1015,10 @@ namespace Mengine
                     TextLine tl( layoutIndex, charOffset );
                     if( tl.initialize( fontId, chunkFont, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "'%s' textID '%s' invalid setup line"
+                        LOGGER_ERROR( "'%s' textID '%s' text '%s' invalid setup line"
                             , this->getName().c_str()
                             , m_textId.c_str()
+                            , m_text.c_str()
                         );
 
                         return false;
@@ -1087,6 +1095,13 @@ namespace Mengine
 
         const ConstString & aliasTestId = TEXT_SERVICE()
             ->getTextAlias( m_aliasEnvironment, m_textId );
+
+        if( aliasTestId.empty() == true )
+        {
+            m_totalTextEntry = nullptr;
+
+            return;
+        }
 
         TextEntryInterfacePtr textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
@@ -1472,6 +1487,7 @@ namespace Mengine
     {
         m_textId = _textId;
 
+        m_text.clear();
         m_textFormatArgs.clear();
 
         this->invalidateTextEntry();
@@ -1506,14 +1522,49 @@ namespace Mengine
         return key;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::setText( const String & _text )
+    {
+        m_text = _text;
+
+        m_textId = ConstString::none();
+        m_textFormatArgs.clear();
+
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setTextFormat( const Char * _format, ... )
+    {
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
+
+        Char str[MENGINE_TEXT_FIELD_MAX_TEXT] = {'\0'};
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_TEXT_FIELD_MAX_TEXT, _format, args );
+
+        MENGINE_VA_LIST_END( args );
+
+        if( size_vsnprintf < 0 )
+        {
+            LOGGER_ERROR( "'%s' invalid set text format '%s'"
+                , this->getName().c_str()
+                , _format
+            );
+
+            return;
+        }        
+
+        this->setText( String( str, size_vsnprintf ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TextField::calcText( String * const _text ) const
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s:%s' invalid get text entry can't setup text ID"
-            , this->getName().c_str()
-            , m_textId.c_str()
-        );
+        if( textEntry == nullptr )
+        {
+            *_text = m_text;
+
+            return true;
+        }
 
         size_t textSize;
         const Char * textValue = textEntry->getValue( &textSize );
@@ -1557,7 +1608,7 @@ namespace Mengine
         m_textFormatArgs = _args;
 
         m_textFormatArgContexts.resize( _args.size() );
-            
+
         this->invalidateFont();
         this->invalidateTextLines();
     }
@@ -1582,15 +1633,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextExpectedArgument() const
     {
+        size_t textSize;
+        const Char * textValue;
+
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s:%s' not compile"
-            , this->getName().c_str()
-            , m_textId.c_str()
-        );
-
-        size_t textSize;
-        const Char * textValue = textEntry->getValue( &textSize );
+        if( textEntry == nullptr )
+        {
+            textSize = m_text.size();
+            textValue = m_text.c_str();
+        }
+        else
+        {
+            textValue = textEntry->getValue( &textSize );
+        }
 
         try
         {
@@ -1600,9 +1656,10 @@ namespace Mengine
         }
         catch( const std::exception & _ex )
         {
-            LOGGER_ERROR( "'%s:%s' except error '%s'"
+            LOGGER_ERROR( "'%s' textId '%s' text '%s' except error '%s'"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
+                , m_text.c_str()
                 , _ex.what()
             );
         }
@@ -1612,13 +1669,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextField::updateTextCache_( U32String * const _cacheText ) const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s:%s' invalid get text entry can't setup text ID"
-            , this->getName().c_str()
-            , m_textId.c_str()
-        );
-
         const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
@@ -1626,18 +1676,31 @@ namespace Mengine
             return false;
         }
 
-        size_t textSize;
-        const Char * textValue = textEntry->getValue( &textSize );
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
-        TEXT_SERVICE()
-            ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_textFormatArgs );
+        size_t textSize;
+        const Char * textValue;
+
+        if( textEntry == nullptr )
+        {
+            textSize = m_text.size();
+            textValue = m_text.c_str();
+        }
+        else
+        {
+            textValue = textEntry->getValue( &textSize );
+
+            TEXT_SERVICE()
+                ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_textFormatArgs );
+        }
 
         String fmt;
         if( Helper::getStringFormat( &fmt, textValue, textSize, m_textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "invalid string '%s:%s' format with args %" PRIuPTR ""
+            LOGGER_ERROR( "invalid string '%s' textId '%s' text '%s' format with args %" PRIuPTR ""
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
+                , m_text.c_str()
                 , m_textFormatArgs.size()
             );
 

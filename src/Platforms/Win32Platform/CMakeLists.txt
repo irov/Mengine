@@ -12,8 +12,6 @@ src
     Win32DateTimeProvider.cpp
     Win32AlreadyRunningMonitor.h
     Win32AlreadyRunningMonitor.cpp
-    Win32AntifreezeMonitor.h
-    Win32AntifreezeMonitor.cpp
     Win32CriticalErrorsMonitor.h
     Win32CriticalErrorsMonitor.cpp
 )

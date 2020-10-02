@@ -5,6 +5,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -83,20 +84,36 @@ namespace Mengine
 
         m_dateTimeProvider = dateTimeProvider;
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_BEGIN, this, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_LOGGER_END, this, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ABORT, this, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_BEGIN, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_END, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ABORT, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::finalize()
     {
+        bool enable = CONFIG_VALUE( "Engine", "AntifreezeMonitorEnable", true );
+
+        if( enable == false )
+        {
+            return;
+        }
+
+        uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 10U );
+
+        if( seconds == 0U )
+        {
+            return;
+        }
+
         if( m_workerId != 0 )
         {
             m_threadJob->removeWorker( m_workerId );
-            m_threadJob = nullptr;
+            m_workerId = 0;
         }
+
+        m_threadJob = nullptr;
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
@@ -139,12 +156,12 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true )
+            ->isDebuggerPresent() == true && HAS_OPTION( "antifreezemonitordebug" ) == false )
         {
             return true;
         }
 
-        Char userPath[MENGINE_MAX_PATH] = { '\0' };
+        Char userPath[MENGINE_MAX_PATH] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -169,8 +186,13 @@ namespace Mengine
         processDumpPath += str_date;
         processDumpPath += ".dmp";
 
-        PLATFORM_SERVICE()
-            ->createProcessDump( processDumpPath.c_str(), nullptr, true );
+        if( PLATFORM_SERVICE()
+            ->createProcessDump( processDumpPath.c_str(), nullptr, true ) == false )
+        {
+            LOGGER_ERROR( "Antifreeze monitor invalid create process dump '%s'"
+                , processDumpPath.c_str()
+            );
+        }
 
         bool sceneProcess = SCENE_SERVICE()
             ->isProcess();

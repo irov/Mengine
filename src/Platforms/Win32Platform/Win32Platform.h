@@ -5,7 +5,6 @@
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
-#include "Win32AntifreezeMonitor.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
@@ -75,6 +74,7 @@ namespace Mengine
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getUserName( Char * const _userName ) const override;
 
+        void closeWindow() override;
         void minimizeWindow() override;
 
         void setCursorPosition( const mt::vec2f & _pos ) override;
@@ -197,7 +197,6 @@ namespace Mengine
         FactoryPtr m_factoryDateTimeProviders;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
-        Win32AntifreezeMonitorPtr m_antifreezeMonitor;
 
         Win32MouseEvent m_mouseEvent;
 

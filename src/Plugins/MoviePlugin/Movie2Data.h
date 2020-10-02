@@ -34,7 +34,7 @@ namespace Mengine
         const aeMovieData * getMovieData() const override;
 
     public:
-        const ResourcePtr & getResource( const ae_string_t _resourceName );
+        const ResourcePtr & getResource( const Char * _resourceName );
 
     public:
         struct ImageDesc

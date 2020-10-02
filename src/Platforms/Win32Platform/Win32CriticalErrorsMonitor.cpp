@@ -46,7 +46,7 @@ namespace Mengine
         va_list argList;
         va_start( argList, _format );
 
-        char format_msg[4096] = {0};
+        Char format_msg[4096] = {'\0'};
         MENGINE_VSPRINTF( format_msg, _format, argList );
 
         va_end( argList );

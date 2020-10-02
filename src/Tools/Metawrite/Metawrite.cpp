@@ -31,6 +31,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "stdex/allocator.h"
+
 #include <string>
 #include <vector>
 
@@ -136,96 +138,100 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     stdex_allocator_initialize();
 
-    Mengine::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Mengine::WString() );
-    Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
-    Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
-
-    if( in.empty() == true )
     {
-        message_error( "not found 'in' param" );
+        Mengine::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Mengine::WString() );
+        Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
+        Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
 
-        return 0;
-    }
-
-    try
-    {
-        if( Mengine::initializeEngine() == false )
+        if( in.empty() == true )
         {
-            message_error( "ImageTrimmer invalid initialize" );
+            message_error( "not found 'in' param" );
 
             return 0;
         }
+
+        try
+        {
+            if( Mengine::initializeEngine() == false )
+            {
+                message_error( "ImageTrimmer invalid initialize" );
+
+                return 0;
+            }
+        }
+        catch( const std::exception & se )
+        {
+            message_error( "Mengine exception %s"
+                , se.what()
+            );
+
+            return 0;
+        }
+
+        Mengine::FilePath fp_protocol = Mengine::Helper::unicodeToFilePath( protocol );
+        Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
+        Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
+
+        if( PLUGIN_SERVICE()
+            ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            return 0;
+        }
+
+        using namespace Mengine::Literals;
+
+        Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
+            ->createDecoderT<Mengine::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
+
+        if( decoder == nullptr )
+        {
+            LOGGER_ERROR( "invalid create decoder xml2bin for %s"
+                , fp_in.c_str()
+            );
+
+            return 0;
+        }
+
+        if( decoder->prepareData( nullptr ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize decoder xml2bin for %s"
+                , fp_in.c_str()
+            );
+
+            return 0;
+        }
+
+        Mengine::XmlCodecOptions options;
+        options.pathProtocol = fp_protocol;
+
+        Mengine::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
+            ->getFileGroup( Mengine::ConstString::none() );
+
+        if( fileGroup == nullptr )
+        {
+            LOGGER_ERROR( "LoaderEngine::makeBin_ invalid get file group"
+            );
+
+            return 0;
+        }
+
+        const Mengine::FilePath & path = fileGroup->getRelationPath();
+
+        options.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
+        options.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
+
+        if( decoder->setOptions( &options ) == false )
+        {
+            return 0;
+        }
+
+        if( decoder->decode( 0, 0 ) == 0 )
+        {
+            return 0;
+        }
     }
-    catch( const std::exception & se )
-    {
-        message_error( "Mengine exception %s"
-            , se.what()
-        );
 
-        return 0;
-    }
-
-    Mengine::FilePath fp_protocol = Mengine::Helper::unicodeToFilePath( protocol );
-    Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
-    Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
-
-    if( PLUGIN_SERVICE()
-        ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
-    {
-        return 0;
-    }
-
-    using namespace Mengine::Literals;
-
-    Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-        ->createDecoderT<Mengine::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
-
-    if( decoder == nullptr )
-    {
-        LOGGER_ERROR( "invalid create decoder xml2bin for %s"
-            , fp_in.c_str()
-        );
-
-        return 0;
-    }
-
-    if( decoder->prepareData( nullptr ) == false )
-    {
-        LOGGER_ERROR( "invalid initialize decoder xml2bin for %s"
-            , fp_in.c_str()
-        );
-
-        return 0;
-    }
-
-    Mengine::XmlCodecOptions options;
-    options.pathProtocol = fp_protocol;
-
-    Mengine::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-        ->getFileGroup( Mengine::ConstString::none() );
-
-    if( fileGroup == nullptr )
-    {
-        LOGGER_ERROR( "LoaderEngine::makeBin_ invalid get file group"
-        );
-
-        return 0;
-    }
-
-    const Mengine::FilePath & path = fileGroup->getRelationPath();
-
-    options.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
-    options.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
-
-    if( decoder->setOptions( &options ) == false )
-    {
-        return 0;
-    }
-
-    if( decoder->decode( 0, 0 ) == 0 )
-    {
-        return 0;
-    }
+    stdex_allocator_finalize();
 
     return 0;
 }

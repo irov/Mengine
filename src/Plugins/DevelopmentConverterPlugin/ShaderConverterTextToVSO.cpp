@@ -44,7 +44,7 @@ namespace Mengine
 
         if( fxcPath == STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) )
         {
-            Char WindowsKitsInstallationFolder[256] = { 0 };
+            Char WindowsKitsInstallationFolder[1024] = {'\0'};
             if( win32Platform->getLocalMachineRegValue( "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", "KitsRoot10", WindowsKitsInstallationFolder, 256 ) == false )
             {
                 LOGGER_ERROR( "not found REGISTER Windows Kits installed roots"
@@ -77,7 +77,7 @@ namespace Mengine
         String full_output = folderPath.c_str();
         full_output += m_options.outputFilePath.c_str();
 
-        Char buffer[2048] = {0};
+        Char buffer[2048] = {'\0'};
         MENGINE_SPRINTF( buffer, "/nologo /T vs_1_1 /O3 /Fo \"%s\" \"%s\""
             , full_output.c_str()
             , full_input.c_str()

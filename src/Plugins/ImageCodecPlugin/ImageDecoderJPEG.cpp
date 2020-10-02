@@ -40,7 +40,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         METHODDEF( noreturn_t ) s_jpegErrorExit( j_common_ptr _cinfo )
         {
-            Char buffer[JMSG_LENGTH_MAX] = {0};
+            Char buffer[JMSG_LENGTH_MAX] = {'\0'};
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
@@ -57,7 +57,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         METHODDEF( noreturn_t ) s_jpegOutputMessage( j_common_ptr _cinfo )
         {
-            char buffer[JMSG_LENGTH_MAX] = {0};
+            char buffer[JMSG_LENGTH_MAX] = {'\0'};
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 

@@ -82,6 +82,7 @@ namespace Mengine
         virtual size_t getUserPath( Char * const _filePath ) const = 0;
         virtual size_t getUserName( Char * const _userName ) const = 0;
 
+        virtual void closeWindow() = 0;
         virtual void minimizeWindow() = 0;
 
         virtual void setCursorPosition( const mt::vec2f & _pos ) = 0;

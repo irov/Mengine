@@ -92,6 +92,7 @@ namespace Mengine
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getUserName( Char * const _userName ) const override;
 
+        void closeWindow() override;
         void minimizeWindow() override;
 
         void setCursorPosition( const mt::vec2f & _pos ) override;

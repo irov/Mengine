@@ -55,7 +55,7 @@ namespace Mengine
 
         union
         {
-            int8_t tail_buffer[8] = { 0 };
+            int8_t tail_buffer[8] = {0};
             int64_t tail64;
         };
 
@@ -78,7 +78,7 @@ namespace Mengine
 
         union
         {
-            int8_t tail_buffer[8] = { 0 };
+            int8_t tail_buffer[8] = {0};
             int64_t tail64;
         };
 

@@ -1231,7 +1231,7 @@ namespace Mengine
     {
         if( m_debugFileOpen == true )
         {
-            NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_, MENGINE_DOCUMENT_FACTORABLE );
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_OPEN_FILE, &Application::notifyDebugOpenFile_, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
@@ -1355,7 +1355,7 @@ namespace Mengine
     void Application::quit()
     {
         PLATFORM_SERVICE()
-            ->stopPlatform();
+            ->closeWindow();
 
         RENDER_SERVICE()
             ->onWindowClose();
@@ -1618,7 +1618,7 @@ namespace Mengine
 
         if( needQuit == true )
         {
-            quit();
+            this->quit();
         }
     }
     //////////////////////////////////////////////////////////////////////////

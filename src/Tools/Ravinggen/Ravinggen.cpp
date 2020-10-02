@@ -153,76 +153,80 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     (void)nShowCmd;
 
     stdex_allocator_initialize();
-        
-    Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
-    Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
-    Mengine::WString secure = parse_kwds( lpCmdLine, L"--secure", Mengine::WString() );
-
-    if( in.empty() == true )
+    
     {
-        message_error( "not found 'in' param"
-        );
+        Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
+        Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
+        Mengine::WString secure = parse_kwds( lpCmdLine, L"--secure", Mengine::WString() );
 
-        return 0;
-    }
-
-    if( out.empty() == true )
-    {
-        message_error( "not found 'out' param"
-        );
-
-        return 0;
-    }
-
-    if( secure.empty() == true )
-    {
-        message_error( "not found 'secure' param"
-        );
-
-        return 0;
-    }
-
-    try
-    {
-        if( Mengine::initializeEngine() == false )
+        if( in.empty() == true )
         {
-            message_error( "invalid initialize" );
+            message_error( "not found 'in' param"
+            );
 
             return 0;
         }
+
+        if( out.empty() == true )
+        {
+            message_error( "not found 'out' param"
+            );
+
+            return 0;
+        }
+
+        if( secure.empty() == true )
+        {
+            message_error( "not found 'secure' param"
+            );
+
+            return 0;
+        }
+
+        try
+        {
+            if( Mengine::initializeEngine() == false )
+            {
+                message_error( "invalid initialize" );
+
+                return 0;
+            }
+        }
+        catch( const std::exception & se )
+        {
+            message_error( "Mengine exception %s"
+                , se.what()
+            );
+
+            return 0;
+        }
+
+        Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
+        Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
+
+        const Mengine::FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getFileGroup( Mengine::ConstString::none() );
+
+        Mengine::MemoryInterfacePtr memory = Mengine::Helper::createMemoryFile( fileGroup, fp_in, false, false, MENGINE_DOCUMENT_FUNCTION );
+
+        void * memoryBuffer = memory->getBuffer();
+        size_t memorySize = memory->getSize();
+
+        Mengine::Char utf8_secure[1024];
+        size_t utf8_secure_len;
+        Mengine::Helper::unicodeToUtf8( secure, utf8_secure, 1024, &utf8_secure_len );
+
+        Mengine::HashType sequreHash = Mengine::Helper::makeHash( utf8_secure, utf8_secure_len );
+
+        Mengine::Helper::ravingcode( (uint32_t)sequreHash, memoryBuffer, memorySize, memoryBuffer );
+
+        Mengine::OutputStreamInterfacePtr outputStream = Mengine::Helper::openOutputStreamFile( fileGroup, fp_out, MENGINE_DOCUMENT_FUNCTION );
+
+        outputStream->write( "RGCD", 4 );
+        outputStream->write( memoryBuffer, memorySize );
     }
-    catch( const std::exception & se )
-    {
-        message_error( "Mengine exception %s"
-            , se.what()
-        );
 
-        return 0;
-    }
-
-    Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
-    Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
-
-    const Mengine::FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-        ->getFileGroup( Mengine::ConstString::none() );
-
-    Mengine::MemoryInterfacePtr memory = Mengine::Helper::createMemoryFile( fileGroup, fp_in, false, false, MENGINE_DOCUMENT_FUNCTION );
-
-    void * memoryBuffer = memory->getBuffer();
-    size_t memorySize = memory->getSize();
-
-    Mengine::Char utf8_secure[1024];
-    size_t utf8_secure_len;
-    Mengine::Helper::unicodeToUtf8( secure, utf8_secure, 1024, &utf8_secure_len );
-
-    Mengine::HashType sequreHash = Mengine::Helper::makeHash( utf8_secure, utf8_secure_len );
-
-    Mengine::Helper::ravingcode( (uint32_t)sequreHash, memoryBuffer, memorySize, memoryBuffer );
-
-    Mengine::OutputStreamInterfacePtr outputStream = Mengine::Helper::openOutputStreamFile( fileGroup, fp_out, MENGINE_DOCUMENT_FUNCTION );
-
-    outputStream->write( "RGCD", 4 );
-    outputStream->write( memoryBuffer, memorySize );
+    stdex_allocator_finalize();
 
     return 0;
 }

@@ -18,6 +18,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AllocatorHelper.h"
+#include "Kernel/PathString.h"
 
 #include "zlib.h"
 

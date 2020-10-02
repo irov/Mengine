@@ -14,6 +14,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/PathString.h"
 
 #include "Config/StdString.h"
 

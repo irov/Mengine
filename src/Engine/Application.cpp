@@ -2155,10 +2155,10 @@ namespace Mengine
 
         if( m_invalidateCursorMode == true )
         {
+            m_invalidateCursorMode = false;
+
             PLATFORM_SERVICE()
                 ->notifyCursorModeChanged( m_cursorMode );
-
-            m_invalidateCursorMode = false;
         }
     }
     //////////////////////////////////////////////////////////////////////////

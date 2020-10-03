@@ -841,7 +841,10 @@ namespace Mengine
         desc.milliseconds = _milliseconds;
         desc.time = _milliseconds;
         desc.lambda = _lambda;
+
+#if MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
+#endif
 
         m_timers.emplace_back( desc );
 

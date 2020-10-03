@@ -151,7 +151,7 @@ namespace Mengine
 
             buffer.lock = true;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             buffer.doc = _doc;
 #endif
 
@@ -178,7 +178,7 @@ namespace Mengine
             buffer.size = _size;
             buffer.lock = true;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             buffer.doc = _doc;
 #endif
 
@@ -202,7 +202,7 @@ namespace Mengine
         buffer.size = _size;
         buffer.lock = true;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         buffer.doc = _doc;
 #endif
 

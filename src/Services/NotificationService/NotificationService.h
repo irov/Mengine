@@ -40,7 +40,7 @@ namespace Mengine
             Observable * observer;
             ObserverCallableInterfacePtr callable;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };
@@ -53,7 +53,8 @@ namespace Mengine
             uint32_t id;
             Observable * observer;
             ObserverCallableInterfacePtr callable;
-#ifdef MENGINE_DEBUG
+
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

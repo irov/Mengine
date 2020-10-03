@@ -256,7 +256,7 @@ namespace Mengine
         desc.enable = true;
         desc.dead = false;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 

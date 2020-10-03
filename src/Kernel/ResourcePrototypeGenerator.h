@@ -45,7 +45,7 @@ namespace Mengine
             const ConstString & prototype = this->getPrototype();
             resource->setType( prototype );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Resource '%s' type '%s' create '%s'"
                 , resource->getName().c_str()
                 , resource->getType().c_str()

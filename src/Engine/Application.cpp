@@ -2211,7 +2211,7 @@ namespace Mengine
         {
             return;
         }
-
+        
         const ConstString & name = m_cursorResource->getName();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
         const ContentInterface * content = m_cursorResource->getContent();

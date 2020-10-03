@@ -85,7 +85,7 @@ namespace Mengine
             desc.observer = _observer;
             desc.callable = _callable;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             desc.doc = _doc;
 #endif
 
@@ -158,7 +158,7 @@ namespace Mengine
 
                 for( const ObserverQueue & q : move_add )
                 {
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
                     this->addObserver_( q.id, q.observer, q.callable, q.doc );
 #else
                     this->addObserver_( q.id, q.observer, q.callable, nullptr );
@@ -191,7 +191,7 @@ namespace Mengine
         desc.observer = _observer;
         desc.callable = _callable;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
 #endif
 

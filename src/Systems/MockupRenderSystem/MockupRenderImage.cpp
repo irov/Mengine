@@ -69,13 +69,13 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        size_t size = (size_t)(_rect.right - _rect.left) * (_rect.bottom - _rect.top);
+        size_t size = (size_t)(_rect.right - _rect.left) * (_rect.bottom - _rect.top) * m_hwChannels * m_hwDepth;
 
         memory->newBuffer( size );
 
         m_memory = memory;
 
-        *_pitch = (size_t)(_rect.right - _rect.left);
+        *_pitch = (size_t)(_rect.right - _rect.left) * m_hwChannels * m_hwDepth;
 
         void * buffer = m_memory->getBuffer();
 

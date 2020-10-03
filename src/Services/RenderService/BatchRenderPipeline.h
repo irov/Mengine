@@ -172,7 +172,10 @@ namespace Mengine
             uint32_t vertexCount;
             const RenderIndex * indices;
             uint32_t indexCount;
+
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
+#endif
         };
 
         typedef Vector<DebugRenderObject> VectorDebugRenderObjects;

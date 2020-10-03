@@ -32,7 +32,10 @@ namespace Mengine
         {
             UniqueId id;
             TimepipeInterfacePtr timepipe;
+
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
+#endif
         };
 
         typedef Vector<TimepipeDesc> VectorTimepipe;

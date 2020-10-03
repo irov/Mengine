@@ -113,7 +113,9 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalid = true;
 
+#if MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
+#endif
 
         m_schedulersAdd.emplace_back( desc );
 
@@ -142,7 +144,9 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalid = true;
 
+#if MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
+#endif
 
         m_schedulersAdd.emplace_back( desc );
 
@@ -334,7 +338,7 @@ namespace Mengine
                     float timeOffset = desc.delay - old_time_delay;
 
                     TIMELINE_SERVICE()
-                        ->beginOffset( timeOffset, desc.doc );
+                        ->beginOffset( timeOffset, MENGINE_DOCUMENT_VALUE( desc.doc, nullptr ) );
 
                     desc.dead = true;
 
@@ -393,7 +397,7 @@ namespace Mengine
                         desc.iterate_invalid = true;
 
                         TIMELINE_SERVICE()
-                            ->beginOffset( timeOffset, desc.doc );
+                            ->beginOffset( timeOffset, MENGINE_DOCUMENT_VALUE( desc.doc, nullptr ) );
 
                         desc.timer->onSchedulerTiming( desc.id, iterate, desc.delay );
 

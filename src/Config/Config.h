@@ -108,6 +108,12 @@
 #   endif
 #endif
 
+#if MENGINE_DOCUMENT_ENABLE
+#   define MENGINE_DOCUMENT_VALUE(X, Y) (X)
+#else
+#   define MENGINE_DOCUMENT_VALUE(X, Y) (Y)
+#endif
+
 #define MENGINE_CONSTEXPR constexpr
 #define MENGINE_INLINE inline
 

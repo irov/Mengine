@@ -4,6 +4,7 @@
 #include "Kernel/HashHelper.h"
 
 #include "Config/Char.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -40,7 +41,7 @@ namespace Mengine
                 ConstString operator() ( const Char * _value ) const
                 {
                     const ConstString::value_type * value_str = _value;
-                    ConstString::size_type value_size = N;
+                    ConstString::size_type value_size = MENGINE_STRLEN( _value );
 
                     ConstString constString = Helper::stringizeStringSize( value_str, (ConstString::size_type)value_size );
 

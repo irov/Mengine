@@ -476,7 +476,10 @@ namespace Mengine
         dro.vertexCount = _vertexCount;
         dro.indices = _indices;
         dro.indexCount = _indexCount;
+
+#if MENGINE_DOCUMENT_ENABLE
         dro.doc = _doc;
+#endif
 
         m_debugRenderObjects.push_back( dro );
 #else

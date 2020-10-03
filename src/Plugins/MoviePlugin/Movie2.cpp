@@ -1418,32 +1418,32 @@ namespace Mengine
             {
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    SurfacePtr surface = PROTOTYPE_SERVICE()
+                    SurfacePtr surfaceVideo = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surface );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceVideo );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
-                    surface->setName( c_name );
+                    surfaceVideo->setName( c_name );
 
                     Resource * resourceVideo = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ) );
 
-                    UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
+                    UnknownVideoSurfaceInterface * unknownVideoSurface = surfaceVideo->getUnknown();
 
                     unknownVideoSurface->setResourceVideo( ResourcePtr( resourceVideo ) );
 
                     EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer_data );
 
-                    AnimationInterface * surface_animation = surface->getAnimation();
+                    AnimationInterface * surfaceVideoAnimation = surfaceVideo->getAnimation();
 
-                    surface_animation->setLoop( _callbackData->incessantly );
+                    surfaceVideoAnimation->setLoop( _callbackData->incessantly );
 
-                    surface->setBlendMode( blend_mode );
-                    surface->setPremultiplyAlpha( true );
+                    surfaceVideo->setBlendMode( blend_mode );
+                    surfaceVideo->setPremultiplyAlpha( true );
 
-                    movie2->addSurface_( surface, true );
+                    movie2->addSurface_( surfaceVideo, true );
 
-                    *_nd = surface.get();
+                    *_nd = surfaceVideo.get();
 
                     return AE_TRUE;
                 }break;
@@ -1490,9 +1490,10 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
+    ae_void_t Movie2::__movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        AE_UNUSED( _ud );
+        Movie2 * movie2 = static_cast<Movie2 *>(_ud);
+        AE_UNUSED( movie2 );
 
         ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer_data );
 
@@ -1509,9 +1510,9 @@ namespace Mengine
             {
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
-                    //SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element;
+                    //SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element_userdata;
 
-                    //movie2->removeSurface( surfaceTrackMatte );
+                    //movie2->removeSurface_( SurfacePtr::from( surfaceTrackMatte ) );
                 }break;
             default:
                 {
@@ -1530,15 +1531,15 @@ namespace Mengine
                 }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    //SurfaceVideo * surfaceVideo = (SurfaceVideo *)_callbackData->element;
+                    //Surface * surfaceVideo = (Surface *)_callbackData->element_userdata;
 
-                    //movie2->removeSurface( surfaceVideo );
+                    //movie2->removeSurface_( SurfacePtr::from( surfaceVideo ) );
                 }break;
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
-                    //SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                    //Surface * surfaceSound = (Surface *)_callbackData->element_userdata;
 
-                    //movie2->removeSurface( surfaceSound );
+                    //movie2->removeSurface_( SurfacePtr::from( surfaceSound ) );
                 }break;
             default:
                 break;
@@ -2161,7 +2162,7 @@ namespace Mengine
         providers.camera_update = &__movie_composition_camera_update;
 
         providers.node_provider = &Movie2::__movie_composition_node_provider;
-        providers.node_deleter = &__movie_composition_node_deleter;
+        providers.node_deleter = &Movie2::__movie_composition_node_deleter;
         providers.node_update = &__movie_composition_node_update;
 
         providers.track_matte_provider = &__movie_composition_track_matte_provider;
@@ -3102,6 +3103,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSurface_( const SurfacePtr & _surface, bool _compile )
     {
+        MENGINE_ASSERTION_FATAL( std::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end() );
+
         if( _compile == true )
         {
             _surface->compile();

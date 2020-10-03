@@ -94,7 +94,9 @@ namespace Mengine
 
         m_systemPlugin = this->_systemPlugin();
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_INITIALIZE, this->getPluginName() );
+        const Char * pluginName = this->getPluginName();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_INITIALIZE, pluginName );
 
         LOGGER_INFO( "plugin '%s' initialize"
             , this->getPluginName()

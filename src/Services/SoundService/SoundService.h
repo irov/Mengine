@@ -138,7 +138,7 @@ namespace Mengine
         MixerValue m_musicVolume;
         MixerValue m_voiceVolume;
 
-        FactoryPtr m_factorySoundEmitter;
+        FactoryPtr m_factorySoundIdentity;
 
         typedef Vector<SoundIdentityPtr> VectorSoundSource;
         VectorSoundSource m_soundIdentities;

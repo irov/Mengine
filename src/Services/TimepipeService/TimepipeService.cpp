@@ -54,7 +54,10 @@ namespace Mengine
         TimepipeDesc desc;
         desc.id = newid;
         desc.timepipe = _timepipe;
+
+#if MENGINE_DOCUMENT_ENABLE
         desc.doc = _doc;
+#endif
 
         m_timepipeAdd.emplace_back( desc );
 

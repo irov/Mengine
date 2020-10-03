@@ -80,7 +80,8 @@ namespace Mengine
         {
             uint32_t reference;
             const AstralaxEmitterContainer * container;
-#ifdef MENGINE_DEBUG
+
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

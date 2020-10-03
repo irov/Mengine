@@ -77,7 +77,7 @@ namespace Mengine
         }
 
         m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factorySoundEmitter = Helper::makeFactoryPool<SoundIdentity, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySoundIdentity = Helper::makeFactoryPool<SoundIdentity, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t timepipe = TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
@@ -137,10 +137,10 @@ namespace Mengine
             m_timepipeId = 0;
         }
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundEmitter );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWorkerTaskSoundBufferUpdate );
 
-        m_factorySoundEmitter = nullptr;
+        m_factorySoundIdentity = nullptr;
         m_factoryWorkerTaskSoundBufferUpdate = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -355,41 +355,41 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( source, "create SoundSource invalid" );
 
-        SoundIdentityPtr emitter = m_factorySoundEmitter->createObject( _doc );
+        SoundIdentityPtr identity = m_factorySoundIdentity->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( emitter );
+        MENGINE_ASSERTION_MEMORY_PANIC( identity );
 
         UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
-        emitter->setId( new_id );
+        identity->setId( new_id );
 
-        emitter->setSoundSource( source );
-        emitter->listener = nullptr;
-        emitter->worker = nullptr;
-        emitter->bufferId = 0;
+        identity->setSoundSource( source );
+        identity->listener = nullptr;
+        identity->worker = nullptr;
+        identity->bufferId = 0;
 
-        emitter->time_left = 0.f;
+        identity->time_left = 0.f;
 
-        emitter->state = ESS_STOP;
-        emitter->category = _category;
+        identity->state = ESS_STOP;
+        identity->category = _category;
 
-        emitter->streamable = _streamable;
-        emitter->looped = false;
-        emitter->turn = _streamable ? m_turnStream : m_turnSound;
+        identity->streamable = _streamable;
+        identity->looped = false;
+        identity->turn = _streamable ? m_turnStream : m_turnSound;
 
-#ifdef MENGINE_DEBUG
-        emitter->doc = _doc;
+#if MENGINE_DOCUMENT_ENABLE
+        identity->doc = _doc;
 #endif
 
-        if( emitter->initialize() == false )
+        if( identity->initialize() == false )
         {
             return nullptr;
         }
 
-        this->updateSourceVolume_( emitter );
+        this->updateSourceVolume_( identity );
 
-        m_soundIdentities.emplace_back( emitter );
+        m_soundIdentities.emplace_back( identity );
 
-        return emitter;
+        return identity;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::updateSourceVolume_( const SoundIdentityPtr & _emitter )

@@ -202,7 +202,10 @@ namespace Mengine
             float milliseconds;
             float time;
             LambdaTimer lambda;
+
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
+#endif
         };
 
         uint32_t m_enumerator;

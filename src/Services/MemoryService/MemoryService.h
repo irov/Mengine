@@ -56,7 +56,7 @@ namespace Mengine
             size_t size;
             bool lock;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

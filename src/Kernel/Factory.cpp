@@ -98,7 +98,7 @@ namespace Mengine
         }
 #endif
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr doc = _object->getDocument();
         MENGINE_UNUSED( doc );
 

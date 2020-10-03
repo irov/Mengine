@@ -33,7 +33,7 @@ namespace Mengine
 
         BitmapFontPtr font = factory->createObject( _doc );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Sprite '%s' type '%s' create '%s'"
             , font->getName().c_str()
             , font->getType().c_str()

@@ -81,7 +81,7 @@ namespace Mengine
         ResourceOzzMeshPtr m_resourceMesh;
 
         typedef Vector<SamplerOzzAnimationPtr> VectorSamplerOzzAnimations;
-        VectorSamplerOzzAnimations m_samplerOzzAnimations;
+        VectorSamplerOzzAnimations m_samplers;
 
         ozz::vector<ozz::math::SoaTransform> m_blendedLocals;
 

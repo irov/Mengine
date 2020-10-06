@@ -17,11 +17,11 @@
 
 #include "math/box2.h"
 
+#include <algorithm>
+
 #ifndef MENGINE_TEXT_FIELD_MAX_TEXT
 #define MENGINE_TEXT_FIELD_MAX_TEXT 1024
 #endif
-
-#include <algorithm>
 
 namespace Mengine
 {

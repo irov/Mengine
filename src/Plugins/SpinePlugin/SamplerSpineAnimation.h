@@ -32,12 +32,11 @@ namespace Mengine
         const ResourcePtr & getResourceSpineSkeleton() const override;
 
     public:
-        void setAnimationStateName( const ConstString & _animationStateName ) override;
-        const ConstString & getAnimationStateName() const override;
-
-    public:
         void setAnimationName( const ConstString & _animationName ) override;
         const ConstString & getAnimationName() const override;
+
+    public:
+        spAnimationState * getAnimationState() const;
 
     public:
         float _getDuration() const override;
@@ -66,7 +65,6 @@ namespace Mengine
     protected:
         ResourceSpineSkeletonPtr m_resourceSpineSkeleton;
 
-        ConstString m_animationStateName;
         ConstString m_animationName;
 
         spAnimationStateData * m_animationStateData;

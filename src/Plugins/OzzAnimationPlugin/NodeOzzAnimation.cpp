@@ -135,28 +135,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::addOzzAnimationSampler( const SamplerOzzAnimationInterfacePtr & _sampler )
     {
-        m_samplerOzzAnimations.emplace_back( _sampler );
+        m_samplers.emplace_back( _sampler );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::removeOzzAnimationSampler( const ConstString & _name )
     {
-        VectorSamplerOzzAnimations::iterator it_found = std::find_if( m_samplerOzzAnimations.begin(), m_samplerOzzAnimations.end()
+        VectorSamplerOzzAnimations::iterator it_found = std::find_if( m_samplers.begin(), m_samplers.end()
             , [_name]( const SamplerOzzAnimationPtr & _sampler )
         {
             return _sampler->getName() == _name;
         } );
 
-        if( it_found == m_samplerOzzAnimations.end() )
+        if( it_found == m_samplers.end() )
         {
             return;
         }
 
-        m_samplerOzzAnimations.erase( it_found );
+        m_samplers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     const SamplerOzzAnimationInterfacePtr & NodeOzzAnimation::findOzzAnimationSampler( const ConstString & _name ) const
     {
-        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplers )
         {
             if( sampler->getName() != _name )
             {
@@ -171,14 +171,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t NodeOzzAnimation::getOzzAnimationSamplerCount() const
     {
-        VectorSamplerOzzAnimations::size_type count = m_samplerOzzAnimations.size();
+        VectorSamplerOzzAnimations::size_type count = m_samplers.size();
 
         return (uint32_t)count;
     }
     //////////////////////////////////////////////////////////////////////////
     const SamplerOzzAnimationInterfacePtr & NodeOzzAnimation::getOzzAnimationSampler( uint32_t _index ) const
     {
-        const SamplerOzzAnimationPtr & sampler = m_samplerOzzAnimations[_index];
+        const SamplerOzzAnimationPtr & sampler = m_samplers[_index];
 
         return sampler;
     }
@@ -279,7 +279,7 @@ namespace Mengine
 
         m_material = material;
 
-        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplers )
         {
             if( sampler->compile() == false )
             {
@@ -305,12 +305,12 @@ namespace Mengine
 
         m_material = nullptr;
 
-        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplers )
         {
             sampler->release();
         }
 
-        m_samplerOzzAnimations.clear();
+        m_samplers.clear();
 
         m_resourceImage->release();
         m_resourceSkeleton->release();
@@ -319,7 +319,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::update( const UpdateContext * _context )
     {
-        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplers )
         {
             sampler->update( _context );
         }
@@ -332,7 +332,7 @@ namespace Mengine
         ozz::animation::BlendingJob::Layer layers[32];
         uint32_t layers_iterator = 0;
 
-        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplers )
         {
             if( sampler->isCompile() == false )
             {

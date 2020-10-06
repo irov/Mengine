@@ -123,7 +123,7 @@ namespace Mengine
 
             if( crc32 != 0 )
             {
-                uint32_t check_crc32 = Helper::make_crc32( compress_memory, compress_size );
+                uint32_t check_crc32 = Helper::makeCRC32( compress_memory, compress_size );
 
                 if( check_crc32 != crc32 )
                 {
@@ -221,7 +221,7 @@ namespace Mengine
 
             if( crc32 != 0 )
             {
-                uint32_t check_crc32 = Helper::make_crc32( compress_memory, compress_size );
+                uint32_t check_crc32 = Helper::makeCRC32( compress_memory, compress_size );
 
                 if( check_crc32 != crc32 )
                 {
@@ -307,7 +307,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( compressBuffer, "invalid get memory" );
 
-            uint32_t value_crc32 = _crc32 == true ? Helper::make_crc32( compressBuffer, compressSize ) : 0;
+            uint32_t value_crc32 = _crc32 == true ? Helper::makeCRC32( compressBuffer, compressSize ) : 0;
 
             if( _stream->write( &value_crc32, sizeof( value_crc32 ) ) == false )
             {
@@ -425,7 +425,7 @@ namespace Mengine
 
             if( crc32 != 0 )
             {
-                uint32_t check_crc32 = Helper::make_crc32( compress_buffer, compress_size );
+                uint32_t check_crc32 = Helper::makeCRC32( compress_buffer, compress_size );
 
                 if( check_crc32 != crc32 )
                 {
@@ -532,7 +532,7 @@ namespace Mengine
 
             if( crc32 != 0 )
             {
-                uint32_t check_crc32 = Helper::make_crc32( compress_buffer, compress_size );
+                uint32_t check_crc32 = Helper::makeCRC32( compress_buffer, compress_size );
 
                 if( check_crc32 != crc32 )
                 {

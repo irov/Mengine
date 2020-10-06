@@ -72,7 +72,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        uint32_t make_crc32( const void * _buffer, size_t _size )
+        uint32_t makeCRC32( const void * _buffer, size_t _size )
         {
             uint32_t crc = 0xFFFFFFFF;
 
@@ -86,9 +86,9 @@ namespace Mengine
             return crc ^ 0xFFFFFFFF;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t make_crc32_mod( const void * _buffer, size_t _size, uint32_t _mod )
+        uint32_t makeCRC32Mod( const void * _buffer, size_t _size, uint32_t _mod )
         {
-            uint32_t value = make_crc32( _buffer, _size );
+            uint32_t value = makeCRC32( _buffer, _size );
 
             uint32_t value_mod = value % _mod;
 

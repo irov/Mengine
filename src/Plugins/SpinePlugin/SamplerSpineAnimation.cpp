@@ -23,6 +23,7 @@ namespace Mengine
     SamplerSpineAnimation::SamplerSpineAnimation()
         : m_animationStateData( nullptr )
         , m_animationState( nullptr )
+        , m_animationEnable( false )
         , m_trackEntry( nullptr )
         , m_time( 0.f )
         , m_duration( 0.f )
@@ -71,6 +72,16 @@ namespace Mengine
     spAnimationState * SamplerSpineAnimation::getAnimationState() const
     {
         return m_animationState;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SamplerSpineAnimation::setAnimationEnable( bool _animationEnable )
+    {
+        m_animationEnable = _animationEnable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SamplerSpineAnimation::getAnimationEnable() const
+    {
+        return m_animationEnable;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail

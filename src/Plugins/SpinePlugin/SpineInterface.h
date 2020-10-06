@@ -65,6 +65,10 @@ namespace Mengine
     public:
         virtual void setAnimationName( const ConstString & _animationName ) = 0;
         virtual const ConstString & getAnimationName() const = 0;
+
+    public:
+        virtual void setAnimationEnable( bool _enable ) = 0;
+        virtual bool getAnimationEnable() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SamplerSpineAnimationInterface> SamplerSpineAnimationInterfacePtr;

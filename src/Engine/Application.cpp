@@ -2152,10 +2152,10 @@ namespace Mengine
 
         if( m_invalidateCursorMode == true )
         {
+            m_invalidateCursorMode = false;
+
             PLATFORM_SERVICE()
                 ->notifyCursorModeChanged( m_cursorMode );
-
-            m_invalidateCursorMode = false;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2208,7 +2208,7 @@ namespace Mengine
         {
             return;
         }
-
+        
         const ConstString & name = m_cursorResource->getName();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
         const ContentInterface * content = m_cursorResource->getContent();

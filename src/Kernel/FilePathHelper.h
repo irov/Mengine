@@ -4,7 +4,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/HashHelper.h"
 
-#include "Config/Typedef.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -41,9 +41,8 @@ namespace Mengine
                 FilePath operator() ( const Char * _value ) const
                 {
                     const FilePath::value_type * value_str = _value;
-                    FilePath::size_type value_size = N;
 
-                    FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
+                    FilePath fp = Helper::stringizeFilePath( value_str );
 
                     return fp;
                 }

@@ -71,15 +71,15 @@ if(MENGINE_TOOLCHAIN_MSVC)
 endif()
 
 if(MENGINE_TOOLCHAIN_XCODE AND MENGINE_TARGET_MACOS)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.dylib)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/astralax/mac/magic3d.dylib)
 endif()
 
 if(MENGINE_TOOLCHAIN_XCODE AND MENGINE_TARGET_IOS)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/astralax-ios/bitcode/libimagic3d.a)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/astralax/ios/bitcode/libimagic3d.a)
 endif()
 
 if(MENGINE_TOOLCHAIN_GRADLE)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/astralax-ios/bitcode/libimagic3d.a)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/astralax/android/3d/a/${ANDROID_ABI}/libamagic3d.a)
 endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
@@ -92,3 +92,20 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}zlib${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
+
+if(MENGINE_TOOLCHAIN_GRADLE)
+    add_library(amagic3d
+            SHARED
+            IMPORTED )
+             
+    set_target_properties( # Specifies the target library.
+            amagic3d
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+
+            # Provides the path to the library you want to import.
+            ${THIRDPARTY_DIR}/astralax/android/3d/so/${ANDROID_ABI}/libamagic3d.so
+            )
+
+    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} amagic3d)
+endif()

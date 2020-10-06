@@ -36,6 +36,8 @@ namespace Mengine
             m_soundSystem->releaseBufferId( m_alBufferId );
             m_alBufferId = 0;
         }
+
+        m_soundDecoder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::update()
@@ -45,6 +47,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::load( const SoundDecoderInterfacePtr & _soundDecoder )
     {
+        MENGINE_ASSERTION_FATAL( m_alBufferId == 0 );
+
         m_alBufferId = m_soundSystem->genBufferId();
 
         if( m_alBufferId == 0 )

@@ -23,7 +23,7 @@ namespace Mengine
     SamplerSpineAnimation::SamplerSpineAnimation()
         : m_animationStateData( nullptr )
         , m_animationState( nullptr )
-        , m_animationEnable( false )
+        , m_animationEnable( true )
         , m_trackEntry( nullptr )
         , m_time( 0.f )
         , m_duration( 0.f )

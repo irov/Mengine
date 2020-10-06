@@ -112,7 +112,7 @@ namespace Mengine
             return !(*this == _rhs);
         }
 
-        MENGINE_INLINE Color & operator *= ( const float _f )
+        MENGINE_INLINE Color & operator *= ( float _f )
         {
             m_r *= _f;
             m_g *= _f;

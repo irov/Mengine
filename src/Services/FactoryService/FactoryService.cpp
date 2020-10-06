@@ -262,7 +262,7 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
+        uint32_t hash = Helper::makeCRC32ModPod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 
         ObjectLeakDesc desc;
         desc.generation = m_generation;
@@ -295,7 +295,7 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
+        uint32_t hash = Helper::makeCRC32ModPod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 
         VectorObjectLeakDesc & nodeLeakDescs = m_objectLeakDescs[hash];
 

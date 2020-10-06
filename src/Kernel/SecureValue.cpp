@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SecureValue::setUnprotectedValue( uint32_t _value )
     {
-        uint32_t hash = Helper::make_crc32_pod( _value );
+        uint32_t hash = Helper::makeCRC32Pod( _value );
         m_hash = hash;
         m_value = _value ^ hash;
 
@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SecureValue::getUnprotectedValue( uint32_t * const _value ) const
     {
-        uint32_t hash = Helper::make_crc32_pod( m_value ^ m_hash );
+        uint32_t hash = Helper::makeCRC32Pod( m_value ^ m_hash );
 
         if( m_hash != hash )
         {

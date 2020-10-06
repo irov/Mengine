@@ -36,6 +36,10 @@ namespace Mengine
         const ConstString & getAnimationName() const override;
 
     public:
+        void setAnimationEnable( bool _animationEnable ) override;
+        bool getAnimationEnable() const override;
+
+    public:
         spAnimationState * getAnimationState() const;
 
     public:
@@ -66,6 +70,8 @@ namespace Mengine
         ResourceSpineSkeletonPtr m_resourceSpineSkeleton;
 
         ConstString m_animationName;
+
+        bool m_animationEnable;
 
         spAnimationStateData * m_animationStateData;
         spAnimationState * m_animationState;

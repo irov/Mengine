@@ -25,11 +25,19 @@ namespace Mengine
     {
         AnimationInterface * animation = m_animatable->getAnimation();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( animation, "node not have animation" );
+        if( animation == nullptr )
+        {
+            return true;
+        }
 
+        animation->play( 0.f );
+        
         EventationInterface * eventation = m_eventable->getEventation();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( eventation, "node not have eventation" );
+        if( eventation == nullptr )
+        {
+            return true;
+        }
 
         TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>( MENGINE_DOCUMENT_FUNCTION );
 
@@ -44,8 +52,6 @@ namespace Mengine
         receiver->setGOAPNode( _node );
 
         m_receiver = receiver;
-
-        animation->play( 0.f );
 
         return false;
     }
@@ -66,6 +72,11 @@ namespace Mengine
     void TaskAnimatablePlayWait::_onFinally()
     {
         EventationInterface * eventation = m_eventable->getEventation();
+
+        if( eventation == nullptr )
+        {
+            return;
+        }
 
         EventReceiverInterfacePtr delreceiver_end = eventation->removeEventReceiver( EVENT_ANIMATION_END );
         EventReceiverInterfacePtr delreceiver_stop = eventation->removeEventReceiver( EVENT_ANIMATION_STOP );

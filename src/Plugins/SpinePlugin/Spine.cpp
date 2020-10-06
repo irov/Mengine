@@ -164,7 +164,7 @@ namespace Mengine
             {
             case SP_ATTACHMENT_REGION:
                 {
-                    spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
+                    spRegionAttachment * const attachment = (spRegionAttachment * const)slot->attachment;
 
                     spRegionAttachment_computeWorldVertices( attachment, slot->bone, (float *)attachment_vertices, 0, 2 );
 
@@ -172,7 +172,7 @@ namespace Mengine
                 }break;
             case SP_ATTACHMENT_MESH:
                 {
-                    spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
+                    spMeshAttachment * const attachment = (spMeshAttachment * const)slot->attachment;
 
                     spVertexAttachment_computeWorldVertices( &attachment->super, slot, 0, attachment->super.worldVerticesLength, (float *)attachment_vertices, 0, 2 );
 
@@ -353,6 +353,11 @@ namespace Mengine
 
         for( const SamplerSpineAnimationPtr & sampler : m_samplers )
         {
+            if( sampler->getAnimationEnable() == false )
+            {
+                continue;
+            }
+
             sampler->update( _context );
 
             spAnimationState * animationState = sampler->getAnimationState();

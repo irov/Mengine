@@ -76,8 +76,11 @@ namespace Mengine
             return false;
         }
 
-        spAnimationState * animationState = sampler->getAnimationState();
-        spAnimationState_apply( animationState, m_skeleton );
+        if( sampler->getAnimationEnable() == true )
+        {
+            spAnimationState * animationState = sampler->getAnimationState();
+            spAnimationState_apply( animationState, m_skeleton );
+        }
 
         return true;
     }

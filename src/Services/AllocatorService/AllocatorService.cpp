@@ -80,6 +80,8 @@ namespace Mengine
 #else
         void * p = ::malloc( _size );
 
+        MENGINE_ASSERTION_FATAL( _size == _msize( p ) );
+
         this->report( _doc, _size, 0 );
 #endif
 

@@ -69,11 +69,6 @@ namespace Mengine
         SOUND_SERVICE()
             ->setLoop( soundIdentity, loop );
 
-        if( soundIdentity->initialize() == false )
-        {
-            return false;
-        }
-
         m_soundIdentity = soundIdentity;
 
         float volume = m_resourceSound->getDefaultVolume();
@@ -92,6 +87,8 @@ namespace Mengine
                 , m_soundIdentity->getId()
             );
         }
+
+        m_soundIdentity->setSoundListener( nullptr );
             
         m_soundIdentity = nullptr;
 

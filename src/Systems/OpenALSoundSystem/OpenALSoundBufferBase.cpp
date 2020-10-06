@@ -18,6 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferBase::~OpenALSoundBufferBase()
     {
+        MENGINE_ASSERTION_FATAL( m_refacquire == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferBase::setSoundSystem( OpenALSoundSystem * _soundSystem )

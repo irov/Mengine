@@ -99,7 +99,9 @@ namespace Mengine
             bool freeze;
             bool iterate_invalid;
 
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
+#endif
         };
 
         typedef Vector<SchedulerEventDesc> VectorSchedulers;

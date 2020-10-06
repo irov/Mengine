@@ -178,7 +178,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setLoop( soundIdentity, _looped ) == false )
         {
-            LOGGER_ERROR( "can't set sound '%s' lood '%d'"
+            LOGGER_ERROR( "can't set sound '%s' loop '%d'"
                 , filePath.c_str()
                 , _looped
             );

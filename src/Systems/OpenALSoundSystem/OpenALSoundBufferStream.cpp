@@ -54,6 +54,7 @@ namespace Mengine
     {
         this->removeBuffers_();
 
+        m_soundDecoder = nullptr;
         m_mutexUpdating = nullptr;
         m_memory = nullptr;
     }
@@ -101,7 +102,7 @@ namespace Mengine
         const SoundCodecDataInfo * dataInfo = m_soundDecoder->getCodecDataInfo();
         m_frequency = dataInfo->frequency;
 
-        MENGINE_ASSERTION_FATAL( dataInfo->channels == 2, "invalid channels %d must be %d"
+        MENGINE_ASSERTION_FATAL( dataInfo->channels == 2, "invalid channels %u must be %u"
             , dataInfo->channels
             , 2
         );

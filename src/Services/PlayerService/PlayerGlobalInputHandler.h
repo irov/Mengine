@@ -59,7 +59,8 @@ namespace Mengine
             InputHandlerInterfacePtr handler;
             bool enable;
             bool dead;
-#ifdef MENGINE_DEBUG
+
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };

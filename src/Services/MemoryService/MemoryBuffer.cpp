@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::deallocateMemory( m_memory, MENGINE_DOCUMENTABLE_STR( this, "MemoryBuffer" ) );
+        Helper::deallocateMemory( m_memory, "MemoryBuffer" );
 
         m_memory = nullptr;
     }
@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryBuffer::newBuffer( size_t _size )
     {
-        void * new_memory = Helper::reallocateMemory( m_memory, _size, MENGINE_DOCUMENTABLE_STR( this, "MemoryBuffer" ) );
+        void * new_memory = Helper::reallocateMemory( m_memory, _size, "MemoryBuffer" );
 
         if( new_memory == nullptr )
         {
@@ -48,7 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MemoryBuffer::clearBuffer()
     {
-        Helper::deallocateMemory( m_memory, MENGINE_DOCUMENTABLE_STR( this, "MemoryBuffer" ) );
+        Helper::deallocateMemory( m_memory, "MemoryBuffer" );
 
         m_memory = nullptr;
         m_size = 0;

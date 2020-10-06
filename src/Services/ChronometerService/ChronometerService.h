@@ -36,6 +36,7 @@ namespace Mengine
         {
             uint32_t id;
             LambdaChronometer lambda;
+
 #if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif

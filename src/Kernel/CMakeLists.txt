@@ -224,6 +224,7 @@ PrototypeGenerator
     ScriptablePrototypeGenerator.h
     ResourcePrototypeGenerator.h
     SurfacePrototypeGenerator.h
+    ObjectPrototypeGenerator.h
 )
 
 ADD_FILTER(

@@ -13,6 +13,7 @@
 #include "Kernel/VectorRenderIndex.h"
 
 #include "ResourceSpineSkeleton.h"
+#include "SamplerSpineAnimation.h"
 
 #include "spine/spine.h"
 
@@ -20,18 +21,14 @@ namespace Mengine
 {
     class Spine
         : public Node
-        , public BaseAnimation
         , public BaseUpdation
         , public BaseRender
-        , public BaseEventation
         , public UnknownSpineInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
-        DECLARE_ANIMATABLE();
-        DECLARE_EVENTABLE();
 
     public:
         Spine();
@@ -42,32 +39,13 @@ namespace Mengine
         const ResourcePtr & getResourceSpineSkeleton() const override;
 
     public:
-        bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix ) override;
+        bool addAnimationSampler( const SamplerSpineAnimationInterfacePtr & _sampler ) override;
+        void removeAnimationSampler( const ConstString & _samplerName ) override;
 
-    public:
-        bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _time, float _speedFactor, bool _loop ) override;
-        bool removeStateAnimation( const ConstString & _state ) override;
+        const SamplerSpineAnimationInterfacePtr & findAnimationSampler( const ConstString & _name ) const override;
 
-        bool hasSkeletonAnimationName( const ConstString & _name ) const override;
-
-    public:
-        bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor ) override;
-        float getStateAnimationSpeedFactor( const ConstString & _state ) const override;
-
-        bool setStateAnimationTime( const ConstString & _state, float _time ) override;
-        float getStateAnimationTime( const ConstString & _state ) const override;
-
-        bool setStateAnimationFreeze( const ConstString & _state, bool _freeze ) override;
-        bool getStateAnimationFreeze( const ConstString & _state ) const override;
-
-        float getStateAnimationDuration( const ConstString & _state ) const override;
-
-        bool setStateAnimationLoop( const ConstString & _state, bool _loop ) override;
-        bool getStateAnimationLoop( const ConstString & _state ) const override;
-
-    public:
-        bool setStateAnimationFirstFrame( const ConstString & _state, const ConstString & _name ) override;
-        bool setStateAnimationLastFrame( const ConstString & _state, const ConstString & _name ) override;
+        uint32_t getAnimationSamplerCount() const override;
+        const SamplerSpineAnimationInterfacePtr & getAnimationSampler( uint32_t _index ) const override;
 
     public:
         bool getWorldBoundingBox( mt::box2f * _box ) const;
@@ -86,18 +64,6 @@ namespace Mengine
         bool _afterActivate() override;
 
     protected:
-        bool _play( uint32_t _enumerator, float _time ) override;
-        bool _restart( uint32_t _enumerator, float _time ) override;
-        void _pause( uint32_t _enumerator ) override;
-        void _resume( uint32_t _enumerator, float _resume ) override;
-        bool _stop( uint32_t _enumerator ) override;
-        void _end( uint32_t _enumerator ) override;
-        bool _interrupt( uint32_t _enumerator ) override;
-
-    public:
-        void addAnimationEvent_( spAnimationState * _animationState, spEventType _type, spTrackEntry * _entry, spEvent * _event );
-
-    protected:
         void fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColorValue_ARGB _argb, int _count, const mt::mat4f & _wm ) const;
         void fillIndices_( RenderIndex * _vertices2D, const RenderIndex * _triangles, uint32_t _count ) const;
 
@@ -105,30 +71,13 @@ namespace Mengine
         RenderMaterialInterfacePtr makeMaterial_( spSlot * _slot, const ResourceImage * _resourceImage ) const;
 
     protected:
-        void updateAnimation_();
-
-    protected:
         ResourceSpineSkeletonPtr m_resourceSpineSkeleton;
 
         spSkeleton * m_skeleton;
         spAnimationStateData * m_animationStateData;
 
-        struct AnimationDesc
-        {
-            ConstString state;
-            ConstString name;
-            spAnimationState * animationState;
-            spTrackEntry * track;
-            float time;
-            float duration;
-            float speedFactor;
-            bool freeze;
-            bool complete;
-            bool loop;
-        };
-
-        typedef Vector<AnimationDesc> VectorAnimations;
-        VectorAnimations m_animations;
+        typedef Vector<SamplerSpineAnimationPtr> VectorSamplerAnimations;
+        VectorSamplerAnimations m_samplers;
 
         struct AttachmentMeshDesc
         {

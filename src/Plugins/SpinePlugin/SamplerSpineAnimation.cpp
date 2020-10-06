@@ -21,6 +21,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SamplerSpineAnimation::SamplerSpineAnimation()
+        : m_animationStateData( nullptr )
+        , m_animationState( nullptr )
+        , m_trackEntry( nullptr )
+        , m_time( 0.f )
+        , m_duration( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,16 +58,6 @@ namespace Mengine
         return m_resourceSpineSkeleton;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerSpineAnimation::setAnimationStateName( const ConstString & _animationStateName )
-    {
-        m_animationStateName = _animationStateName;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & SamplerSpineAnimation::getAnimationStateName() const
-    {
-        return m_animationStateName;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SamplerSpineAnimation::setAnimationName( const ConstString & _animationName )
     {
         m_animationName = _animationName;
@@ -71,6 +66,11 @@ namespace Mengine
     const ConstString & SamplerSpineAnimation::getAnimationName() const
     {
         return m_animationName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    spAnimationState * SamplerSpineAnimation::getAnimationState() const
+    {
+        return m_animationState;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
@@ -86,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerSpineAnimation::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, "'%s' resource is null"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, "'%s' resource is nullptr"
             , this->getName().c_str()
         );
 
@@ -122,7 +122,7 @@ namespace Mengine
 
         m_animationState = animationState;
 
-        bool loop = this->getLoop();
+        bool loop = this->isLoop();
 
         spTrackEntry * trackEntry = spAnimationState_setAnimation( m_animationState, 0, animation, loop == true ? 1 : 0 );
 
@@ -136,7 +136,7 @@ namespace Mengine
         }
 
         float spTime = m_time * 0.001f;
-        spAnimationState_update( animationState, spTime );
+        spAnimationState_update( m_animationState, spTime );
 
         return true;
     }
@@ -293,8 +293,10 @@ namespace Mengine
             {
             case SP_ANIMATION_COMPLETE:
                 {
+                    const ConstString & name = this->getName();
+
                     EVENTABLE_METHOD( EVENT_SPINE_STATE_ANIMATION_END )
-                        ->onSpineStateAnimationEnd( m_animationStateName, m_animationName, true );
+                        ->onSpineStateAnimationEnd( name, m_animationName, true );
 
                     if( loop == false )
                     {

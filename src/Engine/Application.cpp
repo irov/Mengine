@@ -1326,11 +1326,8 @@ namespace Mengine
         float vx;
         float vy;
 
-        if( INPUT_SERVICE()
-            ->validCursorPosition( _event.x, _event.y, &vx, &vy ) == false )
-        {
-            return;
-        }
+        INPUT_SERVICE()
+            ->validCursorPosition( _event.x, _event.y, &vx, &vy );
 
         m_mouseEnter = true;
 

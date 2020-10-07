@@ -41,6 +41,7 @@ namespace Mengine
     public:
         bool addAnimationSampler( const SamplerSpineAnimationInterfacePtr & _sampler ) override;
         void removeAnimationSampler( const ConstString & _samplerName ) override;
+        void clearAnimationSamplers() override;
 
         const SamplerSpineAnimationInterfacePtr & findAnimationSampler( const ConstString & _name ) const override;
 

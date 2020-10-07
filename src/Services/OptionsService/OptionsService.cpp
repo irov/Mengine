@@ -7,6 +7,8 @@
 
 #include "Config/StdString.h"
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 //////////////////////////////////////////////////////////////////////////
@@ -119,6 +121,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::hasOption( const Char * _key ) const
     {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return isalpha( _ch ) == 1;
+        } ) == 0 );
+
         for( const Option & op : m_options )
         {
             if( MENGINE_STRCMP( op.key, _key ) != 0 )

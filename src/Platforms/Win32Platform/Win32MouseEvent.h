@@ -15,7 +15,7 @@ namespace Mengine
         ~Win32MouseEvent();
 
     public:
-        bool initialize( HWND _hWnd );
+        void setHWND( HWND _hWnd );
 
     public:
         void verify();

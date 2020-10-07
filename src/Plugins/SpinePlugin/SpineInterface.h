@@ -83,6 +83,7 @@ namespace Mengine
     public:
         virtual bool addAnimationSampler( const SamplerSpineAnimationInterfacePtr & _sampler ) = 0;
         virtual void removeAnimationSampler( const ConstString & _name ) = 0;
+        virtual void clearAnimationSamplers() = 0;
 
         virtual const SamplerSpineAnimationInterfacePtr & findAnimationSampler( const ConstString & _name ) const = 0;
 

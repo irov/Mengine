@@ -1,0 +1,13 @@
+MENGINE_PROJECT(Win32CriticalErrorsMonitorPlugin)
+
+ADD_FILTER(
+src
+    Win32CriticalErrorsMonitorPlugin.h
+    Win32CriticalErrorsMonitorPlugin.cpp
+    Win32CriticalErrorsMonitorPlugin.def
+)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_WIN32_CRITICALERRORSMONITOR)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})

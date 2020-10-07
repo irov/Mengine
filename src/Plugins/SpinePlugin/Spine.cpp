@@ -105,6 +105,19 @@ namespace Mengine
         m_samplers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Spine::clearAnimationSamplers()
+    {
+        if( this->isCompile() == true )
+        {
+            for( const SamplerSpineAnimationPtr & sampler : m_samplers )
+            {
+                sampler->release();
+            }
+        }
+
+        m_samplers.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     const SamplerSpineAnimationInterfacePtr & Spine::findAnimationSampler( const ConstString & _name ) const
     {
         for( const SamplerSpineAnimationPtr & sampler : m_samplers )

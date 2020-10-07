@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32DynamicLibrary
         : public DynamicLibraryInterface
         , public Factorable
@@ -28,7 +29,7 @@ namespace Mengine
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
     protected:
-        Char m_name[MENGINE_MAX_PATH];
+        Char m_name[MENGINE_MAX_PATH] = {'\0'};
         HINSTANCE m_hInstance;
     };
     //////////////////////////////////////////////////////////////////////////

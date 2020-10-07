@@ -15,11 +15,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32MouseEvent::initialize( HWND _hWnd )
+    void Win32MouseEvent::setHWND( HWND _hWnd )
     {
         m_hWnd = _hWnd;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32MouseEvent::verify()
@@ -35,20 +33,32 @@ namespace Mengine
         }
 
         POINT pt;
-        ::GetCursorPos( &pt );
+        if( ::GetCursorPos( &pt ) == FALSE )
+        {
+            return;
+        }
 
         RECT rect;
-        ::GetClientRect( m_hWnd, &rect );
+        if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
+        {
+            return;
+        }
 
         POINT pleft;
         pleft.x = rect.left;
         pleft.y = rect.top;
-        ClientToScreen( m_hWnd, &pleft );
+        if( ::ClientToScreen( m_hWnd, &pleft ) == FALSE )
+        {
+            return;
+        }
 
         POINT pright;
         pright.x = rect.right;
         pright.y = rect.bottom;
-        ClientToScreen( m_hWnd, &pright );
+        if( ::ClientToScreen( m_hWnd, &pright ) == FALSE )
+        {
+            return;
+        }
 
         RECT rclient;
         rclient.left = pleft.x;

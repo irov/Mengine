@@ -180,6 +180,9 @@ namespace Mengine
         bool getErrorMessage( DWORD _messageId, Char * const _out, size_t _capacity ) const override;
 
     protected:
+        bool getCallstack( String * _stack, PCONTEXT _context ) const override;
+
+    protected:
         bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
 
     protected:
@@ -225,7 +228,7 @@ namespace Mengine
         VectorTimers m_timers;
 
         uint32_t m_icon;
-        WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];
+        WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'/0'};
 
         uint64_t m_prevTime;
 

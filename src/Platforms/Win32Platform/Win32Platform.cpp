@@ -3233,7 +3233,7 @@ namespace Mengine
     }
 #else
 //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( String * _stack, PCONTEXT _context )
+    bool Win32Platform::getCallstack( String * _stack, PCONTEXT _context ) const
     {
         MENGINE_UNUSED( _stack );
         MENGINE_UNUSED( _context );

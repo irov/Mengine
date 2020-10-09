@@ -29,6 +29,7 @@ namespace Mengine
         void onGameTimeFactor( float _timeFactor ) override;
         bool onGamePreparation( bool _debug ) override;
         void onGameRun() override;
+        void onGameStop() override;
         bool onGameInitialize() override;
         void onGameInitializeRenderResources() override;
         void onGameFinalizeRenderResources() override;

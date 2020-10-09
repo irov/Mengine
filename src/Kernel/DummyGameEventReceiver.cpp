@@ -147,6 +147,11 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void DummyGameEventReceiver::onGameStop()
+    {
+        // Empty
+    }    
+    //////////////////////////////////////////////////////////////////////////
     bool DummyGameEventReceiver::onGameInitialize()
     {
         // Empty

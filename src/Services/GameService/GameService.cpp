@@ -422,6 +422,14 @@ namespace Mengine
             ->onGameRun();
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameService::stop()
+    {
+        LOGGER_MESSAGE( "Stop game" );
+
+        EVENTABLE_METHOD( EVENT_GAME_STOP )
+            ->onGameStop();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void GameService::initializeRenderResources()
     {
         EVENTABLE_METHOD( EVENT_GAME_INITIALIZE_RENDER_RESOURCES )

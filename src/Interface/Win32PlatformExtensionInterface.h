@@ -36,6 +36,6 @@ namespace Mengine
         virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode ) = 0;
 
     public:
-        virtual bool getCallstack( String * _stack, PCONTEXT _context ) const = 0;
+        virtual bool getCallstack( Char * const _stack, PCONTEXT _context ) const = 0;
     };
 }

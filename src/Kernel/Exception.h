@@ -1,13 +1,28 @@
 #pragma once
 
-#include "stdex/exception.h"
+#include "Config/Char.h"
+
+#include <exception>
 
 //////////////////////////////////////////////////////////////////////////
-#define MENGINE_THROW_EXCEPTION STDEX_THROW_EXCEPTION
-#define MENGINE_THROW_EXCEPTION_FL stdex::helper::throw_exception
+#ifndef MENGINE_EXCEPTION_MAX_MESSAGE
+#define MENGINE_EXCEPTION_MAX_MESSAGE 2048
+#endif
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    typedef stdex::helper::stdex_exception Exception;
+    class Exception
+        : public std::exception
+    {
+    public:
+        explicit Exception( const Char * _message ) noexcept;
+        ~Exception() noexcept;
+
+    public:
+        const char * what() const noexcept override;
+
+    protected:
+        Char m_message[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
+    };
 }
-//////////////////////////////////////////////////////////////////////////
+

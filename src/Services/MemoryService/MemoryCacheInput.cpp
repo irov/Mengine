@@ -1,8 +1,10 @@
 #include "MemoryCacheInput.h"
 
-#include "MemoryService.h"
-
 #include "Interface/MemoryInterface.h"
+
+#include "Kernel/ThreadGuardScope.h"
+
+#include "MemoryService.h"
 
 #include "stdex/memorycopy.h"
 
@@ -72,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryCacheInput::read( void * const _buf, size_t _size )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::read" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::read" );
 
         size_t cnt = _size;
         // Read over end of memory?
@@ -95,7 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::seek( size_t _pos )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::seek" );
 
         if( _pos > m_size )
         {
@@ -109,7 +111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::skip( size_t _pos )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::skip" );
 
         if( m_pos + _pos > m_end )
         {
@@ -128,14 +130,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::eof() const
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::eof" );
 
         return m_pos == m_end;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryCacheInput::tell() const
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::tell" );
 
         size_t distance = m_pos - m_data;
 

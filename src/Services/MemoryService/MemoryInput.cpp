@@ -1,6 +1,7 @@
 #include "MemoryInput.h"
 
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/ThreadGuardScope.h"
 
 #include "stdex/memorycopy.h"
 
@@ -55,7 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryInput::read( void * const _buf, size_t _count )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::read" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::read" );
 
         size_t cnt = _count;
         // Read over end of memory?
@@ -78,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryInput::seek( size_t _pos )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::seek" );
 
         if( _pos > m_size )
         {
@@ -92,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryInput::skip( size_t _pos )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::skip" );
 
         if( m_pos + _pos > m_end )
         {
@@ -106,21 +107,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryInput::size() const
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::size" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::size" );
 
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryInput::eof() const
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::eof" );
 
         return m_pos == m_end;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryInput::tell() const
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::tell" );
 
         size_t distance = m_pos - m_data;
 

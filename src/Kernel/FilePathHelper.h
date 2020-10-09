@@ -29,7 +29,7 @@ namespace Mengine
                     const FilePath::value_type * value_str = _value.c_str();
                     FilePath::size_type value_size = (FilePath::size_type)_value.size();
 
-                    FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
+                    FilePath fp = Helper::stringizeFilePathSize( value_str, value_size );
 
                     return fp;
                 }

@@ -360,9 +360,7 @@ namespace Mengine
         }
 
         typedef BOOL( WINAPI * PSETPROCESSDPIAWARE )(VOID);
-
-        FARPROC pSetProcessDPIAware =
-            ::GetProcAddress( hUser32, "SetProcessDPIAware" );
+        FARPROC pSetProcessDPIAware = ::GetProcAddress( hUser32, "SetProcessDPIAware" );
 
         if( pSetProcessDPIAware == NULL )
         {
@@ -786,7 +784,7 @@ namespace Mengine
             }
 
             // Found a match
-            if( ::_wcsicmp( unicode_fontName, valueName ) == 0 )
+            if( MENGINE_WCSICMP( unicode_fontName, valueName ) == 0 )
             {
                 MENGINE_MEMCPY( unicode_fontPath, valueData, valueDataSize );
 
@@ -2972,7 +2970,7 @@ namespace Mengine
             firstEntry, nextEntry, lastEntry
         };
         //////////////////////////////////////////////////////////////////////////
-        static void OnCallstackEntry( String * _stack, CallstackEntry & entry )
+        static void OnCallstackEntry( Char * _stack, CallstackEntry & entry )
         {
             CHAR buffer[STACKWALK_MAX_NAMELEN];
             if( entry.offset == 0 )
@@ -3011,11 +3009,13 @@ namespace Mengine
                 MENGINE_SPRINTF( buffer, "%s (%d): %s\n", entry.lineFileName, entry.lineNumber, entry.name );
             }
 
-            _stack->append( buffer );
+            MENGINE_STRCAT( _stack, buffer );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool GetCallstack( String * _stack, PCONTEXT _context, HMODULE hDbhHelp, HMODULE hKernel32, HANDLE hThread, HANDLE hProcess )
+        static bool GetCallstack( Char * const _stack, PCONTEXT _context, HMODULE hDbhHelp, HMODULE hKernel32, HANDLE hThread, HANDLE hProcess )
         {
+            _stack[0] = '\0';
+
             TRtlCaptureContext pRtlCaptureContext = (TRtlCaptureContext)::GetProcAddress( hKernel32, "RtlCaptureContext" );
             TStackWalk64 pStackWalk64 = (TStackWalk64)::GetProcAddress( hDbhHelp, "StackWalk64" );
             TSymGetOptions pSymGetOptions = (TSymGetOptions)::GetProcAddress( hDbhHelp, "SymGetOptions" );
@@ -3175,7 +3175,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( String * _stack, PCONTEXT _context ) const
+    bool Win32Platform::getCallstack( Char * const _stack, PCONTEXT _context ) const
     {
         HANDLE hThread = ::GetCurrentThread();
         HANDLE hProcess = ::GetCurrentProcess();
@@ -3232,8 +3232,8 @@ namespace Mengine
         return successful;
     }
 #else
-//////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( String * _stack, PCONTEXT _context )
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getCallstack( Char * const _stack, PCONTEXT _context ) const
     {
         MENGINE_UNUSED( _stack );
         MENGINE_UNUSED( _context );

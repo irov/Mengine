@@ -8,11 +8,11 @@ namespace Mengine
 {
     namespace Helper
     {
-        void crash()
+        void crash( const Char * _doc )
         {
             if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
             {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_CRASH, _doc );
             }
 
             volatile uint32_t * p = nullptr;

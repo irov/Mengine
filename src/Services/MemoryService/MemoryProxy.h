@@ -3,8 +3,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Factorable.h"
-
-#include "stdex/thread_guard.h"
+#include "Kernel/ThreadGuard.h"
 
 namespace Mengine
 {
@@ -28,7 +27,7 @@ namespace Mengine
         void * m_ptr;
         size_t m_size;
 
-        STDEX_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryProxy> MemoryProxyPtr;

@@ -11,7 +11,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/Pointer.h"
 
-#include "stdex/thread_guard.h"
+#include "Kernel/ThreadGuard.h"
 
 namespace Mengine
 {
@@ -47,7 +47,7 @@ namespace Mengine
         bool m_register;
 #endif
 
-        STDEX_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factory> FactoryPtr;

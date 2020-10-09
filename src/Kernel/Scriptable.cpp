@@ -2,7 +2,7 @@
 
 #include "Interface/ScriptWrapperInterface.h"
 
-#include "Kernel/Exception.h"
+#include "Kernel/ExceptionHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE

@@ -44,8 +44,8 @@ namespace Mengine
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
             ->getPlatformExtention();
 
-        String stack;
-        if( extension->getCallstack( &stack, pExceptionPointers->ContextRecord ) == false )
+        Char stack[8096] = {'\0'};
+        if( extension->getCallstack( stack, pExceptionPointers->ContextRecord ) == false )
         {
             LOGGER_CRITICAL( "catch exception and write dumb '%s'\n\n\n"
                 , g_crashDumpExceptionHandlerData->dumpPath.c_str()
@@ -55,7 +55,7 @@ namespace Mengine
         {
             LOGGER_CRITICAL( "catch exception and write dumb '%s'\n\n\n %s\n\n\n"
                 , g_crashDumpExceptionHandlerData->dumpPath.c_str()
-                , stack.c_str()
+                , stack
             );
         }
 

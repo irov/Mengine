@@ -3,10 +3,9 @@
 #include "Interface/FileInputStreamInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ThreadGuardScope.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
-
-#include "stdex/thread_guard_scope.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
@@ -65,7 +64,7 @@ namespace Mengine
 
         uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE] = {0};
 
-        STDEX_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT;
 
 #ifdef MENGINE_DEBUG
         FilePath m_relationPath;

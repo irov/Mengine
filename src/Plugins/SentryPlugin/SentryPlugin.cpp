@@ -370,7 +370,7 @@ namespace Mengine
 
             sentry_capture_event( event );
 
-            Helper::crash();
+            Helper::crash( "sentrycrash" );
         }
     }
 }

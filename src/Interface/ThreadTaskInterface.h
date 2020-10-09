@@ -3,8 +3,6 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
-#include "Config/Config.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

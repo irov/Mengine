@@ -45,6 +45,7 @@ namespace Mengine
 
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onPreparation", EVENT_GAME_PREPARATION, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onRun", EVENT_GAME_RUN, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onStop", EVENT_GAME_STOP, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onInitialize", EVENT_GAME_INITIALIZE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onInitializeRenderResources", EVENT_GAME_INITIALIZE_RENDER_RESOURCES, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, "onAccountFinalize", EVENT_GAME_ACCOUNT_FINALIZE, _doc );

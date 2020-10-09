@@ -22,6 +22,7 @@ namespace Mengine
 
     public:
         virtual void run() = 0;
+        virtual void stop() = 0;
 
     public:
         virtual void update() = 0;

@@ -1245,6 +1245,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stop()
     {
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP );
+        }
+
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        {
+            GAME_SERVICE()
+                ->stop();
+        }
+
         m_packagesPaths.clear();
         m_settingsPaths.clear();
 
@@ -1274,7 +1285,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
         }
 

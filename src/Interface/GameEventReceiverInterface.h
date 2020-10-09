@@ -29,6 +29,7 @@ namespace Mengine
         EVENT_GAME_ON_TIME_FACTOR,
         EVENT_GAME_PREPARATION,
         EVENT_GAME_RUN,
+        EVENT_GAME_STOP,
         EVENT_GAME_INITIALIZE,
         EVENT_GAME_INITIALIZE_RENDER_RESOURCES,
         EVENT_GAME_FINALIZE_RENDER_RESOURCES,
@@ -74,6 +75,7 @@ namespace Mengine
         virtual void onGameTimeFactor( float _timeFactor ) = 0;
         virtual bool onGamePreparation( bool _debug ) = 0;
         virtual void onGameRun() = 0;
+        virtual void onGameStop() = 0;
         virtual bool onGameInitialize() = 0;
         virtual void onGameInitializeRenderResources() = 0;
         virtual void onGameFinalizeRenderResources() = 0;
@@ -114,6 +116,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ON_TIME_FACTOR );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_PREPARATION );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_RUN );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_STOP );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_INITIALIZE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_INITIALIZE_RENDER_RESOURCES );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FINALIZE_RENDER_RESOURCES );

@@ -574,10 +574,10 @@ namespace Mengine
 
             m_soundIdentities.erase( it );
 
-            break;
+            return true;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::setSoundVolume( const ConstString & _type, float _volume, float _default )

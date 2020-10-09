@@ -4,7 +4,7 @@
 
 #include "Kernel/Factorable.h"
 
-#include "stdex/thread_guard_scope.h"
+#include "Kernel/ThreadGuardScope.h"
 
 #ifdef MENGINE_DEBUG
 #include "Kernel/DocumentHelper.h"
@@ -48,7 +48,7 @@ namespace Mengine
         uint8_t * m_pos;
         uint8_t * m_end;
 
-        STDEX_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryProxyInput> MemoryProxyInputPtr;

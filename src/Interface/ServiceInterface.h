@@ -4,6 +4,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/ExceptionHelper.h"
 #include "Kernel/Typename.h"
 
 namespace Mengine

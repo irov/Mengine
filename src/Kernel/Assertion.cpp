@@ -92,7 +92,7 @@ namespace Mengine
 
             if( _level == ASSERTION_LEVEL_CRITICAL )
             {
-                Helper::crash();
+                Helper::crash( str_info );
 
                 return;
             }

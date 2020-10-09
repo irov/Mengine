@@ -50,7 +50,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );
+        MENGINE_THREAD_GUARD_CHECK( this, "Factory::createObject" );
 
         Factorable * object = this->_createObject();
 
@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factory::destroyObject( Factorable * _object )
     {
-        STDEX_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
+        MENGINE_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
 
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )

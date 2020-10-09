@@ -4,8 +4,8 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Factorable.h"
-
-#include "stdex/thread_guard.h"
+#include "Kernel/ThreadGuardScope.h"
+#include "Kernel/ThreadGuard.h"
 
 namespace Mengine
 {
@@ -57,7 +57,7 @@ namespace Mengine
         uint8_t * m_pos;
         uint8_t * m_end;
 
-        STDEX_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryCacheInput> MemoryCacheInputPtr;

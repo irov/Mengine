@@ -3,8 +3,7 @@
 #include "Interface/FileInputStreamInterface.h"
 
 #include "Kernel/Factorable.h"
-
-#include "stdex/thread_guard.h"
+#include "Kernel/ThreadGuard.h"
 
 #include "SDL_rwops.h"
 
@@ -62,7 +61,7 @@ namespace Mengine
 
         uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE] = {0};
 
-        STDEX_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT;
 
 #ifdef MENGINE_DEBUG
         FilePath m_relationPath;

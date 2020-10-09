@@ -397,14 +397,6 @@ namespace Mengine
             ->sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t ThreadService::getCurrentThreadId() const
-    {
-        uint64_t id = THREAD_SYSTEM()
-            ->getCurrentThreadId();
-
-        return id;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ThreadService::isMainThread() const
     {
         uint64_t id = THREAD_SYSTEM()

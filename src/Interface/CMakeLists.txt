@@ -49,8 +49,7 @@ src
     EasingInterface.h
     EasingServiceInterface.h
     BootstrapperInterface.h
-    SecureServiceInterface.h
-    ThreadWorkerInterface.h
+    SecureServiceInterface.h    
     DateTimeProviderInterface.h
     
     ConverterInterface.h
@@ -148,6 +147,7 @@ ADD_FILTER(
 Thread     
     ThreadIdentityInterface.h
     ThreadQueueInterface.h
+    ThreadWorkerInterface.h
     ThreadTaskInterface.h
     ThreadMutexInterface.h
     ThreadServiceInterface.h

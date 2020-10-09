@@ -322,7 +322,7 @@ Vertices
 )
 
 ADD_FILTER(
-ThreadTask
+Thread
     ThreadEnum.h
     ThreadTask.h
     ThreadTask.cpp
@@ -332,6 +332,10 @@ ThreadTask
     ThreadTaskPacket.cpp
     ThreadHelper.h
     ThreadHelper.cpp
+    ThreadGuard.h
+    ThreadGuard.cpp
+    ThreadGuardScope.h
+    ThreadGuardScope.cpp
 )
 
 ADD_FILTER(
@@ -391,6 +395,11 @@ Core
     BaseFileGroup.cpp
 
     Exception.h
+    Exception.cpp
+    
+    ExceptionHelper.h
+    ExceptionHelper.cpp
+    
     Visitor.h
 
     Polygon.h

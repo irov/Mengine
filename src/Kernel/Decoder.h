@@ -3,10 +3,9 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
 
+#include "Kernel/ThreadGuardScope.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Logger.h"
-
-#include "stdex/thread_guard_scope.h"
 
 namespace Mengine
 {
@@ -29,7 +28,7 @@ namespace Mengine
     public:
         bool initialize() override
         {
-            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::initialize" );
+            MENGINE_THREAD_GUARD_SCOPE( this, "Decoder::initialize" );
 
             if( m_initialize == true )
             {
@@ -50,7 +49,7 @@ namespace Mengine
     public:
         void finalize() override
         {
-            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::finalize" );
+            MENGINE_THREAD_GUARD_SCOPE( this, "Decoder::finalize" );
 
             if( m_initialize == false )
             {
@@ -83,7 +82,7 @@ namespace Mengine
     private:
         bool prepareData( const InputStreamInterfacePtr & _stream ) override
         {
-            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::prepareData" );
+            MENGINE_THREAD_GUARD_SCOPE( this, "Decoder::prepareData" );
 
             m_stream = _stream;
 
@@ -106,7 +105,7 @@ namespace Mengine
     private:
         size_t decode( void * const _buffer, size_t _bufferSize ) override
         {
-            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::decode" );
+            MENGINE_THREAD_GUARD_SCOPE( this, "Decoder::decode" );
 
             size_t byte = this->_decode( _buffer, _bufferSize );
 
@@ -119,7 +118,7 @@ namespace Mengine
     private:
         bool seek( float _time ) override
         {
-            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::seek" );
+            MENGINE_THREAD_GUARD_SCOPE( this, "Decoder::seek" );
 
             bool successful = this->_seek( _time );
 
@@ -137,7 +136,7 @@ namespace Mengine
     private:
         float tell() const override
         {
-            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::tell" );
+            MENGINE_THREAD_GUARD_SCOPE( this, "Decoder::tell" );
 
             float value = this->_tell();
 
@@ -153,7 +152,7 @@ namespace Mengine
     private:
         bool rewind() override
         {
-            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::rewind" );
+            MENGINE_THREAD_GUARD_SCOPE( this, "Decoder::rewind" );
 
             bool successful = this->_rewind();
 
@@ -175,6 +174,6 @@ namespace Mengine
 
         bool m_initialize;
 
-        STDEX_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT;
     };
 }

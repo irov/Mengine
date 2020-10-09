@@ -28,7 +28,7 @@ namespace Mengine
                     const ConstString::value_type * value_str = _value.c_str();
                     ConstString::size_type value_size = (ConstString::size_type)_value.size();
 
-                    ConstString constString = Helper::stringizeStringSize( value_str, (ConstString::size_type)value_size );
+                    ConstString constString = Helper::stringizeStringSize( value_str, value_size );
 
                     return constString;
                 }

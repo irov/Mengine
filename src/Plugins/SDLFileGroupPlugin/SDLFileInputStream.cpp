@@ -5,11 +5,11 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ThreadGuardScope.h"
 
 #include "SDLFileHelper.h"
 
 #include "stdex/memorycopy.h"
-#include "stdex/thread_guard_scope.h"
 
 #include <algorithm>
 
@@ -65,7 +65,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
 
 #ifdef MENGINE_DEBUG
         m_relationPath = _relationPath;
@@ -171,7 +171,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLFileInputStream::read( void * _buf, size_t _count )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::read" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::read" );
 
         size_t pos = m_reading - m_capacity + m_carriage;
 
@@ -287,7 +287,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::seek( size_t _pos )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::seek" );
 
         bool successful = this->seek_( _pos );
 
@@ -326,7 +326,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::skip( size_t _pos )
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::skip" );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -339,7 +339,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLFileInputStream::tell() const
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::tell" );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -353,7 +353,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::eof() const
     {
-        STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::eof" );
 
         return (m_reading - m_capacity + m_carriage) == m_size;
     }

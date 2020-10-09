@@ -3,6 +3,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
@@ -1263,7 +1264,8 @@ namespace Mengine
         }
         else
         {
-            uint64_t tid = THREAD_SERVICE()->getCurrentThreadId();
+            uint64_t tid = THREAD_SYSTEM()
+                ->getCurrentThreadId();
 
             if( _streaming == false )
             {

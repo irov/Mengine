@@ -56,7 +56,6 @@ namespace Mengine
         void sleep( uint32_t _ms ) override;
 
     public:
-        uint64_t getCurrentThreadId() const override;
         bool isMainThread() const override;
 
     protected:

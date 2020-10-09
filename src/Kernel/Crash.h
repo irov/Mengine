@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Config/Char.h"
+
 namespace Mengine
 {
     namespace Helper
     {
-        void crash();
+        void crash( const Char * _doc );
     }
 }

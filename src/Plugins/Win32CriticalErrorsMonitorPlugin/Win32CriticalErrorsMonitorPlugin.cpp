@@ -3,9 +3,11 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Interface/Win32PlatformExtensionInterface.h"
 
+#include "Kernel/BuildMode.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdIO.h"
@@ -32,6 +34,13 @@ namespace Mengine
         }
 
         if( HAS_OPTION( "nocriticalerrorsmonitor" ) == true )
+        {
+            return false;
+        }
+
+        bool developmentMode = Helper::isDevelopmentMode();
+
+        if( developmentMode == false )
         {
             return false;
         }
@@ -101,6 +110,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32CriticalErrorsMonitorPlugin::_initializePlugin()
     {
+        Char userPath[MENGINE_MAX_PATH] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getUserPath( userPath );
+
+        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+            ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
+
+        PlatformDateTime dateTime;
+        dateTimeProvider->getLocalDateTime( &dateTime );
+
+        MENGINE_SPRINTF( m_dumpPath, "%sDump_%u_%u_%u_%u_%u_%u.dmp"
+            , userPath
+            , dateTime.year
+            , dateTime.month
+            , dateTime.day
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
+        );
+
         g_monitor = this;
 
         ::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );

@@ -11,7 +11,6 @@
 
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
-#include "Win32CriticalErrorsMonitor.h"
 
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
@@ -272,50 +271,8 @@ namespace Mengine
         m_factoryDateTimeProviders = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::runCriticalErrorsMonitor_()
-    {
-        bool developmentMode = Helper::isDevelopmentMode();
-
-        bool roamingMode = HAS_OPTION( "roaming" );
-        bool noroamingMode = HAS_OPTION( "noroaming" );
-
-        if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
-        {
-            Char userPath[MENGINE_MAX_PATH] = {'\0'};
-            this->getUserPath( userPath );
-
-            String dumpPath;
-            dumpPath += userPath;
-            dumpPath += "Dump";
-            dumpPath += "_";
-
-            DateTimeProviderInterfacePtr dateTimeProvider =
-                this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
-            PlatformDateTime dateTime;
-            dateTimeProvider->getLocalDateTime( &dateTime );
-
-            Stringstream ss_date;
-            ss_date << dateTime.year
-                << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
-                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
-                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-                << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-            String str_date = ss_date.str();
-
-            dumpPath += str_date;
-            dumpPath += ".dmp";
-
-            Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_runService()
     {
-        this->runCriticalErrorsMonitor_();
-
         DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -2970,7 +2927,7 @@ namespace Mengine
             firstEntry, nextEntry, lastEntry
         };
         //////////////////////////////////////////////////////////////////////////
-        static void OnCallstackEntry( Char * _stack, CallstackEntry & entry )
+        static void OnCallstackEntry( Char * const _stack, CallstackEntry & entry )
         {
             CHAR buffer[STACKWALK_MAX_NAMELEN];
             if( entry.offset == 0 )
@@ -3002,11 +2959,21 @@ namespace Mengine
                     MENGINE_STRCPY( entry.moduleName, "(module-name not available)" );
                 }
 
-                MENGINE_SPRINTF( buffer, "%p (%s): %s (%d): %s\n", (LPVOID)entry.offset, entry.moduleName, entry.lineFileName, entry.lineNumber, entry.name );
+                MENGINE_SPRINTF( buffer, "%p (%s): %s (%d): %s\n"
+                    , (LPVOID)entry.offset
+                    , entry.moduleName
+                    , entry.lineFileName
+                    , entry.lineNumber
+                    , entry.name 
+                );
             }
             else
             {
-                MENGINE_SPRINTF( buffer, "%s (%d): %s\n", entry.lineFileName, entry.lineNumber, entry.name );
+                MENGINE_SPRINTF( buffer, "%s (%d): %s\n"
+                    , entry.lineFileName
+                    , entry.lineNumber
+                    , entry.name 
+                );
             }
 
             MENGINE_STRCAT( _stack, buffer );

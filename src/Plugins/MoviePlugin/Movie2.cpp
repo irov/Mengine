@@ -625,7 +625,10 @@ namespace Mengine
         for( const HashtableSlots::value_type & value : m_slots )
         {
             const Movie2SlotPtr & slot = value.element;
+
             slot->removeFromParent();
+            slot->removeChildren( []( const NodePtr & )
+            {} );
         }
 
         m_slots.clear();
@@ -644,6 +647,8 @@ namespace Mengine
         {
             const TextFieldPtr & text = value.element;
             text->removeFromParent();
+            text->removeChildren( []( const NodePtr & )
+            {} );
         }
 
         m_texts.clear();
@@ -652,6 +657,8 @@ namespace Mengine
         {
             const ShapeQuadFixedPtr & sprite = value.element;
             sprite->removeFromParent();
+            sprite->removeChildren( []( const NodePtr & )
+            {} );
         }
 
         m_sprites.clear();
@@ -661,6 +668,8 @@ namespace Mengine
             const NodePtr & astralaxEmitter = value.element;
 
             astralaxEmitter->removeFromParent();
+            astralaxEmitter->removeChildren( []( const NodePtr & )
+            {} );
         }
 
         m_astralaxEmitters.clear();

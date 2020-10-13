@@ -697,10 +697,9 @@ namespace Mengine
         LOGGER_MESSAGE( "initialize Plugins..." );
 
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
-        {LOGGER_INFO( Info );\
-        if( PLUGIN_CREATE(Name, Doc) == false ){\
+        {if( PLUGIN_CREATE(Name, Doc) == false ){\
         LOGGER_ERROR( "Invalid %s", Info ); return false;}else{\
-        LOGGER_MESSAGE( "Successful %s", Info );}}
+        LOGGER_MESSAGE_RELEASE( "Successful %s", Info );}}
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
         MENGINE_ADD_PLUGIN( Sentry, "initialize Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );

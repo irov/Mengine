@@ -70,6 +70,7 @@ namespace Mengine
         , m_serverAddressCopy()
         , m_serverPortCopy( 0 )
         , m_connectionStatus( ConnectionStatus::Disconnected )
+        , m_arrow( nullptr )
         , m_scene( nullptr )
         , m_scenePickerable( nullptr )
         , m_sceneRenderable( nullptr )
@@ -78,6 +79,11 @@ namespace Mengine
         , m_updateSceneOnChange( false )
         , m_pauseRequested( false )
         , m_memoryTotal( 0 )
+        , m_AvailableTextureMemory( 0 )
+        , m_TextureMemoryUse( 0 )
+        , m_TextureCount( 0 )
+        , m_SoundSourcesCount( 0 )
+        , m_SoundBuffersCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -151,7 +157,7 @@ namespace Mengine
         m_networkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
 
         // Create tabs
-        m_tabs.push_back({
+        m_tabs.push_back( {
             "Scene Debugger",
             true,
             [this]()
@@ -160,19 +166,19 @@ namespace Mengine
         }} );
         m_tabs.push_back( {
             "Memory",
-            true, 
+            true,
             [this]()
         {
             this->DoUIMemoryTab();
         }} );
-        m_tabs.push_back({
+        m_tabs.push_back( {
             "Objects Leak",
             true,
             [this]()
         {
             this->DoUIObjectsLeakTab();
         }} );
-        m_tabs.push_back({
+        m_tabs.push_back( {
             "Settings",
             true,
             [this]()
@@ -229,6 +235,12 @@ namespace Mengine
 
         m_networkThread.join();
 
+        if( m_arrow != nullptr )
+        {
+            this->DestroyNode( m_arrow );
+            m_arrow = nullptr;
+        }
+
         if( m_scene != nullptr )
         {
             this->DestroyNode( m_scene );
@@ -264,6 +276,12 @@ namespace Mengine
 
         if( m_connectionStatus == ConnectionStatus::Disconnected )
         {
+            if( m_arrow != nullptr )
+            {
+                this->DestroyNode( m_arrow );
+                m_arrow = nullptr;
+            }
+
             if( m_scene != nullptr )
             {
                 this->DestroyNode( m_scene );
@@ -406,34 +424,53 @@ namespace Mengine
             return;
         }
 
-        if( typeStr == "Scene" )
+        if( typeStr == "Arrow" )
+        {
+            this->ReceiveArrow( payloadNode );
+        }
+        else if( typeStr == "Scene" )
         {
             this->ReceiveScene( payloadNode );
         }
-
-        if( typeStr == "Pickerable" )
+        else if( typeStr == "Pickerable" )
         {
             this->ReceivePickerable( payloadNode );
         }
-
-        if( typeStr == "Renderable" )
+        else if( typeStr == "Renderable" )
         {
             this->ReceiveRenderable( payloadNode );
         }
-
-        if( typeStr == "Memory" )
+        else if( typeStr == "Memory" )
         {
             this->ReceiveMemory( payloadNode );
         }
-
-        if( typeStr == "ObjectsLeak" )
+        else if( typeStr == "ObjectsLeak" )
         {
             this->ReceiveObjectsLeak( payloadNode );
         }
-
-        if( typeStr == "Settings" )
+        else if( typeStr == "Settings" )
         {
             this->ReceiveSettings( payloadNode );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveArrow( const pugi::xml_node & _xmlContainer )
+    {
+        pugi::xml_node xmlNode = _xmlContainer.first_child();
+
+        if( xmlNode )
+        {
+            if( m_arrow != nullptr )
+            {
+                DestroyNode( m_arrow );
+            }
+
+            m_arrow = new DebuggerNode();
+            m_arrow->parent = nullptr;
+
+            this->DeserializeNode( xmlNode, m_arrow );
+
+            m_selectedNode = this->PathToNode( this->StringToPath( m_lastSelectedNodePath ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -500,6 +537,11 @@ namespace Mengine
     void NodeDebuggerApp::ReceiveMemory( const pugi::xml_node & _xmlContainer )
     {
         m_memoryTotal = _xmlContainer.attribute( "Total" ).as_uint();
+        m_AvailableTextureMemory = _xmlContainer.attribute( "AvailableTextureMemory" ).as_uint();
+        m_TextureMemoryUse = _xmlContainer.attribute( "TextureMemoryUse" ).as_uint();
+        m_TextureCount = _xmlContainer.attribute( "TextureCount" ).as_uint();
+        m_SoundSourcesCount = _xmlContainer.attribute( "SoundSourcesCount" ).as_uint();
+        m_SoundBuffersCount = _xmlContainer.attribute( "SoundBuffersCount" ).as_uint();
 
         pugi::xml_node xml_allocators = _xmlContainer.child( "Allocators" );
 
@@ -509,7 +551,7 @@ namespace Mengine
             uint32_t count = child.attribute( "Count" ).as_uint();
 
             m_memory[name] = count;
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer )
@@ -1063,26 +1105,27 @@ namespace Mengine
             }
         }
 
-        static int SceneTagId = 0;
+        static int SceneTagId = 1;
 
         if( ImGui::CollapsingHeader( "Type:" ) )
         {
-            ImGui::RadioButton( "Full", &SceneTagId, 0 ); ImGui::SameLine();
-            ImGui::RadioButton( "Picker", &SceneTagId, 1 ); ImGui::SameLine();
-            ImGui::RadioButton( "Render", &SceneTagId, 2 );
+            ImGui::RadioButton( "Arrow", &SceneTagId, 0 ); ImGui::SameLine();
+            ImGui::RadioButton( "Full", &SceneTagId, 1 ); ImGui::SameLine();
+            ImGui::RadioButton( "Picker", &SceneTagId, 2 ); ImGui::SameLine();
+            ImGui::RadioButton( "Render", &SceneTagId, 3 );
         }
 
         switch( SceneTagId )
         {
         case 0:
             {
-                if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                if( ImGui::CollapsingHeader( "Arrow:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
-                    if( m_scene )
+                    if( m_arrow )
                     {
-                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                        if( ImGui::BeginChild( "ArrowTree", ImVec2( 0, 200.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scene, "Full" );
+                            this->DoNodeElement( m_arrow, "ArrowFull" );
                         }
                         ImGui::EndChild();
                     }
@@ -1090,13 +1133,13 @@ namespace Mengine
             }break;
         case 1:
             {
-                if( ImGui::CollapsingHeader( "Pickerable:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
-                    if( m_scenePickerable )
+                    if( m_scene )
                     {
-                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scenePickerable, "Pickerable" );
+                            this->DoNodeElement( m_scene, "SceneFull" );
                         }
                         ImGui::EndChild();
                     }
@@ -1104,13 +1147,27 @@ namespace Mengine
             }break;
         case 2:
             {
+                if( ImGui::CollapsingHeader( "Pickerable:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                {
+                    if( m_scenePickerable )
+                    {
+                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                        {
+                            this->DoNodeElement( m_scenePickerable, "ScenePickerable" );
+                        }
+                        ImGui::EndChild();
+                    }
+                }
+            }break;
+        case 3:
+            {
                 if( ImGui::CollapsingHeader( "Renderable:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
                     if( m_sceneRenderable )
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_sceneRenderable, "Renderable" );
+                            this->DoNodeElement( m_sceneRenderable, "SceneRenderable" );
                         }
                         ImGui::EndChild();
                     }
@@ -1136,10 +1193,37 @@ namespace Mengine
     {
         ImGui::Separator();
 
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Total: %um %ukb %ub"
-            , m_memoryTotal / 1000000
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Total: %ug %um %ukb %ub"
+            , m_memoryTotal / 1000000000
+            , (m_memoryTotal % 1000000000) / 1000000
             , (m_memoryTotal % 1000000) / 1000
             , m_memoryTotal % 1000
+        );
+
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Texture Available: %ug %um %ukb %ub"
+            , m_AvailableTextureMemory / 1000000000
+            , (m_AvailableTextureMemory % 1000000000) / 1000000
+            , (m_AvailableTextureMemory % 1000000) / 1000
+            , m_AvailableTextureMemory % 1000
+        );
+
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Texture Use: %ug %um %ukb %ub"
+            , m_TextureMemoryUse / 1000000000
+            , (m_TextureMemoryUse % 1000000000) / 1000000
+            , (m_TextureMemoryUse % 1000000) / 1000
+            , m_TextureMemoryUse % 1000
+        );
+
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Texture Count: %u"
+            , m_TextureCount
+        );
+
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Sound Sources Count: %u"
+            , m_SoundSourcesCount
+        );
+
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Sound Buffers Count: %u"
+            , m_SoundBuffersCount
         );
 
         ImGui::Separator();

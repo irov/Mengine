@@ -31,7 +31,7 @@ namespace Mengine
         void enable( IDirect3DDevice9 * _pD3DDevice );
 
     protected:
-        IDirect3DVertexShader9 * m_shader;
+        IDirect3DVertexShader9 * m_pD3DVertexShader;
 
         ConstString m_name;
 

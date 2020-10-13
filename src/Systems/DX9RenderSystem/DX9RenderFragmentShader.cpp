@@ -8,14 +8,14 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderFragmentShader::DX9RenderFragmentShader()
-        : m_shader( nullptr )
+        : m_pD3DPixelShader( nullptr )
         , m_compile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderFragmentShader::~DX9RenderFragmentShader()
     {
-        this->finalize();
+        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderFragmentShader::getName() const
@@ -37,12 +37,12 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        DXRELEASE( m_shader );
+        DXRELEASE( m_pD3DPixelShader );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderFragmentShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        MENGINE_ASSERTION_FATAL( m_shader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
 
         const DWORD * shader_compile_data = m_memory->getBuffer();
 
@@ -50,16 +50,19 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        IF_DXCALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, &m_shader) )
+        IDirect3DPixelShader9 * pD3DPixelShader;
+        IF_DXCALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, &pD3DPixelShader) )
         {
             return false;
         }
+
+        m_pD3DPixelShader = pD3DPixelShader;
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderFragmentShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        DXCALL( _pD3DDevice, SetPixelShader, (m_shader) );
+        DXCALL( _pD3DDevice, SetPixelShader, (m_pD3DPixelShader) );
     }
 }

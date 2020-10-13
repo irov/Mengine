@@ -1514,7 +1514,7 @@ namespace Mengine
 
         if( playCount > MaxSoundPlay )
         {
-            LOGGER_ERROR( "Sound play exceeded max count '%d'"
+            LOGGER_ERROR( "Sound play exceeded max count '%u'"
                 , MaxSoundPlay
             );
 

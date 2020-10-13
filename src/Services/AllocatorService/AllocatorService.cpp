@@ -204,6 +204,11 @@ namespace Mengine
         MENGINE_UNUSED( _doc );
 
 #ifdef MENGINE_ALLOCATOR_DEBUG
+        if( _doc == nullptr )
+        {
+            return 0;
+        }
+
         for( uint32_t index = 0; index != 2048; ++index )
         {
             const ReportDesc & r = m_reports[index];
@@ -223,6 +228,11 @@ namespace Mengine
 #ifdef MENGINE_ALLOCATOR_DEBUG
     void AllocatorService::report( const Char * _doc, size_t _add, size_t _minus )
     {
+        if( _doc == nullptr )
+        {
+            return;
+        }
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexReport );
 
         MENGINE_ASSERTION_FATAL( m_reportTotal + _add >= _minus );

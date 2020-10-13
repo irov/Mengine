@@ -33,6 +33,8 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Error.h"
 
+#include "Config/StdString.h"
+
 #include "math/uv4.h"
 
 #include <algorithm>
@@ -142,7 +144,7 @@ namespace Mengine
                 continue;
             }
 
-            if( strstr( Identifier.Description, "PerfHUD" ) != 0 )
+            if( MENGINE_STRSTR( Identifier.Description, "PerfHUD" ) != 0 )
             {
                 m_adapterToUse = Adapter;
                 m_deviceType = D3DDEVTYPE_REF;
@@ -203,8 +205,8 @@ namespace Mengine
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 
         m_factoryRenderVertexAttribute = Helper::makeFactoryPool<DX9RenderVertexAttribute, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderVertexShader = Helper::makeFactoryPool<DX9RenderVertexShader, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderFragmentShader = Helper::makeFactoryPool<DX9RenderFragmentShader, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<DX9RenderVertexShader, 16>( this, &DX9RenderSystem::onDestroyDX9VertexShader_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<DX9RenderFragmentShader, 16>( this, &DX9RenderSystem::onDestroyDX9FragmentShader_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgram = Helper::makeFactoryPool<DX9RenderProgram, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX9RenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryVertexBuffer = Helper::makeFactoryPoolWithListener<DX9RenderVertexBuffer, 8>( this, &DX9RenderSystem::onDestroyDX9VertexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
@@ -866,13 +868,15 @@ namespace Mengine
 
         if( hr == D3DERR_DEVICELOST )
         {
-            ::Sleep( 100 );
+            LOGGER_MESSAGE_RELEASE( "device lost wait to reset" );
+
+            ::Sleep( 200 );
 
             return false;
         }
         else if( hr == D3DERR_DEVICENOTRESET )
         {
-            LOGGER_WARNING( "D3DERR_DEVICENOTRESET" );
+            LOGGER_MESSAGE_RELEASE( "device reset" );
 
             if( this->resetDevice_() == false )
             {
@@ -927,6 +931,8 @@ namespace Mengine
 
         if( hr == D3DERR_DEVICELOST )
         {
+            LOGGER_ERROR( "device lost in swap buffers" );
+
             this->releaseResources_();
         }
         else if( FAILED( hr ) )
@@ -1067,6 +1073,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t DX9RenderSystem::getAvailableTextureMemory() const
+    {
+        UINT availableTextureMem = m_pD3DDevice->GetAvailableTextureMem();
+
+        return (uint32_t)availableTextureMem;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderSystem::getTextureMemoryUse() const
     {
         return m_textureMemoryUse;
@@ -1191,10 +1204,7 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetIndices, (nullptr) )
             {
-                LOGGER_ERROR( "indices not reset"
-                );
-
-                //return false;
+                LOGGER_ERROR( "indices not reset" );
             }
         }
 
@@ -1204,10 +1214,7 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
             {
-                LOGGER_ERROR( "stream source not reset"
-                );
-
-                //return false;
+                LOGGER_ERROR( "stream source not reset" );
             }
         }
 
@@ -1222,11 +1229,8 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetTexture, (i, nullptr) )
             {
-                LOGGER_ERROR( "texture %d not reset"
-                    , i
+                LOGGER_ERROR( "texture %d not reset", i
                 );
-
-                //return false;
             }
         }
 
@@ -1267,7 +1271,7 @@ namespace Mengine
 
         if( hr == D3DERR_DEVICELOST )
         {
-            ::Sleep( 100 );
+            ::Sleep( 200 );
 
             return false;
         }
@@ -1867,6 +1871,16 @@ namespace Mengine
             m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDestroyDX9VertexShader_( DX9RenderVertexShader * _shader )
+    {
+        _shader->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDestroyDX9FragmentShader_( DX9RenderFragmentShader * _shader )
+    {
+        _shader->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9VertexBuffer_( DX9RenderVertexBuffer * _buffer )

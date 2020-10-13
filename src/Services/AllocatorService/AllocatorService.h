@@ -5,6 +5,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#define MENGINE_ALLOCATOR_DEBUG 1
+
 #ifndef MENGINE_ALLOCATOR_DEBUG
 #   ifdef MENGINE_WINDOWS_DEBUG
 #       define MENGINE_ALLOCATOR_DEBUG 1
@@ -57,7 +59,7 @@ namespace Mengine
 
         struct ReportDesc
         {
-            char doc[2048] = {'\0'};
+            Char doc[2048] = {'\0'};
             AtomicUInt32 count;
         };
 

@@ -21,7 +21,7 @@ namespace Mengine
         bool getData( void * const _buffer, size_t _pitch ) const override;
 
     protected:
-        IDirect3DSurface9 * m_surfacePlain;
+        IDirect3DSurface9 * m_pD3DSurfacePlain;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderTargetOffscreen> DX9RenderTargetOffscreenPtr;

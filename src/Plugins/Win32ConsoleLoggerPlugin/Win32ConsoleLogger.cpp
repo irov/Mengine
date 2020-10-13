@@ -44,9 +44,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::createConsole_()
     {
-        typedef BOOL( WINAPI * PATTACHCONSOLE )(DWORD);
-        PATTACHCONSOLE pAttachConsole = nullptr;
-
         HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
 
         if( hKernel32 == nullptr )
@@ -54,39 +51,41 @@ namespace Mengine
             return;
         }
 
-        FARPROC proc = GetProcAddress( hKernel32, "AttachConsole" );
+        FARPROC proc = ::GetProcAddress( hKernel32, "AttachConsole" );
 
-        pAttachConsole = reinterpret_cast<PATTACHCONSOLE>(proc);
+        typedef BOOL( WINAPI * PATTACHCONSOLE )(DWORD);
+        PATTACHCONSOLE pAttachConsole = reinterpret_cast<PATTACHCONSOLE>(proc);
 
         if( pAttachConsole == nullptr )
         {
-            FreeLibrary( hKernel32 );
+            ::FreeLibrary( hKernel32 );
+
             return;
         }
 
         CONSOLE_SCREEN_BUFFER_INFO coninfo;
 
         // try to attach to calling console first
-        if( pAttachConsole( (DWORD)-1 ) == FALSE )
+        if( (*pAttachConsole)((DWORD)-1) == FALSE )
         {
             // allocate a console for this app
-            m_createConsole = (AllocConsole() != FALSE);
+            m_createConsole = (::AllocConsole() != FALSE);
 
             // set the screen buffer to be big enough to let us scroll text
             HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
-            GetConsoleScreenBufferInfo( output_handle, &coninfo );
+            ::GetConsoleScreenBufferInfo( output_handle, &coninfo );
             coninfo.dwSize.Y = 1000;
-            SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
+            ::SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
         }
 
-        m_CONOUT = freopen( "CONOUT$", "w", stdout );
+        m_CONOUT = ::freopen( "CONOUT$", "w", stdout );
 
         //::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
         // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
         // point to console as well
         std::ios::sync_with_stdio();
 
-        FreeLibrary( hKernel32 );
+        ::FreeLibrary( hKernel32 );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::removeConsole_()
@@ -96,10 +95,10 @@ namespace Mengine
             return;
         }
 
-        fclose( m_CONOUT );
+        ::fclose( m_CONOUT );
         m_CONOUT = nullptr;
 
-        FreeConsole();
+        ::FreeConsole();
 
         m_createConsole = false;
     }

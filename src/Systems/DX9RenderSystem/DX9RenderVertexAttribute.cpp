@@ -12,13 +12,13 @@ namespace Mengine
     DX9RenderVertexAttribute::DX9RenderVertexAttribute()
         : m_elementSize( 0 )
         , m_pD3DDevice( nullptr )
-        , m_vertexDeclaration( nullptr )
+        , m_pD3DVertexDeclaration( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexAttribute::~DX9RenderVertexAttribute()
     {
-        this->finalize();
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
@@ -31,12 +31,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::finalize()
     {
-        DXRELEASE( m_vertexDeclaration );
+        DXRELEASE( m_pD3DVertexDeclaration );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        MENGINE_ASSERTION_FATAL( m_vertexDeclaration == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
 
         m_pD3DDevice = _pD3DDevice;
 
@@ -50,18 +50,15 @@ namespace Mengine
             {
                 declaration[declaration_iterator++] = { 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 };
             }
-
-            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
+            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
             {
                 declaration[declaration_iterator++] = { 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 };
             }
-
-            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
+            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
             {
                 declaration[declaration_iterator++] = { 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 };
             }
-
-            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
+            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
             {
                 declaration[declaration_iterator++] = { 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 };
             }
@@ -73,10 +70,13 @@ namespace Mengine
             , m_name.c_str()
         );
 
-        IF_DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &m_vertexDeclaration) )
+        IDirect3DVertexDeclaration9 * pD3DVertexDeclaration;
+        IF_DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &pD3DVertexDeclaration) )
         {
             return false;
         }
+
+        m_pD3DVertexDeclaration = pD3DVertexDeclaration;
 
         return true;
     }
@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::enable()
     {
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_vertexDeclaration) );
+        DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::disable()
@@ -112,5 +112,7 @@ namespace Mengine
         desc.offset = _offset;
 
         m_attributes.emplace_back( desc );
+
+        MENGINE_ASSERTION_FATAL( m_attributes.size() < 64 );
     }
 }

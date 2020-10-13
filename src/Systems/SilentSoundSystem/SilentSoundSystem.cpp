@@ -119,4 +119,14 @@ namespace Mengine
 
         //Empty
     }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SilentSoundSystem::getSourcesCount() const
+    {
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SilentSoundSystem::getBuffersCount() const
+    {
+        return 0;
+    }
 }

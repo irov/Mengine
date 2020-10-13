@@ -19,6 +19,7 @@
 #include "Kernel/ModuleBase.h"
 #include "Kernel/NodeUniqueFinder.h"
 #include "Kernel/Shape.h"
+#include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
 
 #include "NodeDebuggerSerialization.h"
@@ -68,6 +69,10 @@ namespace Mengine
         void onDone( uint32_t _id ) override;
 
     public:
+        void setArrow( const ArrowPtr & _arrow );
+        void updateArrow();
+
+    public:
         void setScene( const ScenePtr & _scene );
         void updateScene();
 
@@ -81,6 +86,7 @@ namespace Mengine
         void compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
         void uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void sendPacket( NodeDebuggerPacket & _packet );
+        void sendArrow( const ArrowPtr & _arrow );
         void sendScene( const ScenePtr & _scene );
         void sendPickerable( const ScenePtr & _scene );
         void sendRenderable( const ScenePtr & _scene );
@@ -111,6 +117,7 @@ namespace Mengine
         void stringToPath( const String & _str, VectorNodePath * const _path ) const;
 
     protected:
+        void notifyChangeArrow( const ArrowPtr & _arrow );
         void notifyChangeScene( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
         void notifyIncrefFactoryGeneration( uint32_t _generator );
@@ -118,6 +125,7 @@ namespace Mengine
     protected:
         uint32_t m_globalKeyHandlerF2;
 
+        ArrowPtr m_arrow;
         ScenePtr m_scene;
         SocketInterfacePtr m_socket;
         AtomicBool m_shouldRecreateServer;

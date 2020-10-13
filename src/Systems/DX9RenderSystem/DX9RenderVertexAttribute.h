@@ -41,7 +41,7 @@ namespace Mengine
         uint32_t m_elementSize;
 
         IDirect3DDevice9 * m_pD3DDevice;
-        IDirect3DVertexDeclaration9 * m_vertexDeclaration;
+        IDirect3DVertexDeclaration9 * m_pD3DVertexDeclaration;
 
         struct AttributeDesc
         {

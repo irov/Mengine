@@ -225,7 +225,7 @@ namespace Mengine
         VectorTimers m_timers;
 
         uint32_t m_icon;
-        WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'/0'};
+        WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
 
         uint64_t m_prevTime;
 

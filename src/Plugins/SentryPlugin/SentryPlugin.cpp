@@ -68,8 +68,10 @@ namespace Mengine
             return;
         }
 
+        MENGINE_STRCAT( message, "\n" );
+
         LOGGER_SERVICE()
-            ->logMessage( level, 0, LCOLOR_GREEN, message, (size_t)n );
+            ->logMessage( level, 0, LCOLOR_GREEN, message, (size_t)n + 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     SentryPlugin::SentryPlugin()

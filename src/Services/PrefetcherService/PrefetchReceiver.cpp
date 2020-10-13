@@ -10,6 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PrefetchReceiver::~PrefetchReceiver()
     {
+        MENGINE_ASSERTION_FATAL( m_prefetchRefcount == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::initialize( const ThreadTaskPrefetchPtr & _prefetcher )

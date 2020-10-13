@@ -244,6 +244,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setArrow( const ArrowPtr & _arrow )
     {
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_PREPARE_DESTROY, m_arrow );
+
         if( m_arrow != nullptr )
         {
             m_arrow->disable();
@@ -274,6 +276,8 @@ namespace Mengine
 
             m_arrow->enable();
         }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_COMPLETE, m_arrow );
     }
     //////////////////////////////////////////////////////////////////////////
     const ArrowPtr & PlayerService::getArrow() const

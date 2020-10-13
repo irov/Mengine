@@ -19,10 +19,6 @@ namespace Mengine
         , m_looped( false )
         , m_updating( false )
     {
-        for( uint32_t i = 0; i != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++i )
-        {
-            m_alBuffersId[i] = 0;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::~OpenALSoundBufferStream()
@@ -85,7 +81,7 @@ namespace Mengine
             if( id == 0 )
             {
                 // TODO: report in case of error
-                LOGGER_ERROR( "invalid gen %d buffer ID"
+                LOGGER_ERROR( "invalid gen %u buffer ID"
                     , i
                 );
 

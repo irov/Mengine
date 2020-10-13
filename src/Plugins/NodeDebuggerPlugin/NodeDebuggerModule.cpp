@@ -4,6 +4,7 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
@@ -72,6 +73,7 @@ namespace Mengine
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotSurface" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_ARROW_COMPLETE, &NodeDebuggerModule::notifyChangeArrow, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE, &NodeDebuggerModule::notifyChangeScene, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY, &NodeDebuggerModule::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION, &NodeDebuggerModule::notifyIncrefFactoryGeneration, MENGINE_DOCUMENT_FACTORABLE );
@@ -98,6 +100,7 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotSurface" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_ARROW_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION );
@@ -115,6 +118,7 @@ namespace Mengine
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ) );
 
+        m_arrow = nullptr;
         m_scene = nullptr;
 
         if( m_socket != nullptr )
@@ -287,6 +291,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::setArrow( const ArrowPtr & _arrow )
+    {
+        if( m_arrow != _arrow )
+        {
+            m_arrow = _arrow;
+
+            m_shouldUpdateScene = true;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::setScene( const ScenePtr & _scene )
     {
         if( m_scene != _scene )
@@ -303,6 +317,7 @@ namespace Mengine
 
         if( m_serverState == ENodeDebuggerServerState::Connected )
         {
+            this->sendArrow( m_arrow );
             this->sendScene( m_scene );
             this->sendPickerable( m_scene );
             this->sendRenderable( m_scene );
@@ -990,6 +1005,34 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendArrow( const ArrowPtr & _arrow )
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Arrow" );
+
+        if( _arrow != nullptr )
+        {
+            pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+            this->serializeNode( _arrow, payloadNode );
+        }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef MENGINE_DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::sendScene( const ScenePtr & _scene )
     {
         pugi::xml_document doc;
@@ -1132,6 +1175,31 @@ namespace Mengine
             ->get_report_total();
 
         payloadNode.append_attribute( "Total" ).set_value( allocator_report_total );
+
+        uint32_t availableTextureMemory = RENDER_SYSTEM()
+            ->getAvailableTextureMemory();
+
+        payloadNode.append_attribute( "AvailableTextureMemory" ).set_value( availableTextureMemory );
+
+        uint32_t textureMemoryUse = RENDER_SYSTEM()
+            ->getTextureMemoryUse();
+        
+        payloadNode.append_attribute( "TextureMemoryUse" ).set_value( textureMemoryUse );
+
+        uint32_t textureCount = RENDER_SYSTEM()
+            ->getTextureCount();
+
+        payloadNode.append_attribute( "TextureCount" ).set_value( textureCount );
+
+        uint32_t sourcesCount = SOUND_SYSTEM()
+            ->getSourcesCount();
+
+        payloadNode.append_attribute( "SoundSourcesCount" ).set_value( sourcesCount );
+        
+        uint32_t buffersCount = SOUND_SYSTEM()
+            ->getBuffersCount();
+
+        payloadNode.append_attribute( "SoundBuffersCount" ).set_value( buffersCount );
 
         pugi::xml_node allocatorsNode = payloadNode.append_child( "Allocators" );
 
@@ -1576,6 +1644,11 @@ namespace Mengine
                 ++ptr;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::notifyChangeArrow( const ArrowPtr & _arrow )
+    {
+        this->setArrow( _arrow );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::notifyChangeScene( const ScenePtr & _scene )

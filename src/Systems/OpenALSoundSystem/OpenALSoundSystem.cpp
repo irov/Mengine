@@ -21,6 +21,8 @@ namespace Mengine
     OpenALSoundSystem::OpenALSoundSystem()
         : m_context( nullptr )
         , m_device( nullptr )
+        , m_sourcesCount( 0 )
+        , m_buffersCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -138,6 +140,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::_finalizeService()
     {
+        MENGINE_ASSERTION_FATAL( m_sourcesCount == 0 );
+        MENGINE_ASSERTION_FATAL( m_buffersCount == 0 );
+
         if( m_device != nullptr )
         {
             alcMakeContextCurrent( nullptr );
@@ -245,12 +250,26 @@ namespace Mengine
         ALuint sourceId = 0;
         OPENAL_CALL( alGenSources, (1, &sourceId) );
 
+        if( sourceId == 0 )
+        {
+            return 0U;
+        }
+
+        ++m_sourcesCount;
+
         return sourceId;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::releaseSourceId( ALuint _sourceId )
     {
+        if( _sourceId == 0 )
+        {
+            return;
+        }
+
         OPENAL_CALL( alDeleteSources, (1, &_sourceId) );
+
+        --m_sourcesCount;
     }
     //////////////////////////////////////////////////////////////////////////
     ALuint OpenALSoundSystem::genBufferId()
@@ -258,11 +277,36 @@ namespace Mengine
         ALuint bufferId = 0;
         OPENAL_CALL( alGenBuffers, (1, &bufferId) );
 
+        if( bufferId == 0 )
+        {
+            return 0U;
+        }
+
+        ++m_buffersCount;
+
         return bufferId;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::releaseBufferId( ALuint _bufferId )
     {
+        if( _bufferId == 0 )
+        {
+            return;
+        }
+
         OPENAL_CALL( alDeleteBuffers, (1, &_bufferId) );
+
+        --m_buffersCount;
     }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenALSoundSystem::getSourcesCount() const
+    {
+        return m_sourcesCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenALSoundSystem::getBuffersCount() const
+    {
+        return m_buffersCount;
+    }
+
 }

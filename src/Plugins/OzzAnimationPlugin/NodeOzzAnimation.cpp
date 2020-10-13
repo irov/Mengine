@@ -222,7 +222,7 @@ namespace Mengine
         {
             const Char * joint_name = joint_names[i];
 
-            if( strstr( joint_name, "Spine1" ) != nullptr )
+            if( MENGINE_STRSTR( joint_name, "Spine1" ) != nullptr )
             {
                 m_upperBodyRoot = i;
                 break;

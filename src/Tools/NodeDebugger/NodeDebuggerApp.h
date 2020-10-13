@@ -428,6 +428,7 @@ namespace Mengine
         void CompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
         void UncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void ProcessPacket( const NodeDebuggerPacket & _packet );
+        void ReceiveArrow( const pugi::xml_node & _xmlContainer );
         void ReceiveScene( const pugi::xml_node & _xmlContainer );
         void ReceivePickerable( const pugi::xml_node & _xmlContainer );
         void ReceiveRenderable( const pugi::xml_node & _xmlContainer );
@@ -502,6 +503,11 @@ namespace Mengine
         typedef Vector<LeakDesc> VectorLeaks;
         Map<String, VectorLeaks> m_objectLeaks;
         uint32_t m_memoryTotal;
+        uint32_t m_AvailableTextureMemory;
+        uint32_t m_TextureMemoryUse;
+        uint32_t m_TextureCount;
+        uint32_t m_SoundSourcesCount;
+        uint32_t m_SoundBuffersCount;
         Map<String, uint32_t> m_memory;
         String m_objectLeakGeneration;
         size_t m_currentTab;
@@ -520,6 +526,7 @@ namespace Mengine
         std::thread m_networkThread;
         std::mutex m_dataMutex;
 
+        DebuggerNode * m_arrow;
         DebuggerNode * m_scene;
         DebuggerNode * m_scenePickerable;
         DebuggerNode * m_sceneRenderable;

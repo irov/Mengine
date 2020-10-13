@@ -72,7 +72,7 @@ namespace Mengine
 
         const char * version = Magic_GetVersion();
 
-        if( strstr( version, MAGIC_API ) == nullptr )
+        if( MENGINE_STRSTR( version, MAGIC_API ) == nullptr )
         {
             LOGGER_CRITICAL( "Astralax Magic Particles Version: '%s' but need '%s'"
                 , version

@@ -52,14 +52,17 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, "\n" );
                 
 #ifdef MENGINE_PLATFORM_WINDOWS
-        Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
-            ->getPlatformExtention();
+        if( SERVICE_EXIST( PlatformInterface ) == true )
+        {
+            Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+                ->getPlatformExtention();
 
-        Char stack_msg[8096] = {'\0'};
-        extension->getCallstack( stack_msg, nullptr );
+            Char stack_msg[8096] = {'\0'};
+            extension->getCallstack( stack_msg, nullptr );
 
-        MENGINE_STRCAT( exception_msg, "stack:\n" );
-        MENGINE_STRCAT( exception_msg, stack_msg );
+            MENGINE_STRCAT( exception_msg, "stack:\n" );
+            MENGINE_STRCAT( exception_msg, stack_msg );
+        }
 #endif
 
         throw Exception( exception_msg );

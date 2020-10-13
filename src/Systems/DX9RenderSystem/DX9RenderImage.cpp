@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImage::~DX9RenderImage()
     {
-        this->finalize();
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
@@ -50,6 +50,8 @@ namespace Mengine
         D3DSURFACE_DESC texDesc;
         IF_DXCALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
         {
+            DXRELEASE( pD3DTexture );
+
             return false;
         }
 

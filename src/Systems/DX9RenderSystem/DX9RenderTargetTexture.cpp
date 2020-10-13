@@ -24,6 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetTexture::~DX9RenderTargetTexture()
     {
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
@@ -45,15 +46,17 @@ namespace Mengine
 
         D3DFORMAT d3dformat = Helper::toD3DFormat( m_format );
 
-        IDirect3DTexture9 * renderTexture;
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
+        IDirect3DTexture9 * pD3DTexture;
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &pD3DTexture, NULL) )
         {
             return false;
         }
 
         D3DSURFACE_DESC texDesc;
-        IF_DXCALL( renderTexture, GetLevelDesc, (0, &texDesc) )
+        IF_DXCALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
         {
+            DXRELEASE( pD3DTexture );
+
             return false;
         }
 
@@ -65,16 +68,20 @@ namespace Mengine
 
         if( this->_initialize() == false )
         {
+            DXRELEASE( pD3DTexture );
+
             return false;
         }
 
-        m_pD3DTexture = renderTexture;
+        m_pD3DTexture = pD3DTexture;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::_initialize()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -191,23 +198,25 @@ namespace Mengine
     {
         return m_pD3DTexture;
     }
-    //////////////////////////////////////////////////////////////////////////        
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::onRenderReset()
     {
         DXRELEASE( m_pD3DTexture );
     }
-    //////////////////////////////////////////////////////////////////////////        
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::onRenderRestore()
     {
-        D3DFORMAT d3dformat = Helper::toD3DFormat( m_format );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
 
-        IDirect3DTexture9 * renderTexture;
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, nullptr) )
+        D3DFORMAT D3DFormat = Helper::toD3DFormat( m_format );
+
+        IDirect3DTexture9 * pD3DTexture;
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, D3DFormat, D3DPOOL_DEFAULT, &pD3DTexture, nullptr) )
         {
             return false;
         }
 
-        m_pD3DTexture = renderTexture;
+        m_pD3DTexture = pD3DTexture;
 
         return true;
     }

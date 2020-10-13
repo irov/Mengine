@@ -44,6 +44,10 @@ namespace Mengine
         uint32_t genBufferId();
         void releaseBufferId( uint32_t _bufferId );
 
+    public:
+        uint32_t getSourcesCount() const override;
+        uint32_t getBuffersCount() const override;
+
     protected:
         FactoryPtr m_factorySilentSoundBuffer;
         FactoryPtr m_factorySilentSoundSource;

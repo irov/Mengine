@@ -556,7 +556,7 @@ namespace Mengine
         }
 
         ThreadTaskPrefetchPtr prefetcher = receiver->getPrefetcher();
-                
+
         if( prefetcher->isComplete() == false ||
             prefetcher->isSuccessful() == false )
         {
@@ -565,7 +565,7 @@ namespace Mengine
             if( prefetcher->cancel() == true )
             {
                 prefetcher->join();
-            }            
+            }
 
             m_prefetchReceivers.erase( fileGroupName, _filePath );
 

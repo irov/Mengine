@@ -266,6 +266,11 @@ namespace Mengine
 
                 //ss << "Smart Batch: " << mode << " " << rdi.batch << std::endl;
 
+                uint32_t availableTextureMemory = RENDER_SYSTEM()
+                    ->getAvailableTextureMemory();
+
+                ss << "Available Texture Memory: " << (float)availableTextureMemory / (1024.f * 1024.f) << std::endl;
+
                 uint32_t textureMemoryUse = RENDER_SYSTEM()
                     ->getTextureMemoryUse();
 

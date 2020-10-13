@@ -30,6 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
     {
+        MENGINE_ASSERTION_FATAL( m_pVB == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
@@ -129,6 +130,8 @@ namespace Mengine
 
             return nullptr;
         }
+
+        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
 
         DWORD d3d_flag;
         switch( m_bufferType )
@@ -235,6 +238,8 @@ namespace Mengine
         {
             return true;
         }
+
+        MENGINE_ASSERTION_FATAL( m_pVB == nullptr );
 
         uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 

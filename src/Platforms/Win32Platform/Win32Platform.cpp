@@ -3790,7 +3790,7 @@ namespace Mengine
         MENGINE_VA_LIST_START( args, _format );
 
         Char str[MENGINE_LOGGER_MAX_MESSAGE];
-        int32_t size_sprintf = MENGINE_SPRINTF( str, "%s", _format );
+        int32_t size_sprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
         MENGINE_VA_LIST_END( args );
 
         if( size_sprintf > 0 )

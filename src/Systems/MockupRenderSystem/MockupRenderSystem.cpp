@@ -331,6 +331,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderSystem::getAvailableTextureMemory() const
+    {
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderSystem::getTextureMemoryUse() const
     {
         return m_textureMemoryUse;

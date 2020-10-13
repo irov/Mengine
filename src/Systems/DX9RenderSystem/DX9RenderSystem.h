@@ -72,13 +72,9 @@ namespace Mengine
         bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable ) override;
 
     public:
-        void drawIndexedPrimitive( EPrimitiveType _type
-            , uint32_t _baseVertexIndex
-            , uint32_t _minIndex
-            , uint32_t _vertexCount
-            , uint32_t _startIndex
-            , uint32_t _indexCount ) override;
+        void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) override;
 
+    public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
         void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
         void setTextureFactor( uint32_t _color ) override;
@@ -129,6 +125,7 @@ namespace Mengine
         void setVSync( bool _vSync ) override;
 
     public:
+        uint32_t getAvailableTextureMemory() const override;
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
 
@@ -179,6 +176,8 @@ namespace Mengine
         bool restore_();
 
     protected:
+        void onDestroyDX9VertexShader_( DX9RenderVertexShader * _shader );
+        void onDestroyDX9FragmentShader_( DX9RenderFragmentShader * _shader );
         void onDestroyDX9VertexBuffer_( DX9RenderVertexBuffer * _buffer );
         void onDestroyDX9IndexBuffer_( DX9RenderIndexBuffer * _buffer );
         void onDestroyDX9RenderImage_( DX9RenderImage * _image );

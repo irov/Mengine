@@ -30,6 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderIndexBuffer::~DX9RenderIndexBuffer()
     {
+        MENGINE_ASSERTION_FATAL( m_pIB == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
@@ -123,7 +124,7 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCount )
         {
-            LOGGER_ERROR( "lock count %d offset %d more max size %d (doc '%s')"
+            LOGGER_ERROR( "lock count %u offset %u more max size %u (doc '%s')"
                 , _count
                 , _offset
                 , m_indexCount
@@ -132,6 +133,8 @@ namespace Mengine
 
             return nullptr;
         }
+
+        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
 
         DWORD d3d_flag;
         switch( m_bufferType )
@@ -237,6 +240,8 @@ namespace Mengine
         {
             return true;
         }
+
+        MENGINE_ASSERTION_FATAL( m_pIB == nullptr );
 
         uint32_t bufferSize = m_indexCapacity * m_indexSize;
 

@@ -8,35 +8,38 @@
 namespace Mengine
 {
     DX9RenderTargetOffscreen::DX9RenderTargetOffscreen()
-        : m_surfacePlain( nullptr )
+        : m_pD3DSurfacePlain( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetOffscreen::~DX9RenderTargetOffscreen()
     {
+        MENGINE_ASSERTION_FATAL( m_pD3DSurfacePlain == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetOffscreen::_initialize()
     {
-        IDirect3DSurface9 * surfacePlain;
-        IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) )
+        IDirect3DSurface9 * pD3DSurfacePlain;
+        IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &pD3DSurfacePlain, NULL) )
         {
             return false;
         }
 
-        m_surfacePlain = surfacePlain;
+        m_pD3DSurfacePlain = pD3DSurfacePlain;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetOffscreen::_finalize()
     {
-        DXRELEASE( m_surfacePlain );
+        DX9RenderTargetTexture::_finalize();
+
+        DXRELEASE( m_pD3DSurfacePlain );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
-        if( m_surfacePlain == nullptr )
+        if( m_pD3DSurfacePlain == nullptr )
         {
             return false;
         }
@@ -46,10 +49,10 @@ namespace Mengine
             return false;
         }
 
-        DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurface, m_surfacePlain) );
+        DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurface, m_pD3DSurfacePlain) );
 
         D3DLOCKED_RECT LockedRect;
-        DXCALL( m_surfacePlain, LockRect, (&LockedRect, NULL, 0) );
+        DXCALL( m_pD3DSurfacePlain, LockRect, (&LockedRect, NULL, 0) );
 
         if( LockedRect.pBits == NULL || LockedRect.Pitch == 0 )
         {
@@ -67,7 +70,7 @@ namespace Mengine
             srcData += LockedRect.Pitch;
         }
 
-        DXCALL( m_surfacePlain, UnlockRect, () );
+        DXCALL( m_pD3DSurfacePlain, UnlockRect, () );
 
         return true;
     }

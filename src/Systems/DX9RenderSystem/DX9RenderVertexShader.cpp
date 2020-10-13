@@ -8,14 +8,14 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexShader::DX9RenderVertexShader()
-        : m_shader( nullptr )
+        : m_pD3DVertexShader( nullptr )
         , m_compile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexShader::~DX9RenderVertexShader()
     {
-        this->finalize();
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderVertexShader::getName() const
@@ -37,12 +37,12 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        DXRELEASE( m_shader );
+        DXRELEASE( m_pD3DVertexShader );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        MENGINE_ASSERTION_FATAL( m_shader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
 
         const DWORD * dx_source = m_memory->getBuffer();
 
@@ -50,17 +50,20 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &m_shader) )
+        IDirect3DVertexShader9 * pD3DVertexShader;
+        IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &pD3DVertexShader) )
         {
             return false;
         }
+
+        m_pD3DVertexShader = pD3DVertexShader;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        DXCALL( _pD3DDevice, SetVertexShader, (m_shader) );
+        DXCALL( _pD3DDevice, SetVertexShader, (m_pD3DVertexShader) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

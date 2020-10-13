@@ -8,6 +8,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -femulated-tls -fuse-ld=lld -DWIN32 -D_WIN64 -m64")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -femulated-tls -fuse-ld=lld -DWIN32 -D_WIN64 -m64")
 
+if(MENGINE_EXTERNAL_PDB)
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g")
+endif()
+
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -fno-strict-aliasing -fomit-frame-pointer -std=c11 -O0 -D_DEBUG")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-strict-aliasing -fomit-frame-pointer -std=c11 -O3 -DNDEBUG")
 

@@ -724,6 +724,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenGLRenderSystem::getAvailableTextureMemory() const
+    {
+        return 0U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderSystem::getTextureMemoryUse() const
     {
         return 0U;

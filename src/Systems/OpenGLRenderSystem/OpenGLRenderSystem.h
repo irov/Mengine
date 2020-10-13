@@ -118,6 +118,7 @@ namespace Mengine
 
         void setVSync( bool _vSync ) override;
 
+        uint32_t getAvailableTextureMemory() const override;
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
 

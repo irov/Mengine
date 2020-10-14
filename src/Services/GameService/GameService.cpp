@@ -331,8 +331,7 @@ namespace Mengine
         if( ACCOUNT_SERVICE()
             ->loadAccounts() == false )
         {
-            LOGGER_ERROR( "failed load accounts"
-            );
+            LOGGER_ERROR( "failed load accounts" );
         }
 
         bool hasGlobalAccount = ACCOUNT_SERVICE()
@@ -340,6 +339,8 @@ namespace Mengine
 
         if( hasGlobalAccount == false )
         {
+            LOGGER_INFO( "game create global account" );
+
             EVENTABLE_METHOD( EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
                 ->onGameCreateGlobalAccount();
         }
@@ -349,9 +350,13 @@ namespace Mengine
 
         if( hasCurrentAccount == false )
         {
+            LOGGER_INFO( "game create default account" );
+
             EVENTABLE_METHOD( EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
                 ->onGameCreateDefaultAccount();
         }
+
+        LOGGER_INFO( "game load accounts" );
 
         EVENTABLE_METHOD( EVENT_GAME_LOAD_ACCOUNTS )
             ->onGameLoadAccounts();

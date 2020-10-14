@@ -1557,6 +1557,13 @@ namespace Mengine
 
                 bool result = account->addSetting( _setting, utf8_defaultValue, provider );
 
+                LOGGER_INFO( "%s add account '%s' setting '%s' default value '%s'"
+                    , result == true ? "successful" : "failed"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , utf8_defaultValue
+                );
+
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////

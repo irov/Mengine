@@ -7,22 +7,12 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::MT19937Randomizer()
+        : m_engineRandomize{3499211612}
     {
-        //LOGGER_INFO( "002" );
-        //std::random_device rd;
-        LOGGER_INFO( "003" );
-
-        m_engineRandomize = std::mt19937{3499211612};
-        LOGGER_INFO( "1112" );
-
         std::mt19937::result_type min_value = (m_engineRandomize.min)();
         std::mt19937::result_type max_value = (m_engineRandomize.max)();
 
-        LOGGER_INFO( "%f %f", min_value, max_value );
-
         m_epsilon = 1.f / float( max_value - min_value );
-
-        LOGGER_INFO( "%f", m_epsilon );
     }
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::~MT19937Randomizer()

@@ -131,6 +131,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
+        LOGGER_INFO( "create global account %s"
+            , accountID.c_str()
+        );
+
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -409,6 +413,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::setGlobalAccount( const ConstString & _accountID )
     {
+        LOGGER_INFO( "set global account %s"
+            , _accountID.c_str()
+        );
+
         m_globalAccountID = _accountID;
 
         m_invalidateAccounts = true;

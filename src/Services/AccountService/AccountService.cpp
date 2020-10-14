@@ -120,27 +120,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createGlobalAccount( const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "1" );
-
         uint32_t new_playerID = ++m_playerEnumerator;
-
-        LOGGER_INFO( "2" );
 
         Stringstream streamAccountID;
 
-        LOGGER_INFO( "22" );
-
         streamAccountID << "Global_" << new_playerID;
-
-        LOGGER_INFO( "3" );
 
         ConstString accountID = Helper::stringizeString( streamAccountID.str() );
 
-        LOGGER_INFO( "4" );
-
         AccountInterfacePtr account = this->createGlobalAccount_( accountID, _doc );
-
-        LOGGER_INFO( "5" );
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 

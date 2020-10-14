@@ -68,51 +68,97 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()
     {
+        LOGGER_INFO( "1" );
+
         m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>( MENGINE_DOCUMENT_FACTORABLE );
+
+        LOGGER_INFO( "2" );
 
         m_factoryScheduleManager = Helper::makeFactoryPool<Scheduler, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
+        LOGGER_INFO( "3" );
+
         SchedulerPtr scheduler = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
+        LOGGER_INFO( "41" );
+
         scheduler->setName( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) );
+
+        LOGGER_INFO( "5" );
 
         if( scheduler->initialize() == false )
         {
             return false;
         }
 
+        LOGGER_INFO( "6" );
+
         m_scheduler = scheduler;
+
+        LOGGER_INFO( "7" );
 
         SchedulerPtr schedulerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
+        LOGGER_INFO( "8" );
+
         schedulerGlobal->setName( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) );
+
+        LOGGER_INFO( "9" );
 
         if( schedulerGlobal->initialize() == false )
         {
             return false;
         }
 
+        LOGGER_INFO( "1" );
+
         m_schedulerGlobal = schedulerGlobal;
+
+        LOGGER_INFO( "2" );
 
         m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>( MENGINE_DOCUMENT_FACTORABLE );
 
+        LOGGER_INFO( "3" );
+
         if( HAS_OPTION( "seed" ) == true )
         {
+            LOGGER_INFO( "4" );
+
             uint32_t randomSeed = GET_OPTION_VALUE_UINT32( "seed", 0U );
+
+            LOGGER_INFO( "5" );
+
             m_randomizer->setSeed( randomSeed );
+
+            LOGGER_INFO( "6" );
         }
         else
         {
+            LOGGER_INFO( "7" );
+
             uint64_t milliseconds = TIME_SYSTEM()
                 ->getTimeMilliseconds();
 
+            LOGGER_INFO( "8" );
+
             uint32_t randomSeed = (uint32_t)milliseconds;
 
+            LOGGER_INFO( "9" );
+
             m_randomizer->setSeed( randomSeed );
+
+            LOGGER_INFO( "1" );
         }
 
+        LOGGER_INFO( "2" );
+
         m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE ); 
+
+        LOGGER_INFO( "3" );
+
         m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
+
+        LOGGER_INFO( "4" );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
@@ -124,6 +170,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_ENABLE, this, &PlayerService::notifyRestartSceneEnable, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyRemoveScenePrepareDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &PlayerService::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
+
+        LOGGER_INFO( "5" );
 
         return true;
     }

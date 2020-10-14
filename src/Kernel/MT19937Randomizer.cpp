@@ -1,6 +1,7 @@
 #include "MT19937Randomizer.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -8,10 +9,16 @@ namespace Mengine
     MT19937Randomizer::MT19937Randomizer()
         : m_engineRandomize( std::random_device()() )
     {
+        LOGGER_INFO( "1112" );
+
         std::mt19937::result_type min_value = (m_engineRandomize.min)();
         std::mt19937::result_type max_value = (m_engineRandomize.max)();
 
+        LOGGER_INFO( "%f %f", min_value, max_value );
+
         m_epsilon = 1.f / float( max_value - min_value );
+
+        LOGGER_INFO( "%f", m_epsilon );
     }
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::~MT19937Randomizer()

@@ -304,12 +304,16 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "bootstrapper create dynamic priority plugins" );
+
         if( this->createDynamicPriorityPlugins_() == false )
         {
             LOGGER_ERROR( "invalid create dynamic priority plugins" );
 
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper create dynamic priority dev plugins" );
 
         if( this->createDynamicPriorityDevPlugins_() == false )
         {
@@ -318,12 +322,16 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "bootstrapper create dynamic static plugins" );
+
         if( this->createStaticPlugins_() == false )
         {
             LOGGER_ERROR( "invalid create static plugins" );
 
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper create dynamic plugins" );
 
         if( this->createDynamicPlugins_() == false )
         {
@@ -332,12 +340,16 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "bootstrapper create dynamic dev plugins" );
+
         if( this->createDynamicDevPlugins_() == false )
         {
             LOGGER_ERROR( "invalid create dynamic dev plugins" );
 
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper create application" );
 
         if( this->createApplication_() == false )
         {
@@ -346,12 +358,16 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "bootstrapper run modules" );
+
         if( this->runModules_() == false )
         {
             LOGGER_ERROR( "invalid run modules" );
 
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper run dev modules" );
 
         if( this->runDevModules_() == false )
         {
@@ -360,12 +376,16 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "bootstrapper create frameworks" );
+
         if( this->createFrameworks_() == false )
         {
             LOGGER_ERROR( "invalid create frameworks" );
 
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper run frameworks" );
 
         if( this->runFrameworks_() == false )
         {
@@ -376,7 +396,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
 
-        LOGGER_INFO( "initialize Game..." );
+        LOGGER_INFO( "bootstrapper initialize game" );
 
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -384,20 +404,22 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->initializeGame( defaultFileGroup, m_packagesPaths, m_settingsPaths ) == false )
         {
-            LOGGER_CRITICAL( "Application invalid initialize game"
-            );
+            LOGGER_CRITICAL( "Application invalid initialize game" );
 
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper load personality" );
 
         if( GAME_SERVICE()
             ->loadPersonality() == false )
         {
-            LOGGER_CRITICAL( "Game invalid load personality"
-            );
+            LOGGER_CRITICAL( "Game invalid load personality" );
 
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper run" );
 
         return true;
     }
@@ -606,6 +628,8 @@ namespace Mengine
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( ComponentService, MENGINE_DOCUMENT_FACTORABLE );
 
+        LOGGER_INFO( "bootstrapper load application ini" );
+
         if( this->loadApplicationIni_() == false )
         {
             return false;
@@ -615,79 +639,89 @@ namespace Mengine
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
 
+        LOGGER_INFO( "bootstrapper mount user file group" );
+
         if( this->mountUserFileGroup_() == false )
         {
             return false;
         }
+
+        LOGGER_INFO( "bootstrapper initialize file logger" );
 
         if( this->initializeFileLogger_() == false )
         {
             return false;
         }
 
-        SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
+#define BOOTSTRAPPER_SERVICE_CREATE( Name, Doc )\
+        LOGGER_INFO("bootstrapper create service: " #Name);\
+        SERVICE_CREATE(Name, Doc)\
+
+        BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FACTORABLE );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
 
         bool norenderMode = HAS_OPTION( "norender" );
 
         if( norenderMode == true )
         {
-            SERVICE_CREATE( MockupRenderSystem, MENGINE_DOCUMENT_FACTORABLE );
+            BOOTSTRAPPER_SERVICE_CREATE( MockupRenderSystem, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
-            SERVICE_CREATE( RenderSystem, MENGINE_DOCUMENT_FACTORABLE );
+            BOOTSTRAPPER_SERVICE_CREATE( RenderSystem, MENGINE_DOCUMENT_FACTORABLE );
         }
 
-        SERVICE_CREATE( RenderService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( RenderMaterialService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( RenderTextureService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( RenderService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( RenderMaterialService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( RenderTextureService, MENGINE_DOCUMENT_FACTORABLE );
 
         bool muteMode = HAS_OPTION( "mute" );
 
         if( muteMode == true )
         {
-            SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
+            BOOTSTRAPPER_SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
             if( SERVICE_CREATE_SAFE( SoundSystem, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
+                BOOTSTRAPPER_SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
             }
         }
 
-        SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( FrameworkService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( PrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( InputService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( UpdateService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( SceneService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( ResourceService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( TextService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( WatchdogService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( GraveyardService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( PackageService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( UserdataService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( PickerService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( PlayerService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( AccountService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( GameService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( FrameworkService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( PrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( InputService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( UpdateService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( SceneService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ResourceService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( TextService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( WatchdogService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( GraveyardService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( PackageService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( UserdataService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( PickerService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( PlayerService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( AccountService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( GameService, MENGINE_DOCUMENT_FACTORABLE );
+
+#undef BOOTSTRAPPER_SERVICE_CREATE
 
         return true;
     }

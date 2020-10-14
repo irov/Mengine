@@ -3,6 +3,12 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
+#ifndef MENGINE_ASSERTION_DEBUG
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_ASSERTION_DEBUG 1
+#   endif
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -102,7 +108,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_ASSERTION_DEBUG
+#if MENGINE_ASSERTION_DEBUG
 #   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
 #   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...) if(!(Condition)) return Mengine::Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
 #   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)

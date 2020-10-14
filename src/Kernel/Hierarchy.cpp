@@ -8,7 +8,7 @@ namespace Mengine
 {
     namespace Detail
     {
-#ifdef MENGINE_ASSERTION_DEBUG
+#if MENGINE_ASSERTION_DEBUG
         //////////////////////////////////////////////////////////////////////////
         static const ConstString & getHierarchyReceiverName( const Hierarchy * _hierarchy )
         {

@@ -10,6 +10,12 @@
 #define MENGINE_LOGGER_MAX_MESSAGE 16384
 #endif
 
+#ifndef MENGINE_LOGGER_DEBUG
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_LOGGER_DEBUG 1
+#   endif
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -55,7 +61,7 @@ namespace Mengine
 #define LOGGER_ERROR( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
 #define LOGGER_MESSAGE_RELEASE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_LOGGER_DEBUG
+#if MENGINE_LOGGER_DEBUG
 #   define LOGGER_PERFORMANCE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0 )( __VA_ARGS__ )
 #   define LOGGER_STATISTIC( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, Mengine::LCOLOR_GREEN, nullptr, 0 )( __VA_ARGS__ )
 #   define LOGGER_WARNING( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )

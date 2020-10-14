@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     struct CodecDataInfo
     {
-#ifdef MENGINE_ASSERTION_DEBUG
+#if MENGINE_ASSERTION_DEBUG
         CodecDataInfo() = default;
         virtual ~CodecDataInfo() = default;
 #endif
@@ -15,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct CodecOptions
     {
-#ifdef MENGINE_ASSERTION_DEBUG
+#if MENGINE_ASSERTION_DEBUG
         CodecOptions() = default;
         virtual ~CodecOptions() = default;
 #endif

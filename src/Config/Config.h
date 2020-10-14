@@ -157,18 +157,6 @@
 #define MENGINE_WINDOWS_DEBUG_VALUE(X, Y) (Y)
 #endif
 
-#ifndef MENGINE_ASSERTION_DEBUG
-#   ifdef MENGINE_DEBUG
-#       define MENGINE_ASSERTION_DEBUG
-#   endif
-#endif
-
-#ifndef MENGINE_LOGGER_DEBUG
-#   ifdef MENGINE_DEBUG
-#       define MENGINE_LOGGER_DEBUG
-#   endif
-#endif
-
 #define MENGINE_UNKNOWN_SIZE (~0U)
 #define MENGINE_UNKNOWN_HASH (-1)
 

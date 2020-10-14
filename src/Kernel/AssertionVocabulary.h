@@ -10,7 +10,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_ASSERTION_DEBUG
+#if MENGINE_ASSERTION_DEBUG
 #   define MENGINE_ASSERTION_VOCABULARY_EMPTY(Category) Detail::assertionVocabularyEmpty(Category, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 #else
 #   define MENGINE_ASSERTION_VOCABULARY_EMPTY(Category)

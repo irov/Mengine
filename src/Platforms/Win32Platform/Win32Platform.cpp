@@ -896,12 +896,29 @@ namespace Mengine
         {
         case WM_ACTIVATE:
             {
-                DWORD flagActive = LOWORD( wParam ); // флажок активизации
-                BOOL minimized = (BOOL)HIWORD( wParam ); // флажок минимизации
+                DWORD flagActive = LOWORD( wParam );
+                BOOL minimized = (BOOL)HIWORD( wParam );
 
-                bool active = (flagActive != WA_INACTIVE) && (minimized == FALSE);
+                LOGGER_INFO( "WND WM_ACTIVATE active [%u] minimized [%u] visible [%u]"
+                    , flagActive
+                    , minimized
+                    , ::IsWindowVisible( hWnd )
+                );
 
-                this->setActive_( active );
+                if( flagActive != WA_INACTIVE && minimized == FALSE )
+                {
+                    if( ::IsWindowVisible( hWnd ) == FALSE )
+                    {
+                        break;
+                    }
+
+                    this->setActive_( true );
+                }
+                else
+                {
+                    this->setActive_( false );
+                }
+                
 
                 return 0;
             }break;
@@ -923,18 +940,22 @@ namespace Mengine
                 {
                 case WTS_SESSION_LOCK:
                     {
+                        LOGGER_INFO( "WND WTS_SESSION_LOCK" );
+
                         m_sessionLock = true;
                     }break;
                 case WTS_SESSION_UNLOCK:
                     {
+                        LOGGER_INFO( "WND WTS_SESSION_UNLOCK" );
+
                         m_sessionLock = false;
                     }break;
                 }
             }break;
         case WM_DISPLAYCHANGE:
             {
-                //DWORD width = LOWORD(lParam); // флажок активизации
-                //DWORD height = HIWORD(lParam); // флажок минимизации
+                //DWORD width = LOWORD(lParam);
+                //DWORD height = HIWORD(lParam);
 
                 //Resolution desktopResolution;
                 //desktopResolution.setWidth( width );
@@ -948,14 +969,20 @@ namespace Mengine
             {
                 if( wParam == SIZE_MAXIMIZED )
                 {
+                    LOGGER_INFO( "WND SIZE_MAXIMIZED" );
+
                     this->setActive_( true );
                 }
                 else if( wParam == SIZE_MINIMIZED )
                 {
+                    LOGGER_INFO( "WND SIZE_MINIMIZED" );
+
                     this->setActive_( false );
                 }
                 else if( wParam == SIZE_RESTORED /*&& m_application->getFullscreenMode() == true*/ )
                 {
+                    LOGGER_INFO( "WND SIZE_RESTORED" );
+
                     bool fullsreenMode = APPLICATION_SERVICE()
                         ->getFullscreenMode();
 
@@ -3737,7 +3764,10 @@ namespace Mengine
 
         if( m_active == false )
         {
-            Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+            if( nopause == false )
+            {
+                Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+            }
         }
         else
         {

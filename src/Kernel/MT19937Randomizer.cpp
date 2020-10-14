@@ -7,8 +7,12 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::MT19937Randomizer()
-        : m_engineRandomize( std::random_device()() )
     {
+        LOGGER_INFO( "002" );
+        std::random_device rd;
+        LOGGER_INFO( "003" );
+
+        m_engineRandomize = std::mt19937( rd() );
         LOGGER_INFO( "1112" );
 
         std::mt19937::result_type min_value = (m_engineRandomize.min)();

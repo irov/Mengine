@@ -323,6 +323,7 @@ Vertices
 
 ADD_FILTER(
 Thread
+    ThreadHandle.h
     ThreadEnum.h
     ThreadTask.h
     ThreadTask.cpp
@@ -659,6 +660,9 @@ Core
     
     FileStreamHelper.h
     FileStreamHelper.cpp
+
+    RandomDevice.h
+    RandomDevice.cpp
     
     RandomizerHelper.h
     RandomizerHelper.cpp

@@ -9,8 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImage::DX9RenderImage()
-        : m_pD3DDevice( nullptr )
-        , m_pD3DTexture( nullptr )
+        : m_pD3DTexture( nullptr )
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
@@ -25,16 +24,6 @@ namespace Mengine
     DX9RenderImage::~DX9RenderImage()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
-    {
-        m_pD3DDevice = _pD3DDevice;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderImage::getDirect3DDevice9() const
-    {
-        return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat )
@@ -155,7 +144,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     IDirect3DDevice9 * DX9RenderImage::getD3DDevice() const
     {
-        return m_pD3DDevice;
+        IDirect3DDevice9 * device9 = this->getDirect3DDevice9();
+
+        return device9;
     }
     //////////////////////////////////////////////////////////////////////////
     IDirect3DTexture9 * DX9RenderImage::getD3DTexture() const

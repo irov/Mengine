@@ -26,6 +26,7 @@ namespace Mengine
     ThreadService::ThreadService()
         : m_threadCount( 0 )
         , m_mainThreadId( 0 )
+        , m_mainThread( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -42,7 +43,10 @@ namespace Mengine
 
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
-        
+
+        m_mainThread = THREAD_SYSTEM()
+            ->getCurrentThread();
+                
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -408,6 +412,16 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t ThreadService::getMainThreadId() const
+    {
+        return m_mainThreadId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void * ThreadService::getMainThread() const
+    {
+        return m_mainThread;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::tryFastProcessTask_( ThreadTaskDesc & _desc )

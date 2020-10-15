@@ -3,11 +3,9 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/DX9RenderImageExtensionInterface.h"
 
-#include "DX9RenderResourceHandler.h"
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
-
-#include "d3d9.h"
 
 namespace Mengine
 {

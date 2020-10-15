@@ -2,11 +2,11 @@
 
 #include "Interface/RenderProgramInterface.h"
 
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+
 #include "DX9RenderVertexShader.h"
 #include "DX9RenderFragmentShader.h"
 #include "DX9RenderVertexAttribute.h"
-
-#include "d3d9.h"
 
 #include "math/uv4.h"
 #include "math/mat4.h"

@@ -6,6 +6,7 @@
 #include "Interface/ThreadConditionVariableInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/ThreadHandle.h"
 
 namespace Mengine
 {
@@ -23,6 +24,7 @@ namespace Mengine
 
     public:
         virtual uint64_t getCurrentThreadId() const = 0;
+        virtual ThreadHandle getCurrentThread() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

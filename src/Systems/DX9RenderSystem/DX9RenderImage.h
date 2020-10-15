@@ -3,11 +3,11 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/DX9RenderImageExtensionInterface.h"
 
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+
 #include "DX9RenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
-
-#include "d3d9.h"
 
 namespace Mengine
 {
@@ -20,10 +20,6 @@ namespace Mengine
     public:
         DX9RenderImage();
         ~DX9RenderImage() override;
-
-    public:
-        void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );
-        IDirect3DDevice9 * getDirect3DDevice9() const;
 
     public:
         bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat );
@@ -66,7 +62,6 @@ namespace Mengine
         IDirect3DTexture9 * getD3DTexture() const override;
 
     protected:
-        IDirect3DDevice9 * m_pD3DDevice;
         IDirect3DTexture9 * m_pD3DTexture;
 
         RenderImageProviderInterfacePtr m_renderImageProvider;

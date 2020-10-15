@@ -44,25 +44,27 @@ namespace Mengine
 
         if( size_vsnprintf >= 0 )
         {
-            str_info[size_vsnprintf] = '\n';
+            str_info[size_vsnprintf + 0] = '\n';
             str_info[size_vsnprintf + 1] = '\0';
 
             LoggerOperator( LM_ERROR, 0, LCOLOR_RED, m_file, m_line )
                 .logMessage( str_info, (size_t)size_vsnprintf + 1 );
         }
 
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_level, m_file, m_line, str_info );
+        }
+
         switch( m_level )
         {
         case ERROR_LEVEL_MESSAGE:
             {
-                if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_ERROR, m_level, m_file, m_line, str_info );
-                }
+                //Empty
             }break;
         case ERROR_LEVEL_FATAL:
             {
-                Helper::abort();
+                Helper::abort( str_info );
             }break;
         }
 

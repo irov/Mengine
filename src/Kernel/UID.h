@@ -7,5 +7,6 @@ namespace Mengine
     namespace Helper
     {
         void makeUID( uint32_t _length, Char * const _uid );
+        void makeUIDSeed( uint32_t _seed, uint32_t _length, Char * const _uid );
     }
 }

@@ -16,31 +16,20 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderIndexBuffer::DX9RenderIndexBuffer()
-        : m_pD3DDevice( nullptr )
-        , m_bufferType( BT_STATIC )
+        : m_bufferType( BT_STATIC )
         , m_indexSize( 0 )
         , m_indexCapacity( 0 )
         , m_indexCount( 0 )
         , m_usage( 0 )
         , m_format( D3DFMT_UNKNOWN )
         , m_pool( D3DPOOL_MANAGED )
-        , m_pIB( nullptr )
+        , m_pD3DIndexBuffer( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderIndexBuffer::~DX9RenderIndexBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_pIB == nullptr );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderIndexBuffer::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
-    {
-        m_pD3DDevice = _pD3DDevice;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderIndexBuffer::getDirect3DDevice9() const
-    {
-        return m_pD3DDevice;
+        MENGINE_ASSERTION_FATAL( m_pD3DIndexBuffer == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
@@ -81,7 +70,7 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        DXRELEASE( m_pIB );
+        DXRELEASE( m_pD3DIndexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderIndexBuffer::getIndexCount() const
@@ -103,19 +92,19 @@ namespace Mengine
             return true;
         }
 
-        DXRELEASE( m_pIB );
+        DXRELEASE( m_pD3DIndexBuffer );
 
         m_indexCapacity = m_indexCount;
 
         uint32_t bufferSize = m_indexCapacity * m_indexSize;
 
-        IDirect3DIndexBuffer9 * pIB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pIB, NULL) )
+        IDirect3DIndexBuffer9 * pD3DIndexBuffer = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pD3DIndexBuffer, NULL) )
         {
             return false;
         }
 
-        m_pIB = pIB;
+        m_pD3DIndexBuffer = pD3DIndexBuffer;
 
         return true;
     }
@@ -153,7 +142,7 @@ namespace Mengine
         uint32_t lockSize = _count * m_indexSize;
 
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pIB, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
+        IF_DXCALL( m_pD3DIndexBuffer, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
             LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
                 , _count
@@ -173,7 +162,7 @@ namespace Mengine
     {
         m_memory->setBuffer( nullptr, 0 );
 
-        IF_DXCALL( m_pIB, Unlock, () )
+        IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
             LOGGER_ERROR( "invalid"
             );
@@ -189,7 +178,7 @@ namespace Mengine
         UINT sizeToLock = (UINT)(_size * m_indexSize);
 
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pIB, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
+        IF_DXCALL( m_pD3DIndexBuffer, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
             LOGGER_ERROR( "invalid lock size %zu (doc '%s')"
                 , _size
@@ -201,7 +190,7 @@ namespace Mengine
 
         stdex::memorycopy( lock_memory, 0, _buffer, _size * m_indexSize );
 
-        IF_DXCALL( m_pIB, Unlock, () )
+        IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
             LOGGER_ERROR( "invalid unlock"
             );
@@ -214,7 +203,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::enable()
     {
-        DXCALL( m_pD3DDevice, SetIndices, (m_pIB) );
+        DXCALL( m_pD3DDevice, SetIndices, (m_pD3DIndexBuffer) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::disable()
@@ -231,7 +220,7 @@ namespace Mengine
 
         m_memory->setBuffer( nullptr, 0 );
 
-        DXRELEASE( m_pIB );
+        DXRELEASE( m_pD3DIndexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::onRenderRestore()
@@ -241,17 +230,17 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_ASSERTION_FATAL( m_pIB == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DIndexBuffer == nullptr );
 
         uint32_t bufferSize = m_indexCapacity * m_indexSize;
 
-        IDirect3DIndexBuffer9 * pIB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pIB, nullptr) )
+        IDirect3DIndexBuffer9 * pD3DIndexBuffer = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (bufferSize, m_usage, m_format, m_pool, &pD3DIndexBuffer, nullptr) )
         {
             return false;
         }
 
-        m_pIB = pIB;
+        m_pD3DIndexBuffer = pD3DIndexBuffer;
 
         return true;
     }

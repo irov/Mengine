@@ -93,4 +93,11 @@ namespace Mengine
 
         return (uint64_t)id;
     }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadHandle Win32ThreadSystem::getCurrentThread() const
+    {
+        HANDLE hThread = ::GetCurrentThread();
+
+        return (ThreadHandle)hThread;
+    }
 }

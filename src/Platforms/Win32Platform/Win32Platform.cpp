@@ -423,7 +423,7 @@ namespace Mengine
             dumptype = MINIDUMP_TYPE( MiniDumpWithFullMemory | MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithUnloadedModules | MiniDumpWithThreadInfo );
         }
 
-        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exinfo), NULL, NULL );
+        BOOL successful = (*MiniDumpWriteDump)(hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exinfo), NULL, NULL);
 
         ::FreeLibrary( dbghelp_dll );
         ::CloseHandle( hFile );
@@ -918,7 +918,7 @@ namespace Mengine
                 {
                     this->setActive_( false );
                 }
-                
+
 
                 return 0;
             }break;
@@ -2954,12 +2954,12 @@ namespace Mengine
             firstEntry, nextEntry, lastEntry
         };
         //////////////////////////////////////////////////////////////////////////
-        static void OnCallstackEntry( Char * const _stack, CallstackEntry & entry )
+        static size_t OnCallstackEntry( Char * const _stack, size_t _capacity, CallstackEntry & entry )
         {
             CHAR buffer[STACKWALK_MAX_NAMELEN];
             if( entry.offset == 0 )
             {
-                return;
+                return 0;
             }
 
             if( entry.name[0] == 0 )
@@ -2991,7 +2991,7 @@ namespace Mengine
                     , entry.moduleName
                     , entry.lineFileName
                     , entry.lineNumber
-                    , entry.name 
+                    , entry.name
                 );
             }
             else
@@ -2999,16 +2999,28 @@ namespace Mengine
                 MENGINE_SPRINTF( buffer, "%s (%d): %s\n"
                     , entry.lineFileName
                     , entry.lineNumber
-                    , entry.name 
+                    , entry.name
                 );
             }
 
+            size_t buffer_len = MENGINE_STRLEN( buffer );
+
+            if( _capacity < buffer_len )
+            {
+                return 0;
+            }
+
             MENGINE_STRCAT( _stack, buffer );
+
+            return buffer_len;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool GetCallstack( Char * const _stack, PCONTEXT _context, HMODULE hDbhHelp, HMODULE hKernel32, HANDLE hThread, HANDLE hProcess )
+        static bool GetCallstack( Char * const _stack, size_t _capacity, PCONTEXT _context, HMODULE hDbhHelp, HMODULE hKernel32, HANDLE hThread, HANDLE hProcess )
         {
+            MENGINE_ASSERTION_FATAL( _capacity != 0 );
+
             _stack[0] = '\0';
+            --_capacity;
 
             TRtlCaptureContext pRtlCaptureContext = (TRtlCaptureContext)::GetProcAddress( hKernel32, "RtlCaptureContext" );
             TStackWalk64 pStackWalk64 = (TStackWalk64)::GetProcAddress( hDbhHelp, "StackWalk64" );
@@ -3157,7 +3169,9 @@ namespace Mengine
                     }
                 }
 
-                Detail::OnCallstackEntry( _stack, csEntry );
+                size_t stack_len = Detail::OnCallstackEntry( _stack, _capacity, csEntry );
+
+                _capacity -= stack_len;
 
                 if( frame.AddrReturn.Offset == 0 )
                 {
@@ -3169,9 +3183,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( Char * const _stack, PCONTEXT _context ) const
+    bool Win32Platform::getCallstack( ThreadHandle _thread, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
     {
-        HANDLE hThread = ::GetCurrentThread();
+        HANDLE hThread = (HANDLE)_thread;
+
+        if( hThread == nullptr )
+        {
+            hThread = ::GetCurrentThread();
+        }
+
         HANDLE hProcess = ::GetCurrentProcess();
 
         HMODULE hDbhHelp = LoadLibraryW( L"dbghelp.dll" );
@@ -3216,7 +3236,7 @@ namespace Mengine
             return false;
         }
 
-        bool successful = Detail::GetCallstack( _stack, (PCONTEXT)_context, hDbhHelp, hKernel32, hThread, hProcess );
+        bool successful = Detail::GetCallstack( _stack, _capacity, (PCONTEXT)_context, hDbhHelp, hKernel32, hThread, hProcess );
 
         (*pSymCleanup)(hProcess);
 
@@ -3227,8 +3247,9 @@ namespace Mengine
     }
 #else
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( Char * const _stack, PCONTEXT _context ) const
+    bool Win32Platform::getCallstack( ThreadHandle _thread, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
     {
+        MENGINE_UNUSED( _thread );
         MENGINE_UNUSED( _stack );
         MENGINE_UNUSED( _context );
 

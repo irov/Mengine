@@ -176,8 +176,10 @@ namespace Mengine
         bool restore_();
 
     protected:
+        void onDestroyDX9VertexAttribute_( DX9RenderVertexAttribute * _attribute );
         void onDestroyDX9VertexShader_( DX9RenderVertexShader * _shader );
         void onDestroyDX9FragmentShader_( DX9RenderFragmentShader * _shader );
+        void onDestroyDX9Program_( DX9RenderProgram * _program );
         void onDestroyDX9VertexBuffer_( DX9RenderVertexBuffer * _buffer );
         void onDestroyDX9IndexBuffer_( DX9RenderIndexBuffer * _buffer );
         void onDestroyDX9RenderImage_( DX9RenderImage * _image );

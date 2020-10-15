@@ -204,10 +204,10 @@ namespace Mengine
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
 
-        m_factoryRenderVertexAttribute = Helper::makeFactoryPool<DX9RenderVertexAttribute, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderVertexAttribute = Helper::makeFactoryPoolWithListener<DX9RenderVertexAttribute, 8>( this, &DX9RenderSystem::onDestroyDX9VertexAttribute_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<DX9RenderVertexShader, 16>( this, &DX9RenderSystem::onDestroyDX9VertexShader_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<DX9RenderFragmentShader, 16>( this, &DX9RenderSystem::onDestroyDX9FragmentShader_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgram = Helper::makeFactoryPool<DX9RenderProgram, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<DX9RenderProgram, 16>( this, &DX9RenderSystem::onDestroyDX9Program_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX9RenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryVertexBuffer = Helper::makeFactoryPoolWithListener<DX9RenderVertexBuffer, 8>( this, &DX9RenderSystem::onDestroyDX9VertexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryIndexBuffer = Helper::makeFactoryPoolWithListener<DX9RenderIndexBuffer, 8>( this, &DX9RenderSystem::onDestroyDX9IndexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
@@ -1873,6 +1873,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDestroyDX9VertexAttribute_( DX9RenderVertexAttribute * _attribute )
+    {
+        _attribute->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9VertexShader_( DX9RenderVertexShader * _shader )
     {
         _shader->finalize();
@@ -1881,6 +1886,11 @@ namespace Mengine
     void DX9RenderSystem::onDestroyDX9FragmentShader_( DX9RenderFragmentShader * _shader )
     {
         _shader->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDestroyDX9Program_( DX9RenderProgram * _program )
+    {
+        _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9VertexBuffer_( DX9RenderVertexBuffer * _buffer )

@@ -78,6 +78,13 @@ namespace Mengine
 #ifndef MENGINE_ALLOCATOR_DEBUG
         void * p = stdex_malloc( _size );
 #else
+        //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
+
+        if( _size > 15000000 )
+        {
+            return nullptr;
+        }
+
         void * p = ::malloc( _size );
 
         MENGINE_ASSERTION_FATAL( _size == _msize( p ) );
@@ -95,6 +102,8 @@ namespace Mengine
 #ifndef MENGINE_ALLOCATOR_DEBUG
         stdex_free( _mem );
 #else
+        //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
+
         size_t size = _mem == nullptr ? 0 : _msize( _mem );
 
         ::free( _mem );
@@ -110,6 +119,8 @@ namespace Mengine
 #ifndef MENGINE_ALLOCATOR_DEBUG
         void * p = stdex_calloc( _num, _size );
 #else
+        //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
+
         size_t total = _num * _size;
         void * p = ::malloc( total );
         ::memset( p, 0x00, total );
@@ -127,6 +138,8 @@ namespace Mengine
 #ifndef MENGINE_ALLOCATOR_DEBUG
         void * p = stdex_realloc( _mem, _size );
 #else
+        //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
+
         size_t size = _mem == nullptr ? 0 : _msize( _mem );
 
         void * p = ::realloc( _mem, _size );

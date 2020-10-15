@@ -110,12 +110,13 @@ namespace Mengine
                     , _file
                     , _line
                     , _test
-                    , str_info);
+                    , str_info
+                    );
             }
 
             if( _level == ASSERTION_LEVEL_FATAL )
             {
-                Helper::abort();
+                Helper::abort( str_info );
             }
 
             if( Assertion_NotDebugBreak == true && _level >= ASSERTION_LEVEL_WARNING )

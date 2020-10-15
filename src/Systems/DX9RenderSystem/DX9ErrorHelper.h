@@ -2,10 +2,10 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "d3d9.h"
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
 #ifdef MENGINE_DEBUG
-#define MENGINE_RENDER_CHECK_ERROR
+#   define MENGINE_RENDER_CHECK_ERROR
 #endif
 
 namespace Mengine

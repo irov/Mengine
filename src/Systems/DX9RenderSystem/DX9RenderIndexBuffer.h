@@ -2,9 +2,9 @@
 
 #include "Interface/RenderIndexBufferInterface.h"
 
-#include "DX9RenderResourceHandler.h"
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
-#include "d3d9.h"
+#include "DX9RenderResourceHandler.h"
 
 namespace Mengine
 {
@@ -16,10 +16,6 @@ namespace Mengine
     public:
         DX9RenderIndexBuffer();
         ~DX9RenderIndexBuffer() override;
-
-    public:
-        void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );
-        IDirect3DDevice9 * getDirect3DDevice9() const;
 
     public:
         bool initialize( uint32_t _indexSize, EBufferType _bufferType ) override;
@@ -48,8 +44,6 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
-        IDirect3DDevice9 * m_pD3DDevice;
-
         EBufferType m_bufferType;
         uint32_t m_indexSize;
         uint32_t m_indexCapacity;
@@ -58,7 +52,7 @@ namespace Mengine
         DWORD m_usage;
         D3DFORMAT m_format;
         D3DPOOL m_pool;
-        IDirect3DIndexBuffer9 * m_pIB;
+        IDirect3DIndexBuffer9 * m_pD3DIndexBuffer;
 
         MemoryProxyInterfacePtr m_memory;
     };

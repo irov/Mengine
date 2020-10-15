@@ -2,6 +2,8 @@
 
 #include "Interface/UnknownInterface.h"
 
+#include "Kernel/ThreadHandle.h"
+
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
 
@@ -36,6 +38,6 @@ namespace Mengine
         virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode ) = 0;
 
     public:
-        virtual bool getCallstack( Char * const _stack, PCONTEXT _context ) const = 0;
+        virtual bool getCallstack( ThreadHandle _thread, Char * const _stack, size_t _capacity, PCONTEXT _context ) const = 0;
     };
 }

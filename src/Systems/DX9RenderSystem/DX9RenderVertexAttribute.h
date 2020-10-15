@@ -3,10 +3,10 @@
 #include "Interface/RenderVertexAttributeInterface.h"
 #include "Interface/MemoryInterface.h"
 
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/Vector.h"
-
-#include "d3d9.h"
 
 namespace Mengine
 {

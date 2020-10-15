@@ -3,6 +3,8 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/DX9RenderSystemExtensionInterface.h"
 
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+
 #include "DX9RenderResourceHandler.h"
 
 #include "Kernel/ServiceBase.h"
@@ -10,8 +12,6 @@
 #include "Kernel/Vector.h"
 
 #include "stdex/intrusive_list.h"
-
-#include "d3d9.h"
 
 namespace Mengine
 {

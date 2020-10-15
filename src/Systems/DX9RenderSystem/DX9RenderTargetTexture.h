@@ -2,11 +2,11 @@
 
 #include "Interface/RenderTargetInterface.h"
 
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+
 #include "DX9RenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
-
-#include "d3d9.h"
 
 namespace Mengine
 {
@@ -18,10 +18,6 @@ namespace Mengine
     public:
         DX9RenderTargetTexture();
         ~DX9RenderTargetTexture() override;
-
-    public:
-        void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );
-        IDirect3DDevice9 * getDirect3DDevice9() const;
 
     public:
         bool initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format );
@@ -62,8 +58,6 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
-        IDirect3DDevice9 * m_pD3DDevice;
-
         uint32_t m_width;
         uint32_t m_height;
         uint32_t m_channels;

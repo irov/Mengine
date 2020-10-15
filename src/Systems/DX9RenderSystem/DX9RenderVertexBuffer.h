@@ -2,11 +2,11 @@
 
 #include "Interface/RenderVertexBufferInterface.h"
 
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+
 #include "DX9RenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
-
-#include "d3d9.h"
 
 namespace Mengine
 {
@@ -18,10 +18,6 @@ namespace Mengine
     public:
         DX9RenderVertexBuffer();
         ~DX9RenderVertexBuffer() override;
-
-    public:
-        void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );
-        IDirect3DDevice9 * getDirect3DDevice9() const;
 
     public:
         bool initialize( uint32_t _vertexSize, EBufferType _bufferType ) override;
@@ -50,8 +46,6 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
-        IDirect3DDevice9 * m_pD3DDevice;
-
         EBufferType m_bufferType;
         uint32_t m_vertexSize;
         uint32_t m_vertexCapacity;
@@ -60,7 +54,7 @@ namespace Mengine
         DWORD m_usage;
         D3DFORMAT m_format;
         D3DPOOL m_pool;
-        IDirect3DVertexBuffer9 * m_pVB;
+        IDirect3DVertexBuffer9 * m_pD3DVertexBuffer;
 
         MemoryProxyInterfacePtr m_memory;
     };

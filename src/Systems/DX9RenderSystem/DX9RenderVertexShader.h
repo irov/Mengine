@@ -3,9 +3,9 @@
 #include "Interface/RenderVertexShaderInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/Factorable.h"
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
-#include "d3d9.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {

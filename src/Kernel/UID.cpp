@@ -1,7 +1,8 @@
 #include "UID.h"
 
+#include "Kernel/RandomDevice.h"
+
 #include <random>
-#include <chrono>
 #include <functional>
 #include <algorithm>
 
@@ -27,14 +28,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void makeUID( uint32_t _length, Char * const _uid )
         {
-            auto now = std::chrono::system_clock::now();
-            auto now_ms = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
-            auto epoch = now_ms.time_since_epoch();
-            auto value = std::chrono::duration_cast<std::chrono::nanoseconds>(epoch);
+            uint32_t seed = Helper::generateRandomDeviceSeed();
 
-            uint32_t now_ms_count = (uint32_t)value.count();
-
-            std::default_random_engine rng{now_ms_count};
+            makeUIDSeed( seed, _length, _uid );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void makeUIDSeed( uint32_t _seed, uint32_t _length, Char * const _uid )
+        {
+            std::default_random_engine rng{_seed};
 
             std::uniform_int_distribution<uint32_t> dist( 0, sizeof( char_array ) - 1 );
 

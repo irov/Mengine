@@ -7,6 +7,10 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
+#ifdef MENGINE_PLATFORM_WINDOWS
+#   include "Interface/Win32PlatformExtensionInterface.h"
+#endif
+
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/DocumentHelper.h"
@@ -15,9 +19,6 @@
 
 #include "Kernel/Stringstream.h"
 
-#include <thread>
-#include <atomic>
-#include <chrono>
 #include <iomanip>
 
 namespace Mengine
@@ -161,6 +162,26 @@ namespace Mengine
             return true;
         }
 
+#ifdef MENGINE_PLATFORM_WINDOWS
+        Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getPlatformExtention();
+
+        ThreadHandle currentThread = THREAD_SERVICE()
+            ->getMainThread();
+
+        Char stack_msg[8096] = {'\0'};
+        if( extension->getCallstack( currentThread, stack_msg, 8096, nullptr ) == false )
+        {
+            LOGGER_ERROR( "Antifreeze monitor invalid callstack" );
+        }
+        else
+        {
+            LOGGER_ERROR( "Antifreeze monitor callstack:\n%s"
+                , stack_msg
+            );
+        }
+#endif
+
         Char userPath[MENGINE_MAX_PATH] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
@@ -227,8 +248,10 @@ namespace Mengine
         --m_reflogger;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyAbort()
+    void Win32AntifreezeMonitor::notifyAbort( const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         m_reflogger += 1024;
     }
 }

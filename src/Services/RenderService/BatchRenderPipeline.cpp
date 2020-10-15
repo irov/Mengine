@@ -908,20 +908,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t _vbPos, uint32_t _ibPos ) const
     {
-        void * memory_buffer = _vertexMemory->getBuffer();
-        size_t memory_size = _vertexMemory->getSize();
+        void * vertexBuffer = _vertexMemory->getBuffer();
+        size_t vertexBufferSize = _vertexMemory->getSize();
 
-        size_t memory_offset = _vbPos * _vertexSize;
+        size_t vertexBufferOffset = _vbPos * _vertexSize;
+        size_t vertexCountSize = _renderObject->vertexCount * _vertexSize;
 
-        if( stdex::memorycopy_safe( memory_buffer, memory_offset, memory_size, _renderObject->vertexData, _renderObject->vertexCount * _vertexSize ) == false )
+        if( vertexBufferOffset + vertexCountSize > vertexBufferSize )
         {
-            LOGGER_ERROR( "vertex buffer overrlow!"
-            );
+            LOGGER_ERROR( "vertex buffer overrlow!" );
 
             return false;
         }
 
         RenderIndex * indexBuffer = _indexMemory->getBuffer();
+        size_t indexBufferSize = _indexMemory->getSize();
+
+        size_t indexBufferOffset = _ibPos * sizeof( RenderIndex );
+        size_t indexCountSize = _renderObject->indexCount * sizeof( RenderIndex );
+
+        if( indexBufferOffset + indexCountSize > indexBufferSize )
+        {
+            LOGGER_ERROR( "index buffer overrlow!" );
+
+            return false;
+        }
+
+        stdex::memorycopy( vertexBuffer, vertexBufferOffset, _renderObject->vertexData, vertexCountSize );
 
         RenderIndex * offsetIndicesBuffer = indexBuffer + _ibPos;
 

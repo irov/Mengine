@@ -29,6 +29,8 @@ src
     DX9ErrorHelper.cpp
     DX9RenderProgramVariable.h
     DX9RenderProgramVariable.cpp
+    DX9RenderResourceHandler.h
+    DX9RenderResourceHandler.cpp
 )
 
 ADD_MENGINE_LIBRARY(Systems)

@@ -16,31 +16,20 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexBuffer::DX9RenderVertexBuffer()
-        : m_pD3DDevice( nullptr )
-        , m_bufferType( BT_STATIC )
+        : m_bufferType( BT_STATIC )
         , m_vertexSize( 0 )
         , m_vertexCapacity( 0 )
         , m_vertexCount( 0 )
         , m_usage( 0 )
         , m_format( D3DFMT_UNKNOWN )
         , m_pool( D3DPOOL_MANAGED )
-        , m_pVB( nullptr )
+        , m_pD3DVertexBuffer( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_pVB == nullptr );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexBuffer::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
-    {
-        m_pD3DDevice = _pD3DDevice;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderVertexBuffer::getDirect3DDevice9() const
-    {
-        return m_pD3DDevice;
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexBuffer == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::initialize( uint32_t _vertexSize, EBufferType _bufferType )
@@ -79,7 +68,7 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        DXRELEASE( m_pVB );
+        DXRELEASE( m_pD3DVertexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderVertexBuffer::getVertexCount() const
@@ -101,19 +90,19 @@ namespace Mengine
             return true;
         }
 
-        DXRELEASE( m_pVB );
+        DXRELEASE( m_pD3DVertexBuffer );
 
         m_vertexCapacity = m_vertexCount;
 
         uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
-        IDirect3DVertexBuffer9 * pVB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pVB, NULL) )
+        IDirect3DVertexBuffer9 * pD3DVertexBuffer = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pD3DVertexBuffer, NULL) )
         {
             return false;
         }
 
-        m_pVB = pVB;
+        m_pD3DVertexBuffer = pD3DVertexBuffer;
 
         return true;
     }
@@ -150,7 +139,7 @@ namespace Mengine
         uint32_t lockSize = _count * m_vertexSize;
 
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pVB, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
+        IF_DXCALL( m_pD3DVertexBuffer, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
             LOGGER_ERROR( "%d offset %d invalid lock doc '%s'"
                 , _count
@@ -170,7 +159,7 @@ namespace Mengine
     {
         m_memory->setBuffer( nullptr, 0 );
 
-        IF_DXCALL( m_pVB, Unlock, () )
+        IF_DXCALL( m_pD3DVertexBuffer, Unlock, () )
         {
             LOGGER_ERROR( "invalid unlock"
             );
@@ -186,7 +175,7 @@ namespace Mengine
         UINT sizeToLock = (UINT)(_size * m_vertexSize);
 
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pVB, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
+        IF_DXCALL( m_pD3DVertexBuffer, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
             LOGGER_ERROR( "invalid lock size %zu (doc %s)"
                 , _size
@@ -198,7 +187,7 @@ namespace Mengine
 
         stdex::memorycopy( lock_memory, 0, _buffer, _size * m_vertexSize );
 
-        IF_DXCALL( m_pVB, Unlock, () )
+        IF_DXCALL( m_pD3DVertexBuffer, Unlock, () )
         {
             LOGGER_ERROR( "invalid unlock (doc %s)"
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
@@ -212,7 +201,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::enable()
     {
-        DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pVB, 0, m_vertexSize) );
+        DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pD3DVertexBuffer, 0, m_vertexSize) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::disable()
@@ -229,7 +218,7 @@ namespace Mengine
 
         m_memory->setBuffer( nullptr, 0 );
 
-        DXRELEASE( m_pVB );
+        DXRELEASE( m_pD3DVertexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::onRenderRestore()
@@ -239,17 +228,17 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_ASSERTION_FATAL( m_pVB == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexBuffer == nullptr );
 
         uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
-        IDirect3DVertexBuffer9 * pVB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pVB, nullptr) )
+        IDirect3DVertexBuffer9 * pD3DVertexBuffer = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (bufferSize, m_usage, 0, m_pool, &pD3DVertexBuffer, nullptr) )
         {
             return false;
         }
 
-        m_pVB = pVB;
+        m_pD3DVertexBuffer = pD3DVertexBuffer;
 
         return true;
     }

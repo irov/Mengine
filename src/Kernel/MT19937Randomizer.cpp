@@ -1,5 +1,6 @@
 #include "MT19937Randomizer.h"
 
+#include "Kernel/RandomDevice.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
@@ -7,8 +8,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::MT19937Randomizer()
-        : m_engineRandomize{3499211612}
     {
+        uint32_t seed = Helper::generateRandomDeviceSeed();
+
+        m_engineRandomize = std::mt19937{seed};
+
         std::mt19937::result_type min_value = (m_engineRandomize.min)();
         std::mt19937::result_type max_value = (m_engineRandomize.max)();
 

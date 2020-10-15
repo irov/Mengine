@@ -11,7 +11,6 @@ namespace Mengine
         , m_height( 0 )
         , m_channels( 0 )
         , m_format( PF_UNKNOWN )
-        , m_pD3DDevice( nullptr )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwWidthInv( 0.f )
@@ -25,16 +24,6 @@ namespace Mengine
     DX9RenderTargetTexture::~DX9RenderTargetTexture()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetTexture::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
-    {
-        m_pD3DDevice = _pD3DDevice;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderTargetTexture::getDirect3DDevice9() const
-    {
-        return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )

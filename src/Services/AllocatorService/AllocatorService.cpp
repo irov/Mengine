@@ -67,6 +67,8 @@ namespace Mengine
     void AllocatorService::_finalizeService()
     {
 #ifdef MENGINE_ALLOCATOR_DEBUG
+        MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
+
         //MENGINE_ASSERTION_FATAL( m_reportTotal == 0 );
 #endif
     }

@@ -89,4 +89,15 @@ namespace Mengine
         GLCALL( glAttachShader, (_program, m_shaderId) );
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderFragmentShader::onRenderReset()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderFragmentShader::onRenderRestore()
+    {
+        //Empty
+
+        return true;
+    }
 }

@@ -4,12 +4,11 @@
 #include "Interface/ResourceBankInterface.h"
 
 #include "Kernel/Visitor.h"
-
-#include "Config/Lambda.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
+
+#include "Config/Lambda.h"
 
 namespace Mengine
 {

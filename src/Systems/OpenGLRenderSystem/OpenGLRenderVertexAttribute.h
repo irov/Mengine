@@ -3,6 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 
 #include "OpenGLRenderExtension.h"
+#include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Vector.h"
@@ -12,6 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderVertexAttribute
         : public RenderVertexAttributeInterface
+        , public OpenGLRenderResourceHandler
         , public Factorable
     {
     public:
@@ -34,6 +36,10 @@ namespace Mengine
 
     protected:
         void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
+
+    protected:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         ConstString m_name;

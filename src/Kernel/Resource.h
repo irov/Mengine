@@ -298,6 +298,18 @@ namespace Mengine
 
             return t;
         }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T dynamicResourceCast( const ResourcePtr & _resource )
+        {
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<typename T::value_type>>, "dynamic resource cast use on non 'Resourcable' type");
+#endif
+
+            T t = stdex::intrusive_dynamic_cast<T>(_resource);
+
+            return std::move( t );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>

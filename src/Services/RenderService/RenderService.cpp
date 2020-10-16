@@ -24,7 +24,6 @@
 #include "math/convex8.h"
 
 #include "stdex/memorycopy.h"
-#include "stdex/intrusive_ptr_base.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderService, Mengine::RenderService );

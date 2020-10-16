@@ -90,4 +90,16 @@ namespace Mengine
     {
         GLCALL( glAttachShader, (_program, m_shaderId) );
     }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderVertexShader::onRenderReset()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexShader::onRenderRestore()
+    {
+        //Empty
+
+        return true;
+    }
 }

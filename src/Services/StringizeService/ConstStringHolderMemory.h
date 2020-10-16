@@ -2,12 +2,13 @@
 
 #include "Kernel/String.h"
 #include "Kernel/ConstStringHolder.h"
+#include "Kernel/IntrusiveLinked.h"
 
 namespace Mengine
 {
     class ConstStringHolderMemory
         : public ConstStringHolder
-        , public stdex::intrusive_linked<ConstStringHolderMemory>
+        , public IntrusiveLinked<ConstStringHolderMemory>
     {
     public:
         ConstStringHolderMemory();

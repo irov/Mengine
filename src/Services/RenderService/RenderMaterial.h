@@ -2,14 +2,14 @@
 
 #include "Interface/RenderMaterialInterface.h"
 
-#include "stdex/intrusive_linked.h"
+#include "Kernel/IntrusiveLinked.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterial
         : public RenderMaterialInterface
-        , public stdex::intrusive_linked<RenderMaterial>
+        , public IntrusiveLinked<RenderMaterial>
     {
     public:
         RenderMaterial();

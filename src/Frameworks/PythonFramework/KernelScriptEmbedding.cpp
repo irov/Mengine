@@ -100,7 +100,6 @@
 #include "math/quat.h"
 #include "math/utils.h"
 
-#include "stdex/xml_sax_parser.h"
 #include "utf8.h"
 
 namespace Mengine

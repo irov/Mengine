@@ -3,6 +3,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHolder.h"
+#include "Kernel/IntrusiveLinked.h"
 
 #include "pybind/pybind.hpp"
 
@@ -10,7 +11,7 @@ namespace Mengine
 {
     class ConstStringHolderPythonString
         : public ConstStringHolder
-        , public stdex::intrusive_linked<ConstStringHolderPythonString>
+        , public IntrusiveLinked<ConstStringHolderPythonString>
     {
     public:
         ConstStringHolderPythonString();

@@ -6,8 +6,6 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/UpdateContext.h"
 
-#include "stdex/intrusive_slug_linked_ptr.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

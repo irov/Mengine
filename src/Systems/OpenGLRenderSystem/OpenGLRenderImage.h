@@ -6,13 +6,16 @@
 
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
+#include "OpenGLRenderResourceHandler.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderImage
         : public RenderImageInterface
         , public OpenGLRenderImageExtensionInterface
-        , public Factorable
+        , public OpenGLRenderResourceHandler
+        , public Factorable        
     {
     public:
         OpenGLRenderImage();
@@ -73,6 +76,10 @@ namespace Mengine
 
         void setWrapT( GLenum _wrapT );
         GLenum getWrapT() const;
+
+    protected:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         RenderImageProviderInterfacePtr m_renderImageProvider;

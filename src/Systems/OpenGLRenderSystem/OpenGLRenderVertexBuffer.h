@@ -3,6 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 
 #include "OpenGLRenderExtension.h"
+#include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
 
@@ -11,6 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderVertexBuffer
         : public RenderVertexBufferInterface
+        , public OpenGLRenderResourceHandler
         , public Factorable
     {
     public:
@@ -42,6 +44,10 @@ namespace Mengine
     public:
         void release();
         bool reload();
+
+    protected:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         uint32_t m_vertexCapacity;

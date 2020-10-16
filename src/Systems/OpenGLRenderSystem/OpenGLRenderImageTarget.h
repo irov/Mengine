@@ -3,11 +3,12 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/OpenGLRenderImageExtensionInterface.h"
 
+#include "Environment/OpenGL/OpenGLRenderIncluder.h"
+
 #include "OpenGLRenderTargetTexture.h"
+#include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
-
-#include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
 namespace Mengine
 {
@@ -15,6 +16,7 @@ namespace Mengine
     class OpenGLRenderImageTarget
         : public RenderImageInterface
         , public OpenGLRenderImageExtensionInterface
+        , public OpenGLRenderResourceHandler
         , public Factorable
     {
     public:
@@ -55,6 +57,10 @@ namespace Mengine
 
     protected:
         GLuint getUID() const override;
+
+    protected:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         OpenGLRenderTargetTexturePtr m_renderTarget;

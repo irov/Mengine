@@ -6,8 +6,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Color.h"
 
-#include "stdex/intrusive_tree.h"
-
 namespace Mengine
 {
     class TextEntry

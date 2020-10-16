@@ -2,6 +2,7 @@
 
 #include "Interface/RenderIndexBufferInterface.h"
 
+#include "OpenGLRenderResourceHandler.h"
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/Factorable.h"
@@ -11,6 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderIndexBuffer
         : public RenderIndexBufferInterface
+        , public OpenGLRenderResourceHandler
         , public Factorable
     {
     public:
@@ -40,6 +42,10 @@ namespace Mengine
     public:
         void release();
         bool reload();
+
+    public:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         uint32_t m_indexCapacity;

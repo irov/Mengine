@@ -7,14 +7,13 @@
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/UpdateContext.h"
-
-#include "stdex/intrusive_slug_linked_ptr.h"
+#include "Kernel/IntrusiveSlugLinkedPtr.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Affector
-        : public stdex::intrusive_slug_linked_ptr<Affector, void, IntrusivePtr, IntrusivePtrBase>
+        : public IntrusiveSlugLinkedPtr<Affector, void, IntrusivePtr, IntrusivePtrBase>
         , public Factorable
         , public Updatable
         , public BaseUpdation

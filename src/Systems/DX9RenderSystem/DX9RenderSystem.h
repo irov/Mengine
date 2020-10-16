@@ -200,8 +200,6 @@ namespace Mengine
 
         Viewport m_viewport;
 
-        IDirect3DVertexDeclaration9 * m_vertexDeclaration;
-
         FactoryPtr m_factoryRenderVertexAttribute;
         FactoryPtr m_factoryRenderVertexShader;
         FactoryPtr m_factoryRenderFragmentShader;

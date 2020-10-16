@@ -134,7 +134,6 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
-#include "stdex/xml_sax_parser.h"
 #include "utf8.h"
 
 namespace Mengine

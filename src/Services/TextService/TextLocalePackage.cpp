@@ -8,8 +8,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
-#include "stdex/xml_sax_parser.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

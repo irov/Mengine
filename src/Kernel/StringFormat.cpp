@@ -2,8 +2,6 @@
 
 #include "Kernel/Logger.h"
 
-#include "stdex/stl_allocator.h"
-
 namespace Mengine
 {
     namespace Helper

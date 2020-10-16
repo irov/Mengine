@@ -6,8 +6,6 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
-#include "stdex/pool.h"
-
 namespace Mengine
 {
     class SDLThreadSystem

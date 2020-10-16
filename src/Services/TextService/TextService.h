@@ -2,12 +2,10 @@
 
 #include "Interface/TextServiceInterface.h"
 
-#include "Kernel/ServiceBase.h"
-
 #include "TextLocalePackage.h"
-
 #include "TextEntry.h"
 
+#include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Tags.h"
@@ -15,12 +13,11 @@
 #include "Kernel/ConstStringHolderLocalString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Pool.h"
-
 #include "Kernel/Pair.h"
 #include "Kernel/Map.h"
-#include "Config/Typedef.h"
+#include "Kernel/IntrusiveList.h"
 
-#include "stdex/intrusive_list.h"
+#include "Config/Typedef.h"
 
 namespace Mengine
 {
@@ -139,10 +136,10 @@ namespace Mengine
         FactoryPtr m_factoryTextEntry;
         FactoryPtr m_factoryTextLocalePackage;
 
-        typedef stdex::template_pool<ConstStringHolderLocalString, 1024> PoolConstStringHolderLocalString;
+        typedef Pool<ConstStringHolderLocalString, 1024> PoolConstStringHolderLocalString;
         PoolConstStringHolderLocalString m_poolLocalString;
 
-        typedef stdex::intrusive_list<ConstStringHolderLocalString> IntrusiveListConstStringHolderLocalString;
+        typedef IntrusiveList<ConstStringHolderLocalString> IntrusiveListConstStringHolderLocalString;
         IntrusiveListConstStringHolderLocalString m_holdersLocalString;
 
         VectorU32String m_lineDelims;

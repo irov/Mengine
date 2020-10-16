@@ -4,6 +4,8 @@
 
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
+#include "OpenGLRenderResourceHandler.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine
@@ -11,6 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderTargetTexture
         : public RenderTargetInterface
+        , public OpenGLRenderResourceHandler
         , public Factorable
     {
     public:
@@ -52,7 +55,8 @@ namespace Mengine
         GLuint getUID() const;
 
     public:
-        void _destroy() override;
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         GLuint m_tuid;

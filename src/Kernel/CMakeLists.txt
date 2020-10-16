@@ -578,11 +578,15 @@ Core
     IntrusivePtrBase.h
     IntrusivePtrView.h
     
+    IntrusiveList.h
+    IntrusiveLinked.h
+    
     IntrusiveSlug.h
     IntrusiveSlugIterator.h
     IntrusiveSlugHead.h
     IntrusiveSlugListSize.h
     IntrusiveSlugList.h
+    IntrusiveSlugLinkedPtr.h
     
     LoggerBase.cpp
     LoggerBase.h
@@ -591,6 +595,8 @@ Core
     VectorAspectRatioViewports.h
     
     VectorAuxScope.h
+    
+    ContainerWriter.h
     
     BezierHelper.h
     ParabolicHelper.h

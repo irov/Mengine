@@ -4,8 +4,6 @@
 
 #include "metabuf/Metadata.hpp"
 
-#include "stdex/memory_reader.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"

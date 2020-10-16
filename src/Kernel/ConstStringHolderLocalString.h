@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Kernel/ConstStringHolder.h"
+#include "Kernel/IntrusiveLinked.h"
 
 namespace Mengine
 {
     class ConstStringHolderLocalString
         : public ConstStringHolder
-        , public stdex::intrusive_linked<ConstStringHolderLocalString>
+        , public IntrusiveLinked<ConstStringHolderLocalString>
     {
     public:
         ConstStringHolderLocalString();

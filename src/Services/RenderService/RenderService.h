@@ -19,9 +19,6 @@
 #include "Kernel/List.h"
 #include "Kernel/ConstString.h"
 
-#include "stdex/static_array.h"
-#include "stdex/dynamic_array.h"
-
 #include "math/mat4.h"
 #include "math/vec4.h"
 

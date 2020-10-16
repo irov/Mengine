@@ -10,6 +10,8 @@ src
     OpenGLRenderError.h
     OpenGLRenderEnum.cpp
     OpenGLRenderEnum.h
+    OpenGLRenderResourceHandler.h
+    OpenGLRenderResourceHandler.cpp
     OpenGLRenderFragmentShader.cpp
     OpenGLRenderFragmentShader.h
     OpenGLRenderIndexBuffer.cpp

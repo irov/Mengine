@@ -20,12 +20,11 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/Vector.h"
+#include "Kernel/ContainerWriter.h"
 
 #include "math/quat.h"
 
 #include "poly2tri/poly2tri.h"
-
-#include "stdex/container_writer.h"
 
 namespace Mengine
 {

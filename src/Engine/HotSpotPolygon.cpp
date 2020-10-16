@@ -11,8 +11,6 @@
 
 #include "Config/Config.h"
 
-#include "stdex/span.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -39,37 +37,6 @@ namespace Mengine
     {
         m_polygon.clear();
     }
-    //////////////////////////////////////////////////////////////////////////
-    //void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
-    //{
-    //    const VectorPoints & points = m_polygon.getPoints();
-
-    //    if( points.empty() == true )
-    //    {
-    //        *_boundingBoxCurrent = nullptr;
-
-    //        return;
-    //    }
-
-    //    const mt::mat4f & wm = this->getWorldMatrix();
-
-    //    const mt::vec2f & v0 = points.front();
-
-    //    mt::vec2f wmp_0;
-    //    mt::mul_v2_v2_m4( wmp_0, v0, wm );
-
-    //    mt::reset( _boundingBox, wmp_0 );
-
-    //    for( const mt::vec2f & v : stdex::span::range( points, 1 ) )
-    //    {
-    //        mt::vec2f wmp_it;
-    //        mt::mul_v2_v2_m4( wmp_it, v, wm );
-
-    //        mt::add_internal_point( _boundingBox, wmp_it );
-    //    }
-
-    //    *_boundingBoxCurrent = &_boundingBox;
-    //}
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotPolygon::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
     {

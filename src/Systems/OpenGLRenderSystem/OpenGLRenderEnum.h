@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         GLenum toGLIndexType( uint32_t _size );

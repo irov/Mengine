@@ -9,8 +9,7 @@
 #include "Kernel/Hashtable.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
-
-#include "stdex/intrusive_list.h"
+#include "Kernel/IntrusiveList.h"
 
 #ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
 #define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
@@ -120,7 +119,7 @@ namespace Mengine
         RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
         uint32_t m_stageCount;
 
-        typedef stdex::intrusive_list<RenderMaterial> IntrusiveListRenderMaterial;
+        typedef IntrusiveList<RenderMaterial> IntrusiveListRenderMaterial;
         IntrusiveListRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
         RenderMaterialInterfacePtr m_solidRenderMaterial[4];

@@ -254,8 +254,15 @@ namespace Mengine
         return m_tuid;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderTargetTexture::_destroy()
+    void OpenGLRenderTargetTexture::onRenderReset()
     {
-        this->release();
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderTargetTexture::onRenderRestore()
+    {
+        //Empty
+
+        return true;
     }
 }

@@ -4,6 +4,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "OpenGLRenderExtension.h"
+#include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/CompilableReference.h"
@@ -13,8 +14,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderFragmentShader
         : public RenderFragmentShaderInterface
-        , public Factorable
+        , public OpenGLRenderResourceHandler
         , public CompilableReference
+        , public Factorable        
     {
     public:
         OpenGLRenderFragmentShader();
@@ -33,6 +35,10 @@ namespace Mengine
 
     public:
         void attach( GLuint _program );
+
+    public:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         ConstString m_name;

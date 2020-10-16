@@ -5,13 +5,12 @@
 
 #include "Kernel/HashType.h"
 #include "Kernel/Factorable.h"
-
-#include "stdex/intrusive_linked.h"
+#include "Kernel/IntrusiveLinked.h"
 
 namespace Mengine
 {
     class ConstStringHolder
-        : public stdex::intrusive_linked<ConstStringHolder>
+        : public IntrusiveLinked<ConstStringHolder>
     {
     protected:
         ConstStringHolder();

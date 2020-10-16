@@ -7,6 +7,7 @@
 #include "OpenGLRenderVertexAttribute.h"
 
 #include "OpenGLRenderExtension.h"
+#include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/CompilableReference.h"
@@ -26,8 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderProgram
         : public RenderProgramInterface
-        , public Factorable
+        , public OpenGLRenderResourceHandler
         , public CompilableReference
+        , public Factorable        
     {
     public:
         OpenGLRenderProgram();
@@ -60,6 +62,10 @@ namespace Mengine
 
         void bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const;
         bool bindTexture( uint32_t _textureInd ) const;
+
+    public:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         ConstString m_name;

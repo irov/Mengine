@@ -9,8 +9,5 @@
 namespace Mengine
 {
     template<class T, class D = void>
-    class IntrusiveSlugList
-        : public stdex::intrusive_slug_list_ptr<T, D, IntrusivePtr, IntrusivePtrBase, IntrusiveSlugHead>
-    {
-    };
+    using IntrusiveSlugList = stdex::intrusive_slug_list_ptr<T, D, IntrusivePtr, IntrusivePtrBase, IntrusiveSlugHead>;
 }

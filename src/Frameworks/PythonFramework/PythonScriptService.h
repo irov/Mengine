@@ -20,10 +20,9 @@
 #include "Kernel/Pool.h"
 #include "Kernel/Map.h"
 #include "Kernel/Vector.h"
+#include "Kernel/IntrusiveList.h"
 
 #include "pybind/pybind.hpp"
-
-#include "stdex/intrusive_list.h"
 
 namespace Mengine
 {
@@ -120,7 +119,7 @@ namespace Mengine
         typedef Pool<ConstStringHolderPythonString, 256> PoolConstStringHolderPythonString;
         PoolConstStringHolderPythonString m_poolPythonString;
 
-        typedef stdex::intrusive_list<ConstStringHolderPythonString> IntrusiveListConstStringHolderPythonString;
+        typedef IntrusiveList<ConstStringHolderPythonString> IntrusiveListConstStringHolderPythonString;
         IntrusiveListConstStringHolderPythonString m_holdersPythonString;
 
         FactoryPtr m_factoryScriptModule;

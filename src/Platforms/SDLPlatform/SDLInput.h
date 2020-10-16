@@ -6,7 +6,6 @@
 #include "Kernel/Factorable.h"
 
 #include "math/vec2.h"
-#include "stdex/stl_map.h"
 
 #include "SDL.h"
 

@@ -2,14 +2,12 @@
 
 #include "Interface/StringizeServiceInterface.h"
 
+#include "ConstStringHolderMemory.h"
+
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Pool.h"
-
-#include "ConstStringHolderMemory.h"
-
-#include "stdex/intrusive_list.h"
-
+#include "Kernel/IntrusiveList.h"
 
 #ifndef MENGINE_STRINGIZE_HOLDER_COUNT
 #define MENGINE_STRINGIZE_HOLDER_COUNT 4096
@@ -45,10 +43,10 @@ namespace Mengine
         typedef Pool<ConstStringHolderMemory, 1024> PoolConstStringHolderMemory;
         PoolConstStringHolderMemory m_poolHolderStringMemory;
 
-        typedef stdex::intrusive_list<ConstStringHolder> IntrusiveListConstStringHolder;
+        typedef IntrusiveList<ConstStringHolder> IntrusiveListConstStringHolder;
         IntrusiveListConstStringHolder m_holders[MENGINE_STRINGIZE_HOLDER_COUNT];
 
-        typedef stdex::intrusive_list<ConstStringHolderMemory> IntrusiveListConstStringHolderMemory;
+        typedef IntrusiveList<ConstStringHolderMemory> IntrusiveListConstStringHolderMemory;
         IntrusiveListConstStringHolderMemory m_holdersMemory;
 
         struct InternalHolder

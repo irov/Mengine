@@ -5,7 +5,7 @@
 
 #include "Kernel/ServiceBase.h"
 
-#define MENGINE_ALLOCATOR_DEBUG 1
+//#define MENGINE_ALLOCATOR_DEBUG 1
 
 #ifndef MENGINE_ALLOCATOR_DEBUG
 #   ifdef MENGINE_WINDOWS_DEBUG

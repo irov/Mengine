@@ -54,7 +54,7 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutexAllocatorPool;
 
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
         ThreadMutexInterfacePtr m_mutexReport;
 
         struct ReportDesc

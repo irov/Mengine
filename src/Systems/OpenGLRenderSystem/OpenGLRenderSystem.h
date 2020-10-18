@@ -14,6 +14,7 @@
 #include "OpenGLRenderProgramVariable.h"
 #include "OpenGLRenderExtension.h"
 
+#include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
@@ -189,23 +190,8 @@ namespace Mengine
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
 
-        typedef Vector<OpenGLRenderIndexBuffer *> VectorCacheRenderIndexBuffers;
-        VectorCacheRenderIndexBuffers m_cacheRenderIndexBuffers;
-
-        typedef Vector<OpenGLRenderVertexBuffer *> VectorCacheRenderVertexBuffers;
-        VectorCacheRenderVertexBuffers m_cacheRenderVertexBuffers;
-
-        typedef Vector<OpenGLRenderImage *> VectorCacheRenderImages;
-        VectorCacheRenderImages m_cacheRenderImages;
-
-        typedef Vector<OpenGLRenderImageTarget *> VectorCacheRenderImageTargets;
-        VectorCacheRenderImageTargets m_cacheRenderImageTargets;
-
-        typedef Vector<OpenGLRenderTargetTexture *> VectorCacheRenderTargetTextures;
-        VectorCacheRenderTargetTextures m_cacheRenderTargetTextures;
-
-        typedef Vector<OpenGLRenderProgram *> VectorCacheRenderPrograms;
-        VectorCacheRenderPrograms m_cacheRenderPrograms;
+        typedef IntrusiveList<OpenGLRenderResourceHandler> IntrusiveListOpenGLRenderResourceHandler;
+        IntrusiveListOpenGLRenderResourceHandler m_renderResourceHandlers;
 
         bool m_renderWindowCreate;
         bool m_depthMask;

@@ -15,7 +15,7 @@ namespace Mengine
         : public RenderImageInterface
         , public OpenGLRenderImageExtensionInterface
         , public OpenGLRenderResourceHandler
-        , public Factorable        
+        , public Factorable
     {
     public:
         OpenGLRenderImage();
@@ -36,7 +36,6 @@ namespace Mengine
     public:
         bool create();
         void release();
-        bool reload();
 
     public:
         Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
@@ -57,9 +56,6 @@ namespace Mengine
 
     public:
         UnknownPointer getRenderImageExtention() override;
-
-    public:
-        void _destroy() override;
 
     public:
         GLuint getUID() const override;

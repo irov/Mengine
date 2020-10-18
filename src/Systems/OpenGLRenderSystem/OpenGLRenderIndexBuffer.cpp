@@ -66,15 +66,7 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        if( m_id != 0 )
-        {
-            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-                ->getRenderSystemExtention();
-
-            extension->deleteBuffer( m_id );
-
-            m_id = 0;
-        }
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderIndexBuffer::getIndexCount() const
@@ -200,7 +192,12 @@ namespace Mengine
         m_indexCapacity = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderIndexBuffer::reload()
+    void OpenGLRenderIndexBuffer::onRenderReset()
+    {
+        this->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderIndexBuffer::onRenderRestore()
     {
         MENGINE_ASSERTION_FATAL( m_id == 0 );
 
@@ -221,18 +218,6 @@ namespace Mengine
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ELEMENT_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderIndexBuffer::onRenderReset()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderIndexBuffer::onRenderRestore()
-    {
-        //Empty
 
         return true;
     }

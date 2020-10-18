@@ -24,7 +24,7 @@ namespace Mengine
         ~OpenGLRenderImageTarget() override;
 
     public:
-        void initialize( const OpenGLRenderTargetTexturePtr & _renderTarget );
+        bool initialize( const OpenGLRenderTargetTexturePtr & _renderTarget );
         void finalize();
 
     public:

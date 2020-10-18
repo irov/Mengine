@@ -104,19 +104,9 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderIndexBuffers );
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderVertexBuffers );
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderImages );
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderImageTargets );
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderTargetTextures );
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_cacheRenderPrograms );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
 
-        m_cacheRenderIndexBuffers.clear();
-        m_cacheRenderVertexBuffers.clear();
-        m_cacheRenderImages.clear();
-        m_cacheRenderImageTargets.clear();
-        m_cacheRenderTargetTextures.clear();
-        m_cacheRenderPrograms.clear();
+        m_renderResourceHandlers.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderIndexBuffer );
@@ -243,7 +233,7 @@ namespace Mengine
             }
 
             OpenGLRenderProgram * program_ptr = program.get();
-            m_cacheRenderPrograms.push_back( program_ptr );
+            m_renderResourceHandlers.push_back( program_ptr );
         }
 
         m_deferredCompilePrograms.clear();
@@ -359,11 +349,13 @@ namespace Mengine
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
+            LOGGER_ERROR( "invalid initialize vertex buffer" );
+
             return nullptr;
         }
 
         OpenGLRenderVertexBuffer * buffer_ptr = buffer.get();
-        m_cacheRenderVertexBuffers.push_back( buffer_ptr );
+        m_renderResourceHandlers.push_back( buffer_ptr );
 
         return buffer;
     }
@@ -385,11 +377,13 @@ namespace Mengine
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
+            LOGGER_ERROR( "invalid initialize index buffer" );
+
             return nullptr;
         }
 
         OpenGLRenderIndexBuffer * buffer_ptr = buffer.get();
-        m_cacheRenderIndexBuffers.push_back( buffer_ptr );
+        m_renderResourceHandlers.push_back( buffer_ptr );
 
         return buffer;
     }
@@ -494,7 +488,7 @@ namespace Mengine
             }
 
             OpenGLRenderProgram * program_ptr = program.get();
-            m_cacheRenderPrograms.push_back( program_ptr );
+            m_renderResourceHandlers.push_back( program_ptr );
         }
         else
         {
@@ -875,14 +869,13 @@ namespace Mengine
             , textureColorFormat
             , textureColorDataType ) == false )
         {
-            LOGGER_ERROR( "invalid initialize"
-            );
+            LOGGER_ERROR( "invalid initialize" );
 
             return nullptr;
         }
 
         OpenGLRenderImage * image_ptr = image.get();
-        m_cacheRenderImages.push_back( image_ptr );
+        m_renderResourceHandlers.push_back( image_ptr );
 
         return image;
     }
@@ -1009,29 +1002,9 @@ namespace Mengine
         }
 #endif
 
-        for( OpenGLRenderIndexBuffer * buffer : m_cacheRenderIndexBuffers )
+        for( OpenGLRenderResourceHandler * resource : m_renderResourceHandlers )
         {
-            buffer->release();
-        }
-
-        for( OpenGLRenderVertexBuffer * buffer : m_cacheRenderVertexBuffers )
-        {
-            buffer->release();
-        }
-
-        for( OpenGLRenderImage * image : m_cacheRenderImages )
-        {
-            image->release();
-        }
-
-        for( OpenGLRenderTargetTexture * target : m_cacheRenderTargetTextures )
-        {
-            target->release();
-        }
-
-        for( OpenGLRenderProgram * program : m_cacheRenderPrograms )
-        {
-            program->release();
+            resource->onRenderReset();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1051,41 +1024,9 @@ namespace Mengine
         m_vertexArrayId = vertexArrayId;
 #endif
 
-        for( OpenGLRenderIndexBuffer * buffer : m_cacheRenderIndexBuffers )
+        for( OpenGLRenderResourceHandler * resource : m_renderResourceHandlers )
         {
-            if( buffer->reload() == false )
-            {
-                return false;
-            }
-        }
-
-        for( OpenGLRenderVertexBuffer * buffer : m_cacheRenderVertexBuffers )
-        {
-            if( buffer->reload() == false )
-            {
-                return false;
-            }
-        }
-
-        for( OpenGLRenderImage * image : m_cacheRenderImages )
-        {
-            if( image->reload() == false )
-            {
-                return false;
-            }
-        }
-
-        for( OpenGLRenderTargetTexture * target : m_cacheRenderTargetTextures )
-        {
-            if( target->reload() == false )
-            {
-                return false;
-            }
-        }
-
-        for( OpenGLRenderProgram * program : m_cacheRenderPrograms )
-        {
-            if( program->compile() == false )
+            if( resource->onRenderRestore() == false )
             {
                 return false;
             }
@@ -1135,14 +1076,13 @@ namespace Mengine
 
         if( renderTarget->initialize( _width, _height, hwChannels, hwFormat, textureInternalFormat, textureColorFormat, textureColorDataType ) == false )
         {
-            LOGGER_ERROR( "invalid initialize"
-            );
+            LOGGER_ERROR( "invalid initialize" );
 
             return nullptr;
         }
 
         OpenGLRenderTargetTexture * renderTarget_ptr = renderTarget.get();
-        m_cacheRenderTargetTextures.push_back( renderTarget_ptr );
+        m_renderResourceHandlers.push_back( renderTarget_ptr );
 
         return renderTarget;
     }
@@ -1168,7 +1108,15 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageTarget );
 
-        imageTarget->initialize( targetTexture );
+        if( imageTarget->initialize( targetTexture ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize" );
+
+            return nullptr;
+        }
+
+        OpenGLRenderImageTarget * imageTarget_ptr = imageTarget.get();
+        m_renderResourceHandlers.push_back( imageTarget_ptr );
 
         return imageTarget;
     }
@@ -1176,76 +1124,26 @@ namespace Mengine
     void OpenGLRenderSystem::onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _buffer )
     {
         _buffer->finalize();
-
-        VectorCacheRenderVertexBuffers::iterator it_found = std::find( m_cacheRenderVertexBuffers.begin(), m_cacheRenderVertexBuffers.end(), _buffer );
-
-        if( it_found == m_cacheRenderVertexBuffers.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderVertexBuffers.back();
-        m_cacheRenderVertexBuffers.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _buffer )
     {
         _buffer->finalize();
-
-        VectorCacheRenderIndexBuffers::iterator it_found = std::find( m_cacheRenderIndexBuffers.begin(), m_cacheRenderIndexBuffers.end(), _buffer );
-
-        if( it_found == m_cacheRenderIndexBuffers.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderIndexBuffers.back();
-        m_cacheRenderIndexBuffers.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
     {
         _image->finalize();
-
-        VectorCacheRenderImages::iterator it_found = std::find( m_cacheRenderImages.begin(), m_cacheRenderImages.end(), _image );
-
-        if( it_found == m_cacheRenderImages.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderImages.back();
-        m_cacheRenderImages.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _image )
     {
         _image->finalize();
-
-        VectorCacheRenderImageTargets::iterator it_found = std::find( m_cacheRenderImageTargets.begin(), m_cacheRenderImageTargets.end(), _image );
-
-        if( it_found == m_cacheRenderImageTargets.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderImageTargets.back();
-        m_cacheRenderImageTargets.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _renderTarget )
     {
         _renderTarget->finalize();
-
-        VectorCacheRenderTargetTextures::iterator it_found = std::find( m_cacheRenderTargetTextures.begin(), m_cacheRenderTargetTextures.end(), _renderTarget );
-
-        if( it_found == m_cacheRenderTargetTextures.end() )
-        {
-            return;
-        }
-
-        *it_found = m_cacheRenderTargetTextures.back();
-        m_cacheRenderTargetTextures.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader )
@@ -1264,23 +1162,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramDestroy_( OpenGLRenderProgram * _program )
     {
-        VectorCacheRenderPrograms::iterator it_found = std::find( m_cacheRenderPrograms.begin(), m_cacheRenderPrograms.end(), _program );
-
-        if( it_found == m_cacheRenderPrograms.end() )
+        if( _program->isCompile() == true )
         {
-            _program->finalize();
-
-            return;
+            _program->release();
         }
-
-        _program->release();
 
         MENGINE_ASSERTION_FATAL( _program->isCompile() == false );
 
         _program->finalize();
-
-        *it_found = m_cacheRenderPrograms.back();
-        m_cacheRenderPrograms.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::updatePMWMatrix_()

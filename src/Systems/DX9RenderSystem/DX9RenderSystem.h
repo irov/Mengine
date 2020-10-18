@@ -7,11 +7,10 @@
 
 #include "DX9RenderResourceHandler.h"
 
+#include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
-
-#include "stdex/intrusive_list.h"
 
 namespace Mengine
 {
@@ -224,7 +223,7 @@ namespace Mengine
         typedef Vector<DX9RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;
 
-        typedef stdex::intrusive_list<DX9RenderResourceHandler> IntrusiveListDX9RenderResourceHandler;
+        typedef IntrusiveList<DX9RenderResourceHandler> IntrusiveListDX9RenderResourceHandler;
         IntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
 
         mt::mat4f m_projectionMatrix;

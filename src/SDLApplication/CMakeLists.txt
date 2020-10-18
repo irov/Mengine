@@ -1,5 +1,7 @@
 MENGINE_PROJECT(SDLApplication)
 
+SET(MENGINE_XCODE_DEPLOY_PATH "Desktop" CACHE STRING "Mengine Xcode deploy path")
+
 ADD_FILTER(
 src
     main.cpp
@@ -36,12 +38,12 @@ if(MENGINE_TARGET_ANDROID)
 endif()
 
 if(MENGINE_TARGET_IOS AND NOT MENGINE_BUILD_ONLY_EXECUTABLE_MODULE)
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{HOME}/Desktop/deploy-ios-plist")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/deploy-ios-plist")
 
-    set(myApp_MEDIA "$ENV{HOME}/Desktop/deploy-ios-media.xcassets")
+    set(myApp_MEDIA "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/deploy-ios-media.xcassets")
     set_source_files_properties(${myApp_MEDIA} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
-    set(DEPLOY_DATA "$ENV{HOME}/Desktop/deploy-ios-data")
+    set(DEPLOY_DATA "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/deploy-ios-data")
     file(GLOB_RECURSE myApp_DATAS "${DEPLOY_DATA}/*")
     list(FILTER myApp_DATAS EXCLUDE REGEX ".*.DS_Store$")
     foreach(myApp_DATA ${myApp_DATAS})
@@ -74,12 +76,12 @@ if(MENGINE_TARGET_IOS AND MENGINE_BUILD_ONLY_EXECUTABLE_MODULE)
 endif()
 
 if(MENGINE_TARGET_MACOS)
-    set(myApp_ICONS "$ENV{HOME}/Desktop/deploy-mac-icons.icns")
+    set(myApp_ICONS "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/deploy-mac-icons.icns")
     set_source_files_properties(${myApp_ICONS} PROPERTIES 
         MACOSX_PACKAGE_LOCATION "Resources")
 
     if(MENGINE_PLUGIN_ASTRALAX)
-    	set(myApp_ASTRALAX "$ENV{HOME}/Desktop/magic3d.dylib")
+    	set(myApp_ASTRALAX "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/magic3d.dylib")
     	set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
 			MACOSX_PACKAGE_LOCATION "MacOS")
     else()
@@ -87,14 +89,14 @@ if(MENGINE_TARGET_MACOS)
     endif()
 
     if(MENGINE_PLUGIN_STEAM)
-        set(myApp_STEAM "$ENV{HOME}/Desktop/libsteam_api.dylib")
+        set(myApp_STEAM "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/libsteam_api.dylib")
         set_source_files_properties(${myApp_STEAM} PROPERTIES
         	MACOSX_PACKAGE_LOCATION "MacOS")
     else()
         set(myApp_STEAM)
     endif()
     
-    set(DEPLOY_DATA "$ENV{HOME}/Desktop/deploy-mac-data")
+    set(DEPLOY_DATA "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/deploy-mac-data")
     file(GLOB_RECURSE myApp_DATAS "${DEPLOY_DATA}/*")
     list(FILTER myApp_DATAS EXCLUDE REGEX ".*.DS_Store$")
     foreach(myApp_DATA ${myApp_DATAS})
@@ -106,7 +108,7 @@ if(MENGINE_TARGET_MACOS)
         source_group(${ide_group_name} FILES ${myApp_DATA})
     endforeach()
 
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{HOME}/Desktop/deploy-mac-plist")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/deploy-mac-plist")
     
     string(TIMESTAMP MACOSX_FRAMEWORK_BUNDLE_VERSION "%Y.%m.%d.%H%M%S")
     string(TIMESTAMP MACOSX_FRAMEWORK_SHORT_VERSION_STRING "%Y.%m.%d")

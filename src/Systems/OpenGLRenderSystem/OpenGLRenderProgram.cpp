@@ -269,14 +269,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::onRenderReset()
     {
-        //Empty
+        this->_release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::onRenderRestore()
     {
-        //Empty
+        bool successful = this->_compile();
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
 }

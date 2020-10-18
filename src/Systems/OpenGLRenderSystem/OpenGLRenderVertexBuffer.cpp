@@ -64,17 +64,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexBuffer::finalize()
     {
-        if( m_id != 0 )
-        {
-            OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-                ->getRenderSystemExtention();
-
-            extension->deleteBuffer( m_id );
-
-            m_id = 0;
-        }
-
         m_memory = nullptr;
+
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderVertexBuffer::getVertexCount() const
@@ -200,7 +192,12 @@ namespace Mengine
         m_vertexCapacity = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexBuffer::reload()
+    void OpenGLRenderVertexBuffer::onRenderReset()
+    {
+        this->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexBuffer::onRenderRestore()
     {
         MENGINE_ASSERTION_FATAL( m_id == 0 );
 
@@ -221,18 +218,6 @@ namespace Mengine
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderVertexBuffer::onRenderReset()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexBuffer::onRenderRestore()
-    {
-        //Empty
 
         return true;
     }

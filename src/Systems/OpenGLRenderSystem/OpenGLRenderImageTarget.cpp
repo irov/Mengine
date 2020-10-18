@@ -14,9 +14,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImageTarget::initialize( const OpenGLRenderTargetTexturePtr & _renderTarget )
+    bool OpenGLRenderImageTarget::initialize( const OpenGLRenderTargetTexturePtr & _renderTarget )
     {
         m_renderTarget = _renderTarget;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::finalize()

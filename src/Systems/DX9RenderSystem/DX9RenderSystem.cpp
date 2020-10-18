@@ -26,6 +26,7 @@
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionContainer.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/UnicodeHelper.h"
@@ -222,14 +223,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::_finalizeService()
     {
-        m_renderResourceHandlers.clear();
-
         m_deferredCompileVertexShaders.clear();
         m_deferredCompileFragmentShaders.clear();
         m_deferredCompileVertexAttributes.clear();
         m_deferredCompilePrograms.clear();
 
         this->release_();
+
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
+
+        m_renderResourceHandlers.clear();
 
         MENGINE_ASSERTION_FATAL( m_textureCount == 0 );
         MENGINE_ASSERTION_FATAL( m_vertexBufferCount == 0 );

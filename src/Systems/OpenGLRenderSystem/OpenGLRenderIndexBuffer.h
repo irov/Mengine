@@ -41,7 +41,6 @@ namespace Mengine
 
     public:
         void release();
-        bool reload();
 
     public:
         void onRenderReset() override;

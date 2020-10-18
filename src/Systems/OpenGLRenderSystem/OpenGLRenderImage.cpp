@@ -213,31 +213,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::reload()
-    {
-        if( this->create() == false )
-        {
-            return false;
-        }
-
-        if( m_renderImageProvider == nullptr )
-        {
-            return true;
-        }
-
-        RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( loader->load( RenderImageInterfacePtr( this ) ) == false )
-        {
-            LOGGER_ERROR( "Invalid decode image"
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     Pointer OpenGLRenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         MENGINE_UNUSED( _readOnly );
@@ -421,11 +396,6 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::_destroy()
-    {
-        this->release();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setMinFilter( GLenum _minFilter )
     {
         m_minFilter = _minFilter;
@@ -478,12 +448,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::onRenderReset()
     {
-        //Empty
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::onRenderRestore()
     {
-        //Emty
+        if( this->create() == false )
+        {
+            return false;
+        }
+
+        if( m_renderImageProvider == nullptr )
+        {
+            return true;
+        }
+
+        RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( loader->load( RenderImageInterfacePtr( this ) ) == false )
+        {
+            LOGGER_ERROR( "Invalid decode image"
+            );
+
+            return false;
+        }
 
         return true;
     }

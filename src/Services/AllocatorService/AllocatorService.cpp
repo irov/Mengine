@@ -1,7 +1,9 @@
 #include "AllocatorService.h"
 
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
@@ -18,7 +20,7 @@ SERVICE_FACTORY( AllocatorService, Mengine::AllocatorService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG == 0
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -37,7 +39,7 @@ namespace Mengine
 #endif
     //////////////////////////////////////////////////////////////////////////
     AllocatorService::AllocatorService()
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
         : m_reportTotal( 0 )
 #endif
     {
@@ -49,6 +51,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AllocatorService::_initializeService()
     {
+#if MENGINE_ALLOCATOR_DEBUG == 0
+        SERVICE_WAIT( LoggerServiceInterface, [this]()
+        {
+            LOGGER_MESSAGE_RELEASE( "enable allocator debug" );
+
+            return true;
+        } );
+#endif
+
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             this->waitThread_();
@@ -66,7 +77,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::_finalizeService()
     {
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
         MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         //MENGINE_ASSERTION_FATAL( m_reportTotal == 0 );
@@ -77,9 +88,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifndef MENGINE_ALLOCATOR_DEBUG
-        void * p = stdex_malloc( _size );
-#else
+#if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         if( _size > 15000000 )
@@ -92,6 +101,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _size == _msize( p ) );
 
         this->report( _doc, _size, 0 );
+#else
+        void * p = stdex_malloc( _size );
 #endif
 
         return p;
@@ -101,9 +112,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifndef MENGINE_ALLOCATOR_DEBUG
-        stdex_free( _mem );
-#else
+#if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         size_t size = _mem == nullptr ? 0 : _msize( _mem );
@@ -111,6 +120,8 @@ namespace Mengine
         ::free( _mem );
 
         this->report( _doc, 0, size );
+#else
+        stdex_free( _mem );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -118,9 +129,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifndef MENGINE_ALLOCATOR_DEBUG
-        void * p = stdex_calloc( _num, _size );
-#else
+#if MENGINE_ALLOCATOR_DEBUG        
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         size_t total = _num * _size;
@@ -128,6 +137,8 @@ namespace Mengine
         ::memset( p, 0x00, total );
                 
         this->report( _doc, total, 0 );
+#else
+        void * p = stdex_calloc( _num, _size );
 #endif
 
         return p;
@@ -137,9 +148,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifndef MENGINE_ALLOCATOR_DEBUG
-        void * p = stdex_realloc( _mem, _size );
-#else
+#if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         size_t size = _mem == nullptr ? 0 : _msize( _mem );
@@ -147,6 +156,8 @@ namespace Mengine
         void * p = ::realloc( _mem, _size );
 
         this->report( _doc, _size, size );
+#else
+        void * p = stdex_realloc( _mem, _size );
 #endif
 
         return p;
@@ -154,7 +165,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::waitThread_()
     {
-#ifndef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
+        m_mutexReport = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
+#else
         m_mutexAllocatorPool = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
 
@@ -162,26 +176,23 @@ namespace Mengine
             , (stdex_allocator_thread_lock_t)&Detail::s_stdex_thread_lock
             , (stdex_allocator_thread_unlock_t)&Detail::s_stdex_thread_unlock
         );
-#else
-        m_mutexReport = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::leaveThread_()
     {
-#ifndef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
+        m_mutexReport = nullptr;
+#else
         stdex_allocator_finalize_threadsafe();
 
         m_mutexAllocatorPool = nullptr;
-#else
-        m_mutexReport = nullptr;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t AllocatorService::get_report_count() const
     {
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
         return 2048;
 #else
         return 0;
@@ -192,7 +203,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _index );
 
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
         const ReportDesc & r = m_reports[_index];
 
         *_doc = r.doc;
@@ -207,7 +218,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AllocatorService::get_report_total() const
     {
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
         return m_reportTotal;
 #else
         return 0;
@@ -218,7 +229,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
         if( _doc == nullptr )
         {
             return 0;
@@ -240,7 +251,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_ALLOCATOR_DEBUG
+#if MENGINE_ALLOCATOR_DEBUG
     void AllocatorService::report( const Char * _doc, size_t _add, size_t _minus )
     {
         if( _doc == nullptr )

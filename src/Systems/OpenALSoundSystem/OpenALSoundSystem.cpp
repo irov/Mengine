@@ -34,21 +34,21 @@ namespace Mengine
     {
         LOGGER_INFO( "Starting OpenAL Sound System..." );
 
-        m_device = alcOpenDevice( nullptr );
+        ALCdevice * device = alcOpenDevice( nullptr );
 
-        if( m_device == nullptr )
+        if( device == nullptr )
         {
             LOGGER_ERROR( "Failed to open 'generic software' sound device try default..." );
 
-            m_device = alcOpenDevice( "Generic Software" );
+            device = alcOpenDevice( "Generic Software" );
 
-            if( m_device == nullptr )
+            if( device == nullptr )
             {
                 LOGGER_ERROR( "Failed to open default sound device try hardware" );
 
-                m_device = alcOpenDevice( "Generic Hardware" );
+                device = alcOpenDevice( "Generic Hardware" );
 
-                if( m_device == nullptr )
+                if( device == nullptr )
                 {
                     LOGGER_ERROR( "Failed to open hardware sound device.." );
 
@@ -57,9 +57,11 @@ namespace Mengine
             }
         }
 
-        m_context = alcCreateContext( m_device, nullptr );
+        m_device = device;
 
-        if( m_context == nullptr )
+        ALCcontext * context = alcCreateContext( m_device, nullptr );
+
+        if( context == nullptr )
         {
             LOGGER_ERROR( "Failed to create context" );
 
@@ -68,6 +70,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_context = context;
 
         RET_OPENAL_CALL( ALCboolean, currentResult, alcMakeContextCurrent, (m_context) );
 
@@ -83,7 +87,6 @@ namespace Mengine
 
             return false;
         }
-
 
         ALCint majorVersion;
         OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MAJOR_VERSION, 1, &majorVersion) );
@@ -122,13 +125,13 @@ namespace Mengine
             , alGetString( AL_RENDERER )
         );
 
-        float lposition[] = { 0.f, 0.f, 0.f };
+        ALfloat lposition[] = { 0.f, 0.f, 0.f };
         OPENAL_CALL( alListenerfv, (AL_POSITION, lposition) );
 
-        float lvelocity[] = { 0.f, 0.f, 0.f };
+        ALfloat lvelocity[] = { 0.f, 0.f, 0.f };
         OPENAL_CALL( alListenerfv, (AL_VELOCITY, lvelocity) );
 
-        float lorient[] = { 0.f, 0.f, -1.f, 0.f, 1.f, 0.f };
+        ALfloat lorient[] = { 0.f, 0.f, -1.f, 0.f, 1.f, 0.f };
         OPENAL_CALL( alListenerfv, (AL_ORIENTATION, lorient) );
         
         m_factoryOpenALSoundBuffer = Helper::makeFactoryPool<OpenALSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
@@ -201,6 +204,8 @@ namespace Mengine
     SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentPtr & _doc )
     {
         OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( soundSource );
 
         soundSource->setSoundSystem( this );
 
@@ -308,5 +313,5 @@ namespace Mengine
     {
         return m_buffersCount;
     }
-
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -137,7 +137,7 @@ namespace Mengine
 
         if( _pos > 0.f )
         {
-            float al_pos = _pos * 0.001f;
+            ALfloat al_pos = (ALfloat)(_pos * 0.001f);
             OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) );
         }
 
@@ -177,7 +177,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const
     {
-        float al_pos = _pos * 0.001f;
+        ALfloat al_pos = (ALfloat)(_pos * 0.001f);
         IF_OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) )
         {
             return false;
@@ -188,14 +188,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::getTimePos( ALuint _source, float * const _pos ) const
     {
-        float al_pos = 0.f;
-
+        ALfloat al_pos = 0.f;
         IF_OPENAL_CALL( alGetSourcef, (_source, AL_SEC_OFFSET, &al_pos) )
         {
             return false;
         }
 
-        float pos = al_pos * 1000.f;
+        float pos = (float)al_pos * 1000.f;
 
         float total = this->getTimeTotal();
 

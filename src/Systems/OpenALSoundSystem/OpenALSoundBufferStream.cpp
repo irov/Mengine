@@ -355,7 +355,11 @@ namespace Mengine
         {
             m_soundDecoder->rewind();
 
-            size_t bytesWritten2 = m_soundDecoder->decode( dataBuffer + bytesWritten, MENGINE_OPENAL_STREAM_BUFFER_SIZE - bytesWritten );
+            size_t bufferSize = MENGINE_OPENAL_STREAM_BUFFER_SIZE - bytesWritten;
+            
+            bufferSize -= bufferSize % 4;
+
+            size_t bytesWritten2 = m_soundDecoder->decode( dataBuffer + bytesWritten, bufferSize );
 
             bytesWritten += bytesWritten2;
         }
@@ -384,4 +388,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

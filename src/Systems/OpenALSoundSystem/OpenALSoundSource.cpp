@@ -171,7 +171,7 @@ namespace Mengine
 
         if( m_playing == true && m_sourceId != 0 )
         {
-            ALfloat gain = MT_powf( m_volume, 2.f );
+            ALfloat gain = (ALfloat)MT_powf( m_volume, 2.f );
             OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
         }
     }
@@ -356,7 +356,7 @@ namespace Mengine
         OPENAL_CALL( alSourcef, (_source, AL_MAX_GAIN, 1.f) );
         OPENAL_CALL( alSourcef, (_source, AL_PITCH, 1.f) );
 
-        ALfloat gain = MT_powf( m_volume, 2.f );
+        ALfloat gain = (ALfloat)MT_powf( m_volume, 2.f );
         OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -188,7 +188,7 @@ namespace Mengine
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYHOST, 0) );
 
-        char errorbuf[CURL_ERROR_SIZE] = {'\0'};
+        Char errorbuf[CURL_ERROR_SIZE] = {'\0'};
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
 
         if( CONFIG_VALUE( "HTTP", "Verbose", false ) == true )

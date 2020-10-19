@@ -72,11 +72,18 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
         
-        MENGINE_VSNPRINTF( message, MENGINE_DOCUMENT_MAX_MESSAGE - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_DOCUMENT_MAX_MESSAGE - 1, _format, args );
 
         MENGINE_VA_LIST_END( args );
 
-        document->setMessage( message );
+        MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid string format '%s'"
+            , _format
+        );
+
+        if( size_vsnprintf > 0 )
+        {
+            document->setMessage( message );
+        }
 
         return document;
     }

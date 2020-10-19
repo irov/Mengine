@@ -139,7 +139,7 @@ namespace Mengine
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual void messageBox( const Char * _format, ... ) const = 0;
+        virtual void messageBox( const Char * _caption, const Char * _format, ... ) const = 0;
 
     public:
         virtual UnknownPointer getPlatformExtention() = 0;

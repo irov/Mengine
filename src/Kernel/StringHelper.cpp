@@ -17,24 +17,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String stringFormat( const Char * _format, ... )
         {
+            Char str[2048] = {'\0'};
+
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
-
-            Char str[2048] = { 0 };
-            int32_t size = MENGINE_VSNPRINTF( str, 2047, _format, args );
-
-            MENGINE_ASSERTION_FATAL( size >= 0, "invalid string format '%s'"
-                , _format
-            );
+            
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, 2047, _format, args );
 
             MENGINE_VA_LIST_END( args );
 
-            if( size == 0 )
+            MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid string format '%s'"
+                , _format
+            );
+
+            if( size_vsnprintf == 0 )
             {
                 return String();
             }
 
-            return String( str, size );
+            return String( str, size_vsnprintf );
         }
         //////////////////////////////////////////////////////////////////////////
         void split( VectorString * const _outStrings, const String & _str, bool _trimDelims, const String & _delim )

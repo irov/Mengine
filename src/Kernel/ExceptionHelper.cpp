@@ -26,11 +26,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ExceptionHelper::operator () ( const Char * _format, ... ) const
     {
+        Char foramt_msg[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
+
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        Char foramt_msg[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
-        MENGINE_VSNPRINTF( foramt_msg, MENGINE_EXCEPTION_MAX_MESSAGE - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( foramt_msg, MENGINE_EXCEPTION_MAX_MESSAGE - 1, _format, args );
+        MENGINE_UNUSED( size_vsnprintf );
 
         MENGINE_VA_LIST_END( args );
 
@@ -45,7 +47,7 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, "\n" );
 
         Char format_line[16] = {'\0'};
-        MENGINE_SPRINTF( format_line, "%u", m_line );
+        MENGINE_SNPRINTF( format_line, 15, "%u", m_line );
 
         MENGINE_STRCAT( exception_msg, "line: " );
         MENGINE_STRCAT( exception_msg, format_line );
@@ -58,7 +60,7 @@ namespace Mengine
                 ->getPlatformExtention();
 
             Char stack_msg[8096] = {'\0'};
-            extension->getCallstack( nullptr, stack_msg, 8096, nullptr );
+            extension->getCallstack( nullptr, stack_msg, 8095, nullptr );
 
             MENGINE_STRCAT( exception_msg, "stack:\n" );
             MENGINE_STRCAT( exception_msg, stack_msg );

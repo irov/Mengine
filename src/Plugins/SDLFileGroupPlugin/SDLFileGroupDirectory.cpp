@@ -180,8 +180,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        Char utf8_base[MENGINE_MAX_PATH];
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, FilePath::none(), utf8_base, MENGINE_MAX_PATH ) == false )
+        Char utf8_base[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, FilePath::none(), utf8_base, MENGINE_MAX_PATH - 1 ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()

@@ -44,7 +44,7 @@ namespace Mengine
             font->setCharOffset( charOffset );
         }
 
-        bool system =_config->getValue( name.c_str(), "System", false );
+        bool system = _config->getValue( name.c_str(), "System", false );
 
         font->setSystem( system );
 
@@ -76,7 +76,7 @@ namespace Mengine
                 return false;
             }
 
-            Char utf8_ttfPath[MENGINE_MAX_PATH] = { '\0' };
+            Char utf8_ttfPath[MENGINE_MAX_PATH] = {'\0'};
             if( PLATFORM_SERVICE()
                 ->getSystemFontPath( ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {

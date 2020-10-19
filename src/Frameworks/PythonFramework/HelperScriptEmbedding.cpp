@@ -447,7 +447,7 @@ namespace Mengine
             {
                 MENGINE_ASSERTION( _length < 1024, "max UID length equal 1024" );
 
-                Char uid[1024];
+                Char uid[1024] = {'\0'};
                 Helper::makeUID( _length, uid );
 
                 return String( uid, _length );
@@ -665,7 +665,7 @@ namespace Mengine
                 uint64_t total = (uint32_t)milliseconds + (ticks << 32);
 
                 size_t total_base64_size;
-                Char total_base64[16];
+                Char total_base64[16] = {'\0'};
                 Helper::base64_encode( (const uint8_t *)&total, sizeof( total ), false, total_base64, 16, &total_base64_size );
                 total_base64[total_base64_size] = '\0';
 
@@ -677,7 +677,7 @@ namespace Mengine
                 {
                     uint32_t uid_size = _length - (uint32_t)total_base64_size;
 
-                    Char uid[40];
+                    Char uid[40] = {'\0'};
                     Helper::makeUID( uid_size, uid );
                     uid[uid_size] = '\0';
 
@@ -1663,8 +1663,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32];
-                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                Char setting_value[32] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 31 ) == false )
                 {
                     return false;
                 }
@@ -1693,8 +1693,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32];
-                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                Char setting_value[32] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 31 ) == false )
                 {
                     return false;
                 }
@@ -1723,8 +1723,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32];
-                if( Helper::stringalized( _value, setting_value, 32 ) == false )
+                Char setting_value[32] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 31 ) == false )
                 {
                     return false;
                 }
@@ -1753,8 +1753,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[64];
-                if( Helper::stringalized( _value, setting_value, 64 ) == false )
+                Char setting_value[64] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 63 ) == false )
                 {
                     return false;
                 }
@@ -2408,8 +2408,8 @@ namespace Mengine
                     return l.ret();
                 }
 
-                WChar setting_valueW[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-                Helper::utf8ToUnicode( setting_value, setting_valueW, MENGINE_ACCOUNT_SETTING_MAXVALUE );
+                WChar setting_valueW[MENGINE_ACCOUNT_SETTING_MAXVALUE] = {L'\0'};
+                Helper::utf8ToUnicode( setting_value, setting_valueW, MENGINE_ACCOUNT_SETTING_MAXVALUE - 1 );
 
                 VectorWString strings;
                 Helper::wsplit( &strings, setting_valueW, true, L" ,,, " );

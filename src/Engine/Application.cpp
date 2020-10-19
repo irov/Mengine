@@ -267,7 +267,7 @@ namespace Mengine
 
         LOGGER_MESSAGE( "setup locale '%s'"
             , m_locale.c_str()
-            );
+        );
 
 #if defined(MENGINE_PLATFORM_IOS)
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -295,13 +295,13 @@ namespace Mengine
         if( HAS_OPTION( "author" ) == true || HAS_OPTION( "support" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
+                ->messageBox( "Mengine", "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
         if( HAS_OPTION( "buildcommit" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
+                ->messageBox( "Mengine", "build commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
         else
         {
@@ -311,7 +311,7 @@ namespace Mengine
         if( HAS_OPTION( "resourcecommit" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "resource commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+                ->messageBox( "Mengine", "resource commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
         }
         else
         {
@@ -321,7 +321,7 @@ namespace Mengine
         if( HAS_OPTION( "buildversion" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "build version: %s", MENGINE_BUILD_VERSION );
+                ->messageBox( "Mengine", "build version: %s", MENGINE_BUILD_VERSION );
         }
         else
         {
@@ -341,7 +341,7 @@ namespace Mengine
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
         );
-        
+
         if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
         {
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
@@ -352,7 +352,7 @@ namespace Mengine
             , m_projectName
             , m_projectVersion
             , m_locale.c_str()
-            );
+        );
 
         bool logopenfiles = HAS_OPTION( "logopenfiles" );
 
@@ -387,7 +387,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "render pipeline '%s' invalid initialize"
                 , Engine_RenderPipeline.c_str()
-                );
+            );
 
             return false;
         }
@@ -740,7 +740,7 @@ namespace Mengine
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
-            );
+        );
 
         this->calcRenderViewport_( m_currentResolution, &m_renderViewport );
 
@@ -749,7 +749,7 @@ namespace Mengine
             , m_renderViewport.begin.y
             , m_renderViewport.getWidth()
             , m_renderViewport.getHeight()
-            );
+        );
 
         m_createRenderWindow = RENDER_SERVICE()
             ->createRenderWindow( m_currentResolution
@@ -759,12 +759,12 @@ namespace Mengine
                 , fullscreen
                 , m_FSAAType
                 , m_FSAAQuality
-                );
+            );
 
         if( m_createRenderWindow == false )
         {
             LOGGER_ERROR( "failed to create render window"
-                );
+            );
 
             return false;
         }
@@ -801,7 +801,7 @@ namespace Mengine
             {
                 LOGGER_CRITICAL( "invalid load package '%s'"
                     , packagePath.c_str()
-                    );
+                );
 
                 return false;
             }
@@ -812,7 +812,7 @@ namespace Mengine
 
         LOGGER_INFO( "load game resource tags '%s'"
             , Helper::tagsToString( platformTags ).c_str()
-            );
+        );
 
         if( PACKAGE_SERVICE()
             ->enablePackages( m_locale, platformTags ) == false )
@@ -820,7 +820,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid enable for locale '%s' platform '%s'!"
                 , m_locale.c_str()
                 , Helper::tagsToString( platformTags ).c_str()
-                );
+            );
 
             return false;
         }
@@ -832,7 +832,7 @@ namespace Mengine
             {
                 LOGGER_CRITICAL( "invalid load setting '%s'"
                     , settingPath.c_str()
-                    );
+                );
 
                 return false;
             }
@@ -848,7 +848,7 @@ namespace Mengine
                 ->validate() == false )
             {
                 LOGGER_ERROR( "invalid validate!"
-                    );
+                );
             }
         }
 #endif
@@ -881,7 +881,7 @@ namespace Mengine
         {
             if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
             {
-                Char userPath[MENGINE_MAX_PATH] = { '\0' };
+                Char userPath[MENGINE_MAX_PATH] = {'\0'};
                 PLATFORM_SERVICE()
                     ->getUserPath( userPath );
 
@@ -1025,8 +1025,8 @@ namespace Mengine
                     ->setTimeFactor( timeFactor );
 
                 LOGGER_MESSAGE( "time factor: %f"
-                    , timeFactor 
-                    );
+                    , timeFactor
+                );
             }
 
             if( _event.code == KC_OEM_4 && _event.isDown == true )
@@ -1047,8 +1047,8 @@ namespace Mengine
                     ->setTimeFactor( timeFactor );
 
                 LOGGER_MESSAGE( "time factor: %f"
-                    , timeFactor 
-                    );
+                    , timeFactor
+                );
             }
 
             //if( _event.code == KC_F12 && _event.isDown == true )
@@ -1422,7 +1422,7 @@ namespace Mengine
         LOGGER_INFO( "focus %d (freeze %d)"
             , m_focus
             , m_freeze
-            );
+        );
 
         if( m_freeze == true )
         {
@@ -1448,7 +1448,7 @@ namespace Mengine
         LOGGER_INFO( "freeze %d (focus %d)"
             , m_freeze
             , m_focus
-            );
+        );
 
         if( m_focus == false )
         {
@@ -1696,12 +1696,12 @@ namespace Mengine
         LOGGER_MESSAGE( "Max Client Resolution %u %u"
             , dres.getWidth()
             , dres.getHeight()
-            );
+        );
 
         LOGGER_MESSAGE( "Window Resolution %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
-            );
+        );
 
         float aspect = m_windowResolution.getAspectRatio();
 
@@ -1760,7 +1760,7 @@ namespace Mengine
         LOGGER_INFO( "resolution [%u %u]"
             , width
             , height
-            );
+        );
 
         float rw = (float)width;
         float rh = (float)height;
@@ -1813,7 +1813,7 @@ namespace Mengine
             , m_windowResolution.getHeight()
             , _resolution.getWidth()
             , _resolution.getHeight()
-            );
+        );
 
         if( m_windowResolution == _resolution )
         {
@@ -1870,12 +1870,12 @@ namespace Mengine
         {
             return;
         }
-        
+
         LOGGER_MESSAGE( "%d Current Resolution [%u %u]"
             , fullscreen
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
-            );
+        );
 
         bool vsync = this->getVSync();
 
@@ -1895,7 +1895,7 @@ namespace Mengine
             , m_renderViewport.begin.y
             , m_renderViewport.getWidth()
             , m_renderViewport.getHeight()
-            );
+        );
 
         RENDER_SERVICE()
             ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
@@ -1922,7 +1922,7 @@ namespace Mengine
                 , gameViewport.end.x
                 , gameViewport.end.y
                 , gameViewportAspect
-                );
+            );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1992,7 +1992,7 @@ namespace Mengine
         {
             LOGGER_WARNING( "alredy set locale '%s'"
                 , _locale.c_str()
-                );
+            );
 
             return;
         }
@@ -2004,7 +2004,7 @@ namespace Mengine
         LOGGER_MESSAGE( "new locale '%s' old '%s'"
             , m_locale.c_str()
             , prevLocale.c_str()
-            );
+        );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
@@ -2202,7 +2202,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( cursorResource, "can't find resource cursor '%s'"
             , _resourceName.c_str()
-            );
+        );
 
         m_cursorResource = cursorResource;
 
@@ -2210,7 +2210,7 @@ namespace Mengine
         {
             return;
         }
-        
+
         const ConstString & name = m_cursorResource->getName();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
         const ContentInterface * content = m_cursorResource->getContent();

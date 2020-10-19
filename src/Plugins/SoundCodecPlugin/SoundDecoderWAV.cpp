@@ -12,10 +12,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct WAVE_HEADER
     {
-        char ChunkID[4];
+        Char ChunkID[4];
         uint32_t ChunkSize;
-        char Format[4];
-        char Subchunk1ID[4];
+        Char Format[4];
+        Char Subchunk1ID[4];
         uint32_t Subchunk1Size;
         uint16_t AudioFormat;
         uint16_t NumChannels;
@@ -126,7 +126,7 @@ namespace Mengine
     {
         while( m_stream->eof() == false )
         {
-            char Subchunk2ID[4];
+            Char Subchunk2ID[4];
             m_stream->read( &Subchunk2ID, 4 );
 
             uint32_t Subchunk2Size;

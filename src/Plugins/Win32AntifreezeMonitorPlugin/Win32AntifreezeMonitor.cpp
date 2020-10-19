@@ -170,7 +170,7 @@ namespace Mengine
             ->getMainThread();
 
         Char stack_msg[8096] = {'\0'};
-        if( extension->getCallstack( currentThread, stack_msg, 8096, nullptr ) == false )
+        if( extension->getCallstack( currentThread, stack_msg, 8095, nullptr ) == false )
         {
             LOGGER_ERROR( "Antifreeze monitor invalid callstack" );
         }

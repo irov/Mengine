@@ -161,7 +161,7 @@ namespace Mengine
         void setActive_( bool _active );
 
     protected:
-        void messageBox( const Char * _format, ... ) const override;
+        void messageBox( const Char * _caption, const Char * _format, ... ) const override;
 
     protected:
         UnknownPointer getPlatformExtention() override;

@@ -91,9 +91,12 @@ namespace Mengine
     void PythonScriptModuleFinder::removeModulePath( const FileGroupInterfacePtr & _fileGroup )
     {
         m_modulePaths.erase(
-            std::find_if( m_modulePaths.begin(), m_modulePaths.end(), [&_fileGroup]( const ModulePathes & _pathes ) { return _pathes.fileGroup == _fileGroup; } )
+            std::find_if( m_modulePaths.begin(), m_modulePaths.end(), [&_fileGroup]( const ModulePathes & _pathes )
+        {
+            return _pathes.fileGroup == _fileGroup;
+        } )
             , m_modulePaths.end()
-        );
+            );
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * PythonScriptModuleFinder::find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path )
@@ -169,7 +172,7 @@ namespace Mengine
         _cache[module_size] = '\0';
 
         for( char
-            *it = _cache,
+            * it = _cache,
             *it_end = _cache + module_size;
             it != it_end;
             ++it )
@@ -192,7 +195,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptModuleFinder::find_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr &  _loader )
+    bool PythonScriptModuleFinder::find_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader )
     {
         bool successful = this->find_module_( _kernel, _module, _loader, ".pyz", sizeof( ".pyz" ) - 1, "__init__.pyz", sizeof( "__init__.pyz" ) - 1 );
 
@@ -201,15 +204,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI )
     {
-        Char modulePathCache[MENGINE_MAX_PATH] = { '\0' };
+        Char modulePathCache[MENGINE_MAX_PATH] = {'\0'};
 
         uint32_t modulePathCacheLen;
-        if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH, _module, &modulePathCacheLen ) == false )
+        if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH - 1, _module, &modulePathCacheLen ) == false )
         {
             return false;
         }
 
-        if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MENGINE_MAX_PATH, _ext, _extN ) == false )
+        if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MENGINE_MAX_PATH - 1, _ext, _extN ) == false )
         {
             return false;
         }
@@ -217,7 +220,7 @@ namespace Mengine
         if( this->findModule_( modulePathCache, modulePathCacheLen + _extN, _loader ) == false )
         {
             modulePathCache[modulePathCacheLen] = MENGINE_PATH_DELIM;
-            if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH, _init, _extI ) == false )
+            if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH - 1, _init, _extI ) == false )
             {
                 return false;
             }

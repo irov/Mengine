@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        Char utf8_filePath[MENGINE_MAX_PATH] = { '\0' };
+        Char utf8_filePath[MENGINE_MAX_PATH] = {'\0'};
         if( this->getFullPath( _filePath, utf8_filePath ) == false )
         {
             LOGGER_ERROR( "invlalid get fullPath '%s'"
@@ -175,7 +175,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        Char fullPathBase[MENGINE_MAX_PATH] = { '\0' };
+        Char fullPathBase[MENGINE_MAX_PATH] = {'\0'};
         if( this->getFullPath( FilePath::none(), fullPathBase ) == false )
         {
             return false;
@@ -263,7 +263,7 @@ namespace Mengine
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath );
-        
+
         MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()

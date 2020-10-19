@@ -404,7 +404,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
-        char * memory = buffer->getBuffer();
+        Char * memory = buffer->getBuffer();
 
         stream->read( memory, xml_buffer_size );
         memory[xml_buffer_size] = '\0';

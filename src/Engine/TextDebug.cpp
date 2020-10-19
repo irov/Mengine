@@ -173,11 +173,15 @@ namespace Mengine
                 MENGINE_VA_LIST_START( args, _format );
 
                 Char msg[2048] = {'\0'};
-                int32_t size = MENGINE_VSNPRINTF( msg, 2047, _format, args );
-
-                Helper::drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size, _doc );
+                int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 2047, _format, args );
 
                 MENGINE_VA_LIST_END( args );
+
+                MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid string format '%s'"
+                    , _format
+                );
+
+                Helper::drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size_vsnprintf, _doc );
             }
 
             font->releaseFont();

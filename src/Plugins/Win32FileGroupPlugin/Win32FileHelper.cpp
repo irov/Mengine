@@ -16,7 +16,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         HANDLE Win32CreateFile( const WChar * _filePath, DWORD _desiredAccess, DWORD _sharedMode, DWORD _creationDisposition )
         {
-            WChar pathCorrect[MENGINE_MAX_PATH] = { L'\0' };
+            WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
             Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
             HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
@@ -107,8 +107,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t Win32ConcatenateFilePathW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _concatenatePath, size_t _capacity )
         {
-            Char utf8_filePath[MENGINE_MAX_PATH] = { '\0' };
-            size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
+            Char utf8_filePath[MENGINE_MAX_PATH] = {'\0'};
+            size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH - 1 );
 
             if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
             {
@@ -152,7 +152,7 @@ namespace Mengine
         size_t Win32ConcatenateFilePathTempW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _concatenatePath, size_t _capacity )
         {
             Char utf8_filePath[MENGINE_MAX_PATH] = {'\0'};
-            size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathTempA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
+            size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathTempA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH - 1 );
 
             if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
             {

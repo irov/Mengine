@@ -33,7 +33,7 @@ namespace Mengine
     public:
         uint32_t m_value;
         uint32_t m_hash;
-        Char m_buffer[20];
+        Char m_buffer[20] = {'\0'};
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SecureValue> SecureValuePtr;

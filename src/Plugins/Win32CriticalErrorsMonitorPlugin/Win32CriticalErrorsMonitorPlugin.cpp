@@ -74,7 +74,7 @@ namespace Mengine
         va_start( argList, _format );
 
         Char format_msg[4096] = {'\0'};
-        MENGINE_VSPRINTF( format_msg, _format, argList );
+        MENGINE_VSNPRINTF( format_msg, 4095, _format, argList );
 
         va_end( argList );
 
@@ -84,12 +84,12 @@ namespace Mengine
     LONG WINAPI Win32CriticalErrorsMonitorPlugin::s_exceptionHandler( EXCEPTION_POINTERS * pExceptionPointers )
     {
         LOGGER_ERROR( "Exception catch" );
-        
+
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
             ->getPlatformExtention();
-        
+
         Char stack[8096] = {'\0'};
-        if( extension->getCallstack( nullptr, stack, 8096, pExceptionPointers->ContextRecord ) == false )
+        if( extension->getCallstack( nullptr, stack, 8095, pExceptionPointers->ContextRecord ) == false )
         {
             LOGGER_CRITICAL( "catch exception and write dumb '%s'\n\n\n"
                 , g_monitor->m_dumpPath

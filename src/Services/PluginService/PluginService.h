@@ -32,7 +32,7 @@ namespace Mengine
     protected:
         struct PluginDesc
         {
-            Char name[MENGINE_PLUGIN_NAME_MAX];
+            Char name[MENGINE_PLUGIN_NAME_MAX] = {'\0'};
             DynamicLibraryInterfacePtr dynamicLibrary;
             PluginInterfacePtr plugin;
         };

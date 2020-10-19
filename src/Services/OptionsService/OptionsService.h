@@ -38,8 +38,8 @@ namespace Mengine
     protected:
         struct Option
         {
-            Char key[MENGINE_OPTIONS_KEY_SIZE];
-            Char value[MENGINE_OPTIONS_VALUE_SIZE];
+            Char key[MENGINE_OPTIONS_KEY_SIZE] = {'\0'};
+            Char value[MENGINE_OPTIONS_VALUE_SIZE] = {'\0'};
         };
 
         typedef Vector<Option> VectorOptions;

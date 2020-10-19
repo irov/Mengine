@@ -236,7 +236,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileService::removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        Char fullPath[MENGINE_MAX_PATH] = { '\0' };
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
         _fileGroup->getFullPath( _filePath, fullPath );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );

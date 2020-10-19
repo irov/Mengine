@@ -98,8 +98,18 @@ namespace Mengine
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
-        MENGINE_VSPRINTF( msg, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 4095, _format, args );
         MENGINE_VA_LIST_END( args );
+
+        if( size_vsnprintf < 0 )
+        {
+            LOGGER_ERROR( "invalid format error '%s' code '%d'"
+                , _format
+                , _code
+            );
+
+            return;
+        }
 
         LOGGER_ERROR( "error '%s' code '%d'"
             , msg

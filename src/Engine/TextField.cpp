@@ -1538,7 +1538,7 @@ namespace Mengine
         MENGINE_VA_LIST_START( args, _format );
 
         Char str[MENGINE_TEXT_FIELD_MAX_TEXT] = {'\0'};
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_TEXT_FIELD_MAX_TEXT, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_TEXT_FIELD_MAX_TEXT - 1, _format, args );
 
         MENGINE_VA_LIST_END( args );
 

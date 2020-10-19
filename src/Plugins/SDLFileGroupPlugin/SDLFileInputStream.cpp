@@ -76,7 +76,7 @@ namespace Mengine
         m_streaming = _streaming;
         m_share = _share;
 
-        Char fullPath[MENGINE_MAX_PATH];
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
         {
             return false;
@@ -361,8 +361,8 @@ namespace Mengine
     bool SDLFileInputStream::time( uint64_t * _time ) const
     {
 #ifdef MENGINE_DEBUG
-        Char filePath[MENGINE_MAX_PATH];
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
+        Char filePath[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()

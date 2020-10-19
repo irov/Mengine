@@ -27,8 +27,8 @@ namespace Mengine
         m_folderPath = _folderPath;
         m_filePath = _filePath;
 
-        WChar fullPathTemp[MENGINE_MAX_PATH] = { L'\0' };
-        size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+        WChar fullPathTemp[MENGINE_MAX_PATH] = {L'\0'};
+        size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempW( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH - 1 );
 
         MENGINE_UNUSED( fullPathTempLen );
 
@@ -74,7 +74,7 @@ namespace Mengine
         m_hFile = INVALID_HANDLE_VALUE;
 
         Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
-        size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
+        size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH - 1 );
 
         MENGINE_UNUSED( fullPathTempLen );
 
@@ -84,7 +84,7 @@ namespace Mengine
         );
 
         Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH );
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH - 1 );
 
         MENGINE_UNUSED( fullPathLen );
 

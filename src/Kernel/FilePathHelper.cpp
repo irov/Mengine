@@ -36,24 +36,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePathFormat( const Char * _format, ... )
         {
+            Char str[MENGINE_MAX_PATH] = {'\0'};
+
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
-
-            Char str[MENGINE_MAX_PATH] = { '\0' };
-            int32_t size = MENGINE_VSNPRINTF( str, MENGINE_MAX_PATH - 1, _format, args );
-
-            MENGINE_ASSERTION_FATAL( size >= 0, "invalid stringize file format '%s'"
-                , _format
-            );
+                        
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_MAX_PATH - 1, _format, args );
 
             MENGINE_VA_LIST_END( args );
 
-            if( size == 0 )
+            MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid stringize file format '%s'"
+                , _format
+            );
+
+            if( size_vsnprintf == 0 )
             {
                 return FilePath::none();
             }
 
-            FilePath filePath = Helper::stringizeFilePathSize( str, size );
+            FilePath filePath = Helper::stringizeFilePathSize( str, size_vsnprintf );
 
             return filePath;
         }

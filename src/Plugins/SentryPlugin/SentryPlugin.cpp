@@ -28,50 +28,57 @@ PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void sentry_logger_func( sentry_level_t _level, const char * _format, va_list _args, void * _ud )
+    namespace Detail
     {
-        MENGINE_UNUSED( _ud );
-
-        ELoggerLevel level;
-        switch( _level )
+        //////////////////////////////////////////////////////////////////////////
+        static void sentry_logger_func( sentry_level_t _level, const char * _format, va_list _args, void * _ud )
         {
-        case SENTRY_LEVEL_DEBUG:
+            MENGINE_UNUSED( _ud );
+
+            ELoggerLevel level;
+            switch( _level )
             {
+            case SENTRY_LEVEL_DEBUG:
+                {
+                    return;
+                }break;
+            case SENTRY_LEVEL_INFO:
+                {
+                    level = LM_INFO;
+                }break;
+            case SENTRY_LEVEL_WARNING:
+                {
+                    level = LM_WARNING;
+                }break;
+            case SENTRY_LEVEL_ERROR:
+                {
+                    level = LM_ERROR;
+                }break;
+            case SENTRY_LEVEL_FATAL:
+                {
+                    level = LM_FATAL;
+                }break;
+            default:
                 return;
-            }break;
-        case SENTRY_LEVEL_INFO:
+            }
+
+            Char message[2048] = {'\0'};
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, 2047, _format, _args );
+
+            if( size_vsnprintf < 0 )
             {
-                level = LM_INFO;
-            }break;
-        case SENTRY_LEVEL_WARNING:
-            {
-                level = LM_WARNING;
-            }break;
-        case SENTRY_LEVEL_ERROR:
-            {
-                level = LM_ERROR;
-            }break;
-        case SENTRY_LEVEL_FATAL:
-            {
-                level = LM_FATAL;
-            }break;
-        default:
-            return;
+                LOGGER_ERROR( "invalid string format '%s'"
+                    , _format
+                );
+
+                return;
+            }
+
+            MENGINE_STRCAT( message, "\n" );
+
+            LOGGER_SERVICE()
+                ->logMessage( level, 0, LCOLOR_GREEN, message, (size_t)size_vsnprintf + 1 );
         }
-
-        Char message[2048];
-        int n = MENGINE_VSNPRINTF( message, 2047, _format, _args );
-
-        if( n <= 0 )
-        {
-            return;
-        }
-
-        MENGINE_STRCAT( message, "\n" );
-
-        LOGGER_SERVICE()
-            ->logMessage( level, 0, LCOLOR_GREEN, message, (size_t)n + 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     SentryPlugin::SentryPlugin()
@@ -125,7 +132,7 @@ namespace Mengine
 
         sentry_options_t * options = sentry_options_new();
 
-        sentry_options_set_logger( options, &sentry_logger_func, nullptr );
+        sentry_options_set_logger( options, &Detail::sentry_logger_func, nullptr );
 
         Char userPath[MENGINE_MAX_PATH] = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()
@@ -137,7 +144,7 @@ namespace Mengine
 
 #ifdef MENGINE_PLATFORM_WINDOWS
         WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH, nullptr );
+        Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH - 1, nullptr );
 
         sentry_options_set_database_pathw( options, unicode_sentryDatabasePath );
 #else
@@ -146,7 +153,7 @@ namespace Mengine
 
 #ifdef MENGINE_PLATFORM_WINDOWS
         WChar unicode_sentryHandler[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::utf8ToUnicode( sentryHandler, unicode_sentryHandler, MENGINE_MAX_PATH, nullptr );
+        Helper::utf8ToUnicode( sentryHandler, unicode_sentryHandler, MENGINE_MAX_PATH - 1, nullptr );
 
         sentry_options_set_handler_pathw( options, unicode_sentryHandler );
 #else
@@ -287,7 +294,7 @@ namespace Mengine
             ->getProjectVersion();
 
         Char projectVersionString[32] = {'\0'};
-        if( Helper::stringalized( projectVersion, projectVersionString, 32 ) == false )
+        if( Helper::stringalized( projectVersion, projectVersionString, 31 ) == false )
         {
             LOGGER_MESSAGE( "Sentry set extra [Version: %s]"
                 , "Error"
@@ -362,9 +369,10 @@ namespace Mengine
 
             LOGGER_ERROR( "!!!test sentry crash!!!" );
 
-            Char message_uid[21];
+            Char message_uid[21] = {'\0'};
             Helper::makeUID( 20, message_uid );
             message_uid[20] = '\0';
+
             LOGGER_ERROR( "uid: %s", message_uid );
             LOGGER_ERROR( "!!!test sentry crash!!!" );
 

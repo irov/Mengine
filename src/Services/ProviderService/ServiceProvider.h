@@ -65,7 +65,7 @@ namespace Mengine
     protected:
         struct ServiceDesc
         {
-            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
+            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
             ServiceInterfacePtr service;
             bool exist;
             bool available;
@@ -78,8 +78,8 @@ namespace Mengine
 
         struct DependencyDesc
         {
-            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
-            Char dependency[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
+            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
+            Char dependency[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
         };
 
         DependencyDesc m_dependencies[MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT];
@@ -88,8 +88,8 @@ namespace Mengine
 
         struct LeaveDesc
         {
-            Char owner[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
-            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
+            Char owner[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
+            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
             LambdaLeaveService lambda;
         };
 
@@ -99,8 +99,8 @@ namespace Mengine
 
         struct WaitDesc
         {
-            Char owner[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
-            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
+            Char owner[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
+            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
             LambdaWaitService lambda;
         };
 

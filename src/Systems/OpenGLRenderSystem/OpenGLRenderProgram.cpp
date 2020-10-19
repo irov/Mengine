@@ -4,6 +4,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdIO.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -152,8 +154,8 @@ namespace Mengine
 
         for( uint32_t index = 0; index != m_samplerCount; ++index )
         {
-            Char samplerVar[16];
-            sprintf( samplerVar, "inSampler%u", index );
+            Char samplerVar[16] = {'\0'};
+            MENGINE_SNPRINTF( samplerVar, 15, "inSampler%u", index );
 
             GLint location;
             GLCALLR( location, glGetUniformLocation, (programId, samplerVar) );

@@ -20,7 +20,7 @@ namespace Mengine
     protected:
         struct ETC1Header
         {
-            char tag[6];
+            Char tag[6];
             uint16_t format;
             uint16_t texWidth;
             uint16_t texHeight;

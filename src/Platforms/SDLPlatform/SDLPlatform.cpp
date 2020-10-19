@@ -94,8 +94,8 @@ namespace Mengine
     size_t SDLPlatform::getCurrentPath( Char * const _currentPath ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_path[MENGINE_MAX_PATH];
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, unicode_path );
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
+        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 1, unicode_path );
 
         if( len == 0 )
         {
@@ -149,7 +149,7 @@ namespace Mengine
 
         if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
-            Char currentPath[MENGINE_MAX_PATH];
+            Char currentPath[MENGINE_MAX_PATH] = {'\0'};
             size_t currentPathLen = this->getCurrentPath( currentPath );
 
             if( MENGINE_MAX_PATH <= currentPathLen + 5 )
@@ -170,7 +170,7 @@ namespace Mengine
         const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
+        Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
 
         size_t sdl_prefPathLen = MENGINE_STRLEN( sdl_prefPath );
 
@@ -515,8 +515,8 @@ namespace Mengine
 
         if( option_platform != nullptr )
         {
-            Char uppercase_option_platform[256];
-            Helper::toupper( option_platform, uppercase_option_platform, 256 );
+            Char uppercase_option_platform[256] = {'\0'};
+            Helper::toupper( option_platform, uppercase_option_platform, 255 );
 
             m_platformTags.clear();
             m_platformTags.addTag( Helper::stringizeString( option_platform ) );
@@ -1351,8 +1351,8 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_WINDOWS)
-            WChar unicode_fullpath[MENGINE_MAX_PATH];
-            Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH );
+            WChar unicode_fullpath[MENGINE_MAX_PATH] = {L'\0'};
+            Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH - 1 );
 
             BOOL successful = ::CreateDirectoryW( unicode_fullpath, NULL );
 
@@ -1578,87 +1578,146 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_WINDOWS)
     //////////////////////////////////////////////////////////////////////////
-    static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda )
+    namespace Detail
     {
+        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
         {
-            WChar sPath[MENGINE_MAX_PATH];
-            ::wsprintf( sPath, L"%s%s%s", _dir, _path, _mask );
-
-            WIN32_FIND_DATA fdFile;
-            HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
-
-            if( hFind != INVALID_HANDLE_VALUE )
             {
+                WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
+                MENGINE_WCSCPY( sPath, _dir );
+                MENGINE_WCSCAT( sPath, _path );
+                MENGINE_WCSCAT( sPath, _mask );
+
+                WIN32_FIND_DATA fdFile;
+                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
+
+                if( hFind != INVALID_HANDLE_VALUE )
+                {
+                    do
+                    {
+                        if( ::wcscmp( fdFile.cFileName, L"." ) == 0
+                            || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
+                        {
+                            continue;
+                        }
+
+                        if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+                        {
+                            continue;
+                        }
+
+                        WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
+                        MENGINE_WCSCPY( sPath2, sPath );
+                        MENGINE_WCSCAT( sPath2, L"\0" );
+
+                        Helper::pathCorrectForwardslashW( sPath2 );
+
+                        ::PathRemoveFileSpec( sPath2 );
+
+                        WChar unicode_filepath[MENGINE_MAX_PATH] = {L'\0'};
+                        ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
+
+                        WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
+                        if( MENGINE_WCSLEN( _dir ) != 0 )
+                        {
+                            ::PathRelativePathTo( unicode_out,
+                                _dir,
+                                FILE_ATTRIBUTE_DIRECTORY,
+                                unicode_filepath,
+                                FILE_ATTRIBUTE_NORMAL );
+                        }
+                        else
+                        {
+                            MENGINE_WCSCPY( unicode_out, unicode_filepath );
+                        }
+
+                        Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
+                        if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                        {
+                            ::FindClose( hFind );
+
+                            return false;
+                        }
+
+                        FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+                        if( _lambda( fp ) == false )
+                        {
+                            ::FindClose( hFind );
+
+                            *_stop = true;
+
+                            return true;
+                        }
+
+                    } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
+                }
+
+                ::FindClose( hFind );
+            }
+
+            {
+                WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
+                MENGINE_WCSCPY( sPath, _dir );
+                MENGINE_WCSCAT( sPath, _path );
+                MENGINE_WCSCAT( sPath, L"*.*" );
+
+                WIN32_FIND_DATA fdFile;
+                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
+
+                if( hFind == INVALID_HANDLE_VALUE )
+                {
+                    return true;
+                }
+
                 do
                 {
-                    if( ::wcscmp( fdFile.cFileName, L"." ) == 0
-                        || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
+                    if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0
+                        || MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
                     {
                         continue;
                     }
 
-                    if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+                    if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
                     {
                         continue;
                     }
 
-                    WChar unicode_filepath[MENGINE_MAX_PATH];
-                    ::wsprintf( unicode_filepath, L"%s%s", _path, fdFile.cFileName );
+                    WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
+                    MENGINE_WCSCPY( currentPath, sPath );
+                    MENGINE_WCSCAT( currentPath, L"\0" );
 
-                    Char utf8_filepath[MENGINE_MAX_PATH];
-                    if( Helper::unicodeToUtf8( unicode_filepath, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                    ::PathRemoveFileSpec( currentPath );
+
+                    WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
+                    ::PathCombine( nextPath, currentPath, fdFile.cFileName );
+
+                    MENGINE_WCSCAT( nextPath, L"\\" );
+
+                    bool stop;
+                    if( Detail::listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
                     {
-                        FindClose( hFind );
+                        ::FindClose( hFind );
 
                         return false;
                     }
 
-                    FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+                    if( stop == true )
+                    {
+                        ::FindClose( hFind );
 
-                    _lambda( fp );
+                        *_stop = true;
+
+                        return true;
+                    }
 
                 } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
+
+                ::FindClose( hFind );
             }
 
-            ::FindClose( hFind );
+            return true;
         }
-
-        {
-            WChar sPath[MENGINE_MAX_PATH];
-            ::wsprintf( sPath, L"%s%s*.*", _dir, _path );
-
-            WIN32_FIND_DATA fdFile;
-            HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
-
-            if( hFind == INVALID_HANDLE_VALUE )
-            {
-                return true;
-            }
-
-            do
-            {
-                if( ::wcscmp( fdFile.cFileName, L"." ) == 0
-                    || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
-                {
-                    continue;
-                }
-
-                if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-                {
-                    continue;
-                }
-
-                WChar nextPath[2048];
-                ::wsprintf( nextPath, L"%s%s/", _path, fdFile.cFileName );
-
-                s_listDirectoryContents( _dir, _mask, nextPath, _lambda );
-
-            } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
-
-            ::FindClose( hFind );
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif
@@ -1670,28 +1729,31 @@ namespace Mengine
         MENGINE_UNUSED( _mask );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_base[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
+        WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_mask[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
+        WChar unicode_mask[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        if( s_listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda ) == false )
+        bool stop;
+        if( Detail::listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda, &stop ) == false )
         {
             return false;
         }
+
+        MENGINE_UNUSED( stop );
 
         return true;
 #else
@@ -1774,8 +1836,11 @@ namespace Mengine
         MENGINE_UNUSED( _filePath );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_filePath[MENGINE_MAX_PATH];
-        Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
+        WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
+        {
+            return 0U;
+        }
 
         HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
             OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -1791,9 +1856,9 @@ namespace Mengine
             return 0U;
         }
 
-        time_t time = s_FileTimeToUnixTime( &write );
-
         ::CloseHandle( handle );
+
+        time_t time = s_FileTimeToUnixTime( &write );        
 
         return time;
 #else
@@ -1851,19 +1916,29 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::messageBox( const Char * _format, ... ) const
+    void SDLPlatform::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
+        Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
+                
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, args );
 
-        Char str[MENGINE_LOGGER_MAX_MESSAGE];
-        int32_t size_sprintf = MENGINE_SPRINTF( str, "%s", _format );
         MENGINE_VA_LIST_END( args );
 
-        if( size_sprintf > 0 )
+        if( size_vsnprintf < 0 )
         {
-            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, "message", str, nullptr );
+            LOGGER_ERROR( "invalid message box format message '%s'"
+                , _format
+            );
+
+            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, "invalid message box format message", nullptr );
+
+            return;
         }
+
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, str, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     UnknownPointer SDLPlatform::getPlatformExtention()

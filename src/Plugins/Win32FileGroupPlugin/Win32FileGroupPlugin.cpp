@@ -29,7 +29,7 @@ namespace Mengine
     {
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<Win32FileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() ), MENGINE_DOCUMENT_FACTORABLE );
 
-        Char currentPath[MENGINE_MAX_PATH] = { '\0' };
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 

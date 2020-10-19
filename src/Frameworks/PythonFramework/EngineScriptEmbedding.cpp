@@ -292,8 +292,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_loadPlugin( const WString & _pluginName )
             {
-                Char utf8_pluginName[MENGINE_MAX_PATH] = { '\0' };
-                if( Helper::unicodeToUtf8( _pluginName, utf8_pluginName, MENGINE_MAX_PATH ) == false )
+                Char utf8_pluginName[MENGINE_MAX_PATH] = {'\0'};
+                if( Helper::unicodeToUtf8( _pluginName, utf8_pluginName, MENGINE_MAX_PATH - 1 ) == false )
                 {
                     return false;
                 }
@@ -739,14 +739,14 @@ namespace Mengine
                             , _prototype.c_str()
                             , _name.c_str()
                             , _cb.repr().c_str()
-                            );
+                        );
 
                         return false;
                     }
 
                     LOGGER_INFO( "set current scene '%s'"
                         , _name.c_str()
-                        );
+                    );
 
                     py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
                     py_cb->initialize( _cb, _args );
@@ -795,14 +795,14 @@ namespace Mengine
                         LOGGER_ERROR( "scene name '%s' cb '%s' not callable"
                             , _name.c_str()
                             , _cb.repr().c_str()
-                            );
+                        );
 
                         return false;
                     }
 
                     LOGGER_INFO( "set current scene '%s'"
                         , _name.c_str()
-                        );
+                    );
 
                     py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
                     py_cb->initialize( _cb, _args );
@@ -856,7 +856,7 @@ namespace Mengine
                     MENGINE_ASSERTION_MEMORY_PANIC( eventable, "scene '%s' invalid eventable '%s'"
                         , _name.c_str()
                         , _type.repr().c_str()
-                        );
+                    );
 
                     scene->setBehaviorEventable( eventable );
 
@@ -867,7 +867,7 @@ namespace Mengine
                         LOGGER_ERROR( "scene '%s' invalid create type '%s'"
                             , _name.c_str()
                             , _type.repr().c_str()
-                            );
+                        );
 
                         return nullptr;
                     }
@@ -912,7 +912,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( arrow, "Error: can't setup arrow '%s'"
                     , _prototype.c_str()
-                    );
+                );
 
                 PLAYER_SERVICE()
                     ->setArrow( arrow );
@@ -1059,7 +1059,7 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is nullptr"
                     , _name.c_str()
-                    );
+                );
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_PYBIND );
@@ -1093,7 +1093,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
                     , _type.c_str()
-                    );
+                );
 
                 return resource;
             }
@@ -1106,7 +1106,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "not found resource '%s'"
                         , _nameResource.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1116,7 +1116,7 @@ namespace Mengine
                     LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                         , _nameResource.c_str()
                         , resource->getType().c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1132,7 +1132,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "not found resource '%s'"
                         , _nameResource.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1165,7 +1165,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "not exist resource '%s'"
                     , _name.c_str()
-                    );
+                );
 
                 return resource;
             }
@@ -1177,7 +1177,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "not exist resource '%s'"
                     , _name.c_str()
-                    );
+                );
 
                 return resource;
             }
@@ -1238,14 +1238,14 @@ namespace Mengine
                 LOGGER_WARNING( "write image to file '%s' path '%s'"
                     , _resource.c_str()
                     , _filePath.c_str()
-                    );
+                );
 
                 const ResourceImagePtr & resource = RESOURCE_SERVICE()
                     ->getResource( _resource );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "image resource not getting '%s'"
                     , _resource.c_str()
-                    );
+                );
 
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -1494,7 +1494,7 @@ namespace Mengine
                 , const ConstString & _category
                 , const FilePath & _path
                 , const FilePath & _descriptionPath
-                )
+            )
             {
                 FileGroupInterfacePtr fileGroup;
                 if( FILE_SERVICE()
@@ -1502,7 +1502,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid found file group '%s'"
                         , _fileGroupName.c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -1512,7 +1512,7 @@ namespace Mengine
                     , _type.c_str()
                     , _category.c_str()
                     , _path.c_str()
-                    );
+                );
 
                 PackageDesc desc;
                 desc.dev = false;
@@ -1640,7 +1640,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer );
 
-                char * memory = binary_buffer->getBuffer();
+                Char * memory = binary_buffer->getBuffer();
 
                 PythonSaxCallback pysc( _kernel, _cb );
                 if( stdex::xml_sax_parse( memory, pysc ) == false )
@@ -1873,7 +1873,7 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
                     , _resourceFilePath.c_str()
-                    );
+                );
 
                 const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
                     ->getResource( _resourceFilePath );
@@ -1912,7 +1912,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_updateUserWallpaper( const String & _filePath )
             {
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = { '\0' };
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -1939,7 +1939,7 @@ namespace Mengine
                     return false;
                 }
 
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = { '\0' };
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -1966,7 +1966,7 @@ namespace Mengine
                     return false;
                 }
 
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = { '\0' };
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -2528,7 +2528,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( render, "node '%s' is not renderable"
                     , _node->getName().c_str()
-                    );
+                );
 
                 AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha->create( _node
                     , [render]( float _alpha )
@@ -2879,7 +2879,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "cb '%s' not callable"
                         , _cb.repr().c_str()
-                        );
+                    );
 
                     return false;
                 }
@@ -3029,7 +3029,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
                 }
             };
@@ -3077,7 +3077,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
 
                     return false;
@@ -3122,7 +3122,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
 
                     return false;
@@ -3168,7 +3168,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
 
                     return false;
@@ -3208,7 +3208,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
 
                     return false;
@@ -3256,7 +3256,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
 
                     return false;
@@ -3297,7 +3297,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
 
                     return false;
@@ -3338,7 +3338,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s' return value '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
-                            );
+                        );
                     }
 
                     return false;
@@ -3377,7 +3377,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( py_handler, "%d handler invalid"
                     , _id
-                    );
+                );
 
                 py_handler->finalize();
 
@@ -3489,7 +3489,7 @@ namespace Mengine
             bool s_openUrlInDefaultBrowser( const WString & _url )
             {
                 Char utf8_url[4096];
-                Helper::unicodeToUtf8( _url, utf8_url, 4096 );
+                Helper::unicodeToUtf8( _url, utf8_url, 4095 );
 
                 bool val = PLATFORM_SERVICE()
                     ->openUrlInDefaultBrowser( utf8_url );
@@ -3696,7 +3696,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' not found"
                     , _resourceName.c_str()
-                    );
+                );
 
                 if( SERVICE_EXIST( ResourceValidateServiceInterface ) == false )
                 {

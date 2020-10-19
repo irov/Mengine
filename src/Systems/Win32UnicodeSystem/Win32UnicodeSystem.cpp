@@ -108,7 +108,7 @@ namespace Mengine
                 ->getPlatformExtention();
 
             Char str_le[1024];
-            win32Platform->getErrorMessage( error, str_le, 1024 );
+            win32Platform->getErrorMessage( error, str_le, 1023 );
 
             LOGGER_ERROR( "invalid convert utf8 '%s' to unicode error: %s [%lu]"
                 , _utf8

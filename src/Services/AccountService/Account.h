@@ -69,7 +69,7 @@ namespace Mengine
 
         struct Setting
         {
-            Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE] = {'\0'};
             AccountSettingProviderInterfacePtr provider;
         };
 

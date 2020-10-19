@@ -100,8 +100,8 @@ namespace Mengine
 
             if( f != NULL )
             {
-                Char objectleakmsg[1024];
-                int objectleakmsg_length = MENGINE_SPRINTF( objectleakmsg,
+                Char objectleakmsg[1024] = {'\0'};
+                int objectleakmsg_length = MENGINE_SNPRINTF( objectleakmsg, 1023,
                     "**********************************************************\n"
                     "<<<<<                OBJECT LEAK [% .7u]           >>>>>\n"
                     "**********************************************************\n"
@@ -115,8 +115,8 @@ namespace Mengine
                     const Char * factory_delimiter = "##########################################################\n";
                     fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
 
-                    Char factorymsg[2048];
-                    int factorymsg_length = MENGINE_SNPRINTF( factorymsg, 2048, "Factory '%s' [%zu]:\n"
+                    Char factorymsg[2048] = {'\0'};
+                    int factorymsg_length = MENGINE_SNPRINTF( factorymsg, 2047, "Factory '%s' [%zu]:\n"
                         , name.c_str()
                         , objects.size()
                     );
@@ -130,8 +130,8 @@ namespace Mengine
                         const Char * obj_delimiter = "**********************************************************\n";
                         fwrite( obj_delimiter, MENGINE_STRLEN( obj_delimiter ), 1, f );
 
-                        Char objmsg[16384];
-                        int objmsg_length = MENGINE_SNPRINTF( objmsg, 16384, "    doc: %s\n"
+                        Char objmsg[16384] = {'\0'};
+                        int objmsg_length = MENGINE_SNPRINTF( objmsg, 16383, "    doc: %s\n"
                             , MENGINE_DOCUMENT_STR( obj )
                         );
 

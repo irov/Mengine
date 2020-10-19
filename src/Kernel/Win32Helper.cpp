@@ -17,7 +17,7 @@ namespace Mengine
                 MENGINE_UNUSED( _path );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-                WCHAR unicode_path[MENGINE_MAX_PATH] = { L'\0' };
+                WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
                 HMODULE hm = NULL;
 
                 if( ::GetModuleHandleEx( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
@@ -62,7 +62,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetCurrentDllPath()
         {
-            static Char dllPath[MENGINE_MAX_PATH] = { '\0' };
+            static Char dllPath[MENGINE_MAX_PATH] = {'\0'};
 
             if( dllPath[0] == '\0' )
             {

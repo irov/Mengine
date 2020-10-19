@@ -29,7 +29,7 @@ namespace Mengine
     {
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<SDLFileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, STRINGIZE_FILEPATH_LOCAL( "" ) ), MENGINE_DOCUMENT_FACTORABLE );
 
-        Char utf8_currentPath[MENGINE_MAX_PATH] = {0};
+        Char utf8_currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t utf8_currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
 

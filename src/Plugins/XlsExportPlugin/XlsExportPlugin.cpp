@@ -16,7 +16,7 @@
 #include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-FILE _iob[] = { *stdin, *stdout, *stderr };
+FILE _iob[] = {*stdin, *stdout, *stderr};
 extern "C" FILE * __cdecl __iob_func( void )
 {
     return _iob;
@@ -90,8 +90,8 @@ namespace Mengine
         //Py_NoUserSiteDirectory = 1;
         //Py_NoSiteFlag = 1;
 
-        WChar currentPath[MENGINE_MAX_PATH] = { L'\0' };
-        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+        WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
+        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH - 1, currentPath );
 
         if( len == 0 )
         {
@@ -101,12 +101,12 @@ namespace Mengine
         currentPath[len + 0] = MENGINE_PATH_WDELIM;
         currentPath[len + 1] = L'\0';
 
-        WChar exportPath[MENGINE_MAX_PATH] = { L'\0' };
+        WChar exportPath[MENGINE_MAX_PATH] = {L'\0'};
         MENGINE_WCSCPY( exportPath, currentPath );
         MENGINE_WCSCAT( exportPath, L"Python3Lib/" );
 
-        WChar shortpath_exportPath[MENGINE_MAX_PATH] = { L'\0' };
-        DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
+        WChar shortpath_exportPath[MENGINE_MAX_PATH] = {L'\0'};
+        DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH - 1 );
 
         if( ShortPathNameLen == 0 )
         {
@@ -143,23 +143,23 @@ namespace Mengine
         pybind::list py_syspath( kernel );
 
         {
-            WChar stdPath[MENGINE_MAX_PATH] = { L'\0' };
+            WChar stdPath[MENGINE_MAX_PATH] = {L'\0'};
             MENGINE_WCSCPY( stdPath, currentPath );
             MENGINE_WCSCAT( stdPath, L"Python3Lib/" );
 
-            WChar shortpath_stdPath[MENGINE_MAX_PATH] = { L'\0' };
-            GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH );
+            WChar shortpath_stdPath[MENGINE_MAX_PATH] = {L'\0'};
+            ::GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH - 1 );
 
             py_syspath.append( shortpath_stdPath );
         }
 
         {
-            WChar xlsxPath[MENGINE_MAX_PATH] = { L'\0' };
+            WChar xlsxPath[MENGINE_MAX_PATH] = {L'\0'};
             MENGINE_WCSCPY( xlsxPath, currentPath );
             MENGINE_WCSCAT( xlsxPath, L"XlsxExport/" );
 
-            WChar shortpath_xlsxPath[MENGINE_MAX_PATH] = { L'\0' };
-            GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH );
+            WChar shortpath_xlsxPath[MENGINE_MAX_PATH] = {L'\0'};
+            ::GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH - 1 );
 
             py_syspath.append( shortpath_xlsxPath );
         }
@@ -235,8 +235,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::warning_( const WChar * _msg )
     {
-        Char utf8_msg[2048];
-        Helper::unicodeToUtf8( _msg, utf8_msg, 2048 );
+        Char utf8_msg[2048] = {'\0'};
+        Helper::unicodeToUtf8( _msg, utf8_msg, 2047 );
 
         LOGGER_MESSAGE( "XlsExport[Warning]: %s"
             , utf8_msg
@@ -246,8 +246,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::error_( const WChar * _msg )
     {
-        Char utf8_msg[2048];
-        Helper::unicodeToUtf8( _msg, utf8_msg, 2048 );
+        Char utf8_msg[2048] = {'\0'};
+        Helper::unicodeToUtf8( _msg, utf8_msg, 2047 );
 
         LOGGER_MESSAGE_ERROR( "XlsExport[Error]: %s"
             , utf8_msg

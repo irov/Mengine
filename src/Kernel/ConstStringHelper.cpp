@@ -40,21 +40,21 @@ namespace Mengine
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
 
-            Char str[2048] = { 0 };
-            int32_t size = MENGINE_VSNPRINTF( str, 2047, _format, args );
+            Char str[2048] = {'\0'};
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, 2047, _format, args );
 
-            MENGINE_ASSERTION_FATAL( size >= 0, "invalid stringize string format '%s'"
+            MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid stringize string format '%s'"
                 , _format
             );
 
             MENGINE_VA_LIST_END( args );
 
-            if( size == 0 )
+            if( size_vsnprintf == 0 )
             {
                 return ConstString::none();
             }
 
-            ConstString constString = Helper::stringizeStringSize( str, size );
+            ConstString constString = Helper::stringizeStringSize( str, size_vsnprintf );
 
             return constString;
         }

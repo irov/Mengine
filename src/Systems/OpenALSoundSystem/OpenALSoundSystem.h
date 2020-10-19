@@ -52,14 +52,18 @@ namespace Mengine
         uint32_t getBuffersCount() const override;
 
     protected:
+        void onDestroyOpenALSoundSource_( OpenALSoundSource * _soundSource );
+
+    protected:
         ALCcontext * m_context;
         ALCdevice * m_device;
+
+        uint32_t m_sourcesCount;
+        uint32_t m_buffersCount;
 
         FactoryPtr m_factoryOpenALSoundBuffer;
         FactoryPtr m_factoryOpenALSoundBufferStream;
         FactoryPtr m_factoryOpenALSoundSource;
-
-        uint32_t m_sourcesCount;
-        uint32_t m_buffersCount;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -13,6 +13,8 @@
 #ifndef MENGINE_LOGGER_DEBUG
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_LOGGER_DEBUG 1
+#   else
+#       define MENGINE_LOGGER_DEBUG 0
 #   endif
 #endif
 

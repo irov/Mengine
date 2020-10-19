@@ -6,6 +6,8 @@
 #ifndef MENGINE_ASSERTION_DEBUG
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_ASSERTION_DEBUG 1
+#   else
+#       define MENGINE_ASSERTION_DEBUG 0
 #   endif
 #endif
 

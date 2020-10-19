@@ -1,7 +1,6 @@
 #include "AllocatorService.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -51,23 +50,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AllocatorService::_initializeService()
     {
-
-#if MENGINE_ALLOCATOR_DEBUG == 1
-        SERVICE_WAIT( LoggerServiceInterface, [this]()
-        {
-            LOGGER_MESSAGE_RELEASE( "enable allocator debug [ON]" );
-
-            return true;
-        } );
-#else
-        SERVICE_WAIT( LoggerServiceInterface, [this]()
-        {
-            LOGGER_MESSAGE_RELEASE( "enable allocator debug [OFF]" );
-
-            return true;
-        } );
-#endif
-
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             this->waitThread_();

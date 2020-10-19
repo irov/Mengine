@@ -5,6 +5,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
@@ -136,7 +137,7 @@ namespace Mengine
         
         m_factoryOpenALSoundBuffer = Helper::makeFactoryPool<OpenALSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryOpenALSoundBufferStream = Helper::makeFactoryPool<OpenALSoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOpenALSoundSource = Helper::makeFactoryPool<OpenALSoundSource, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOpenALSoundSource = Helper::makeFactoryPoolWithListener<OpenALSoundSource, 32>( this, &OpenALSoundSystem::onDestroyOpenALSoundSource_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -211,6 +212,13 @@ namespace Mengine
 
         soundSource->setHeadMode( _isHeadMode );
         soundSource->setSoundBuffer( _buffer );
+
+        if( soundSource->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid sound source initialize" );
+
+            return nullptr;
+        }
 
         return soundSource;
     }
@@ -312,6 +320,11 @@ namespace Mengine
     uint32_t OpenALSoundSystem::getBuffersCount() const
     {
         return m_buffersCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundSystem::onDestroyOpenALSoundSource_( OpenALSoundSource * _soundSource )
+    {
+        _soundSource->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
 }

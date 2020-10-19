@@ -628,6 +628,38 @@ namespace Mengine
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( ComponentService, MENGINE_DOCUMENT_FACTORABLE );
 
+#if MENGINE_ASSERTION_DEBUG == 0
+        LOGGER_MESSAGE_RELEASE( "enable assertion debug [OFF]" );
+#endif
+
+#if MENGINE_ASSERTION_DEBUG == 1
+        LOGGER_MESSAGE_RELEASE( "enable assertion debug [ON]" );
+#endif
+
+#if MENGINE_LOGGER_DEBUG == 0
+        LOGGER_MESSAGE_RELEASE( "enable logger debug [OFF]" );
+#endif
+
+#if MENGINE_LOGGER_DEBUG == 1
+        LOGGER_MESSAGE_RELEASE( "enable logger debug [ON]" );
+#endif
+
+#if MENGINE_ALLOCATOR_DEBUG == 0
+        LOGGER_MESSAGE_RELEASE( "enable allocator debug [OFF]" );
+#endif
+
+#if MENGINE_ALLOCATOR_DEBUG == 1
+        LOGGER_MESSAGE_RELEASE( "enable allocator debug [ON]" );
+#endif
+
+#if MENGINE_DOCUMENT_ENABLE == 0
+        LOGGER_MESSAGE_RELEASE( "enable document debug [OFF]" );
+#endif
+
+#if MENGINE_DOCUMENT_ENABLE == 1
+        LOGGER_MESSAGE_RELEASE( "enable document debug [ON]" );
+#endif
+
         LOGGER_INFO( "bootstrapper load application ini" );
 
         if( this->loadApplicationIni_() == false )

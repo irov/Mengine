@@ -105,6 +105,8 @@
 #ifndef MENGINE_DOCUMENT_ENABLE
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_DOCUMENT_ENABLE 1
+#   else
+#       define MENGINE_DOCUMENT_ENABLE 0
 #   endif
 #endif
 

@@ -24,6 +24,10 @@ namespace Mengine
         OpenALSoundSystem * getSoundSystem() const;
 
     public:
+        bool initialize();
+        void finalize();
+
+    public:
         bool play() override;
         void stop() override;
         void pause() override;
@@ -40,8 +44,9 @@ namespace Mengine
         bool getLoop() const override;
 
         float getDuration() const override;
-        float getPosition() const override;
+        
         bool setPosition( float _posMs ) override;
+        float getPosition() const override;
 
         void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) override;
         const SoundBufferInterfacePtr & getSoundBuffer() const override;
@@ -74,4 +79,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenALSoundSource> OpenALSoundSourcePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

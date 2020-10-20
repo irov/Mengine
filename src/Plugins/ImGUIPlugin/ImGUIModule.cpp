@@ -124,8 +124,10 @@ namespace Mengine
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getPlatformExtention();
 
-        uint32_t handlerId = win32Platform->addWin32ProcessHandler( []( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
+        uint32_t handlerId = win32Platform->addWin32ProcessHandler( []( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )
         {
+            *pHandled = FALSE;
+
             LRESULT result = ImGui_ImplWin32_WndProcHandler( hwnd, msg, wParam, lParam );
 
             return result;

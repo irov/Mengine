@@ -24,6 +24,9 @@ namespace Mengine
         virtual bool isRunModule( const ConstString & _name ) const = 0;
 
     public:
+        virtual const ModuleInterfacePtr & getModule( const ConstString & _name ) const = 0;
+
+    public:
         typedef Lambda<void()> LambdaWaitModule;
         virtual void waitModule( const ConstString & _name, const LambdaWaitModule & _lambda ) = 0;
 

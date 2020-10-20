@@ -28,6 +28,9 @@ namespace Mengine
         bool isRunModule( const ConstString & _name ) const override;
 
     public:
+        const ModuleInterfacePtr & getModule( const ConstString & _name ) const override;
+
+    public:
         void waitModule( const ConstString & _name, const LambdaWaitModule & _lambda ) override;
         void leaveModule( const ConstString & _name, const LambdaLeaveModule & _lambda ) override;
 

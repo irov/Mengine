@@ -79,7 +79,6 @@ namespace Mengine
         , m_cursorInArea( false )
         , m_clickOutAreaLeftButton( false )
         , m_clickOutAreaRightButton( false )
-        , m_isDoubleClick( false )
         , m_cursorMode( false )
         , m_cursor( nullptr )
         , m_lastMouse( false )
@@ -889,7 +888,13 @@ namespace Mengine
 
         for( const Win32ProcessDesc & desc : m_win32ProcessHandlers )
         {
-            desc.lambda( hWnd, uMsg, wParam, lParam );
+            BOOL handled = FALSE;
+            LRESULT lResult = desc.lambda( hWnd, uMsg, wParam, lParam, &handled );
+
+            if( handled == TRUE )
+            {
+                return lResult;
+            }
         }
 
         switch( uMsg )
@@ -1361,15 +1366,27 @@ namespace Mengine
                 handle = true;
                 *_result = 0;
             }break;
-        case WM_RBUTTONDBLCLK:
         case WM_LBUTTONDBLCLK:
             {
-                m_isDoubleClick = true;
+                m_isDoubleClick[0] = true;
 
                 handle = true;
                 *_result = 0;
-            }
-            break;
+            }break;
+        case WM_RBUTTONDBLCLK:
+            {
+                m_isDoubleClick[1] = true;
+
+                handle = true;
+                *_result = 0;
+            }break;
+        case WM_MBUTTONDBLCLK:
+            {
+                m_isDoubleClick[2] = true;
+
+                handle = true;
+                *_result = 0;
+            }break;
         case WM_LBUTTONDOWN:
             {
                 mt::vec2f point;
@@ -1386,7 +1403,7 @@ namespace Mengine
             break;
         case WM_LBUTTONUP:
             {
-                if( m_isDoubleClick == false )
+                if( m_isDoubleClick[0] == false )
                 {
                     mt::vec2f point;
                     if( this->calcCursorPosition_( &point ) == false )
@@ -1397,7 +1414,7 @@ namespace Mengine
                     Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
 
-                m_isDoubleClick = false;
+                m_isDoubleClick[0] = false;
 
                 handle = true;
                 *_result = 0;
@@ -1417,7 +1434,7 @@ namespace Mengine
             }break;
         case WM_RBUTTONUP:
             {
-                if( m_isDoubleClick == false )
+                if( m_isDoubleClick[1] == false )
                 {
                     mt::vec2f point;
                     if( this->calcCursorPosition_( &point ) == false )
@@ -1428,7 +1445,7 @@ namespace Mengine
                     Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
 
-                m_isDoubleClick = false;
+                m_isDoubleClick[1] = false;
 
                 handle = true;
                 *_result = 0;
@@ -1448,13 +1465,18 @@ namespace Mengine
             }break;
         case WM_MBUTTONUP:
             {
-                mt::vec2f point;
-                if( this->calcCursorPosition_( &point ) == false )
+                if( m_isDoubleClick[2] == false )
                 {
-                    return 0;
+                    mt::vec2f point;
+                    if( this->calcCursorPosition_( &point ) == false )
+                    {
+                        return 0;
+                    }
+
+                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
                 }
 
-                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                m_isDoubleClick[2] = false;
 
                 handle = true;
                 *_result = 0;

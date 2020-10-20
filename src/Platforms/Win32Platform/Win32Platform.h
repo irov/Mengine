@@ -255,7 +255,7 @@ namespace Mengine
         int32_t m_lastMouseX;
         int32_t m_lastMouseY;
 
-        bool m_isDoubleClick;
+        bool m_isDoubleClick[3] = {false};
         bool m_touchpad;
         bool m_desktop;
         bool m_sessionLock;

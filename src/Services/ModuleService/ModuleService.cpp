@@ -161,6 +161,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ModuleInterfacePtr & ModuleService::getModule( const ConstString & _name ) const
+    {
+        const ModuleInterfacePtr & module = this->findModule_( _name );
+
+        if( module == nullptr )
+        {
+            LOGGER_ERROR( "not found module '%s'"
+                , _name.c_str()
+            );
+
+            return ModuleInterfacePtr::none();
+        }
+
+        return module;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ModuleService::waitModule( const ConstString & _name, const LambdaWaitModule & _lambda )
     {
         for( const ModuleInterfacePtr & module : m_modules )

@@ -80,6 +80,9 @@ namespace Mengine
         {
             spAnimationState * animationState = sampler->getAnimationState();
             spAnimationState_apply( animationState, m_skeleton );
+
+            spSkeleton_updateCache( m_skeleton );
+            spSkeleton_updateWorldTransform( m_skeleton );
         }
 
         return true;
@@ -100,7 +103,10 @@ namespace Mengine
             const SamplerSpineAnimationPtr & sampler = *it_found;
 
             sampler->release();
-        }
+
+            spSkeleton_updateCache( m_skeleton );
+            spSkeleton_updateWorldTransform( m_skeleton );
+        }        
 
         m_samplers.erase( it_found );
     }
@@ -116,6 +122,15 @@ namespace Mengine
         }
 
         m_samplers.clear();
+
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+        
+        spSkeleton_setToSetupPose( m_skeleton );
+        spSkeleton_updateCache( m_skeleton );
+        spSkeleton_updateWorldTransform( m_skeleton );
     }
     //////////////////////////////////////////////////////////////////////////
     const SamplerSpineAnimationInterfacePtr & Spine::findAnimationSampler( const ConstString & _name ) const
@@ -256,6 +271,11 @@ namespace Mengine
                 return false;
             }
 
+            if( sampler->getAnimationEnable() == false )
+            {
+                continue;
+            }
+
             spAnimationState * animationState = sampler->getAnimationState();
             spAnimationState_apply( animationState, m_skeleton );
         }
@@ -358,11 +378,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::update( const UpdateContext * _context )
     {
-        if( m_samplers.empty() == true )
-        {
-            return;
-        }
-
         float spTime = _context->time * 0.001f;
 
         spSkeleton_update( m_skeleton, spTime );

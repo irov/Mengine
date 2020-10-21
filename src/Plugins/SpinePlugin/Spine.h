@@ -96,18 +96,18 @@ namespace Mengine
 
         struct AnimationEventDesc
         {
-            int trackIndex;
+            int32_t trackIndex;
             spEventType type;
 
             ConstString state;
             ConstString name;
 
-            const char * eventName;
-            int eventIntValue;
+            const Char * eventName;
+            int32_t eventIntValue;
             float eventFloatValue;
-            const char * eventStringValue;
+            const Char * eventStringValue;
 
-            int loopCount;
+            int32_t loopCount;
         };
 
         typedef Vector<AnimationEventDesc> VectorAnimationEvent;

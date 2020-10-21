@@ -133,15 +133,14 @@ namespace Mengine
                     region->v2 = (region->y + region->height) * atlasHeightInv;
                 }
 
+                const mt::vec2f & offset = _frame->getOffset();
                 const mt::vec2f & maxSize = _frame->getMaxSize();
+
+                region->offsetX = (int)(offset.x + 0.5f);
+                region->offsetY = (int)(maxSize.y - size.y - offset.y + 0.5f);
 
                 region->originalWidth = (int)(maxSize.x + 0.5f);
                 region->originalHeight = (int)(maxSize.y + 0.5f);
-
-                const mt::vec2f & offset = _frame->getOffset();
-
-                region->offsetX = (int)(maxSize.x - size.x - offset.x + 0.5f);
-                region->offsetY = (int)(maxSize.y - size.y - offset.y + 0.5f);
 
                 region->index = -1;
 

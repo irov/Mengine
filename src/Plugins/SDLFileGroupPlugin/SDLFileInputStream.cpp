@@ -11,8 +11,6 @@
 
 #include "stdex/memorycopy.h"
 
-#include <algorithm>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -246,7 +244,7 @@ namespace Mengine
             return 0;
         }
 
-        size_t readSize = (std::min)(correct_count - tail, bytesRead);
+        size_t readSize = MENGINE_MIN( correct_count - tail, bytesRead );
 
         stdex::memorycopy( _buf, tail, m_readCache, readSize );
 
@@ -380,7 +378,7 @@ namespace Mengine
         return true;
 #else
         MENGINE_UNUSED( _time );
-        
+
         return false;
 #endif
     }

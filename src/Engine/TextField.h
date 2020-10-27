@@ -44,6 +44,14 @@ namespace Mengine
         bool getAutoScale() const;
 
     public:
+        void setAnchorHorizontalAlign( bool _anchorHorizontalAlign );
+        bool getAnchorHorizontalAlign() const;
+
+    public:
+        void setAnchorVerticalAlign( bool _anchorVerticalAlign );
+        bool getAnchorVerticalAlign() const;
+
+    public:
         void setWrap( bool _wrap );
         bool getWrap() const;
 
@@ -252,6 +260,8 @@ namespace Mengine
         mutable uint32_t m_layoutCount;
         mutable mt::vec2f m_textSize;
 
+        bool m_anchorHorizontalAlign;
+        bool m_anchorVerticalAlign;
         bool m_wrap;
         bool m_autoScale;
         bool m_pixelsnap;
@@ -262,9 +272,6 @@ namespace Mengine
         typedef Vector<VectorTextLines> VectorTextLines2;
         typedef Vector<VectorTextLines2> VectorTextLinesLayout;
         mutable VectorTextLinesLayout m_layouts;
-
-        typedef Vector<float> VectorTextLineAlignOffset;
-        mutable VectorTextLineAlignOffset m_textLineAlignOffsets;
 
         typedef Vector<TextRenderChunk> VectorChunks;
         mutable VectorChunks m_chunks;

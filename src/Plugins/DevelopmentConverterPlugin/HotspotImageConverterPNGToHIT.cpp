@@ -177,7 +177,7 @@ namespace Mengine
         uint32_t mipmap_pow_width = (uint32_t)(MT_logf( (float)_width ) / MT_logf( 2.f ));
         uint32_t mipmap_pow_height = (uint32_t)(MT_logf( (float)_height ) / MT_logf( 2.f ));
 
-        uint32_t mipmap_level = (std::min)(mipmap_pow_width, mipmap_pow_height) + 1;
+        uint32_t mipmap_level = MENGINE_MIN( mipmap_pow_width, mipmap_pow_height ) + 1;
 
         uint32_t bufferOffset = 0;
         for( uint32_t i = 1; i != mipmap_level; ++i )
@@ -238,10 +238,10 @@ namespace Mengine
                     uint8_t v2 = prev_buff[i2];
                     uint8_t v3 = prev_buff[i3];
 
-                    uint8_t b0 = (std::max)(v0, v1);
-                    uint8_t b1 = (std::max)(v2, v3);
+                    uint8_t b0 = MENGINE_MAX( v0, v1 );
+                    uint8_t b1 = MENGINE_MAX( v2, v3 );
 
-                    uint8_t b_max = (std::max)(b0, b1);
+                    uint8_t b_max = MENGINE_MAX( b0, b1 );
 
                     if( i == (cur_width - 1) && (prev_width % 2) == 1 )
                     {
@@ -251,9 +251,9 @@ namespace Mengine
                         uint8_t v4 = prev_buff[i4];
                         uint8_t v5 = prev_buff[i5];
 
-                        uint8_t b3 = (std::max)(v4, v5);
+                        uint8_t b3 = MENGINE_MAX( v4, v5 );
 
-                        b_max = (std::max)(b_max, b3);
+                        b_max = MENGINE_MAX( b_max, b3 );
                     }
 
                     if( j == (cur_height - 1) && (prev_height % 2) == 1 )
@@ -264,9 +264,9 @@ namespace Mengine
                         uint8_t v4 = prev_buff[i4];
                         uint8_t v5 = prev_buff[i5];
 
-                        uint8_t b3 = (std::max)(v4, v5);
+                        uint8_t b3 = MENGINE_MAX( v4, v5 );
 
-                        b_max = (std::max)(b_max, b3);
+                        b_max = MENGINE_MAX( b_max, b3 );
                     }
 
                     if( i == (cur_width - 1) && (prev_width % 2) == 1 &&
@@ -276,7 +276,7 @@ namespace Mengine
 
                         uint8_t v4 = prev_buff[i4];
 
-                        b_max = (std::max)(b_max, v4);
+                        b_max = MENGINE_MAX( b_max, v4 );
                     }
 
                     cur_buff[i + j * cur_width] = b_max;

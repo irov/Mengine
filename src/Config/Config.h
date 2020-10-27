@@ -17,15 +17,19 @@
 #endif
 
 #ifndef MENGINE_MAX
-#define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MENGINE_MAX(A, B) ((A) > (B) ? (A) : (B))
 #endif
 
 #ifndef MENGINE_MIN
-#define MENGINE_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MENGINE_MIN(A, B) ((A) < (B) ? (A) : (B))
+#endif
+
+#ifndef MENGINE_STATIC_STRING_LENGTH
+#define MENGINE_STATIC_STRING_LENGTH(S) (sizeof( (S) ) - 1)
 #endif
 
 #ifndef MENGINE_CLAMP
-#define MENGINE_CLAMP(a, b, c) MENGINE_MAX( MENGINE_MIN(b, c), a )
+#define MENGINE_CLAMP(A, B, C) MENGINE_MAX( A, MENGINE_MIN(B, C) )
 #endif
 
 #define MENGINE_STRING_EMPTY ""
@@ -180,18 +184,18 @@
 #       if _MSC_VER >= 1400
 #           include <sal.h>
 #           if _MSC_VER > 1400
-#               define MENGINE_CHECK_FORMAT_STRING(p) _Printf_format_string_ p
+#               define MENGINE_CHECK_FORMAT_STRING(Format) _Printf_format_string_ Format
 #           else
-#               define MENGINE_CHECK_FORMAT_STRING(p) __format_string p
+#               define MENGINE_CHECK_FORMAT_STRING(Format) __format_string Format
 #           endif
 #       else
-#           define MENGINE_CHECK_FORMAT_STRING(p) p
+#           define MENGINE_CHECK_FORMAT_STRING(Format) Format
 #       endif
 #   else
-#       define MENGINE_CHECK_FORMAT_STRING(p) p
+#       define MENGINE_CHECK_FORMAT_STRING(Format) Format
 #   endif
 #else
-#   define MENGINE_CHECK_FORMAT_STRING(p) p
+#   define MENGINE_CHECK_FORMAT_STRING(Format) Format
 #endif
 
 #if defined(MENGINE_DEBUG)

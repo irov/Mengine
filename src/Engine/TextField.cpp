@@ -1705,6 +1705,24 @@ namespace Mengine
             return false;
         }
 
+        if( m_debugMode == true )
+        {
+            const ConstString & textId = this->getTextId();
+
+            if( textId == ConstString::none() )
+            {
+                const Char notextId[] = "[NONE]";
+
+                font->prepareText( notextId, MENGINE_STATIC_STRING_LENGTH( notextId ), _cacheText );
+            }
+            else
+            {
+                font->prepareText( textId.c_str(), textId.size(), _cacheText );
+            }            
+
+            return true;
+        }
+
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         size_t textSize;

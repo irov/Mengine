@@ -40,9 +40,9 @@ namespace Mengine
             size_t len = MENGINE_STRLEN( _key );
 
             _stream->write( _key, len );
-            _stream->write( " = ", sizeof( " = " ) - 1 );
+            _stream->write( " = ", MENGINE_STATIC_STRING_LENGTH( " = " ) );
             _stream->write( _value, _size );
-            _stream->write( "\n", sizeof( "\n" ) - 1 );
+            _stream->write( "\n", MENGINE_STATIC_STRING_LENGTH( "\n" ) );
 
             return true;
         }
@@ -61,10 +61,15 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSection( const OutputStreamInterfacePtr & _stream, const Char * _section, uint32_t _sectionSize )
+        bool writeIniSection( const OutputStreamInterfacePtr & _stream, const Char * _section, size_t _sectionSize )
         {
+            if( _sectionSize == MENGINE_UNKNOWN_SIZE )
+            {
+                _sectionSize = MENGINE_STRLEN( _section );
+            }
+
             _stream->write( _section, _sectionSize );
-            _stream->write( "\n", sizeof( "\n" ) - 1 );
+            _stream->write( "\n", MENGINE_STATIC_STRING_LENGTH( "\n" ) );
 
             return true;
         }

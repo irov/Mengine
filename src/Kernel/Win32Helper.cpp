@@ -17,7 +17,6 @@ namespace Mengine
                 MENGINE_UNUSED( _path );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-                WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
                 HMODULE hm = NULL;
 
                 if( ::GetModuleHandleEx( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
@@ -27,7 +26,8 @@ namespace Mengine
                     return false;
                 }
 
-                if( ::GetModuleFileName( hm, unicode_path, sizeof( unicode_path ) ) == 0 )
+                WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
+                if( ::GetModuleFileName( hm, unicode_path, MENGINE_MAX_PATH - 1 ) == 0 )
                 {
                     return false;
                 }

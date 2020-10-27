@@ -88,7 +88,7 @@ namespace Mengine
         else
         {
             const Char msg[] = "invalid message :(\n";
-            this->logMessage( msg, sizeof( msg ) );
+            this->logMessage( msg, MENGINE_STATIC_STRING_LENGTH( msg ) );
 
             int32_t size_sprintf = MENGINE_SPRINTF( str, "%s", _format );
 

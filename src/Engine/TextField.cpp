@@ -40,6 +40,8 @@ namespace Mengine
         , m_charCount( 0 )
         , m_layoutCount( 0 )
         , m_textSize( 0.f, 0.f )
+        , m_anchorHorizontalAlign( true )
+        , m_anchorVerticalAlign( true )
         , m_wrap( true )
         , m_autoScale( false )
         , m_pixelsnap( true )
@@ -280,11 +282,10 @@ namespace Mengine
 
         mt::vec2f offset = base_offset;
 
-        uint32_t textLineAlignOffsetIterator = 0U;
-
         for( const VectorTextLines2 & lines2 : layouts )
         {
-            float alignOffsetX = m_textLineAlignOffsets[textLineAlignOffsetIterator++];
+            float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
+
             offset.x = alignOffsetX * m_autoScaleFactor;
 
             for( const VectorTextLines & lines : lines2 )
@@ -464,6 +465,30 @@ namespace Mengine
     bool TextField::getAutoScale() const
     {
         return m_autoScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setAnchorHorizontalAlign( bool _anchorHorizontalAlign )
+    {
+        m_anchorHorizontalAlign = _anchorHorizontalAlign;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::getAnchorHorizontalAlign() const
+    {
+        return m_anchorHorizontalAlign;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setAnchorVerticalAlign( bool _anchorVerticalAlign )
+    {
+        m_anchorVerticalAlign = _anchorVerticalAlign;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::getAnchorVerticalAlign() const
+    {
+        return m_anchorVerticalAlign;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setWrap( bool _wrap )
@@ -828,8 +853,6 @@ namespace Mengine
 
         uint32_t charCount = 0;
 
-        m_textLineAlignOffsets.clear();
-
         float maxlen = 0.f;
         for( const VectorTextLines2 & lines2 : layouts )
         {
@@ -844,12 +867,8 @@ namespace Mengine
                 line_chars += line.getCharsDataSize();
             }
 
-            maxlen = (std::max)(maxlen, line_length);
+            maxlen = MENGINE_MAX( maxlen, line_length );
             charCount += line_chars;
-
-            float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
-
-            m_textLineAlignOffsets.push_back( alignOffsetX );
         }
 
         *_charCount = charCount;
@@ -1349,6 +1368,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const
     {
+        if( m_anchorVerticalAlign == false )
+        {
+            return 0.f;
+        }
+
         float fontAscent = _font->getFontAscent();
         //float fontDescent = _font->getFontDescent();
         float fontHeight = _font->getFontHeight();
@@ -1436,6 +1460,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::getHorizontAlignOffset_( const VectorTextLines2 & _lines ) const
     {
+        if( m_anchorHorizontalAlign == false )
+        {
+            return 0.f;
+        }
+
         float length = 0.f;
         for( const VectorTextLines & line : _lines )
         {

@@ -37,7 +37,7 @@ namespace Mengine
         {
             std::default_random_engine rng{_seed};
 
-            std::uniform_int_distribution<uint32_t> dist( 0, sizeof( char_array ) - 1 );
+            std::uniform_int_distribution<uint32_t> dist( 0, MENGINE_STATIC_STRING_LENGTH( char_array ) );
 
             std::generate_n( _uid, _length, [&dist, &rng]()
             {

@@ -67,5 +67,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define STRINGIZE_STRING_LOCAL( STRING )\
-    Mengine::Helper::stringizeStringTemplate<STRING##_hash>( STRING, (sizeof(STRING) - 1) )
+    Mengine::Helper::stringizeStringTemplate<STRING##_hash>( STRING, MENGINE_STATIC_STRING_LENGTH(STRING) )
 //////////////////////////////////////////////////////////////////////////

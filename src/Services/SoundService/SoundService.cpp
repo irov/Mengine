@@ -192,8 +192,7 @@ namespace Mengine
 
             if( source->play() == false )
             {
-                LOGGER_ERROR( "invalid play"
-                );
+                LOGGER_ERROR( "invalid play" );
 
                 continue;
             }
@@ -336,16 +335,14 @@ namespace Mengine
     {
         if( m_supportStream == false && _streamable == true )
         {
-            LOGGER_WARNING( "unsupport stream sound"
-            );
+            LOGGER_WARNING( "unsupport stream sound" );
 
             _streamable = false;
         }
 
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stoped"
-            );
+            LOGGER_ERROR( "service is stoped" );
 
             return nullptr;
         }
@@ -382,6 +379,8 @@ namespace Mengine
 
         if( identity->initialize() == false )
         {
+            LOGGER_ERROR( "invalide initialize identity sound" );
+
             return nullptr;
         }
 
@@ -403,7 +402,9 @@ namespace Mengine
 
         bool streamable = _emitter->isStreamable();
 
-        if( this->isMute() == true ||
+        bool mute = this->isMute();
+
+        if( mute == true ||
             (m_turnStream == false && streamable == true) ||
             (m_turnSound == false && streamable == false) )
         {
@@ -553,31 +554,25 @@ namespace Mengine
         return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::releaseSoundSource( const SoundIdentityInterfacePtr & _element )
+    bool SoundService::releaseSoundSource( const SoundIdentityInterfacePtr & _identity )
     {
-        _element->finalize();
+        _identity->finalize();
 
-        uint32_t id = _element->getId();
+        uint32_t id = _identity->getId();
 
-        for( VectorSoundSource::iterator
-            it = m_soundIdentities.begin(),
-            it_end = m_soundIdentities.end();
-            it != it_end;
-            ++it )
+        VectorSoundSource::iterator it_found = std::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityPtr & _identity )
         {
-            const SoundIdentityPtr & identity = *it;
+            return _identity->getId() == id;
+        } );
 
-            if( identity->getId() != id )
-            {
-                continue;
-            }
-
-            m_soundIdentities.erase( it );
-
-            return true;
+        if( it_found == m_soundIdentities.end() )
+        {
+            return false;
         }
 
-        return false;
+        m_soundIdentities.erase( it_found );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::setSoundVolume( const ConstString & _type, float _volume, float _default )
@@ -1119,7 +1114,9 @@ namespace Mengine
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-        return identity->state == ESS_STOP;
+        bool stopped = identity->state == ESS_STOP;
+
+        return stopped;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isEmitterPlay( const SoundIdentityInterfacePtr & _identity ) const
@@ -1133,7 +1130,9 @@ namespace Mengine
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-        return identity->state == ESS_PLAY;
+        bool played = identity->state == ESS_PLAY;
+
+        return played;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isEmitterPause( const SoundIdentityInterfacePtr & _identity ) const
@@ -1147,7 +1146,9 @@ namespace Mengine
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-        return identity->state == ESS_PAUSE;
+        bool paused = identity->state == ESS_PAUSE;
+
+        return paused;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped )

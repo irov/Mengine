@@ -59,11 +59,15 @@ namespace Mengine
 
         m_globalBank = globalBank;
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_FINALIZE, &ResourceService::notifyEngineFinalize, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_FINALIZE );
+
         m_mutex = nullptr;
 
         m_resourcesCache.clear();
@@ -78,6 +82,11 @@ namespace Mengine
     void ResourceService::_stopService()
     {
         m_globalBank->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceService::notifyEngineFinalize()
+    {
+        m_globalBank->finalizeKeepResource();
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceBankInterfacePtr ResourceService::createResourceBank( uint32_t _reserved, const DocumentPtr & _doc )

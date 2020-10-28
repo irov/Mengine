@@ -18,6 +18,9 @@ namespace Mengine
         void finalize() override;
 
     public:
+        void finalizeKeepResource();
+
+    public:
         ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentPtr & _doc ) override;
 
     public:

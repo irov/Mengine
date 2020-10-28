@@ -230,6 +230,16 @@ namespace Mengine
             return false;
         }
 
+        if( m_play == false )
+        {
+            return true;
+        }
+
+        if( m_pause == true )
+        {
+            return true;
+        }
+
         m_play = true;
         m_pause = true;
 
@@ -244,6 +254,16 @@ namespace Mengine
         if( m_soundIdentity == nullptr )
         {
             return false;
+        }
+
+        if( m_play == false )
+        {
+            return true;
+        }
+
+        if( m_pause == false )
+        {
+            return true;
         }
 
         m_play = true;

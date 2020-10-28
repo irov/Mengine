@@ -85,24 +85,39 @@ namespace Mengine
             return true;
         }
 
-        m_compositionName = _compositionName;
-
         if( m_resourceMovie2 == nullptr )
         {
+            m_compositionName = _compositionName;
+
             return true;
         }
 
-        this->destroyCompositionLayers_();
-
-        if( _compositionName.empty() == false )
+        bool successful = true;
+        this->recompile( [this, &successful, _compositionName]()
         {
+            if( m_compositionName.empty() == false )
+            {
+                this->destroyCompositionLayers_();
+            }
+
+            m_compositionName = _compositionName;            
+
+            if( _compositionName.empty() == true )
+            {
+                return true;
+            }
+
             if( this->createCompositionLayers_() == false )
             {
-                return false;
-            }
-        }
+                successful = false;
 
-        return true;
+                return true;
+            }
+            
+            return true;
+        } );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Movie2::getCompositionName() const
@@ -1534,9 +1549,11 @@ namespace Mengine
             {
             case AE_MOVIE_LAYER_TYPE_PARTICLE:
                 {
-                    //ParticleEmitter2 * particleEmitter = (ParticleEmitter2 *)_callbackData->element;
+                    Node * node = (Node *)_callbackData->element_userdata;
+                                        
+                    UnknownAstralaxEmitterInterface * unknownAstralaxEmitter = node->getUnknown();
 
-                    //movie2->removeParticle( particleEmitter );
+                    unknownAstralaxEmitter->setResourceAstralax( nullptr );
                 }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
@@ -3406,9 +3423,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_destroy()
     {
-        this->destroyCompositionLayers_();
-
         Node::_destroy();
+
+        this->destroyCompositionLayers_();        
     }
     //////////////////////////////////////////////////////////////////////////
 }

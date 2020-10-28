@@ -1623,8 +1623,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::turnSound( bool _turn )
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_TURN_SOUND, _turn );
-
         if( _turn == false )
         {
             if( SERVICE_EXIST( SoundServiceInterface ) == true )
@@ -1665,6 +1663,8 @@ namespace Mengine
                     ->onTurnStream( true );
             }
         }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_TURN_SOUND, _turn );
 
         if( SERVICE_EXIST( SoundServiceInterface ) == true )
         {

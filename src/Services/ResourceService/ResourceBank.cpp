@@ -72,7 +72,9 @@ namespace Mengine
             resource->setResourceBank( nullptr );
             resource->finalize();
 
-            if( resource->isKeep() == true )
+            bool keep = resource->isKeep();
+
+            if( keep == true )
             {
                 IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
             }
@@ -81,6 +83,35 @@ namespace Mengine
         m_resources.clear();
 
         m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceBank::finalizeKeepResource()
+    {
+        for( const HashtableResources::value_type & value : m_resources )
+        {
+            const ResourcePtrView & resource = value.element;
+
+            bool precompile = resource->isPrecompile();
+
+            if( precompile == true )
+            {
+                resource->release();
+            }
+
+            resource->setPrecompile( false );
+
+            bool keep = resource->isKeep();
+
+            if( keep == true )
+            {
+                resource->setResourceBank( nullptr );
+                resource->finalize();
+
+                IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
+
+                m_resources.erase( value.key );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentPtr & _doc )
@@ -133,9 +164,11 @@ namespace Mengine
                 prev_resource->finalize();
                 prev_resource->setMapping( false );
 
-                if( prev_resource->isKeep() == false )
+                bool prev_keep = prev_resource->isKeep();
+
+                if( prev_keep == true )
                 {
-                    IntrusivePtrBase::intrusive_ptr_add_ref( prev_resource.get() );
+                    IntrusivePtrBase::intrusive_ptr_dec_ref( prev_resource.get() );
                 }
             }
 
@@ -178,7 +211,9 @@ namespace Mengine
             m_resources.erase( name );
         }
 
-        if( _resource->isKeep() == true )
+        bool keep = _resource->isKeep();
+
+        if( keep == true )
         {
             IntrusivePtrBase::intrusive_ptr_dec_ref( _resource );
         }

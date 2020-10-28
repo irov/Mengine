@@ -448,14 +448,14 @@ namespace Mengine
     void AstralaxEmitter::setResourceAstralax( const ResourcePtr & _resourceParticle )
     {
         MENGINE_ASSERTION_RESOURCE_TYPE( _resourceParticle, ResourceAstralaxPtr, "Resource '%s' invalid type '%s' is not 'ResourceAstralax'"
-            , _resourceParticle->getName().c_str()
-            , _resourceParticle->getType().c_str()
+            , _resourceParticle == nullptr ? "nullptr" : _resourceParticle->getName().c_str()
+            , _resourceParticle == nullptr ? "nullptr" : _resourceParticle->getType().c_str()
         );
 
         if( m_resourceAstralax == _resourceParticle )
         {
             return;
-        }        
+        }
 
         this->recompile( [this, &_resourceParticle]()
         {

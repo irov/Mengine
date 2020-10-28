@@ -54,12 +54,6 @@ namespace Mengine
 
         typedef Pool<ImageDesc, 512> PoolImageDesc;
         PoolImageDesc m_poolImageDesc;
-
-        typedef Vector<ImageDesc *> VectorImageDesc;
-        VectorImageDesc m_images;
-
-        typedef Vector<ResourcePtr> VectorResources;
-        VectorResources m_resources;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2Data> Movie2DataPtr;

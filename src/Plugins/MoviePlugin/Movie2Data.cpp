@@ -319,8 +319,6 @@ namespace Mengine
             , _resourceName
         );
 
-        m_resources.emplace_back( resource );
-
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -330,8 +328,6 @@ namespace Mengine
 
         desc->refcount = 0;
         desc->resourceImage = _resource;
-
-        m_images.push_back( desc );
 
         return desc;
     }

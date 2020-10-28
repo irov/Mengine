@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////
 #if MENGINE_ASSERTION_DEBUG
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_ASSERTION_RESOURCE_TYPE( Resource, ResourceType, ... ) MENGINE_ASSERTION_FATAL( (Resource != nullptr && stdex::intrusive_dynamic_cast<ResourceType>(Resource) != nullptr), __VA_ARGS__)
+#   define MENGINE_ASSERTION_RESOURCE_TYPE( Resource, ResourceType, ... ) MENGINE_ASSERTION_FATAL( (Resource == nullptr || stdex::intrusive_dynamic_cast<ResourceType>(Resource) != nullptr), __VA_ARGS__)
 //////////////////////////////////////////////////////////////////////////
 #   include "Interface/ResourceServiceInterface.h"
 //////////////////////////////////////////////////////////////////////////

@@ -53,7 +53,7 @@ namespace Mengine
         m_remove.clear();
 
         uint32_t index = 0;
-        for( VectorObservers & observers : m_mapObserves )
+        for( VectorObservers & observers : m_observes )
         {
 #if MENGINE_DOCUMENT_ENABLE
             for( const ObserverDesc & desc : observers )
@@ -64,7 +64,9 @@ namespace Mengine
             }
 #endif
 
-            MENGINE_ASSERTION( observers.empty() == true, "finalized notification '%d' has observers", index );
+            MENGINE_ASSERTION( observers.empty() == true, "finalized notification '%u' has observers"
+                , index 
+            );
 
             observers.clear();
 
@@ -123,7 +125,7 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        const VectorObservers & observers = m_mapObserves[_id];
+        const VectorObservers & observers = m_observes[_id];
 
         if( observers.empty() == true )
         {
@@ -181,7 +183,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
-        VectorObservers & observers = m_mapObserves[_id];
+        VectorObservers & observers = m_observes[_id];
 
         ObserverDesc desc;
         desc.observer = _observer;
@@ -198,7 +200,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
-        VectorObservers & observers = m_mapObserves[_id];
+        VectorObservers & observers = m_observes[_id];
 
         for( ObserverDesc & desc : observers )
         {

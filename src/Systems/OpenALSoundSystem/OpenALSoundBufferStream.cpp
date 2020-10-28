@@ -26,9 +26,9 @@ namespace Mengine
 #if MENGINE_ASSERTION_DEBUG
         for( ALuint index = 0; index != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++index )
         {
-             ALuint id = m_alBuffersId[index];
+            ALuint id = m_alBuffersId[index];
 
-             MENGINE_ASSERTION_FATAL( id == 0 );
+            MENGINE_ASSERTION_FATAL( id == 0 );
         }
 #endif
     }
@@ -75,6 +75,8 @@ namespace Mengine
             {
                 continue;
             }
+
+            m_alBuffersId[i] = 0;
 
             m_soundSystem->releaseBufferId( id );
         }
@@ -364,7 +366,7 @@ namespace Mengine
             m_soundDecoder->rewind();
 
             size_t bufferSize = MENGINE_OPENAL_STREAM_BUFFER_SIZE - bytesWritten;
-            
+
             bufferSize -= bufferSize % 4;
 
             size_t bytesWritten2 = m_soundDecoder->decode( dataBuffer + bytesWritten, bufferSize );

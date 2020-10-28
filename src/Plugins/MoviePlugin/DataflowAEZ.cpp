@@ -243,6 +243,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DataflowAEZ::finalize()
     {
+        m_archivator = nullptr;
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMovieData );
         m_factoryMovieData = nullptr;
     }
@@ -296,6 +298,8 @@ namespace Mengine
         ae_uint32_t minor_version;
         ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movie_stream, &major_version, &minor_version );
 
+        ae_delete_movie_stream( movie_stream );
+
         if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
         {
             const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
@@ -310,8 +314,6 @@ namespace Mengine
 
             return false;
         }
-
-        ae_delete_movie_stream( movie_stream );
 
         data->setMovieData( movieData );
 

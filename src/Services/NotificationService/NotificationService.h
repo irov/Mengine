@@ -46,7 +46,7 @@ namespace Mengine
         };
 
         typedef Vector<ObserverDesc> VectorObservers;
-        VectorObservers m_mapObserves[MENGINE_NOTIFICATOR_MAX_COUNT];
+        VectorObservers m_observes[MENGINE_NOTIFICATOR_MAX_COUNT];
 
         struct ObserverQueue
         {

@@ -991,6 +991,11 @@ namespace Mengine
         float ex = (e.x + 1.f) * 0.5f * vs.x;
         float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
 
+        bx = MENGINE_MAX( bx, m_viewport.begin.x );
+        by = MENGINE_MAX( by, m_viewport.begin.y );
+        ex = MENGINE_MIN( ex, m_viewport.end.x );
+        ey = MENGINE_MIN( ey, m_viewport.end.y );
+
         RECT r;
         r.left = (uint32_t)bx;
         r.top = (uint32_t)by;

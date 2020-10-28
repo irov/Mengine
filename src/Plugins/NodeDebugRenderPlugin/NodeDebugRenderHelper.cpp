@@ -22,7 +22,7 @@ namespace Mengine
                     , true, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderCircle( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, float _radius, uint32_t _count, uint32_t _color, const DocumentPtr & _doc )
+        void nodeDebugRenderCircle( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, float _radius, uint32_t _count, ColorValue_ARGB _color, const DocumentPtr & _doc )
         {
             uint32_t numpoints = _count;
             uint32_t vertexCount = numpoints * 2;
@@ -78,7 +78,7 @@ namespace Mengine
             Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderPolygon( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, uint32_t _color, const DocumentPtr & _doc )
+        void nodeDebugRenderPolygon( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, ColorValue_ARGB _color, const DocumentPtr & _doc )
         {
             uint32_t numpoints = _polygon.size();
 
@@ -131,5 +131,38 @@ namespace Mengine
 
             Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
         }
+        //////////////////////////////////////////////////////////////////////////
+        void nodeDebugRenderPoint( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const mt::vec2f & _point, ColorValue_ARGB _color, float _length, const DocumentPtr & _doc )
+        {
+            VectorRenderVertex2D & vertices = RENDER_SERVICE()
+                ->getDebugRenderVertex2D( 4 );
+
+            mt::vec3f p0_wm;
+            mt::mul_v3_v2_m4( p0_wm, _point + mt::vec2f( 0.f, -_length ), _wm );
+
+            mt::vec3f p1_wm;
+            mt::mul_v3_v2_m4( p1_wm, _point + mt::vec2f( 0.f, _length ), _wm );
+
+            mt::vec3f p2_wm;
+            mt::mul_v3_v2_m4( p2_wm, _point + mt::vec2f( -_length, 0.f ), _wm );
+
+            mt::vec3f p3_wm;
+            mt::mul_v3_v2_m4( p3_wm, _point + mt::vec2f( _length, 0.f ), _wm );
+
+            vertices[0].position = p0_wm;
+            vertices[0].color = _color;
+
+            vertices[1].position = p1_wm;
+            vertices[1].color = _color;
+
+            vertices[2].position = p2_wm;
+            vertices[2].color = _color;
+
+            vertices[3].position = p3_wm;
+            vertices[3].color = _color;
+
+            Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

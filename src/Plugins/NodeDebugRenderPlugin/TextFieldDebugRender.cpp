@@ -15,28 +15,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node )
     {
-        Viewport viewport;
-        if( _node->calcTextViewport( &viewport ) == false )
         {
-            return;
+            const mt::mat4f & wm = _node->getWorldMatrix();
+
+            ColorValue_ARGB color = Helper::makeRGBA( 0.f, 1.f, 0.f, 1.f );
+
+            Helper::nodeDebugRenderPoint( _renderPipeline, _context, wm, mt::vec2f( 0.f, 0.f ), color, 10.f, MENGINE_DOCUMENT_FORWARD );
         }
 
-        mt::vec2f b = viewport.begin;
-        mt::vec2f e = viewport.end;
+        {
+            Viewport viewport;
+            if( _node->calcTextViewport( &viewport ) == false )
+            {
+                return;
+            }
 
-        mt::vec2f v0( b.x, b.y );
-        mt::vec2f v1( e.x, b.y );
-        mt::vec2f v2( e.x, e.y );
-        mt::vec2f v3( b.x, e.y );
+            mt::vec2f b = viewport.begin;
+            mt::vec2f e = viewport.end;
 
-        Polygon polygon;
-        polygon.append( v0 );
-        polygon.append( v1 );
-        polygon.append( v2 );
-        polygon.append( v3 );
+            mt::vec2f v0( b.x, b.y );
+            mt::vec2f v1( e.x, b.y );
+            mt::vec2f v2( e.x, e.y );
+            mt::vec2f v3( b.x, e.y );
 
-        const mt::mat4f & wm = _node->getWorldMatrix();
+            Polygon polygon;
+            polygon.append( v0 );
+            polygon.append( v1 );
+            polygon.append( v2 );
+            polygon.append( v3 );
 
-        Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF, MENGINE_DOCUMENT_FORWARD );
+            const mt::mat4f & wm = _node->getWorldMatrix();
+
+            Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF, MENGINE_DOCUMENT_FORWARD );
+        }
     }
 }

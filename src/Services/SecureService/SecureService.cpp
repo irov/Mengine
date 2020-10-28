@@ -88,4 +88,5 @@ namespace Mengine
 
         MENGINE_MEMCPY( (int8_t *)_buffer + head, tail_buffer, tail );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

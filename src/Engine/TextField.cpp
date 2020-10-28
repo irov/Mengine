@@ -1409,7 +1409,7 @@ namespace Mengine
 
                     if( m_anchorVerticalAlign == false )
                     {
-                        offset += m_textSize.y * 0.5f;
+                        offset += m_textSize.y;
                     }
                 }break;
             case ETFVA_CENTER:
@@ -1497,7 +1497,7 @@ namespace Mengine
 
                 if( m_anchorHorizontalAlign == false )
                 {
-                    offset += m_textSize.x * 0.5f;
+                    offset += m_textSize.x;
                 }
             }break;
         }

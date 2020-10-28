@@ -1406,11 +1406,6 @@ namespace Mengine
             case ETFVA_BOTTOM:
                 {
                     offset = fontHeight - (fontHeight - fontAscent);
-
-                    if( m_anchorVerticalAlign == false )
-                    {
-                        offset += m_textSize.y;
-                    }
                 }break;
             case ETFVA_CENTER:
                 {
@@ -1425,6 +1420,11 @@ namespace Mengine
             case ETFVA_TOP:
                 {
                     offset = fontHeight - fontHeight * layoutCountf + layoutCount1f * _lineOffset;
+
+                    if( m_anchorVerticalAlign == false )
+                    {
+                        offset += m_textSize.y;
+                    }
                 }break;
             }
         }

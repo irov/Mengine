@@ -1368,11 +1368,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const
     {
-        if( m_anchorVerticalAlign == false )
-        {
-            return 0.f;
-        }
-
         float fontAscent = _font->getFontAscent();
         //float fontDescent = _font->getFontDescent();
         float fontHeight = _font->getFontHeight();
@@ -1411,10 +1406,20 @@ namespace Mengine
             case ETFVA_BOTTOM:
                 {
                     offset = fontHeight - (fontHeight - fontAscent);
+
+                    if( m_anchorVerticalAlign == false )
+                    {
+                        offset += m_textSize.y * 0.5f;
+                    }
                 }break;
             case ETFVA_CENTER:
                 {
                     offset = fontHeight - (fontHeight - fontAscent) - fontHeight * layoutCountf * 0.5f - layoutCount1f * _lineOffset * 0.5f;
+                    
+                    if( m_anchorVerticalAlign == false )
+                    {
+                        offset += m_textSize.y * 0.5f;
+                    }
                 }break;
             case ETFVA_NONE:
             case ETFVA_TOP:
@@ -1460,11 +1465,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::getHorizontAlignOffset_( const VectorTextLines2 & _lines ) const
     {
-        if( m_anchorHorizontalAlign == false )
-        {
-            return 0.f;
-        }
-
         float length = 0.f;
         for( const VectorTextLines & line : _lines )
         {
@@ -1485,10 +1485,20 @@ namespace Mengine
         case ETFHA_CENTER:
             {
                 offset = -length * 0.5f;
+
+                if( m_anchorHorizontalAlign == false )
+                {
+                    offset += m_textSize.x * 0.5f;
+                }
             }break;
         case ETFHA_RIGHT:
             {
                 offset = -length;
+
+                if( m_anchorHorizontalAlign == false )
+                {
+                    offset += m_textSize.x * 0.5f;
+                }
             }break;
         }
 

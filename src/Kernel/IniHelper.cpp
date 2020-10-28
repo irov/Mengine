@@ -61,17 +61,15 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSection( const OutputStreamInterfacePtr & _stream, const Char * _section, size_t _sectionSize )
+        bool writeIniSection( const OutputStreamInterfacePtr & _stream, const Char * _section )
         {
-            if( _sectionSize == MENGINE_UNKNOWN_SIZE )
-            {
-                _sectionSize = MENGINE_STRLEN( _section );
-            }
+            size_t len = MENGINE_STRLEN( _section );
 
-            _stream->write( _section, _sectionSize );
+            _stream->write( _section, len );
             _stream->write( "\n", MENGINE_STATIC_STRING_LENGTH( "\n" ) );
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

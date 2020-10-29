@@ -16,14 +16,6 @@ namespace Mengine
     void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node )
     {
         {
-            const mt::mat4f & wm = _node->getWorldMatrix();
-
-            ColorValue_ARGB color = Helper::makeRGBA( 0.f, 1.f, 0.f, 1.f );
-
-            Helper::nodeDebugRenderPoint( _renderPipeline, _context, wm, mt::vec2f( 0.f, 0.f ), color, 10.f, MENGINE_DOCUMENT_FORWARD );
-        }
-
-        {
             Viewport viewport;
             if( _node->calcTextViewport( &viewport ) == false )
             {
@@ -47,6 +39,14 @@ namespace Mengine
             const mt::mat4f & wm = _node->getWorldMatrix();
 
             Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF, MENGINE_DOCUMENT_FORWARD );
+        }
+
+        {
+            const mt::mat4f & wm = _node->getWorldMatrix();
+
+            ColorValue_ARGB color = Helper::makeRGBA( 0.f, 1.f, 0.f, 1.f );
+
+            Helper::nodeDebugRenderPoint( _renderPipeline, _context, wm, mt::vec2f( 0.f, 0.f ), color, 10.f, MENGINE_DOCUMENT_FORWARD );
         }
     }
 }

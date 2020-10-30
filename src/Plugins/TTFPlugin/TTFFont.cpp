@@ -124,6 +124,16 @@ namespace Mengine
         return m_FESample;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setFECustomString( const String & _FECustomString )
+    {
+        m_FECustomString = _FECustomString;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & TTFFont::getFECustomString() const
+    {
+        return m_FECustomString;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TTFFont::initialize()
     {
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TTFFont::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
@@ -190,6 +200,46 @@ namespace Mengine
             fe_bundle * ttfFEBundle = m_dataFE->getFEBundle();
 
             fe_effect * ttfFEEffect = fe_bundle_get_effect_by_name( ttfFEBundle, m_ttfFEName.c_str() );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( ttfFEEffect );
+
+            m_ttfFEEffect = ttfFEEffect;
+
+            fe_node * effect_node_out = fe_effect_find_node_by_type( m_ttfFEEffect, fe_node_type_out );
+
+            if( effect_node_out->properties_int[0] != 0 )
+            {
+                uint32_t layoutCount = 0;
+
+                for( int32_t i = 0; i < FE_MAX_PINS; ++i )
+                {
+                    const fe_node * effect_node_layout = effect_node_out->in[FE_MAX_PINS - i - 1].node;
+
+                    if( effect_node_layout != nullptr )
+                    {
+                        m_ttfEffectNodes[layoutCount] = effect_node_layout;
+                        ++layoutCount;
+                    }
+                }
+
+                m_ttfLayoutCount = layoutCount;
+            }
+            else
+            {
+                m_ttfEffectNodes[0] = effect_node_out;
+
+                m_ttfLayoutCount = 1;
+            }
+        }
+        else if( m_FECustomString.empty() == false )
+        {
+            const char * memory_buffer = m_FECustomString.c_str();
+
+            size_t memory_size = m_FECustomString.length() * sizeof( char );
+
+            fe_bundle * bundle = fe_bundle_load( memory_buffer, (int32_t)memory_size );
+
+            fe_effect * ttfFEEffect = fe_bundle_get_effect_by_name( bundle, m_ttfFEName.c_str() );
 
             MENGINE_ASSERTION_MEMORY_PANIC( ttfFEEffect );
 

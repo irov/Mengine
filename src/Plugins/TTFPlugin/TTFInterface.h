@@ -37,6 +37,9 @@ namespace Mengine
 
         virtual void setFESample( uint32_t _FESample ) = 0;
         virtual uint32_t getFESample() const = 0;
+
+        virtual void setFECustomString( const String & _FECustomString ) = 0;
+        virtual const String & getFECustomString() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownTTFFontInterface> UnknownTTFFontInterfacePtr;

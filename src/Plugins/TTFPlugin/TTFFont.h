@@ -65,6 +65,9 @@ namespace Mengine
         void setFESample( uint32_t _FESample ) override;
         uint32_t getFESample() const override;
 
+        void setFECustomString( const String & _FECustomString ) override;
+        const String & getFECustomString() const override;
+
     public:
         bool initialize() override;
         void finalize() override;
@@ -120,6 +123,8 @@ namespace Mengine
         bool m_system;
 
         uint32_t m_FESample;
+
+        String m_FECustomString;
 
         float m_ttfAscender;
         float m_ttfDescender;

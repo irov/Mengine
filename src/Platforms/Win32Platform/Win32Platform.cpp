@@ -1097,6 +1097,8 @@ namespace Mengine
                 return 0;
             }break;
         case WM_DESTROY:
+            LOGGER_MESSAGE_RELEASE( "Quit application" );
+
             m_close = true;
 
             ::PostQuitMessage( 0 );

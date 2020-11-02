@@ -4,6 +4,7 @@
 
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {

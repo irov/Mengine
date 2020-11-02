@@ -6,6 +6,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -88,6 +89,8 @@ namespace Mengine
         m_factoryMemoryCacheInput = nullptr;
         m_factoryMemoryProxyInput = nullptr;
         m_factoryMemoryInput = nullptr;
+
+        MENGINE_ASSERTION_ALLOCATOR( "memory" );
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryService::_stopService()

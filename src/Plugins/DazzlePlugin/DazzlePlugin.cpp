@@ -13,6 +13,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Dazzle, Mengine::DazzlePlugin );
@@ -129,5 +130,7 @@ namespace Mengine
     {
         dz_service_destroy( m_service );
         m_service = nullptr;
+
+        MENGINE_ASSERTION_ALLOCATOR( "dazzle" );
     }
 }

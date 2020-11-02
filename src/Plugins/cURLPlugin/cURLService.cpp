@@ -15,6 +15,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -151,15 +152,6 @@ namespace Mengine
         m_factoryTaskGetMessage = nullptr;
 
         curl_global_cleanup();
-
-#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
-        uint32_t report_count = ALLOCATOR_SERVICE()
-            ->find_alloc_count( "curl" );
-
-        MENGINE_ASSERTION( report_count == 0, "cURL memleak [%d]"
-            , report_count
-        );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::notifyEnginePrepareFinalize_()

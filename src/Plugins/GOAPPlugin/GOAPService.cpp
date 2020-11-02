@@ -28,14 +28,14 @@ namespace Mengine
     protected:
         void * allocate( size_t _size ) override
         {
-            void * p = Helper::allocateMemory( _size, "metabuf" );
+            void * p = Helper::allocateMemory( _size, "goap" );
 
             return p;
         }
 
         void deallocate( void * _ptr ) override
         {
-            Helper::deallocateMemory( _ptr, "metabuf" );
+            Helper::deallocateMemory( _ptr, "goap" );
         }
     };
     //////////////////////////////////////////////////////////////////////////

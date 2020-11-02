@@ -879,7 +879,10 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
+            bool controlDown = INPUT_SERVICE()
+                ->isControlDown();
+
+            if( _event.code == KC_BACK && _event.isDown && controlDown == true )
             {
                 Char userPath[MENGINE_MAX_PATH] = {'\0'};
                 PLATFORM_SERVICE()
@@ -967,19 +970,19 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F5 && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_F5 && _event.isDown == true && controlDown == true )
             {
                 SCENE_SERVICE()
                     ->removeCurrentScene( false, nullptr );
             }
 
-            if( _event.code == KC_F5 && _event.isDown == true && INPUT_SERVICE()->isControlDown() == false )
+            if( _event.code == KC_F5 && _event.isDown == true && controlDown == false )
             {
                 SCENE_SERVICE()
                     ->restartCurrentScene( false, nullptr );
             }
 
-            if( _event.code == KC_G && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_G && _event.isDown == true && controlDown == true )
             {
                 FACTORY_SERVICE()
                     ->increfFactoryGeneration();
@@ -1067,7 +1070,7 @@ namespace Mengine
                 this->updateDebugOpenFile_();
             }
 
-            if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_P && _event.isDown == true && controlDown == true )
             {
                 static bool s_particle_enable = true;
 
@@ -1077,7 +1080,7 @@ namespace Mengine
                     ->setParticleEnable( s_particle_enable );
             }
 
-            if( _event.code == KC_T && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_T && _event.isDown == true && controlDown == true )
             {
                 static bool s_text_enable = true;
 
@@ -1087,7 +1090,7 @@ namespace Mengine
                     ->setTextEnable( s_text_enable );
             }
 
-            if( _event.code == KC_V && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_V && _event.isDown == true && controlDown == true )
             {
                 static bool s_video_enable = true;
 
@@ -1097,7 +1100,7 @@ namespace Mengine
                     ->setVideoEnable( s_video_enable );
             }
 
-            if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_R && _event.isDown == true && controlDown == true )
             {
                 static bool s_text_debug = true;
 
@@ -1106,7 +1109,7 @@ namespace Mengine
                 NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
             }
 
-            if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_E && _event.isDown == true && controlDown == true )
             {
                 NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
                 NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );

@@ -10,6 +10,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AllocatorHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 #include "TTFPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"
@@ -29,6 +30,32 @@ void * _fe_alloc( size_t _size )
 void _fe_free( void * _ptr )
 {
     Mengine::Helper::deallocateMemory( _ptr, "fe" );
+}
+//////////////////////////////////////////////////////////////////////////
+void * _ft_malloc( size_t _size )
+{
+    void * p = Mengine::Helper::allocateMemory( _size, "ft" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void * _ft_calloc( size_t _count, size_t _size )
+{
+    void * p = Mengine::Helper::callocateMemory( _count, _size, "ft" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void _ft_free( void * _ptr )
+{
+    Mengine::Helper::deallocateMemory( _ptr, "ft" );
+}
+//////////////////////////////////////////////////////////////////////////
+void * _ft_realloc( void * _ptr, size_t _size )
+{
+    void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "ft" );
+
+    return p;
 }
 //////////////////////////////////////////////////////////////////////////
 void _debug_image_created( fe_image * )
@@ -141,17 +168,13 @@ namespace Mengine
 
         FT_Done_FreeType( m_ftlibrary );
         m_ftlibrary = nullptr;
-
-#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
-        uint32_t report_count = stdex_get_allocator_report_count( "fe" );
-        MENGINE_ASSERTION( report_count == 0, "FE memleak [%d]"
-            , report_count
-        );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( TTFAtlasService );
+
+        MENGINE_ASSERTION_ALLOCATOR( "ft" );
+        MENGINE_ASSERTION_ALLOCATOR( "fe" );
     }
 }

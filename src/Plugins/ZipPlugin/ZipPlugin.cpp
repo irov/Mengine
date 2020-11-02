@@ -8,6 +8,7 @@
 
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Zip, Mengine::ZipPlugin )
@@ -35,5 +36,10 @@ namespace Mengine
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "zip" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ZipPlugin::_destroyPlugin()
+    {
+        MENGINE_ASSERTION_ALLOCATOR( "zip" );
     }
 }

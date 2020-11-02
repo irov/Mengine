@@ -20,6 +20,7 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( JSONService );
@@ -113,5 +114,7 @@ namespace Mengine
     void JSONPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( JSONService );
+
+        MENGINE_ASSERTION_ALLOCATOR( "json" );
     }
 }

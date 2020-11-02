@@ -27,6 +27,7 @@
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/EncoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( ImageCodec, Mengine::ImageCodecPlugin );
@@ -100,4 +101,12 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageCodecPlugin::_destroyPlugin()
+    {
+        MENGINE_ASSERTION_ALLOCATOR( "jpeg" );
+        MENGINE_ASSERTION_ALLOCATOR( "dpng" );
+        MENGINE_ASSERTION_ALLOCATOR( "epng" );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

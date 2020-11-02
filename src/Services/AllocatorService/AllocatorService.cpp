@@ -234,7 +234,9 @@ namespace Mengine
                 continue;
             }
 
-            return r.count;
+            size_t count = r.count;
+
+            return count;
         }
 #endif
 
@@ -270,6 +272,8 @@ namespace Mengine
             r.count += _add;
             r.count -= _minus;
 
+            r.total_alloc += _add;
+
             return;
         }
 
@@ -288,6 +292,8 @@ namespace Mengine
 
             r.count += _add;
             r.count -= _minus;
+
+            r.total_alloc += _add;
 
             break;
         }        

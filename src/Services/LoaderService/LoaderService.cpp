@@ -11,12 +11,12 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/PathString.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -82,6 +82,8 @@ namespace Mengine
         m_metacache.strings.clear();
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Loader" ) );
+
+        MENGINE_ASSERTION_ALLOCATOR( "metabuf" );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoaderService::setProtocolPath( const FilePath & _protocolPath )

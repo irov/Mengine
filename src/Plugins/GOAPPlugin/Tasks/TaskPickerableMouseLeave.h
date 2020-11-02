@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Kernel/Pickerable.h"
-
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/EventationInterface.h"
 
 #include "GOAP/TaskInterface.h"
+
+#include "Kernel/Pickerable.h"
+#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
 

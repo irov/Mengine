@@ -18,7 +18,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskPickerableMouseLeave( const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter );
+        TaskPickerableMouseLeave( const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentPtr & _doc );
         ~TaskPickerableMouseLeave() override;
 
     protected:
@@ -30,6 +30,8 @@ namespace Mengine
         PickerablePtr m_pickerable;
 
         LambdaPickerMouseLeaveEvent m_filter;
+
+        DocumentPtr m_doc;
 
         EventReceiverInterfacePtr m_receiver;
     };

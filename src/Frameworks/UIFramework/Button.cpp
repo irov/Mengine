@@ -160,7 +160,7 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeAppear );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
 
         auto && [source_true, source_false] = Cook::addIf( _source, [this]()
         {
@@ -171,16 +171,16 @@ namespace Mengine
 
         auto && [source_over_click, source_over_enter, source_block, source_play] = Cook::addRace<4>( _source );
 
-        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_click, this, &Button::__setState, EBS_PUSH );
 
-        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_enter, this, &Button::__setState, EBS_ENTER );
 
         Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
         Cook::addFunction( source_block, this, &Button::__setState, EBS_BLOCK_ENTER );
 
-        Cook::addAnimatablePlayWait( source_play, _nodeAppear, _nodeAppear );
+        Cook::addAnimatablePlayWait( source_play, _nodeAppear, _nodeAppear, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_play, this, &Button::__setState, EBS_IDLE );
 
         Cook::addNodeDisable( _source, _nodeAppear );
@@ -189,14 +189,14 @@ namespace Mengine
     void Button::__stateIdle( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeIdle )
     {
         Cook::addNodeEnable( _source, _nodeIdle );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
 
         auto && [source_over_click, source_over_enter, source_block] = Cook::addRace<3>( _source );
 
-        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_click, this, &Button::__setState, EBS_PUSH );
 
-        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_enter, this, &Button::__setState, EBS_ENTER );
 
         Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
@@ -208,14 +208,14 @@ namespace Mengine
     void Button::__stateOver( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeOver )
     {
         Cook::addNodeEnable( _source, _nodeOver );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
 
         auto && [source_over_click, source_over_leave, source_block] = Cook::addRace<3>( _source );
 
-        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_click, this, &Button::__setState, EBS_PUSH );
 
-        Cook::addPickerableMouseLeave( source_over_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_over_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_leave, this, &Button::__setState, EBS_LEAVE );
 
         Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
@@ -235,18 +235,18 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeEnter );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
 
         auto && [source_enter_movie, source_enter_leave, source_enter_click] = Cook::addRace<3>( _source );
-        Cook::addAnimatablePlayWait( source_enter_movie, _nodeEnter, _nodeEnter );
+        Cook::addAnimatablePlayWait( source_enter_movie, _nodeEnter, _nodeEnter, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_enter_movie, this, &Button::__setState, EBS_OVER );
 
-        Cook::addPickerableMouseLeave( source_enter_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_enter_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( source_enter_leave, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
         Cook::addFunction( source_enter_leave, this, &Button::__setState, EBS_IDLE );
 
-        Cook::addPickerableMouseButton( source_enter_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_enter_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_enter_click, this, &Button::__setState, EBS_PUSH );
 
         Cook::addNodeDisable( _source, _nodeEnter );
@@ -263,14 +263,14 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeLeave );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
 
         auto && [source_leave_movie, source_leave_enter] = Cook::addRace<2>( _source );
-        Cook::addAnimatablePlayWait( source_leave_movie, _nodeLeave, _nodeLeave );
+        Cook::addAnimatablePlayWait( source_leave_movie, _nodeLeave, _nodeLeave, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_leave_movie, this, &Button::__setState, EBS_IDLE );
 
-        Cook::addPickerableMouseEnter( source_leave_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_leave_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_leave_enter, this, &Button::__setState, EBS_ENTER );
 
         Cook::addNodeDisable( _source, _nodeLeave );
@@ -287,18 +287,18 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodePush );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_PUSH, &ButtonEventReceiverInterface::onButtonMousePush );
 
         auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel] = Cook::addRace<3>( _source );
-        Cook::addAnimatablePlayWait( source_Push_movie, _nodePush, _nodePush );
+        Cook::addAnimatablePlayWait( source_Push_movie, _nodePush, _nodePush, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Push_movie, this, &Button::__setState, EBS_PRESSED );
 
-        Cook::addPickerableMouseLeave( source_Push_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_Push_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( source_Push_leave, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
         Cook::addFunction( source_Push_leave, this, &Button::__setState, EBS_RELEASE );
 
-        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Pressed_click_Rel, this, &Button::__setState, EBS_CLICK );
 
         Cook::addNodeDisable( _source, _nodePush );
@@ -315,15 +315,15 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodePressed );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_PRESSED, &ButtonEventReceiverInterface::onButtonMousePressed );
 
         auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block] = Cook::addRace<3>( _source );
 
-        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Pressed_click_Rel, this, &Button::__setState, EBS_CLICK );
 
-        Cook::addPickerableMouseLeave( source_Pressed_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_Pressed_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( source_Pressed_leave, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
         Cook::addFunction( source_Pressed_leave, this, &Button::__setState, EBS_RELEASE );
 
@@ -344,14 +344,14 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeRelease );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_RELEASE, &ButtonEventReceiverInterface::onButtonMouseRelease );
 
         auto && [source_Release_movie, source_Release_enter] = Cook::addRace<2>( _source );
-        Cook::addPickerableMouseButton( source_Release_movie, m_pickerable, MC_LBUTTON, false, true, nullptr );
+        Cook::addPickerableMouseButton( source_Release_movie, m_pickerable, MC_LBUTTON, false, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Release_movie, this, &Button::__setState, EBS_RELEASE_PLAY );
 
-        Cook::addPickerableMouseEnter( source_Release_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_Release_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Release_enter, this, &Button::__setState, EBS_PRESSED );
 
         Cook::addNodeDisable( _source, _nodeRelease );
@@ -367,7 +367,7 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeRelease );
-        Cook::addAnimatablePlayWait( _source, _nodeRelease, _nodeRelease );
+        Cook::addAnimatablePlayWait( _source, _nodeRelease, _nodeRelease, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addAnimatableRewind( _source, _nodeRelease );
         Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
         Cook::addNodeDisable( _source, _nodeRelease );
@@ -387,7 +387,7 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeClick );
-        Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick );
+        Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON_BEGIN, &ButtonEventReceiverInterface::onButtonMouseButtonBegin );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON, &ButtonEventReceiverInterface::onButtonMouseButton );
         Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON_END, &ButtonEventReceiverInterface::onButtonMouseButtonEnd );
@@ -406,7 +406,7 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeBlockEnter );
-        Cook::addAnimatablePlayWait( _source, _nodeBlockEnter, _nodeBlockEnter );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnter, _nodeBlockEnter, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( _source, this, &Button::__setState, EBS_BLOCK );
 
         Cook::addNodeDisable( _source, _nodeBlockEnter );
@@ -441,7 +441,7 @@ namespace Mengine
 
         Cook::addNodeEnable( _source, _nodeBlockEnd );
 
-        Cook::addAnimatablePlayWait( _source, _nodeBlockEnd, _nodeBlockEnd );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnd, _nodeBlockEnd, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
 
         Cook::addNodeDisable( _source, _nodeBlockEnd );

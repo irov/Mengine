@@ -9,8 +9,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalMouseWheel::TaskGlobalMouseWheel( const LambdaInputMouseWheelEvent & _filter )
+    TaskGlobalMouseWheel::TaskGlobalMouseWheel( const LambdaInputMouseWheelEvent & _filter, const DocumentPtr & _doc )
         : m_filter( _filter )
+        , m_doc( _doc )
         , m_id( 0 )
     {
     }
@@ -31,7 +32,7 @@ namespace Mengine
             _node->complete();
         };
 
-        uint32_t id = Helper::addGlobalMouseWheelEvent( lambda, MENGINE_DOCUMENT_FUNCTION );
+        uint32_t id = Helper::addGlobalMouseWheelEvent( lambda, m_doc );
 
         if( id == 0 )
         {

@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( ImGUI, Mengine::ImGUIPlugin )
@@ -30,10 +31,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImGUIPlugin::_finalizePlugin()
     {
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIPlugin::_destroyPlugin()
     {
-        //Empty
+        MENGINE_ASSERTION_ALLOCATOR( "imgui" );
     }
 }

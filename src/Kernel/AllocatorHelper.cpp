@@ -16,10 +16,10 @@ namespace Mengine
             return memory_buffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        void * callocateMemory( size_t _num, size_t _size, const Char * _doc )
+        void * callocateMemory( size_t _count, size_t _size, const Char * _doc )
         {
             void * memory_buffer = ALLOCATOR_SERVICE()
-                ->calloc( _num, _size, _doc );
+                ->calloc( _count, _size, _doc );
 
             return memory_buffer;
         }

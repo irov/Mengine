@@ -48,7 +48,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        void * p = Helper::allocateMemory( _size, "png encoder" );
+        void * p = Helper::allocateMemory( _size, "epng" );
 
         return p;
     }
@@ -57,7 +57,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        Helper::deallocateMemory( _ptr, "png encoder" );
+        Helper::deallocateMemory( _ptr, "epng" );
     }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderPNG::ImageEncoderPNG()

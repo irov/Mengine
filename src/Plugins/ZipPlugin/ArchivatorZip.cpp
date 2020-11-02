@@ -71,7 +71,7 @@ namespace Mengine
 
         uInt total = _items * _size;
 
-        void * p = Helper::allocateMemory( total, "ArchivatorZip" );
+        void * p = Helper::allocateMemory( total, "zip" );
 
         return p;
     }
@@ -80,7 +80,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _opaque );
 
-        Helper::deallocateMemory( _address, "ArchivatorZip" );
+        Helper::deallocateMemory( _address, "zip" );
     }
     //////////////////////////////////////////////////////////////////////////
     static int32_t my_uncompress( Bytef * _dest, uLong * _destLen, const Bytef * _source, uLong _sourceLen )

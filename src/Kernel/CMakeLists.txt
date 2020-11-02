@@ -374,6 +374,7 @@ Assertion
     AssertionVocabulary.cpp
     AssertionNode.h
     AssertionType.h
+    AssertionAllocator.h
 )
 
 ADD_FILTER(

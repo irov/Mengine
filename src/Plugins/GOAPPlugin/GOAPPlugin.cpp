@@ -2,6 +2,8 @@
 
 #include "Interface/AllocatorServiceInterface.h"
 
+#include "Kernel/AssertionAllocator.h"
+
 #include "GOAP/Allocator.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -35,5 +37,7 @@ namespace Mengine
     void GOAPPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( GOAPService );
+
+        MENGINE_ASSERTION_ALLOCATOR( "goap" );
     }
 }

@@ -45,8 +45,9 @@ namespace Mengine
         GOAP::NodeInterfacePtr m_node;
     };
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalDelay::TaskGlobalDelay( float _time )
+    TaskGlobalDelay::TaskGlobalDelay( float _time, const DocumentPtr & _doc )
         : m_time( _time )
+        , m_doc( _doc )
         , m_id( 0 )
     {
     }
@@ -67,12 +68,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskGlobalDelay::_onRun( GOAP::NodeInterface * _node )
     {
-        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskGlobalDelay::ScheduleEvent>( MENGINE_DOCUMENT_FUNCTION, this, _node );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskGlobalDelay::ScheduleEvent>( m_doc, this, _node );
 
         const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
             ->getGlobalScheduler();
 
-        uint32_t id = scheduler->event( m_time, ev, MENGINE_DOCUMENT_FUNCTION );
+        uint32_t id = scheduler->event( m_time, ev, m_doc );
 
         if( id == 0 )
         {

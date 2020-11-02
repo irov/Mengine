@@ -196,7 +196,7 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeAppear );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
 
         auto && [source_true, source_false] = Cook::addIf( _source, [this]()
         {
@@ -209,16 +209,16 @@ namespace Mengine
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
-        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_enter, this, &Checkbox::__setState, _value, ECS_ENTER );
 
         Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
         Cook::addFunction( source_block, this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
 
-        Cook::addAnimatablePlayWait( source_play, _nodeAppear, _nodeAppear );
+        Cook::addAnimatablePlayWait( source_play, _nodeAppear, _nodeAppear, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_play, this, &Checkbox::__setState, _value, ECS_IDLE );
 
         Cook::addNodeDisable( _source, _nodeAppear );
@@ -227,16 +227,16 @@ namespace Mengine
     void Checkbox::__stateIdle( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeIdle, bool _value )
     {
         Cook::addNodeEnable( _source, _nodeIdle );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
 
         auto && [source_over_click, source_over_enter, source_block, source_value] = Cook::addRace<4>( _source );
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
-        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_enter, this, &Checkbox::__setState, _value, ECS_ENTER );
 
         Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
@@ -248,16 +248,16 @@ namespace Mengine
     void Checkbox::__stateOver( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeOver, bool _value )
     {
         Cook::addNodeEnable( _source, _nodeOver );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
 
         auto && [source_over_click, source_over_leave, source_block, source_value] = Cook::addRace<4>( _source );
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
-        Cook::addPickerableMouseLeave( source_over_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_over_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_over_leave, this, &Checkbox::__setState, _value, ECS_LEAVE );
 
         Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
@@ -277,20 +277,20 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeEnter );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_ENTER, &CheckboxEventReceiverInterface::onCheckboxMouseEnter, _value );
 
         auto && [source_enter_movie, source_enter_leave, source_enter_click, source_value] = Cook::addRace<4>( _source );
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addAnimatablePlayWait( source_enter_movie, _nodeEnter, _nodeEnter );
+        Cook::addAnimatablePlayWait( source_enter_movie, _nodeEnter, _nodeEnter, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_enter_movie, this, &Checkbox::__setState, _value, ECS_OVER );
 
-        Cook::addPickerableMouseLeave( source_enter_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_enter_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_enter_leave, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        Cook::addPickerableMouseButton( source_enter_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addPickerableMouseButton( source_enter_click, m_pickerable, MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_enter_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
         Cook::addNodeDisable( _source, _nodeEnter );
@@ -307,17 +307,17 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeLeave );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_LEAVE, &CheckboxEventReceiverInterface::onCheckboxMouseLeave, _value );
 
         auto && [source_leave_movie, source_leave_enter, source_value] = Cook::addRace<3>( _source );
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addAnimatablePlayWait( source_leave_movie, _nodeLeave, _nodeLeave );
+        Cook::addAnimatablePlayWait( source_leave_movie, _nodeLeave, _nodeLeave, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_leave_movie, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        Cook::addPickerableMouseEnter( source_leave_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_leave_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_leave_enter, this, &Checkbox::__setState, _value, ECS_OVER );
 
         Cook::addNodeDisable( _source, _nodeLeave );
@@ -334,20 +334,20 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodePush );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_PUSH, &CheckboxEventReceiverInterface::onCheckboxMousePush, _value );
 
         auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel, source_value] = Cook::addRace<4>( _source );
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addAnimatablePlayWait( source_Push_movie, _nodePush, _nodePush );
+        Cook::addAnimatablePlayWait( source_Push_movie, _nodePush, _nodePush, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Push_movie, this, &Checkbox::__setState, _value, ECS_PRESSED );
 
-        Cook::addPickerableMouseLeave( source_Push_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_Push_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Push_leave, this, &Checkbox::__setState, _value, ECS_RELEASE );
 
-        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Pressed_click_Rel, this, &Checkbox::__setState, _value, ECS_CLICK );
 
         Cook::addNodeDisable( _source, _nodePush );
@@ -364,17 +364,17 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodePressed );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_PRESSED, &CheckboxEventReceiverInterface::onCheckboxMousePressed, _value );
 
         auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block, source_value] = Cook::addRace<4>( _source );
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Pressed_click_Rel, this, &Checkbox::__setState, _value, ECS_CLICK );
 
-        Cook::addPickerableMouseLeave( source_Pressed_leave, m_pickerable, nullptr );
+        Cook::addPickerableMouseLeave( source_Pressed_leave, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Pressed_leave, this, &Checkbox::__setState, _value, ECS_RELEASE );
 
         Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
@@ -394,17 +394,17 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeRelease );
-        Cook::addLocalDelay( _source, 0.f );
+        Cook::addLocalDelay( _source, 0.f, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_RELEASE, &CheckboxEventReceiverInterface::onCheckboxMouseRelease, _value );
 
         auto && [source_Release_movie, source_Release_enter, source_value] = Cook::addRace<3>( _source );
 
         Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        Cook::addPickerableMouseButton( source_Release_movie, m_pickerable, MC_LBUTTON, false, true, nullptr );
+        Cook::addPickerableMouseButton( source_Release_movie, m_pickerable, MC_LBUTTON, false, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Release_movie, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        Cook::addPickerableMouseEnter( source_Release_enter, m_pickerable, nullptr );
+        Cook::addPickerableMouseEnter( source_Release_enter, m_pickerable, nullptr, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( source_Release_enter, this, &Checkbox::__setState, _value, ECS_PRESSED );
 
         Cook::addNodeDisable( _source, _nodeRelease );
@@ -427,7 +427,7 @@ namespace Mengine
 
         if( m_waitChange == true )
         {
-            Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick );
+            Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
@@ -450,7 +450,7 @@ namespace Mengine
         }
 
         Cook::addNodeEnable( _source, _nodeBlockEnter );
-        Cook::addAnimatablePlayWait( _source, _nodeBlockEnter, _nodeBlockEnter );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnter, _nodeBlockEnter, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_BLOCK );
 
         Cook::addNodeDisable( _source, _nodeBlockEnter );
@@ -485,7 +485,7 @@ namespace Mengine
 
         Cook::addNodeEnable( _source, _nodeBlockEnd );
 
-        Cook::addAnimatablePlayWait( _source, _nodeBlockEnd, _nodeBlockEnd );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnd, _nodeBlockEnd, MENGINE_DOCUMENT_FACTORABLE );
         Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_IDLE );
 
         Cook::addNodeDisable( _source, _nodeBlockEnd );

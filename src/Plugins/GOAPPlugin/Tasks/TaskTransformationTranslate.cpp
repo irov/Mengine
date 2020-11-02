@@ -74,11 +74,12 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationTranslate::TaskTransformationTranslate( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed )
+    TaskTransformationTranslate::TaskTransformationTranslate( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentPtr & _doc )
         : m_transformation( _transformation )
         , m_affectorable( _affectorable )
         , m_to( _to )
         , m_speed( _speed )
+        , m_doc( _doc )
         , m_id( 0 )
     {
     }
@@ -96,7 +97,7 @@ namespace Mengine
 
         mt::vec3f deltha = dir * m_speed;
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_transformation, deltha, m_to, m_speed );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( m_doc, _node, m_transformation, deltha, m_to, m_speed );
 
         const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 

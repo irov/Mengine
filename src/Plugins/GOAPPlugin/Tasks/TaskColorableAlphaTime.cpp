@@ -90,12 +90,13 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskColorableAlphaTime::TaskColorableAlphaTime( const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time )
+    TaskColorableAlphaTime::TaskColorableAlphaTime( const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc )
         : m_colorable( _colorable )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )
         , m_time( _time )
+        , m_doc( _doc )
         , m_id( 0 )
     {
         MENGINE_ASSERTION_FATAL( m_colorable != nullptr );
@@ -110,7 +111,7 @@ namespace Mengine
     {
         float alpha = m_colorable->getLocalAlpha();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_colorable, alpha, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( m_doc, _node, m_colorable, alpha, m_to, m_time );
 
         affector->setEasing( m_easing );
 

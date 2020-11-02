@@ -6,6 +6,7 @@
 
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -13,7 +14,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        explicit TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr & _eventable );
+        TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc );
         ~TaskAnimatablePlayWait() override;
 
     protected:
@@ -25,6 +26,7 @@ namespace Mengine
     protected:
         AnimatablePtr m_animatable;
         EventablePtr m_eventable;
+        DocumentPtr m_doc;
 
         EventReceiverInterfacePtr m_receiver;
     };

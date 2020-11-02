@@ -14,7 +14,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationRotateZTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode );
+        TaskTransformationRotateZTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc );
         ~TaskTransformationRotateZTime() override;
 
     protected:
@@ -30,6 +30,8 @@ namespace Mengine
         float m_to;
         float m_time;
         ETransformationRotateMode m_mode;
+
+        DocumentPtr m_doc;
 
         UniqueId m_id;
     };

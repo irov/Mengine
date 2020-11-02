@@ -53,9 +53,9 @@ namespace Mengine
             Cook::addTask<TaskAnimatablePlay>( _source, _animatable );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addAnimatablePlayWait( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable, const EventablePtr & _eventable )
+        void addAnimatablePlayWait( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskAnimatablePlayWait>( _source, _animatable, _eventable );
+            Cook::addTask<TaskAnimatablePlayWait>( _source, _animatable, _eventable, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addAnimatableResume( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable )
@@ -88,69 +88,69 @@ namespace Mengine
             Cook::addTask<TaskNodeEnable>( _source, _node );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
+        void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskPickerableMouseButton>( _source, _pickerable, _code, _isDown, _isPressed, _filter );
+            Cook::addTask<TaskPickerableMouseButton>( _source, _pickerable, _code, _isDown, _isPressed, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter )
+        void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskPickerableMouseEnter>( _source, _pickerable, _filter );
+            Cook::addTask<TaskPickerableMouseEnter>( _source, _pickerable, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addPickerableMouseLeave( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter )
+        void addPickerableMouseLeave( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskPickerableMouseLeave>( _source, _pickerable, _filter );
+            Cook::addTask<TaskPickerableMouseLeave>( _source, _pickerable, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
+        void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationRotateX>( _source, _transformation, _affectorable, _to, _speed );
+            Cook::addTask<TaskTransformationRotateX>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
+        void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationRotateY>( _source, _transformation, _affectorable, _to, _speed );
+            Cook::addTask<TaskTransformationRotateY>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateZ( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed )
+        void addTransformationRotateZ( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationRotateZ>( _source, _transformation, _affectorable, _to, _speed );
+            Cook::addTask<TaskTransformationRotateZ>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateXTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode )
+        void addTransformationRotateXTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationRotateXTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode );
+            Cook::addTask<TaskTransformationRotateXTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode )
+        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationRotateYTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode );
+            Cook::addTask<TaskTransformationRotateYTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateZTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode )
+        void addTransformationRotateZTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationRotateZTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode );
+            Cook::addTask<TaskTransformationRotateZTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags )
+        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationScaleTime>( _source, _transformation, _affectorable, _easing, _to, _time, _flags );
+            Cook::addTask<TaskTransformationScaleTime>( _source, _transformation, _affectorable, _easing, _to, _time, _flags, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed )
+        void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationTranslate>( _source, _transformation, _affectorable, _to, _speed );
+            Cook::addTask<TaskTransformationTranslate>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time )
+        void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskTransformationTranslateTime>( _source, _transformation, _affectorable, _easing, _to, _time );
+            Cook::addTask<TaskTransformationTranslateTime>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time )
+        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskColorableAlphaTime>( _source, _transformation, _affectorable, _easing, _to, _time );
+            Cook::addTask<TaskColorableAlphaTime>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addPrint( const GOAP::SourceInterfacePtr & _source, const Char * _format, ... )
@@ -178,39 +178,39 @@ namespace Mengine
             MENGINE_VA_LIST_END( args );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addDelay( const GOAP::SourceInterfacePtr & _source, const SchedulerInterfacePtr & _scheduler, float _time )
+        void addDelay( const GOAP::SourceInterfacePtr & _source, const SchedulerInterfacePtr & _scheduler, float _time, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskDelay>( _source, _scheduler, _time );
+            Cook::addTask<TaskDelay>( _source, _scheduler, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addGlobalDelay( const GOAP::SourceInterfacePtr & _source, float _time )
+        void addGlobalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskGlobalDelay>( _source, _time );
+            Cook::addTask<TaskGlobalDelay>( _source, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time )
+        void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskLocalDelay>( _source, _time );
+            Cook::addTask<TaskLocalDelay>( _source, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter )
+        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskGlobalKeyPress>( _source, _code, _isDown, _filter );
+            Cook::addTask<TaskGlobalKeyPress>( _source, _code, _isDown, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////    
-        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter )
+        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskGlobalMouseButton>( _source, _code, _isDown, _filter );
+            Cook::addTask<TaskGlobalMouseButton>( _source, _code, _isDown, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter )
+        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskGlobalMouseMove>( _source, _filter );
+            Cook::addTask<TaskGlobalMouseMove>( _source, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter )
+        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskGlobalMouseWheel>( _source, _filter );
+            Cook::addTask<TaskGlobalMouseWheel>( _source, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
     }

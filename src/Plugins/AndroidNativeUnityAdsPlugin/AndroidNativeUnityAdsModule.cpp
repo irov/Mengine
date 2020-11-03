@@ -8,7 +8,9 @@
 
 #include "Environment/Android/AndroidUtils.h"
 
-#include "pybind/pybind.hpp"
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "pybind/pybind.hpp"
+#endif
 
 #include <jni.h>
 
@@ -164,6 +166,8 @@ extern "C" {
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -244,6 +248,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
     AndroidNativeUnityAdsModule::AndroidNativeUnityAdsModule()
     {
     }
@@ -254,6 +260,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeUnityAdsModule::_initializeModule()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::enum_<EnumUnityAdsEventHandler>( kernel, "EnumUnityAdsEventHandler" )
@@ -271,6 +278,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidUnityInitialize", this, &AndroidNativeUnityAdsModule::initializeSDK );
         pybind::def_functor( kernel, "androidUnitySetupAds", this, &AndroidNativeUnityAdsModule::setupAds );
         pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );
+#endif
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -347,4 +355,5 @@ namespace Mengine
     {
         m_eventation.setEventHandler( _handler );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

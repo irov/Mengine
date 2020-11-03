@@ -41,6 +41,11 @@ namespace Mengine
             return this->m_pointer == _ptr;
         }
 
+        bool operator != ( const T * _ptr ) const
+        {
+            return this->m_pointer != _ptr;
+        }
+
     public:
         operator T * () const
         {
@@ -101,6 +106,11 @@ namespace Mengine
         bool operator == ( const T * _ptr ) const
         {
             return this->m_pointer == _ptr;
+        }
+
+        bool operator != ( const T * _ptr ) const
+        {
+            return this->m_pointer != _ptr;
         }
 
     public:
@@ -165,6 +175,11 @@ namespace Mengine
             return this->m_pointer == _ptr;
         }
 
+        bool operator != ( const T * _ptr ) const
+        {
+            return this->m_pointer != _ptr;
+        }
+
     public:
         operator T * () const
         {
@@ -213,6 +228,11 @@ namespace Mengine
         bool operator == ( const T * _ptr ) const
         {
             return this->m_pointer == _ptr;
+        }
+
+        bool operator != ( const T * _ptr ) const
+        {
+            return this->m_pointer != _ptr;
         }
 
     public:

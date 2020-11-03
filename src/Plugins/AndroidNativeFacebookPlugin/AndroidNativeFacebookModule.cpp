@@ -8,7 +8,9 @@
 
 #include "Environment/Android/AndroidUtils.h"
 
-#include "pybind/pybind.hpp"
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "pybind/pybind.hpp"
+#endif
 
 #define FACEBOOK_JAVA_PREFIX org_Mengine_Build_Facebook
 #define FACEBOOK_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
@@ -30,7 +32,7 @@ extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv * mEnv, jclass cls)
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
@@ -46,7 +48,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1onSDKInitialized )(JNIEnv *mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1onSDKInitialized )(JNIEnv * mEnv, jclass cls)
     {
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -58,7 +60,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginSuccess )(JNIEnv *env, jclass cls, jstring accessToken_)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginSuccess )(JNIEnv * env, jclass cls, jstring accessToken_)
     {
         const char * accessToken = env->GetStringUTFChars( accessToken_, 0 );
 
@@ -76,7 +78,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginCancel )(JNIEnv *env, jclass cls)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginCancel )(JNIEnv * env, jclass cls)
     {
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -88,7 +90,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginError )(JNIEnv *env, jclass cls, jstring exception_)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginError )(JNIEnv * env, jclass cls, jstring exception_)
     {
         const char * exception = env->GetStringUTFChars( exception_, 0 );
 
@@ -106,31 +108,31 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutSuccess )(JNIEnv *env, jclass cls)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutSuccess )(JNIEnv * env, jclass cls)
     {
         if( s_androidNativeFacebookModule != nullptr )
         {
             s_androidNativeFacebookModule->addCommand( []( const Mengine::FacebookEventHandlerPtr & _handler )
-                                                       {
-                                                           _handler->onFacebookLogoutSuccess();
-                                                       } );
+            {
+                _handler->onFacebookLogoutSuccess();
+            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutCancel )(JNIEnv *env, jclass cls)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutCancel )(JNIEnv * env, jclass cls)
     {
         if( s_androidNativeFacebookModule != nullptr )
         {
             s_androidNativeFacebookModule->addCommand( []( const Mengine::FacebookEventHandlerPtr & _handler )
-                                                       {
-                                                           _handler->onFacebookLogoutCancel();
-                                                       } );
+            {
+                _handler->onFacebookLogoutCancel();
+            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutError )(JNIEnv *env, jclass cls, jstring exception_)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLogoutError )(JNIEnv * env, jclass cls, jstring exception_)
     {
         const char * exception = env->GetStringUTFChars( exception_, 0 );
 
@@ -139,16 +141,16 @@ extern "C"
             Mengine::String exception_str = exception;
 
             s_androidNativeFacebookModule->addCommand( [exception_str]( const Mengine::FacebookEventHandlerPtr & _handler )
-                                                       {
-                                                           _handler->onFacebookLogoutError( exception_str );
-                                                       } );
+            {
+                _handler->onFacebookLogoutError( exception_str );
+            } );
         }
 
         env->ReleaseStringUTFChars( exception_, exception );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onUserFetchSuccess )(JNIEnv *env, jclass cls, jstring object_, jstring response_)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onUserFetchSuccess )(JNIEnv * env, jclass cls, jstring object_, jstring response_)
     {
         const char * object = env->GetStringUTFChars( object_, 0 );
         const char * response = env->GetStringUTFChars( response_, 0 );
@@ -169,7 +171,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareSuccess )(JNIEnv *env, jclass cls, jstring postId_)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareSuccess )(JNIEnv * env, jclass cls, jstring postId_)
     {
         const char * postId = env->GetStringUTFChars( postId_, 0 );
 
@@ -187,7 +189,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareCancel )(JNIEnv *env, jclass cls)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareCancel )(JNIEnv * env, jclass cls)
     {
         if( s_androidNativeFacebookModule != nullptr )
         {
@@ -199,7 +201,7 @@ extern "C"
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jclass cls, jstring exception_)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv * env, jclass cls, jstring exception_)
     {
         const char * exception = env->GetStringUTFChars( exception_, 0 );
 
@@ -217,7 +219,7 @@ extern "C"
     }
 
     JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onProfilePictureLinkGet )(JNIEnv *env, jclass cls, jstring pictureURL_)
+        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onProfilePictureLinkGet )(JNIEnv * env, jclass cls, jstring pictureURL_)
     {
         const char * pictureURL = env->GetStringUTFChars( pictureURL_, 0 );
 
@@ -238,6 +240,8 @@ extern "C"
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -248,7 +252,8 @@ namespace Mengine
             PythonFacebookEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
-            {}
+            {
+            }
 
             ~PythonFacebookEventHandler() override
             {
@@ -324,7 +329,7 @@ namespace Mengine
 
                 m_cb.call_args( FACEBOOK_SHARE_ERROR, pyparams, m_args );
             }
-            
+
             void onFacebookUserFetchSuccess( const String & _userObject, const String & _response ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _userObject, _response );
@@ -352,6 +357,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
     AndroidNativeFacebookModule::AndroidNativeFacebookModule()
     {
     }
@@ -362,25 +369,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::_initializeModule()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::enum_<EnumFacebookEventHandler>(kernel, "EnumFacebookEventHandler")
-                .def("FACEBOOK_INITIALIZE", FACEBOOK_INITIALIZE)
-                .def("FACEBOOK_LOGIN_SUCCESS", FACEBOOK_LOGIN_SUCCESS)
-                .def("FACEBOOK_LOGIN_CANCEL", FACEBOOK_LOGIN_CANCEL)
-                .def("FACEBOOK_LOGIN_ERROR", FACEBOOK_LOGIN_ERROR)
-                .def("FACEBOOK_LOGOUT_SUCCESS", FACEBOOK_LOGOUT_SUCCESS)
-                .def("FACEBOOK_LOGOUT_CANCEL", FACEBOOK_LOGOUT_CANCEL)
-                .def("FACEBOOK_LOGOUT_ERROR", FACEBOOK_LOGOUT_ERROR)
-                .def("FACEBOOK_SHARE_SUCCESS", FACEBOOK_SHARE_SUCCESS)
-                .def("FACEBOOK_SHARE_CANCEL", FACEBOOK_SHARE_CANCEL)
-                .def("FACEBOOK_SHARE_ERROR", FACEBOOK_SHARE_ERROR)
-                .def("FACEBOOK_USER_FETCH_SUCCESS", FACEBOOK_USER_FETCH_SUCCESS)
-                .def("FACEBOOK_PROFILE_PICTURE_LINK_GET", FACEBOOK_PROFILE_PICTURE_LINK_GET)
-                ;
+        pybind::enum_<EnumFacebookEventHandler>( kernel, "EnumFacebookEventHandler" )
+            .def( "FACEBOOK_INITIALIZE", FACEBOOK_INITIALIZE )
+            .def( "FACEBOOK_LOGIN_SUCCESS", FACEBOOK_LOGIN_SUCCESS )
+            .def( "FACEBOOK_LOGIN_CANCEL", FACEBOOK_LOGIN_CANCEL )
+            .def( "FACEBOOK_LOGIN_ERROR", FACEBOOK_LOGIN_ERROR )
+            .def( "FACEBOOK_LOGOUT_SUCCESS", FACEBOOK_LOGOUT_SUCCESS )
+            .def( "FACEBOOK_LOGOUT_CANCEL", FACEBOOK_LOGOUT_CANCEL )
+            .def( "FACEBOOK_LOGOUT_ERROR", FACEBOOK_LOGOUT_ERROR )
+            .def( "FACEBOOK_SHARE_SUCCESS", FACEBOOK_SHARE_SUCCESS )
+            .def( "FACEBOOK_SHARE_CANCEL", FACEBOOK_SHARE_CANCEL )
+            .def( "FACEBOOK_SHARE_ERROR", FACEBOOK_SHARE_ERROR )
+            .def( "FACEBOOK_USER_FETCH_SUCCESS", FACEBOOK_USER_FETCH_SUCCESS )
+            .def( "FACEBOOK_PROFILE_PICTURE_LINK_GET", FACEBOOK_PROFILE_PICTURE_LINK_GET )
+            ;
 
         pybind::def_function_proxy_args( kernel, "androidFacebookSetEventHandler", &Detail::androidFacebookSetEventHandler, this );
-                
+
         pybind::def_functor( kernel, "androidFacebookInitialize", this, &AndroidNativeFacebookModule::initializeSDK );
         pybind::def_functor( kernel, "androidFacebookIsLoggedIn", this, &AndroidNativeFacebookModule::isLoggedIn );
         pybind::def_functor( kernel, "androidFacebookGetAccessToken", this, &AndroidNativeFacebookModule::getAccessToken );
@@ -390,6 +398,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidFacebookShareLink", this, &AndroidNativeFacebookModule::shareLink );
         pybind::def_functor( kernel, "androidFacebookGetProfilePictureLink", this, &AndroidNativeFacebookModule::getProfilePictureLink );
         pybind::def_functor( kernel, "androidFacebookGetProfileUserPictureLink", this, &AndroidNativeFacebookModule::getProfileUserPictureLink );
+#endif
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -418,7 +427,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeFacebookModule::_update( bool _focus )
     {
-        (void)_focus;
+        MENGINE_UNUSED( _focus );
 
         m_eventation.invoke();
     }
@@ -465,11 +474,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::performLogin( const VectorString & _permissions )
     {
-        JNIEnv *env = Mengine_JNI_GetEnv();
+        JNIEnv * env = Mengine_JNI_GetEnv();
 
-        if( _permissions.empty() == true ) {
+        if( _permissions.empty() == true )
+        {
 
-            jboolean jReturnValue = env->CallStaticBooleanMethod(mActivityClass, jmethodID_performLogin, nullptr);
+            jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_performLogin, nullptr );
 
             return (bool)jReturnValue;
         }
@@ -530,7 +540,7 @@ namespace Mengine
         jstring jmessage = env->NewStringUTF( message_str );
 
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_shareLink, jlink, jpicture, jmessage );
-        
+
         env->DeleteLocalRef( jlink );
         env->DeleteLocalRef( jpicture );
         env->DeleteLocalRef( jmessage );
@@ -546,7 +556,7 @@ namespace Mengine
         jstring jtypeParameter = env->NewStringUTF( typeParameter_str );
 
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_getProfilePictureLink, jtypeParameter );
-        
+
         env->DeleteLocalRef( jtypeParameter );
 
         return (bool)jReturnValue;
@@ -569,4 +579,5 @@ namespace Mengine
 
         return (bool)jReturnValue;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

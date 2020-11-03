@@ -9,7 +9,9 @@
 
 #include "Environment/Android/AndroidUtils.h"
 
-#include "pybind/pybind.hpp"
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "pybind/pybind.hpp"
+#endif
 
 #define LINKING_JAVA_PREFIX org_Mengine_Build_Linking
 
@@ -17,14 +19,13 @@ static jclass mActivityClass;
 static jmethodID jmethodID_openURL;
 static jmethodID jmethodID_openMail;
 
-
 static Mengine::AndroidNativeLinkingModule * s_androidNativeLinkingModule = nullptr;
 
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLinking_1setupLinkingJNI )(JNIEnv *mEnv, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLinking_1setupLinkingJNI )(JNIEnv * mEnv, jclass cls)
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
@@ -35,6 +36,9 @@ extern "C"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -45,7 +49,8 @@ namespace Mengine
             PythonLinkingEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
-            {}
+            {
+            }
 
         protected:
             pybind::object m_cb;
@@ -60,6 +65,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
     AndroidNativeLinkingModule::AndroidNativeLinkingModule()
     {
     }
@@ -70,11 +77,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeLinkingModule::_initializeModule()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::def_function_proxy_args( kernel, "androidLinkingSetEventHandler", &Detail::androidLinkingSetEventHandler, this );
         pybind::def_functor( kernel, "AndroidOpenUrl", this, &AndroidNativeLinkingModule::openURL );
         pybind::def_functor( kernel, "AndroidOpenMail", this, &AndroidNativeLinkingModule::openMail );
+#endif
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -103,7 +112,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeLinkingModule::_update( bool _focus )
     {
-        MENGINE_UNUSED(_focus);
+        MENGINE_UNUSED( _focus );
 
         m_eventation.invoke();
     }
@@ -119,12 +128,13 @@ namespace Mengine
 
         const wchar_t * url_str = _url.c_str();
         size_t urlLength = _url.length();
-        jchar* url_jchar = (jchar*)Helper::allocateMemory((urlLength + 1)*sizeof(jchar), "AndroidNativeLinkingModule");
-        for (int i = 0; i < urlLength; i++)
+        jchar * url_jchar = (jchar *)Helper::allocateMemory( (urlLength + 1) * sizeof( jchar ), "AndroidNativeLinkingModule" );
+        for( int i = 0; i != urlLength; ++i ) {
             url_jchar[i] = (jchar) url_str[i];
+        }
         url_jchar[urlLength] = 0;
         jstring jurl = env->NewString( url_jchar, urlLength );
-        Helper::deallocateMemory(url_jchar, "AndroidNativeLinkingModule");
+        Helper::deallocateMemory( url_jchar, "AndroidNativeLinkingModule" );
 
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_openURL, jurl );
 
@@ -139,30 +149,33 @@ namespace Mengine
 
         const wchar_t * email_str = _email.c_str();
         size_t emailLength = _email.length();
-        jchar* email_jchar = (jchar*)Helper::allocateMemory((emailLength + 1)*sizeof(jchar), "AndroidNativeLinkingModule");
-        for (int i = 0; i < emailLength; i++)
+        jchar * email_jchar = (jchar *)Helper::allocateMemory( (emailLength + 1) * sizeof( jchar ), "AndroidNativeLinkingModule" );
+        for( int i = 0; i != emailLength; ++i ) {
             email_jchar[i] = (jchar) email_str[i];
+        }
         email_jchar[emailLength] = 0;
         jstring jemail = env->NewString( email_jchar, emailLength );
-        Helper::deallocateMemory(email_jchar, "AndroidNativeLinkingModule");
+        Helper::deallocateMemory( email_jchar, "AndroidNativeLinkingModule" );
 
         const wchar_t * subject_str = _subject.c_str();
         size_t subjectLength = _subject.length();
-        jchar* subject_jchar = (jchar*)Helper::allocateMemory((subjectLength + 1)*sizeof(jchar), "AndroidNativeLinkingModule");
-        for (int i = 0; i < subjectLength; i++)
+        jchar * subject_jchar = (jchar *)Helper::allocateMemory( (subjectLength + 1) * sizeof( jchar ), "AndroidNativeLinkingModule" );
+        for( int i = 0; i != subjectLength; ++i ) {
             subject_jchar[i] = (jchar) subject_str[i];
+        }
         subject_jchar[subjectLength] = 0;
         jstring jsubject = env->NewString( subject_jchar, subjectLength );
-        Helper::deallocateMemory(subject_jchar, "AndroidNativeLinkingModule");
+        Helper::deallocateMemory( subject_jchar, "AndroidNativeLinkingModule" );
 
         const wchar_t * body_str = _body.c_str();
         size_t bodyLength = _body.length();
-        jchar* body_jchar = (jchar*)Helper::allocateMemory((bodyLength + 1)*sizeof(jchar), "AndroidNativeLinkingModule");
-        for (int i = 0; i < bodyLength; i++)
+        jchar * body_jchar = (jchar *)Helper::allocateMemory( (bodyLength + 1) * sizeof( jchar ), "AndroidNativeLinkingModule" );
+        for( int i = 0; i != bodyLength; ++i ) {
             body_jchar[i] = (jchar) body_str[i];
+        }
         body_jchar[bodyLength] = 0;
         jstring jbody = env->NewString( body_jchar, bodyLength );
-        Helper::deallocateMemory(body_jchar, "AndroidNativeLinkingModule");
+        Helper::deallocateMemory( body_jchar, "AndroidNativeLinkingModule" );
 
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_openMail, jemail, jsubject, jbody );
 
@@ -172,4 +185,5 @@ namespace Mengine
 
         return (bool)jReturnValue;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

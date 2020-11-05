@@ -1,6 +1,6 @@
 #include "AndroidNativeKernelModule.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
@@ -27,6 +27,19 @@ extern "C" {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
         jmethodID_getAndroidId = env->GetStaticMethodID( mActivityClass, "kernelGetAndroidId", "()Ljava/lang/String;" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL
+    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeKernel_1hasPlugin )(JNIEnv * env, jclass cls, jstring name)
+    {
+        const char * name_str = env->GetStringUTFChars( name, 0 );
+
+        bool exist = PLUGIN_SERVICE()
+            ->hasPlugin(name_str);
+
+        env->ReleaseStringUTFChars( name, name_str );
+
+        return (jboolean)exist;
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

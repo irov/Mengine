@@ -2,6 +2,8 @@
 
 #include "Interface/RenderIndexBufferInterface.h"
 
+#include "Kernel/Factorable.h"
+
 namespace Mengine
 {
     class MockupRenderIndexBuffer

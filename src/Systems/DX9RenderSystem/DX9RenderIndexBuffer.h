@@ -6,6 +6,8 @@
 
 #include "DX9RenderResourceHandler.h"
 
+#include "Kernel/Factorable.h"
+
 namespace Mengine
 {
     class DX9RenderIndexBuffer

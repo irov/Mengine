@@ -2,11 +2,13 @@
 
 #include "FactoryPrototypeGenerator.h"
 
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Logger.h"
+
 
 namespace Mengine
 {

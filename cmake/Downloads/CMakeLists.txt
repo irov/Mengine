@@ -15,7 +15,7 @@ DOWNLOAD_URL_FOLDER(astralax_mac http://astralax.ru/download/programm/dev/magic_
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 
-GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-2")
+GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-4")
 GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "3.1.2")
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.11")
 GIT_CLONE(libogg https://github.com/xiph/ogg.git "v1.3.4")
@@ -38,7 +38,7 @@ GIT_CLONE(jpp https://github.com/irov/jpp.git)
 GIT_CLONE(libpng https://github.com/glennrp/libpng.git "v1.6.37")
 GIT_CLONE(libjpeg https://github.com/winlibs/libjpeg.git "libjpeg-9c")
 GIT_CLONE(libtheora https://github.com/xiph/theora.git "v1.1.1")
-GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "openal-soft-1.20.1")
+GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "openal-soft-1.21.0")
 GIT_CLONE(python https://github.com/python/cpython.git "v2.7.18")
 GIT_CLONE(python3 https://github.com/python/cpython.git "v3.8.6")
 GIT_CLONE(ozz https://github.com/guillaumeblanc/ozz-animation.git "0.13.0")

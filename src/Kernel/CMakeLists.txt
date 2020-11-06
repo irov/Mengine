@@ -299,6 +299,8 @@ Resource
     ResourceCacher.h
     Resource.cpp
     Resource.h
+    ResourceHelper.cpp
+    ResourceHelper.h
 )
 
 ADD_FILTER(

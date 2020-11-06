@@ -113,6 +113,11 @@ namespace Mengine
                 MENGINE_STRCPY( op.value, option_value_str + 1 );
             }
 
+            MENGINE_ASSERTION_FATAL( std::count_if( op.key, op.key + MENGINE_STRLEN( op.key ), []( Char _ch )
+            {
+                return std::isupper( _ch ) != 0;
+            } ) == 0 );
+
             m_options.push_back( op );
         }
 
@@ -123,7 +128,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return isalpha( _ch ) == 1;
+            return std::isupper( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -141,6 +146,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Char * OptionsService::getOptionValue( const Char * _key, const Char * _default ) const
     {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return std::isupper( _ch ) != 0;
+        } ) == 0 );
+
         for( const Option & op : m_options )
         {
             if( MENGINE_STRCMP( op.key, _key ) != 0 )
@@ -156,6 +166,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t OptionsService::getOptionUInt32( const Char * _key, uint32_t _default ) const
     {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return std::isupper( _ch ) != 0;
+        } ) == 0 );
+
         for( const Option & op : m_options )
         {
             if( MENGINE_STRCMP( op.key, _key ) != 0 )
@@ -182,6 +197,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
     {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return std::isupper( _ch ) != 0;
+        } ) == 0 );
+
         if( this->hasOption( _key ) == false )
         {
             return false;

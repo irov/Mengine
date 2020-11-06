@@ -9,6 +9,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/ResourceHelper.h"
 
 namespace Mengine
 {
@@ -192,6 +193,12 @@ namespace Mengine
 
             return false;
         }
+
+        LOGGER_INFO( "[surface] sound play '%s' resource '%s' file '%s'"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+            , Helper::getResourceFilePath( m_resourceSound ).c_str()
+        );
 
         if( SOUND_SERVICE()
             ->playEmitter( m_soundIdentity ) == false )

@@ -31,6 +31,9 @@ namespace Mengine
         void setValidNoExist( bool _valid ) override;
         bool isValidNoExist() const override;
 
+    public:
+        bool existContent() const override;
+
     protected:
         FileGroupInterfacePtr m_fileGroup;
 

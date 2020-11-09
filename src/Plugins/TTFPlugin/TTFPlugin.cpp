@@ -14,30 +14,7 @@
 #include "TTFPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"
 #include "TTFDataflow.h"
-#include "FEDataflow.h"
 
-#include "fe/fe.h"
-
-//////////////////////////////////////////////////////////////////////////
-void * _fe_alloc( size_t _size )
-{
-    void * p = Mengine::Helper::allocateMemory( _size, "fe" );
-
-    return p;
-}
-//////////////////////////////////////////////////////////////////////////
-void _fe_free( void * _ptr )
-{
-    Mengine::Helper::deallocateMemory( _ptr, "fe" );
-}
-//////////////////////////////////////////////////////////////////////////
-void _debug_image_created( fe_image * )
-{
-}
-//////////////////////////////////////////////////////////////////////////
-void _debug_image_deleted( fe_image * )
-{
-}
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( TTFAtlasService );
 //////////////////////////////////////////////////////////////////////////
@@ -104,15 +81,6 @@ namespace Mengine
 
             VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ), dataflowTTF, MENGINE_DOCUMENT_FACTORABLE );
 
-            FEDataflowPtr dataflowFE = Helper::makeFactorableUnique<FEDataflow>( MENGINE_DOCUMENT_FACTORABLE );
-
-            if( dataflowFE->initialize() == false )
-            {
-                return false;
-            }
-
-            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ), dataflowFE, MENGINE_DOCUMENT_FACTORABLE );
-
             return true;
         } );
 
@@ -120,9 +88,6 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowTTF = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
             dataflowTTF->finalize();
-
-            DataflowInterfacePtr dataflowFE = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-            dataflowFE->finalize();
         } );
 
         return true;
@@ -141,17 +106,11 @@ namespace Mengine
 
         FT_Done_FreeType( m_ftlibrary );
         m_ftlibrary = nullptr;
-
-#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
-        uint32_t report_count = stdex_get_allocator_report_count( "fe" );
-        MENGINE_ASSERTION( report_count == 0, "FE memleak [%d]"
-            , report_count
-        );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( TTFAtlasService );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

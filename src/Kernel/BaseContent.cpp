@@ -71,4 +71,11 @@ namespace Mengine
     {
         return m_validNoExist;
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseContent::existContent() const
+    {
+        bool result = m_fileGroup->existFile( m_filePath, true );
+
+        return result;
+    }
 }

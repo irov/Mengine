@@ -222,6 +222,7 @@ namespace Mengine
         : m_kernel( nullptr )
         , m_moduleMengine( nullptr )
         , m_initializeModules( false )
+        , m_tracebackOffset( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -271,6 +272,8 @@ namespace Mengine
         );
 
         kernel->set_currentmodule( m_moduleMengine );
+
+        pybind::def_functor( m_kernel, "setTracebackOffset", this, &PythonScriptService::setTracebackOffset );
 
         pybind::interface_<PythonScriptLogger>( m_kernel, "PythonScriptLogger", true )
             .def_native_kernel( "write", &PythonScriptLogger::py_write )
@@ -910,6 +913,16 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptService::setTracebackOffset( uint32_t _tracebackOffset )
+    {
+        m_tracebackOffset = _tracebackOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t PythonScriptService::getTracebackOffset() const
+    {
+        return m_tracebackOffset;
     }
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG

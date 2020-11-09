@@ -2,6 +2,9 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
+
+#include "Plugins/FEPlugin/FEInterface.h"
 
 #include "TTFFont.h"
 
@@ -29,24 +32,22 @@ namespace Mengine
         Color colorFont;
         if( _config->hasValue( name.c_str(), "ColorFont", &colorFont ) == true )
         {
-            font->setFontColor( colorFont );
+            _font->setFontColor( colorFont );
         }
 
         float lineOffset;
         if( _config->hasValue( name.c_str(), "LineOffset", &lineOffset ) == true )
         {
-            font->setLineOffset( lineOffset );
+            _font->setLineOffset( lineOffset );
         }
 
         float charOffset;
         if( _config->hasValue( name.c_str(), "CharOffset", &charOffset ) == true )
         {
-            font->setCharOffset( charOffset );
+            _font->setCharOffset( charOffset );
         }
 
         bool system = _config->getValue( name.c_str(), "System", false );
-
-        font->setSystem( system );
 
         if( system == false )
         {
@@ -60,9 +61,10 @@ namespace Mengine
                 return false;
             }
 
-            font->setTTFPath( ttfPath );
+            ContentInterface * content = _font->getContent();
 
-            font->setTTFFileGroup( _fileGroup );
+            content->setFileGroup( _fileGroup );
+            content->setFilePath( ttfPath );
         }
         else
         {
@@ -90,12 +92,13 @@ namespace Mengine
 
             FilePath ttfPath = Helper::stringizeFilePath( utf8_ttfPath );
 
-            font->setTTFPath( ttfPath );
-
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-            font->setTTFFileGroup( fileGroup );
+            ContentInterface * content = _font->getContent();
+
+            content->setFileGroup( fileGroup );
+            content->setFilePath( ttfPath );
         }
 
         uint32_t height;
@@ -108,15 +111,22 @@ namespace Mengine
             return false;
         }
 
-        font->setHeight( height );
+        _font->setHeight( height );
 
-        FilePath ttfFEPath;
-        if( _config->hasValue( name.c_str(), "FEPath", &ttfFEPath ) == true )
+        FilePath FEPath;
+        if( _config->hasValue( name.c_str(), "FEPath", &FEPath ) == true )
         {
-            font->setTTFFEPath( ttfFEPath );
+            TextFontEffectInterfacePtr textFontEffet = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            ConstString ttfFEName;
-            if( _config->hasValue( name.c_str(), "FEName", &ttfFEName ) == false )
+            UnknownFEFileInterface * unknownFE = textFontEffet->getDynamicUnknown();
+
+            ContentInterface * content = unknownFE->getContent();
+
+            content->setFilePath( FEPath );
+            content->setFileGroup( _fileGroup );
+
+            ConstString FEName;
+            if( _config->hasValue( name.c_str(), "FEName", &FEName ) == false )
             {
                 LOGGER_ERROR( "invalid font '%s' don't setup FEName"
                     , name.c_str()
@@ -125,17 +135,18 @@ namespace Mengine
                 return false;
             }
 
-            font->setTTFFEName( ttfFEName );
+            unknownFE->setEffectName( FEName );
 
-            font->setTTFFEFileGroup( _fileGroup );
-        }
+            uint32_t FESample;
+            if( _config->hasValue( name.c_str(), "FESample", &FESample ) == true )
+            {
+                textFontEffet->setEffectSample( FESample );
+            }
 
-        uint32_t FESample;
-        if( _config->hasValue( name.c_str(), "FESample", &FESample ) == true )
-        {
-            font->setFESample( FESample );
+            _font->setEffect( textFontEffet );
         }
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

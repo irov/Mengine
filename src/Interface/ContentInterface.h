@@ -32,6 +32,9 @@ namespace Mengine
     public:
         virtual void setValidNoExist( bool _valid ) = 0;
         virtual bool isValidNoExist() const = 0;
+
+    public:
+        virtual bool existContent() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ContentInterface> ContentInterfacePtr;

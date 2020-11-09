@@ -73,6 +73,10 @@ namespace Mengine
     public:
         bool stringize( PyObject * _object, ConstString * const _str ) override;
 
+    public:
+        void setTracebackOffset( uint32_t _tracebackOffset );
+        uint32_t getTracebackOffset() const;
+
 #ifdef MENGINE_DEBUG
     public:
         void addLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter );
@@ -139,5 +143,7 @@ namespace Mengine
         typedef Vector<DebugCallDesc> VectorDebugCallFunctions;
         VectorDebugCallFunctions m_debugCallFunctions;
 #endif
+
+        uint32_t m_tracebackOffset;
     };
 }

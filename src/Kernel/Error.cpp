@@ -47,8 +47,7 @@ namespace Mengine
             str_info[size_vsnprintf + 0] = '\n';
             str_info[size_vsnprintf + 1] = '\0';
 
-            LoggerOperator( LM_ERROR, 0, LCOLOR_RED, m_file, m_line )
-                .logMessage( str_info, (size_t)size_vsnprintf + 1 );
+            LoggerOperator( LM_ERROR, 0, LCOLOR_RED, m_file, m_line )( "%s", str_info );
         }
 
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )

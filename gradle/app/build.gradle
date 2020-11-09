@@ -4,7 +4,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'io.sentry.android.gradle'
 
 android {
-    buildToolsVersion '29.0.3'
+    buildToolsVersion '30.0.2'
     compileSdkVersion 30
 
     ext.getBooleanProperty = { name ->

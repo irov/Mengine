@@ -1,5 +1,7 @@
 #include "PythonScriptLogger.h"
 
+#include "Interface/OptionsServiceInterface.h"
+
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
@@ -39,25 +41,40 @@ namespace Mengine
             size_t size;
             const char * str = _kernel->string_to_char_and_size( arg, &size );
 
-            this->write( str, size );
+            m_messageCache.append( str, size );
         }
         else if( _kernel->unicode_check( arg ) == true )
         {
             size_t size;
             const char * utf8 = _kernel->unicode_to_utf8_and_size( arg, &size );
 
-            this->write( utf8, size );
+            m_messageCache.append( utf8, size );
         }
 
-        return _kernel->ret_none();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::write( const Char * _msg, uint32_t _size )
-    {
+        if( m_messageCache.find( '\n' ) == String::npos )
+        {
+            return _kernel->ret_none();
+        }
+
         ELoggerLevel level = this->getVerboseLevel();
         uint32_t color = this->getColor();
 
-        LOGGER_VERBOSE_LEVEL( level, color, "Python", 0 ).logMessage( _msg, _size );
+        if( HAS_OPTION( "tracescriptlog" ) == true )
+        {
+            char function[256];
+            uint32_t lineno;
+            _kernel->get_traceback_function( function, 256, &lineno );
+
+            LOGGER_VERBOSE_LEVEL( level, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );            
+        }
+        else
+        {
+            LOGGER_VERBOSE_LEVEL( level, color, nullptr, 0 ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
+        }
+
+        m_messageCache.clear();
+
+        return _kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptLogger::setSoftspace( int32_t _softspace )

@@ -6,6 +6,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/AllocatorHelper.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "cURLScriptEmbedding.h"

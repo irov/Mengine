@@ -46,7 +46,7 @@ namespace Mengine
 
         const DWORD * dx_source = m_memory->getBuffer();
 
-        LOGGER_INFO( "compile vertex shader '%s'"
+        LOGGER_INFO( "render", "compile vertex shader '%s'"
             , this->getName().c_str()
         );
 

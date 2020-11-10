@@ -283,7 +283,7 @@ namespace Mengine
 
         m_textures.emplace( fileGroupName, _filePath, texture_ptr );
 
-        LOGGER_INFO( "cache texture '%s:%s'"
+        LOGGER_INFO( "texture", "cache texture '%s:%s'"
             , fileGroupName.c_str()
             , _filePath.c_str()
         );

@@ -47,7 +47,7 @@ namespace Mengine
             for( HashType i = 0; i != _len; ++i )
             {
                 const HashType b2 = *p++;
-                const HashType x2 = xmul12864( 1000003ULL, x );
+                const HashType x2 = Helper::xmul12864( 1000003ULL, x );
 
                 x = x2 ^ b2;
             }

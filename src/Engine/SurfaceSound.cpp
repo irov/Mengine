@@ -194,7 +194,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "[surface] sound play '%s' resource '%s' file '%s'"
+        LOGGER_INFO( "sound", "[surface] sound play '%s' resource '%s' file '%s'"
             , this->getName().c_str()
             , m_resourceSound->getName().c_str()
             , Helper::getResourceFilePath( m_resourceSound ).c_str()

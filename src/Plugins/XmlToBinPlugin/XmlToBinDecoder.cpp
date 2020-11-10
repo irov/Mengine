@@ -255,7 +255,7 @@ namespace Mengine
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
-        LOGGER_INFO( "\nxml %s\nbin %s"
+        LOGGER_INFO( "convert", "\nxml %s\nbin %s"
             , m_options.pathXml.c_str()
             , m_options.pathBin.c_str()
         );

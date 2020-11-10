@@ -64,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void XlsScriptLogger::write( const Char * _msg, uint32_t _size )
     {
-        LOGGER_VERBOSE_LEVEL( m_level, m_color, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ).logMessage( _msg, _size );
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), m_level, m_color, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ).logMessage( _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsScriptLogger::setSoftspace( int32_t _softspace )

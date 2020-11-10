@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "create converter '%s'"
+        LOGGER_INFO( "convert", "create converter '%s'"
             , _type.c_str()
         );
 
@@ -57,7 +57,7 @@ namespace Mengine
 
         if( converter->initialize() == false )
         {
-            LOGGER_INFO( "invalid initialize converter '%s'"
+            LOGGER_INFO( "convert", "invalid initialize converter '%s'"
                 , _type.c_str()
             );
 

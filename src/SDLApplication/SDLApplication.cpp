@@ -113,7 +113,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeFileService_()
     {
-        LOGGER_INFO( "Initialize SDL file group..." );
+        LOGGER_INFO( "application", "Initialize SDL file group..." );
 
         PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FUNCTION );
 
@@ -269,11 +269,14 @@ namespace Mengine
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;
 
+        ConstString APPLICATION_TITLE = STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" );
+
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
-            ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
+            ->hasTextEntry( APPLICATION_TITLE, &entry ) == false )
         {
-            LOGGER_INFO( "Application not setup title 'APPLICATION_TITLE'"
+            LOGGER_INFO( "application", "Application not setup title '%s'"
+                , APPLICATION_TITLE.c_str()
             );
         }
         else

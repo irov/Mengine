@@ -601,7 +601,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerEntityGenerator_()
     {
-        LOGGER_INFO( "Register Entity Generator..." );
+        LOGGER_INFO( "system", "Register Entity Generator..." );
 
         EntityPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<EntityPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -616,7 +616,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerSceneGenerator_()
     {
-        LOGGER_INFO( "Register Scene Generator..." );
+        LOGGER_INFO( "system", "Register Scene Generator..." );
 
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -631,7 +631,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterEntityGenerator_()
     {
-        LOGGER_INFO( "Unregister Entity Generator..." );
+        LOGGER_INFO( "system", "Unregister Entity Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none() );
@@ -639,7 +639,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()
     {
-        LOGGER_INFO( "Unregister Scene Generator..." );
+        LOGGER_INFO( "system", "Unregister Scene Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none() );
@@ -647,7 +647,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerArrowGenerator_()
     {
-        LOGGER_INFO( "Register Arrow Generator..." );
+        LOGGER_INFO( "system", "Register Arrow Generator..." );
 
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ArrowPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -662,7 +662,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterArrowGenerator_()
     {
-        LOGGER_INFO( "Unregister Arrow Generator..." );
+        LOGGER_INFO( "system", "Unregister Arrow Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none() );
@@ -670,7 +670,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
     {
-        LOGGER_INFO( "Register Resource Type..." );
+        LOGGER_INFO( "system", "Register Resource Type..." );
 
 #define ADD_PROTOTYPE( Type )\
         if( PROTOTYPE_SERVICE()\
@@ -702,7 +702,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseResourceTypes_()
     {
-        LOGGER_INFO( "Initializing Resource Type..." );
+        LOGGER_INFO( "system", "Initializing Resource Type..." );
 
 #define REMOVE_PROTOTYPE( Type )\
         PROTOTYPE_SERVICE()\
@@ -810,7 +810,7 @@ namespace Mengine
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
 
-        LOGGER_INFO( "load game resource tags '%s'"
+        LOGGER_INFO( "system", "load game resource tags '%s'"
             , Helper::tagsToString( platformTags ).c_str()
         );
 
@@ -1252,14 +1252,14 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open %s%s"
                     , _folder
                     , _filePath
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming %s%s"
                     , _folder
                     , _filePath
                     );
@@ -1272,7 +1272,7 @@ namespace Mengine
 
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%" PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1280,7 +1280,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%" PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1422,7 +1422,7 @@ namespace Mengine
 
         m_focus = _focus;
 
-        LOGGER_INFO( "focus %d (freeze %d)"
+        LOGGER_INFO( "system", "focus %d (freeze %d)"
             , m_focus
             , m_freeze
         );
@@ -1448,7 +1448,7 @@ namespace Mengine
 
         m_freeze = _freeze;
 
-        LOGGER_INFO( "freeze %d (focus %d)"
+        LOGGER_INFO( "system", "freeze %d (focus %d)"
             , m_freeze
             , m_focus
         );
@@ -1760,7 +1760,7 @@ namespace Mengine
         uint32_t width = _resolution.getWidth();
         uint32_t height = _resolution.getHeight();
 
-        LOGGER_INFO( "resolution [%u %u]"
+        LOGGER_INFO( "system", "resolution [%u %u]"
             , width
             , height
         );
@@ -2226,5 +2226,6 @@ namespace Mengine
     {
         m_debugPause = _pause;
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

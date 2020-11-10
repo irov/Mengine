@@ -339,7 +339,7 @@ namespace Mengine
 
         if( hasGlobalAccount == false )
         {
-            LOGGER_INFO( "game create global account" );
+            LOGGER_INFO( "game", "game create global account" );
 
             EVENTABLE_METHOD( EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
                 ->onGameCreateGlobalAccount();
@@ -350,13 +350,13 @@ namespace Mengine
 
         if( hasCurrentAccount == false )
         {
-            LOGGER_INFO( "game create default account" );
+            LOGGER_INFO( "game", "game create default account" );
 
             EVENTABLE_METHOD( EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
                 ->onGameCreateDefaultAccount();
         }
 
-        LOGGER_INFO( "game load accounts" );
+        LOGGER_INFO( "game", "game load accounts" );
 
         EVENTABLE_METHOD( EVENT_GAME_LOAD_ACCOUNTS )
             ->onGameLoadAccounts();

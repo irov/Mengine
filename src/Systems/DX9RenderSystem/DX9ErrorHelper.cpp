@@ -77,7 +77,7 @@ namespace Mengine
 
         const Char * message = Helper::getDX9ErrorMessage( _hr );
 
-        LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("[DX9] file '%s' line %u call '%s' get error: %s (hr:%x)"
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("[DX9] file '%s' line %u call '%s' get error: %s (hr:%x)"
             , m_file
             , m_line
             , m_method
@@ -87,4 +87,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

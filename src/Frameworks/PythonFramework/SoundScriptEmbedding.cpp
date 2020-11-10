@@ -247,7 +247,7 @@ namespace Mengine
                     , _resourceName.c_str()
                     );
 
-                LOGGER_INFO( "[script] sound play resource '%s' file '%s'"
+                LOGGER_INFO( "sound", "[script] sound play resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
@@ -273,7 +273,7 @@ namespace Mengine
                     , _resourceName.c_str()
                     );
 
-                LOGGER_INFO( "[script] voice play resource '%s' file '%s'"
+                LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
@@ -326,7 +326,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                LOGGER_INFO( "[script] voice play resource '%s' file '%s' from position '%f'"
+                LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s' from position '%f'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                     , _position
@@ -459,7 +459,7 @@ namespace Mengine
                     , _resourceName.c_str()
                     );
 
-                LOGGER_INFO( "[script] sound fade out resource '%s' file '%s'"
+                LOGGER_INFO( "sound", "[script] sound fade out resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );
@@ -533,7 +533,7 @@ namespace Mengine
                     , _resourceName.c_str()
                     );
 
-                LOGGER_INFO( "[script] sound fade out to resource '%s' file '%s'"
+                LOGGER_INFO( "sound", "[script] sound fade out to resource '%s' file '%s'"
                     , _resourceName.c_str()
                     , Helper::getResourceFilePathByName( _resourceName ).c_str()
                 );

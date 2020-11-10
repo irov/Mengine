@@ -89,7 +89,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "Settings load... %s:%s"
+        LOGGER_INFO( "settings", "Settings load... %s:%s"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -106,7 +106,7 @@ namespace Mengine
 
         for( const String & setting : settingSettings )
         {
-            LOGGER_INFO( "setting load '%s'"
+            LOGGER_INFO( "settings", "setting load '%s'"
                 , setting.c_str()
             );
 

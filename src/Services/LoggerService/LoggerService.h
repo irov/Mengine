@@ -40,7 +40,7 @@ namespace Mengine
         size_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const override;
 
     public:
-        bool validMessage( ELoggerLevel _level, uint32_t _flag ) const override;
+        bool validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _flag ) const override;
 
     public:
         void logMessage( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size ) override;
@@ -63,12 +63,15 @@ namespace Mengine
         uint32_t m_verboseFlag;
         bool m_silent;
 
+        typedef Vector<ConstString> VectorVerboses;
+        VectorVerboses m_verboses;
+
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
 
         ThreadMutexInterfacePtr m_mutex;
 
-        uint32_t m_countMessage[__LM_MAX__];
+        uint32_t m_countMessage[__LM_MAX__] = {0};
 
         struct Record
         {

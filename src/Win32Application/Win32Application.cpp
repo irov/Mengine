@@ -86,12 +86,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeFileService_()
     {
-        LOGGER_INFO( "Inititalizing File Service..." );
+        LOGGER_INFO( "system", "Inititalizing File Service..." );
 
-        LOGGER_INFO( "Initialize Win32 file group..." );
+        LOGGER_INFO( "system", "Initialize Win32 file group..." );
         PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
 
-        Char currentPath[MENGINE_MAX_PATH] = { '\0' };
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
@@ -103,7 +103,7 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE_RELEASE( "Current Path: %s"
-            , currentPath 
+            , currentPath
         );
 
         if( FILE_SERVICE()
@@ -294,14 +294,18 @@ namespace Mengine
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;
 
+        ConstString APPLICATION_TITLE = STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" );
+
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
-            ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
+            ->hasTextEntry( APPLICATION_TITLE, &entry ) == false )
         {
-            LOGGER_INFO( "Application not setup title 'APPLICATION_TITLE'" );
+            LOGGER_INFO( "system", "Application not setup title '%s'"
+                , APPLICATION_TITLE.c_str()
+            );
         }
         else
-        {   
+        {
             projectTitle = entry->getValue( &projectTitleLen );
         }
 

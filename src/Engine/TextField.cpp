@@ -35,6 +35,7 @@ namespace Mengine
         , m_autoScaleFactor( 1.f )
         , m_lineOffset( 0.f )
         , m_charOffset( 0.f )
+        , m_anchorPercent( 0.f, 0.f )
         , m_fontParams( EFP_NONE )
         , m_maxCharCount( MENGINE_UNKNOWN_SIZE )
         , m_charCount( 0 )
@@ -489,6 +490,18 @@ namespace Mengine
     bool TextField::getAnchorVerticalAlign() const
     {
         return m_anchorVerticalAlign;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setAnchorPercent( const mt::vec2f & _anchorPercent )
+    {
+        m_anchorPercent = _anchorPercent;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & TextField::getAnchorPercent() const
+    {
+        return m_anchorPercent;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setWrap( bool _wrap )
@@ -1429,6 +1442,8 @@ namespace Mengine
             }
         }
 
+        offset -= m_textSize.y * m_anchorPercent.y;
+
         return offset;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1501,6 +1516,8 @@ namespace Mengine
                 }
             }break;
         }
+
+        offset -= m_textSize.x * m_anchorPercent.x;
 
         return offset;
     }

@@ -52,6 +52,10 @@ namespace Mengine
         bool getAnchorVerticalAlign() const;
 
     public:
+        void setAnchorPercent( const mt::vec2f & _anchorPercent );
+        const mt::vec2f & getAnchorPercent() const;
+
+    public:
         void setWrap( bool _wrap );
         bool getWrap() const;
 
@@ -246,6 +250,8 @@ namespace Mengine
         float m_lineOffset;
         float m_charOffset;
 
+        mt::vec2f m_anchorPercent;
+
         Color m_colorFont;
 
         uint32_t m_fontParams;
@@ -348,4 +354,5 @@ namespace Mengine
 
         this->invalidateTextLines();
     }
+    //////////////////////////////////////////////////////////////////////////
 }

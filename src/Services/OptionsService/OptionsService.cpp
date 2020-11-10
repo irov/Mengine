@@ -9,6 +9,8 @@
 
 #include <algorithm>
 
+#include <ctype.h>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 //////////////////////////////////////////////////////////////////////////
@@ -177,7 +179,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL( std::count_if( op.key, op.key + MENGINE_STRLEN( op.key ), []( Char _ch )
             {
-                return std::isupper( _ch ) != 0;
+                return ::isupper( _ch ) != 0;
             } ) == 0 );
 
             m_options.push_back( op );
@@ -190,7 +192,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return std::isupper( _ch ) != 0;
+            return ::isupper( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -210,7 +212,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return std::isupper( _ch ) != 0;
+            return ::isupper( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -259,7 +261,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return std::isupper( _ch ) != 0;
+            return ::isupper( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -290,7 +292,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return std::isupper( _ch ) != 0;
+            return ::isupper( _ch ) != 0;
         } ) == 0 );
 
         if( this->hasOption( _key ) == false )

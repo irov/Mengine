@@ -664,6 +664,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::calcTotalTextSize( mt::vec2f * _textSize ) const
+    {
+        *_textSize = m_textSize * m_autoScaleFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const
     {
         if( m_wrap == false )

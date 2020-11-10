@@ -185,8 +185,6 @@ namespace Mengine
         float fontHeight = _font->getFontHeight();
         //float fontAscent = _font->getFontAscent();
 
-        float charScale = this->calcCharScale();
-
         EMaterial materialId = EM_DEBUG;
 
         bool premultiply = _font->getFontPremultiply();
@@ -283,6 +281,10 @@ namespace Mengine
 
         mt::vec2f offset = base_offset;
 
+        float charScale = this->calcCharScale();
+
+        float charScaleTotal = charScale * m_autoScaleFactor;
+
         for( const VectorTextLines2 & lines2 : layouts )
         {
             float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
@@ -303,7 +305,7 @@ namespace Mengine
                     {
                         if( cd.texture == nullptr )
                         {
-                            line.advanceCharOffset( cd, charScale * m_autoScaleFactor, &offset2 );
+                            line.advanceCharOffset( cd, charScaleTotal, &offset2 );
 
                             continue;
                         }
@@ -314,7 +316,7 @@ namespace Mengine
                         {
                             RenderVertex2D v;
 
-                            line.calcCharPosition( cd, offset2, charScale * m_autoScaleFactor, i, &v.position );
+                            line.calcCharPosition( cd, offset2, charScaleTotal, i, &v.position );
 
                             v.color = argb;
                             v.uv[0] = cd.uv[i];
@@ -322,7 +324,7 @@ namespace Mengine
                             _vertexData->emplace_back( v );
                         }
 
-                        line.advanceCharOffset( cd, charScale * m_autoScaleFactor, &offset2 );
+                        line.advanceCharOffset( cd, charScaleTotal, &offset2 );
 
                         RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FORWARD );
 
@@ -664,7 +666,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::calcTotalTextSize( mt::vec2f * _textSize ) const
+    void TextField::calcTotalTextSize( mt::vec2f * const _textSize ) const
     {
         *_textSize = m_textSize * m_autoScaleFactor;
     }
@@ -1447,8 +1449,6 @@ namespace Mengine
             }
         }
 
-        offset -= m_textSize.y * m_anchorPercent.y;
-
         return offset;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1521,8 +1521,6 @@ namespace Mengine
                 }
             }break;
         }
-
-        offset -= m_textSize.x * m_anchorPercent.x;
 
         return offset;
     }
@@ -2017,10 +2015,30 @@ namespace Mengine
         this->calcTotalColor( &colorNode );
 
         this->updateVertexData_( _font, colorNode, &m_vertexDataText );
+
+        if( m_anchorPercent.x != 0.f || m_anchorPercent.y != 0.f )
+        {
+            mt::box2f box;
+            mt::insideout_box( box );
+
+            for( const RenderVertex2D & vertex : m_vertexDataText )
+            {
+                mt::add_internal_point( box, vertex.position.x, vertex.position.y );
+            }
+
+            mt::vec2f anchor = (box.maximum - box.minimum) * m_anchorPercent;
+
+            for( RenderVertex2D & vertex : m_vertexDataText )
+            {
+                vertex.position.x -= anchor.x;
+                vertex.position.y -= anchor.y;
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr TextField::_updateMaterial() const
     {
         return nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

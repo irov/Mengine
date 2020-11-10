@@ -916,6 +916,15 @@ namespace Mengine
                 .def( "setAutoScale", &TextField::setAutoScale )
                 .def( "getAutoScale", &TextField::getAutoScale )
 
+                .def( "setAnchorHorizontalAlign", &TextField::setAnchorHorizontalAlign )
+                .def( "getAnchorHorizontalAlign", &TextField::getAnchorHorizontalAlign )
+
+                .def( "setAnchorVerticalAlign", &TextField::setAnchorVerticalAlign )
+                .def( "getAnchorVerticalAlign", &TextField::getAnchorVerticalAlign )
+
+                .def( "setAnchorPercent", &TextField::setAnchorPercent )
+                .def( "getAnchorPercent", &TextField::getAnchorPercent )
+
                 .def_deprecated( "setCenterAlign", &TextField::setHorizontalCenterAlign, "use setHorizontalCenterAlign" )
                 .def_deprecated( "isCenterAlign", &TextField::isHorizontalCenterAlign, "use isHorizontalCenterAlign" )
                 .def_deprecated( "setRightAlign", &TextField::setHorizontalRightAlign, "use setHorizontalRightAlign" )

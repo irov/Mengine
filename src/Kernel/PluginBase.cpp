@@ -98,7 +98,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_INITIALIZE, pluginName );
 
-        LOGGER_INFO( "plugin '%s' initialize"
+        LOGGER_INFO( "plugin", "plugin '%s' initialize"
             , this->getPluginName()
         );
 
@@ -132,7 +132,7 @@ namespace Mengine
 
         m_moduleFactories.clear();
 
-        LOGGER_INFO( "plugin '%s' finalize"
+        LOGGER_INFO( "plugin", "plugin '%s' finalize"
             , this->getPluginName()
         );
     }

@@ -47,7 +47,7 @@ namespace Mengine
 
             const Char * err_str = glGetErrorString( err );
 
-            LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LCOLOR_RED, nullptr, 0 )("%s:[%d] error %s:%d"
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), Mengine::LM_ERROR, Mengine::LCOLOR_RED, nullptr, 0 )("%s:[%d] error %s:%d"
                 , _file
                 , _line
                 , err_str
@@ -56,5 +56,6 @@ namespace Mengine
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

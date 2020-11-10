@@ -98,7 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const
     {
-        LOGGER_INFO( "load bin '%s:%s'"
+        LOGGER_INFO( "load", "load bin '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );

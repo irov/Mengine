@@ -108,7 +108,7 @@ namespace Mengine
     {
         if( ++m_compileReferenceCount == 1 )
         {
-            LOGGER_INFO( "compile '%s:%s'"
+            LOGGER_INFO( "resource", "compile '%s:%s'"
                 , this->getType().c_str()
                 , this->getName().c_str()
             );
@@ -135,7 +135,7 @@ namespace Mengine
 
         if( --m_compileReferenceCount == 0 )
         {
-            LOGGER_INFO( "release '%s:%s'"
+            LOGGER_INFO( "resource", "release '%s:%s'"
                 , this->getType().c_str()
                 , this->getName().c_str()
             );
@@ -226,4 +226,5 @@ namespace Mengine
             m_resourceBank->destroyResource( this );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

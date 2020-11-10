@@ -57,7 +57,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "Packages load... %s:%s"
+        LOGGER_INFO( "package", "Packages load... %s:%s"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -404,7 +404,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::enablePackages( const ConstString & _locale, const Tags & _platformTags )
     {
-        LOGGER_INFO( "Packages enable..." );
+        LOGGER_INFO( "package", "Packages enable..." );
 
         VectorPackages packages;
 

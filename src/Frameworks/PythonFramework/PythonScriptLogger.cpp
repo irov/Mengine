@@ -57,7 +57,7 @@ namespace Mengine
         ELoggerLevel level = this->getVerboseLevel();
         uint32_t color = this->getColor();
 
-        LOGGER_VERBOSE_LEVEL( level, color, "Python", 0 ).logMessage( _msg, _size );
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), level, color, "Python", 0 ).logMessage( _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptLogger::setSoftspace( int32_t _softspace )

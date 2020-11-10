@@ -744,7 +744,7 @@ namespace Mengine
                         return false;
                     }
 
-                    LOGGER_INFO( "set current scene '%s'"
+                    LOGGER_INFO( "scene", "set current scene '%s'"
                         , _name.c_str()
                     );
 
@@ -800,7 +800,7 @@ namespace Mengine
                         return false;
                     }
 
-                    LOGGER_INFO( "set current scene '%s'"
+                    LOGGER_INFO( "scene", "set current scene '%s'"
                         , _name.c_str()
                     );
 

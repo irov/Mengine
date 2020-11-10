@@ -8,6 +8,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/String.h"
 #include "Kernel/StringRegex.h"
 #include "Kernel/BuildMode.h"
@@ -28,10 +29,6 @@ namespace Mengine
         , m_silent( false )
         , m_historically( MENGINE_WINDOWS_DEBUG_VALUE( true, false ) )
     {
-        for( uint32_t i = 0; i != __LM_MAX__; ++i )
-        {
-            m_countMessage[i] = 0;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerService::~LoggerService()
@@ -112,6 +109,18 @@ namespace Mengine
 
         this->setVerboseFlag( verboseFlag );
 
+        const Char * verboses[16];
+        uint32_t verboses_count;
+        OPTIONS_SERVICE()
+            ->getOptionValues( "verboses", verboses, &verboses_count );
+
+        for( uint32_t index = 0; index != verboses_count; ++index )
+        {
+            const Char * verbose = verboses[index];
+
+            m_verboses.emplace_back( Helper::stringizeString( verbose ) );
+        }
+
         if( HAS_OPTION( "loghistory" ) == true )
         {
             m_historically = true;
@@ -127,7 +136,7 @@ namespace Mengine
         const Char * loggerLevel = loggerLevels[level];
 
         Char loggerLevelMessage[256] = {'\0'};
-        size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 255, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]\n"
+        int32_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 255, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]\n"
             , loggerLevel
             , developmentMode == true ? "Dev" : "Normal"
             , MENGINE_DEBUG_VALUE( "True", "False" )
@@ -182,6 +191,7 @@ namespace Mengine
         }
 
         m_loggers.clear();
+        m_verboses.clear();
         m_history.clear();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -280,7 +290,7 @@ namespace Mengine
         return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerService::validMessage( ELoggerLevel _level, uint32_t _flag ) const
+    bool LoggerService::validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _flag ) const
     {
         if( m_silent == true )
         {
@@ -289,7 +299,15 @@ namespace Mengine
 
         if( m_verboseLevel < _level )
         {
-            return false;
+            if( _category == ConstString::none() )
+            {
+                return false;
+            }
+
+            if( std::find( m_verboses.begin(), m_verboses.end(), _category ) == m_verboses.end() )
+            {
+                return false;
+            }
         }
 
         if( _flag == 0 )

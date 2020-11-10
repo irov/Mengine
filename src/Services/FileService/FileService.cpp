@@ -101,7 +101,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "mount file group '%s' path '%s' type '%s'"
+        LOGGER_INFO( "file", "mount file group '%s' path '%s' type '%s'"
             , _name.c_str()
             , _filePath.c_str()
             , _type.c_str()

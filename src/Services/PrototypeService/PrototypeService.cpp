@@ -71,7 +71,7 @@ namespace Mengine
 
         m_generators.emplace( _category, _prototype, _generator );
 
-        LOGGER_INFO( "add '%s:%s'"
+        LOGGER_INFO( "prototype", "add '%s:%s'"
             , _category.c_str()
             , _prototype.c_str()
         );

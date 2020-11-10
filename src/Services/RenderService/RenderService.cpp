@@ -131,7 +131,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "render", "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -211,7 +211,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createNullTexture_()
     {
-        LOGGER_INFO( "create null texture" );
+        LOGGER_INFO( "render", "create null texture" );
 
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
@@ -278,7 +278,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createWhitePixelTexture_()
     {
-        LOGGER_INFO( "create white pixel texture" );
+        LOGGER_INFO( "render", "create white pixel texture" );
 
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
@@ -351,7 +351,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "render", "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()

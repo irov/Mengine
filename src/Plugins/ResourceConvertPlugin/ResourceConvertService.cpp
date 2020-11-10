@@ -56,7 +56,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_INFO( "convert resource '%s' type '%s' group '%s' file locale '%s' converter '%s'"
+        LOGGER_INFO( "convert", "convert resource '%s' type '%s' group '%s' file locale '%s' converter '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()

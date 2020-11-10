@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/ServiceInterface.h"
 #include "Interface/LoggerInterface.h"
+
+#include "Kernel/ConstString.h"
+
+#include "Config/Typedef.h"
 
 namespace Mengine
 {
@@ -28,7 +30,7 @@ namespace Mengine
         virtual size_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const = 0;
 
     public:
-        virtual bool validMessage( ELoggerLevel _level, uint32_t _flag ) const = 0;
+        virtual bool validMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _flag ) const = 0;
 
     public:
         virtual void logMessage( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size ) = 0;

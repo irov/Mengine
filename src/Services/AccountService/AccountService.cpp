@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::_initializeService()
     {
-        LOGGER_INFO( "Initializing Account manager..." );
+        LOGGER_INFO( "account", "Initializing Account manager..." );
 
         m_factoryAccounts = Helper::makeFactoryPool<Account, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -132,7 +132,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
-        LOGGER_INFO( "create global account %s"
+        LOGGER_INFO( "account", "create global account '%s'"
             , accountID.c_str()
         );
 
@@ -414,7 +414,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::setGlobalAccount( const ConstString & _accountID )
     {
-        LOGGER_INFO( "set global account %s"
+        LOGGER_INFO( "account", "set global account '%s'"
             , _accountID.c_str()
         );
 
@@ -523,14 +523,14 @@ namespace Mengine
 
         if( config->hasValue( "SETTINGS", "GlobalAccountID", &m_globalAccountID ) == false )
         {
-            LOGGER_INFO( "get GlobalAccountID failed '%s'"
+            LOGGER_INFO( "account", "get GlobalAccountID failed '%s'"
                 , accountsPath.c_str()
             );
         }
 
         if( config->hasValue( "SETTINGS", "DefaultAccountID", &m_defaultAccountID ) == false )
         {
-            LOGGER_INFO( "get DefaultAccountID failed '%s'"
+            LOGGER_INFO( "account", "get DefaultAccountID failed '%s'"
                 , accountsPath.c_str()
             );
         }
@@ -538,7 +538,7 @@ namespace Mengine
         ConstString selectAccountID;
         if( config->hasValue( "SETTINGS", "SelectAccountID", &selectAccountID ) == false )
         {
-            LOGGER_INFO( "get SelectAccountID failed '%s'"
+            LOGGER_INFO( "account", "get SelectAccountID failed '%s'"
                 , accountsPath.c_str()
             );
         }
@@ -589,7 +589,7 @@ namespace Mengine
 
         if( selectAccountID.empty() == false )
         {
-            LOGGER_INFO( "select account '%s'"
+            LOGGER_INFO( "account", "select account '%s'"
                 , selectAccountID.c_str()
             );
 
@@ -604,7 +604,7 @@ namespace Mengine
         }
         else if( m_defaultAccountID.empty() == false )
         {
-            LOGGER_INFO( "set default account '%s'"
+            LOGGER_INFO( "account", "set default account '%s'"
                 , m_defaultAccountID.c_str()
             );
 
@@ -636,7 +636,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_INFO( "invalid set any accounts" );
+            LOGGER_INFO( "account", "invalid set any accounts" );
         }
 
         m_invalidateAccounts = true;

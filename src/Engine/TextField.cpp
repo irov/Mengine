@@ -463,6 +463,8 @@ namespace Mengine
     void TextField::setAutoScale( bool _autoScale )
     {
         m_autoScale = _autoScale;
+
+        this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::getAutoScale() const
@@ -668,6 +670,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::calcTotalTextSize( mt::vec2f * const _textSize ) const
     {
+        if( this->isInvalidateTextLines() == true )
+        {
+            this->updateTextLines_();
+        }
+
         *_textSize = m_textSize * m_autoScaleFactor;
     }
     //////////////////////////////////////////////////////////////////////////

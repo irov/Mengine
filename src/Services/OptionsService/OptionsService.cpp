@@ -232,7 +232,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return std::isupper( _ch ) != 0;
+            return ::isupper( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )

@@ -720,6 +720,7 @@ if(MENGINE_TOOLCHAIN_MSVC)
         add_dependencies(python3 ssl crypto)
         message("================python3_decimal================")
         ADD_SUBDIRECTORY(python3_decimal)
+        add_dependencies(python3_decimal python3)
     endif()
 	
     

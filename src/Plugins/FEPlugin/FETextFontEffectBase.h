@@ -31,7 +31,7 @@ namespace Mengine
         bool compileFEBundle( fe_bundle * _bundle );
 
     protected:
-        bool apply( uint32_t _width, uint32_t _height, uint32_t _rows, uint32_t _pitch, const void * _buffer, uint32_t _channel, int32_t _left, int32_t _top, const LambdaFontEffectProvider & _provider ) override;
+        bool apply( uint32_t _width, uint32_t _rows, uint32_t _pitch, const void * _buffer, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider ) override;
 
     public:
         bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) override;
@@ -46,9 +46,9 @@ namespace Mengine
         uint32_t m_effectSample;
         float m_effectSampleInv;
 
-        uint32_t m_ttfLayoutCount;
+        uint32_t m_layoutCount;
 
-        const fe_node * m_ttfEffectNodes[FE_MAX_PINS] = {nullptr};
+        const fe_node * m_effectNodes[FE_MAX_PINS] = {nullptr};
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FETextFontEffectBase> FETextFontEffectBasePtr;

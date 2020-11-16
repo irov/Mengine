@@ -335,6 +335,7 @@ include_directories(${SOURCE_DIR}/Include/internal)
 
 include_directories(${THIRDPARTY_DIR}/zlib)
 include_directories(${THIRDPARTY_CONFIG_DIR}/zlib)
+include_directories(${THIRDPARTY_CONFIG_DIR}/openssl)
 
 if(WIN32)
   include_directories(

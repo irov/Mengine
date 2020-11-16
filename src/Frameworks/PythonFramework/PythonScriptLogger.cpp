@@ -61,15 +61,15 @@ namespace Mengine
 
         if( HAS_OPTION( "tracescriptlog" ) == true )
         {
-            char function[256];
-            uint32_t lineno;
+            Char function[256] = {'\0'};
+            uint32_t lineno = 0;
             _kernel->get_traceback_function( function, 256, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( level, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );            
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, color, function, lineno ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );            
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( level, color, nullptr, 0 ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
+            LOGGER_VERBOSE_LEVEL( ConstString::none(), level, color, nullptr, 0 ).setNewline( false ).operator()( "%s", m_messageCache.c_str() );
         }
 
         m_messageCache.clear();

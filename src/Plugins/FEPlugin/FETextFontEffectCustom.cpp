@@ -1,13 +1,13 @@
 #include "FETextFontEffectCustom.h"
 
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/Dataflow.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FETextFontEffectCustom::FETextFontEffectCustom()
+        : m_bundle( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -24,14 +24,22 @@ namespace Mengine
 
         fe_bundle * bundle = fe_bundle_load( memory_buffer, (int32_t)memory_size );
 
-        bool successful = this->compileFEBundle( bundle );
+        if( this->compileFEBundle( bundle ) == false )
+        {
+            fe_bundle_free( bundle );
 
-        return successful;
+            return false;
+        }
+
+        m_bundle = bundle;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FETextFontEffectCustom::_release()
     {
-        m_memory = nullptr;
+        fe_bundle_free( m_bundle );
+        m_bundle = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void FETextFontEffectCustom::setFECustom( const MemoryInterfacePtr & _memory )

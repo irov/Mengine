@@ -5,9 +5,9 @@
 #include "Interface/InputHandlerInterface.h"
 
 #include "Kernel/KeyCode.h"
+#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
-
 
 namespace Mengine
 {
@@ -18,7 +18,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalKeyPress( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter );
+        TaskGlobalKeyPress( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentPtr & _doc );
         ~TaskGlobalKeyPress() override;
 
     protected:
@@ -30,6 +30,8 @@ namespace Mengine
         bool m_isDown;
 
         LambdaInputKeyEvent m_filter;
+
+        DocumentPtr m_doc;
 
         uint32_t m_id;
     };

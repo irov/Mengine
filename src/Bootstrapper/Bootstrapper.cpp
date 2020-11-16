@@ -308,7 +308,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper create dynamic priority plugins" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
 
         if( this->createDynamicPriorityPlugins_() == false )
         {
@@ -317,7 +317,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper create dynamic priority dev plugins" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority dev plugins" );
 
         if( this->createDynamicPriorityDevPlugins_() == false )
         {
@@ -326,7 +326,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper create dynamic static plugins" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic static plugins" );
 
         if( this->createStaticPlugins_() == false )
         {
@@ -335,7 +335,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper create dynamic plugins" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic plugins" );
 
         if( this->createDynamicPlugins_() == false )
         {
@@ -344,7 +344,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper create dynamic dev plugins" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic dev plugins" );
 
         if( this->createDynamicDevPlugins_() == false )
         {
@@ -353,7 +353,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper create application" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper create application" );
 
         if( this->createApplication_() == false )
         {
@@ -362,7 +362,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper run modules" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper run modules" );
 
         if( this->runModules_() == false )
         {
@@ -371,7 +371,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper run dev modules" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper run dev modules" );
 
         if( this->runDevModules_() == false )
         {
@@ -380,7 +380,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper create frameworks" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper create frameworks" );
 
         if( this->createFrameworks_() == false )
         {
@@ -389,7 +389,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper run frameworks" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper run frameworks" );
 
         if( this->runFrameworks_() == false )
         {
@@ -400,7 +400,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
 
-        LOGGER_INFO( "bootstrapper initialize game" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper initialize game" );
 
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -413,7 +413,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper load personality" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper load personality" );
 
         if( GAME_SERVICE()
             ->loadPersonality() == false )
@@ -423,7 +423,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper run" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper run" );
 
         return true;
     }
@@ -481,7 +481,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_INFO( "not exist application config '%s'"
+            LOGGER_INFO( "bootstrapper", "not exist application config '%s'"
                 , applicationPath.c_str()
             );
         }
@@ -604,7 +604,7 @@ namespace Mengine
         {
             m_loggerFile = fileLog;
 
-            LOGGER_INFO( "write log to '%s'"
+            LOGGER_INFO( "bootstrapper", "write log to '%s'"
                 , logFilename.c_str()
             );
         }
@@ -664,7 +664,7 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "enable document debug [ON]" );
 #endif
 
-        LOGGER_INFO( "bootstrapper load application ini" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper load application ini" );
 
         if( this->loadApplicationIni_() == false )
         {
@@ -675,14 +675,14 @@ namespace Mengine
 
         Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
 
-        LOGGER_INFO( "bootstrapper mount user file group" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
 
         if( this->mountUserFileGroup_() == false )
         {
             return false;
         }
 
-        LOGGER_INFO( "bootstrapper initialize file logger" );
+        LOGGER_INFO( "bootstrapper", "bootstrapper initialize file logger" );
 
         if( this->initializeFileLogger_() == false )
         {
@@ -690,7 +690,7 @@ namespace Mengine
         }
 
 #define BOOTSTRAPPER_SERVICE_CREATE( Name, Doc )\
-        LOGGER_INFO("bootstrapper create service: " #Name);\
+        LOGGER_INFO("bootstrapper", "bootstrapper create service: " #Name);\
         SERVICE_CREATE(Name, Doc)\
 
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );

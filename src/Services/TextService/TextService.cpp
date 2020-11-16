@@ -590,7 +590,7 @@ namespace Mengine
         font->setName( _fontName );
         font->setType( _fontType );
 
-        LOGGER_INFO( "add font '%s' type '%s' (doc: %s)"
+        LOGGER_INFO( "settings", "add font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()
             , _fontType.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

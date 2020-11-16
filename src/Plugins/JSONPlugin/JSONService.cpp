@@ -3,6 +3,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Logger.h"
@@ -97,13 +98,6 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryJSONStorage );
 
         m_factoryJSONStorage = nullptr;
-
-#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
-        uint32_t report_count = stdex_get_allocator_report_count( "json" );
-        MENGINE_ASSERTION( report_count == 0, "json memleak [%d]"
-            , report_count
-        );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     JSONStorageInterfacePtr JSONService::createStorage( const jpp::object & _json, bool _copy, const DocumentPtr & _doc ) const

@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxModule::_initializeModule()
     {
-        LOGGER_INFO( "Initializing Astralax Module ..." );
+        LOGGER_INFO( "astralax", "Initializing Astralax Module ..." );
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()

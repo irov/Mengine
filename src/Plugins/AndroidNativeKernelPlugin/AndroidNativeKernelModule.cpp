@@ -1,6 +1,6 @@
 #include "AndroidNativeKernelModule.h"
 
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
@@ -8,7 +8,9 @@
 
 #include "Environment/Android/AndroidUtils.h"
 
-#include "pybind/pybind.hpp"
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "pybind/pybind.hpp"
+#endif
 
 #include <jni.h>
 #include <vector>
@@ -26,6 +28,19 @@ extern "C" {
 
         jmethodID_getAndroidId = env->GetStaticMethodID( mActivityClass, "kernelGetAndroidId", "()Ljava/lang/String;" );
     }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL
+    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeKernel_1hasPlugin )(JNIEnv * env, jclass cls, jstring name)
+    {
+        const char * name_str = env->GetStringUTFChars( name, 0 );
+
+        bool exist = PLUGIN_SERVICE()
+            ->hasPlugin(name_str);
+
+        env->ReleaseStringUTFChars( name, name_str );
+
+        return (jboolean)exist;
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -41,9 +56,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeKernelModule::_initializeModule()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::def_functor( kernel, "androidKernelGetAndroidId", this, &AndroidNativeKernelModule::getAndroidId );
+#endif
 
         return true;
     }
@@ -71,4 +88,5 @@ namespace Mengine
 
         return stringValue;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

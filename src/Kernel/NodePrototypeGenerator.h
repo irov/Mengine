@@ -10,6 +10,8 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

@@ -16,6 +16,7 @@
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ResourceHelper.h"
 
 #include "Frameworks/PythonFramework/DocumentTraceback.h"
 
@@ -246,6 +247,11 @@ namespace Mengine
                     , _resourceName.c_str()
                     );
 
+                LOGGER_INFO( "sound", "[script] sound play resource '%s' file '%s'"
+                    , _resourceName.c_str()
+                    , Helper::getResourceFilePathByName( _resourceName ).c_str()
+                );
+
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
@@ -266,6 +272,11 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
                     );
+
+                LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s'"
+                    , _resourceName.c_str()
+                    , Helper::getResourceFilePathByName( _resourceName ).c_str()
+                );
 
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
@@ -314,6 +325,13 @@ namespace Mengine
 
                     return nullptr;
                 }
+
+                LOGGER_INFO( "sound", "[script] voice play resource '%s' file '%s' from position '%f'"
+                    , _resourceName.c_str()
+                    , Helper::getResourceFilePathByName( _resourceName ).c_str()
+                    , _position
+                );
+
 
                 if( SOUND_SERVICE()
                     ->playEmitter( sourceEmitter ) == false )
@@ -441,6 +459,11 @@ namespace Mengine
                     , _resourceName.c_str()
                     );
 
+                LOGGER_INFO( "sound", "[script] sound fade out resource '%s' file '%s'"
+                    , _resourceName.c_str()
+                    , Helper::getResourceFilePathByName( _resourceName ).c_str()
+                );
+
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
@@ -509,6 +532,11 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "can't get resource '%s'"
                     , _resourceName.c_str()
                     );
+
+                LOGGER_INFO( "sound", "[script] sound fade out to resource '%s' file '%s'"
+                    , _resourceName.c_str()
+                    , Helper::getResourceFilePathByName( _resourceName ).c_str()
+                );
 
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )

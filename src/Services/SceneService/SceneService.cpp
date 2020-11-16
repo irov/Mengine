@@ -272,6 +272,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::destroyCurrentScene()
     {
+        if( m_scene == m_globalScene )
+        {
+            LOGGER_ERROR( "block delete global scene" );
+
+            return;
+        }
+
         ScenePtr destroyScene = m_scene;
         m_scene = nullptr;
 

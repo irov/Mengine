@@ -81,11 +81,13 @@
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STRICMP
 #if defined(MENGINE_COMPILER_MSVC)
-#   define MENGINE_STRICMP(a, b) _stricmp(a, b)
+#   define MENGINE_STRICMP(a, b) ::_stricmp(a, b)
 #elif defined(MENGINE_PLATFORM_LINUX) && defined(MENGINE_COMPILER_GCC)
-#   define MENGINE_STRICMP(a, b) strcasecmp(a, b)
+#   define MENGINE_STRICMP(a, b) ::strcasecmp(a, b)
+#elif defined(MENGINE_PLATFORM_ANDROID)
+#   define MENGINE_STRICMP(a, b) ::strcasecmp(a, b)
 #else
-#   define MENGINE_STRICMP(a, b) stricmp(a, b)
+#   define MENGINE_STRICMP(a, b) ::stricmp(a, b)
 #endif
 #endif
 //////////////////////////////////////////////////////////////////////////

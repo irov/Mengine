@@ -8,7 +8,9 @@
 
 #include "Environment/Android/AndroidUtils.h"
 
-#include "pybind/pybind.hpp"
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "pybind/pybind.hpp"
+#endif
 
 #define DEVTODEV_JAVA_PREFIX org_Mengine_Build_DevToDev
 #define DEVTODEV_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(DEVTODEV_JAVA_PREFIX, DevToDevInteractionLayer, function)
@@ -60,6 +62,9 @@ extern "C"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+//////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -94,6 +99,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
     AndroidNativeDevToDevModule::AndroidNativeDevToDevModule()
     {
     }
@@ -104,6 +111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevModule::_initializeModule()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::enum_<EnumDevToDevEventHandler>( kernel, "EnumDevToDevEventHandler" )
@@ -119,6 +127,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidDevToDevOnRealPayment", this, &AndroidNativeDevToDevModule::onRealPayment );
         pybind::def_functor( kernel, "androidDevToDevOnInAppPurchase", this, &AndroidNativeDevToDevModule::onInAppPurchase );
         pybind::def_functor( kernel, "androidDevToDevOnSimpleCustomEvent", this, &AndroidNativeDevToDevModule::onSimpleCustomEvent );
+#endif
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -147,7 +156,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeDevToDevModule::_update( bool _focus )
     {
-        (void)_focus;
+        MENGINE_UNUSED( _focus );
 
         m_eventation.invoke();
     }
@@ -291,4 +300,5 @@ namespace Mengine
 
         return (bool)jReturnValue;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

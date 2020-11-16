@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxPlugin::_initializePlugin()
     {
-        LOGGER_INFO( "Initializing Astralax System..." );
+        LOGGER_INFO( "astralax", "Initializing Astralax System..." );
 
         SERVICE_CREATE( AstralaxService, MENGINE_DOCUMENT_FACTORABLE );
 

@@ -10,11 +10,38 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AllocatorHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 #include "TTFPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"
 #include "TTFDataflow.h"
 
+//////////////////////////////////////////////////////////////////////////
+void * _ft_malloc( size_t _size )
+{
+    void * p = Mengine::Helper::allocateMemory( _size, "ft" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void * _ft_calloc( size_t _count, size_t _size )
+{
+    void * p = Mengine::Helper::callocateMemory( _count, _size, "ft" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void _ft_free( void * _ptr )
+{
+    Mengine::Helper::deallocateMemory( _ptr, "ft" );
+}
+//////////////////////////////////////////////////////////////////////////
+void * _ft_realloc( void * _ptr, size_t _size )
+{
+    void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "ft" );
+
+    return p;
+}
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( TTFAtlasService );
 //////////////////////////////////////////////////////////////////////////
@@ -111,6 +138,8 @@ namespace Mengine
     void TTFPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( TTFAtlasService );
+
+        MENGINE_ASSERTION_ALLOCATOR( "ft" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

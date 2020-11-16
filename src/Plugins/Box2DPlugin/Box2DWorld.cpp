@@ -5,6 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Box2DBody.h"
 #include "Box2DJoint.h"

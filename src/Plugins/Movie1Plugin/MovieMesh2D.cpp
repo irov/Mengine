@@ -164,10 +164,12 @@ namespace Mengine
 
         for( uint32_t i = 0; i != m_vertexCount; ++i )
         {
+            RenderVertex2D & v = m_verticesWM[i];
+
             const mt::vec2f & uv = m_shape->uv[i];
 
-            m_verticesWM[i].uv[0] = uv;
-            m_verticesWM[i].uv[1] = uv;
+            m_resourceImage->correctUVImage( uv, v.uv + 0 );
+            m_resourceImage->correctUVAlpha( uv, v.uv + 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

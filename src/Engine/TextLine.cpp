@@ -31,7 +31,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            GlyphCode glyphChar = (GlyphCode)* it;
+            GlyphCode glyphChar = (GlyphCode)*it;
 
             U32String::const_iterator it_kerning = it;
             std::advance( it_kerning, 1 );
@@ -46,11 +46,6 @@ namespace Mengine
                     , glyphChar
                     , glyphCharNext
                 );
-
-                mt::uv4_from_mask( glyph.uv, mt::vec4f( 0.f, 0.f, 0.f, 0.f ) );
-                glyph.offset = mt::vec2f( 0.f, 0.f );
-                glyph.advance = 0.f;
-                glyph.size = mt::vec2f( 0.f, 0.f );
 
                 successful = false;
 
@@ -99,8 +94,8 @@ namespace Mengine
 
         mt::vec2f offset = _offset + _cd.offset * _charScale;
 
-        const float size_xi[] = { 0.f, size.x, size.x, 0.f };
-        const float size_yi[] = { 0.f, 0.f, size.y, size.y };
+        const float size_xi[] = {0.f, size.x, size.x, 0.f};
+        const float size_yi[] = {0.f, 0.f, size.y, size.y};
 
         float size_x = size_xi[_index];
         float size_y = size_yi[_index];

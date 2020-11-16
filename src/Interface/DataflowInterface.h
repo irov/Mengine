@@ -6,6 +6,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/FilePath.h"
+#include "Kernel/Document.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"

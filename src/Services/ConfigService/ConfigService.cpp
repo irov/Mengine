@@ -74,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "load config '%s:%s' (doc: %s)"
+        LOGGER_INFO( "config", "load config '%s:%s' (doc: %s)"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
@@ -106,7 +106,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "load default config '%s'"
+        LOGGER_INFO( "config", "load default config '%s'"
             , _filePath.c_str()
         );
 

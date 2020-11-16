@@ -9,6 +9,8 @@
 
 #include <algorithm>
 
+#include <ctype.h>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 //////////////////////////////////////////////////////////////////////////
@@ -30,7 +32,7 @@ namespace Mengine
         {
             for( const Option & option : m_options )
             {
-                if( MENGINE_STRLEN( option.value ) == 0 )
+                if( option.value_count == 0 )
                 {
                     LOGGER_MESSAGE_RELEASE( "option: -%s"
                         , option.key
@@ -38,10 +40,28 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_MESSAGE_RELEASE( "option: -%s=%s"
-                        , option.key
-                        , option.value
-                    );
+                    if( option.value_count == 1 )
+                    {
+                        LOGGER_MESSAGE_RELEASE( "option: -%s=%s"
+                            , option.key
+                            , option.value[0]
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_MESSAGE_RELEASE_WN( "option: -%s="
+                            , option.key
+                        );
+
+                        for( uint32_t index = 0; index != option.value_count; ++index )
+                        {
+                            LOGGER_MESSAGE_RELEASE_WN( "%s|"
+                                , option.value[index]
+                            );
+                        }
+
+                        LOGGER_MESSAGE_RELEASE( "\n" );
+                    }
                 }
             }
 
@@ -91,7 +111,8 @@ namespace Mengine
 
                 MENGINE_STRCPY( op.key, option_key_str );
 
-                op.value[0] = '\0';
+                op.value[0][0] = '\0';
+                op.value_count = 0;
             }
             else
             {
@@ -105,13 +126,61 @@ namespace Mengine
                 MENGINE_STRNCPY( op.key, option_key_str, key_size );
                 op.key[key_size] = '\0';
 
-                if( MENGINE_STRLEN( option_value_str + 1 ) >= MENGINE_OPTIONS_VALUE_SIZE )
-                {
-                    return false;
-                }
+                const Char * option_delim_str = MENGINE_STRCHR( option_key_str, '|' );
 
-                MENGINE_STRCPY( op.value, option_value_str + 1 );
+                if( option_delim_str == nullptr )
+                {
+                    if( MENGINE_STRLEN( option_value_str + 1 ) >= MENGINE_OPTIONS_VALUE_SIZE )
+                    {
+                        return false;
+                    }
+
+                    MENGINE_STRCPY( op.value[0], option_value_str + 1 );
+                    op.value_count = 1;
+                }
+                else
+                {
+                    op.value_count = 0;
+
+                    for( ;;)
+                    {
+                        size_t value_size = option_delim_str - (option_value_str + 1);
+
+                        if( value_size >= MENGINE_OPTIONS_VALUE_SIZE )
+                        {
+                            return false;
+                        }
+
+                        MENGINE_STRNCPY( op.value[op.value_count], option_value_str + 1, value_size );
+                        ++op.value_count;
+
+                        const Char * option_delim_test_str = MENGINE_STRCHR( option_delim_str + 1, '|' );
+
+                        if( option_delim_test_str != nullptr )
+                        {
+                            option_delim_str = option_delim_test_str;
+
+                            continue;
+                        }
+
+                        if( MENGINE_STRLEN( option_delim_str + 1 ) >= MENGINE_OPTIONS_VALUE_SIZE )
+                        {
+                            return false;
+                        }
+
+                        MENGINE_STRCPY( op.value[op.value_count], option_delim_str + 1 );
+                        ++op.value_count;
+
+                        break;
+                    }
+                        
+                }
             }
+
+            MENGINE_ASSERTION_FATAL( std::count_if( op.key, op.key + MENGINE_STRLEN( op.key ), []( Char _ch )
+            {
+                return ::isupper( _ch ) != 0;
+            } ) == 0 );
 
             m_options.push_back( op );
         }
@@ -123,7 +192,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
         {
-            return isalpha( _ch ) == 1;
+            return ::isupper( _ch ) != 0;
         } ) == 0 );
 
         for( const Option & op : m_options )
@@ -141,6 +210,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Char * OptionsService::getOptionValue( const Char * _key, const Char * _default ) const
     {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return ::isupper( _ch ) != 0;
+        } ) == 0 );
+
         for( const Option & op : m_options )
         {
             if( MENGINE_STRCMP( op.key, _key ) != 0 )
@@ -148,14 +222,48 @@ namespace Mengine
                 continue;
             }
 
-            return op.value;
+            return op.value[0];
         }
 
         return _default;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool OptionsService::getOptionValues( const Char * _key, const Char ** _values, uint32_t * _count ) const
+    {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return ::isupper( _ch ) != 0;
+        } ) == 0 );
+
+        for( const Option & op : m_options )
+        {
+            if( MENGINE_STRCMP( op.key, _key ) != 0 )
+            {
+                continue;
+            }
+
+            for( uint32_t index = 0; index != op.value_count; ++index )
+            {
+                _values[index] = op.value[index];
+            }
+
+            *_count = op.value_count;
+
+            return true;
+        }
+
+        *_count = 0;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t OptionsService::getOptionUInt32( const Char * _key, uint32_t _default ) const
     {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return ::isupper( _ch ) != 0;
+        } ) == 0 );
+
         for( const Option & op : m_options )
         {
             if( MENGINE_STRCMP( op.key, _key ) != 0 )
@@ -164,7 +272,7 @@ namespace Mengine
             }
 
             uint32_t value_uint32;
-            if( Helper::stringalized( op.value, &value_uint32 ) == false )
+            if( Helper::stringalized( op.value[0], &value_uint32 ) == false )
             {
                 LOGGER_ERROR( "option '%s' invalid cast to uint32_t value '%s'"
                     , _key
@@ -182,6 +290,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
     {
+        MENGINE_ASSERTION_FATAL( std::count_if( _key, _key + MENGINE_STRLEN( _key ), []( Char _ch )
+        {
+            return ::isupper( _ch ) != 0;
+        } ) == 0 );
+
         if( this->hasOption( _key ) == false )
         {
             return false;

@@ -35,6 +35,7 @@ public class MengineActivity extends SDLActivity {
     private static MengineActivity _instance;
 
     private static native void AndroidNativeKernel_setupKernelJNI();
+    private static native boolean AndroidNativeKernel_hasPlugin(String name);
     private static native void AndroidNativeFacebook_setupFacebookJNI();
     private static native void AndroidNativeFacebook_onSDKInitialized();
     private static native void AndroidNativeUnity_setupUnityJNI();
@@ -61,12 +62,35 @@ public class MengineActivity extends SDLActivity {
 
         AndroidNativeKernel_setupKernelJNI();
         
-        AndroidNativeFacebook_setupFacebookJNI();
-        AndroidNativeUnity_setupUnityJNI();
-        AndroidNativeAdMob_setupAdMobJNI();
-        AndroidNativeDevToDev_setupDevToDevJNI();
-        AndroidNativeLinking_setupLinkingJNI();
-        AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
+        if( AndroidNativeKernel_hasPlugin("AndroidNativeFacebook") == true )
+        {
+            AndroidNativeFacebook_setupFacebookJNI();
+        }
+
+        if( AndroidNativeKernel_hasPlugin("AndroidNativeUnity") == true )
+        {        
+            AndroidNativeUnity_setupUnityJNI();
+        }
+        
+        if( AndroidNativeKernel_hasPlugin("AndroidNativeAdMob") == true )
+        {
+            AndroidNativeAdMob_setupAdMobJNI();
+        }
+        
+        if( AndroidNativeKernel_hasPlugin("AndroidNativeDevToDev") == true )
+        {
+            AndroidNativeDevToDev_setupDevToDevJNI();
+        }
+        
+        if( AndroidNativeKernel_hasPlugin("AndroidNativeLinking") == true )
+        {
+            AndroidNativeLinking_setupLinkingJNI();
+        }
+        
+        if( AndroidNativeKernel_hasPlugin("AndroidNativeLocalNotifications") == true )
+        {
+            AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
+        }        
     }
     
     @Override
@@ -84,6 +108,8 @@ public class MengineActivity extends SDLActivity {
         _instance = this;
 
         super.onCreate(savedInstanceState);
+
+        Log.i(TAG, "MengineActivity.onCreate()");
 
         initPlugins();
 
@@ -114,13 +140,7 @@ public class MengineActivity extends SDLActivity {
 
         Log.i(TAG, "MengineActivity.onResume()");
         
-        if (_instance != null) {
-            if (_instance.facebookInteractionLayer == null) {
-                Log.i(TAG, "_instance != null AND _instance.facebookInteractionLayer == null");
-            } else {
-                Log.i(TAG, "_instance != null AND _instance.facebookInteractionLayer != null");
-            }
-        } else {
+        if (_instance == null) {
             Log.i(TAG, "_instance == null -> init plugins");
 
             _instance = this;

@@ -46,7 +46,7 @@ namespace Mengine
 
         const DWORD * shader_compile_data = m_memory->getBuffer();
 
-        LOGGER_INFO( "compile pixel shader '%s'"
+        LOGGER_INFO( "render", "compile pixel shader '%s'"
             , this->getName().c_str()
         );
 

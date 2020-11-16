@@ -9,10 +9,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalKeyPress::TaskGlobalKeyPress( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter )
+    TaskGlobalKeyPress::TaskGlobalKeyPress( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentPtr & _doc )
         : m_code( _code )
         , m_isDown( _isDown )
         , m_filter( _filter )
+        , m_doc( _doc )
         , m_id( 0 )
     {
     }
@@ -45,7 +46,7 @@ namespace Mengine
             return false;
         };
 
-        uint32_t id = Helper::addGlobalKeyHandler( m_code, m_isDown, lambda, MENGINE_DOCUMENT_FUNCTION );
+        uint32_t id = Helper::addGlobalKeyHandler( m_code, m_isDown, lambda, m_doc );
 
         if( id == 0 )
         {

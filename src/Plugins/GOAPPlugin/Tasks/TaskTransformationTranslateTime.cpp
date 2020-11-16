@@ -89,12 +89,13 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationTranslateTime::TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time )
+    TaskTransformationTranslateTime::TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
         : m_transformation( _transformation )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )
         , m_time( _time )
+        , m_doc( _doc )
         , m_id( 0 )
     {
     }
@@ -107,7 +108,7 @@ namespace Mengine
     {
         const mt::vec3f & position = m_transformation->getLocalPosition();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_transformation, position, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( m_doc, _node, m_transformation, position, m_to, m_time );
 
         affector->setEasing( m_easing );
 

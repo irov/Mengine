@@ -178,11 +178,12 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseButton::TaskPickerableMouseButton( const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
+    TaskPickerableMouseButton::TaskPickerableMouseButton( const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc )
         : m_pickerable( _pickerable )
         , m_code( _code )
         , m_isDown( _isDown )
         , m_isPressed( _isPressed )
+        , m_doc( _doc )
         , m_filter( _filter )
     {
     }
@@ -199,7 +200,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( MENGINE_DOCUMENT_FUNCTION, _node, m_code, m_isDown, m_isPressed, m_filter );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_doc, _node, m_code, m_isDown, m_isPressed, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, newreceiver );
 

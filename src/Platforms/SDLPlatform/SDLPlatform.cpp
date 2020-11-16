@@ -324,7 +324,7 @@ namespace Mengine
 
         ELoggerLevel level = s_SDL_GetLoggerLevel( priority );
 
-        LOGGER_VERBOSE_LEVEL( level, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), level, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )("SDL [%s]: %s"
             , s_SDL_GetCategoryName( category )
             , message
             );
@@ -1045,7 +1045,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr SDLPlatform::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "load dynamic library '%s'"
+        LOGGER_INFO( "platform", "load dynamic library '%s'"
             , _dynamicLibraryName
         );
 

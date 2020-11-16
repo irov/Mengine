@@ -5,6 +5,7 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

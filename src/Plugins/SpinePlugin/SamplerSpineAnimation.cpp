@@ -319,6 +319,8 @@ namespace Mengine
                     EVENTABLE_METHOD( EVENT_SPINE_EVENT )
                         ->onSpineEvent( desc.eventName, desc.eventIntValue, desc.eventFloatValue, desc.eventStringValue );
                 }break;
+            default:
+                break;
             }
         }
     }
@@ -372,4 +374,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

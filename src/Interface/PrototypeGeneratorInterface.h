@@ -4,7 +4,8 @@
 
 #include "Kernel/FactorablePointer.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/DocumentHelper.h"
+#include "Kernel/Document.h"
+
 
 namespace Mengine
 {

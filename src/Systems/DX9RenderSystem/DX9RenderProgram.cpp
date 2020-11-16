@@ -57,7 +57,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _pD3DDevice );
 
-        LOGGER_INFO( "compile program '%s'"
+        LOGGER_INFO( "render", "compile program '%s'"
             , this->getName().c_str()
         );
 

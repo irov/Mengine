@@ -34,28 +34,28 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        uint32_t event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
+        UniqueId event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
 
     public:
-        uint32_t timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
+        UniqueId timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
 
     public:
-        bool refresh( uint32_t _id ) override;
+        bool refresh( UniqueId _id ) override;
 
     public:
-        bool exist( uint32_t _id ) const override;
+        bool exist( UniqueId _id ) const override;
 
     public:
-        bool remove( uint32_t _id ) override;
+        bool remove( UniqueId _id ) override;
         void removeAll() override;
 
-        bool freeze( uint32_t _id, bool _freeze ) override;
+        bool freeze( UniqueId _id, bool _freeze ) override;
         void freezeAll( bool _freeze ) override;
         bool isFreezeAll() const override;
-        bool isFreeze( uint32_t _id ) const override;
+        bool isFreeze( UniqueId _id ) const override;
 
-        float getTimePassed( uint32_t _id ) const override;
-        float getTimeLeft( uint32_t _id ) const override;
+        float getTimePassed( UniqueId _id ) const override;
+        float getTimeLeft( UniqueId _id ) const override;
 
     public:
         void setSpeedFactor( float _factor ) override;
@@ -113,8 +113,8 @@ namespace Mengine
 
     protected:
         bool removeScheduler_( SchedulerEventDesc * const _event );
-        bool findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** const _desc ) const;
-        bool findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** const _desc );
+        bool findSchedulerEvent_( UniqueId _id, const SchedulerEventDesc ** const _desc ) const;
+        bool findSchedulerEvent_( UniqueId _id, SchedulerEventDesc ** const _desc );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Scheduler> SchedulerPtr;

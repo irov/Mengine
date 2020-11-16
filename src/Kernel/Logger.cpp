@@ -10,10 +10,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        bool loggerValidMessage( ELoggerLevel _level, uint32_t _flag )
+        bool loggerValidMessage( const ConstString & _category, ELoggerLevel _level, uint32_t _flag )
         {
             bool result = LOGGER_SERVICE()
-                ->validMessage( _level, _flag );
+                ->validMessage( _category, _level, _flag );
 
             return result;
         }
@@ -45,6 +45,18 @@ namespace Mengine
         return m_newline;
     }
     //////////////////////////////////////////////////////////////////////////
+    LoggerOperator & LoggerOperator::setCategory( const ConstString & _category )
+    {
+        m_category = _category;
+
+        return *this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & LoggerOperator::getCategory() const
+    {
+        return m_category;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const LoggerOperator & LoggerOperator::operator () ( const Char * _format, ... ) const
     {
         MENGINE_VA_LIST_TYPE args;
@@ -64,15 +76,27 @@ namespace Mengine
         size_t size = 0;
 
         size_t size_timestamp = LOGGER_SERVICE()
-            ->makeTimeStamp( str, size, MENGINE_LOGGER_MAX_MESSAGE - 1 );
+            ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
 
         if( size_timestamp > 0 )
         {
             size += size_timestamp;
         }
 
+        if( m_category.empty() == false )
+        {
+            size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
+                , m_category.c_str()
+            );
+
+            if( size_category > 0 )
+            {
+                size += size_category;
+            }
+        }
+
         size_t size_functionstamp = LOGGER_SERVICE()
-            ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - 1 );
+            ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
 
         if( size_functionstamp > 0 )
         {

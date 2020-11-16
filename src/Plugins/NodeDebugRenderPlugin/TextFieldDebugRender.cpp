@@ -48,5 +48,23 @@ namespace Mengine
 
             Helper::nodeDebugRenderPoint( _renderPipeline, _context, wm, mt::vec2f( 0.f, 0.f ), color, 10.f, MENGINE_DOCUMENT_FORWARD );
         }
+
+        if( _node->getAutoScale() == true )
+        {
+            const mt::mat4f & wm = _node->getWorldMatrix();
+
+            const mt::vec2f & anchor = _node->getAnchorPercent();
+            float maxLength = _node->getMaxLength();
+
+            float start_x = -maxLength * anchor.x;
+            float finish_x = start_x + maxLength;
+
+            float halfLength = 10.f;
+
+            ColorValue_ARGB color = Helper::makeRGBA( 1.f, 0.f, 0.f, 1.f );
+
+            Helper::nodeDebugRenderLineByToPoints( _renderPipeline, _context, wm, mt::vec2f( start_x, -halfLength ), mt::vec2f( start_x, halfLength ), color, MENGINE_DOCUMENT_FORWARD );
+            Helper::nodeDebugRenderLineByToPoints( _renderPipeline, _context, wm, mt::vec2f( finish_x, -halfLength ), mt::vec2f( finish_x, halfLength ), color, MENGINE_DOCUMENT_FORWARD );
+        }
     }
 }

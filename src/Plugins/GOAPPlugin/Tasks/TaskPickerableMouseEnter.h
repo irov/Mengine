@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Kernel/Pickerable.h"
-
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/EventationInterface.h"
 
 #include "GOAP/TaskInterface.h"
+
+#include "Kernel/Pickerable.h"
+#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
 
@@ -18,7 +19,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter );
+        TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc );
         ~TaskPickerableMouseEnter() override;
 
     protected:
@@ -30,6 +31,8 @@ namespace Mengine
         PickerablePtr m_pickerable;
 
         LambdaPickerMouseEnterEvent m_filter;
+
+        DocumentPtr m_doc;
 
         EventReceiverInterfacePtr m_receiver;
     };

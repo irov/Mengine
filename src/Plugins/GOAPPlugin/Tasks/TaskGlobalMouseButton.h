@@ -5,6 +5,7 @@
 #include "Interface/InputHandlerInterface.h"
 
 #include "Kernel/MouseCode.h"
+#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
 
@@ -17,7 +18,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalMouseButton( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter );
+        TaskGlobalMouseButton( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc );
         ~TaskGlobalMouseButton() override;
 
     protected:
@@ -29,6 +30,8 @@ namespace Mengine
         bool m_isDown;
 
         LambdaInputMouseButtonEvent m_filter;
+
+        DocumentPtr m_doc;
 
         uint32_t m_id;
     };

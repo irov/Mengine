@@ -7,6 +7,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( OggVorbis, Mengine::OggVorbisPlugin );
@@ -80,4 +81,10 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "oggSound" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvSound" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
+    void OggVorbisPlugin::_destroyPlugin()
+    {
+        MENGINE_ASSERTION_ALLOCATOR( "ogg" );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

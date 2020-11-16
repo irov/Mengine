@@ -28,7 +28,7 @@ namespace Mengine
         MENGINE_UNUSED( png_ptr );
         MENGINE_UNUSED( _error );
 
-        LOGGER_INFO( "png warning: '%s'"
+        LOGGER_INFO( "png", "png warning: '%s'"
             , _error
         );
     }
@@ -45,7 +45,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        void * p = Helper::allocateMemory( _size, "png decoder" );
+        void * p = Helper::allocateMemory( _size, "dpng" );
 
         return p;
     }
@@ -54,7 +54,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        Helper::deallocateMemory( _ptr, "png decoder" );
+        Helper::deallocateMemory( _ptr, "dpng" );
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderPNG::ImageDecoderPNG()

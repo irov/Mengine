@@ -299,6 +299,8 @@ Resource
     ResourceCacher.h
     Resource.cpp
     Resource.h
+    ResourceHelper.cpp
+    ResourceHelper.h
 )
 
 ADD_FILTER(
@@ -374,6 +376,7 @@ Assertion
     AssertionVocabulary.cpp
     AssertionNode.h
     AssertionType.h
+    AssertionAllocator.h
 )
 
 ADD_FILTER(

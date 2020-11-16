@@ -4,6 +4,8 @@
 
 #include "Interface/InputHandlerInterface.h"
 
+#include "Kernel/Document.h"
+
 #include "Config/Lambda.h"
 
 namespace Mengine
@@ -15,7 +17,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        explicit TaskGlobalMouseMove( const LambdaInputMouseMoveEvent & _filter );
+        TaskGlobalMouseMove( const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc );
         ~TaskGlobalMouseMove() override;
 
     protected:
@@ -24,6 +26,8 @@ namespace Mengine
 
     protected:
         LambdaInputMouseMoveEvent m_filter;
+
+        DocumentPtr m_doc;
 
         uint32_t m_id;
     };

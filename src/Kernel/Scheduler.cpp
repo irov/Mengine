@@ -85,7 +85,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
+    UniqueId Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
             , this->getName().c_str()
@@ -122,7 +122,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
+    UniqueId Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
     {
         UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
@@ -153,7 +153,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::exist( uint32_t _id ) const
+    bool Scheduler::exist( UniqueId _id ) const
     {
         VectorSchedulers::const_iterator it_find =
             std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
@@ -180,7 +180,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::refresh( uint32_t _id )
+    bool Scheduler::refresh( UniqueId _id )
     {
         SchedulerEventDesc * desc;
 
@@ -200,7 +200,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::remove( uint32_t _id )
+    bool Scheduler::remove( UniqueId _id )
     {
         SchedulerEventDesc * desc;
 
@@ -416,7 +416,7 @@ namespace Mengine
         m_update = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::freeze( uint32_t _id, bool _freeze )
+    bool Scheduler::freeze( UniqueId _id, bool _freeze )
     {
         SchedulerEventDesc * event;
 
@@ -434,7 +434,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::isFreeze( uint32_t _id ) const
+    bool Scheduler::isFreeze( UniqueId _id ) const
     {
         const SchedulerEventDesc * event;
 
@@ -460,7 +460,7 @@ namespace Mengine
         return m_freezeAll;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Scheduler::getTimePassed( uint32_t _id ) const
+    float Scheduler::getTimePassed( UniqueId _id ) const
     {
         const SchedulerEventDesc * event;
 
@@ -478,7 +478,7 @@ namespace Mengine
         return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Scheduler::getTimeLeft( uint32_t _id ) const
+    float Scheduler::getTimeLeft( UniqueId _id ) const
     {
         const SchedulerEventDesc * event;
 
@@ -511,7 +511,7 @@ namespace Mengine
         return m_time;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** const _desc )
+    bool Scheduler::findSchedulerEvent_( UniqueId _id, SchedulerEventDesc ** const _desc )
     {
         VectorSchedulers::iterator it_find =
             std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
@@ -546,7 +546,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** const _desc ) const
+    bool Scheduler::findSchedulerEvent_( UniqueId _id, const SchedulerEventDesc ** const _desc ) const
     {
         VectorSchedulers::const_iterator it_find =
             std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )

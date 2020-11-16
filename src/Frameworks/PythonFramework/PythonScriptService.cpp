@@ -108,7 +108,7 @@ namespace Mengine
                 MENGINE_UNUSED( _functionName );
                 MENGINE_UNUSED( _className );
 
-                LOGGER_INFO( "pybind call begin '%s::%s'"
+                LOGGER_INFO( "script", "pybind call begin '%s::%s'"
                     , _className
                     , _functionName
                 );
@@ -140,7 +140,7 @@ namespace Mengine
                 }
 #endif
 
-                LOGGER_INFO( "pybind call end '%s::%s'"
+                LOGGER_INFO( "script", "pybind call end '%s::%s'"
                     , _className
                     , _functionName
                 );
@@ -187,7 +187,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -197,7 +197,7 @@ namespace Mengine
                 Char traceback[4096] = {'\0'};
                 _kernel->get_traceback( traceback, 4095 );
 
-                LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("traceback:\n%s"
                     , traceback
                     );
             }
@@ -801,7 +801,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * PythonScriptService::initModule( const Char * _name )
     {
-        LOGGER_INFO( "init module '%s'"
+        LOGGER_INFO( "script", "init module '%s'"
             , _name
         );
 

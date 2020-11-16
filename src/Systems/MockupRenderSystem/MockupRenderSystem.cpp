@@ -73,7 +73,7 @@ namespace Mengine
     {
         m_frames = 0;
 
-        LOGGER_INFO( "Initializing MockupRenderSystem..." );
+        LOGGER_INFO( "render", "Initializing MockupRenderSystem..." );
 
         m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 
@@ -186,7 +186,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr MockupRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "texture normal created %dx%d %d:%d depth %d"
+        LOGGER_INFO( "render", "texture normal created %dx%d %d:%d depth %d"
             , _width
             , _height
             , _format
@@ -218,7 +218,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "offscreen target created %dx%d %d"
+        LOGGER_INFO( "render", "offscreen target created %dx%d %d"
             , _width
             , _height
             , _format
@@ -244,7 +244,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "offscreen target created %dx%d %d"
+        LOGGER_INFO( "render", "offscreen target created %dx%d %d"
             , _width
             , _height
             , _format

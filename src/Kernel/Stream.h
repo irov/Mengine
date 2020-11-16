@@ -6,6 +6,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Magic.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {

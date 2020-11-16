@@ -4,6 +4,7 @@
 
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -11,7 +12,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time );
+        TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc );
         ~TaskTransformationTranslateTime() override;
 
     protected:
@@ -26,6 +27,8 @@ namespace Mengine
 
         mt::vec3f m_to;
         float m_time;
+
+        DocumentPtr m_doc;
 
         uint32_t m_id;
     };

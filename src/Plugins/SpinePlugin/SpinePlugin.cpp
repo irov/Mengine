@@ -28,6 +28,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ObjectPrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 #include "spine/extension.h"
 
@@ -172,5 +173,10 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Spine" ) );
 
         spAnimationState_disposeStatics();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SpinePlugin::_destroyPlugin()
+    {
+        MENGINE_ASSERTION_ALLOCATOR( "spine" );
     }
 }

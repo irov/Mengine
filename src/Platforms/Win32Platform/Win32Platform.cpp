@@ -904,7 +904,7 @@ namespace Mengine
                 DWORD flagActive = LOWORD( wParam );
                 BOOL minimized = (BOOL)HIWORD( wParam );
 
-                LOGGER_INFO( "WND WM_ACTIVATE active [%u] minimized [%u] visible [%u]"
+                LOGGER_INFO( "platform", "WND WM_ACTIVATE active [%u] minimized [%u] visible [%u]"
                     , flagActive
                     , minimized
                     , ::IsWindowVisible( hWnd )
@@ -945,13 +945,13 @@ namespace Mengine
                 {
                 case WTS_SESSION_LOCK:
                     {
-                        LOGGER_INFO( "WND WTS_SESSION_LOCK" );
+                        LOGGER_INFO( "platform", "WND WTS_SESSION_LOCK" );
 
                         m_sessionLock = true;
                     }break;
                 case WTS_SESSION_UNLOCK:
                     {
-                        LOGGER_INFO( "WND WTS_SESSION_UNLOCK" );
+                        LOGGER_INFO( "platform", "WND WTS_SESSION_UNLOCK" );
 
                         m_sessionLock = false;
                     }break;
@@ -974,19 +974,19 @@ namespace Mengine
             {
                 if( wParam == SIZE_MAXIMIZED )
                 {
-                    LOGGER_INFO( "WND SIZE_MAXIMIZED" );
+                    LOGGER_INFO( "platform", "WND SIZE_MAXIMIZED" );
 
                     this->setActive_( true );
                 }
                 else if( wParam == SIZE_MINIMIZED )
                 {
-                    LOGGER_INFO( "WND SIZE_MINIMIZED" );
+                    LOGGER_INFO( "platform", "WND SIZE_MINIMIZED" );
 
                     this->setActive_( false );
                 }
                 else if( wParam == SIZE_RESTORED /*&& m_application->getFullscreenMode() == true*/ )
                 {
-                    LOGGER_INFO( "WND SIZE_RESTORED" );
+                    LOGGER_INFO( "platform", "WND SIZE_RESTORED" );
 
                     bool fullsreenMode = APPLICATION_SERVICE()
                         ->getFullscreenMode();
@@ -3470,13 +3470,13 @@ namespace Mengine
 
                 if( successful == TRUE )
                 {
-                    LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("%s"
+                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("%s"
                         , tempFileBuffer
                         );
                 }
                 else
                 {
-                    LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("invalid read file '%ls'"
+                    LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("invalid read file '%ls'"
                         , tempFileNameBuffer
                         );
                 }
@@ -3522,7 +3522,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32Platform::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "load dynamic library '%s'"
+        LOGGER_INFO( "platform", "load dynamic library '%s'"
             , _dynamicLibraryName
         );
 

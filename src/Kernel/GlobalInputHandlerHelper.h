@@ -2,7 +2,7 @@
 
 #include "Interface/InputHandlerInterface.h"
 
-#include "Kernel/DocumentHelper.h"
+#include "Kernel/Document.h"
 #include "Config/Lambda.h"
 
 namespace Mengine

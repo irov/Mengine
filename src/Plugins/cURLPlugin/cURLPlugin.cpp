@@ -6,7 +6,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/AllocatorHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "cURLScriptEmbedding.h"
@@ -60,5 +60,7 @@ namespace Mengine
     void cURLPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( cURLService );
+
+        MENGINE_ASSERTION_ALLOCATOR( "curl" );
     }
 }

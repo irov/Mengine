@@ -601,7 +601,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerEntityGenerator_()
     {
-        LOGGER_INFO( "Register Entity Generator..." );
+        LOGGER_INFO( "system", "Register Entity Generator..." );
 
         EntityPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<EntityPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -616,7 +616,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerSceneGenerator_()
     {
-        LOGGER_INFO( "Register Scene Generator..." );
+        LOGGER_INFO( "system", "Register Scene Generator..." );
 
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -631,7 +631,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterEntityGenerator_()
     {
-        LOGGER_INFO( "Unregister Entity Generator..." );
+        LOGGER_INFO( "system", "Unregister Entity Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none() );
@@ -639,7 +639,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()
     {
-        LOGGER_INFO( "Unregister Scene Generator..." );
+        LOGGER_INFO( "system", "Unregister Scene Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none() );
@@ -647,7 +647,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerArrowGenerator_()
     {
-        LOGGER_INFO( "Register Arrow Generator..." );
+        LOGGER_INFO( "system", "Register Arrow Generator..." );
 
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ArrowPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -662,7 +662,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterArrowGenerator_()
     {
-        LOGGER_INFO( "Unregister Arrow Generator..." );
+        LOGGER_INFO( "system", "Unregister Arrow Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none() );
@@ -670,7 +670,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
     {
-        LOGGER_INFO( "Register Resource Type..." );
+        LOGGER_INFO( "system", "Register Resource Type..." );
 
 #define ADD_PROTOTYPE( Type )\
         if( PROTOTYPE_SERVICE()\
@@ -702,7 +702,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseResourceTypes_()
     {
-        LOGGER_INFO( "Initializing Resource Type..." );
+        LOGGER_INFO( "system", "Initializing Resource Type..." );
 
 #define REMOVE_PROTOTYPE( Type )\
         PROTOTYPE_SERVICE()\
@@ -810,7 +810,7 @@ namespace Mengine
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
 
-        LOGGER_INFO( "load game resource tags '%s'"
+        LOGGER_INFO( "system", "load game resource tags '%s'"
             , Helper::tagsToString( platformTags ).c_str()
         );
 
@@ -879,7 +879,10 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
+            bool controlDown = INPUT_SERVICE()
+                ->isControlDown();
+
+            if( _event.code == KC_BACK && _event.isDown && controlDown == true )
             {
                 Char userPath[MENGINE_MAX_PATH] = {'\0'};
                 PLATFORM_SERVICE()
@@ -967,19 +970,19 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F5 && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_F5 && _event.isDown == true && controlDown == true )
             {
                 SCENE_SERVICE()
                     ->removeCurrentScene( false, nullptr );
             }
 
-            if( _event.code == KC_F5 && _event.isDown == true && INPUT_SERVICE()->isControlDown() == false )
+            if( _event.code == KC_F5 && _event.isDown == true && controlDown == false )
             {
                 SCENE_SERVICE()
                     ->restartCurrentScene( false, nullptr );
             }
 
-            if( _event.code == KC_G && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_G && _event.isDown == true && controlDown == true )
             {
                 FACTORY_SERVICE()
                     ->increfFactoryGeneration();
@@ -1067,7 +1070,7 @@ namespace Mengine
                 this->updateDebugOpenFile_();
             }
 
-            if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_P && _event.isDown == true && controlDown == true )
             {
                 static bool s_particle_enable = true;
 
@@ -1077,7 +1080,7 @@ namespace Mengine
                     ->setParticleEnable( s_particle_enable );
             }
 
-            if( _event.code == KC_T && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_T && _event.isDown == true && controlDown == true )
             {
                 static bool s_text_enable = true;
 
@@ -1087,7 +1090,7 @@ namespace Mengine
                     ->setTextEnable( s_text_enable );
             }
 
-            if( _event.code == KC_V && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_V && _event.isDown == true && controlDown == true )
             {
                 static bool s_video_enable = true;
 
@@ -1097,7 +1100,7 @@ namespace Mengine
                     ->setVideoEnable( s_video_enable );
             }
 
-            if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_R && _event.isDown == true && controlDown == true )
             {
                 static bool s_text_debug = true;
 
@@ -1106,7 +1109,7 @@ namespace Mengine
                 NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
             }
 
-            if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_E && _event.isDown == true && controlDown == true )
             {
                 NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
                 NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );
@@ -1249,14 +1252,14 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open %s%s"
                     , _folder
                     , _filePath
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming %s%s"
                     , _folder
                     , _filePath
                     );
@@ -1269,7 +1272,7 @@ namespace Mengine
 
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%" PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1277,7 +1280,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%" PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%" PRIu64 "] open %s%s"
                     , tid
                     , _folder
                     , _filePath
@@ -1419,7 +1422,7 @@ namespace Mengine
 
         m_focus = _focus;
 
-        LOGGER_INFO( "focus %d (freeze %d)"
+        LOGGER_INFO( "system", "focus %d (freeze %d)"
             , m_focus
             , m_freeze
         );
@@ -1445,7 +1448,7 @@ namespace Mengine
 
         m_freeze = _freeze;
 
-        LOGGER_INFO( "freeze %d (focus %d)"
+        LOGGER_INFO( "system", "freeze %d (focus %d)"
             , m_freeze
             , m_focus
         );
@@ -1757,7 +1760,7 @@ namespace Mengine
         uint32_t width = _resolution.getWidth();
         uint32_t height = _resolution.getHeight();
 
-        LOGGER_INFO( "resolution [%u %u]"
+        LOGGER_INFO( "system", "resolution [%u %u]"
             , width
             , height
         );
@@ -2223,5 +2226,6 @@ namespace Mengine
     {
         m_debugPause = _pause;
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

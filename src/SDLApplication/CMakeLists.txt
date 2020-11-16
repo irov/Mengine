@@ -2,8 +2,6 @@ MENGINE_PROJECT(SDLApplication)
 
 SET(MENGINE_XCODE_DEPLOY_PATH "Desktop" CACHE STRING "Mengine Xcode deploy path")
 
-MESSAGE("MENGINE_XCODE_DEPLOY_PATH: ${MENGINE_XCODE_DEPLOY_PATH}")
-
 ADD_FILTER(
 src
     main.cpp
@@ -84,8 +82,7 @@ if(MENGINE_TARGET_MACOS)
 
     if(MENGINE_PLUGIN_ASTRALAX)
     	set(myApp_ASTRALAX "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/magic3d.dylib")
-    	set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
-			MACOSX_PACKAGE_LOCATION "MacOS")
+    	set_source_files_properties(${myApp_ASTRALAX} PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS")
     else()
         set(myApp_ASTRALAX)
     endif()

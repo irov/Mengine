@@ -8,7 +8,9 @@
 
 #include "Environment/Android/AndroidUtils.h"
 
-#include "pybind/pybind.hpp"
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "pybind/pybind.hpp"
+#endif
 
 #include <jni.h>
 
@@ -63,6 +65,8 @@ extern "C" {
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -109,6 +113,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
     AndroidNativeLocalNotificationsModule::AndroidNativeLocalNotificationsModule()
     {
     }
@@ -119,6 +125,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeLocalNotificationsModule::_initializeModule()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::enum_<EnumLocalNotificationsEventHandler>( kernel, "EnumLocalNotificationsEventHandler" )
@@ -132,6 +139,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidScheduleLocalNotification", this, &AndroidNativeLocalNotificationsModule::scheduleLocalNotification );
         pybind::def_functor( kernel, "androidInstantlyPresentLocalNotification", this, &AndroidNativeLocalNotificationsModule::instantlyPresentLocalNotification );
         pybind::def_functor( kernel, "cancelAllLocalNotification", this, &AndroidNativeLocalNotificationsModule::cancelAllLocalNotification );
+#endif
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -229,4 +237,5 @@ namespace Mengine
 
         return (bool)jReturnValue;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

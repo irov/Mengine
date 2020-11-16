@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        explicit TaskLocalDelay( float _time );
+        TaskLocalDelay( float _time, const DocumentPtr & _doc );
         ~TaskLocalDelay() override;
 
     protected:
@@ -22,6 +22,7 @@ namespace Mengine
 
     protected:
         float m_time;
+        DocumentPtr m_doc;
 
         uint32_t m_id;
 

@@ -61,6 +61,7 @@ namespace Mengine
         {
             Char doc[2048] = {'\0'};
             AtomicUInt32 count;
+            AtomicUInt32 total_alloc;
         };
 
         ReportDesc m_reports[2048];

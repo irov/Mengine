@@ -116,7 +116,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "create resource '%s'"
+        LOGGER_INFO( "resource", "create resource '%s'"
             , _type.c_str()
         );
 

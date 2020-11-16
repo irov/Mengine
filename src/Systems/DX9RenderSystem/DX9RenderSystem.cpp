@@ -118,7 +118,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "Initializing DX9RenderSystem..." );
+        LOGGER_INFO( "render", "Initializing DX9RenderSystem..." );
 
         IDirect3D9 * pD3D = pDirect3DCreate9( D3D_SDK_VERSION );
 
@@ -571,7 +571,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "Mode: resolution %d x %d x %s\n"
+        LOGGER_INFO( "render", "Mode: resolution %d x %d x %s\n"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , Helper::getD3DFormatName( m_displayMode.Format )
@@ -681,7 +681,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "texture normal created %ux%u format %u channel %u depth %u"
+        LOGGER_INFO( "render", "texture normal created %ux%u format %u channel %u depth %u"
             , renderImage->getHWWidth()
             , renderImage->getHWHeight()
             , renderImage->getHWPixelFormat()
@@ -746,7 +746,7 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( renderTargetTexture.get() );
 
-        LOGGER_INFO( "offscreen target created %ux%u format %u"
+        LOGGER_INFO( "render", "offscreen target created %ux%u format %u"
             , _width
             , _height
             , _format
@@ -790,7 +790,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "offscreen target created %ux%u format %u"
+        LOGGER_INFO( "render", "offscreen target created %ux%u format %u"
             , _width
             , _height
             , _format
@@ -825,7 +825,7 @@ namespace Mengine
 
         renderImageTarget->initialize( renderTargetTexture );
 
-        LOGGER_INFO( "render image target created" );
+        LOGGER_INFO( "render", "render image target created" );
 
         return renderImageTarget;
     }

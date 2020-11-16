@@ -274,7 +274,7 @@ namespace Mengine
 
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
-        LOGGER_INFO( "l %d r %d:%d-%d:%d"
+        LOGGER_INFO( "render", "l %d r %d:%d-%d:%d"
             , _level
             , m_lockRect.left
             , m_lockRect.top

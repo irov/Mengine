@@ -157,9 +157,10 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseEnter::TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter )
+    TaskPickerableMouseEnter::TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc )
         : m_pickerable( _pickerable )
         , m_filter( _filter )
+        , m_doc( _doc )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -175,7 +176,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseEnterEventReceiver>( MENGINE_DOCUMENT_FUNCTION, _node, m_filter );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseEnterEventReceiver>( m_doc, _node, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_ENTER, newreceiver );
 

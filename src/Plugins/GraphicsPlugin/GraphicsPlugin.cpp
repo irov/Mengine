@@ -6,6 +6,7 @@
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Graphics, Mengine::GraphicsPlugin );
@@ -36,5 +37,10 @@ namespace Mengine
     {
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Graphics" ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GraphicsPlugin::_destroyPlugin()
+    {
+        MENGINE_ASSERTION_ALLOCATOR( "gp" );
     }
 }

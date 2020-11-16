@@ -66,7 +66,7 @@ namespace Mengine
 
         declaration[declaration_iterator] = D3DDECL_END();
 
-        LOGGER_INFO( "create vertex declaration '%s'"
+        LOGGER_INFO( "render", "create vertex declaration '%s'"
             , m_name.c_str()
         );
 

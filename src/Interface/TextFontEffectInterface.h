@@ -23,9 +23,9 @@ namespace Mengine
         virtual float getEffectSampleInv() const = 0;
 
     public:
-        typedef Lambda<void( uint32_t _index, float _sampleInv, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )>  LambdaFontEffectProvider;
+        typedef Lambda<void( uint32_t _index, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )>  LambdaFontEffectProvider;
 
-        virtual bool apply( uint32_t _width, uint32_t _height, uint32_t _rows, uint32_t _pitch, const void * _buffer, uint32_t _channel, int32_t _left, int32_t _top, const LambdaFontEffectProvider & _provider ) = 0;
+        virtual bool apply( uint32_t _width, uint32_t _rows, uint32_t _pitch, const void * _buffer, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider ) = 0;
 
     public:
         virtual bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) = 0;

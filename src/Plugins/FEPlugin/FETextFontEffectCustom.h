@@ -27,6 +27,8 @@ namespace Mengine
         bool isValid() const override;
 
     protected:
+        fe_bundle * m_bundle;
+
         MemoryInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////

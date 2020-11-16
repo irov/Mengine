@@ -341,7 +341,7 @@ namespace Mengine
 
         if( m_effect != nullptr )
         {
-            m_effect->apply( glyph_bitmap.width, m_height, glyph_bitmap.rows, glyph_bitmap.pitch, glyph_bitmap.buffer, bitmap_channel, glyph->bitmap_left, glyph->bitmap_top, [&ttf_glyph, _doc]( uint32_t _index, float _sampleInv, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )
+            m_effect->apply( glyph_bitmap.width, glyph_bitmap.rows, glyph_bitmap.pitch, glyph_bitmap.buffer, bitmap_channel, glyph->bitmap_left, glyph->bitmap_top, m_height, [&ttf_glyph, sampleInv, _doc]( uint32_t _index, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )
             {
                 TTFFontTextureGlyphProvider provider( _width, _height, _buffer, _pitch, _bytespp );
 
@@ -353,10 +353,10 @@ namespace Mengine
 
                 TTFGlyphQuad & quad = ttf_glyph.quads[_index];
 
-                quad.offset.x = (float)_x * _sampleInv;
-                quad.offset.y = (float)_y * _sampleInv;
-                quad.size.x = (float)_width * _sampleInv;
-                quad.size.y = (float)_height * _sampleInv;
+                quad.offset.x = (float)_x * sampleInv;
+                quad.offset.y = (float)_y * sampleInv;
+                quad.size.x = (float)_width * sampleInv;
+                quad.size.y = (float)_height * sampleInv;
                 quad.uv = uv;
                 quad.texture = texture;
             } );
@@ -373,10 +373,10 @@ namespace Mengine
 
             TTFGlyphQuad & quad = ttf_glyph.quads[0];
 
-            quad.offset.x = (float)glyph_dx;
-            quad.offset.y = (float)-glyph_dy;
-            quad.size.x = (float)glyph_w;
-            quad.size.y = (float)glyph_h;
+            quad.offset.x = (float)glyph_dx * sampleInv;
+            quad.offset.y = (float)-glyph_dy * sampleInv;
+            quad.size.x = (float)glyph_w * sampleInv;
+            quad.size.y = (float)glyph_h * sampleInv;
             quad.uv = uv;
             quad.texture = texture;
         }

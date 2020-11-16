@@ -11,6 +11,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/AssertionAllocator.h"
 
 #include "FEDataflow.h"
 #include "FETextFontEffectFile.h"
@@ -97,12 +98,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FECustom" ) );
 
-#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
-        uint32_t report_count = stdex_get_allocator_report_count( "fe" );
-        MENGINE_ASSERTION( report_count == 0, "FE memleak [%d]"
-            , report_count
-        );
-#endif
+        MENGINE_ASSERTION_ALLOCATOR( "fe" );
     }
     //////////////////////////////////////////////////////////////////////////
     void FEPlugin::_destroyPlugin()

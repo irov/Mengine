@@ -42,8 +42,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.ChunkID, "RIFF" ) == false )
         {
-            LOGGER_ERROR( "invalid chunk id 'RIFF'"
-            );
+            LOGGER_ERROR( "invalid chunk id 'RIFF'" );
 
             return false;
         }
@@ -54,8 +53,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.Format, "WAVE" ) == false )
         {
-            LOGGER_ERROR( "invalid format 'WAVE'"
-            );
+            LOGGER_ERROR( "invalid format 'WAVE'" );
 
             return false;
         }
@@ -64,8 +62,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.Subchunk1ID, "fmt " ) == false )
         {
-            LOGGER_ERROR( "invalid subchunk id 'fmt '"
-            );
+            LOGGER_ERROR( "invalid subchunk id 'fmt '" );
 
             return false;
         }
@@ -76,7 +73,7 @@ namespace Mengine
 
         if( header.AudioFormat != 1 )
         {
-            LOGGER_ERROR( "invalid AudioFormat %d"
+            LOGGER_ERROR( "invalid AudioFormat %u"
                 , header.AudioFormat
             );
 
@@ -91,7 +88,7 @@ namespace Mengine
 
         if( (header.BitsPerSample != 16) && (header.BitsPerSample != 8) )
         {
-            LOGGER_ERROR( "invalid bits per sample %d"
+            LOGGER_ERROR( "invalid bits per sample %u"
                 , header.BitsPerSample
             );
 

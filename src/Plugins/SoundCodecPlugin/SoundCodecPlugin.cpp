@@ -32,5 +32,8 @@ namespace Mengine
     void SoundCodecPlugin::_finalizePlugin()
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "wavSound" ) );
+
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "wav" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

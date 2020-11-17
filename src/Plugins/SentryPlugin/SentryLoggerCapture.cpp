@@ -20,7 +20,7 @@ namespace Mengine
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
         MENGINE_UNUSED( _color );
-
+         
         uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "Sentry", "MaxLogSize", 10240 );
 
         if( m_message.size() + _size > Sentry_MaxLogSize )
@@ -32,4 +32,5 @@ namespace Mengine
 
         sentry_set_extra( "Log", sentry_value_new_string( m_message.c_str() ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

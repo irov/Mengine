@@ -100,6 +100,18 @@ namespace Mengine
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
+
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "png" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "PNG" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpg" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpeg" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "dds" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ) );
+
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "hit" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void ImageCodecPlugin::_destroyPlugin()

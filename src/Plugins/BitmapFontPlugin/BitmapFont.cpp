@@ -24,24 +24,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BitmapFont::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    void BitmapFont::setEffect( const TextFontEffectInterfacePtr & _effect )
     {
-        m_fileGroup = _fileGroup;
+        MENGINE_UNUSED( _effect );
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & BitmapFont::getFileGroup() const
+    const TextFontEffectInterfacePtr & BitmapFont::getEffect() const
     {
-        return m_fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BitmapFont::setPathFontImage( const FilePath & _pathFontImage )
-    {
-        m_pathFontImage = _pathFontImage;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & BitmapFont::getPathFontImage() const
-    {
-        return m_pathFontImage;
+        //Empty
+
+        return TextFontEffectInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::initialize()
@@ -63,11 +55,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::isValid()
     {
-        if( m_fileGroup->existFile( m_pathFontImage, true ) == false )
+        const ContentInterface * content = this->getContent();
+
+        if( content->existContent() == false )
         {
-            LOGGER_ERROR( "font '%s' not found file '%s'"
-                , m_name.c_str()
-                , m_pathFontImage.c_str()
+            const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+            const FilePath & filePath = content->getFilePath();
+
+            LOGGER_ERROR( "font '%s' not found file '%s:%s'"
+                , this->getName().c_str()
+                , fileGroup->getName().c_str()
+                , filePath.c_str()
             );
 
             return false;
@@ -78,15 +76,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::_compile()
     {
+        const ContentInterface * content = this->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+
         const ConstString & fontImageCodec = CODEC_SERVICE()
-            ->findCodecType( m_pathFontImage );
+            ->findCodecType( filePath );
 
         m_textureFont = RENDERTEXTURE_SERVICE()
-            ->loadTexture( m_fileGroup, m_pathFontImage, fontImageCodec, DF_NONE, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( fileGroup, filePath, fontImageCodec, DF_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s:%s'"
             , m_name.c_str()
-            , m_pathFontImage.c_str()
+            , fileGroup->getName().c_str()
+            , filePath.c_str()
         );
 
         return true;

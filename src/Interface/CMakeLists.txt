@@ -36,6 +36,7 @@ src
     PickCodecInterface.h
     SoundCodecInterface.h
     TextFontInterface.h
+    TextFontEffectInterface.h
     TextFontConfigLoaderInterface.h
     TextEntryInterface.h
     TextServiceInterface.h

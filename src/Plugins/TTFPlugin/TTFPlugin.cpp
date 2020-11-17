@@ -15,22 +15,7 @@
 #include "TTFPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"
 #include "TTFDataflow.h"
-#include "FEDataflow.h"
 
-#include "fe/fe.h"
-
-//////////////////////////////////////////////////////////////////////////
-void * _fe_alloc( size_t _size )
-{
-    void * p = Mengine::Helper::allocateMemory( _size, "fe" );
-
-    return p;
-}
-//////////////////////////////////////////////////////////////////////////
-void _fe_free( void * _ptr )
-{
-    Mengine::Helper::deallocateMemory( _ptr, "fe" );
-}
 //////////////////////////////////////////////////////////////////////////
 void * _ft_malloc( size_t _size )
 {
@@ -56,14 +41,6 @@ void * _ft_realloc( void * _ptr, size_t _size )
     void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "ft" );
 
     return p;
-}
-//////////////////////////////////////////////////////////////////////////
-void _debug_image_created( fe_image * )
-{
-}
-//////////////////////////////////////////////////////////////////////////
-void _debug_image_deleted( fe_image * )
-{
 }
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( TTFAtlasService );
@@ -131,15 +108,6 @@ namespace Mengine
 
             VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ), dataflowTTF, MENGINE_DOCUMENT_FACTORABLE );
 
-            FEDataflowPtr dataflowFE = Helper::makeFactorableUnique<FEDataflow>( MENGINE_DOCUMENT_FACTORABLE );
-
-            if( dataflowFE->initialize() == false )
-            {
-                return false;
-            }
-
-            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ), dataflowFE, MENGINE_DOCUMENT_FACTORABLE );
-
             return true;
         } );
 
@@ -147,9 +115,6 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowTTF = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
             dataflowTTF->finalize();
-
-            DataflowInterfacePtr dataflowFE = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-            dataflowFE->finalize();
         } );
 
         return true;
@@ -175,7 +140,6 @@ namespace Mengine
         SERVICE_DESTROY( TTFAtlasService );
 
         MENGINE_ASSERTION_ALLOCATOR( "ft" );
-        MENGINE_ASSERTION_ALLOCATOR( "fe" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

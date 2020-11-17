@@ -76,9 +76,10 @@ namespace Mengine
             return false;
         }
 
-        font->setPathFontImage( pathFontImage );
+        ContentInterface * content = _font->getContent();
 
-        font->setFileGroup( _fileGroup );
+        content->setFileGroup( _fileGroup );
+        content->setFilePath( pathFontImage );
 
         return true;
     }

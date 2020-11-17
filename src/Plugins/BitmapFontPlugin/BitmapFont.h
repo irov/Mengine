@@ -2,8 +2,8 @@
 
 #include "Kernel/Compilable.h"
 #include "Kernel/Reference.h"
-
 #include "Kernel/FontBase.h"
+#include "Kernel/BaseContent.h"
 
 #include "BitmapGlyph.h"
 
@@ -11,17 +11,17 @@ namespace Mengine
 {
     class BitmapFont
         : public FontBase
+        , public BaseContent
     {
+        DECLARE_CONTENTABLE();
+
     public:
         BitmapFont();
         ~BitmapFont() override;
 
     public:
-        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
-        const FileGroupInterfacePtr & getFileGroup() const;
-
-        void setPathFontImage( const FilePath & _pathFontImage );
-        const FilePath & getPathFontImage() const;
+        void setEffect( const TextFontEffectInterfacePtr & _effect ) override;
+        const TextFontEffectInterfacePtr & getEffect() const override;
 
     protected:
         bool initialize() override;
@@ -60,9 +60,6 @@ namespace Mengine
 
     protected:
         BitmapGlyphPtr m_glyph;
-
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_pathFontImage;
 
         RenderTextureInterfacePtr m_textureFont;
         RenderTextureInterfacePtr m_textureOutline;

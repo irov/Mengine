@@ -2,7 +2,6 @@
 
 #include "TTFInterface.h"
 #include "TTFDataInterface.h"
-#include "FEDataInterface.h"
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/TextFontInterface.h"
@@ -11,15 +10,13 @@
 #include "Kernel/String.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FontBase.h"
-#include "Kernel/Map.h"
+#include "Kernel/BaseContent.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
 #include "freetype/ftglyph.h"
 
 #include "math/uv4.h"
-
-#include "fe/fe.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_TTF_FONT_GLYPH_HASH_SIZE
@@ -32,7 +29,9 @@ namespace Mengine
         : public FontBase
         , public UnknownTTFFontInterface
         , public Observable
+        , public BaseContent
     {
+        DECLARE_CONTENTABLE();
         DECLARE_UNKNOWABLE();
 
     public:
@@ -43,30 +42,8 @@ namespace Mengine
         void setFTLibrary( FT_Library _library );
 
     public:
-        void setSystem( bool _system ) override;
-        bool getSystem() const override;
-
-        void setTTFPath( const FilePath & _ttfPath ) override;
-        const FilePath & getTTFPath() const override;
-
-        void setTTFFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
-        const FileGroupInterfacePtr & getTTFFileGroup() const override;
-
-        void setTTFFEPath( const FilePath & _ttfPath ) override;
-        const FilePath & getTTFFEPath() const override;
-
-        void setTTFFEName( const ConstString & _ttfPath ) override;
-        const ConstString & getTTFFEName() const override;
-
-
-        void setTTFFEFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
-        const FileGroupInterfacePtr & getTTFFEFileGroup() const override;
-
-        void setFESample( uint32_t _FESample ) override;
-        uint32_t getFESample() const override;
-
-        void setFECustomString( const String & _FECustomString ) override;
-        const String & getFECustomString() const override;
+        void setEffect( const TextFontEffectInterfacePtr & _effect ) override;
+        const TextFontEffectInterfacePtr & getEffect() const override;
 
     public:
         bool initialize() override;
@@ -114,34 +91,20 @@ namespace Mengine
         void clearGlyphs_();
 
     protected:
+        uint32_t getSample() const;
+        float getSampleInv() const;
+
+    protected:
         FT_Library m_ftlibrary;
         TTFDataInterfacePtr m_dataTTF;
 
-        FileGroupInterfacePtr m_ttfFileGroup;
-        FilePath m_ttfPath;
-
-        bool m_system;
-
-        uint32_t m_FESample;
-
-        String m_FECustomString;
+        TextFontEffectInterfacePtr m_effect;
 
         float m_ttfAscender;
         float m_ttfDescender;
         float m_ttfHeight;
         float m_ttfBearingYA;
         float m_ttfSpacing;
-
-        uint32_t m_ttfLayoutCount;
-
-        FileGroupInterfacePtr m_ttfFEFileGroup;
-        FilePath m_ttfFEPath;
-
-        ConstString m_ttfFEName;
-
-        FEDataInterfacePtr m_dataFE;
-        fe_effect * m_ttfFEEffect;
-        const fe_node * m_ttfEffectNodes[FE_MAX_PINS] = {nullptr};
 
         struct TTFGlyphQuad
         {

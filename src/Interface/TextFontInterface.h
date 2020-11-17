@@ -4,8 +4,10 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
+#include "Interface/TextFontEffectInterface.h"
 
 #include "Kernel/Unknowable.h"
+#include "Kernel/Contentable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
@@ -44,8 +46,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TextFontInterface
         : public ServantInterface
+        , public Contentable
         , public Unknowable
     {
+    public:
+        virtual void setEffect( const TextFontEffectInterfacePtr & _effect ) = 0;
+        virtual const TextFontEffectInterfacePtr & getEffect() const = 0;
+
     public:
         virtual void setName( const ConstString & _name ) = 0;
         virtual const ConstString & getName() const = 0;

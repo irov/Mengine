@@ -418,7 +418,7 @@ endif()
 #dependencies openssl
 if(MENGINE_DEPENDENCE_OPENSSL AND NOT MENGINE_TARGET_IOS)
     message("================openssl================")
-    set(WITH_APPS OFF CACHE BOOL "WITH_APPS" FORCE)    
+    set(WITH_APPS OFF CACHE BOOL "WITH_APPS" FORCE)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openssl ${CMAKE_TEMP_DIR}/openssl)
     

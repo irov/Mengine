@@ -80,6 +80,8 @@ namespace Mengine
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "oggSound" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvSound" ) );
+
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogg" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OggVorbisPlugin::_destroyPlugin()

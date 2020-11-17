@@ -3275,6 +3275,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _thread );
         MENGINE_UNUSED( _stack );
+        MENGINE_UNUSED( _capacity );
         MENGINE_UNUSED( _context );
 
         LOGGER_ERROR( "this platform not support callstack" );

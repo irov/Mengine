@@ -425,6 +425,12 @@ namespace Mengine
 
         LOGGER_INFO( "bootstrapper", "bootstrapper run" );
 
+        LOGGER_SERVICE()
+            ->setHistorically( false );
+
+        LOGGER_SERVICE()
+            ->clearHistory();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

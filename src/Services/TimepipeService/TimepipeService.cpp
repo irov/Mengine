@@ -49,6 +49,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         UniqueId newid = GENERATE_UNIQUE_IDENTITY();
 
         TimepipeDesc desc;

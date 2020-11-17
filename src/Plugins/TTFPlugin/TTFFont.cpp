@@ -108,12 +108,37 @@ namespace Mengine
 
         FT_Face face = data->getFTFace();
 
+        FT_Error err_code = FT_Set_Pixel_Sizes( face, 0, m_height );
+
+        if( err_code != FT_Err_Ok )
+        {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid set pixel sizes '%u' error [%s]"
+                , this->getName().c_str()
+                , m_height
+                , err_message
+            );
+
+            return false;
+        }
+
         GlyphCode code = 'A';
 
         FT_UInt glyph_index = FT_Get_Char_Index( face, code );
 
-        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
+
+        if( err_code != FT_Err_Ok )
         {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%lu' error [%s]"
+                , this->getName().c_str()
+                , code
+                , err_message
+            );
+
             return false;
         }
 
@@ -413,11 +438,28 @@ namespace Mengine
 
         if( err_code != 0 )
         {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid new memory face size '%lu' error [%s]"
+                , this->getName().c_str()
+                , memory_size
+                , err_message
+            );
+
             return false;
         }
 
-        if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        err_code = FT_Select_Charmap( face, FT_ENCODING_UNICODE );
+
+        if( err_code != FT_Err_Ok )
         {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid select charmap 'FT_ENCODING_UNICODE' error [%s]"
+                , this->getName().c_str()
+                , err_message
+            );
+
             FT_Done_Face( face );
 
             return false;
@@ -427,8 +469,18 @@ namespace Mengine
 
         int32_t fe_height = (int32_t)(m_height * sample);
 
-        if( FT_Set_Pixel_Sizes( face, 0, fe_height ) != FT_Err_Ok )
+        err_code = FT_Set_Pixel_Sizes( face, 0, fe_height );
+
+        if( err_code != FT_Err_Ok )
         {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid set pixel sizes '%d' error [%s]"
+                , this->getName().c_str()
+                , fe_height
+                , err_message
+            );
+
             FT_Done_Face( face );
 
             return false;
@@ -442,11 +494,16 @@ namespace Mengine
 
             FT_UInt glyph_index = FT_Get_Char_Index( face, ttf_code );
 
-            if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+            err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
+
+            if( err_code != FT_Err_Ok )
             {
-                LOGGER_ERROR( "ttf font '%s' not found glyph code '%lu'"
+                const Char * err_message = FT_Error_String( err_code );
+
+                LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%lu' error [%s]"
                     , this->getName().c_str()
                     , ttf_code
+                    , err_message
                 );
 
                 successful = false;
@@ -543,7 +600,19 @@ namespace Mengine
         }
 
         FT_Vector ttf_kerning;
-        FT_Get_Kerning( face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
+        FT_Error err_code = FT_Get_Kerning( face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
+
+        if( err_code != FT_Err_Ok )
+        {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid get kerning code '%lu' next '%lu' error [%s]"
+                , this->getName().c_str()
+                , _code
+                , _next
+                , err_message
+            );
+        }
 
         if( ttf_kerning.x == 0 )
         {
@@ -612,11 +681,16 @@ namespace Mengine
 
         int32_t fe_height = (int32_t)(m_height * sample);
 
-        if( FT_Set_Pixel_Sizes( face, 0, fe_height ) != FT_Err_Ok )
+        FT_Error err_code = FT_Set_Pixel_Sizes( face, 0, fe_height );
+
+        if( err_code != FT_Err_Ok )
         {
-            LOGGER_ERROR( "font '%s' invalid set pixel height '%u'"
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "font '%s' invalid set pixel height '%u' error [%s]"
                 , this->getName().c_str()
                 , m_height
+                , err_message
             );
 
             return false;
@@ -624,8 +698,18 @@ namespace Mengine
 
         FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
 
-        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
+
+        if( err_code != FT_Err_Ok )
         {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%lu' error [%s]"
+                , this->getName().c_str()
+                , _code
+                , err_message
+            );
+
             return false;
         }
 

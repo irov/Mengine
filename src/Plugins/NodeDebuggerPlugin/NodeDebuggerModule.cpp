@@ -190,25 +190,21 @@ namespace Mengine
             {
                 // check if need to send data
                 m_dataMutex->lock();
-                {
-                    if( !m_outgoingPackets.empty() )
-                    {
-                        for( const NodeDebuggerPacket & p : m_outgoingPackets )
-                        {
-                            m_socket->send( p.payload.data(), p.payload.size() );
-                        }
+                Deque<NodeDebuggerPacket> outgoingPacketsAux = std::move( m_outgoingPackets );
+                m_dataMutex->unlock();
 
-                        m_outgoingPackets.clear();
+                if( outgoingPacketsAux.empty() == false )
+                {
+                    for( const NodeDebuggerPacket & p : outgoingPacketsAux )
+                    {
+                        m_socket->send( p.payload.data(), p.payload.size() );
                     }
                 }
-                m_dataMutex->unlock();
 
                 // now check if we received something (100 ms)
                 bool haveSomeData = m_socket->waitForData( 100u );
                 if( haveSomeData == true )
                 {
-                    ThreadMutexScope mutexLock( m_dataMutex );
-
                     static constexpr size_t BUFFER_SIZE = 4096;
                     uint8_t buffer[BUFFER_SIZE];
 
@@ -239,8 +235,6 @@ namespace Mengine
                 // check if we have read something
                 if( m_receivedData.size() > sizeof( PacketHeader ) )
                 {
-                    ThreadMutexScope mutexLock( m_dataMutex );
-
                     // check if we have enough data to form a packet
                     PacketHeader * hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
                     while( hdr != nullptr && hdr->compressedSize <= (m_receivedData.size() - sizeof( PacketHeader )) )
@@ -258,13 +252,15 @@ namespace Mengine
                         NodeDebuggerPacket packet;
                         this->uncompressPacket( packet, *hdr, m_receivedData.data() + sizeof( PacketHeader ) );
 
+                        m_dataMutex->lock();
                         m_incomingPackets.emplace_back( packet );
+                        m_dataMutex->unlock();
 
                         // now remove this packet data from the buffer
                         const size_t newSize = m_receivedData.size() - dataSizeWithHeader;
                         if( newSize )
                         {
-                            memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
+                            MENGINE_MEMMOVE( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
                             m_receivedData.resize( newSize );
 
                             hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
@@ -313,17 +309,32 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::updateScene()
     {
-        m_shouldUpdateScene = false;
-
         if( m_serverState == ENodeDebuggerServerState::Connected )
         {
-            this->sendArrow( m_arrow );
-            this->sendScene( m_scene );
-            this->sendPickerable( m_scene );
-            this->sendRenderable( m_scene );
-            this->sendSettings();
-            this->sendMemory();
-            this->sendObjectsLeak();
+            if( m_currentTab == "scene" )
+            {
+                this->sendArrow( m_arrow );
+                this->sendScene( m_scene );
+                this->sendPickerable( m_scene );
+                this->sendRenderable( m_scene );
+            }
+
+            if( m_currentTab == "settings" )
+            {
+                this->sendSettings();
+            }
+
+            if( m_currentTab == "memory" )
+            {
+                this->sendMemory();
+            }
+
+            if( m_currentTab == "leak" )
+            {
+                this->sendObjectsLeak();
+            }
+
+            m_shouldUpdateScene = false;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -347,12 +358,18 @@ namespace Mengine
         }
         else
         {
-            ThreadMutexScope mutexLock( m_dataMutex );
-            if( !m_incomingPackets.empty() )
+            m_dataMutex->lock();
+            if( m_incomingPackets.empty() == false )
             {
-                NodeDebuggerPacket & packet = m_incomingPackets.front();
-                this->processPacket( packet );
+                NodeDebuggerPacket packet = std::move( m_incomingPackets.front() );
                 m_incomingPackets.pop_front();
+                m_dataMutex->unlock();
+
+                this->processPacket( packet );
+            }
+            else
+            {
+                m_dataMutex->unlock();
             }
         }
     }
@@ -749,7 +766,7 @@ namespace Mengine
             {
                 this->serializeAnimation( _compilable, animation, xmlElement );
             }
-        });
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode )
@@ -1183,7 +1200,7 @@ namespace Mengine
 
         uint32_t textureMemoryUse = RENDER_SYSTEM()
             ->getTextureMemoryUse();
-        
+
         payloadNode.append_attribute( "TextureMemoryUse" ).set_value( textureMemoryUse );
 
         uint32_t textureCount = RENDER_SYSTEM()
@@ -1195,7 +1212,7 @@ namespace Mengine
             ->getSourcesCount();
 
         payloadNode.append_attribute( "SoundSourcesCount" ).set_value( sourcesCount );
-        
+
         uint32_t buffersCount = SOUND_SYSTEM()
             ->getBuffersCount();
 
@@ -1354,7 +1371,15 @@ namespace Mengine
             return;
         }
 
-        if( typeStr == "Node" )
+        if( typeStr == "Tab" )
+        {
+            String tab = payloadNode.attribute( "value" ).as_string();
+
+            m_currentTab = tab;
+
+            m_shouldUpdateScene = true;
+        }
+        else if( typeStr == "Node" )
         {
             pugi::xml_node xmlNode = payloadNode.child( "Node" );
 
@@ -1667,4 +1692,5 @@ namespace Mengine
 
         m_shouldUpdateScene = true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

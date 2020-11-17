@@ -26,7 +26,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        LOGGER_INFO( "spreadingPngAlpha\n" );
+        LOGGER_INFO( "tools", "spreadingPngAlpha" );
 
         String utf8_inputFileName;
         Helper::unicodeToUtf8( pngPathIn, &utf8_inputFileName );

@@ -133,11 +133,13 @@ namespace Mengine
         ThreadJobPtr m_threadJob;
         uint32_t m_workerId;
         ThreadMutexInterfacePtr m_dataMutex;
-        ENodeDebuggerServerState m_serverState;
+        Atomic<ENodeDebuggerServerState> m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
         Blobject m_receivedData;
+        Blobject m_receivedDataAux;
         VectorNodePath m_selectedNodePath;
         ArchivatorInterfacePtr m_archivator;
+        String m_currentTab;
     };
 }

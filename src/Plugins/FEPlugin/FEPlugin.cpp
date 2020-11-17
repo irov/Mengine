@@ -62,7 +62,7 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FECustom" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<FETextFontEffectFile, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FECustom" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<FETextFontEffectCustom, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }

@@ -27,6 +27,9 @@ namespace Mengine
         uint32_t getEffectSample() const override;
         float getEffectSampleInv() const override;
 
+    public:
+        uint32_t getLayoutCount() const override;
+
     protected:
         bool compileFEBundle( fe_bundle * _bundle );
 

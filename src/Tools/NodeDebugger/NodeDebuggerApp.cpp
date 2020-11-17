@@ -70,6 +70,7 @@ namespace Mengine
         , m_serverAddressCopy()
         , m_serverPortCopy( 0 )
         , m_connectionStatus( ConnectionStatus::Disconnected )
+        , m_invalidateSelectedTab( true )
         , m_arrow( nullptr )
         , m_scene( nullptr )
         , m_scenePickerable( nullptr )
@@ -158,6 +159,7 @@ namespace Mengine
 
         // Create tabs
         m_tabs.push_back( {
+            "scene",
             "Scene Debugger",
             true,
             [this]()
@@ -165,6 +167,7 @@ namespace Mengine
             this->DoUISceneDebuggerTab();
         }} );
         m_tabs.push_back( {
+            "memory",
             "Memory",
             true,
             [this]()
@@ -172,6 +175,7 @@ namespace Mengine
             this->DoUIMemoryTab();
         }} );
         m_tabs.push_back( {
+            "leak",
             "Objects Leak",
             true,
             [this]()
@@ -179,6 +183,7 @@ namespace Mengine
             this->DoUIObjectsLeakTab();
         }} );
         m_tabs.push_back( {
+            "settings",
             "Settings",
             true,
             [this]()
@@ -308,39 +313,50 @@ namespace Mengine
         {
             if( m_incomingPackets.empty() == false )
             {
-                NodeDebuggerPacket & packet = m_incomingPackets.front();
-                this->ProcessPacket( packet );
+                NodeDebuggerPacket packet = std::move( m_incomingPackets.front() );
                 m_incomingPackets.pop_front();
+
+                this->ProcessPacket( packet );
             }
 
-            if( m_selectedNode && m_selectedNode->dirty )
+            if( m_invalidateSelectedTab == true )
             {
-                this->SendChangedNode( *m_selectedNode );
-                m_selectedNode->dirty = false;
+                this->SendChangedTab( m_selectedTab );
+
+                m_invalidateSelectedTab = false;
             }
 
-            if( m_selectedNodePath.empty() == false )
+            if( m_selectedTab == "scene" )
             {
-                this->SendNodeSelection( m_selectedNodePath );
-                m_selectedNodePath.clear();
-            }
-
-            if( m_sceneUpdateFreq > 0 )
-            {
-                m_sceneUpdateTimer += _dt;
-
-                const double updateInterval = 1.0 / static_cast<double>(m_sceneUpdateFreq);
-                if( m_sceneUpdateTimer >= updateInterval )
+                if( m_selectedNode && m_selectedNode->dirty )
                 {
-                    this->SendSceneRequest();
-                    m_sceneUpdateTimer = 0.0;
+                    this->SendChangedNode( *m_selectedNode );
+                    m_selectedNode->dirty = false;
                 }
-            }
 
-            if( m_pauseRequested == true )
-            {
-                this->SendPauseRequest();
-                m_pauseRequested = false;
+                if( m_selectedNodePath.empty() == false )
+                {
+                    this->SendNodeSelection( m_selectedNodePath );
+                    m_selectedNodePath.clear();
+                }
+
+                if( m_sceneUpdateFreq > 0 )
+                {
+                    m_sceneUpdateTimer += _dt;
+
+                    const double updateInterval = 1.0 / static_cast<double>(m_sceneUpdateFreq);
+                    if( m_sceneUpdateTimer >= updateInterval )
+                    {
+                        this->SendSceneRequest();
+                        m_sceneUpdateTimer = 0.0;
+                    }
+                }
+
+                if( m_pauseRequested == true )
+                {
+                    this->SendPauseRequest();
+                    m_pauseRequested = false;
+                }
             }
         }
     }
@@ -470,7 +486,9 @@ namespace Mengine
 
             this->DeserializeNode( xmlNode, m_arrow );
 
-            m_selectedNode = this->PathToNode( this->StringToPath( m_lastSelectedNodePath ) );
+            Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
+
+            m_selectedNode = this->PathToNode( path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1006,6 +1024,14 @@ namespace Mengine
                 {
                     if( ImGui::BeginTabItem( tab.title.c_str() ) )
                     {
+                        m_selectedTab = tab.name;
+
+                        if( m_cacheSelectedTab != m_selectedTab )
+                        {
+                            m_cacheSelectedTab = m_selectedTab;
+                            m_invalidateSelectedTab = true;
+                        }
+
                         tab.functor();
 
                         ImGui::EndTabItem();
@@ -2002,6 +2028,8 @@ namespace Mengine
             if( m_connectionStatus == ConnectionStatus::ConnectionRequested )
             {
                 this->ConnectToServer();
+
+                m_invalidateSelectedTab = true;
             }
             else if( m_connectionStatus == ConnectionStatus::DisconnectionRequested )
             {
@@ -2183,6 +2211,20 @@ namespace Mengine
 
             m_outgoingPackets.emplace_back( packet );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::SendChangedTab( const String & _tab )
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Tab" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        payloadNode.append_attribute( "value" ).set_value( _tab.c_str() );
+
+        this->SendXML( doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::SendChangedNode( const DebuggerNode & _node )

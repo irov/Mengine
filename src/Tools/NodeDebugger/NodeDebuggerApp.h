@@ -399,6 +399,7 @@ namespace Mengine
     {
         using TabFunctor = std::function<void()>;
 
+        String      name;
         String      title;
         bool        enabled;
         TabFunctor  functor;
@@ -468,6 +469,7 @@ namespace Mengine
         void SendNetworkData();
         void ReceiveNetworkData();
         void SendXML( const pugi::xml_document & _doc );
+        void SendChangedTab( const String & _tab );
         void SendChangedNode( const DebuggerNode & _node );
         void SendNodeSelection( const String & _path );
 
@@ -525,6 +527,10 @@ namespace Mengine
 
         std::thread m_networkThread;
         std::mutex m_dataMutex;
+
+        String m_selectedTab;
+        String m_cacheSelectedTab;
+        bool m_invalidateSelectedTab;
 
         DebuggerNode * m_arrow;
         DebuggerNode * m_scene;

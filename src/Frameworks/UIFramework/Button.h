@@ -48,6 +48,7 @@ namespace Mengine
     public:
         void setStateNode( EButtonState _state, const NodePtr & _node, bool _attach );
         const NodePtr & getStateNode( EButtonState _state ) const;
+        void clearStates();
 
     protected:
         bool _activate() override;

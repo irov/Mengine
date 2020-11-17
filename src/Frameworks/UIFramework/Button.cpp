@@ -59,7 +59,15 @@ namespace Mengine
     const NodePtr & Button::getStateNode( EButtonState _state ) const
     {
         return m_nodes[_state];
-;    }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Button::clearStates()
+    {
+        for( uint32_t index = 0; index != __EBS_MAX__; ++index )
+        {
+            m_nodes[index] = nullptr;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Button::_activate()
     {

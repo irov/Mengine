@@ -82,7 +82,7 @@ namespace Mengine
             , m_line
             , m_method
             , message
-            , _hr
+            , (uint32_t)_hr
             );
 
         return true;

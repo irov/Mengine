@@ -7,6 +7,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/Contentable.h"
 
 #include "math/uv4.h"
 
@@ -16,33 +17,7 @@ namespace Mengine
     class UnknownTTFFontInterface
         : public UnknownInterface
     {
-    public:
-        virtual void setSystem( bool _system ) = 0;
-        virtual bool getSystem() const = 0;
-
-        virtual void setTTFPath( const FilePath & _ttfPath ) = 0;
-        virtual const FilePath & getTTFPath() const = 0;
-
-        virtual void setTTFFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
-        virtual const FileGroupInterfacePtr & getTTFFileGroup() const = 0;
-
-        virtual void setTTFFEPath( const FilePath & _ttfPath ) = 0;
-        virtual const FilePath & getTTFFEPath() const = 0;
-
-        virtual void setTTFFEName( const ConstString & _ttfPath ) = 0;
-        virtual const ConstString & getTTFFEName() const = 0;
-
-        virtual void setTTFFEFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
-        virtual const FileGroupInterfacePtr & getTTFFEFileGroup() const = 0;
-
-        virtual void setFESample( uint32_t _FESample ) = 0;
-        virtual uint32_t getFESample() const = 0;
-
-        virtual void setFECustomString( const String & _FECustomString ) = 0;
-        virtual const String & getFECustomString() const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<UnknownTTFFontInterface> UnknownTTFFontInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TTFTextureGlyphProviderInterface
         : public Mixin
@@ -63,7 +38,4 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define TTFATLAS_SERVICE()\
     ((Mengine::TTFAtlasServiceInterface *)SERVICE_GET(Mengine::TTFAtlasServiceInterface))
-//////////////////////////////////////////////////////////////////////////
-#define TTFFONT_SERVICE()\
-    ((Mengine::TTFFontManagerInterface *)SERVICE_GET(Mengine::TTFFontManagerInterface))
 //////////////////////////////////////////////////////////////////////////

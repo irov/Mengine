@@ -1,5 +1,7 @@
 #include "XlsScriptLogger.h"
 
+#include "Interface/LoggerServiceInterface.h"
+
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
@@ -64,7 +66,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void XlsScriptLogger::write( const Char * _msg, uint32_t _size )
     {
-        LOGGER_VERBOSE_LEVEL( ConstString::none(), m_level, m_color, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ).logMessage( _msg, _size );
+        LOGGER_SERVICE()
+            ->logMessage( m_level, 0, m_color, _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsScriptLogger::setSoftspace( int32_t _softspace )

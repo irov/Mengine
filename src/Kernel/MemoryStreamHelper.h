@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/FilePath.h"
@@ -13,8 +14,9 @@ namespace Mengine
     {        
         MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentPtr & _doc );
-        MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentPtr & _doc );
+        MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentPtr & _doc );        
         MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc );
+        MemoryInterfacePtr createMemoryContent( const ContentInterface * _content, bool _stream, bool _share, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryBuffer( size_t _size, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentPtr & _doc );

@@ -144,9 +144,11 @@ namespace Mengine
 
         m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
-#ifndef _WIN64
+#ifdef MENGINE_PLATFORM_WINDOWS32
         m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#else
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
         m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
 
@@ -184,9 +186,15 @@ namespace Mengine
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
 
-#ifdef _WIN32
+#ifdef MENGINE_PLATFORM_WINDOWS32
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
+
+
 
             m_touchpad = true;
             m_desktop = false;
@@ -848,7 +856,7 @@ namespace Mengine
 
                 Win32Platform * app = (Win32Platform *)createStruct->lpCreateParams;
 
-#ifdef _WIN64
+#ifdef MENGINE_PLATFORM_WINDOWS64
                 ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
 #else
                 ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG)app );
@@ -904,7 +912,7 @@ namespace Mengine
                 DWORD flagActive = LOWORD( wParam );
                 BOOL minimized = (BOOL)HIWORD( wParam );
 
-                LOGGER_INFO( "platform", "WND WM_ACTIVATE active [%u] minimized [%u] visible [%u]"
+                LOGGER_INFO( "platform", "WND WM_ACTIVATE active [%lu] minimized [%u] visible [%u]"
                     , flagActive
                     , minimized
                     , ::IsWindowVisible( hWnd )
@@ -2798,7 +2806,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////        
-#if defined _DEBUG && (defined _M_IX86 || defined _M_X64 || defined _M_IA64) && defined WIN32
+#if defined MENGINE_PLATFORM_WINDOWS
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -3996,4 +4004,5 @@ namespace Mengine
 
         return time;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

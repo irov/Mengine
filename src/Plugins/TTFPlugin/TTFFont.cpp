@@ -133,7 +133,7 @@ namespace Mengine
         {
             const Char * err_message = FT_Error_String( err_code );
 
-            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%lu' error [%s]"
+            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%u' error [%s]"
                 , this->getName().c_str()
                 , code
                 , err_message
@@ -440,7 +440,7 @@ namespace Mengine
         {
             const Char * err_message = FT_Error_String( err_code );
 
-            LOGGER_ERROR( "ttf font '%s' invalid new memory face size '%lu' error [%s]"
+            LOGGER_ERROR( "ttf font '%s' invalid new memory face size '%zu' error [%s]"
                 , this->getName().c_str()
                 , memory_size
                 , err_message
@@ -606,7 +606,7 @@ namespace Mengine
         {
             const Char * err_message = FT_Error_String( err_code );
 
-            LOGGER_ERROR( "ttf font '%s' invalid get kerning code '%lu' next '%lu' error [%s]"
+            LOGGER_ERROR( "ttf font '%s' invalid get kerning code '%u' next '%u' error [%s]"
                 , this->getName().c_str()
                 , _code
                 , _next
@@ -704,7 +704,7 @@ namespace Mengine
         {
             const Char * err_message = FT_Error_String( err_code );
 
-            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%lu' error [%s]"
+            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%u' error [%s]"
                 , this->getName().c_str()
                 , _code
                 , err_message

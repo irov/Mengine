@@ -276,7 +276,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "option '%s' invalid cast to uint32_t value '%s'"
                     , _key
-                    , op.value
+                    , op.value[0]
                 );
 
                 return 0;

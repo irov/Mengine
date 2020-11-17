@@ -126,6 +126,12 @@
 #if defined(_WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #   define MENGINE_PLATFORM_DESKTOP
+
+#   if defined(_WIN64)
+#       define MENGINE_PLATFORM_WINDOWS64
+#   else
+#       define MENGINE_PLATFORM_WINDOWS32
+#   endif
 #elif defined(__linux__) && !defined(__ANDROID__)
 #   define MENGINE_PLATFORM_LINUX
 #   define MENGINE_PLATFORM_DESKTOP

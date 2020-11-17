@@ -37,7 +37,6 @@ namespace Mengine
         , m_ttfHeight( 0.f )
         , m_ttfBearingYA( 0.f )
         , m_ttfSpacing( 0.f )
-        , m_ttfLayoutCount( 1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -74,6 +73,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_dataTTF == nullptr );
 
         this->clearGlyphs_();
+
+        m_effect = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::isValid()
@@ -321,7 +322,9 @@ namespace Mengine
 
         if( glyph_bitmap.width == 0 || glyph_bitmap.rows == 0 )
         {
-            for( uint32_t index = 0; index != m_ttfLayoutCount; ++index )
+            uint32_t layoutCount = this->getLayoutCount();
+
+            for( uint32_t index = 0; index != layoutCount; ++index )
             {
                 TTFGlyphQuad & quad = ttf_glyph.quads[index];
 
@@ -390,10 +393,7 @@ namespace Mengine
     {
         const ContentInterface * content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        MemoryInterfacePtr memory = Helper::createMemoryFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr memory = Helper::createMemoryContent( content, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( memory == nullptr )
         {
@@ -418,6 +418,8 @@ namespace Mengine
 
         if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
         {
+            FT_Done_Face( face );
+
             return false;
         }
 
@@ -427,18 +429,16 @@ namespace Mengine
 
         if( FT_Set_Pixel_Sizes( face, 0, fe_height ) != FT_Err_Ok )
         {
+            FT_Done_Face( face );
+
             return false;
         }
 
         bool successful = true;
 
-        for( U32String::const_iterator
-            it = _codes.begin(),
-            it_end = _codes.end();
-            it != it_end;
-            ++it )
+        for( Char32 ch : _codes )
         {
-            FT_ULong ttf_code = (FT_ULong)*it;
+            FT_ULong ttf_code = (FT_ULong)ch;
 
             FT_UInt glyph_index = FT_Get_Char_Index( face, ttf_code );
 
@@ -456,7 +456,7 @@ namespace Mengine
 
             FT_GlyphSlot glyph = face->glyph;
 
-            FT_Bitmap bitmap = glyph->bitmap;
+            const FT_Bitmap & bitmap = glyph->bitmap;
 
             uint8_t pixel_mode = bitmap.pixel_mode;
 
@@ -559,7 +559,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TTFFont::getLayoutCount() const
     {
-        return m_ttfLayoutCount;
+        if( m_effect != nullptr )
+        {
+            uint32_t layoutCount = m_effect->getLayoutCount();
+
+            return layoutCount;
+        }
+
+        return 1;
     }
     //////////////////////////////////////////////////////////////////////////
     float TTFFont::getFontAscent() const
@@ -644,26 +651,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TTFFont::getSample() const
     {
-        if( m_effect == nullptr )
+        if( m_effect != nullptr )
         {
-            return 1;
+            uint32_t sample = m_effect->getEffectSample();
+
+            return sample;
         }
 
-        uint32_t sample = m_effect->getEffectSample();
-
-        return sample;
+        return 1;
     }
     //////////////////////////////////////////////////////////////////////////
     float TTFFont::getSampleInv() const
     {
-        if( m_effect == nullptr )
+        if( m_effect != nullptr )
         {
-            return 1.f;
+            float sample = m_effect->getEffectSampleInv();
+
+            return sample;
         }
 
-        float sample = m_effect->getEffectSampleInv();
-
-        return sample;
+        return 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
 }

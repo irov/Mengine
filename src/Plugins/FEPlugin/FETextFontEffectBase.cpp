@@ -43,6 +43,11 @@ namespace Mengine
         return m_effectSampleInv;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t FETextFontEffectBase::getLayoutCount() const
+    {
+        return m_layoutCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FETextFontEffectBase::compileFEBundle( fe_bundle * _bundle )
     {
         fe_effect * effect = fe_bundle_get_effect_by_name( _bundle, m_effectName.c_str() );
@@ -64,16 +69,18 @@ namespace Mengine
 
         for( int32_t i = 0; i != FE_MAX_PINS; ++i )
         {
-            const fe_pin & pin = effect_node_out->in[i];
+            int32_t index = FE_MAX_PINS - i - 1;
 
-            const fe_node * effect_node_layout = pin.node;
+            const fe_pin & pin = effect_node_out->in[index];
 
-            if( effect_node_layout == nullptr )
+            const fe_node * pin_node = pin.node;
+
+            if( pin_node == nullptr )
             {
                 continue;
             }
 
-            m_effectNodes[layoutCount] = effect_node_layout;
+            m_effectNodes[layoutCount] = pin_node;
 
             ++layoutCount;
         }

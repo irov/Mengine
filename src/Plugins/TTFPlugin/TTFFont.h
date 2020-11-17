@@ -100,15 +100,11 @@ namespace Mengine
 
         TextFontEffectInterfacePtr m_effect;
 
-        String m_FECustomString;
-
         float m_ttfAscender;
         float m_ttfDescender;
         float m_ttfHeight;
         float m_ttfBearingYA;
         float m_ttfSpacing;
-
-        uint32_t m_ttfLayoutCount;
 
         struct TTFGlyphQuad
         {

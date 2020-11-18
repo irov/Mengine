@@ -128,10 +128,6 @@ namespace Mengine
         virtual void _freeze( bool _value );
 
     public:
-        void setSpeedFactor( float _speedFactor );
-        float getSpeedFactor() const;
-
-    public:
         void _hierarchySetParent( Node * _newParent ) override;
         void _hierarchyRemoveParent( Node * _oldParent ) override;
         void _hierarchyChangeParent( Node * _oldParent, Node * _newParent ) override;

@@ -2,7 +2,7 @@
 
 #include "Interface/ResourceBankInterface.h"
 
-#include "Kernel/Hashtable.h"
+#include "Kernel/Hashtable2.h"
 
 namespace Mengine
 {
@@ -42,7 +42,7 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
         
-        typedef Hashtable<ConstString, ResourcePtrView> HashtableResources;
+        typedef Hashtable2<ConstString, ConstString, ResourcePtrView> HashtableResources;
         HashtableResources m_resources;
 
         friend class Resource;

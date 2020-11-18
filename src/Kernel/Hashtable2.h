@@ -110,6 +110,18 @@ namespace Mengine
             return element;
         }
 
+        element_type_ptr erase( const value_type & _value )
+        {
+            if( m_size == 0 )
+            {
+                return nullptr;
+            }
+
+            element_type_ptr element = this->pop_( _value.hash, _value.key1, _value.key2 );
+
+            return element;
+        }
+
         const element_type_ptr & find( const key_type1 & _key1, const key_type2 & _key2 ) const
         {
             if( m_size == 0 )
@@ -727,6 +739,18 @@ namespace Mengine
             hash_type hash = Hashtable2::get_hash_key( _key1, _key2 );
 
             element_type_ptr element = this->pop_( hash, _key1, _key2 );
+
+            return element;
+        }
+
+        element_type_ptr erase( const value_type & _value )
+        {
+            if( m_size == 0 )
+            {
+                return nullptr;
+            }
+
+            element_type_ptr element = this->pop_( _value.hash, _value.key1 );
 
             return element;
         }

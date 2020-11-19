@@ -62,6 +62,8 @@ Tasks
     TaskTransformationTranslate.h
     TaskTransformationTranslateTime.h
     TaskTransformationTranslateTime.cpp
+    TaskTransformationTranslateTimeWithSkip.h
+    TaskTransformationTranslateTimeWithSkip.cpp
     TaskColorableAlphaTime.h
     TaskColorableAlphaTime.cpp
     TaskAnimatablePlay.cpp

@@ -48,6 +48,7 @@ namespace Mengine
     public:
         bool remove( UniqueId _id ) override;
         void removeAll() override;
+        void cancelAll() override;
 
         bool freeze( UniqueId _id, bool _freeze ) override;
         void freezeAll( bool _freeze ) override;

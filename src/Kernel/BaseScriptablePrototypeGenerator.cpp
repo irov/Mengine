@@ -5,6 +5,7 @@
 #include "Interface/NotificatorInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionObservable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -17,6 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseScriptablePrototypeGenerator::~BaseScriptablePrototypeGenerator()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "BaseScriptablePrototypeGenerator" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ScriptWrapperInterfacePtr & BaseScriptablePrototypeGenerator::getScriptWrapper() const

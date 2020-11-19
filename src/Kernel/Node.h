@@ -80,6 +80,12 @@ namespace Mengine
     protected:
         void visitChildren( const VisitorPtr & _visitor );
 
+    public:
+        void dispose();
+
+    protected:
+        virtual void _dispose();
+
     protected:
         void _destroy() override;
 

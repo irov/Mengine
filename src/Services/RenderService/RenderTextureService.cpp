@@ -313,6 +313,12 @@ namespace Mengine
             }
         }
 
+        LOGGER_INFO( "texture", "load texture '%s:%s' codec '%s'"
+            , _fileGroup->getName().c_str()
+            , _filePath.c_str()
+            , _codecType.c_str()
+        );
+
         DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageProvider, "invalid create render image provider" );

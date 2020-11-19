@@ -878,7 +878,14 @@ namespace Mengine
                     scene->setBehavior( behavior );
                 }
 
-                scene->onCreate();
+                if( scene->create() == false )
+                {
+                    LOGGER_ERROR( "invalid create scene '%s'"
+                        , _name.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 return scene;
             }
@@ -1020,9 +1027,7 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "invalid take None object" );
 
-                _node->disable();
-                _node->removeFromParent();
-                _node->unwrap();
+                _node->dispose();
             }
             //////////////////////////////////////////////////////////////////////////
             NodePtr s_createNode( const ConstString & _type )

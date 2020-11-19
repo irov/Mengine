@@ -3,6 +3,7 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionObservable.h"
 
 namespace Mengine
 {
@@ -13,6 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceUselessCompileChecker::~ResourceUselessCompileChecker()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "ResourceUselessCompileChecker" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceUselessCompileChecker::initialize()

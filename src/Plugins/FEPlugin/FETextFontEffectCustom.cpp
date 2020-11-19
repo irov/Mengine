@@ -15,6 +15,23 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void FETextFontEffectCustom::setFECustom( const MemoryInterfacePtr & _memory )
+    {
+        m_memory = _memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const MemoryInterfacePtr & FETextFontEffectCustom::getFECustom() const
+    {
+        return m_memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FETextFontEffectCustom::isValid() const
+    {
+        //ToDo
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FETextFontEffectCustom::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_memory );
@@ -40,23 +57,6 @@ namespace Mengine
     {
         fe_bundle_free( m_bundle );
         m_bundle = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FETextFontEffectCustom::setFECustom( const MemoryInterfacePtr & _memory )
-    {
-        m_memory = _memory;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const MemoryInterfacePtr & FETextFontEffectCustom::getFECustom() const
-    {
-        return m_memory;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool FETextFontEffectCustom::isValid() const
-    {
-        //Empty
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

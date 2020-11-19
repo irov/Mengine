@@ -29,6 +29,9 @@ namespace Mengine
 
     protected:
         bool isValid() const override;
+
+    protected:
+        FEDataInterfacePtr m_data;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FETextFontEffectFile> FETextFontEffectFilePtr;

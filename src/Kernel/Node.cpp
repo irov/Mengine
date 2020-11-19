@@ -32,6 +32,22 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::dispose()
+    {
+        this->removeFromParent();
+        this->disable();
+        this->release();
+
+        this->_dispose();
+
+        this->unwrap();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_dispose()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::_destroy()
     {
         this->release();

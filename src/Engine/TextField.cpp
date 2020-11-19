@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionObservable.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
@@ -56,6 +57,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TextField::~TextField()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "text field '%s'"
+            , this->getName().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_activate()

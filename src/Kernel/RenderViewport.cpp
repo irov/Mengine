@@ -3,6 +3,8 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Kernel/AssertionObservable.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -14,6 +16,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderViewport::~RenderViewport()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "viewport '%s'"
+            , this->getName().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderViewport::_activate()

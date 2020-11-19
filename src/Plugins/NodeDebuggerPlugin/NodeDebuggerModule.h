@@ -118,7 +118,8 @@ namespace Mengine
 
     protected:
         void notifyChangeArrow( const ArrowPtr & _arrow );
-        void notifyChangeScene( const ScenePtr & _scene );
+        void notifyChangeSceneComplete( const ScenePtr & _scene );
+        void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
         void notifyIncrefFactoryGeneration( uint32_t _generator );
 

@@ -6,6 +6,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Dataflow.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -33,14 +34,24 @@ namespace Mengine
 
         fe_bundle * bundle = data->getFEBundle();
 
-        bool successful = this->compileFEBundle( bundle );
+        if( this->compileFEBundle( bundle ) == false )
+        {
+            LOGGER_ERROR( "invalid compile text font effect '%s:%s'"
+                , fileGroup->getName().c_str()
+                , filePath.c_str()
+            );
 
-        return successful;
+            return false;
+        }
+
+        m_data = data;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FETextFontEffectFile::_release()
     {
-        //Empty
+        m_data = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FETextFontEffectFile::_prefetch( const PrefetcherObserverInterfacePtr & _observer )

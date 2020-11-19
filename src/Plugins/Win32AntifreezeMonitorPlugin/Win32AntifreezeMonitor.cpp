@@ -16,6 +16,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionObservable.h"
 
 #include "Kernel/Stringstream.h"
 
@@ -35,6 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32AntifreezeMonitor::~Win32AntifreezeMonitor()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "Win32AntifreezeMonitor" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::initialize()

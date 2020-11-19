@@ -641,7 +641,7 @@ namespace Mengine
         {
             const Movie2SlotPtr & slot = value.element;
 
-            slot->removeFromParent();
+            slot->dispose();
             slot->removeChildren( []( const NodePtr & )
             {} );
         }
@@ -653,7 +653,10 @@ namespace Mengine
             const HotSpotPolygonPtr & hotspot = value.element;
             EventationInterface * eventation = hotspot->getEventation();
             eventation->removeEvents();
-            hotspot->removeFromParent();
+            hotspot->dispose();
+            hotspot->removeChildren( []( const NodePtr & )
+            {} );
+
         }
 
         m_sockets.clear();
@@ -661,7 +664,7 @@ namespace Mengine
         for( const HashtableTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.element;
-            text->removeFromParent();
+            text->dispose();
             text->removeChildren( []( const NodePtr & )
             {} );
         }
@@ -671,7 +674,7 @@ namespace Mengine
         for( const HashtableSprites::value_type & value : m_sprites )
         {
             const ShapeQuadFixedPtr & sprite = value.element;
-            sprite->removeFromParent();
+            sprite->dispose();
             sprite->removeChildren( []( const NodePtr & )
             {} );
         }
@@ -682,7 +685,7 @@ namespace Mengine
         {
             const NodePtr & astralaxEmitter = value.element;
 
-            astralaxEmitter->removeFromParent();
+            astralaxEmitter->dispose();
             astralaxEmitter->removeChildren( []( const NodePtr & )
             {} );
         }
@@ -2104,9 +2107,10 @@ namespace Mengine
 
         Camera & c = it_found->second;
 
-        c.projection->removeFromParent();
+        c.projection->dispose();
         c.projection = nullptr;
-        c.viewport->removeFromParent();
+
+        c.viewport->dispose();
         c.viewport = nullptr;
 
         m_cameras.erase( it_found );

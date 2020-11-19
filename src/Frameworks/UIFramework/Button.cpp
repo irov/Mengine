@@ -61,11 +61,17 @@ namespace Mengine
         return m_nodes[_state];
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::clearStates()
+    void Button::_dispose()
     {
         for( uint32_t index = 0; index != __EBS_MAX__; ++index )
         {
             m_nodes[index] = nullptr;
+        }
+
+        if( m_semaphoreBlock != nullptr )
+        {
+            m_semaphoreBlock->clearObserverProviders();
+            m_semaphoreBlock = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////

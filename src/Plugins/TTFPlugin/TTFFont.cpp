@@ -19,6 +19,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionObservable.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "utf8.h"
@@ -42,6 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFFont::~TTFFont()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "ttf font '%s'"
+            , this->getName().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::setFTLibrary( FT_Library _ftlibrary )
@@ -70,7 +74,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
-        MENGINE_ASSERTION_FATAL( m_dataTTF == nullptr );
+        //MENGINE_ASSERTION_FATAL( m_dataTTF == nullptr );
 
         this->clearGlyphs_();
 

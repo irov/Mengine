@@ -3,6 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Observable.h"
+#include "Kernel/AssertionObservable.h"
 
 namespace Mengine
 {
@@ -22,6 +23,9 @@ namespace Mengine
 
         ~ServiceBase() override
         {
+            MENGINE_ASSERTION_OBSERVABLE( this, "service '%s'"
+                , T::getStaticServiceID()
+            );
         }
 
     private:

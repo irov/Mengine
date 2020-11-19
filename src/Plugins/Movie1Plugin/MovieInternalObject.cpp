@@ -130,7 +130,7 @@ namespace Mengine
     {
         Node::_deactivate();
 
-        m_internalNode->removeFromParent();
+        m_internalNode->dispose();
         m_internalNode = nullptr;
 
         EVENTABLE_OTHER_METHOD( m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL )

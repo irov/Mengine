@@ -117,9 +117,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_destroyEntity( const EntityPtr & _entity )
         {
-            _entity->disable();
-            _entity->removeFromParent();
-            _entity->onDestroy();
+            _entity->dispose();
         }
         //////////////////////////////////////////////////////////////////////////
         pybind::object s_importEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )

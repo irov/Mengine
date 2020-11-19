@@ -1983,5 +1983,6 @@ namespace Mengine
 
         mt::transpose_m4_m4( m_totalWVPInvMatrix, totalWVPMatrix );
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

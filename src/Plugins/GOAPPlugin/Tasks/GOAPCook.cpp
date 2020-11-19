@@ -24,6 +24,7 @@
 #include "TaskTransformationScaleTime.h"
 #include "TaskTransformationTranslate.h"
 #include "TaskTransformationTranslateTime.h"
+#include "TaskTransformationTranslateTimeWithSkip.h"
 #include "TaskAnimatablePlay.h"
 #include "TaskAnimatablePlayWait.h"
 #include "TaskAnimatableStop.h"
@@ -146,6 +147,11 @@ namespace Mengine
         void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationTranslateTime>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addTransformationTranslateTimeWithSkip( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
+        {
+            Cook::addTask<TaskTransformationTranslateTimeWithSkip>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc )

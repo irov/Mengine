@@ -248,6 +248,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Scheduler::cancelAll()
+    {
+        m_schedulers.clear();
+        m_schedulersAdd.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Scheduler::removeScheduler_( SchedulerEventDesc * const _event )
     {
         if( _event->dead == true )

@@ -28,6 +28,9 @@ namespace Mengine
         void removeObserver( uint32_t _id, Observable * _observer ) override;
 
     public:
+        bool hasObserver( Observable * _observer ) const override;
+
+    public:
         bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
 
     public:

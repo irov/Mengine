@@ -119,6 +119,24 @@ namespace Mengine
         this->removeObserver_( _id, _observer );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool NotificationService::hasObserver( Observable * _observer ) const
+    {
+        for( const VectorObservers & observers : m_observes )
+        {
+            for( const ObserverDesc & desc : observers )
+            {
+                if( desc.observer != _observer )
+                {
+                    continue;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool NotificationService::visitObservers( uint32_t _id, const LambdaObserver & _lambda )
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );

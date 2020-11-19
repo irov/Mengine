@@ -23,6 +23,8 @@ namespace Mengine
     {
         ResourceTexturepacker * resource = stdex::intrusive_get<ResourceTexturepacker *>( _loadable );
 
+        const ConstString & groupName = resource->getGroupName();
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker *>(_meta);
 
@@ -31,7 +33,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourcePtr & resourceJSON = resourceBank->getResourceReference( resourceJSONName );
+        const ResourcePtr & resourceJSON = resourceBank->getResourceReference( groupName, resourceJSONName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()
@@ -41,7 +43,7 @@ namespace Mengine
 
         resource->setResourceJSON( resourceJSON );
 
-        const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( resourceImageName );
+        const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( groupName, resourceImageName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()

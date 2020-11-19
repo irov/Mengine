@@ -2,6 +2,8 @@
 
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Kernel/AssertionObservable.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,6 +15,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ModuleBase::~ModuleBase()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "module '%s'"
+            , this->getName().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::setName( const ConstString & _name )

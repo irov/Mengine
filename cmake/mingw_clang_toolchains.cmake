@@ -1,7 +1,7 @@
 set(CMAKE_CROSSCOMPILING TRUE)
 
 if(NOT DEFINED ENV{MINGW32_ROOT})
-    message(FATAL_ERROR "Required ENV variable MINGW_ROOT does not exists")
+    message(FATAL_ERROR "Required ENV variable MINGW32_ROOT does not exists")
 else()
     SET(MINGW_ROOT $ENV{MINGW32_ROOT})
 endif()

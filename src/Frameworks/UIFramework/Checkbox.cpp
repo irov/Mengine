@@ -85,6 +85,29 @@ namespace Mengine
         return m_nodes[index][_state];
     }
     //////////////////////////////////////////////////////////////////////////
+    void Checkbox::_dispose()
+    {
+        m_pickerable = nullptr;
+
+        for( uint32_t index = 0; index != __ECS_MAX__; ++index )
+        {
+            m_nodes[0][index] = nullptr;
+            m_nodes[1][index] = nullptr;
+        }
+
+        if( m_semaphoreBlock != nullptr )
+        {
+            m_semaphoreBlock->clearObserverProviders();
+            m_semaphoreBlock = nullptr;
+        }
+
+        if( m_semaphoreValue != nullptr )
+        {
+            m_semaphoreValue->clearObserverProviders();
+            m_semaphoreValue = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Checkbox::_activate()
     {
         const NodePtr & nodeUnselectIdle = m_nodes[0][ECS_IDLE];

@@ -115,4 +115,5 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_attributes.size() < 64 );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

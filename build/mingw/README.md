@@ -9,3 +9,4 @@ pacman -S mingw-w64-i686-clang
 pacman -S mingw-w64-i686-lld
 pacman -S mingw-w64-i686-ninja
 pacman -S mingw-w64-i686-cmake
+pacman -S mingw-w64-i686-gdb

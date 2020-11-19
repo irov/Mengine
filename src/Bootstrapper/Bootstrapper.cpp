@@ -425,6 +425,12 @@ namespace Mengine
 
         LOGGER_INFO( "bootstrapper", "bootstrapper run" );
 
+        LOGGER_SERVICE()
+            ->setHistorically( false );
+
+        LOGGER_SERVICE()
+            ->clearHistory();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -972,25 +978,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createDynamicDevPlugins_()
     {
-#ifdef MENGINE_MASTER_RELEASE
-        bool devplugins = false;
-#else
-#ifdef MENGINE_DEBUG
-        bool devplugins = true;
-#else
-        bool developmentMode = Helper::isDevelopmentMode();
-        bool devplugins = developmentMode;
-#endif
-#endif
+        bool devplugins = MENGINE_MASTER_VALUE( false, Helper::isDevelopmentMode() );
 
         if( HAS_OPTION( "devplugins" ) == true )
         {
             devplugins = true;
         }
 
-        bool nodevplugins = HAS_OPTION( "nodevplugins" );
+        if( HAS_OPTION( "nodevplugins" ) == true )
+        {
+            devplugins = false;
+        }
 
-        if( devplugins == true && nodevplugins == false )
+        if( devplugins == true )
         {
             VectorString devPlugins;
             CONFIG_VALUES( "DevPlugins", "Name", &devPlugins );
@@ -1020,7 +1020,7 @@ namespace Mengine
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "failed to load plugin '%s'"
+                LOGGER_CRITICAL( "failed to load priority plugin '%s'"
                     , pluginName.c_str()
                 );
 
@@ -1033,25 +1033,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createDynamicPriorityDevPlugins_()
     {
-#ifdef MENGINE_MASTER_RELEASE
-        bool devplugins = false;
-#else
-#ifdef MENGINE_DEBUG
-        bool devplugins = true;
-#else
-        bool developmentMode = Helper::isDevelopmentMode();
-        bool devplugins = developmentMode;
-#endif
-#endif
+        bool devplugins = MENGINE_MASTER_VALUE( false, Helper::isDevelopmentMode() );
 
         if( HAS_OPTION( "devplugins" ) == true )
         {
             devplugins = true;
         }
 
-        bool nodevplugins = HAS_OPTION( "nodevplugins" );
+        if( HAS_OPTION( "nodevplugins" ) == true )
+        {
+            devplugins = false;
+        }
 
-        if( devplugins == true && nodevplugins == false )
+        if( devplugins == true )
         {
             VectorString devPlugins;
             CONFIG_VALUES( "PriorityDevPlugins", "Name", &devPlugins );

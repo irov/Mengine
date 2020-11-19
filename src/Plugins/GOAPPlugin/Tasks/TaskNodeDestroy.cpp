@@ -16,8 +16,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _node );
 
-        m_node->removeFromParent();
-        m_node->disable();
+        m_node->dispose();
 
         return true;
     }

@@ -197,7 +197,11 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const DataflowInterfacePtr & dataflow = content->getDataflow();
 
-        Movie2DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FACTORABLE );
+        DataflowContext context;
+        context.filePath = filePath;
+        context.groupName = this->getGroupName();
+
+        Movie2DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "resource '%s' group '%s' invalid compile data"
             , this->getName().c_str()

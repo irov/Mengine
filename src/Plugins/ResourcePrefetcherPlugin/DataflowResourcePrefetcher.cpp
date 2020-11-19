@@ -30,8 +30,14 @@ namespace Mengine
         const FilePath & filePath = content->getFilePath();
         const DataflowInterfacePtr & dataflow = content->getDataflow();
 
+        const ConstString & groupName = _resource->getGroupName();
+
+        DataflowContext context;
+        context.filePath = filePath;
+        context.groupName = groupName;
+
         if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflow, _observer ) == false )
+            ->prefetchData( fileGroup, filePath, dataflow, &context, _observer ) == false )
         {
             return false;
         }

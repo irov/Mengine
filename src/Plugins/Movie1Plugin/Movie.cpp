@@ -1230,8 +1230,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieImage_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceImagePtr resourceImage = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
@@ -1264,8 +1266,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieMesh2D_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceImagePtr resourceImage = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
@@ -1291,8 +1295,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         const ResourceImageSolidPtr & resource = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "'%s' resource '%s' can't compile sprite '%s' imageSolid resource = NULL"
             , this->getName().c_str()
@@ -1329,8 +1335,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieMesh2DSolid_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceImageSolidPtr resourceImage = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
@@ -1356,8 +1364,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSocketImage_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceHITPtr resourceHIT = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT );
 
@@ -1383,8 +1393,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_hotspotresourceshape );
 
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceShapePtr resourceShape = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceShape );
 
@@ -1400,8 +1412,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieAnimation_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceImageSequencePtr resourceImageSequence = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImageSequence );
 
@@ -1446,8 +1460,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_movie );
 
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie );
 
@@ -1476,8 +1492,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_movie );
 
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie );
 
@@ -1506,8 +1524,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( movie_internal );
 
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         const ResourceInternalObjectPtr & resourceInternalObject = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceInternalObject );
 
@@ -1524,8 +1544,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieVideo_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         const ResourcePtr & resourceVideo = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceVideo );
 
@@ -1574,8 +1596,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_sound );
 
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceSoundPtr resourceSound = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceSound );
 
@@ -1609,8 +1633,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_sound );
 
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceSoundPtr resourceSound = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.name );
+            ->getResourceReference( groupName, _layer.name );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceSound );
 
@@ -1693,8 +1719,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieExtraSprite_( const MovieLayer & _layer )
     {
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         ResourceImagePtr resourceImage = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.name );
+            ->getResourceReference( groupName, _layer.name );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "movie '%s' resource '%s' layer '%s' invalid get resource for image '%s'"
             , this->getName().c_str()
@@ -1817,8 +1845,10 @@ namespace Mengine
 
         AnimationInterface * animationParticleEmitter2 = layer_particles->getAnimation();
 
+        const ConstString & groupName = m_resourceMovie->getGroupName();
+
         const ResourcePtr & resourceParticle = RESOURCE_SERVICE()
-            ->getResourceReference( _layer.source );
+            ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceParticle );
 

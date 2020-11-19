@@ -377,6 +377,7 @@ Assertion
     AssertionNode.h
     AssertionType.h
     AssertionAllocator.h
+    AssertionObservable.h
 )
 
 ADD_FILTER(

@@ -27,7 +27,7 @@ namespace Mengine
         : m_verboseLevel( LM_ERROR )
         , m_verboseFlag( 0 )
         , m_silent( false )
-        , m_historically( MENGINE_WINDOWS_DEBUG_VALUE( true, false ) )
+        , m_historically( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -229,6 +229,22 @@ namespace Mengine
     bool LoggerService::isSilent() const
     {
         return m_silent;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::setHistorically( bool _historically )
+    {
+        m_historically = _historically;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::getHistorically() const
+    {
+        return m_historically;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::clearHistory()
+    {
+        m_history.clear();
+        m_history.shrink_to_fit();
     }
     //////////////////////////////////////////////////////////////////////////
     size_t LoggerService::makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const

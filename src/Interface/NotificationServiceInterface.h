@@ -146,6 +146,9 @@ namespace Mengine
         }
 
     public:
+        virtual bool hasObserver( Observable * _observer ) const = 0;
+
+    public:
         typedef Lambda<void( const ObserverCallableInterfacePtr & )> LambdaObserver;
         virtual bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) = 0;
 

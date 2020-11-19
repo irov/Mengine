@@ -154,7 +154,7 @@ namespace Mengine
         }
 
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-            ->dataflowT<MovieFramePackInterfacePtr>( dataflow, stream, MENGINE_DOCUMENT_FACTORABLE );
+            ->dataflowT<MovieFramePackInterfacePtr>( dataflow, stream, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         if( framePack == nullptr )
         {

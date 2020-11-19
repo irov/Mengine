@@ -47,8 +47,13 @@ namespace Mengine
         const RenderCameraInterfacePtr & getPickerCamera() const override;
 
     public:
-        bool onCreate();
-        void onDestroy();
+        bool create();
+
+    protected:
+        virtual bool _create();
+
+    protected:
+        void _dispose() override;
 
     protected:
         bool _activate() override;

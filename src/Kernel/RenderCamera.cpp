@@ -3,6 +3,7 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionObservable.h"
 
 namespace Mengine
 {
@@ -16,6 +17,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderCamera::~RenderCamera()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "camera '%s'"
+            , this->getName().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderCamera::_activate()

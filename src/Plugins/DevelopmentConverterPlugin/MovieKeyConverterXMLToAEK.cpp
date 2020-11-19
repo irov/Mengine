@@ -92,7 +92,7 @@ namespace Mengine
     bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream, MENGINE_DOCUMENT_FACTORABLE );
+            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         if( framePack == nullptr )
         {
@@ -683,7 +683,7 @@ namespace Mengine
 
                     if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
                     {
-                        LOGGER_ERROR( "layer %d index overflow %d (max $d)"
+                        LOGGER_ERROR( "layer %u index overflow %u (max %u)"
                             , layerIndex
                             , shapeIndicesCount
                             , MENGINE_MOVIE_SHAPE_MAX_INDICES
@@ -758,7 +758,7 @@ namespace Mengine
 
             if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
             {
-                LOGGER_ERROR( "layer %d polygon vertex overflow %d (max $d)"
+                LOGGER_ERROR( "layer %u polygon vertex overflow %u (max %u)"
                     , layerIndex
                     , polygon_size
                     , MENGINE_MOVIE_POLYGON_MAX_VERTEX

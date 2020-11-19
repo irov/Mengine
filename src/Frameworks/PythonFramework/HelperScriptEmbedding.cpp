@@ -172,7 +172,7 @@ namespace Mengine
             {
                 LOGGER_MESSAGE_RELEASE( "debug!\n" );
 
-#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(MENGINE_PLATFORM_WINDOWS64)
                 _asm int 3;
 #endif
             }
@@ -190,7 +190,7 @@ namespace Mengine
 
                 LOGGER_MESSAGE_RELEASE( "debug once!\n" );
 
-#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(MENGINE_PLATFORM_WINDOWS64)
                 _asm int 3;
 #endif
             }
@@ -201,7 +201,7 @@ namespace Mengine
 
                 LOGGER_MESSAGE_RELEASE( "debug node!\n" );
 
-#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(MENGINE_PLATFORM_WINDOWS64)
                 _asm int 3;
 #endif
             }

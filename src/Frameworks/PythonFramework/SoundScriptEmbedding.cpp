@@ -155,8 +155,16 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool hasSound( const ConstString & _resourceName )
             {
+                ResourcePtr resource;
                 if( RESOURCE_SERVICE()
-                    ->hasResourceWithType( _resourceName, STRINGIZE_STRING_LOCAL( "ResourceSound" ), nullptr ) == false )
+                    ->hasResource( ConstString::none(), _resourceName, &resource ) == false )
+                {
+                    return false;
+                }
+
+                const ConstString & resourceType = resource->getType();
+
+                if( resourceType != STRINGIZE_STRING_LOCAL( "ResourceSound" ) )
                 {
                     return false;
                 }
@@ -173,7 +181,7 @@ namespace Mengine
                     );
 
                 const ResourceSoundPtr & resource = RESOURCE_SERVICE()
-                    ->getResource( _resourceName );
+                    ->getResource( ConstString::none(), _resourceName );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource );
 

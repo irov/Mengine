@@ -3,6 +3,8 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Kernel/AssertionObservable.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,6 +15,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderScissor::~RenderScissor()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "scissor '%s'"
+            , this->getName().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderScissor::_activate()

@@ -15,16 +15,16 @@ namespace Mengine
         FETextFontEffectCustom();
         ~FETextFontEffectCustom() override;
 
-    public:
-        bool _compile() override;
-        void _release() override;
-
     protected:
         void setFECustom( const MemoryInterfacePtr & _memory ) override;
         const MemoryInterfacePtr & getFECustom() const override;
 
     protected:
         bool isValid() const override;
+
+    public:
+        bool _compile() override;
+        void _release() override;
 
     protected:
         fe_bundle * m_bundle;

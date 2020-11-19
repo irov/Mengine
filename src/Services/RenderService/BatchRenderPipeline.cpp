@@ -625,7 +625,7 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {
-            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, dro.doc );
+            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_VALUE( dro.doc, nullptr ) );
         }
 #endif
     }
@@ -1024,4 +1024,5 @@ namespace Mengine
 
         return rp;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

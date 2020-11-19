@@ -13,6 +13,10 @@ namespace Mengine
         : public DataInterface
     {
     public:
+        virtual void setGroupName( const ConstString & _groupName ) = 0;
+        virtual const ConstString & getGroupName() const = 0;
+
+    public:
         virtual const aeMovieData * getMovieData() const = 0;
 
     public:

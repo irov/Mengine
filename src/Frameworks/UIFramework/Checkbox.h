@@ -58,6 +58,9 @@ namespace Mengine
         const NodePtr & getStateNode( bool _select, ECheckboxState _state ) const;
 
     protected:
+        void _dispose() override;
+
+    protected:
         bool _activate() override;
         void _deactivate() override;
 

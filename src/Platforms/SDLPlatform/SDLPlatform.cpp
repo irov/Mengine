@@ -834,6 +834,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SDLPlatform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         uint32_t new_id = ++m_enumerator;
 
         TimerDesc desc;

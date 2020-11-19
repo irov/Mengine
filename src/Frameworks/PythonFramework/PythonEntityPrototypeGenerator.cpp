@@ -116,7 +116,7 @@ namespace Mengine
 
         if( py_entity.is_invalid() == true )
         {
-            LOGGER_ERROR( "can't create object '%s' '%s' (invalid create) doc '%s'"
+            LOGGER_ERROR( "can't create object '%s' '%s' (invalid create) (doc: %s)"
                 , m_category.c_str()
                 , m_prototype.c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -145,7 +145,16 @@ namespace Mengine
 
         entity->setBehavior( behavior );
 
-        entity->onCreate();
+        if( entity->create() == false )
+        {
+            LOGGER_ERROR( "invalid create entity category '%s' prototype '%s' (doc: %s)"
+                , m_category.c_str()
+                , m_prototype.c_str()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
 
         return entity;
     }

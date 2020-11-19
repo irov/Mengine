@@ -80,6 +80,12 @@ namespace Mengine
     protected:
         void visitChildren( const VisitorPtr & _visitor );
 
+    public:
+        void dispose();
+
+    protected:
+        virtual void _dispose();
+
     protected:
         void _destroy() override;
 
@@ -126,10 +132,6 @@ namespace Mengine
 
     protected:
         virtual void _freeze( bool _value );
-
-    public:
-        void setSpeedFactor( float _speedFactor );
-        float getSpeedFactor() const;
 
     public:
         void _hierarchySetParent( Node * _newParent ) override;

@@ -59,7 +59,21 @@ namespace Mengine
     const NodePtr & Button::getStateNode( EButtonState _state ) const
     {
         return m_nodes[_state];
-;    }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Button::_dispose()
+    {
+        for( uint32_t index = 0; index != __EBS_MAX__; ++index )
+        {
+            m_nodes[index] = nullptr;
+        }
+
+        if( m_semaphoreBlock != nullptr )
+        {
+            m_semaphoreBlock->clearObserverProviders();
+            m_semaphoreBlock = nullptr;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Button::_activate()
     {

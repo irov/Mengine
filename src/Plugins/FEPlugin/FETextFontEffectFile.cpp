@@ -28,7 +28,10 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+        DataflowContext context;
+        context.filePath = filePath;
+
+        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data );
 
@@ -102,7 +105,10 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+        DataflowContext context;
+        context.filePath = filePath;
+
+        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         if( data == nullptr )
         {

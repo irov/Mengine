@@ -120,4 +120,5 @@ namespace Mengine
 
         DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, _totalPMWInvMatrix.buff(), 4) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

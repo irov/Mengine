@@ -65,4 +65,5 @@ namespace Mengine
     {
         DXCALL( _pD3DDevice, SetPixelShader, (m_pD3DPixelShader) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

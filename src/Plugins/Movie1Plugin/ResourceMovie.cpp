@@ -224,7 +224,10 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const DataflowInterfacePtr & dataflow = content->getDataflow();
 
-        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+        DataflowContext context;
+        context.filePath = filePath;
+
+        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "resource movie '%s' group '%s' can` t get frame pack '%s'"
             , this->getName().c_str()

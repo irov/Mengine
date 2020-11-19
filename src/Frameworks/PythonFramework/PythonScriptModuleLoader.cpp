@@ -67,7 +67,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * PythonScriptModuleLoader::load_module( pybind::kernel_interface * _kernel, PyObject * _moduleName )
     {
-        ScriptCodeDataInterfacePtr codeData = Helper::popDataflow( m_fileGroup, m_filePath, m_dataflow, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+        DataflowContext context;
+        context.filePath = m_filePath;
+
+        ScriptCodeDataInterfacePtr codeData = Helper::popDataflow( m_fileGroup, m_filePath, m_dataflow, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         if( codeData == nullptr )
         {

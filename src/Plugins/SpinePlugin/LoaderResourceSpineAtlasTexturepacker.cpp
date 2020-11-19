@@ -23,6 +23,8 @@ namespace Mengine
     {
         ResourceSpineAtlasTexturepacker * resource = stdex::intrusive_get<ResourceSpineAtlasTexturepacker *>( _loadable );
 
+        const ConstString & groupName = resource->getGroupName();
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker *>(_meta);
 
@@ -31,7 +33,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourcePtr & resourceTextupacker = resourceBank->getResourceReference( resourceTexturepackerName );
+        const ResourcePtr & resourceTextupacker = resourceBank->getResourceReference( groupName, resourceTexturepackerName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceTextupacker, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()

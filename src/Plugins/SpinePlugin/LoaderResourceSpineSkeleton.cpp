@@ -21,6 +21,8 @@ namespace Mengine
     {
         ResourceSpineSkeleton * resource = stdex::intrusive_get<ResourceSpineSkeleton *>( _loadable );
 
+        const ConstString & groupName = resource->getGroupName();
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineSkeleton * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineSkeleton *>(_meta);
 
@@ -34,7 +36,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourcePtr & resourceSpineAtlas = resourceBank->getResourceReference( resourceSpineAtlasName );
+        const ResourcePtr & resourceSpineAtlas = resourceBank->getResourceReference( groupName, resourceSpineAtlasName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()

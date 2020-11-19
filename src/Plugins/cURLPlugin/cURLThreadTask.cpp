@@ -282,4 +282,5 @@ namespace Mengine
         m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_responseStatus, m_responseError, m_responseHeaders, m_responseData, m_responseCode, _successful );
         m_receiver = nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -32,6 +32,22 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::dispose()
+    {
+        this->removeFromParent();
+        this->disable();
+        this->release();
+
+        this->_dispose();
+
+        this->unwrap();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_dispose()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::_destroy()
     {
         this->release();
@@ -61,6 +77,8 @@ namespace Mengine
 
         if( this->_activate() == false )
         {
+            this->release();
+
             return false;
         }
 
@@ -68,39 +86,40 @@ namespace Mengine
 
         m_active = true;
 
-        if( this->foreachChildrenSlugBreak( [this]( const NodePtr & _hierarchy )
+        if( this->foreachChildrenSlugBreak( []( const NodePtr & _hierarchy )
         {
-            NodePtr child = _hierarchy;
+            bool result = _hierarchy->activate();
 
-            if( child->activate() == false )
-            {
-                m_active = false;
-
-                return false;
-            }
-
-            return true;
+            return result;
         } ) == false )
         {
+            m_active = false;
+
+            this->release();
+
             return false;
         }
 
-        if( m_active == true )
+        if( m_active == false )
         {
-            m_afterActive = true;
+            this->release();
 
-            if( this->_afterActivate() == false )
-            {
-                m_afterActive = false;
-                m_active = false;
-            }
+            return false;
         }
-        else
+
+        m_afterActive = true;
+
+        if( this->_afterActivate() == false )
         {
+            m_afterActive = false;
             m_active = false;
+
+            this->release();
+
+            return false;
         }
 
-        return m_active;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::deactivate()
@@ -278,7 +297,7 @@ namespace Mengine
                 _picker->setRelationPicker( pickerParent );
             } );
         }
-    }        
+    }
     //////////////////////////////////////////////////////////////////////////
     void Node::setUniqueIdentity( UniqueId _uniqueIdentity )
     {
@@ -365,7 +384,7 @@ namespace Mengine
                 } );
             }
         }
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda )
     {
@@ -433,18 +452,6 @@ namespace Mengine
         {
             _child->freeze( _value );
         } );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setSpeedFactor( float _speedFactor )
-    {
-        MENGINE_UNUSED( _speedFactor );
-
-        //TODO: REMOVE
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Node::getSpeedFactor() const
-    {
-        return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::_activate()

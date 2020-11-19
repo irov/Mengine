@@ -40,8 +40,7 @@ namespace Mengine
             {
             case ESCT_SET:
                 {
-                    desc.scene->disable();
-                    desc.scene->onDestroy();
+                    desc.scene->dispose();
                     desc.scene = nullptr;
                 }break;
             case ESCT_RESTART:
@@ -67,6 +66,12 @@ namespace Mengine
         {
             return false;
         }
+
+        LOGGER_INFO( "scene", "set current scene '%s' immediately [%s] destroy old [%s]"
+            , _scene->getName().c_str()
+            , _immediately == true ? "True" : "False"
+            , _destroyOld == true ? "True" : "False"
+        );
 
         if( m_commands.empty() == false )
         {
@@ -108,6 +113,11 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "scene", "restart current scene '%s' immediately [%s]"
+            , m_scene->getName().c_str()
+            , _immediately == true ? "True" : "False"
+        );
+
         SceneCommandDesc desc;
         desc.type = ESCT_RESTART;
         desc.cb = _cb;
@@ -139,6 +149,11 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "scene", "remove current scene '%s' immediately [%s]"
+            , m_scene->getName().c_str()
+            , _immediately == true ? "True" : "False"
+        );
+
         SceneCommandDesc desc;
         desc.type = ESCT_REMOVE;
         desc.cb = _cb;
@@ -161,8 +176,7 @@ namespace Mengine
 
         if( m_scene != nullptr )
         {
-            m_scene->disable();
-            m_scene->onDestroy();
+            m_scene->dispose();
             m_scene = nullptr;
         }
 
@@ -286,8 +300,7 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, (destroyScene) );
 
-            destroyScene->disable();
-            destroyScene->onDestroy();
+            destroyScene->dispose();
             destroyScene = nullptr;
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_DESTROY );
@@ -323,8 +336,7 @@ namespace Mengine
 
         if( globalScene != nullptr )
         {
-            globalScene->disable();
-            globalScene->onDestroy();
+            globalScene->dispose();
             globalScene = nullptr;
         }
     }

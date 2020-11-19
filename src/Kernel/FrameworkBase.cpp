@@ -1,6 +1,7 @@
 #include "FrameworkBase.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionObservable.h"
 
 namespace Mengine
 {
@@ -14,6 +15,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FrameworkBase::~FrameworkBase()
     {
+        MENGINE_ASSERTION_OBSERVABLE( this, "framework '%s'"
+            , this->getName().c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void FrameworkBase::setName( const ConstString & _name )

@@ -6,6 +6,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Dataflow.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -27,20 +28,30 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, MENGINE_DOCUMENT_FACTORABLE );
+        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data );
 
         fe_bundle * bundle = data->getFEBundle();
 
-        bool successful = this->compileFEBundle( bundle );
+        if( this->compileFEBundle( bundle ) == false )
+        {
+            LOGGER_ERROR( "invalid compile text font effect '%s:%s'"
+                , fileGroup->getName().c_str()
+                , filePath.c_str()
+            );
 
-        return successful;
+            return false;
+        }
+
+        m_data = data;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FETextFontEffectFile::_release()
     {
-        //Empty
+        m_data = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FETextFontEffectFile::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
@@ -54,8 +65,11 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
+        DataflowContext context;
+        context.filePath = filePath;
+
         if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflow, _observer ) == false )
+            ->prefetchData( fileGroup, filePath, dataflow, &context, _observer ) == false )
         {
             return false;
         }
@@ -88,7 +102,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, MENGINE_DOCUMENT_FACTORABLE );
+        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         if( data == nullptr )
         {

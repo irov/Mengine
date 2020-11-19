@@ -2,6 +2,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
@@ -24,8 +25,12 @@ namespace Mengine
 
             entity->setBehaviorEventable( eventable );
 
-            if( entity->onCreate() == false )
+            if( entity->create() == false )
             {
+                LOGGER_ERROR( "invalid create entity (doc %s)"
+                    , MENGINE_DOCUMENT_STR( _doc )
+                );
+
                 return nullptr;
             }
 

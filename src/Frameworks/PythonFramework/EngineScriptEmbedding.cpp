@@ -878,7 +878,14 @@ namespace Mengine
                     scene->setBehavior( behavior );
                 }
 
-                scene->onCreate();
+                if( scene->create() == false )
+                {
+                    LOGGER_ERROR( "invalid create scene '%s'"
+                        , _name.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 return scene;
             }
@@ -1020,9 +1027,7 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "invalid take None object" );
 
-                _node->disable();
-                _node->removeFromParent();
-                _node->unwrap();
+                _node->dispose();
             }
             //////////////////////////////////////////////////////////////////////////
             NodePtr s_createNode( const ConstString & _type )
@@ -1102,7 +1107,7 @@ namespace Mengine
             {
                 ResourcePtr resource;
                 if( RESOURCE_SERVICE()
-                    ->hasResource( _nameResource, &resource ) == false )
+                    ->hasResource( ConstString::none(), _nameResource, &resource ) == false )
                 {
                     LOGGER_ERROR( "not found resource '%s'"
                         , _nameResource.c_str()
@@ -1128,7 +1133,7 @@ namespace Mengine
             {
                 ResourcePtr resource;
                 if( RESOURCE_SERVICE()
-                    ->hasResource( _nameResource, &resource ) == false )
+                    ->hasResource( ConstString::none(), _nameResource, &resource ) == false )
                 {
                     LOGGER_ERROR( "not found resource '%s'"
                         , _nameResource.c_str()
@@ -1161,7 +1166,7 @@ namespace Mengine
             const ResourcePtr & s_getResource( const ConstString & _name )
             {
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResource( _name );
+                    ->getResource( ConstString::none(), _name );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "not exist resource '%s'"
                     , _name.c_str()
@@ -1173,7 +1178,7 @@ namespace Mengine
             const ResourcePtr & s_getResourceReference( const ConstString & _name )
             {
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResourceReference( _name );
+                    ->getResourceReference( ConstString::none(), _name );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "not exist resource '%s'"
                     , _name.c_str()
@@ -1241,7 +1246,7 @@ namespace Mengine
                 );
 
                 const ResourceImagePtr & resource = RESOURCE_SERVICE()
-                    ->getResource( _resource );
+                    ->getResource( ConstString::none(), _resource );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "image resource not getting '%s'"
                     , _resource.c_str()
@@ -1876,7 +1881,7 @@ namespace Mengine
                 );
 
                 const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
-                    ->getResource( _resourceFilePath );
+                    ->getResource( ConstString::none(), _resourceFilePath );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resourceFile );
 
@@ -2870,7 +2875,7 @@ namespace Mengine
             bool s_hasResource( const ConstString & _name )
             {
                 return RESOURCE_SERVICE()
-                    ->hasResource( _name, nullptr );
+                    ->hasResource( ConstString::none(), _name, nullptr );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )
@@ -3692,7 +3697,7 @@ namespace Mengine
             bool s_validResource( const ConstString & _resourceName )
             {
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResourceReference( _resourceName );
+                    ->getResourceReference( ConstString::none(), _resourceName );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' not found"
                     , _resourceName.c_str()

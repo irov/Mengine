@@ -36,6 +36,12 @@ namespace Mengine
         bool isSilent() const override;
 
     public:
+        void setHistorically( bool _historically ) override;
+        bool getHistorically() const override;
+
+        void clearHistory() override;
+
+    public:
         size_t makeTimeStamp( Char * const _buffer, size_t _offset, size_t _capacity ) const override;
         size_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * const _buffer, size_t _offset, size_t _capacity ) const override;
 

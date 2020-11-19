@@ -141,15 +141,27 @@ namespace Mengine
             ->onEntityRelease( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Entity::onCreate()
+    bool Entity::create()
     {
+        if( this->_create() == false )
+        {
+            return false;
+        }
+
         bool successful = EVENTABLE_METHODR( EVENT_ENTITY_CREATE, true )
             ->onEntityCreate( m_behavior, this );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Entity::onDestroy()
+    bool Entity::_create()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_dispose()
     {
         EVENTABLE_METHOD( EVENT_ENTITY_DESTROY )
             ->onEntityDestroy( m_behavior );
@@ -161,8 +173,6 @@ namespace Mengine
         }
 
         m_behaviorEventable = nullptr;
-
-        this->unwrap();
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_destroy()

@@ -55,7 +55,7 @@ namespace Mengine
             MENGINE_UNUSED( _kernel );
 
             const ResourcePtr & resource = RESOURCE_SERVICE()
-                ->getResourceReference( _emitterImageName );
+                ->getResourceReference( ConstString::none(), _emitterImageName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, "emitter '%s' can't get resource '%s'"
                 , _emitter->getName().c_str()

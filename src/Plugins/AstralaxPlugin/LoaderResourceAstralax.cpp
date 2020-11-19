@@ -24,6 +24,8 @@ namespace Mengine
     {
         ResourceAstralax * resource = stdex::intrusive_get<ResourceAstralax *>( _loadable );
 
+        const ConstString & groupName = resource->getGroupName();
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle *>(_meta);
 
@@ -42,7 +44,7 @@ namespace Mengine
             const ConstString & resourceImageName = atlas.get_ResourceName();
 
             ResourceImagePtr resourceImage = RESOURCE_SERVICE()
-                ->getResourceReference( resourceImageName );
+                ->getResourceReference( groupName, resourceImageName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "resource '%s' container '%s' can't get atlas image '%s'"
                 , resource->getName().c_str()

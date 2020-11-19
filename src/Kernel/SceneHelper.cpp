@@ -2,6 +2,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/ConstStringHelper.h"
@@ -31,8 +32,12 @@ namespace Mengine
 
             scene->setBehaviorEventable( eventable );
 
-            if( scene->onCreate() == false )
+            if( scene->create() == false )
             {
+                LOGGER_ERROR( "invalid create scene (doc %s)"
+                    , MENGINE_DOCUMENT_STR( _doc )
+                );
+
                 return nullptr;
             }
 

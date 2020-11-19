@@ -105,7 +105,7 @@ namespace Mengine
         }
 
         ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
-            ->getResourceReference( _resourceName );
+            ->getResourceReference( ConstString::none(), _resourceName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceMusic, "can't found resource '%s'"
             , _resourceName.c_str()

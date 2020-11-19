@@ -17,6 +17,7 @@ namespace Mengine
     struct DataflowContext
     {
         FilePath filePath;
+        ConstString groupName;
     };
     //////////////////////////////////////////////////////////////////////////
     class DataflowInterface

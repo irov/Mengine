@@ -8,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/AssertionObservable.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Kernel/Win32Helper.h"
@@ -156,6 +157,10 @@ namespace Mengine
     {
         const Char * pluginName = this->getPluginName();
         MENGINE_UNUSED( pluginName );
+
+        MENGINE_ASSERTION_OBSERVABLE( this, "plugin '%s'"
+            , this->getPluginName()
+        );
 
         this->_destroyPlugin();
 

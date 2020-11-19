@@ -118,7 +118,8 @@ namespace Mengine
 
     protected:
         void notifyChangeArrow( const ArrowPtr & _arrow );
-        void notifyChangeScene( const ScenePtr & _scene );
+        void notifyChangeSceneComplete( const ScenePtr & _scene );
+        void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
         void notifyIncrefFactoryGeneration( uint32_t _generator );
 
@@ -133,11 +134,13 @@ namespace Mengine
         ThreadJobPtr m_threadJob;
         uint32_t m_workerId;
         ThreadMutexInterfacePtr m_dataMutex;
-        ENodeDebuggerServerState m_serverState;
+        Atomic<ENodeDebuggerServerState> m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
         Blobject m_receivedData;
+        Blobject m_receivedDataAux;
         VectorNodePath m_selectedNodePath;
         ArchivatorInterfacePtr m_archivator;
+        String m_currentTab;
     };
 }

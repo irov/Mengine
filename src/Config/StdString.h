@@ -75,6 +75,10 @@
 #define MENGINE_MEMSET(d, v, s) ::memset(d, v, s)
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_MEMMOVE
+#define MENGINE_MEMMOVE(d, v, s) ::memmove(d, v, s)
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_TOUPPER
 #define MENGINE_TOUPPER(c) ::toupper(c)
 #endif

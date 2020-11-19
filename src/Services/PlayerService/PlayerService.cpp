@@ -184,7 +184,7 @@ namespace Mengine
             PICKER_SERVICE()
                 ->setArrow( nullptr );
 
-            m_arrow->onDestroy();
+            m_arrow->dispose();
             m_arrow = nullptr;
         }
 
@@ -259,7 +259,7 @@ namespace Mengine
             PICKER_SERVICE()
                 ->setArrow( nullptr );
 
-            m_arrow->onDestroy();
+            m_arrow->dispose();
             m_arrow = nullptr;
         }
 

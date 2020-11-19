@@ -87,6 +87,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UniqueId Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         MENGINE_ASSERTION( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
             , this->getName().c_str()
             , _delay
@@ -124,6 +126,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UniqueId Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         SchedulerEventDesc desc;

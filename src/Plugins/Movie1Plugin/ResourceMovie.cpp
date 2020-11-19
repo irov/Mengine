@@ -136,6 +136,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceShapePtr ResourceMovie::getSocketResourceShape( const ConstString & _socketName ) const
     {
+        const ConstString & groupName = this->getGroupName();
+
         for( const MovieLayer & layer : m_layers )
         {
             if( layer.name != _socketName )
@@ -144,7 +146,7 @@ namespace Mengine
             }
 
             ResourceShapePtr resourceShape = RESOURCE_SERVICE()
-                ->getResourceReference( layer.source );
+                ->getResourceReference( groupName, layer.source );
 
             return resourceShape;
         }
@@ -222,7 +224,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const DataflowInterfacePtr & dataflow = content->getDataflow();
 
-        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FACTORABLE );
+        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "resource movie '%s' group '%s' can` t get frame pack '%s'"
             , this->getName().c_str()

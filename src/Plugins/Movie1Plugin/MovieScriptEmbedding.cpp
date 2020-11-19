@@ -1111,7 +1111,7 @@ namespace Mengine
             ResourceMoviePtr resourceMovie;
 
             if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
+                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, &resourceMovie ) == false )
             {
                 LOGGER_ERROR( "not found resource movie '%s'"
                     , resourceMovieName.c_str()
@@ -1150,7 +1150,7 @@ namespace Mengine
             ResourceMoviePtr resourceMovie;
 
             if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
+                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, &resourceMovie ) == false )
             {
                 LOGGER_ERROR( "not found resource movie '%s'"
                     , resourceMovieName.c_str()
@@ -1178,7 +1178,7 @@ namespace Mengine
         static float s_getMovieDuration( const ConstString & _resourceName )
         {
             const ResourceMoviePtr & resourceMovie = RESOURCE_SERVICE()
-                ->getResource( _resourceName );
+                ->getResource( ConstString::none(), _resourceName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "invalid movie resource '%s'"
                 , _resourceName.c_str()
@@ -1242,7 +1242,7 @@ namespace Mengine
         static bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
         {
             const ResourceMoviePtr & resource = RESOURCE_SERVICE()
-                ->getResource( _resourceName );
+                ->getResource( ConstString::none(), _resourceName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource );
 

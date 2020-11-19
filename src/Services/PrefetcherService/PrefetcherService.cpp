@@ -273,7 +273,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer )
+    bool PrefetcherService::prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const PrefetcherObserverInterfacePtr & _observer )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, "'%s':'%s' invalid dataflow is nullptr"
             , _fileGroup->getName().c_str()
@@ -311,6 +311,7 @@ namespace Mengine
         task->initialize( _fileGroup, _filePath, _observer );
 
         task->setDataflow( _dataflow );
+        task->setDataflowContext( *_context );
 
         PrefetchReceiverPtr new_receiver = m_factoryPrefetchReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 

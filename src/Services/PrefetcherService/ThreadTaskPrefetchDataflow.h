@@ -18,6 +18,10 @@ namespace Mengine
         const DataflowInterfacePtr & getDataflow() const;
 
     public:
+        void setDataflowContext( const DataflowContext & _context );
+        const DataflowContext & getDataflowContext() const;
+
+    public:
         const DataInterfacePtr & getData() const;
 
     protected:
@@ -30,6 +34,8 @@ namespace Mengine
 
     protected:
         DataflowInterfacePtr m_dataflow;
+
+        DataflowContext m_context;
 
     protected:
         DataInterfacePtr m_data;

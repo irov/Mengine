@@ -769,8 +769,11 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
             fileGroup->findFiles( pack.path, "*.py", [&fileGroup, &dataflowPY, &_cb]( const FilePath & _filePath )
             {
+                DataflowContext context;
+                context.filePath = _filePath;
+
                 if( PREFETCHER_SERVICE()
-                    ->prefetchData( fileGroup, _filePath, dataflowPY, _cb ) == false )
+                    ->prefetchData( fileGroup, _filePath, dataflowPY, &context, _cb ) == false )
                 {
                     LOGGER_ERROR( "invalid prefetch data '%s'"
                         , _filePath.c_str() 
@@ -783,8 +786,11 @@ namespace Mengine
 
             fileGroup->findFiles( pack.path, "*.pyz", [&fileGroup, &dataflowPYZ, &_cb]( const FilePath & _filePath )
             {
+                DataflowContext context;
+                context.filePath = _filePath;
+
                 if( PREFETCHER_SERVICE()
-                    ->prefetchData( fileGroup, _filePath, dataflowPYZ, _cb ) == false )
+                    ->prefetchData( fileGroup, _filePath, dataflowPYZ, &context, _cb ) == false )
                 {
                     LOGGER_ERROR( "invalid prefetch data '%s'"
                         , _filePath.c_str()

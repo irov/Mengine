@@ -19,6 +19,10 @@ namespace Mengine
         ~Movie2Data() override;
 
     public:
+        void setGroupName( const ConstString & _groupName ) override;
+        const ConstString & getGroupName() const override;
+
+    public:
         bool acquire() override;
         void release() override;
 
@@ -51,6 +55,8 @@ namespace Mengine
 
     protected:
         const aeMovieData * m_movieData;
+
+        ConstString m_groupName;
 
         typedef Pool<ImageDesc, 512> PoolImageDesc;
         PoolImageDesc m_poolImageDesc;

@@ -2201,7 +2201,7 @@ namespace Mengine
         }
 
         const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()
-            ->getResource( _resourceName );
+            ->getResource( ConstString::none(), _resourceName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( cursorResource, "can't find resource cursor '%s'"
             , _resourceName.c_str()

@@ -43,17 +43,18 @@ namespace Mengine
         virtual void destroyResource( Resource * _resource ) = 0;
 
     public:
-        virtual const ResourcePtr & getResource( const ConstString & _name ) const = 0;
-        virtual const ResourcePtr & getResourceReference( const ConstString & _name ) const = 0;
+        virtual const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const = 0;
+        virtual const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const = 0;
 
     public:
-        virtual bool hasResource( const ConstString & _name, ResourcePtr * const _resource ) const = 0;
+        virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const = 0;
 
+    public:
         template<class T>
-        bool hasResourceT( const ConstString & _name, T * const _resource ) const
+        bool hasResourceT( const ConstString & _groupName, const ConstString & _name, T * const _resource ) const
         {
             ResourcePtr resource;
-            if( this->hasResource( _name, &resource ) == false )
+            if( this->hasResource( _groupName, _name, &resource ) == false )
             {
                 return false;
             }
@@ -74,8 +75,6 @@ namespace Mengine
 
             return true;
         }
-
-        virtual bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const = 0;
 
     public:
         typedef Lambda<void( const ResourcePtrView & )> LambdaResourceView;

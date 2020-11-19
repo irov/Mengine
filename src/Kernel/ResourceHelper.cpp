@@ -26,7 +26,7 @@ namespace Mengine
         {
             ResourcePtr resource;
             if( RESOURCE_SERVICE()
-                ->hasResource( _resourceName, &resource ) == false )
+                ->hasResource( ConstString::none(), _resourceName, &resource ) == false )
             {
                 return FilePath::none();
             }

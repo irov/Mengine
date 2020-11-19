@@ -300,6 +300,16 @@ namespace Mengine
         ae_visit_composition_layer_data( _compositionData, &__ae_movie_layer_data_visitor_get, const_cast<void *>(reinterpret_cast<const void *>(&_lambda)) );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2Data::setGroupName( const ConstString & _groupName )
+    {
+        m_groupName = _groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Movie2Data::getGroupName() const
+    {
+        return m_groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2Data::setMovieData( const aeMovieData * _movieData )
     {
         m_movieData = _movieData;
@@ -313,7 +323,7 @@ namespace Mengine
     const ResourcePtr & Movie2Data::getResource( const Char * _resourceName )
     {
         const ResourcePtr & resource = RESOURCE_SERVICE()
-            ->getResourceReference( Helper::stringizeString( _resourceName ) );
+            ->getResourceReference( m_groupName, Helper::stringizeString( _resourceName ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "not found resource '%s'"
             , _resourceName

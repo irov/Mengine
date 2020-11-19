@@ -103,7 +103,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, MENGINE_DOCUMENT_FACTORABLE );
+        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         if( data == nullptr )
         {
@@ -168,7 +168,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, MENGINE_DOCUMENT_FACTORABLE );
+        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data );
 
@@ -239,8 +239,11 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
+        DataflowContext context;
+        context.filePath = filePath;
+
         if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflow, _observer ) == false )
+            ->prefetchData( fileGroup, filePath, dataflow, &context, _observer ) == false )
         {
             return false;
         }

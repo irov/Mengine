@@ -2,6 +2,7 @@
 
 #include "Interface/ResourceBankInterface.h"
 
+#include "Kernel/Hashtable.h"
 #include "Kernel/Hashtable2.h"
 
 namespace Mengine
@@ -30,11 +31,10 @@ namespace Mengine
         void destroyResource( Resource * _resource ) override;
 
     public:
-        const ResourcePtr & getResource( const ConstString & _name ) const override;
-        const ResourcePtr & getResourceReference( const ConstString & _name ) const override;
+        const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const override;
+        const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const override;
 
-        bool hasResource( const ConstString & _name, ResourcePtr * const _resource ) const override;
-        bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const override;
+        bool hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const override;
 
     protected:        
         void foreachResources( const LambdaResourceView & _lambda ) const override;
@@ -42,8 +42,11 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
         
-        typedef Hashtable2<ConstString, ConstString, ResourcePtrView> HashtableResources;
+        typedef Hashtable<ConstString, ResourcePtrView> HashtableResources;
         HashtableResources m_resources;
+
+        typedef Hashtable2<ConstString, ConstString, ResourcePtrView> HashtableGroupResources;
+        HashtableGroupResources m_resourcesGroup;
 
         friend class Resource;
         friend class ResourceService;

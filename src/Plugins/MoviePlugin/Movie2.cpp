@@ -100,7 +100,7 @@ namespace Mengine
                 this->destroyCompositionLayers_();
             }
 
-            m_compositionName = _compositionName;            
+            m_compositionName = _compositionName;
 
             if( _compositionName.empty() == true )
             {
@@ -113,7 +113,7 @@ namespace Mengine
 
                 return true;
             }
-            
+
             return true;
         } );
 
@@ -368,6 +368,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::createCompositionLayers_()
     {
+        const ConstString & groupName = m_resourceMovie2->getGroupName();
+
         const ResourceMovie2::CompositionDesc * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
 
         if( composition == nullptr )
@@ -538,7 +540,7 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) )
             {
                 ResourceImagePtr resourceImage = RESOURCE_SERVICE()
-                    ->getResourceReference( layer.name );
+                    ->getResourceReference( groupName, layer.name );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image '%s'"
                     , this->getName().c_str()
@@ -1151,7 +1153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ae_bool_t Movie2::__movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
     {
-        Movie2 * movie2 = static_cast<Movie2 *>( _ud );
+        Movie2 * movie2 = static_cast<Movie2 *>(_ud);
 
         const aeMovieLayerData * layer_data = _callbackData->layer_data;
 
@@ -1553,7 +1555,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_PARTICLE:
                 {
                     Node * node = (Node *)_callbackData->element_userdata;
-                                        
+
                     UnknownAstralaxEmitterInterface * unknownAstralaxEmitter = node->getUnknown();
 
                     unknownAstralaxEmitter->setResourceAstralax( nullptr );
@@ -1808,7 +1810,7 @@ namespace Mengine
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
             ->createProgramVariable( 0, desc->indexOffset + _callbackData->parameter_count, MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-        float shader_uvsl[4] = { 0.f, 0.f, 1.f, 1.f };
+        float shader_uvsl[4] = {0.f, 0.f, 1.f, 1.f};
         programVariable->setPixelVariableFloats( "uvsl", 0, shader_uvsl, 4, 1 );
 
         for( ae_uint32_t index = 0; index != _callbackData->parameter_count; ++index )
@@ -1818,7 +1820,7 @@ namespace Mengine
             MENGINE_STRCPY( parameter.uniform, _callbackData->parameter_uniforms[index] );
             parameter.type = _callbackData->parameter_types[index];
 
-            float shader_values[4] = { 0.f };
+            float shader_values[4] = {0.f};
 
             switch( parameter.type )
             {
@@ -1882,7 +1884,7 @@ namespace Mengine
 
         const RenderProgramVariableInterfacePtr & programVariable = desc->programVariable;
 
-        float shader_values[4] = { 0.f };
+        float shader_values[4] = {0.f};
 
         switch( _callbackData->type )
         {
@@ -2784,7 +2786,7 @@ namespace Mengine
                             float ov = uv_zero.y - resource_image->offset_y * textureHeightInv;
                             float dv = resource_image->base_height / resource_image->trim_height * v;
 
-                            float uvsl[4] = { -ou, -ov, 1.f / du, 1.f / dv };
+                            float uvsl[4] = {-ou, -ov, 1.f / du, 1.f / dv};
                             programVariable->setPixelVariableFloats( "uvsl", 0, uvsl, 4, 1 );
                         }
 
@@ -3429,7 +3431,7 @@ namespace Mengine
     {
         Node::_destroy();
 
-        this->destroyCompositionLayers_();        
+        this->destroyCompositionLayers_();
     }
     //////////////////////////////////////////////////////////////////////////
 }

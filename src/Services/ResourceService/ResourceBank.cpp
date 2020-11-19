@@ -28,13 +28,14 @@ namespace Mengine
         m_mutex = _mutex;
 
         m_resources.reserve( _reserved );
+        m_resourcesGroup.reserve( _reserved );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::finalize()
     {
-        for( const HashtableResources::value_type & value : m_resources )
+        for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
             const ResourcePtrView & resource = value.element;
 
@@ -47,7 +48,7 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
-        for( const HashtableResources::value_type & value : m_resources )
+        for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
             const ResourcePtr & resource = value.element;
 
@@ -65,7 +66,7 @@ namespace Mengine
         }
 #endif
 
-        for( const HashtableResources::value_type & value : m_resources )
+        for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
             const ResourcePtrView & resource = value.element;
        
@@ -81,13 +82,14 @@ namespace Mengine
         }
 
         m_resources.clear();
+        m_resourcesGroup.clear();
 
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::finalizeKeepResource()
     {
-        for( const HashtableResources::value_type & value : m_resources )
+        for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
             const ResourcePtrView & resource = value.element;
 
@@ -109,14 +111,18 @@ namespace Mengine
 
                 IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
 
-                m_resources.erase( value );
+                m_resourcesGroup.erase( value );
+                
+                m_resources.erase( value.key1 );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "resource", "create resource '%s'"
+        LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s'"
+            , _name.c_str()
+            , _groupName.c_str()
             , _type.c_str()
         );
 
@@ -152,11 +158,23 @@ namespace Mengine
 
         resource->setKeep( _keep );
 
-        if( _name.empty() == false )
+        if( _keep == true )
         {
-            resource->setMapping( true );
+            IntrusivePtrBase::intrusive_ptr_add_ref( resource.get() );
+        }
 
-            ResourcePtrView prev_resource = m_resources.change( ConstString::none(), _name, resource );
+        if( _name == ConstString::none() )
+        {
+            return resource;
+        }
+
+        resource->setMapping( true );
+
+        m_resources.change( _name, resource );
+
+        if( _groupName != ConstString::none() )
+        {
+            ResourcePtrView prev_resource = m_resourcesGroup.change( _groupName, _name, resource );
 
             if( prev_resource != nullptr )
             {
@@ -178,11 +196,6 @@ namespace Mengine
             }
         }
 
-        if( _keep == true )
-        {
-            IntrusivePtrBase::intrusive_ptr_add_ref( resource.get() );
-        }
-
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -195,7 +208,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::destroyResource( Resource * _resource )
     {
-        MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( ConstString::none(), _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
+        MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
         );
@@ -204,14 +217,20 @@ namespace Mengine
 
         _resource->finalize();
 
+        const ConstString & groupName = _resource->getGroupName();
         const ConstString & name = _resource->getName();
+        bool keep = _resource->isKeep();
+
 
         if( _resource->isMapping() == true )
         {
-            m_resources.erase( ConstString::none(), name );
-        }
+            if( groupName == ConstString::none() )
+            {
+                m_resourcesGroup.erase( groupName, name );
+            }
 
-        bool keep = _resource->isKeep();
+            m_resources.erase( name );
+        }
 
         if( keep == true )
         {
@@ -219,78 +238,90 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceBank::getResource( const ConstString & _name ) const
+    const ResourcePtr & ResourceBank::getResource( const ConstString & _groupName, const ConstString & _name ) const
     {
         MENGINE_ASSERTION_MAIN_THREAD_GUARD();
 
-        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
+        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
+        if( group_resource != nullptr )
+        {
+            if( group_resource->compile() == false )
+            {
+                LOGGER_ERROR( "resource '%s' '%s' is not compile!"
+                    , _name.c_str()
+                    , group_resource->getType().c_str()
+                );
+
+                return ResourcePtr::none();
+            }
+
+            return group_resource;
+        }
+
+        const ResourcePtr & global_resource = m_resources.find( _name );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( global_resource, "resource '%s' does not exist"
             , _name.c_str()
         );
 
-        if( resource->compile() == false )
+        if( global_resource->compile() == false )
         {
             LOGGER_ERROR( "resource '%s' '%s' is not compile!"
                 , _name.c_str()
-                , resource->getType().c_str()
+                , global_resource->getType().c_str()
             );
 
             return ResourcePtr::none();
         }
 
-        return resource;
+        return global_resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceBank::getResourceReference( const ConstString & _name ) const
+    const ResourcePtr & ResourceBank::getResourceReference( const ConstString & _groupName, const ConstString & _name ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
+        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
+        if( group_resource != nullptr )
+        {
+            return group_resource;
+        }
+
+        const ResourcePtr & global_resource = m_resources.find( _name );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( global_resource, "resource '%s' does not exist"
             , _name.c_str()
         );
 
-        return resource;
+        return global_resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceBank::hasResource( const ConstString & _name, ResourcePtr * const _resource ) const
+    bool ResourceBank::hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const
     {
-        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
+        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
 
-        if( resource == nullptr )
+        if( group_resource != nullptr )
+        {
+            if( _resource != nullptr )
+            {
+                *_resource = group_resource;
+            }
+
+            return true;
+        }
+
+        const ResourcePtr & globa_resource = m_resources.find( _name );
+
+        if( globa_resource == nullptr )
         {
             return false;
         }
 
         if( _resource != nullptr )
         {
-            *_resource = resource;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceBank::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const
-    {
-        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
-
-        if( resource == nullptr )
-        {
-            return false;
-        }
-
-        const ConstString & resourceType = resource->getType();
-
-        if( resourceType != _type )
-        {
-            return false;
-        }
-
-        if( _resource != nullptr )
-        {
-            *_resource = resource;
+            *_resource = globa_resource;
         }
 
         return true;

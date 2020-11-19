@@ -21,6 +21,8 @@ namespace Mengine
     {
         ResourceImageSubstractRGBAndAlpha * resource = stdex::intrusive_get<ResourceImageSubstractRGBAndAlpha *>( _loadable );
 
+        const ConstString & groupName = resource->getGroupName();
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha *>(_meta);
 
@@ -31,7 +33,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourceImagePtr & resourceImageRGB = resourceBank->getResourceReference( resourceImageRGBName );
+        const ResourceImagePtr & resourceImageRGB = resourceBank->getResourceReference( groupName, resourceImageRGBName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImageRGB, "'%s' group '%s' invalid get image RGB resource '%s'"
             , resource->getName().c_str()
@@ -39,7 +41,7 @@ namespace Mengine
             , resourceImageRGBName.c_str()
         );
 
-        const ResourceImagePtr & resourceImageAlpha = resourceBank->getResourceReference( resourceImageAlphaName );
+        const ResourceImagePtr & resourceImageAlpha = resourceBank->getResourceReference( groupName, resourceImageAlphaName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImageAlpha, "'%s' group '%s' invalid get image Alpha resource '%s'"
             , resource->getName().c_str()

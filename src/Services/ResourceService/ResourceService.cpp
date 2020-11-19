@@ -151,11 +151,6 @@ namespace Mengine
             }
         }
 
-        if( prev_resource != nullptr )
-        {
-            IntrusivePtrBase::intrusive_ptr_dec_ref( prev_resource );
-        }
-
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -182,30 +177,23 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::hasResource( const ConstString & _name, ResourcePtr * const _resource ) const
+    bool ResourceService::hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const
     {
-        bool exist = m_globalBank->hasResource( _name, _resource );
+        bool exist = m_globalBank->hasResource( _groupName, _name, _resource );
 
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const
+    const ResourcePtr & ResourceService::getResource( const ConstString & _groupName, const ConstString & _name ) const
     {
-        bool exist = m_globalBank->hasResourceWithType( _name, _type, _resource );
+        const ResourcePtr & resource = m_globalBank->getResource( _groupName, _name );
 
-        return exist;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceService::getResource( const ConstString & _name ) const
-    {
-        const ResourcePtr & resource = m_globalBank->getResource( _name );
-                
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceService::getResourceReference( const ConstString & _name ) const
+    const ResourcePtr & ResourceService::getResourceReference( const ConstString & _groupName, const ConstString & _name ) const
     {
-        const ResourcePtr & resource = m_globalBank->getResourceReference( _name );
+        const ResourcePtr & resource = m_globalBank->getResourceReference( _groupName, _name );
 
         return resource;
     }

@@ -2,6 +2,7 @@
 
 #include "Movie2Interface.h"
 
+#include "ResourceMovie2.h"
 #include "Movie2Data.h"
 
 #include "Kernel/ResourceImage.h"
@@ -278,6 +279,8 @@ namespace Mengine
         MENGINE_UNUSED( _doc );
 
         Movie2Data * data = stdex::intrusive_get<Movie2Data *>( _data );
+
+        data->setGroupName( _context->groupName );
 
         void * memory_buffer = _memory->getBuffer();
 

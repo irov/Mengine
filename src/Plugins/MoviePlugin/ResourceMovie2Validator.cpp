@@ -70,6 +70,8 @@ namespace Mengine
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
         MENGINE_UNUSED( resourceMovie2 );
 
+        const ConstString & groupName = resourceMovie2->getGroupName();
+
         aeMovieResourceTypeEnum resource_type = _resource->type;
 
         switch( resource_type )
@@ -81,7 +83,7 @@ namespace Mengine
                 const Char * resource_image_name = resource_image->name;
 
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResourceReference( Helper::stringizeString( resource_image_name ) );
+                    ->getResourceReference( groupName, Helper::stringizeString( resource_image_name ) );
 
                 if( resource == nullptr )
                 {
@@ -100,7 +102,7 @@ namespace Mengine
                 const Char * resource_video_name = resource_video->name;
 
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResourceReference( Helper::stringizeString( resource_video_name ) );
+                    ->getResourceReference( groupName, Helper::stringizeString( resource_video_name ) );
 
                 if( resource == nullptr )
                 {
@@ -119,7 +121,7 @@ namespace Mengine
                 const Char * resource_sound_name = resource_sound->name;
 
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResourceReference( Helper::stringizeString( resource_sound_name ) );
+                    ->getResourceReference( groupName, Helper::stringizeString( resource_sound_name ) );
 
                 if( resource == nullptr )
                 {
@@ -138,7 +140,7 @@ namespace Mengine
                 const Char * resource_particle_name = resource_particle->name;
 
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResourceReference( Helper::stringizeString( resource_particle_name ) );
+                    ->getResourceReference( groupName, Helper::stringizeString( resource_particle_name ) );
 
                 if( resource == nullptr )
                 {

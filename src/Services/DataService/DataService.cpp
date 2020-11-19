@@ -34,7 +34,7 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Dataflow" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentPtr & _doc )
     {
         DataInterfacePtr data = _dataflow->create( _doc );
 
@@ -48,12 +48,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-#ifdef MENGINE_DEBUG
-        DataflowContext context;
-        context.filePath = Helper::getInputStreamDebugFilePath( _stream );
-#endif
-
-        if( _dataflow->flow( data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), _doc ) == false )
+        if( _dataflow->flow( data, memory, _context, _doc ) == false )
         {
             LOGGER_ERROR( "invalid flow data (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )

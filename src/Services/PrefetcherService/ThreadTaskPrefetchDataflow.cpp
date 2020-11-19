@@ -34,6 +34,16 @@ namespace Mengine
         return m_data;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetchDataflow::setDataflowContext( const DataflowContext & _context )
+    {
+        m_context = _context;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const DataflowContext & ThreadTaskPrefetchDataflow::getDataflowContext() const
+    {
+        return m_context;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetchDataflow::_finalize()
     {
         m_dataflow = nullptr;
@@ -86,12 +96,7 @@ namespace Mengine
 
         if( m_dataflow->isThreadFlow() == true )
         {
-#ifdef MENGINE_DEBUG
-            DataflowContext context;
-            context.filePath = Helper::getInputStreamDebugFilePath( m_stream );
-#endif
-
-            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( m_dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()
@@ -115,12 +120,7 @@ namespace Mengine
         {
             MemoryInterfacePtr memory = std::move( m_memory );
 
-#ifdef MENGINE_DEBUG
-            DataflowContext context;
-            context.filePath = Helper::getInputStreamDebugFilePath( m_stream );
-#endif
-
-            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_VALUE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( m_dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()

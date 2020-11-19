@@ -47,7 +47,7 @@ namespace Mengine
         }
 
 #ifdef MENGINE_DEBUG
-        for( const ResourceBank::HashtableResources::value_type & value : m_resources )
+        for( const HashtableResources::value_type & value : m_resources )
         {
             const ResourcePtr & resource = value.element;
 
@@ -109,7 +109,7 @@ namespace Mengine
 
                 IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
 
-                m_resources.erase( value.key );
+                m_resources.erase( value );
             }
         }
     }
@@ -156,7 +156,7 @@ namespace Mengine
         {
             resource->setMapping( true );
 
-            ResourcePtrView prev_resource = m_resources.change( _name, resource );
+            ResourcePtrView prev_resource = m_resources.change( ConstString::none(), _name, resource );
 
             if( prev_resource != nullptr )
             {
@@ -195,7 +195,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::destroyResource( Resource * _resource )
     {
-        MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
+        MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( ConstString::none(), _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
         );
@@ -208,7 +208,7 @@ namespace Mengine
 
         if( _resource->isMapping() == true )
         {
-            m_resources.erase( name );
+            m_resources.erase( ConstString::none(), name );
         }
 
         bool keep = _resource->isKeep();
@@ -223,7 +223,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MAIN_THREAD_GUARD();
 
-        const ResourcePtr & resource = m_resources.find( _name );
+        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
             , _name.c_str()
@@ -246,7 +246,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        const ResourcePtr & resource = m_resources.find( _name );
+        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "resource '%s' does not exist"
             , _name.c_str()
@@ -257,7 +257,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceBank::hasResource( const ConstString & _name, ResourcePtr * const _resource ) const
     {
-        const ResourcePtr & resource = m_resources.find( _name );
+        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
 
         if( resource == nullptr )
         {
@@ -274,7 +274,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceBank::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * const _resource ) const
     {
-        const ResourcePtr & resource = m_resources.find( _name );
+        const ResourcePtr & resource = m_resources.find( ConstString::none(), _name );
 
         if( resource == nullptr )
         {
@@ -310,4 +310,5 @@ namespace Mengine
     {
         return m_resources;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

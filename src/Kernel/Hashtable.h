@@ -97,6 +97,18 @@ namespace Mengine
             return element;
         }
 
+        element_type_ptr erase( const value_type & _value )
+        {
+            if( m_size == 0 )
+            {
+                return nullptr;
+            }
+
+            element_type_ptr element = this->pop_( _value.hash, _value.key );
+
+            return element;
+        }
+
         const element_type_ptr & find( const key_type & _key ) const
         {
             if( m_size == 0 )
@@ -696,10 +708,17 @@ namespace Mengine
 
             element_type_ptr element = this->pop_( hash, _key );
 
-            if( element != nullptr )
+            return element;
+        }
+
+        element_type_ptr erase( const value_type & _value )
+        {
+            if( m_size == 0 )
             {
-                --m_size;
+                return nullptr;
             }
+
+            element_type_ptr element = this->pop_( _value.hash, _value.key );
 
             return element;
         }

@@ -37,6 +37,10 @@ namespace Mengine
         void addObserver_( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc );
         void removeObserver_( uint32_t _id, Observable * _observer );
 
+    public:
+        bool hasObserver_( uint32_t _id, Observable * _observer ) const;
+        void updateObservers_( uint32_t _id );
+
     protected:
         struct ObserverDesc
         {
@@ -46,10 +50,12 @@ namespace Mengine
 #if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
+
+            bool dead;
         };
 
         typedef Vector<ObserverDesc> VectorObservers;
-        VectorObservers m_observes[MENGINE_NOTIFICATOR_MAX_COUNT];
+        VectorObservers m_observers[MENGINE_NOTIFICATOR_MAX_COUNT];
 
         struct ObserverQueue
         {
@@ -64,7 +70,6 @@ namespace Mengine
 
         typedef Vector<ObserverQueue> VectorObserverQueues;
         VectorObserverQueues m_add;
-        VectorObserverQueues m_remove;
 
         uint32_t m_visiting;
 

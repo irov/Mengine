@@ -240,6 +240,12 @@ Identity
 )
 
 ADD_FILTER(
+Unique
+    Unique.cpp
+    Unique.h
+)
+
+ADD_FILTER(
 Transformation
     Transformation.cpp
     Transformation.h

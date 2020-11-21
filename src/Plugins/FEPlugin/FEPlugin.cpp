@@ -96,14 +96,12 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ) );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FECustom" ) );
-
-        MENGINE_ASSERTION_ALLOCATOR( "fe" );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FECustom" ) );        
     }
     //////////////////////////////////////////////////////////////////////////
     void FEPlugin::_destroyPlugin()
     {
-        //Empty
+        MENGINE_ASSERTION_ALLOCATOR( "fe" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

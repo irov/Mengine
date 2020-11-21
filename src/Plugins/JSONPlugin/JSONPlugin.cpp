@@ -30,6 +30,20 @@ PLUGIN_FACTORY( JSON, Mengine::JSONPlugin );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void * my_jpp_malloc( size_t _size )
+        {
+            return Helper::allocateMemory( _size, "json" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void my_jpp_free( void * _ptr )
+        {
+            Helper::deallocateMemory( _ptr, "json" );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     JSONPlugin::JSONPlugin()
     {
     }
@@ -40,6 +54,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONPlugin::_initializePlugin()
     {
+        jpp::set_object_seed( 1 );
+
+        jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
+
         SERVICE_CREATE( JSONService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE

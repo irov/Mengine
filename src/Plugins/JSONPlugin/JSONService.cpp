@@ -22,16 +22,6 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void * my_jpp_malloc( size_t _size )
-        {
-            return Helper::allocateMemory( _size, "json" );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void my_jpp_free( void * _ptr )
-        {
-            Helper::deallocateMemory( _ptr, "json" );
-        }
-        //////////////////////////////////////////////////////////////////////////
         static void my_jpp_error( int32_t _line, int32_t _column, int32_t _position, const char * _source, const char * _text, void * _ud )
         {
             MENGINE_UNUSED( _ud );
@@ -84,10 +74,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONService::_initializeService()
     {
-        jpp::set_object_seed( 1 );
-
-        jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
-
         m_factoryJSONStorage = Helper::makeFactoryPool<JSONStorage, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;

@@ -34,9 +34,9 @@ namespace Mengine
         const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const override;
         const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const override;
 
-        bool hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const override;
+        bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const override;
 
-    protected:        
+    protected:
         void foreachResources( const LambdaResourceView & _lambda ) const override;
 
     protected:

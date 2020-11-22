@@ -47,14 +47,14 @@ namespace Mengine
         virtual const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const = 0;
 
     public:
-        virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const = 0;
+        virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const = 0;
 
     public:
         template<class T>
-        bool hasResourceT( const ConstString & _groupName, const ConstString & _name, T * const _resource ) const
+        bool hasResourceT( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, T * const _resource ) const
         {
             ResourcePtr resource;
-            if( this->hasResource( _groupName, _name, &resource ) == false )
+            if( this->hasResource( _groupName, _name, _onlyGroup, &resource ) == false )
             {
                 return false;
             }

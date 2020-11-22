@@ -1111,7 +1111,7 @@ namespace Mengine
             ResourceMoviePtr resourceMovie;
 
             if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, &resourceMovie ) == false )
+                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, false, &resourceMovie ) == false )
             {
                 LOGGER_ERROR( "not found resource movie '%s'"
                     , resourceMovieName.c_str()
@@ -1150,7 +1150,7 @@ namespace Mengine
             ResourceMoviePtr resourceMovie;
 
             if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, &resourceMovie ) == false )
+                ->hasResourceT<ResourceMoviePtr>( _groupName, resourceMovieName, false, &resourceMovie ) == false )
             {
                 LOGGER_ERROR( "not found resource movie '%s'"
                     , resourceMovieName.c_str()

@@ -298,7 +298,7 @@ namespace Mengine
         return global_resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceBank::hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const
+    bool ResourceBank::hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const
     {
         const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
 
@@ -310,6 +310,11 @@ namespace Mengine
             }
 
             return true;
+        }
+
+        if( _onlyGroup == true )
+        {
+            return false;
         }
 
         const ResourcePtr & globa_resource = m_resources.find( _name );

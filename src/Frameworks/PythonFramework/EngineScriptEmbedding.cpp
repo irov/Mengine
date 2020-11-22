@@ -1107,7 +1107,7 @@ namespace Mengine
             {
                 ResourcePtr resource;
                 if( RESOURCE_SERVICE()
-                    ->hasResource( ConstString::none(), _nameResource, &resource ) == false )
+                    ->hasResource( ConstString::none(), _nameResource, false, &resource ) == false )
                 {
                     LOGGER_ERROR( "not found resource '%s'"
                         , _nameResource.c_str()
@@ -1133,7 +1133,7 @@ namespace Mengine
             {
                 ResourcePtr resource;
                 if( RESOURCE_SERVICE()
-                    ->hasResource( ConstString::none(), _nameResource, &resource ) == false )
+                    ->hasResource( ConstString::none(), _nameResource, false, &resource ) == false )
                 {
                     LOGGER_ERROR( "not found resource '%s'"
                         , _nameResource.c_str()
@@ -2875,7 +2875,7 @@ namespace Mengine
             bool s_hasResource( const ConstString & _name )
             {
                 return RESOURCE_SERVICE()
-                    ->hasResource( ConstString::none(), _name, nullptr );
+                    ->hasResource( ConstString::none(), _name, false, nullptr );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )

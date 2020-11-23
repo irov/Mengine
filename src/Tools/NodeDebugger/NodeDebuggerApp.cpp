@@ -1424,6 +1424,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUINetwork()
     {
+        // TEMP
+
+        if( ImGui::BeginChild( "Network", ImVec2( 1000, 1000 ), false, ImGuiWindowFlags_None ) )
+        {
+            for( int n = 0; n < 50; n++ )
+            {
+                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Total: %ug", n );
+            }
+        }
+
+        ImGui::EndChild();
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUISettingsTab()

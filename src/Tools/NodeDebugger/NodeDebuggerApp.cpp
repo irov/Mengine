@@ -183,6 +183,14 @@ namespace Mengine
             this->DoUIObjectsLeakTab();
         }} );
         m_tabs.push_back( {
+            "network",
+            "Network",
+            true,
+            [this]()
+        {
+            this->DoUINetwork();
+        } } );
+        m_tabs.push_back( {
             "settings",
             "Settings",
             true,
@@ -468,6 +476,10 @@ namespace Mengine
         {
             this->ReceiveSettings( payloadNode );
         }
+        else if( typeStr == "Network" )
+        {
+            this->ReceiveNetwork( payloadNode );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveArrow( const pugi::xml_node & _xmlContainer )
@@ -618,6 +630,10 @@ namespace Mengine
                 leaks.emplace_back( desc );
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveNetwork( const pugi::xml_node & _xmlContainer )
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveSettings( const pugi::xml_node & _xmlContainer )
@@ -1404,6 +1420,10 @@ namespace Mengine
 
             ++index;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUINetwork()
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUISettingsTab()

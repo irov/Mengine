@@ -336,6 +336,11 @@ namespace Mengine
                 this->sendObjectsLeak();
             }
 
+            if( m_currentTab == "network" )
+            {
+                this->sendNetwork();
+            }
+
             m_shouldUpdateScene = false;
         }
     }
@@ -1341,6 +1346,10 @@ namespace Mengine
         xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
 
         this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendNetwork()
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::processPacket( NodeDebuggerPacket & _packet )

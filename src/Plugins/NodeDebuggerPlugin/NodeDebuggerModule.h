@@ -93,6 +93,7 @@ namespace Mengine
         void sendSettings();
         void sendMemory();
         void sendObjectsLeak();
+        void sendNetwork();
 
     protected:
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );

@@ -435,6 +435,7 @@ namespace Mengine
         void ReceiveRenderable( const pugi::xml_node & _xmlContainer );
         void ReceiveMemory( const pugi::xml_node & _xmlContainer );
         void ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer );
+        void ReceiveNetwork( const pugi::xml_node & _xmlContainer );
         void ReceiveSettings( const pugi::xml_node & _xmlContainer );
 
     protected:
@@ -453,6 +454,7 @@ namespace Mengine
         void DoUISceneDebuggerTab();
         void DoUIMemoryTab();
         void DoUIObjectsLeakTab();
+        void DoUINetwork();
         void DoUISettingsTab();
         String DoIPInput( const String & _title, const String & _inIP );
         void DoNodeElement( DebuggerNode * _node, const String & _tag );

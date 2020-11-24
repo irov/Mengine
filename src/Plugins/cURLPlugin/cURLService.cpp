@@ -387,6 +387,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLService::setRequestListener( const cURLRequestListenerInterfacePtr & _listener )
+    {
+        m_networkListener = _listener;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )
     {
         for( VectorReceiverDesc::iterator

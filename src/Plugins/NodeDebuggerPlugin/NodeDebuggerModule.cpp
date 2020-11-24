@@ -92,6 +92,8 @@ namespace Mengine
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
 
+        m_networkLogger = Helper::makeFactorableUnique<cURLRequestListener>( MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

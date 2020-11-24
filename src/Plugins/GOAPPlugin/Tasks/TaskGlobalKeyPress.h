@@ -31,7 +31,9 @@ namespace Mengine
 
         LambdaInputKeyEvent m_filter;
 
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
+#endif
 
         uint32_t m_id;
     };

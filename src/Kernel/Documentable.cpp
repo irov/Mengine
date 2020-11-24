@@ -11,7 +11,7 @@ namespace Mengine
     Documentable::~Documentable()
     {
     }
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
     //////////////////////////////////////////////////////////////////////////
     void Documentable::setDocument( const DocumentPtr & _document )
     {

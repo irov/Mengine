@@ -94,9 +94,12 @@ namespace Mengine
         , m_to( _to )
         , m_time( _time )
         , m_flags( _flags )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
         , m_id( 0 )
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskTransformationScaleTime::~TaskTransformationScaleTime()
@@ -107,7 +110,7 @@ namespace Mengine
     {
         const mt::vec3f & scale = m_transformation->getLocalScale();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( m_doc, _node, m_transformation, scale, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformation, scale, m_to, m_time );
 
         affector->setEasing( m_easing );
 

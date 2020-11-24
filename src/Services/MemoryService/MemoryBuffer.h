@@ -33,7 +33,7 @@ namespace Mengine
         void * m_memory;
         size_t m_size;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
     };

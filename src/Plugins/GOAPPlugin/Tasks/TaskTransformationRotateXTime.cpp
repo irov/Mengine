@@ -18,9 +18,12 @@ namespace Mengine
         , m_to( _to )
         , m_time( _time )
         , m_mode( _mode )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
         , m_id( 0 )
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskTransformationRotateXTime::~TaskTransformationRotateXTime()
@@ -33,7 +36,7 @@ namespace Mengine
 
         LambdaAffectorTransformationRotateTime transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationX );
 
-        AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotateTime>( m_doc, _node, transformCb, orientationX, m_to, m_time, m_mode );
+        AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotateTime>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, transformCb, orientationX, m_to, m_time, m_mode );
 
         affector->setEasing( m_easing );
 

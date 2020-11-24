@@ -47,9 +47,12 @@ namespace Mengine
     TaskDelay::TaskDelay( const SchedulerInterfacePtr & _scheduler, float _time, const DocumentPtr & _doc )
         : m_scheduler( _scheduler )
         , m_time( _time )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
         , m_id( 0 )
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskDelay::~TaskDelay()
@@ -68,9 +71,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskDelay::_onRun( GOAP::NodeInterface * _node )
     {
-        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( m_doc, this, _node );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), this, _node );
 
-        uint32_t id = m_scheduler->event( m_time, ev, m_doc );
+        uint32_t id = m_scheduler->event( m_time, ev, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
         if( id == 0 )
         {

@@ -1,11 +1,10 @@
 #include "SteamPlugin.h"
 
-#include "Interface/StringizeInterface.h"
-
 #include "ModuleSteam.h"
 
 #include "Kernel/ModuleFactory.h"
-
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -22,19 +21,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SteamPlugin::_initialize()
+    bool SteamPlugin::_initializePlugin()
     {
-        ModuleFactoryInterfacePtr moduleStreamFactory = new ModuleFactory<ModuleSteam>();
-
-        MODULE_SERVICE()
-            ->registerModule( STRINGIZE_STRING_LOCAL( "ModuleSteam" ), moduleStreamFactory );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleSteam" )
+            , Helper::makeModuleFactory<ModuleSteam>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SteamPlugin::_finalize()
+    void SteamPlugin::_finalizePlugin()
     {
-        MODULE_SERVICE()
-            ->unregisterModule( STRINGIZE_STRING_LOCAL( "ModuleSteam" ) );
+        //Empty
     }
+    //////////////////////////////////////////////////////////////////////////
 }

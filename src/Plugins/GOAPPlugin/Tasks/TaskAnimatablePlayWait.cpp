@@ -14,8 +14,11 @@ namespace Mengine
     TaskAnimatablePlayWait::TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc )
         : m_animatable( _animatable )
         , m_eventable( _eventable )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskAnimatablePlayWait::~TaskAnimatablePlayWait()
@@ -40,7 +43,7 @@ namespace Mengine
             return true;
         }
 
-        TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>( m_doc );
+        TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
         EventReceiverInterfacePtr oldreceiver_end = eventation->addEventReceiver( EVENT_ANIMATION_END, receiver );
         EventReceiverInterfacePtr oldreceiver_stop = eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );

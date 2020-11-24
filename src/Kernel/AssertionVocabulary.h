@@ -2,6 +2,8 @@
 
 #include "Kernel/ConstString.h"
 
+#include "Config/Config.h"
+
 namespace Mengine
 {
     namespace Detail

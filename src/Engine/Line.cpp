@@ -107,5 +107,4 @@ namespace Mengine
         _renderPipeline->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
-
 }

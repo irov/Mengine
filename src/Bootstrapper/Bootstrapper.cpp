@@ -229,6 +229,10 @@ PLUGIN_EXPORT( Graphics );
 PLUGIN_EXPORT( Sentry );
 #endif
 
+#ifdef MENGINE_PLUGIN_STEAM_STATIC
+PLUGIN_EXPORT( Steam );
+#endif
+
 #ifdef MENGINE_PLUGIN_GOAP_STATIC
 PLUGIN_EXPORT( GOAP );
 #endif
@@ -898,6 +902,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( FE, "initialize Plugin FE...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#ifdef MENGINE_PLUGIN_STEAM_STATIC
+        MENGINE_ADD_PLUGIN( Steam, "initialize Plugin Steam...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 #ifdef MENGINE_PLUGIN_WIN32_SOCKET_STATIC
         MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -910,7 +918,7 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( ImGUI, "initialize Plugin ImGUI...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#ifdef MENGINE_PLUGIN_CAMERADEBUGGIZMO
+#ifdef MENGINE_PLUGIN_CAMERADEBUGGIZMO_STATIC
         MENGINE_ADD_PLUGIN( CameraDebugGizmo, "initialize Plugin Camera Debug Gizmo...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 

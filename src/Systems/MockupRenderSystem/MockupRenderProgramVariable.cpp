@@ -122,4 +122,5 @@ namespace Mengine
         int32_t * values = &m_dataBooleans[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

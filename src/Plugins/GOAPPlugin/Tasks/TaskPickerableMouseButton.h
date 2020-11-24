@@ -35,7 +35,9 @@ namespace Mengine
 
         LambdaPickerMouseButtonEvent m_filter;
 
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
+#endif
 
         EventReceiverInterfacePtr m_receiver;
     };

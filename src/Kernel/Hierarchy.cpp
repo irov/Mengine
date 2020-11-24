@@ -3,28 +3,10 @@
 #include "Kernel/Node.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/IntrusivePtrScope.h"
+#include "Kernel/MixinDebug.h"
 
 namespace Mengine
 {
-    namespace Detail
-    {
-#if MENGINE_ASSERTION_DEBUG
-        //////////////////////////////////////////////////////////////////////////
-        static const ConstString & getHierarchyReceiverName( const Hierarchy * _hierarchy )
-        {
-            const Identity * identity = dynamic_cast<const Identity *>(_hierarchy);
-
-            if( identity == nullptr )
-            {
-                return ConstString::none();
-            }
-
-            const ConstString & name = identity->getName();
-
-            return name;
-        }
-#endif
-    }
     //////////////////////////////////////////////////////////////////////////
     Hierarchy::Hierarchy()
         : m_parent( nullptr )
@@ -38,11 +20,11 @@ namespace Mengine
     void Hierarchy::addChild( const NodePtr & _node )
     {
         MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add child NULL node"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         MENGINE_ASSERTION_FATAL( _node != this, "node '%s' invalid self child node"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         this->addChild_( m_children.end(), _node, true );
@@ -51,11 +33,11 @@ namespace Mengine
     void Hierarchy::addChildFront( const NodePtr & _node )
     {
         MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add front child NULL node"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         MENGINE_ASSERTION_FATAL( _node != this, "node '%s' invalid self child node"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         this->addChild_( m_children.begin(), _node, m_children.empty() );
@@ -64,21 +46,21 @@ namespace Mengine
     bool Hierarchy::addChildAfter( const NodePtr & _node, const NodePtr & _after )
     {
         MENGINE_ASSERTION_FATAL( _node != nullptr, "node '%s' invalid add child NULL node (node)"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         MENGINE_ASSERTION_FATAL( _after != nullptr, "node '%s' invalid add after NULL node (node)"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         MENGINE_ASSERTION_FATAL( _node != _after, "node '%s' invalid add child '%s' is equal after '%s' (node)"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
             , _node->getName().c_str()
             , _after->getName().c_str()
         );
 
         MENGINE_ASSERTION_FATAL( stdex::helper::intrusive_find( m_children.begin(), m_children.end(), NodePtr::from( _after ) ) != m_children.end(), "node '%s' after is not child"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         IntrusiveSlugListHierarchyChild::iterator it_after( NodePtr::from( _after ) );
@@ -279,12 +261,12 @@ namespace Mengine
     bool Hierarchy::removeChild( const NodePtr & _node )
     {
         MENGINE_ASSERTION_FATAL( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), NodePtr::from( _node ) ) == true, "node '%s' not found children '%s'"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
             , _node->getName().c_str()
         );
 
         MENGINE_ASSERTION_FATAL( _node != this, "node '%s' invalid self child node"
-            , Detail::getHierarchyReceiverName( this ).c_str()
+            , MENGINE_MIXIN_DEBUG_NAME( this )
         );
 
         _node->deactivate();

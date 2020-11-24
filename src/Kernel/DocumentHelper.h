@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 //////////////////////////////////////////////////////////////////////////
 #if MENGINE_DOCUMENT_ENABLE
 #   include "Interface/DocumentServiceInterface.h"

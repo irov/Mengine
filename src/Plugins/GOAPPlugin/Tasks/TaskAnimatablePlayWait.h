@@ -26,7 +26,10 @@ namespace Mengine
     protected:
         AnimatablePtr m_animatable;
         EventablePtr m_eventable;
+
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
+#endif
 
         EventReceiverInterfacePtr m_receiver;
     };

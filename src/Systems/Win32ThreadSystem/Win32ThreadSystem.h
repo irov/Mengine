@@ -15,6 +15,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32ThreadSystem
         : public ServiceBase<ThreadSystemInterface>
     {

@@ -222,4 +222,5 @@ namespace Mengine
             m_surface->correctUV( 1, uv, m_verticesWM[i].uv + 1 );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

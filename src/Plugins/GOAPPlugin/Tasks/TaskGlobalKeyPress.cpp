@@ -13,9 +13,12 @@ namespace Mengine
         : m_code( _code )
         , m_isDown( _isDown )
         , m_filter( _filter )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
         , m_id( 0 )
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskGlobalKeyPress::~TaskGlobalKeyPress()
@@ -46,7 +49,7 @@ namespace Mengine
             return false;
         };
 
-        uint32_t id = Helper::addGlobalKeyHandler( m_code, m_isDown, lambda, m_doc );
+        uint32_t id = Helper::addGlobalKeyHandler( m_code, m_isDown, lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
         if( id == 0 )
         {

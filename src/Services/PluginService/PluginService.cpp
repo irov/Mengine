@@ -116,7 +116,7 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         plugin->setDocument( _doc );
 #endif
 

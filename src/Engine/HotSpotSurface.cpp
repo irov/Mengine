@@ -82,6 +82,6 @@ namespace Mengine
     void HotSpotSurface::_dispose()
     {
         m_surface = nullptr;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
 }

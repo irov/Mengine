@@ -27,7 +27,9 @@ namespace Mengine
         float m_to;
         float m_speed;
 
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
+#endif
 
         UniqueId m_id;
     };

@@ -25,4 +25,5 @@ namespace Mengine
 
         _renderPipeline->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

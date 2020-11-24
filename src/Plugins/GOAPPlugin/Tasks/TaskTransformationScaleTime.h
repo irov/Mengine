@@ -32,7 +32,9 @@ namespace Mengine
 
         uint32_t m_flags;
 
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
+#endif
 
         uint32_t m_id;        
     };

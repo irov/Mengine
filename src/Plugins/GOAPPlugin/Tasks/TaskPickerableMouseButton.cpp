@@ -183,9 +183,12 @@ namespace Mengine
         , m_code( _code )
         , m_isDown( _isDown )
         , m_isPressed( _isPressed )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
         , m_filter( _filter )
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskPickerableMouseButton::~TaskPickerableMouseButton()
@@ -200,7 +203,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_doc, _node, m_code, m_isDown, m_isPressed, m_filter );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_code, m_isDown, m_isPressed, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, newreceiver );
 

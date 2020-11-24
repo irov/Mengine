@@ -38,4 +38,5 @@ namespace Mengine
 
         stdex::helper::intrusive_sort_stable( m_children, FIsometricSortY() );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

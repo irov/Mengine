@@ -61,7 +61,7 @@ namespace Mengine
 
         object->setFactory( this );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         object->setDocument( _doc );
 #endif
 

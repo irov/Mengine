@@ -171,25 +171,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Hierarchy::foreachChildrenSlug( const LambdaHierarchy & _lambda ) const
     {
-        if( m_children.empty() == false )
+        if( m_children.empty() == true )
         {
-            NodePtr single = m_children.single();
+            return;
+        }
+         
+        NodePtr single = m_children.single();
 
-            if( single != nullptr )
-            {
-                _lambda( single );
-            }
-            else
-            {
-                for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
-                {
-                    NodePtr child( *it );
+        if( single != nullptr )
+        {
+            _lambda( single );
 
-                    it.next_shuffle();
+            return;
+        }
 
-                    _lambda( child );
-                }
-            }
+        for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
+        {
+            NodePtr child( *it );
+
+            it.next_shuffle();
+
+            _lambda( child );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -208,19 +210,19 @@ namespace Mengine
             {
                 return false;
             }
+
+            return true;
         }
-        else
+
+        for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
         {
-            for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
+            NodePtr child( *it );
+
+            it.next_shuffle();
+
+            if( _lambda( child ) == false )
             {
-                NodePtr child( *it );
-
-                it.next_shuffle();
-
-                if( _lambda( child ) == false )
-                {
-                    return false;
-                }
+                return false;
             }
         }
     
@@ -309,44 +311,34 @@ namespace Mengine
         this->eraseChild_( _node );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Hierarchy::destroyChildren( const LambdaDestroyChildren & _lambda )
+    void Hierarchy::removeChildren( const LambdaRemoveChildren & _lambda )
     {
         if( m_children.empty() == true )
         {
             return;
         }
 
-        for( IntrusiveSlugHierarchyChild it( m_children ); it.eof() == false; )
+        NodePtr single = m_children.single();
+
+        if( single != nullptr )
         {
-            NodePtr hierarchy( *it );
+            single->deactivate();
 
-            IntrusiveSlugListHierarchyChild::iterator it_node( hierarchy );
-
-            it.next_shuffle();
-
-            hierarchy->deactivate();
-
-            Hierarchy * parent = hierarchy->getParent();
+            Hierarchy * parent = single->getParent();
 
             if( parent != this )
             {
-                continue;
+                return;
             }
 
-            hierarchy->release();
+            single->release();
 
-            hierarchy->removeParent_();
+            single->removeParent_();
 
-            m_children.erase( it_node );
+            m_children.clear();
 
-            _lambda( hierarchy );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Hierarchy::removeChildren( const LambdaRemoveChildren & _lambda )
-    {
-        if( m_children.empty() == true )
-        {
+            _lambda( single );
+
             return;
         }
 

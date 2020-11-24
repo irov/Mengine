@@ -77,9 +77,13 @@ namespace Mengine
 
     public:
         void dispose();
+        void disposeAll();
 
     protected:
         virtual void _dispose();
+
+    public:
+        MENGINE_INLINE bool isDispose() const;
 
     protected:
         void _destroy() override;
@@ -148,6 +152,7 @@ namespace Mengine
         bool m_deactivating;
         bool m_afterActive;
         bool m_enable;
+        bool m_dispose;
 
         bool m_freeze;
 
@@ -156,6 +161,11 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Node> NodePtr;
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool Node::isDispose() const
+    {
+        return m_dispose;
+    }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Node::isActivate() const
     {

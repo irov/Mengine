@@ -117,6 +117,9 @@ namespace Mengine
 
         m_totalTextEntry = nullptr;
 
+        m_cacheTextChars.clear();
+        m_cacheTextLines.clear();
+
         VectorTextLinesLayout layouts;
         m_layouts.swap( layouts );
 
@@ -1539,6 +1542,11 @@ namespace Mengine
     void TextField::_invalidateColor() const
     {
         this->invalidateVertices_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::_dispose()
+    {
+        m_textFormatArgContexts.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getMaxCharCount() const

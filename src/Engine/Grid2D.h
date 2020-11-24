@@ -57,6 +57,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void _dispose() override;
+
+    protected:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:

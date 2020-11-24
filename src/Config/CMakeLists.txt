@@ -18,10 +18,19 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildVersion.h.in ${CMAKE_CURRENT_SOU
 
 MESSAGE("MENGINE_BUILD_VERSION: ${MENGINE_BUILD_VERSION}")
 
+string(TIMESTAMP MENGINE_BUILD_TIMESTAMP "%Y-%m-%d %H:%M:%S")
+
+set(MENGINE_BUILD_USERNAME $ENV{USERNAME} CACHE STRING "MENGINE_BUILD_USERNAME")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildInfo.h.in ${CMAKE_CURRENT_SOURCE_DIR}/BuildInfo.h @ONLY)
+
+MESSAGE("MENGINE_BUILD_USERNAME: ${MENGINE_BUILD_USERNAME}")
+MESSAGE("MENGINE_BUILD_TIMESTAMP: ${MENGINE_BUILD_TIMESTAMP}")
+
 ADD_FILTER(
 src
     Char.h
     Typedef.h
+    Typeinfo.h
     Atomic.h
     Lambda.h
     Defines.h
@@ -39,6 +48,7 @@ src
     UInt32ToPointer.h
     Metaprogramming.h
     GitSHA1.h
+    BuildInfo.h
     BuildVersion.h
     UniqueId.h
 )

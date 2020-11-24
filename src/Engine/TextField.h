@@ -160,9 +160,13 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
+    protected:
         void _invalidateWorldMatrix() const override;
         void _updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const override;
         void _invalidateColor() const override;
+
+    protected:
+        void _dispose() override;
 
     protected:
         void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );

@@ -30,6 +30,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void _dispose() override;
+
+    protected:
         void update( const UpdateContext * _context ) override;
 
     protected:

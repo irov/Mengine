@@ -42,9 +42,14 @@ namespace Mengine
     protected:
         bool _compile() override;
         void _release() override;
+
+    protected:
         void _updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const override;
         void _invalidateWorldMatrix() const override;
         void _invalidateColor() const override;
+
+    protected:
+        void _dispose() override;
 
     protected:
         void _updateVertices( RenderVertex2D * const _vertices, uint8_t _invalidateVertices ) const override;

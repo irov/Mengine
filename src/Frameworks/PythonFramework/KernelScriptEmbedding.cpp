@@ -16,6 +16,7 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/AnimationInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #include "Engine/ResourceImageData.h"
 #include "Engine/ResourceFile.h"
@@ -37,13 +38,10 @@
 #include "Interface/ApplicationInterface.h"
 
 #include "ScriptHolder.h"
-#include "DocumentTraceback.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
-
-#include "Interface/RenderSystemInterface.h"
-
+#include "Environment/Python/PythonDocumentTraceback.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "ScriptableAffectorCallback.h"
@@ -510,7 +508,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_Node_destroyAllChild( Node * _node )
             {
-                _node->destroyChildren( []( const NodePtr & _child )
+                _node->removeChildren( []( const NodePtr & _child )
                 {
                     MENGINE_UNUSED( _child );
                 } );

@@ -375,7 +375,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid create file for '%ls' [error %lu]"
+            LOGGER_ERROR( "invalid create file for '%ls' [error: %lu]"
                 , unicode_processDumpPath.c_str()
                 , error
             );
@@ -1677,7 +1677,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid register session notification: %lu"
+            LOGGER_ERROR( "invalid register session notification [error: %lu]"
                 , error
             );
         }
@@ -1876,7 +1876,7 @@ namespace Mengine
 
                 if( error != 0 )
                 {
-                    LOGGER_ERROR( "icon '%s' for file '%ls' errCode %lu"
+                    LOGGER_ERROR( "icon '%s' for file '%ls' [error: %lu]"
                         , _name.c_str()
                         , unicode_icoFullFile.c_str()
                         , error
@@ -2178,7 +2178,7 @@ namespace Mengine
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
-                        LOGGER_WARNING( "directory '%ls' alredy exists"
+                        LOGGER_ERROR( "directory '%ls' alredy exists"
                             , path.c_str()
                         );
 
@@ -2186,7 +2186,7 @@ namespace Mengine
                     }break;
                 case ERROR_PATH_NOT_FOUND:
                     {
-                        LOGGER_WARNING( "directory '%ls' not found"
+                        LOGGER_ERROR( "directory '%ls' not found"
                             , path.c_str()
                         );
 
@@ -2194,7 +2194,7 @@ namespace Mengine
                     }break;
                 default:
                     {
-                        LOGGER_WARNING( "directory '%ls' unknown error: %lu"
+                        LOGGER_ERROR( "directory '%ls' unknown [error: %lu]"
                             , path.c_str()
                             , err
                         );
@@ -2270,7 +2270,7 @@ namespace Mengine
 
             MENGINE_UNUSED( err );
 
-            LOGGER_WARNING( "file '%ls' error '%lu'"
+            LOGGER_ERROR( "file '%ls' [error: %lu]"
                 , pathCorrect
                 , err
             );
@@ -2335,7 +2335,7 @@ namespace Mengine
 
                 MENGINE_UNUSED( err );
 
-                LOGGER_WARNING( "invalid move file '%ls' error '%lu'"
+                LOGGER_ERROR( "invalid move file '%ls' [error: %lu]"
                     , newFilePathCorrect
                     , err
                 );
@@ -2349,7 +2349,7 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_le, 1023 );
 
-            LOGGER_WARNING( "file '%ls' move to '%ls' error: %s [%lu]"
+            LOGGER_ERROR( "file '%ls' move to '%ls' [error: %s (%lu)]"
                 , oldFilePathCorrect
                 , newFilePathCorrect
                 , str_le
@@ -2610,7 +2610,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "'%ls:%ls' invalid createFile '%ls' [error %lu]"
+            LOGGER_ERROR( "'%ls:%ls' invalid createFile '%ls' [error: %lu]"
                 , pathCorrect
                 , fileCorrect
                 , szPath
@@ -3426,7 +3426,7 @@ namespace Mengine
                 Char str_error[1024] = {'\0'};
                 this->getLastErrorMessage( &error, str_error, 1023 );
 
-                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
+                LOGGER_ERROR( "CreateProcess '%s' return [error: %s (%lu)]"
                     , _process
                     , str_error
                     , error
@@ -3729,7 +3729,7 @@ namespace Mengine
             Char str_error[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_error, 1023 );
 
-            LOGGER_ERROR( "GetUserName invalid error: %s [%lu] "
+            LOGGER_ERROR( "GetUserName invalid [error: %s (%lu)]"
                 , str_error
                 , error
             );
@@ -3760,7 +3760,7 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_le, 1023 );
 
-            LOGGER_ERROR( "invalid ShowWindow: error %s [%lu]"
+            LOGGER_ERROR( "invalid ShowWindow [error: %s (%lu)]"
                 , str_le
                 , error
             );

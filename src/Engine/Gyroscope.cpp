@@ -31,4 +31,5 @@ namespace Mengine
             mt::mul_m4_m4_r( m_worldMatrix, localMatrix, relationMatrix );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

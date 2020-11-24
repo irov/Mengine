@@ -118,8 +118,11 @@ namespace Mengine
             : m_textManager( _textManager )
             , m_fileGroup( _fileGroup )
             , m_filePath( _filePath )
+#if MENGINE_DOCUMENT_ENABLE
             , m_doc( _doc )
+#endif
         {
+            MENGINE_UNUSED( _doc );
         }
 
         ~TextManagerLoadSaxCallback()
@@ -406,7 +409,7 @@ namespace Mengine
 
             Tags tags;
 
-            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, tags, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, m_doc ) == false )
+            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, tags, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
                     , m_fileGroup->getName().c_str()
@@ -422,7 +425,9 @@ namespace Mengine
         const FileGroupInterfacePtr & m_fileGroup;
         const FilePath & m_filePath;
 
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )

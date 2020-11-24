@@ -240,6 +240,12 @@ Identity
 )
 
 ADD_FILTER(
+Unique
+    Unique.cpp
+    Unique.h
+)
+
+ADD_FILTER(
 Transformation
     Transformation.cpp
     Transformation.h
@@ -378,6 +384,7 @@ Assertion
     AssertionType.h
     AssertionAllocator.h
     AssertionObservable.h
+    AssertionObservable.cpp
 )
 
 ADD_FILTER(

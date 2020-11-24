@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32ThreadMutex
         : public ThreadMutexInterface
         , public Factorable
@@ -35,7 +36,7 @@ namespace Mengine
     protected:
         CRITICAL_SECTION m_cs;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
     };

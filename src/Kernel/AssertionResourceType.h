@@ -1,16 +1,17 @@
 #pragma once
 
-#include "Kernel/Assertion.h"
+#include "Config/Config.h"
 
 //////////////////////////////////////////////////////////////////////////
 #if MENGINE_ASSERTION_DEBUG
 //////////////////////////////////////////////////////////////////////////
+#   include "Interface/ResourceServiceInterface.h"
+#   include "Kernel/Assertion.h"
+//////////////////////////////////////////////////////////////////////////
 #   define MENGINE_ASSERTION_RESOURCE_TYPE( Resource, ResourceType, ... ) MENGINE_ASSERTION_FATAL( (Resource == nullptr || stdex::intrusive_dynamic_cast<ResourceType>(Resource) != nullptr), __VA_ARGS__)
 //////////////////////////////////////////////////////////////////////////
-#   include "Interface/ResourceServiceInterface.h"
-//////////////////////////////////////////////////////////////////////////
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( ResourceName, ResourceType, Ret, ... )\
-    if( RESOURCE_SERVICE()->hasResource(ConstString::none(), ResourceName, nullptr) == true )\
+    if( RESOURCE_SERVICE()->hasResource(ConstString::none(), ResourceName, false, nullptr) == true )\
     {\
         if( Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(ConstString::none(), ResourceName)) == nullptr )\
         {\
@@ -20,7 +21,7 @@
     }
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME_VOID( ResourceName, ResourceType, Ret, ... )\
-    if( RESOURCE_SERVICE()->hasResource(ConstString::none(), ResourceName, nullptr) == true )\
+    if( RESOURCE_SERVICE()->hasResource(ConstString::none(), ResourceName, false, nullptr) == true )\
     {\
         if( Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(ConstString::none(), ResourceName)) == nullptr )\
         {\

@@ -10,8 +10,8 @@
 #   define MENGINE_FACTORABLE_DEBUG
 #endif
 
-#ifdef MENGINE_DEBUG
-#include "Kernel/Documentable.h"
+#if MENGINE_DOCUMENT_ENABLE
+#   include "Kernel/Documentable.h"
 #endif
 
 namespace Mengine
@@ -19,7 +19,7 @@ namespace Mengine
     class Factory;
 
     class Factorable
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         : public Documentable
 #else
         : public Mixin

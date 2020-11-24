@@ -18,6 +18,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32ThreadIdentity
         : public ThreadIdentityInterface
         , public Factorable
@@ -57,7 +58,7 @@ namespace Mengine
         ThreadTaskInterface * m_task;
         AtomicBool m_exit;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
 #endif
     };

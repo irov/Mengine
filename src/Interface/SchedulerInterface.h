@@ -66,6 +66,8 @@ namespace Mengine
     public:
         virtual bool remove( UniqueId _id ) = 0;
         virtual void removeAll() = 0;
+
+        virtual bool cancel( UniqueId _id ) = 0;
         virtual void cancelAll() = 0;
 
         virtual bool freeze( UniqueId _id, bool _freeze ) = 0;

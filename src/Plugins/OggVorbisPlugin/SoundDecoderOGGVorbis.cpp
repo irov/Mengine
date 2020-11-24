@@ -61,6 +61,26 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
+    static const Char * s_error_info( int32_t _code )
+    {
+        switch( _code )
+        {
+        case OV_EREAD: return "A read from media returned an error.";
+        case OV_EFAULT: return "Internal logic fault; indicates a bug or heap/stack corruption.";
+        case OV_EIMPL: return "OV_EIMPL";
+        case OV_EINVAL: return "OV_EINVAL";
+        case OV_ENOTVORBIS: return "Bitstream does not contain any Vorbis data.";
+        case OV_EBADHEADER: return "Invalid Vorbis bitstream header.";
+        case OV_EVERSION: return "Vorbis version mismatch.";
+        case OV_ENOTAUDIO: return "OV_ENOTAUDIO";
+        case OV_EBADPACKET: return "OV_EBADPACKET";
+        case OV_EBADLINK: return "OV_EBADLINK";
+        case OV_ENOSEEK: return "OV_ENOSEEK";
+        }
+
+        return "UNKNOWN";
+    }
+    //////////////////////////////////////////////////////////////////////////
     SoundDecoderOGGVorbis::SoundDecoderOGGVorbis()
         : m_oggVorbisFileInitialize( false )
     {
@@ -97,7 +117,8 @@ namespace Mengine
 
         if( opcall_err < 0 )
         {
-            LOGGER_ERROR( "invalid ov_open_callbacks [%d]"
+            LOGGER_ERROR( "invalid ov_open_callbacks [error: %s (%d)]"
+                , s_error_info( opcall_err )
                 , opcall_err
             );
 
@@ -181,7 +202,8 @@ namespace Mengine
 
             if( decodeSize < 0 )
             {
-                LOGGER_ERROR( "ov_read return [%ld]"
+                LOGGER_ERROR( "invalid ov_read [error: %s (%ld)]"
+                    , s_error_info( decodeSize )
                     , decodeSize
                 );
 
@@ -236,9 +258,10 @@ namespace Mengine
         if( seek_err != 0 )
         {
             //OV_ENOSEEK
-            LOGGER_ERROR( "time %f is %f error %d"
+            LOGGER_ERROR( "time %f is %f [error: %s (%d)]"
                 , _time
                 , m_dataInfo.length
+                , s_error_info( seek_err )
                 , seek_err
             );
 

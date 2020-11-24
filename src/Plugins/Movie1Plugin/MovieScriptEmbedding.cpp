@@ -7,8 +7,7 @@
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
-
-#include "Frameworks/PythonFramework/DocumentTraceback.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Movie.h"
 #include "MovieSlot.h"

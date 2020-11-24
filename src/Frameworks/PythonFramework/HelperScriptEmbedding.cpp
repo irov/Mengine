@@ -52,7 +52,7 @@
 
 #include "Engine/ResourceImageSequence.h"
 
-#include "DocumentTraceback.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include <ctime>
 #include <iomanip>

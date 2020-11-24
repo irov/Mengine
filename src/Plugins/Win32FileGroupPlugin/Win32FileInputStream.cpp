@@ -45,8 +45,8 @@ namespace Mengine
         m_filePath = _filePath;
 #endif
 
-        m_share = _share;
         m_streaming = _streaming;
+        m_share = _share;
 
         WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )

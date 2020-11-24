@@ -15,6 +15,31 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void HotSpotSurface::setSurface( const SurfacePtr & _surface )
+    {
+        if( m_surface == _surface )
+        {
+            return;
+        }
+
+        this->recompile( [this, &_surface]()
+        {
+            m_surface = _surface;
+
+            if( m_surface == nullptr )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const SurfacePtr & HotSpotSurface::getSurface() const
+    {
+        return m_surface;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool HotSpotSurface::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_surface, "'%s' surface is nullptr"
@@ -54,28 +79,9 @@ namespace Mengine
         m_surface->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotSurface::setSurface( const SurfacePtr & _surface )
+    void HotSpotSurface::_dispose()
     {
-        if( m_surface == _surface )
-        {
-            return;
-        }
-
-        this->recompile( [this, &_surface]()
-        {
-            m_surface = _surface;
-
-            if( m_surface == nullptr )
-            {
-                return false;
-            }
-
-            return true;
-        } );
+        m_surface = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    const SurfacePtr & HotSpotSurface::getSurface() const
-    {
-        return m_surface;
-    }
 }

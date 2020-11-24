@@ -23,7 +23,10 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    private:
+    protected:
+        void _dispose() override;
+
+    protected:
         ResourceShapePtr m_resourceShape;
     };
     //////////////////////////////////////////////////////////////////////////

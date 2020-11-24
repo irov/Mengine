@@ -5,7 +5,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 
-#include "Frameworks/PythonFramework/DocumentTraceback.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
 

@@ -20,10 +20,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Scriptable::~Scriptable()
     {
+        MENGINE_ASSERTION_FATAL( m_embed == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Scriptable::setEmbed( pybind::kernel_interface * _kernel, PyObject * _embed )
     {
+        MENGINE_ASSERTION_FATAL( m_embed == nullptr );
+
 #if defined(MENGINE_DEBUG) && defined(MENGINE_USE_SCRIPT_SERVICE)
         if( _kernel->is_object_bindable( _embed ) == false )
         {

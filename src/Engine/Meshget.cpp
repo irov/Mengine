@@ -47,6 +47,11 @@ namespace Mengine
         m_surface->release();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Meshget::_dispose()
+    {
+        m_surface = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Meshget::setSurface( const SurfacePtr & _surface )
     {
         if( m_surface == _surface )

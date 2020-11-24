@@ -1,4 +1,6 @@
 MESSAGE("*********************************************")
+MESSAGE("USER: $ENV{USERNAME}")
+MESSAGE("*********************************************")
 MESSAGE("CMAKE VERSION: ${CMAKE_VERSION}")
 MESSAGE("CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
 MESSAGE("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")

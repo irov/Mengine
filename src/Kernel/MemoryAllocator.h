@@ -4,11 +4,8 @@
 #include "Kernel/AllocatorHelper.h"
 
 #include "Config/Config.h"
+#include "Config/Typeinfo.h"
 #include "Config/Char.h"
-
-#ifdef MENGINE_WINDOWS_DEBUG
-#   include <typeinfo>
-#endif
 
 namespace Mengine
 {
@@ -20,7 +17,7 @@ namespace Mengine
         T * allocateT()
         {
 #ifdef MENGINE_WINDOWS_DEBUG
-            const Char * doc = typeid(T).name();
+            const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
 #endif
@@ -35,7 +32,7 @@ namespace Mengine
         void freeT( T * _ptr )
         {
 #ifdef MENGINE_WINDOWS_DEBUG
-            const Char * doc = typeid(T).name();
+            const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
 #endif
@@ -47,7 +44,7 @@ namespace Mengine
         T * allocateArrayT( size_t _count )
         {
 #ifdef MENGINE_WINDOWS_DEBUG
-            const Char * doc = typeid(T).name();
+            const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
 #endif
@@ -62,7 +59,7 @@ namespace Mengine
         T * callocateArrayT( size_t _count )
         {
 #ifdef MENGINE_WINDOWS_DEBUG
-            const Char * doc = typeid(T).name();
+            const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
 #endif
@@ -76,7 +73,7 @@ namespace Mengine
         T * reallocateArrayT( T * _array, size_t _count )
         {
 #ifdef MENGINE_WINDOWS_DEBUG
-            const Char * doc = typeid(T).name();
+            const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
 #endif
@@ -91,7 +88,7 @@ namespace Mengine
         void freeArrayT( T * _array )
         {
 #ifdef MENGINE_WINDOWS_DEBUG
-            const Char * doc = typeid(T).name();
+            const Char * doc = MENGINE_TYPEINFO_NAME( T );
 #else
             const Char * doc = nullptr;
 #endif

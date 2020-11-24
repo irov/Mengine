@@ -63,6 +63,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Button::_dispose()
     {
+        MENGINE_ASSERTION_FATAL( m_chain == nullptr );
+
+        m_pickerable = nullptr;
+
         for( uint32_t index = 0; index != __EBS_MAX__; ++index )
         {
             m_nodes[index] = nullptr;

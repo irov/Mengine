@@ -28,6 +28,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void _dispose() override;
+
+    protected:
         SurfaceSoundPtr m_surfaceSound;
     };
     //////////////////////////////////////////////////////////////////////////

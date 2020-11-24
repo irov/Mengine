@@ -16,9 +16,12 @@ namespace Mengine
         , m_affectorable( _affectorable )
         , m_to( _to )
         , m_speed( _speed )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
         , m_id( 0 )
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskTransformationRotateY::~TaskTransformationRotateY()
@@ -35,7 +38,7 @@ namespace Mengine
 
         LambdaAffectorTransformationRotate transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationY );
 
-        AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotate>( m_doc, _node, transformCb, correct_rotate_from, correct_rotate_to, m_speed );
+        AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotate>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, transformCb, correct_rotate_from, correct_rotate_to, m_speed );
 
         const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 

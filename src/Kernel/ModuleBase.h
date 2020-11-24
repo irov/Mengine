@@ -28,11 +28,11 @@ namespace Mengine
         bool isInitializeModule() const override;
 
     protected:
-        virtual bool _initializeModule();
-        virtual void _finalizeModule();
+        virtual bool _availableModule() const;
 
     protected:
-        virtual bool _availableModule() const;
+        virtual bool _initializeModule();
+        virtual void _finalizeModule();
 
     public:
         void update( bool _focus ) override;

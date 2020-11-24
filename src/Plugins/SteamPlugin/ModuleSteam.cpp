@@ -5,13 +5,13 @@
 
 #include "ModuleSteam.h"
 
-#include "Interface/ConfigInterface.h"
-#include "Interface/OptionsInterface.h"
-#include "Interface/StringizeInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/UnicodeHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -36,15 +36,15 @@ namespace Mengine
     {
         if( _severity >= 1 )
         {
-            LOGGER_ERROR( "%s", _msg );
+            LOGGER_ERROR( "[steam] %s", _msg );
         }
         else
         {
-            LOGGER_WARNING( "%s", _msg );
+            LOGGER_WARNING( "[steam] %s", _msg );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleSteam::_avaliable()
+    bool ModuleSteam::_availableModule() const
     {
         bool avaliable = CONFIG_VALUE( "Steam", "Avaliable", true );
 
@@ -57,11 +57,11 @@ namespace Mengine
 
         if( HAS_OPTION( "steamappid" ) == true )
         {
-            const Char * str_steamappid = GET_OPTION_VALUE( "steamappid" );
+            const Char * str_steamappid = GET_OPTION_VALUE( "steamappid", "" );
 
             if( sscanf( str_steamappid, "%d", &appId ) != 0 )
             {
-                LOGGER_ERROR( "ModuleSteam::_avaliable invalid option steamappid '%s'"
+                LOGGER_ERROR( "invalid option steamappid '%s'"
                     , str_steamappid
                 );
 
@@ -73,7 +73,7 @@ namespace Mengine
         {
             if( SteamAPI_RestartAppIfNecessary( appId ) == true )
             {
-                LOGGER_ERROR( "ModuleSteam::_avaliable invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
+                LOGGER_ERROR( "invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
                     , appId
                 );
 
@@ -84,7 +84,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleSteam::_initialize()
+    bool ModuleSteam::_initializeModule()
     {
         //danish, dutch, english, finnish, french, german, italian, korean,
         //norwegian, polish, portuguese, russian, schinese, spanish, swedish, tchinese, ukrainian
@@ -145,21 +145,22 @@ namespace Mengine
 
         if( SteamAPI_Init() == false )
         {
-            LOGGER_ERROR( "ModuleSteam::_initialize invalid SteamAPI_Init"
-            );
+            LOGGER_ERROR( "invalid SteamAPI_Init" );
 
             return false;
         }
 
-        const char * AvailableGameLanguages = SteamApps()->GetAvailableGameLanguages();
+        const char * AvailableGameLanguages = SteamApps()
+            ->GetAvailableGameLanguages();
 
-        LOGGER_INFO( "ModuleSteam::initialize available game languages '%s'"
+        LOGGER_INFO( "steam", "available game languages '%s'"
             , AvailableGameLanguages
         );
 
-        const char * CurrentGameLanguage = SteamApps()->GetCurrentGameLanguage();
+        const char * CurrentGameLanguage = SteamApps()
+            ->GetCurrentGameLanguage();
 
-        LOGGER_WARNING( "ModuleSteam::initialize game language '%s'"
+        LOGGER_WARNING( "game language '%s'"
             , CurrentGameLanguage
         );
 
@@ -169,7 +170,7 @@ namespace Mengine
         {
             const ConstString & steam_locale = it_locale_found->second;
 
-            LOGGER_WARNING( "ModuleSteam::initialize found locale '%s' for language '%s'"
+            LOGGER_WARNING( "found locale '%s' for language '%s'"
                 , steam_locale.c_str()
                 , CurrentGameLanguage
             );
@@ -179,7 +180,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "ModuleSteam::initialize not found game localization for language '%s' setup 'en'"
+            LOGGER_ERROR( "not found game localization for language '%s' setup 'en'"
                 , CurrentGameLanguage
             );
 
@@ -199,7 +200,7 @@ namespace Mengine
         //
         //if( m_user->BLoggedOn() == false )
         //{
-        //	LOGGER_ERROR("ModuleSteam::_initialize invalid BLoggedOn"
+        //	LOGGER_ERROR("invalid BLoggedOn"
         //		);
 
         //	return false;
@@ -238,7 +239,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleSteam::_finalize()
+    void ModuleSteam::_finalizeModule()
     {
         m_userStats->StoreStats();
 
@@ -247,7 +248,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleSteam::_update( bool _focus )
     {
-        (void)_focus;
+        MENGINE_UNUSED( _focus );
 
         //bool status = m_userStats->RequestCurrentStats();
     }
@@ -262,7 +263,7 @@ namespace Mengine
 
             if( it_value_found == _params.end() )
             {
-                LOGGER_ERROR( "ModuleSteam::_message invalid message '%s' params [not found Value]"
+                LOGGER_ERROR( "invalid message '%s' params [not found Value]"
                     , _messageName.c_str()
                 );
 
@@ -272,13 +273,13 @@ namespace Mengine
             const WString & unicode_value = it_value_found->second;
 
             String utf8_value;
-            Helper::unicodeToUtf8( unicode_value, utf8_value );
+            Helper::unicodeToUtf8( unicode_value, &utf8_value );
 
-            const char * str_value = utf8_value.c_str();
+            const Char * str_value = utf8_value.c_str();
 
             if( m_userStats->SetAchievement( str_value ) == false )
             {
-                LOGGER_ERROR( "ModuleSteam::_message invalid set achievement '%s'"
+                LOGGER_ERROR( "invalid set achievement '%s'"
                     , str_value
                 );
 
@@ -291,7 +292,7 @@ namespace Mengine
 
             if( it_name_found == _params.end() )
             {
-                LOGGER_ERROR( "ModuleSteam::_message invalid message '%s' params [not found Name]"
+                LOGGER_ERROR( "invalid message '%s' params [not found Name]"
                     , _messageName.c_str()
                 );
 
@@ -301,7 +302,7 @@ namespace Mengine
             const WString & unicode_name = it_name_found->second;
 
             String utf8_name;
-            Helper::unicodeToUtf8( unicode_name, utf8_name );
+            Helper::unicodeToUtf8( unicode_name, &utf8_name );
 
             const char * str_name = utf8_name.c_str();
 
@@ -309,7 +310,7 @@ namespace Mengine
 
             if( it_value_found == _params.end() )
             {
-                LOGGER_ERROR( "ModuleSteam::_message invalid message '%s' params [not found Value]"
+                LOGGER_ERROR( "invalid message '%s' params [not found Value]"
                     , _messageName.c_str()
                 );
 
@@ -319,7 +320,7 @@ namespace Mengine
             const WString & unicode_value = it_value_found->second;
 
             String utf8_value;
-            Helper::unicodeToUtf8( unicode_value, utf8_value );
+            Helper::unicodeToUtf8( unicode_value, &utf8_value );
 
             const char * str_value = utf8_value.c_str();
 
@@ -327,7 +328,7 @@ namespace Mengine
 
             if( it_type_found == _params.end() )
             {
-                LOGGER_ERROR( "ModuleSteam::_message invalid message '%s' params [not found Type]"
+                LOGGER_ERROR( "invalid message '%s' params [not found Type]"
                     , _messageName.c_str()
                 );
 
@@ -341,7 +342,7 @@ namespace Mengine
                 float f_value;
                 if( sscanf( str_value, "%f", &f_value ) != 1 )
                 {
-                    LOGGER_ERROR( "ModuleSteam::_message invalid stat '%s' float value '%s'"
+                    LOGGER_ERROR( "invalid stat '%s' float value '%s'"
                         , str_name
                         , str_value
                     );
@@ -351,7 +352,7 @@ namespace Mengine
 
                 if( m_userStats->SetStat( str_name, f_value ) == false )
                 {
-                    LOGGER_ERROR( "ModuleSteam::_message invalid set stat '%s' float value '%f'"
+                    LOGGER_ERROR( "invalid set stat '%s' float value '%f'"
                         , str_value
                         , f_value
                     );
@@ -364,7 +365,7 @@ namespace Mengine
                 int32_t i_value;
                 if( sscanf( str_value, "%d", &i_value ) != 1 )
                 {
-                    LOGGER_ERROR( "ModuleSteam::_message invalid stat '%s' int value '%s'"
+                    LOGGER_ERROR( "invalid stat '%s' int value '%s'"
                         , str_name
                         , str_value
                     );
@@ -374,7 +375,7 @@ namespace Mengine
 
                 if( m_userStats->SetStat( str_name, i_value ) == false )
                 {
-                    LOGGER_ERROR( "ModuleSteam::_message invalid set stat '%s' int value '%d'"
+                    LOGGER_ERROR( "invalid set stat '%s' int value '%d'"
                         , str_value
                         , i_value
                     );
@@ -384,7 +385,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "ModuleSteam::_message invalid set stat '%s' invalid type '%ls'"
+                LOGGER_ERROR( "invalid set stat '%s' invalid type '%ls'"
                     , str_value
                     , unicode_type.c_str()
                 );

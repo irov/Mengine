@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SilentSoundSystem
         : public ServiceBase<SoundSystemInterface>
     {
@@ -52,4 +53,5 @@ namespace Mengine
         FactoryPtr m_factorySilentSoundBuffer;
         FactoryPtr m_factorySilentSoundSource;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

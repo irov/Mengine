@@ -81,11 +81,6 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        if( _size > 15000000 )
-        {
-            return nullptr;
-        }
-
         void * p = ::malloc( _size );
 
         MENGINE_ASSERTION_FATAL( _size == _msize( p ) );

@@ -159,8 +159,11 @@ namespace Mengine
     TaskPickerableMouseLeave::TaskPickerableMouseLeave( const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentPtr & _doc )
         : m_pickerable( _pickerable )
         , m_filter( _filter )
+#if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )
+#endif
     {
+        MENGINE_UNUSED( _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskPickerableMouseLeave::~TaskPickerableMouseLeave()
@@ -175,7 +178,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseLeaveEventReceiver>( m_doc, _node, m_filter );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseLeaveEventReceiver>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_LEAVE, newreceiver );
 

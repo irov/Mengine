@@ -825,30 +825,27 @@ namespace Mengine
             const ConstString & type = meta_resource->get_Type();
 
             //ToDo
-            if( type != STRINGIZE_STRING_LOCAL( "ResourceImageSubstract" ) )
+            bool unique = meta_resource->getd_Unique( true );
+
+            ResourcePtr has_resource;
+            if( RESOURCE_SERVICE()
+                ->hasResource( groupName, name, true, &has_resource ) == true )
             {
-                bool unique = meta_resource->getd_Unique( true );
-
-                ResourcePtr has_resource;
-                if( RESOURCE_SERVICE()
-                    ->hasResource( groupName, name, &has_resource ) == true )
+                if( unique == false )
                 {
-                    if( unique == false )
-                    {
-                        continue;
-                    }
-
-                    LOGGER_ERROR( "path '%s' already exist resource name '%s' in group '%s' ('%s')\nhas resource group '%s' name '%s'"
-                        , _filePath.c_str()
-                        , name.c_str()
-                        , groupName.c_str()
-                        , _fileGroup->getName().c_str()
-                        , has_resource->getGroupName().c_str()
-                        , has_resource->getName().c_str()
-                    );
-
-                    return false;
+                    continue;
                 }
+
+                LOGGER_ERROR( "path '%s' already exist resource name '%s' in group '%s' ('%s')\nhas resource group '%s' name '%s'"
+                    , _filePath.c_str()
+                    , name.c_str()
+                    , groupName.c_str()
+                    , _fileGroup->getName().c_str()
+                    , has_resource->getGroupName().c_str()
+                    , has_resource->getName().c_str()
+                );
+
+                return false;
             }
 
             ResourcePtr resource = RESOURCE_SERVICE()
@@ -1003,7 +1000,7 @@ namespace Mengine
 
             ResourcePtr has_resource = nullptr;
             if( RESOURCE_SERVICE()
-                ->hasResource( groupName, name, &has_resource ) == false )
+                ->hasResource( groupName, name, false, &has_resource ) == false )
             {
                 LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s' category '%s'\nhas resource group '%s' name '%s'"
                     , _filePath.c_str()

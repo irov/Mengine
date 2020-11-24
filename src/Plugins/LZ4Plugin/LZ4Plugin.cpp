@@ -6,7 +6,32 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 
+//////////////////////////////////////////////////////////////////////////
+extern "C"
+{
+    //////////////////////////////////////////////////////////////////////////
+    void * LZ4_malloc( size_t _size )
+    {
+        void * p = Mengine::Helper::allocateMemory( _size, "lz4" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void * LZ4_calloc( size_t _count, size_t _size )
+    {
+        void * p = Mengine::Helper::callocateMemory( _count, _size, "lz4" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void  LZ4_free( void * _ptr )
+    {
+        Mengine::Helper::deallocateMemory( _ptr, "lz4" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( LZ4, Mengine::LZ4Plugin );
 //////////////////////////////////////////////////////////////////////////
@@ -31,5 +56,10 @@ namespace Mengine
     void LZ4Plugin::_finalizePlugin()
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LZ4Plugin::_destroyPlugin()
+    {
+        MENGINE_ASSERTION_ALLOCATOR( "lz4" );
     }
 }

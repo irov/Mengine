@@ -128,6 +128,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
+        MENGINE_ASSERTION( _pipe != nullptr, "scheduler '%s' _pipe is nullptr"
+            , this->getName().c_str()
+        );
+
+        MENGINE_ASSERTION( _timer != nullptr, "scheduler '%s' _timer is nullptr"
+            , this->getName().c_str()
+        );
+
         UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         SchedulerEventDesc desc;
@@ -217,7 +225,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->removeScheduler_( desc ) == false )
+        if( this->removeScheduler_( desc, true ) == false )
         {
             LOGGER_ERROR( "not alredy remove or complete '%d'"
                 , _id
@@ -237,7 +245,7 @@ namespace Mengine
 
             for( SchedulerEventDesc & event : schedules )
             {
-                this->removeScheduler_( &event );
+                this->removeScheduler_( &event, true );
             }
         }
 
@@ -247,18 +255,60 @@ namespace Mengine
 
             for( SchedulerEventDesc & event : schedulesAdd )
             {
-                this->removeScheduler_( &event );
+                this->removeScheduler_( &event, true );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Scheduler::cancelAll()
+    bool Scheduler::cancel( UniqueId _id )
     {
-        m_schedulers.clear();
-        m_schedulersAdd.clear();
+        SchedulerEventDesc * desc;
+
+        if( this->findSchedulerEvent_( _id, &desc ) == false )
+        {
+            LOGGER_ERROR( "not found shedule '%d'"
+                , _id
+            );
+
+            return false;
+        }
+
+        if( this->removeScheduler_( desc, false ) == false )
+        {
+            LOGGER_ERROR( "not alredy remove or complete '%d'"
+                , _id
+            );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::removeScheduler_( SchedulerEventDesc * const _event )
+    void Scheduler::cancelAll()
+    {
+        if( m_schedulers.empty() == false )
+        {
+            VectorSchedulers schedules = std::move( m_schedulers );
+
+            for( SchedulerEventDesc & event : schedules )
+            {
+                this->removeScheduler_( &event, false );
+            }
+        }
+
+        if( m_schedulersAdd.empty() == false )
+        {
+            VectorSchedulers schedulesAdd = std::move( m_schedulersAdd );
+
+            for( SchedulerEventDesc & event : schedulesAdd )
+            {
+                this->removeScheduler_( &event, false );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Scheduler::removeScheduler_( SchedulerEventDesc * const _event, bool _callStop )
     {
         if( _event->dead == true )
         {
@@ -275,7 +325,10 @@ namespace Mengine
 
                 _event->event = nullptr;
 
-                event->onSchedulerStop( _event->id );
+                if( _callStop == true )
+                {
+                    event->onSchedulerStop( _event->id );
+                }
             }break;
         case EST_TIMING:
             {
@@ -285,7 +338,7 @@ namespace Mengine
                 _event->timer = nullptr;
                 _event->pipe = nullptr;
 
-                if( event != nullptr )
+                if( event != nullptr && _callStop == true )
                 {
                     event->onSchedulerStop( _event->id );
                 }

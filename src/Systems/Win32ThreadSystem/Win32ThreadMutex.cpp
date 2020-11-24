@@ -15,7 +15,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         m_doc = _doc;
 #endif
 
@@ -48,4 +48,5 @@ namespace Mengine
     {
         DeleteCriticalSection( &m_cs );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

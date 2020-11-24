@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Identity.h"
+#include "Kernel/Unique.h"
 #include "Kernel/Hierarchy.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Pickerable.h"
@@ -29,6 +30,7 @@ namespace Mengine
     class Node
         : public Factorable
         , public Identity
+        , public Unique
         , public Compilable
         , public Hierarchy
         , public Updatable
@@ -50,14 +52,7 @@ namespace Mengine
         ~Node() override;
 
     public:
-        void setUniqueIdentity( UniqueId _uniqueIdentity );
-        UniqueId getUniqueIdentity() const;
-
-    public:
         NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
-
-    protected:
-        UniqueId m_uniqueIdentity;
 
     protected:
         void refreshRenderRelation_( Node * _parent );

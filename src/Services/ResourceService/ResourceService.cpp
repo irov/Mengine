@@ -177,9 +177,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::hasResource( const ConstString & _groupName, const ConstString & _name, ResourcePtr * const _resource ) const
+    bool ResourceService::hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const
     {
-        bool exist = m_globalBank->hasResource( _groupName, _name, _resource );
+        bool exist = m_globalBank->hasResource( _groupName, _name, _onlyGroup, _resource );
 
         return exist;
     }

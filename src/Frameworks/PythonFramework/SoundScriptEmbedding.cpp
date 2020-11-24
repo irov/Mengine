@@ -157,7 +157,7 @@ namespace Mengine
             {
                 ResourcePtr resource;
                 if( RESOURCE_SERVICE()
-                    ->hasResource( ConstString::none(), _resourceName, &resource ) == false )
+                    ->hasResource( ConstString::none(), _resourceName, false, &resource ) == false )
                 {
                     return false;
                 }

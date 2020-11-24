@@ -87,7 +87,7 @@ namespace Mengine
 
         m_name = _name;
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         m_doc = _doc;
 #endif
 
@@ -144,6 +144,12 @@ namespace Mengine
         case MENGINE_THREAD_PRIORITY_TIME_CRITICAL:
             {
                 ::SetThreadPriority( m_thread, THREAD_PRIORITY_TIME_CRITICAL );
+            }break;
+        default:
+            {
+                LOGGER_ERROR( "invalid thread priority [%u]"
+                    , _priority
+                );
             }break;
         }
 
@@ -276,4 +282,5 @@ namespace Mengine
 
         m_mutex = nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

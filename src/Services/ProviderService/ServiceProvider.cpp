@@ -69,7 +69,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( service );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
         service->setDocument( _doc );
 #endif
 
@@ -642,4 +642,5 @@ namespace Mengine
             desc.service->stopService();
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

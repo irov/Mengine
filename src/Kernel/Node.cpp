@@ -19,8 +19,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Node::Node()
-        : m_uniqueIdentity( 0 )
-        , m_active( false )
+        : m_active( false )
         , m_deactivating( false )
         , m_afterActive( false )
         , m_enable( true )
@@ -50,6 +49,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_destroy()
     {
+        MENGINE_ASSERTION_FATAL( this->isActivate() == false );
+
         this->release();
 
         this->destroyChildren( []( const NodePtr & )
@@ -297,16 +298,6 @@ namespace Mengine
                 _picker->setRelationPicker( pickerParent );
             } );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setUniqueIdentity( UniqueId _uniqueIdentity )
-    {
-        m_uniqueIdentity = _uniqueIdentity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UniqueId Node::getUniqueIdentity() const
-    {
-        return m_uniqueIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
     NodePtr Node::findUniqueChild( uint32_t _uniqueIdentity ) const

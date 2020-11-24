@@ -48,6 +48,8 @@ namespace Mengine
     public:
         bool remove( UniqueId _id ) override;
         void removeAll() override;
+
+        bool cancel( UniqueId _id ) override;
         void cancelAll() override;
 
         bool freeze( UniqueId _id, bool _freeze ) override;
@@ -113,7 +115,7 @@ namespace Mengine
         bool m_update;
 
     protected:
-        bool removeScheduler_( SchedulerEventDesc * const _event );
+        bool removeScheduler_( SchedulerEventDesc * const _event, bool _callStop );
         bool findSchedulerEvent_( UniqueId _id, const SchedulerEventDesc ** const _desc ) const;
         bool findSchedulerEvent_( UniqueId _id, SchedulerEventDesc ** const _desc );
     };

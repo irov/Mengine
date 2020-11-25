@@ -71,6 +71,11 @@ namespace Mengine
         m_verticesWM.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Landscape2D::_dispose()
+    {
+        m_images.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Landscape2D::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         const VectorLandscape2DElements & elementsWM = this->getElementWM();

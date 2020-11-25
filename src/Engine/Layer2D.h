@@ -53,6 +53,9 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
+        void _dispose() override;
+
+    protected:
         const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const override;
 
     public:

@@ -2,6 +2,7 @@
 
 #include "CheckboxEventReceiverInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"

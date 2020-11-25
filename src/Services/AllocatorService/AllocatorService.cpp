@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadServiceInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -68,7 +69,7 @@ namespace Mengine
     void AllocatorService::_finalizeService()
     {
 #if MENGINE_ALLOCATOR_DEBUG
-        MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
+        MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
 
         //MENGINE_ASSERTION_FATAL( m_reportTotal == 0 );
 #endif
@@ -82,8 +83,6 @@ namespace Mengine
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         void * p = ::malloc( _size );
-
-        MENGINE_ASSERTION_FATAL( _size == _msize( p ) );
 
         this->report( _doc, _size, 0 );
 #else
@@ -120,7 +119,7 @@ namespace Mengine
         size_t total = _num * _size;
         void * p = ::malloc( total );
         ::memset( p, 0x00, total );
-                
+
         this->report( _doc, total, 0 );
 #else
         void * p = stdex_calloc( _num, _size );
@@ -291,7 +290,7 @@ namespace Mengine
             r.total_alloc += _add;
 
             break;
-        }        
+        }
     }
 #endif
     //////////////////////////////////////////////////////////////////////////

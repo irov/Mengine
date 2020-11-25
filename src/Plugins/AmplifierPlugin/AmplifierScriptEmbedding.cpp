@@ -6,7 +6,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 
-#include "Frameworks/PythonFramework/DocumentTraceback.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AffectorCallbackInterface.h"

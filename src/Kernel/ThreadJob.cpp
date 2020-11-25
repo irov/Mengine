@@ -55,17 +55,19 @@ namespace Mengine
 
         bool successful = false;
 
+        desc.mutex->lock();
+
         if( desc.status == ETS_FREE )
         {
-            desc.mutex->lock();
             desc.worker = _worker;
-            desc.mutex->unlock();
 
             desc.id = _id;
             desc.status = ETS_WORK;
 
             successful = true;
         }
+
+        desc.mutex->unlock();
 
         return successful;
     }
@@ -111,16 +113,23 @@ namespace Mengine
 
         ThreadWorkerInterfacePtr worker;
 
+        desc.mutex->lock();
+
         if( desc.status != ETS_FREE )
         {
-            desc.mutex->lock();
             worker = desc.worker;
             desc.worker = nullptr;
-            desc.mutex->unlock();
-
+            
             desc.id = 0;
             desc.status = ETS_FREE;
 
+            successful = true;
+        }
+
+        desc.mutex->unlock();
+
+        if( successful == true )
+        {
             worker->onDone( _id );
         }
 
@@ -165,7 +174,9 @@ namespace Mengine
                 continue;
             }
 
+            desc.mutex->lock();
             desc.status = ETS_PAUSE;
+            desc.mutex->unlock();
 
             return true;
         }
@@ -189,7 +200,9 @@ namespace Mengine
                 continue;
             }
 
+            desc.mutex->lock();
             desc.status = ETS_WORK;
+            desc.mutex->unlock();
 
             return true;
         }
@@ -209,17 +222,13 @@ namespace Mengine
         {
             uint32_t id = desc.id;
             ThreadWorkerInterfacePtr worker = desc.worker;
-            desc.mutex->unlock();
 
             if( worker->onWork( id ) == false )
             {
                 desc.status = ETS_DONE;
             }
         }
-        else
-        {
-            desc.mutex->unlock();
-        }
+        desc.mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::_onMain()
@@ -271,20 +280,20 @@ namespace Mengine
             {
                 desc.mutex->lock();
                 worker = std::move( desc.worker );
-                desc.mutex->unlock();
-
+                
                 id = desc.id;
                 desc.id = 0;
 
                 desc.status = ETS_FREE;
+                desc.mutex->unlock();
             }break;
         case ETS_WORK:
             {
                 desc.mutex->lock();
                 worker = desc.worker;
-                desc.mutex->unlock();
-
+                
                 id = desc.id;
+                desc.mutex->unlock();
             }break;
         default:
             break;

@@ -3,6 +3,8 @@
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
 
+#include "Kernel/Assertion.h"
+
 #include "stdex/memorycopy.h"
 
 namespace Mengine

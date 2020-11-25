@@ -5,6 +5,7 @@
 
 #include "Win32FileHelper.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

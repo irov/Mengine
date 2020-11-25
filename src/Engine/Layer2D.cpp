@@ -68,6 +68,11 @@ namespace Mengine
         Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Layer2D::_dispose()
+    {
+        m_resourceImageMask = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Layer2D::setSize( const mt::vec2f & _size )
     {
         m_size = _size;

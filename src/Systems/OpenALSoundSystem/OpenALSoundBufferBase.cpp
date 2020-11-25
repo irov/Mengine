@@ -2,6 +2,8 @@
 
 #include "Interface/SoundCodecInterface.h"
 
+#include "Kernel/Assertion.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

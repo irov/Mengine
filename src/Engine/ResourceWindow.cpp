@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine

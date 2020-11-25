@@ -32,6 +32,7 @@
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -74,7 +75,6 @@
 #include "Kernel/RenderCameraProjection.h"
 
 #include "ScriptHolder.h"
-#include "DocumentTraceback.h"
 
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"
@@ -114,6 +114,7 @@
 
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "PythonValueFollowerLinear.h"
 #include "PythonValueFollowerAcceleration.h"

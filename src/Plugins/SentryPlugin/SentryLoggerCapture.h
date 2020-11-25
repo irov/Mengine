@@ -14,6 +14,10 @@ namespace Mengine
         ~SentryLoggerCapture() override;
 
     protected:
+        bool initialize() override;
+        void finalize() override;
+
+    protected:
         void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size ) override;
 
     protected:

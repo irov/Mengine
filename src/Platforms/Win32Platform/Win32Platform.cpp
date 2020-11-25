@@ -9,6 +9,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
 
@@ -295,6 +296,88 @@ namespace Mengine
             , dateTime.second
         );
 
+        SYSTEM_INFO sysInfo;
+        ::GetSystemInfo( &sysInfo );
+
+        LOGGER_MESSAGE_RELEASE( "Hardware information:" );
+        LOGGER_MESSAGE_RELEASE( "  OEM ID: %u", sysInfo.dwOemId );
+        LOGGER_MESSAGE_RELEASE( "  Number of processors: %u", sysInfo.dwNumberOfProcessors );
+        LOGGER_MESSAGE_RELEASE( "  Page size: %u", sysInfo.dwPageSize );
+        LOGGER_MESSAGE_RELEASE( "  Processor type: %u", sysInfo.dwProcessorType );
+        LOGGER_MESSAGE_RELEASE( "  Minimum application address: %lx", sysInfo.lpMinimumApplicationAddress );
+        LOGGER_MESSAGE_RELEASE( "  Maximum application address: %lx", sysInfo.lpMaximumApplicationAddress );
+        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %u", sysInfo.dwActiveProcessorMask );
+
+        LOGGER_MESSAGE_RELEASE( "CPU information:" );
+
+        Win32CPUInfo cpuinfo;
+
+        LOGGER_MESSAGE_RELEASE( "  Vendor: %s", cpuinfo.Vendor().c_str() );
+        LOGGER_MESSAGE_RELEASE( "  Brand: %s", cpuinfo.Brand().c_str() );
+
+        auto support_message = []( const Char * isa_feature, bool is_supported )
+        {
+            uint32_t color = (is_supported == true ? Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE : Mengine::LCOLOR_RED);
+
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, color, nullptr, 0 )("  %s: %s"
+                , isa_feature
+                , is_supported == true ? " supported" : " not supported"
+                );
+        };
+
+        LOGGER_MESSAGE_RELEASE( "CPU instruction:" );
+        support_message( "3DNOW", cpuinfo._3DNOW() );
+        support_message( "3DNOWEXT", cpuinfo._3DNOWEXT() );
+        support_message( "ABM", cpuinfo.ABM() );
+        support_message( "ADX", cpuinfo.ADX() );
+        support_message( "AES", cpuinfo.AES() );
+        support_message( "AVX", cpuinfo.AVX() );
+        support_message( "AVX2", cpuinfo.AVX2() );
+        support_message( "AVX512CD", cpuinfo.AVX512CD() );
+        support_message( "AVX512ER", cpuinfo.AVX512ER() );
+        support_message( "AVX512F", cpuinfo.AVX512F() );
+        support_message( "AVX512PF", cpuinfo.AVX512PF() );
+        support_message( "BMI1", cpuinfo.BMI1() );
+        support_message( "BMI2", cpuinfo.BMI2() );
+        support_message( "CLFSH", cpuinfo.CLFSH() );
+        support_message( "CMPXCHG16B", cpuinfo.CMPXCHG16B() );
+        support_message( "CX8", cpuinfo.CX8() );
+        support_message( "ERMS", cpuinfo.ERMS() );
+        support_message( "F16C", cpuinfo.F16C() );
+        support_message( "FMA", cpuinfo.FMA() );
+        support_message( "FSGSBASE", cpuinfo.FSGSBASE() );
+        support_message( "FXSR", cpuinfo.FXSR() );
+        support_message( "HLE", cpuinfo.HLE() );
+        support_message( "INVPCID", cpuinfo.INVPCID() );
+        support_message( "LAHF", cpuinfo.LAHF() );
+        support_message( "LZCNT", cpuinfo.LZCNT() );
+        support_message( "MMX", cpuinfo.MMX() );
+        support_message( "MMXEXT", cpuinfo.MMXEXT() );
+        support_message( "MONITOR", cpuinfo.MONITOR() );
+        support_message( "MOVBE", cpuinfo.MOVBE() );
+        support_message( "MSR", cpuinfo.MSR() );
+        support_message( "OSXSAVE", cpuinfo.OSXSAVE() );
+        support_message( "PCLMULQDQ", cpuinfo.PCLMULQDQ() );
+        support_message( "POPCNT", cpuinfo.POPCNT() );
+        support_message( "PREFETCHWT1", cpuinfo.PREFETCHWT1() );
+        support_message( "RDRAND", cpuinfo.RDRAND() );
+        support_message( "RDSEED", cpuinfo.RDSEED() );
+        support_message( "RDTSCP", cpuinfo.RDTSCP() );
+        support_message( "RTM", cpuinfo.RTM() );
+        support_message( "SEP", cpuinfo.SEP() );
+        support_message( "SHA", cpuinfo.SHA() );
+        support_message( "SSE", cpuinfo.SSE() );
+        support_message( "SSE2", cpuinfo.SSE2() );
+        support_message( "SSE3", cpuinfo.SSE3() );
+        support_message( "SSE4.1", cpuinfo.SSE41() );
+        support_message( "SSE4.2", cpuinfo.SSE42() );
+        support_message( "SSE4a", cpuinfo.SSE4a() );
+        support_message( "SSSE3", cpuinfo.SSSE3() );
+        support_message( "SYSCALL", cpuinfo.SYSCALL() );
+        support_message( "TBM", cpuinfo.TBM() );
+        support_message( "XOP", cpuinfo.XOP() );
+        support_message( "XSAVE", cpuinfo.XSAVE() );
+
         MEMORYSTATUSEX mem_st;
         mem_st.dwLength = sizeof( mem_st );
 
@@ -375,7 +458,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid create file for '%ls' [error %lu]"
+            LOGGER_ERROR( "invalid create file for '%ls' [error: %lu]"
                 , unicode_processDumpPath.c_str()
                 , error
             );
@@ -1677,7 +1760,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid register session notification: %lu"
+            LOGGER_ERROR( "invalid register session notification [error: %lu]"
                 , error
             );
         }
@@ -1876,7 +1959,7 @@ namespace Mengine
 
                 if( error != 0 )
                 {
-                    LOGGER_ERROR( "icon '%s' for file '%ls' errCode %lu"
+                    LOGGER_ERROR( "icon '%s' for file '%ls' [error: %lu]"
                         , _name.c_str()
                         , unicode_icoFullFile.c_str()
                         , error
@@ -2178,7 +2261,7 @@ namespace Mengine
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
-                        LOGGER_WARNING( "directory '%ls' alredy exists"
+                        LOGGER_ERROR( "directory '%ls' alredy exists"
                             , path.c_str()
                         );
 
@@ -2186,7 +2269,7 @@ namespace Mengine
                     }break;
                 case ERROR_PATH_NOT_FOUND:
                     {
-                        LOGGER_WARNING( "directory '%ls' not found"
+                        LOGGER_ERROR( "directory '%ls' not found"
                             , path.c_str()
                         );
 
@@ -2194,7 +2277,7 @@ namespace Mengine
                     }break;
                 default:
                     {
-                        LOGGER_WARNING( "directory '%ls' unknown error: %lu"
+                        LOGGER_ERROR( "directory '%ls' unknown [error: %lu]"
                             , path.c_str()
                             , err
                         );
@@ -2270,7 +2353,7 @@ namespace Mengine
 
             MENGINE_UNUSED( err );
 
-            LOGGER_WARNING( "file '%ls' error '%lu'"
+            LOGGER_ERROR( "file '%ls' [error: %lu]"
                 , pathCorrect
                 , err
             );
@@ -2335,7 +2418,7 @@ namespace Mengine
 
                 MENGINE_UNUSED( err );
 
-                LOGGER_WARNING( "invalid move file '%ls' error '%lu'"
+                LOGGER_ERROR( "invalid move file '%ls' [error: %lu]"
                     , newFilePathCorrect
                     , err
                 );
@@ -2349,7 +2432,7 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_le, 1023 );
 
-            LOGGER_WARNING( "file '%ls' move to '%ls' error: %s [%lu]"
+            LOGGER_ERROR( "file '%ls' move to '%ls' [error: %s (%lu)]"
                 , oldFilePathCorrect
                 , newFilePathCorrect
                 , str_le
@@ -2610,7 +2693,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "'%ls:%ls' invalid createFile '%ls' [error %lu]"
+            LOGGER_ERROR( "'%ls:%ls' invalid createFile '%ls' [error: %lu]"
                 , pathCorrect
                 , fileCorrect
                 , szPath
@@ -3426,7 +3509,7 @@ namespace Mengine
                 Char str_error[1024] = {'\0'};
                 this->getLastErrorMessage( &error, str_error, 1023 );
 
-                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
+                LOGGER_ERROR( "CreateProcess '%s' return [error: %s (%lu)]"
                     , _process
                     , str_error
                     , error
@@ -3729,7 +3812,7 @@ namespace Mengine
             Char str_error[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_error, 1023 );
 
-            LOGGER_ERROR( "GetUserName invalid error: %s [%lu] "
+            LOGGER_ERROR( "GetUserName invalid [error: %s (%lu)]"
                 , str_error
                 , error
             );
@@ -3760,7 +3843,7 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_le, 1023 );
 
-            LOGGER_ERROR( "invalid ShowWindow: error %s [%lu]"
+            LOGGER_ERROR( "invalid ShowWindow [error: %s (%lu)]"
                 , str_le
                 , error
             );
@@ -3903,7 +3986,7 @@ namespace Mengine
         if( size_vsnprintf < 0 )
         {
             LOGGER_ERROR( "invalid message box format message '%s'"
-                , _format 
+                , _format
             );
 
             ::MessageBoxA( NULL, "invalid message box format message", _caption, MB_OK );

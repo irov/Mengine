@@ -2,6 +2,7 @@
 
 #include "CheckboxEventReceiverInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Delegate.h"
 
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"
@@ -87,6 +88,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Checkbox::_dispose()
     {
+        MENGINE_ASSERTION_FATAL( m_chain == nullptr );
+
         m_pickerable = nullptr;
 
         for( uint32_t index = 0; index != __ECS_MAX__; ++index )

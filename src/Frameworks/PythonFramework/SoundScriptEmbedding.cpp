@@ -18,7 +18,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourceHelper.h"
 
-#include "Frameworks/PythonFramework/DocumentTraceback.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Config/Lambda.h"
 

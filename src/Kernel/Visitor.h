@@ -8,10 +8,6 @@ namespace Mengine
     class Visitor
         : public Mixin
     {
-    public:
-        virtual ~Visitor()
-        {
-        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Visitor> VisitorPtr;

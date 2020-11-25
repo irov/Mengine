@@ -72,6 +72,11 @@ namespace Mengine
         m_surface->release();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Shape::_dispose()
+    {
+        m_surface = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Shape::update( const UpdateContext * _context )
     {
         uint32_t revision = m_surface->update( _context );

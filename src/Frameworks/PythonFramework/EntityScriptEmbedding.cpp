@@ -6,8 +6,8 @@
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
-#include "DocumentTraceback.h"
 #include "PythonEntityBehavior.h"
 #include "PythonEntityPrototypeGenerator.h"
 

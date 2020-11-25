@@ -23,6 +23,7 @@ namespace Mengine
         , m_deactivating( false )
         , m_afterActive( false )
         , m_enable( true )
+        , m_dispose( false )
         , m_freeze( false )
     {
     }
@@ -33,13 +34,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::dispose()
     {
+        m_dispose = true;
+
         this->removeFromParent();
         this->disable();
         this->release();
 
         this->_dispose();
 
+        this->removeChildren( []( const NodePtr & )
+        {} );
+
         this->unwrap();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::disposeAll()
+    {
+        this->foreachChildrenSlug( []( const NodePtr & _node )
+        {
+            _node->disposeAll();
+        } );
+
+        this->dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_dispose()
@@ -53,7 +69,7 @@ namespace Mengine
 
         this->release();
 
-        this->destroyChildren( []( const NodePtr & )
+        this->removeChildren( []( const NodePtr & )
         {} );
 
         this->unwrap();
@@ -87,9 +103,9 @@ namespace Mengine
 
         m_active = true;
 
-        if( this->foreachChildrenSlugBreak( []( const NodePtr & _hierarchy )
+        if( this->foreachChildrenSlugBreak( []( const NodePtr & _child )
         {
-            bool result = _hierarchy->activate();
+            bool result = _child->activate();
 
             return result;
         } ) == false )
@@ -135,6 +151,8 @@ namespace Mengine
             return;
         }
 
+        IntrusivePtrScope ankh( this );
+
         m_deactivating = true;
 
         if( m_afterActive == false )
@@ -148,11 +166,9 @@ namespace Mengine
 
         this->_deactivate();
 
-        this->foreachChildrenSlug( []( const NodePtr & _hierarchy )
+        this->foreachChildrenSlug( []( const NodePtr & _child )
         {
-            NodePtr child = _hierarchy;
-
-            child->deactivate();
+            _child->deactivate();
         } );
 
         m_active = false;
@@ -183,6 +199,8 @@ namespace Mengine
         {
             return true;
         }
+
+        IntrusivePtrScope ankh( this );
 
         if( this->activate() == false )
         {
@@ -219,6 +237,8 @@ namespace Mengine
                 return true;
             }
         }
+
+        IntrusivePtrScope ankh( this );
 
         if( this->activate() == false )
         {

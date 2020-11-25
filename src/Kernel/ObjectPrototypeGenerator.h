@@ -43,7 +43,7 @@ namespace Mengine
             const ConstString & prototype = this->getPrototype();
             object->setType( prototype );
 
-#ifdef MENGINE_DEBUG
+#if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object '%s' type '%s' create '%s'"
                 , object->getName().c_str()
                 , object->getType().c_str()

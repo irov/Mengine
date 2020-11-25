@@ -463,6 +463,11 @@ namespace Mengine
         this->invalidateVertices();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Window::_dispose()
+    {
+        m_resourceWindow = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Window::setClientSizeClip( const mt::vec2f & _clientSize )
     {
         if( this->hasBackground() == false )

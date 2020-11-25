@@ -163,22 +163,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Entity::_dispose()
     {
-        EVENTABLE_METHOD( EVENT_ENTITY_DESTROY )
-            ->onEntityDestroy( m_behavior );
-
-        if( m_behavior != nullptr )
-        {
-            m_behavior->finalize();
-            m_behavior = nullptr;
-        }
-
-        m_behaviorEventable = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Entity::_destroy()
-    {
-        this->release();
-        
         Node * old_parent = this->getParent();
 
         EVENTABLE_METHOD( EVENT_ENTITY_DESTROY )
@@ -191,21 +175,31 @@ namespace Mengine
         }
 
         m_behaviorEventable = nullptr;
-        
+
         Node * new_parent = this->getParent();
 
         if( old_parent != new_parent )
         {
-            LOGGER_ERROR( "entity '%s:%s' script event EVENT_DESTROY replace node to other hierarchy"
+            LOGGER_ERROR( "entity '%s:%s' event EVENT_ENTITY_DESTROY replace node to other hierarchy"
                 , this->getType().c_str()
                 , this->getName().c_str()
             );
-
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_destroy()
+    {
+        if( this->isDispose() == true )
+        {
             return;
         }
 
+        this->release();
+
+        this->_dispose();
+
         this->removeFromParent();
-        this->destroyChildren( []( const NodePtr & )
+        this->removeChildren( []( const NodePtr & )
         {} );
 
         this->unwrap();

@@ -547,5 +547,15 @@ namespace Mengine
         bool m_pauseRequested;
 
         String m_selectedSetting;
+
+        struct NetworkDesk
+        {
+            String type;
+            uint32_t id;
+            String url;
+        };
+        typedef Vector<NetworkDesk> VectorNetwork;
+
+        VectorNetwork m_network;
     };
 }

@@ -3,7 +3,6 @@
 #include "Interface/ThreadQueueInterface.h"
 
 #include "cURLInterface.h"
-#include "cURLRequestListener.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
@@ -37,7 +36,7 @@ namespace Mengine
         bool cancelRequest( HttpRequestID _id ) override;
 
     protected:
-        void setRequestListener( const cURLRequestListenerInterfacePtr & _listener ) override;
+        void setRequestListener( const cURLRequestLoggerInterfacePtr & _listener ) override;
 
     protected:
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override;
@@ -47,7 +46,7 @@ namespace Mengine
 
     protected:
         ThreadQueueInterfacePtr m_threadQueue;
-        cURLRequestListenerPtr m_networkListener;
+        cURLRequestLoggerInterfacePtr m_networkListener;
 
         typedef Vector<ConstString> VectorThreads;
         VectorThreads m_threads;

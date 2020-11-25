@@ -1,17 +1,19 @@
-#include "cURLRequestListener.h"
+#include "cURLRequestLogger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    cURLRequestListener::cURLRequestListener()
+    cURLRequestLogger::cURLRequestLogger()
+        : m_currentRequestId( 0 )
+        , m_lastSendRequestsId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    cURLRequestListener::~cURLRequestListener()
+    cURLRequestLogger::~cURLRequestLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLRequestListener::request( HttpRequestID _id, const String & _url )
+    void cURLRequestLogger::request( HttpRequestID _id, const String & _url )
     {
         RequestData requestData;
 
@@ -20,9 +22,11 @@ namespace Mengine
         requestData.type = "Request";
 
         m_data.push_back( requestData );
+
+        m_currentRequestId = _id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLRequestListener::response( HttpRequestID _id, const String & _url )
+    void cURLRequestLogger::response( HttpRequestID _id, const String & _url )
     {
         RequestData responseData;
 
@@ -31,11 +35,21 @@ namespace Mengine
         responseData.type = "Response";
 
         m_data.push_back( responseData );
+
+        m_currentRequestId = _id;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ListRequestData & cURLRequestListener::getRequestData() const
+    void cURLRequestLogger::getPreparedData( VectorRequestData * _outData )
     {
-        return m_data;
+        uint32_t dataSize = m_data.size();
+        if( dataSize <= m_lastSendRequestsId )
+        {
+            return;
+        }
+
+        std::copy( m_data.begin() + m_lastSendRequestsId, m_data.end(), std::back_inserter( _outData ) );
+
+        m_lastSendRequestsId = dataSize - 1;
     }
     //////////////////////////////////////////////////////////////////////////
 }

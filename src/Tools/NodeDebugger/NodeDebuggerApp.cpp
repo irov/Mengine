@@ -634,6 +634,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveNetwork( const pugi::xml_node & _xmlContainer )
     {
+        pugi::xml_node xml_network = _xmlContainer.child( "Network" );
+
+        for( const pugi::xml_node & child : xml_network )
+        {
+            for( const pugi::xml_node & obj : child.children() )
+            {
+                const pugi::char_t * type = obj.attribute( "Type" ).value();
+                const pugi::char_t * url = obj.attribute( "Url" ).value();
+                uint32_t id = obj.attribute( "Id" ).as_uint();
+
+                NetworkDesk desk;
+                desk.type = type;
+                desk.url = url;
+                desk.id = id;
+
+                m_network.emplace_back( desk );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveSettings( const pugi::xml_node & _xmlContainer )

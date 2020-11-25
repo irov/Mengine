@@ -10,6 +10,9 @@ ADD_FILTER(
     NodeDebuggerModule.cpp
 
     NodeDebuggerSerialization.h
+    
+    cURLRequestLogger.h
+    cURLRequestLogger.cpp
 )
 
 ADD_FILTER(

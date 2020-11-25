@@ -32,6 +32,7 @@
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"
 

@@ -2,6 +2,7 @@
 
 #include "CheckboxEventReceiverInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Delegate.h"
 
 #include "Plugins/GOAPPlugin/Tasks/GOAPCook.h"

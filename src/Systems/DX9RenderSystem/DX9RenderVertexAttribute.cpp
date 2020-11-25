@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Assertion.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"

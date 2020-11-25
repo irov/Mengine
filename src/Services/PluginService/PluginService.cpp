@@ -5,8 +5,8 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/StdString.h"
 

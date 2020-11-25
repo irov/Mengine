@@ -13,6 +13,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"

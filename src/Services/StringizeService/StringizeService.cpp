@@ -3,6 +3,7 @@
 #include "Kernel/HashType.h"
 #include "Kernel/HashHelper.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/StdString.h"
 

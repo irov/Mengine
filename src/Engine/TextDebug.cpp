@@ -10,6 +10,7 @@
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"

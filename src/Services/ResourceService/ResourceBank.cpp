@@ -6,6 +6,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionMainThreadGuard.h"
 #include "Kernel/ThreadMutexScope.h"

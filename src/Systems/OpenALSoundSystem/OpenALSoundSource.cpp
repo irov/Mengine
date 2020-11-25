@@ -4,6 +4,7 @@
 #include "OpenALSoundBufferBase.h"
 #include "OpenALSoundError.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

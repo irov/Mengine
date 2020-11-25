@@ -47,7 +47,7 @@ namespace Mengine
             return;
         }
 
-        std::copy( m_data.begin() + m_lastSendRequestsId, m_data.end(), std::back_inserter( _outData ) );
+        std::copy( m_data.begin() + m_lastSendRequestsId, m_data.end(), std::back_inserter( *_outData ) );
 
         m_lastSendRequestsId = dataSize - 1;
     }

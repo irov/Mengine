@@ -1,6 +1,7 @@
 #include "SentryLoggerCapture.h"
 
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "sentry.h"
 
@@ -13,6 +14,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SentryLoggerCapture::~SentryLoggerCapture()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SentryLoggerCapture::initialize()
+    {
+        LOGGER_SERVICE()
+            ->writeHistory( LoggerInterfacePtr::from( this ) );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SentryLoggerCapture::finalize()
+    {
+        m_message.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SentryLoggerCapture::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )

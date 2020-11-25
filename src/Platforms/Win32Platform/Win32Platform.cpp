@@ -317,10 +317,12 @@ namespace Mengine
 
         auto support_message = []( const Char * isa_feature, bool is_supported )
         {
-            LOGGER_MESSAGE_RELEASE( "  %s: %s"
+            uint32_t color = (is_supported == true ? Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE : Mengine::LCOLOR_RED);
+
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, color, nullptr, 0 )("  %s: %s"
                 , isa_feature
                 , is_supported == true ? " supported" : " not supported"
-            );
+                );
         };
 
         LOGGER_MESSAGE_RELEASE( "CPU instruction:" );
@@ -3984,7 +3986,7 @@ namespace Mengine
         if( size_vsnprintf < 0 )
         {
             LOGGER_ERROR( "invalid message box format message '%s'"
-                , _format 
+                , _format
             );
 
             ::MessageBoxA( NULL, "invalid message box format message", _caption, MB_OK );

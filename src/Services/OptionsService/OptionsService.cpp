@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/StdString.h"
 

@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadServiceInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 

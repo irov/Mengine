@@ -3,6 +3,7 @@
 #include "Interface/UpdationInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/MixinDebug.h"
 
 #include "math/utils.h"

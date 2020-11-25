@@ -7,6 +7,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/CRC32.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 

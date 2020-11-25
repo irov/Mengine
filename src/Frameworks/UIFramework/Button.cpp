@@ -4,6 +4,8 @@
 
 #include "ButtonEventReceiverInterface.h"
 
+#include "Kernel/Assertion.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

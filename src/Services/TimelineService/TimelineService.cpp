@@ -2,6 +2,7 @@
 
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////

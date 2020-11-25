@@ -10,6 +10,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/VectorAuxScope.h"
 #include "Kernel/IntrusivePtrView.h"
+#include "Kernel/Assertion.h"
 
 #include <algorithm>
 

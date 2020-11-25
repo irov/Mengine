@@ -1,5 +1,6 @@
 #include "VocabularyService.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

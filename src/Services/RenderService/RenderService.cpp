@@ -16,6 +16,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/RenderUtils.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"

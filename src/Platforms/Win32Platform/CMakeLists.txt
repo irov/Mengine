@@ -12,6 +12,8 @@ src
     Win32DateTimeProvider.cpp
     Win32AlreadyRunningMonitor.h
     Win32AlreadyRunningMonitor.cpp
+    Win32CPUInfo.h
+    Win32CPUInfo.cpp
 )
 
 ADD_MENGINE_LIBRARY()

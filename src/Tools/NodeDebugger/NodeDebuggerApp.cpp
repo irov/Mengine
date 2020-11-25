@@ -1446,10 +1446,14 @@ namespace Mengine
 
         if( ImGui::BeginChild( "Network", ImVec2( 1000, 1000 ), false, ImGuiWindowFlags_None ) )
         {
-            for( int n = 0; n < 50; n++ )
+            for( const NetworkDesk & desk : m_network )
             {
-                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Total: %ug", n );
+                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Type: %s", desk.type.c_str() );
+                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Id: %ug", desk.id );
+                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Url: %s", desk.url.c_str() );
             }
+
+            ImGui::Separator();
         }
 
         ImGui::EndChild();

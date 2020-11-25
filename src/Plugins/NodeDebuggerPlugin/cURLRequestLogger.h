@@ -1,8 +1,6 @@
 #pragma once
 
-#include "cURLInterface.h"
-
-#include "Kernel/List.h"
+#include "Plugins/cURLPlugin/cURLInterface.h"
 
 namespace Mengine
 {
@@ -14,27 +12,30 @@ namespace Mengine
         String url;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef List<RequestData> ListRequestData;
+    typedef Vector<RequestData> VectorRequestData;
     //////////////////////////////////////////////////////////////////////////
-    class cURLRequestListener
+    class cURLRequestLogger
         : public Factorable
-        , public cURLRequestListenerInterface
+        , public cURLRequestLoggerInterface
     {
     public:
-        cURLRequestListener();
-        ~cURLRequestListener() override;
+        cURLRequestLogger();
+        ~cURLRequestLogger() override;
 
     public:
         void request( HttpRequestID  _id, const String & _url ) override;
         void response( HttpRequestID  _id, const String & _url ) override;
 
     public:
-        const ListRequestData & getRequestData() const;
+        void getPreparedData( VectorRequestData * _outData );
 
     protected:
-        ListRequestData m_data;
+        VectorRequestData m_data;
+        uint32_t m_currentRequestId;
+
+        uint32_t m_lastSendRequestsId;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLRequestListener> cURLRequestListenerPtr;
+    typedef IntrusivePtr<cURLRequestLogger> cURLRequestLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

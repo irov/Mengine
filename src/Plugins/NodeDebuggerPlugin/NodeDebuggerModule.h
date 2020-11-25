@@ -7,7 +7,6 @@
 
 #include "Plugins/MoviePlugin/Movie2Interface.h"
 #include "Plugins/SpinePlugin/SpineInterface.h"
-#include "Plugins/cURLPlugin/cURLRequestListener.h"
 
 #include "Engine/TextField.h"
 #include "Engine/SurfaceImage.h"
@@ -24,6 +23,7 @@
 #include "Kernel/Scene.h"
 
 #include "NodeDebuggerSerialization.h"
+#include "cURLRequestLogger.h"
 
 namespace Mengine
 {
@@ -145,6 +145,6 @@ namespace Mengine
         ArchivatorInterfacePtr m_archivator;
         String m_currentTab;
 
-        cURLRequestListenerPtr m_networkLogger;
+        cURLRequestLoggerPtr m_networkLogger;
     };
 }

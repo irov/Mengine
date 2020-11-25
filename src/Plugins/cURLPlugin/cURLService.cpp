@@ -222,6 +222,8 @@ namespace Mengine
 
         m_threadQueue->addTask( task );
 
+        m_networkListener->request( task_id, _url );
+
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -260,6 +262,8 @@ namespace Mengine
         m_receiverDescs.push_back( desc );
 
         m_threadQueue->addTask( task );
+
+        m_networkListener->request( task_id, _url );
 
         return task_id;
     }
@@ -387,13 +391,15 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLService::setRequestListener( const cURLRequestListenerInterfacePtr & _listener )
+    void cURLService::setRequestListener( const cURLRequestLoggerInterfacePtr & _listener )
     {
         m_networkListener = _listener;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )
     {
+        m_networkListener->response( _id, _response );
+
         for( VectorReceiverDesc::iterator
             it = m_receiverDescs.begin(),
             it_end = m_receiverDescs.end();

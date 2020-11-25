@@ -92,7 +92,10 @@ namespace Mengine
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
 
-        m_networkLogger = Helper::makeFactorableUnique<cURLRequestListener>( MENGINE_DOCUMENT_FACTORABLE );
+        m_networkLogger = Helper::makeFactorableUnique<cURLRequestLogger>( MENGINE_DOCUMENT_FACTORABLE );
+
+        CURL_SERVICE()
+            ->setRequestListener( m_networkLogger );
 
         return true;
     }
@@ -1352,6 +1355,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::sendNetwork()
     {
+        pugi::xml_document xml_doc;
+
+        pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Network" );
+
+        pugi::xml_node network_xml_objects = packetNode.append_child( "Objects" );
+
+        VectorRequestData data;
+        m_networkLogger->getPreparedData( &data );
+
+        for( const RequestData & request : data )
+        {
+            pugi::xml_node xml_object = network_xml_objects.append_child( "Object" );
+
+            xml_object.append_attribute( "Type" ).set_value( request.type.c_str() );
+            xml_object.append_attribute( "Id" ).set_value( request.id );
+            xml_object.append_attribute( "Url" ).set_value( request.url.c_str() );
+        }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef MENGINE_DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::processPacket( NodeDebuggerPacket & _packet )

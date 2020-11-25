@@ -11,9 +11,6 @@ src
     cURLService.cpp
     cURLService.h
     
-    cURLRequestListener.h
-    cURLRequestListener.cpp
-    
     cURLThreadTask.cpp
     cURLThreadTask.h
     cURLGetAssetThreadTask.cpp

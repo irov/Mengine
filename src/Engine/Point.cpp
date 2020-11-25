@@ -58,7 +58,7 @@ namespace Mengine
         return m_width;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Point::_destroy()
+    void Point::_dispose()
     {
         this->removeLinkedPoint();
 

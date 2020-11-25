@@ -24,6 +24,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"

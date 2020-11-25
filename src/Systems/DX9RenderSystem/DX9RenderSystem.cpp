@@ -25,6 +25,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/AssertionMemoryPanic.h"

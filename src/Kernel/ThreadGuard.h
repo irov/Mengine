@@ -6,6 +6,8 @@
 #ifndef MENGINE_THREAD_GUARD
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_THREAD_GUARD 1
+#   else
+#       define MENGINE_THREAD_GUARD 0
 #   endif
 #endif
 

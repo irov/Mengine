@@ -225,6 +225,11 @@ namespace Mengine
         this->releaseMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Grid2D::_dispose()
+    {
+        m_resourceImage = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Grid2D::_updateMaterial() const
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );

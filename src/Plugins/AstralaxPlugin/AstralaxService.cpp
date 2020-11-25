@@ -114,6 +114,11 @@ namespace Mengine
     {
         this->updateAtlas();
 
+        for( const ResourceImagePtr & resourceImage : m_atlases )
+        {
+            resourceImage->release();
+        }
+
         m_atlases.clear();
 
         for( uint32_t index = 0; index != 256; ++index )
@@ -242,6 +247,11 @@ namespace Mengine
 
                     const ResourceImagePtr & resourceImage = desc.container->getAtlasResourceImage( c.file );
 
+                    if( resourceImage->compile() == false )
+                    {
+                        return false;
+                    }
+
                     m_atlases.emplace_back( resourceImage );
                 }break;
             case MAGIC_CHANGE_ATLAS_DELETE:
@@ -249,13 +259,15 @@ namespace Mengine
                     VectorAtlasDesc::iterator it_remove = m_atlases.begin();
                     std::advance( it_remove, c.index );
 
-                    const ResourceImagePtr & image = *it_remove;
+                    const ResourceImagePtr & resourceImage = *it_remove;
 
-                    m_materials.erase( std::remove_if( m_materials.begin(), m_materials.end(), [image]( const MagicMaterialDesc & _desc )
+                    resourceImage->release();
+
+                    m_materials.erase( std::remove_if( m_materials.begin(), m_materials.end(), [resourceImage]( const MagicMaterialDesc & _desc )
                     {
                         for( uint32_t index = 0; index != _desc.imageCount; ++index )
                         {
-                            if( _desc.images[index] == image )
+                            if( _desc.images[index] == resourceImage )
                             {
                                 return true;
                             }

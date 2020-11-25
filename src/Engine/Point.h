@@ -33,7 +33,7 @@ namespace Mengine
         float getWidth() const;
 
     protected:
-        void _destroy() override;
+        void _dispose() override;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;

@@ -70,10 +70,10 @@
 #include "Kernel/RenderCameraProjection.h"
 
 #include "ScriptHolder.h"
-#include "DocumentTraceback.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"

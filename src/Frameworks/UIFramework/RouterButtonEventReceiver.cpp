@@ -1,5 +1,6 @@
 #include "RouterButtonEventReceiver.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/FactorableUnique.h"
 
 namespace Mengine

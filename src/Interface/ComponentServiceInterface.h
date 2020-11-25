@@ -2,8 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include <typeinfo>
-#include <typeindex>
+#include "Config/Typeinfo.h"
 
 namespace Mengine
 {
@@ -16,7 +15,7 @@ namespace Mengine
         template<class T>
         uint32_t getComponentId()
         {
-            static uint32_t id = this->makeComponentId( std::type_index( typeid(T) ) );
+            static uint32_t id = this->makeComponentId( MENGINE_TYPEINFO_INDEX( T ) );
 
             return id;
         }

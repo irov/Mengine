@@ -77,6 +77,7 @@
 #include "Config/StdIntTypes.h"
 #include "Config/GitSHA1.h"
 #include "Config/BuildVersion.h"
+#include "Config/BuildInfo.h"
 
 // All Node type
 #include "Isometric.h"
@@ -326,6 +327,16 @@ namespace Mengine
         else
         {
             LOGGER_MESSAGE_RELEASE( "Build Version: %s", MENGINE_BUILD_VERSION );
+        }
+
+        if( HAS_OPTION( "buildinfo" ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->messageBox( "Mengine", "build info: %s %s", MENGINE_BUILD_USERNAME, MENGINE_BUILD_TIMESTAMP );
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "Build Info: %s %s", MENGINE_BUILD_USERNAME, MENGINE_BUILD_TIMESTAMP );
         }
 
         bool fullscreen = this->getFullscreenMode();

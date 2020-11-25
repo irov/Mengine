@@ -4,6 +4,8 @@
 
 #include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
+#include "Kernel/Assertion.h"
+
 #ifdef MENGINE_DEBUG
 #   define MENGINE_RENDER_CHECK_ERROR
 #endif

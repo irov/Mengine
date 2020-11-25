@@ -8,6 +8,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMainThreadGuard.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionFactory.h"

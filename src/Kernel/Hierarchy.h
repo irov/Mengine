@@ -33,12 +33,9 @@ namespace Mengine
         bool addChildAfter( const NodePtr & _node, const NodePtr & _after );
         bool removeChild( const NodePtr & _node );
 
-        typedef Lambda<void( const NodePtr & _hierarchy )> LambdaRemoveChildren;
+        typedef Lambda<void( const NodePtr & _node )> LambdaRemoveChildren;
         void removeChildren( const LambdaRemoveChildren & _lambda );
         bool removeFromParent();
-
-        typedef Lambda<void( const NodePtr & _hierarchy )> LambdaDestroyChildren;
-        void destroyChildren( const LambdaDestroyChildren & _lambda );
 
         uint32_t getChildrenCount() const;
         uint32_t getChildrenRecursiveCount() const;

@@ -19,14 +19,21 @@ namespace Mengine
             WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
             Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
-            HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
-                _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
+            HANDLE handle = ::CreateFile( 
+                pathCorrect, //lpFileName
+                _desiredAccess, //dwDesiredAccess
+                _sharedMode, //dwShareMode
+                NULL, //lpSecurityAttributes
+                _creationDisposition, //dwCreationDisposition
+                FILE_ATTRIBUTE_NORMAL, //dwFlagsAndAttributes
+                NULL //hTemplateFile
+            );
 
             if( handle == INVALID_HANDLE_VALUE )
             {
                 DWORD err_code = ::GetLastError();
 
-                LOGGER_ERROR( "invalid create file '%ls' err %lu"
+                LOGGER_ERROR( "invalid create file '%ls' err [%lu]"
                     , pathCorrect
                     , err_code
                 );

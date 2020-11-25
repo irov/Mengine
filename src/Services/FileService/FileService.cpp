@@ -10,6 +10,7 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"

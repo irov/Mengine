@@ -367,14 +367,12 @@ namespace Mengine
         {
             LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
 
-            LOGGER_ERROR( "!!!test sentry crash!!!" );
-
             Char message_uid[21] = {'\0'};
             Helper::makeUID( 20, message_uid );
             message_uid[20] = '\0';
 
-            LOGGER_ERROR( "uid: %s", message_uid );
-            LOGGER_ERROR( "!!!test sentry crash!!!" );
+            LOGGER_MESSAGE_RELEASE( "uid: %s", message_uid );
+            LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
 
             sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Test", "sentrycrash" );
 

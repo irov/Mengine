@@ -2,6 +2,7 @@
 
 #include "DX9ErrorHelper.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

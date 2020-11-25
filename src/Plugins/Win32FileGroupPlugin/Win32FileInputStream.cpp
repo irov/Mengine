@@ -7,6 +7,7 @@
 
 #include "Win32FileHelper.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
@@ -45,8 +46,8 @@ namespace Mengine
         m_filePath = _filePath;
 #endif
 
-        m_share = _share;
         m_streaming = _streaming;
+        m_share = _share;
 
         WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )

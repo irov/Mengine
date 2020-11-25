@@ -119,6 +119,11 @@ namespace Mengine
         HotSpot::_release();
     }
     //////////////////////////////////////////////////////////////////////////
+    void HotSpotImage::_dispose()
+    {
+        m_resourceTestPick = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool HotSpotImage::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
     {
         MENGINE_UNUSED( _contentResolution );

@@ -528,12 +528,19 @@ if(MENGINE_DEPENDENCE_CURL)
 endif()
 
 #dependencies sentry
-if(MENGINE_TARGET_WINDOWS OR (MENGINE_TARGET_MINGW AND MENGINE_ARCHITECTURE_X64) OR MENGINE_TARGET_UNIX)
+if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW OR MENGINE_TARGET_UNIX)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/CMakeLists.txt COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/exception_handler_server.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/util/win/exception_handler_server.cc COPYONLY)
-        
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/crash_report_database_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/client/crash_report_database_win.cc COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/cpu_context_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/snapshot/win/cpu_context_win.cc COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/process_memory.h ${THIRDPARTY_DIR}/sentry/external/crashpad/util/process/process_memory.h COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/exception_handler_server.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/util/process/exception_handler_server.cc COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/util_CMakeLists.txt ${THIRDPARTY_DIR}/sentry/external/crashpad/util/CMakeLists.txt COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/sentry_sync.c ${THIRDPARTY_DIR}/sentry/src/sentry_sync.c COPYONLY)
+
+
         set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
         set(SENTRY_BUILD_TESTS OFF CACHE BOOL "SENTRY_BUILD_TESTS" FORCE)
         set(SENTRY_BUILD_EXAMPLES OFF CACHE BOOL "SENTRY_BUILD_EXAMPLES" FORCE)

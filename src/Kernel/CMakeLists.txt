@@ -5,6 +5,7 @@ Containers
     StlAllocator.h
     Array.h
     ArrayString.h
+    Bitset.h
     DynamicArray.h
     Blobject.h
     String.h

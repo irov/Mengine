@@ -4,16 +4,22 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
+#include "Environment/Python/PythonDocumentTraceback.h"
+
+#include "Kernel/Node.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"
+#include "Kernel/AssertionType.h"
 #include "Kernel/Logger.h"
+
+#include "Config/Typeinfo.h"
 
 #include "pybind/pybind.hpp"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Helper
+    namespace Detail
     {
         template<class T>
         struct ScriptExtract
@@ -44,7 +50,9 @@ namespace Mengine
         PythonScriptWrapper( pybind::kernel_interface * _kernel )
             : m_kernel( _kernel )
         {
-            pybind::type_cast_ptr cast = _kernel->get_allocator()->newT<Helper::ScriptExtract<T>>();
+            pybind::allocator_interface * allocator = _kernel->get_allocator();
+
+            pybind::type_cast_ptr cast = allocator->newT<Detail::ScriptExtract<T>>();
 
             pybind::registration_type_cast<T>(m_kernel, cast);
 
@@ -66,15 +74,10 @@ namespace Mengine
     protected:
         PyObject * wrap( Scriptable * _scriptable ) override
         {
-#ifdef MENGINE_DEBUG
-            if( dynamic_cast<T *>(_scriptable) == nullptr )
-            {
-                LOGGER_ERROR( "invalid type"
-                );
-
-                throw;
-            }
-#endif
+            MENGINE_ASSERTION_TYPE( _scriptable, T *, "invalid wrap type '%s' (doc %s)"
+                , MENGINE_TYPEINFO_NAME( T )
+                , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
+            );
 
             T * obj = static_cast<T *>(_scriptable);
 
@@ -98,6 +101,13 @@ namespace Mengine
             }
 
             m_kernel->unwrap( _obj );
+        }
+
+        bool isWrap( PyObject * _obj ) const override
+        {
+            bool result = m_kernel->is_wrap( _obj );
+
+            return result;
         }
 
     protected:

@@ -120,8 +120,6 @@
 #   endif
 #endif
 
-#       define MENGINE_DOCUMENT_ENABLE 0
-
 #ifndef MENGINE_DOCUMENT_ENABLE
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_DOCUMENT_ENABLE 1

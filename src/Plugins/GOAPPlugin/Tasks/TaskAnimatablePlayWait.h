@@ -14,7 +14,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc );
+        TaskAnimatablePlayWait( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc );
         ~TaskAnimatablePlayWait() override;
 
     protected:

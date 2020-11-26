@@ -8,7 +8,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskReleasePrint::TaskReleasePrint( const Char * _format, ... )
+    TaskReleasePrint::TaskReleasePrint( GOAP::Allocator * _allocator, const Char * _format, ... )
+        : TaskInterface( _allocator )
     {
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
@@ -26,7 +27,8 @@ namespace Mengine
         m_message.assign( message, size_vsnprintf );
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskReleasePrint::TaskReleasePrint( const Char * _format, MENGINE_VA_LIST_TYPE _args )
+    TaskReleasePrint::TaskReleasePrint( GOAP::Allocator * _allocator, const Char * _format, MENGINE_VA_LIST_TYPE _args )
+        : TaskInterface( _allocator )
     {
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 

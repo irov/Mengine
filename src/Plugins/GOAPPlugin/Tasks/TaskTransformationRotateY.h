@@ -12,7 +12,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationRotateY( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
+        TaskTransformationRotateY( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
         ~TaskTransformationRotateY() override;
 
     protected:

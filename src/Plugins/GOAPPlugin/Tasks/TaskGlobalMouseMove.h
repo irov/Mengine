@@ -17,7 +17,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalMouseMove( const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc );
+        TaskGlobalMouseMove( GOAP::Allocator * _allocator, const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc );
         ~TaskGlobalMouseMove() override;
 
     protected:

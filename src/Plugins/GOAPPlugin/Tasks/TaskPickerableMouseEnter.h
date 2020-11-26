@@ -19,7 +19,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc );
+        TaskPickerableMouseEnter( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc );
         ~TaskPickerableMouseEnter() override;
 
     protected:

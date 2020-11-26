@@ -18,7 +18,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalMouseButton( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc );
+        TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc );
         ~TaskGlobalMouseButton() override;
 
     protected:

@@ -89,8 +89,9 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationTranslateTime::TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
-        : m_transformation( _transformation )
+    TaskTransformationTranslateTime::TaskTransformationTranslateTime( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
+        : TaskInterface( _allocator )
+        , m_transformation( _transformation )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )

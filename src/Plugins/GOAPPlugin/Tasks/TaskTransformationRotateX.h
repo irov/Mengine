@@ -12,7 +12,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationRotateX( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
+        TaskTransformationRotateX( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
         ~TaskTransformationRotateX() override;
 
     protected:

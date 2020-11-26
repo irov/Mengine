@@ -48,8 +48,9 @@ namespace Mengine
     {
     public:
         template<class M, class ... Args>
-        TaskEventable( Eventable * _eventable, uint32_t _event, M _method, Args && ... _args )
-            : m_eventable( _eventable )
+        TaskEventable( GOAP::Allocator * _allocator, Eventable * _eventable, uint32_t _event, M _method, Args && ... _args )
+            : GOAP::TaskInterface( _allocator )
+            , m_eventable( _eventable )
             , m_event( _event )
             , m_invoke( [&, _method, _args ...]( EventReceiverInterface * _receiver )
         {

@@ -16,6 +16,30 @@
 #include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
+extern "C"
+{
+    //////////////////////////////////////////////////////////////////////////
+    void * LZ4_malloc( size_t _size )
+    {
+        void * p = malloc( _size );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void * LZ4_calloc( size_t _count, size_t _size )
+    {
+        void * p = calloc( _count, _size );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void  LZ4_free( void * _ptr )
+    {
+        free( _ptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
 	(void)hInstance;
@@ -34,7 +58,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		message_error("not found 'in' param\n"
 			);
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 
 	if( csa_path.empty() == true )
@@ -42,7 +66,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		message_error("not found 'csa' param\n"
 			);
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 	
 	WCHAR szBuffer[MAX_PATH];
@@ -57,7 +81,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, regPath
 				);
 
-			return 0;
+			return EXIT_SUCCESS;
 		}
 
 		DWORD dwBufferSize = sizeof(szBuffer);
@@ -67,7 +91,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, regPath
 				);
 
-			return 0;
+			return EXIT_FAILURE;
 		}
 	}
 	else
@@ -137,7 +161,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			, lpCommandLine
 			);
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 
 	CloseHandle( lpProcessInformation.hThread );
@@ -156,7 +180,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			, exit_code
 			);
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 
     WCHAR outCanonicalize[MAX_PATH];
@@ -171,7 +195,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             , outCanonicalize
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     fseek( f, 0, SEEK_END );
@@ -180,11 +204,13 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( f_size == 0 )
     {
+        fclose( f );
+
         message_error( "invalid size %ls\n"
             , outCanonicalize
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     std::vector<char> v_buffer( f_size );
@@ -201,7 +227,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             , outCanonicalize
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     if( mf == MAGIC_UNKNOWN )
@@ -210,7 +236,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             , outCanonicalize
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     int atlasCount = Magic_GetStaticAtlasCount( mf );
@@ -259,7 +285,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
                 , err
             );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
 
@@ -301,7 +327,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
                 , outzCanonicalize
             );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
         Mengine::magic_number_type numberz = GET_MAGIC_NUMBER( Mengine::MAGIC_PTZ );
@@ -332,7 +358,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
                 , outCanonicalize
             );
 
-            return 0;
+            return EXIT_FAILURE;
         }
 
         uint32_t write_compressSize = (uint32_t)compressSize;
@@ -344,5 +370,5 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         _wremove( outCanonicalize );
     }
 
-	return 0;
+	return EXIT_SUCCESS;
 }

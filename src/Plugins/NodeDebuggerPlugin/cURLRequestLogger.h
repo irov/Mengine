@@ -31,9 +31,6 @@ namespace Mengine
 
     protected:
         VectorRequestData m_data;
-        uint32_t m_currentRequestId;
-
-        uint32_t m_lastSendRequestsId;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLRequestLogger> cURLRequestLoggerPtr;

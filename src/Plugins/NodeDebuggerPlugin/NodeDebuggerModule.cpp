@@ -354,6 +354,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _focus );
 
+        if( m_currentTab == "network" )
+        {
+            this->sendNetwork();
+        }
+
         if( m_shouldRecreateServer == true )
         {
             this->recreateServer();
@@ -1360,7 +1365,9 @@ namespace Mengine
         pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
         packetNode.append_attribute( "type" ).set_value( "Network" );
 
-        pugi::xml_node network_xml_objects = packetNode.append_child( "Objects" );
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        pugi::xml_node network_xml_objects = payloadNode.append_child( "Objects" );
 
         VectorRequestData data;
         m_networkLogger->getPreparedData( &data );

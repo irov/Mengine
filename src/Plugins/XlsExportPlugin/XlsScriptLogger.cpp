@@ -64,7 +64,7 @@ namespace Mengine
         return _kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsScriptLogger::write( const Char * _msg, uint32_t _size )
+    void XlsScriptLogger::write( const Char * _msg, size_t _size )
     {
         LOGGER_SERVICE()
             ->logMessage( m_level, 0, m_color, _msg, _size );

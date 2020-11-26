@@ -558,7 +558,7 @@ namespace Mengine
             }
             else if( m_showDebugText == 6 )
             {
-                typedef Map<int32_t, VectorString> MapPybindScope;
+                typedef Map<size_t, VectorString> MapPybindScope;
                 MapPybindScope scopes;
 
                 uint32_t count = ALLOCATOR_SERVICE()
@@ -567,7 +567,7 @@ namespace Mengine
                 for( uint32_t i = 0; i != count; ++i )
                 {
                     const char * report_name;
-                    uint32_t report_count = ALLOCATOR_SERVICE()
+                    size_t report_count = ALLOCATOR_SERVICE()
                         ->get_report_info( i, &report_name );
 
                     scopes[report_count].emplace_back( report_name );
@@ -583,7 +583,7 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    int32_t c = it->first;
+                    size_t c = it->first;
                     const VectorString & l = it->second;
 
                     for( const String & s : l )

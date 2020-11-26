@@ -15,7 +15,7 @@ namespace Mengine
         virtual ~XlsScriptLogger();
 
     public:
-        virtual void write( const Char * _msg, uint32_t _size );
+        virtual void write( const Char * _msg, size_t _size );
 
     public:
         PyObject * py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds );

@@ -1,5 +1,7 @@
 #include "Win32ThreadIdentity.h"
 
+#include "Interface/AllocatorServiceInterface.h"
+
 #include "Kernel/Logger.h"
 
 #include <process.h>
@@ -158,14 +160,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
     {
+        ALLOCATOR_SERVICE()
+            ->startThread();
+
         while( m_exit == false )
         {
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
             ::EnterCriticalSection( &m_conditionLock );
             ::SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
             ::LeaveCriticalSection( &m_conditionLock );
-#else
-            ::Sleep( 10 );
 #endif
 
             if( m_exit == true )
@@ -190,7 +193,19 @@ namespace Mengine
             }
 
             ::LeaveCriticalSection( &m_processLock );
+
+            if( m_exit == true )
+            {
+                break;
+            }
+
+#if MENGINE_WINDOWS_VERSION < _WIN32_WINNT_LONGHORN
+            ::Sleep( 10 );
+#endif
         }
+
+        ALLOCATOR_SERVICE()
+            ->stopThread();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )

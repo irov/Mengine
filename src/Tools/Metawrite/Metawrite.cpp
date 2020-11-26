@@ -31,8 +31,6 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#include "stdex/allocator.h"
-
 #include <string>
 #include <vector>
 
@@ -136,8 +134,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     (void)hPrevInstance;
     (void)nShowCmd;
 
-    stdex_allocator_initialize();
-
     {
         Mengine::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Mengine::WString() );
         Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
@@ -230,8 +226,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             return 0;
         }
     }
-
-    stdex_allocator_finalize();
-
+        
     return 0;
 }

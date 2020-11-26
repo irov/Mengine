@@ -631,8 +631,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     (void)hPrevInstance;
     (void)nShowCmd;
 
-    stdex_allocator_initialize();
-        
     {
         Mengine::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Mengine::WString() );
         Mengine::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Mengine::WString() );
@@ -709,8 +707,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             return EXIT_FAILURE;
         }
     }
-
-    stdex_allocator_finalize();
 
     return EXIT_SUCCESS;
 }

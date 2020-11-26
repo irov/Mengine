@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskDelay( const SchedulerInterfacePtr & _scheduler, float _time, const DocumentPtr & _doc );
+        TaskDelay( GOAP::Allocator * _allocator, const SchedulerInterfacePtr & _scheduler, float _time, const DocumentPtr & _doc );
         ~TaskDelay() override;
 
     protected:

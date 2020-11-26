@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        explicit TaskAnimatablePlay( const AnimatablePtr & _animatable );
+        TaskAnimatablePlay( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable );
         ~TaskAnimatablePlay() override;
 
     protected:

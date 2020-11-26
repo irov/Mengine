@@ -32,7 +32,5 @@ namespace Mengine
 
     protected:
         GOAP::Allocator * m_allocator;
-
-        GOAP::KernelInterfacePtr m_kernel;
     };
 }

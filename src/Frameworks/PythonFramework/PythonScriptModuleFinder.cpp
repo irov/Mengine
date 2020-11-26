@@ -159,7 +159,7 @@ namespace Mengine
         return py_code;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptModuleFinder::convertDotToSlash_( pybind::kernel_interface * _kernel, Char * const _cache, uint32_t _cacheSize, PyObject * _module, uint32_t * const _modulePathCacheLen )
+    bool PythonScriptModuleFinder::convertDotToSlash_( pybind::kernel_interface * _kernel, Char * const _cache, size_t _cacheSize, PyObject * _module, size_t * const _modulePathCacheLen )
     {
         size_t module_size;
         const char * module_str = _kernel->string_to_char_and_size( _module, &module_size );
@@ -202,11 +202,11 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI )
+    bool PythonScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, size_t _extN, const Char * _init, size_t _extI )
     {
         Char modulePathCache[MENGINE_MAX_PATH] = {'\0'};
 
-        uint32_t modulePathCacheLen;
+        size_t modulePathCacheLen;
         if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH - 1, _module, &modulePathCacheLen ) == false )
         {
             return false;
@@ -236,7 +236,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptModuleFinder::findModule_( const Char * _modulePath, uint32_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const
+    bool PythonScriptModuleFinder::findModule_( const Char * _modulePath, size_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const
     {
         for( const ModulePathes & mp : m_modulePaths )
         {
@@ -250,7 +250,7 @@ namespace Mengine
             for( const FilePath & path : mp.pathes )
             {
                 m_cacheFullPath = path;
-                m_cacheFullPath.append( _modulePath, _modulePathLen );
+                m_cacheFullPath.append( _modulePath, (PathString::size_type)_modulePathLen );
 
                 FilePath c_fullPath = Helper::stringizeFilePath( m_cacheFullPath );
 

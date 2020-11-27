@@ -30,7 +30,7 @@ namespace GOAP
 
             new (p) T( this, std::forward<Args>( _args ) ... );
 
-            return static_cast<T *>(p);
+            return std::launder( static_cast<T *>(p) );
         }
 
         template<class T>

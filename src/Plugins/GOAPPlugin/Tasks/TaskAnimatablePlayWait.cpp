@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TaskAnimatablePlayWait::TaskAnimatablePlayWait( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_animatable( _animatable )
         , m_eventable( _eventable )
 #if MENGINE_DOCUMENT_ENABLE

@@ -179,7 +179,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TaskPickerableMouseButton::TaskPickerableMouseButton( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_pickerable( _pickerable )
         , m_code( _code )
         , m_isDown( _isDown )

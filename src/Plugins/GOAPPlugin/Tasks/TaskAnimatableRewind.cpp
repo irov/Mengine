@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TaskAnimatableRewind::TaskAnimatableRewind( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_animatable( _animatable )
     {
     }

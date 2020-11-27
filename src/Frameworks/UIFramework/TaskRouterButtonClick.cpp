@@ -75,7 +75,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TaskRouterButtonClick::TaskRouterButtonClick( GOAP::Allocator * _allocator, const ConstString & _state, const RouterButtonEventReceiverPtr & _router )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_state( _state )
         , m_router( _router )
     {

@@ -14,9 +14,13 @@ src
     Win32AlreadyRunningMonitor.cpp
     Win32CPUInfo.h
     Win32CPUInfo.cpp
+    Win32MessageBoxLogger.h
+    Win32MessageBoxLogger.cpp
 )
 
 ADD_MENGINE_LIBRARY()
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
 IF(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Shlwapi.lib)

@@ -8,10 +8,14 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
+#include "Interface/PluginInterface.h"
 
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
+#include "Win32MessageBoxLogger.h"
 
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
@@ -27,6 +31,7 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/StringArguments.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -53,13 +58,19 @@
 #include <cerrno>
 
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SETLOCALE
+#define MENGINE_SETLOCALE "C"
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME L"User"
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOW_CLASSNAME
-#define MENGINE_WINDOW_CLASSNAME L"MengineWindow"
+#define MENGINE_WINDOW_CLASSNAME "MengineWindow"
 #endif
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_EXPORT( Win32FileGroup );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
 //////////////////////////////////////////////////////////////////////////
@@ -98,38 +109,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-        HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
-
-        if( hm_ntdll != NULL )
-        {
-            LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
-            *(FARPROC *)&RtlGetVersion = GetProcAddress( hm_ntdll, "RtlGetVersion" );
-
-            if( RtlGetVersion != NULL )
-            {
-                OSVERSIONINFOEXW osInfo;
-                osInfo.dwOSVersionInfoSize = sizeof( osInfo );
-
-                RtlGetVersion( &osInfo );
-
-                LOGGER_MESSAGE_RELEASE( "Windows version: %lu.%lu (build %lu)"
-                    , osInfo.dwMajorVersion
-                    , osInfo.dwMinorVersion
-                    , osInfo.dwBuildNumber
-                );
-
-                LOGGER_MESSAGE_RELEASE( "Windows platform: %lu"
-                    , osInfo.dwPlatformId
-                );
-
-                LOGGER_MESSAGE_RELEASE( "Windows service pack: %lu.%lu"
-                    , (DWORD)osInfo.wServicePackMajor
-                    , (DWORD)osInfo.wServicePackMinor
-                );
-            }
-
-            ::FreeLibrary( hm_ntdll );
-        }
+        ::setlocale( LC_ALL, MENGINE_SETLOCALE );
 
         m_hInstance = ::GetModuleHandle( NULL );
 
@@ -156,90 +136,53 @@ namespace Mengine
         m_touchpad = false;
         m_desktop = true;
 
-        if( HAS_OPTION( "win32" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
-        }
-        else if( HAS_OPTION( "win64" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
-        }
-        else if( HAS_OPTION( "mac" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
-        }
-        else if( HAS_OPTION( "ios" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-
-#ifdef MENGINE_PLATFORM_WINDOWS32
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#endif
-
-#ifdef MENGINE_PLATFORM_WINDOWS64
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-#endif
-
-
-
-            m_touchpad = true;
-            m_desktop = false;
-        }
-        else if( HAS_OPTION( "android" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-
-            m_touchpad = true;
-            m_desktop = false;
-        }
-        else if( HAS_OPTION( "wp" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
-
-            m_touchpad = true;
-            m_desktop = false;
-        }
-
-        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-        if( option_platform != nullptr )
-        {
-            Char uppercase_option_platform[256];
-            Helper::toupper( option_platform, uppercase_option_platform, 255 );
-
-            m_platformTags.clear();
-            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
-        }
-
-        if( HAS_OPTION( "touchpad" ) )
-        {
-            m_touchpad = true;
-        }
-
-        if( HAS_OPTION( "desktop" ) )
-        {
-            m_desktop = true;
-        }
-
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
+
+        const Char * windowClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
+
+        Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH );
+
+        UNKNOWN_SERVICE_WAIT( Win32Platform, OptionsServiceInterface, [this]()
+        {
+            if( this->initializeOptionsService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        UNKNOWN_SERVICE_WAIT( Win32Platform, LoggerServiceInterface, [this]()
+        {
+            if( this->initializeLoggerService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        UNKNOWN_SERVICE_LEAVE( Win32Platform, LoggerServiceInterface, [this]()
+        {
+            this->finalizeLoggerService_();
+        } );
+
+        UNKNOWN_SERVICE_WAIT( Win32Platform, FileServiceInterface, [this]()
+        {
+            if( this->initializeFileService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        UNKNOWN_SERVICE_LEAVE( Win32Platform, FileServiceInterface, [this]()
+        {
+            this->finalizeFileService_();
+        } );
+
 
         return true;
     }
@@ -252,6 +195,28 @@ namespace Mengine
 
         m_cursors.clear();
 
+#ifdef MENGINE_DEBUG
+        for( const Win32ProcessDesc & desc : m_win32ProcessHandlers )
+        {
+            LOGGER_ERROR( "forgot remove win32 process handler (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_win32ProcessHandlers.clear();
+
+#ifdef MENGINE_DEBUG
+        for( const TimerDesc & desc : m_timers )
+        {
+            LOGGER_ERROR( "forgot remove win32 timer (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_timers.clear();
+
         if( m_hWnd != NULL )
         {
             ::CloseWindow( m_hWnd );
@@ -262,10 +227,10 @@ namespace Mengine
 
         if( m_hInstance != NULL )
         {
-            if( ::UnregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance ) == FALSE )
+            if( ::UnregisterClass( m_windowClassName, m_hInstance ) == FALSE )
             {
                 LOGGER_ERROR( "invalid UnregisterClass '%ls'"
-                    , MENGINE_WINDOW_CLASSNAME
+                    , m_windowClassName
                 );
             }
 
@@ -281,120 +246,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_runService()
     {
-        DateTimeProviderInterfacePtr dateTimeProvider =
-            this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
-
-        PlatformDateTime dateTime;
-        dateTimeProvider->getLocalDateTime( &dateTime );
-
-        LOGGER_MESSAGE_RELEASE( "Start Date: %02u.%02u.%u, %02u:%02u:%02u"
-            , dateTime.day
-            , dateTime.month
-            , dateTime.year
-            , dateTime.hour
-            , dateTime.minute
-            , dateTime.second
-        );
-
-        SYSTEM_INFO sysInfo;
-        ::GetSystemInfo( &sysInfo );
-
-        LOGGER_MESSAGE_RELEASE( "Hardware information:" );
-        LOGGER_MESSAGE_RELEASE( "  OEM ID: %u", sysInfo.dwOemId );
-        LOGGER_MESSAGE_RELEASE( "  Number of processors: %u", sysInfo.dwNumberOfProcessors );
-        LOGGER_MESSAGE_RELEASE( "  Page size: %u", sysInfo.dwPageSize );
-        LOGGER_MESSAGE_RELEASE( "  Processor type: %u", sysInfo.dwProcessorType );
-        LOGGER_MESSAGE_RELEASE( "  Minimum application address: %lx", sysInfo.lpMinimumApplicationAddress );
-        LOGGER_MESSAGE_RELEASE( "  Maximum application address: %lx", sysInfo.lpMaximumApplicationAddress );
-        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %u", sysInfo.dwActiveProcessorMask );
-
-        LOGGER_MESSAGE_RELEASE( "CPU information:" );
-
-        Win32CPUInfo cpuinfo;
-
-        LOGGER_MESSAGE_RELEASE( "  Vendor: %s", cpuinfo.Vendor().c_str() );
-        LOGGER_MESSAGE_RELEASE( "  Brand: %s", cpuinfo.Brand().c_str() );
-
-        auto support_message = []( const Char * isa_feature, bool is_supported )
-        {
-            uint32_t color = (is_supported == true ? Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE : Mengine::LCOLOR_RED);
-
-            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, color, nullptr, 0 )("  %s: %s"
-                , isa_feature
-                , is_supported == true ? " supported" : " not supported"
-                );
-        };
-
-        LOGGER_MESSAGE_RELEASE( "CPU instruction:" );
-        support_message( "3DNOW", cpuinfo._3DNOW() );
-        support_message( "3DNOWEXT", cpuinfo._3DNOWEXT() );
-        support_message( "ABM", cpuinfo.ABM() );
-        support_message( "ADX", cpuinfo.ADX() );
-        support_message( "AES", cpuinfo.AES() );
-        support_message( "AVX", cpuinfo.AVX() );
-        support_message( "AVX2", cpuinfo.AVX2() );
-        support_message( "AVX512CD", cpuinfo.AVX512CD() );
-        support_message( "AVX512ER", cpuinfo.AVX512ER() );
-        support_message( "AVX512F", cpuinfo.AVX512F() );
-        support_message( "AVX512PF", cpuinfo.AVX512PF() );
-        support_message( "BMI1", cpuinfo.BMI1() );
-        support_message( "BMI2", cpuinfo.BMI2() );
-        support_message( "CLFSH", cpuinfo.CLFSH() );
-        support_message( "CMPXCHG16B", cpuinfo.CMPXCHG16B() );
-        support_message( "CX8", cpuinfo.CX8() );
-        support_message( "ERMS", cpuinfo.ERMS() );
-        support_message( "F16C", cpuinfo.F16C() );
-        support_message( "FMA", cpuinfo.FMA() );
-        support_message( "FSGSBASE", cpuinfo.FSGSBASE() );
-        support_message( "FXSR", cpuinfo.FXSR() );
-        support_message( "HLE", cpuinfo.HLE() );
-        support_message( "INVPCID", cpuinfo.INVPCID() );
-        support_message( "LAHF", cpuinfo.LAHF() );
-        support_message( "LZCNT", cpuinfo.LZCNT() );
-        support_message( "MMX", cpuinfo.MMX() );
-        support_message( "MMXEXT", cpuinfo.MMXEXT() );
-        support_message( "MONITOR", cpuinfo.MONITOR() );
-        support_message( "MOVBE", cpuinfo.MOVBE() );
-        support_message( "MSR", cpuinfo.MSR() );
-        support_message( "OSXSAVE", cpuinfo.OSXSAVE() );
-        support_message( "PCLMULQDQ", cpuinfo.PCLMULQDQ() );
-        support_message( "POPCNT", cpuinfo.POPCNT() );
-        support_message( "PREFETCHWT1", cpuinfo.PREFETCHWT1() );
-        support_message( "RDRAND", cpuinfo.RDRAND() );
-        support_message( "RDSEED", cpuinfo.RDSEED() );
-        support_message( "RDTSCP", cpuinfo.RDTSCP() );
-        support_message( "RTM", cpuinfo.RTM() );
-        support_message( "SEP", cpuinfo.SEP() );
-        support_message( "SHA", cpuinfo.SHA() );
-        support_message( "SSE", cpuinfo.SSE() );
-        support_message( "SSE2", cpuinfo.SSE2() );
-        support_message( "SSE3", cpuinfo.SSE3() );
-        support_message( "SSE4.1", cpuinfo.SSE41() );
-        support_message( "SSE4.2", cpuinfo.SSE42() );
-        support_message( "SSE4a", cpuinfo.SSE4a() );
-        support_message( "SSSE3", cpuinfo.SSSE3() );
-        support_message( "SYSCALL", cpuinfo.SYSCALL() );
-        support_message( "TBM", cpuinfo.TBM() );
-        support_message( "XOP", cpuinfo.XOP() );
-        support_message( "XSAVE", cpuinfo.XSAVE() );
-
-        MEMORYSTATUSEX mem_st;
-        mem_st.dwLength = sizeof( mem_st );
-
-        if( ::GlobalMemoryStatusEx( &mem_st ) == TRUE )
-        {
-            LOGGER_MESSAGE_RELEASE( "Start Memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
-                , (uint32_t)(mem_st.ullTotalPhys / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullTotalPhys / (1024UL * 1024UL) % 1024UL)
-                , (uint32_t)(mem_st.ullAvailPhys / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullAvailPhys / (1024UL * 1024UL) % 1024UL)
-                , (uint32_t)(mem_st.ullTotalPageFile / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullTotalPageFile / (1024UL * 1024UL) % 1024UL)
-                , (uint32_t)(mem_st.ullAvailPageFile / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullAvailPageFile / (1024UL * 1024UL) % 1024UL)
-            );
-        }
-
-        if( this->setProcessDPIAware() == false )
-        {
-            LOGGER_MESSAGE_RELEASE( "Application not setup Process DPI Aware" );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::setProcessDPIAware()
@@ -578,6 +429,121 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()
     {
+        DateTimeProviderInterfacePtr dateTimeProvider =
+            this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
+
+        PlatformDateTime dateTime;
+        dateTimeProvider->getLocalDateTime( &dateTime );
+
+        LOGGER_MESSAGE_RELEASE( "Start Date: %02u.%02u.%u, %02u:%02u:%02u"
+            , dateTime.day
+            , dateTime.month
+            , dateTime.year
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
+        );
+
+        SYSTEM_INFO sysInfo;
+        ::GetSystemInfo( &sysInfo );
+
+        LOGGER_MESSAGE_RELEASE( "Hardware information:" );
+        LOGGER_MESSAGE_RELEASE( "  OEM ID: %u", sysInfo.dwOemId );
+        LOGGER_MESSAGE_RELEASE( "  Number of processors: %u", sysInfo.dwNumberOfProcessors );
+        LOGGER_MESSAGE_RELEASE( "  Page size: %u", sysInfo.dwPageSize );
+        LOGGER_MESSAGE_RELEASE( "  Processor type: %u", sysInfo.dwProcessorType );
+        LOGGER_MESSAGE_RELEASE( "  Minimum application address: %lx", sysInfo.lpMinimumApplicationAddress );
+        LOGGER_MESSAGE_RELEASE( "  Maximum application address: %lx", sysInfo.lpMaximumApplicationAddress );
+        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %u", sysInfo.dwActiveProcessorMask );
+
+        LOGGER_MESSAGE_RELEASE( "CPU information:" );
+
+        Win32CPUInfo cpuinfo;
+
+        LOGGER_MESSAGE_RELEASE( "  Vendor: %s", cpuinfo.Vendor().c_str() );
+        LOGGER_MESSAGE_RELEASE( "  Brand: %s", cpuinfo.Brand().c_str() );
+
+        auto support_message = []( const Char * isa_feature, bool is_supported )
+        {
+            uint32_t color = (is_supported == true ? Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE : Mengine::LCOLOR_RED);
+
+            LOGGER_VERBOSE_LEVEL( Mengine::ConstString::none(), Mengine::LM_MESSAGE_RELEASE, color, nullptr, 0 )("  %s: %s"
+                , isa_feature
+                , is_supported == true ? " supported" : " not supported"
+                );
+        };
+
+        LOGGER_MESSAGE_RELEASE( "CPU instruction:" );
+        support_message( "3DNOW", cpuinfo._3DNOW() );
+        support_message( "3DNOWEXT", cpuinfo._3DNOWEXT() );
+        support_message( "ABM", cpuinfo.ABM() );
+        support_message( "ADX", cpuinfo.ADX() );
+        support_message( "AES", cpuinfo.AES() );
+        support_message( "AVX", cpuinfo.AVX() );
+        support_message( "AVX2", cpuinfo.AVX2() );
+        support_message( "AVX512CD", cpuinfo.AVX512CD() );
+        support_message( "AVX512ER", cpuinfo.AVX512ER() );
+        support_message( "AVX512F", cpuinfo.AVX512F() );
+        support_message( "AVX512PF", cpuinfo.AVX512PF() );
+        support_message( "BMI1", cpuinfo.BMI1() );
+        support_message( "BMI2", cpuinfo.BMI2() );
+        support_message( "CLFSH", cpuinfo.CLFSH() );
+        support_message( "CMPXCHG16B", cpuinfo.CMPXCHG16B() );
+        support_message( "CX8", cpuinfo.CX8() );
+        support_message( "ERMS", cpuinfo.ERMS() );
+        support_message( "F16C", cpuinfo.F16C() );
+        support_message( "FMA", cpuinfo.FMA() );
+        support_message( "FSGSBASE", cpuinfo.FSGSBASE() );
+        support_message( "FXSR", cpuinfo.FXSR() );
+        support_message( "HLE", cpuinfo.HLE() );
+        support_message( "INVPCID", cpuinfo.INVPCID() );
+        support_message( "LAHF", cpuinfo.LAHF() );
+        support_message( "LZCNT", cpuinfo.LZCNT() );
+        support_message( "MMX", cpuinfo.MMX() );
+        support_message( "MMXEXT", cpuinfo.MMXEXT() );
+        support_message( "MONITOR", cpuinfo.MONITOR() );
+        support_message( "MOVBE", cpuinfo.MOVBE() );
+        support_message( "MSR", cpuinfo.MSR() );
+        support_message( "OSXSAVE", cpuinfo.OSXSAVE() );
+        support_message( "PCLMULQDQ", cpuinfo.PCLMULQDQ() );
+        support_message( "POPCNT", cpuinfo.POPCNT() );
+        support_message( "PREFETCHWT1", cpuinfo.PREFETCHWT1() );
+        support_message( "RDRAND", cpuinfo.RDRAND() );
+        support_message( "RDSEED", cpuinfo.RDSEED() );
+        support_message( "RDTSCP", cpuinfo.RDTSCP() );
+        support_message( "RTM", cpuinfo.RTM() );
+        support_message( "SEP", cpuinfo.SEP() );
+        support_message( "SHA", cpuinfo.SHA() );
+        support_message( "SSE", cpuinfo.SSE() );
+        support_message( "SSE2", cpuinfo.SSE2() );
+        support_message( "SSE3", cpuinfo.SSE3() );
+        support_message( "SSE4.1", cpuinfo.SSE41() );
+        support_message( "SSE4.2", cpuinfo.SSE42() );
+        support_message( "SSE4a", cpuinfo.SSE4a() );
+        support_message( "SSSE3", cpuinfo.SSSE3() );
+        support_message( "SYSCALL", cpuinfo.SYSCALL() );
+        support_message( "TBM", cpuinfo.TBM() );
+        support_message( "XOP", cpuinfo.XOP() );
+        support_message( "XSAVE", cpuinfo.XSAVE() );
+
+        MEMORYSTATUSEX mem_st;
+        mem_st.dwLength = sizeof( mem_st );
+
+        if( ::GlobalMemoryStatusEx( &mem_st ) == TRUE )
+        {
+            LOGGER_MESSAGE_RELEASE( "Start Memory: %u.%uMb total, %u.%uMb free, %u.%uMb Page file total, %u.%uMb Page file free"
+                , (uint32_t)(mem_st.ullTotalPhys / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullTotalPhys / (1024UL * 1024UL) % 1024UL)
+                , (uint32_t)(mem_st.ullAvailPhys / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullAvailPhys / (1024UL * 1024UL) % 1024UL)
+                , (uint32_t)(mem_st.ullTotalPageFile / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullTotalPageFile / (1024UL * 1024UL) % 1024UL)
+                , (uint32_t)(mem_st.ullAvailPageFile / (1024UL * 1024UL) / 1024UL), (uint32_t)(mem_st.ullAvailPageFile / (1024UL * 1024UL) % 1024UL)
+            );
+        }
+
+        if( this->setProcessDPIAware() == false )
+        {
+            LOGGER_MESSAGE_RELEASE( "Application not setup Process DPI Aware" );
+        }
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
         return true;
@@ -1673,7 +1639,7 @@ namespace Mengine
         {
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
-            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
+            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, m_windowClassName, m_projectTitle ) == false )
             {
                 LOGGER_ERROR( "Application invalid running monitor"
                 );
@@ -1700,7 +1666,7 @@ namespace Mengine
             , m_hInstance
             , m_icon
             , black_brush
-            , MENGINE_WINDOW_CLASSNAME );
+            , m_windowClassName );
 
         if( result == 0 )
         {
@@ -1724,7 +1690,7 @@ namespace Mengine
 
         DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
 
-        HWND hWnd = ::CreateWindowEx( dwExStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
+        HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName, m_projectTitle
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
             , NULL, NULL, m_hInstance, (LPVOID)this );
@@ -4002,13 +3968,19 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda )
+    uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         Win32ProcessDesc desc;
         desc.id = id;
         desc.lambda = _lambda;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
         m_win32ProcessHandlers.emplace_back( desc );
 
@@ -4086,6 +4058,274 @@ namespace Mengine
         time_t time = ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
 
         return time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::initializeFileService_()
+    {
+        LOGGER_INFO( "system", "Inititalizing File Service..." );
+
+        LOGGER_INFO( "system", "Initialize Win32 file group..." );
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
+
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        size_t currentPathLen = PLATFORM_SERVICE()
+            ->getCurrentPath( currentPath );
+
+        if( currentPathLen == 0 )
+        {
+            LOGGER_ERROR( "failed to get current directory" );
+
+            return false;
+        }
+
+        LOGGER_MESSAGE_RELEASE( "system", "Current Path: %s"
+            , currentPath
+        );
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount application directory '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount dev directory '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+#endif
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::finalizeFileService_()
+    {
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount dev directory"
+            );
+        }
+#endif
+
+        if( FILE_SERVICE()
+            ->unmountFileGroup( ConstString::none() ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount application directory"
+            );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::initializeOptionsService_()
+    {
+        LPCWSTR lpCmdLine = ::GetCommandLineW();
+
+        if( lpCmdLine == NULL )
+        {
+            return false;
+        }
+
+        int32_t pNumArgs;
+        LPWSTR * szArglist = ::CommandLineToArgvW( lpCmdLine, &pNumArgs );
+
+        if( szArglist == NULL )
+        {
+            return false;
+        }
+
+#   if (WINVER >= 0x0600)
+        DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
+#   else
+        DWORD dwConversionFlags = 0;
+#   endif
+
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
+
+        for( int32_t i = 1; i != pNumArgs; ++i )
+        {
+            PWSTR arg = szArglist[i];
+
+            CHAR utf_arg[1024];
+
+            int32_t utf_arg_size = ::WideCharToMultiByte(
+                CP_UTF8
+                , dwConversionFlags
+                , arg
+                , -1
+                , utf_arg
+                , 1024
+                , NULL
+                , NULL
+            );
+
+            if( utf_arg_size <= 0 )
+            {
+                return false;
+            }
+
+            arguments->addArgument( utf_arg );
+        }
+
+        ::LocalFree( szArglist );
+
+        if( OPTIONS_SERVICE()
+            ->setArguments( arguments ) == false )
+        {
+            return false;
+        }
+
+        if( HAS_OPTION( "win32" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "win64" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "mac" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "ios" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+        else if( HAS_OPTION( "android" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+        else if( HAS_OPTION( "wp" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+
+        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
+
+        if( option_platform != nullptr )
+        {
+            Char uppercase_option_platform[256];
+            Helper::toupper( option_platform, uppercase_option_platform, 255 );
+
+            m_platformTags.clear();
+            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+        }
+
+        if( HAS_OPTION( "touchpad" ) )
+        {
+            m_touchpad = true;
+        }
+
+        if( HAS_OPTION( "desktop" ) )
+        {
+            m_desktop = true;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::initializeLoggerService_()
+    {
+        Win32MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<Win32MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+        loggerMessageBox->setVerboseLevel( LM_CRITICAL );
+
+        LOGGER_SERVICE()
+            ->registerLogger( loggerMessageBox );
+
+        m_loggerMessageBox = loggerMessageBox;
+
+        HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
+
+        if( hm_ntdll != NULL )
+        {
+            LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
+            *(FARPROC *)&RtlGetVersion = ::GetProcAddress( hm_ntdll, "RtlGetVersion" );
+
+            if( RtlGetVersion != NULL )
+            {
+                OSVERSIONINFOEXW osInfo;
+                osInfo.dwOSVersionInfoSize = sizeof( osInfo );
+
+                RtlGetVersion( &osInfo );
+
+                LOGGER_MESSAGE_RELEASE( "Windows version: %lu.%lu (build %lu)"
+                    , osInfo.dwMajorVersion
+                    , osInfo.dwMinorVersion
+                    , osInfo.dwBuildNumber
+                );
+
+                LOGGER_MESSAGE_RELEASE( "Windows platform: %lu"
+                    , osInfo.dwPlatformId
+                );
+
+                LOGGER_MESSAGE_RELEASE( "Windows service pack: %lu.%lu"
+                    , (DWORD)osInfo.wServicePackMajor
+                    , (DWORD)osInfo.wServicePackMinor
+                );
+            }
+
+            ::FreeLibrary( hm_ntdll );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::finalizeLoggerService_()
+    {
+        if( m_loggerMessageBox != nullptr )
+        {
+            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerMessageBox );
+            }
+
+            m_loggerMessageBox = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

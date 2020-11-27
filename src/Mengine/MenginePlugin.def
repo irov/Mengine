@@ -1,0 +1,3 @@
+LIBRARY "Mengine"
+EXPORTS initializeMengine @1
+EXPORTS finalizeMengine @2

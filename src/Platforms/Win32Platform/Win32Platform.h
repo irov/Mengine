@@ -2,6 +2,7 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformExtensionInterface.h"
+#include "Interface/LoggerInterface.h"
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
@@ -170,7 +171,7 @@ namespace Mengine
         HWND getWindowHandle() const override;
 
     protected:
-        uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda ) override;
+        uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc ) override;
         void removeWin32ProcessHandler( uint32_t _id ) override;
 
     protected:
@@ -186,6 +187,18 @@ namespace Mengine
         bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
 
     protected:
+        bool initializeFileService_();
+        bool initializeOptionsService_();
+        bool initializeLoggerService_();
+        bool initializeArchiveService_();
+
+    protected:
+        void finalizeLoggerService_();
+        void finalizeFileService_();
+
+    protected:
+        WChar m_windowClassName[MENGINE_MAX_PATH] = {L'\0'};
+
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;
@@ -198,12 +211,18 @@ namespace Mengine
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
 
+        LoggerInterfacePtr m_loggerMessageBox;
+
         Win32MouseEvent m_mouseEvent;
 
         struct Win32ProcessDesc
         {
             uint32_t id;
             LambdaWin32ProcessHandler lambda;
+
+#if MENGINE_DOCUMENT_ENABLE
+            DocumentPtr doc;
+#endif
         };
 
         typedef Vector<Win32ProcessDesc> VectorWin32ProcessHandler;

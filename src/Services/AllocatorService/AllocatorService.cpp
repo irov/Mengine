@@ -8,7 +8,9 @@
 
 #include "Config/StdString.h"
 
-#include "rpmalloc/rpmalloc.h"
+#if MENGINE_ALLOCATOR_DEBUG == 0
+#   include "rpmalloc/rpmalloc.h"
+#endif
 
 #if MENGINE_ALLOCATOR_DEBUG
 #   include "Kernel/ThreadMutexScope.h"
@@ -33,8 +35,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AllocatorService::_initializeService()
     {
+#if MENGINE_ALLOCATOR_DEBUG == 0
         rpmalloc_initialize();
         rpmalloc_thread_initialize();
+#endif
 
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
@@ -53,8 +57,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::_finalizeService()
     {
+#if MENGINE_ALLOCATOR_DEBUG == 0
         rpmalloc_thread_finalize();
         rpmalloc_finalize();
+#endif
 
 #if MENGINE_ALLOCATOR_DEBUG
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
@@ -137,12 +143,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::startThread()
     {
+#if MENGINE_ALLOCATOR_DEBUG == 0
         rpmalloc_thread_initialize();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::stopThread()
     {
+#if MENGINE_ALLOCATOR_DEBUG == 0
         rpmalloc_thread_finalize();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::waitThread_()

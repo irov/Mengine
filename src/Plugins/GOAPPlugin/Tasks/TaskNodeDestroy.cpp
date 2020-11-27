@@ -4,7 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TaskNodeDestroy::TaskNodeDestroy( GOAP::Allocator * _allocator, const NodePtr & _node )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_node( _node )
     {
     }

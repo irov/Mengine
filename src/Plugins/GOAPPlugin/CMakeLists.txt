@@ -10,6 +10,9 @@ src
     
     GOAPService.h
     GOAPService.cpp
+    
+    GOAPAllocator.h
+    GOAPAllocator.cpp
 )
 
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)

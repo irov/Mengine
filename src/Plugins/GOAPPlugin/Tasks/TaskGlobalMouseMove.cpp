@@ -10,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TaskGlobalMouseMove::TaskGlobalMouseMove( GOAP::Allocator * _allocator, const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_filter( _filter )
 #if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )

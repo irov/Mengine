@@ -80,7 +80,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TaskCheckboxChangeAny::TaskCheckboxChangeAny( GOAP::Allocator * _allocator, const CheckboxPtr & _checkbox )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_checkbox( _checkbox )
     {
     }

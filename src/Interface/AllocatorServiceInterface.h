@@ -18,6 +18,10 @@ namespace Mengine
         virtual void * realloc( void * _mem, size_t _size, const Char * _doc ) = 0;
 
     public:
+        virtual void startThread() = 0;
+        virtual void stopThread() = 0;
+
+    public:
         virtual uint32_t get_report_count() const = 0;
         virtual size_t get_report_info( uint32_t _index, const char ** _name ) const = 0;
         virtual size_t get_report_total() const = 0;

@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        explicit TaskNodeDestroy( const NodePtr & _node );
+        TaskNodeDestroy( GOAP::Allocator * _allocator, const NodePtr & _node );
         ~TaskNodeDestroy() override;
 
     protected:

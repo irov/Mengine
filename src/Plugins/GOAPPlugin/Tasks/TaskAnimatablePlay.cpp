@@ -7,8 +7,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskAnimatablePlay::TaskAnimatablePlay( const AnimatablePtr & _animatable )
-        : m_animatable( _animatable )
+    TaskAnimatablePlay::TaskAnimatablePlay( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable )
+        : TaskInterface( _allocator )
+        , m_animatable( _animatable )
     {
     }
     //////////////////////////////////////////////////////////////////////////

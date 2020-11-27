@@ -1137,14 +1137,10 @@ int main( int argc, char *argv[] )
 
     try
     {
-        stdex_allocator_initialize();
-
         if( run() == false )
         {
             return EXIT_FAILURE;
         }
-
-        stdex_allocator_finalize();
     }
     catch( const std::exception & se )
     {

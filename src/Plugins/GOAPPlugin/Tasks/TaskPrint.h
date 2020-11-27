@@ -13,8 +13,8 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskPrint( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... );
-        TaskPrint( const Char * _format, MENGINE_VA_LIST_TYPE _args );
+        TaskPrint( GOAP::Allocator * _allocator, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... );
+        TaskPrint( GOAP::Allocator * _allocator, const Char * _format, MENGINE_VA_LIST_TYPE _args );
         ~TaskPrint() override;
 
     protected:

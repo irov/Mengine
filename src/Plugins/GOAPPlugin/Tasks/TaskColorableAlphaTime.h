@@ -13,7 +13,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskColorableAlphaTime( const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc );
+        TaskColorableAlphaTime( GOAP::Allocator * _allocator, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc );
         ~TaskColorableAlphaTime() override;
 
     protected:

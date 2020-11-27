@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include "stdex/stl_allocator.h"
+#include "GOAP/StlAllocator.h"
 
 #include <vector>
 
 namespace GOAP
 {
-    template<class T, class A = stdex::stl_allocator<T>>
+    template<class T, class A = StlAllocator<T>>
     using Vector = std::vector<T, A>;
 }

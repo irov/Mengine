@@ -11,8 +11,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateYTime::TaskTransformationRotateYTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
-        : m_transformation( _transformation )
+    TaskTransformationRotateYTime::TaskTransformationRotateYTime( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
+        : TaskInterface( _allocator )
+        , m_transformation( _transformation )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )

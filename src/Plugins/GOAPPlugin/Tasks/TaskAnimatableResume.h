@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        explicit TaskAnimatableResume( const AnimatablePtr & _animatable );
+        TaskAnimatableResume( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable );
         ~TaskAnimatableResume() override;
 
     protected:

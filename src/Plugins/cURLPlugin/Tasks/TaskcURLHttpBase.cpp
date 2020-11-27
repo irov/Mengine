@@ -55,8 +55,9 @@ namespace Mengine
         cURLTaskReceiverInterfacePtr m_receiver;
     };
     //////////////////////////////////////////////////////////////////////////
-    TaskcURLHttpBase::TaskcURLHttpBase( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver )
-        : m_url( _url )
+    TaskcURLHttpBase::TaskcURLHttpBase( GOAP::Allocator * _allocator, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver )
+        : TaskInterface( _allocator )
+        , m_url( _url )
         , m_headers( _headers )
         , m_timeout( _timeout )
         , m_receiveHeaders( _receiveHeaders )

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/AllocatorServiceInterface.h"
-#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -14,6 +13,8 @@
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG
+#   include "Interface/ThreadMutexInterface.h"
+
 #   include "Config/Atomic.h"
 #endif
 
@@ -37,6 +38,10 @@ namespace Mengine
         void * realloc( void * _mem, size_t _size, const Char * _doc ) override;
 
     protected:
+        void startThread() override;
+        void stopThread() override;
+
+    protected:
         uint32_t get_report_count() const override;
         size_t get_report_info( uint32_t _index, const char ** _doc ) const override;
         size_t get_report_total() const override;
@@ -52,8 +57,6 @@ namespace Mengine
         void report( const Char * _name, size_t _add, size_t _minus );
 
     protected:
-        ThreadMutexInterfacePtr m_mutexAllocatorPool;
-
 #if MENGINE_ALLOCATOR_DEBUG
         ThreadMutexInterfacePtr m_mutexReport;
 

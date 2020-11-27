@@ -8,7 +8,7 @@
 
 #include "Config/StdString.h"
 
-#include "stdex/allocator.h"
+#include "rpmalloc/rpmalloc.h"
 
 #if MENGINE_ALLOCATOR_DEBUG
 #   include "Kernel/ThreadMutexScope.h"
@@ -19,24 +19,6 @@ SERVICE_FACTORY( AllocatorService, Mengine::AllocatorService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-#if MENGINE_ALLOCATOR_DEBUG == 0
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
-        {
-            _mutex->lock();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
-        {
-            _mutex->unlock();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
     AllocatorService::AllocatorService()
 #if MENGINE_ALLOCATOR_DEBUG
@@ -51,6 +33,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AllocatorService::_initializeService()
     {
+        rpmalloc_initialize();
+        rpmalloc_thread_initialize();
+
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             this->waitThread_();
@@ -68,6 +53,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::_finalizeService()
     {
+        rpmalloc_thread_finalize();
+        rpmalloc_finalize();
+
 #if MENGINE_ALLOCATOR_DEBUG
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
 
@@ -86,7 +74,7 @@ namespace Mengine
 
         this->report( _doc, _size, 0 );
 #else
-        void * p = stdex_malloc( _size );
+        void * p = rpmalloc( _size );
 #endif
 
         return p;
@@ -105,7 +93,7 @@ namespace Mengine
 
         this->report( _doc, 0, size );
 #else
-        stdex_free( _mem );
+        rpfree( _mem );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -113,7 +101,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#if MENGINE_ALLOCATOR_DEBUG        
+#if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         size_t total = _num * _size;
@@ -122,7 +110,7 @@ namespace Mengine
 
         this->report( _doc, total, 0 );
 #else
-        void * p = stdex_calloc( _num, _size );
+        void * p = rpcalloc( _num, _size );
 #endif
 
         return p;
@@ -141,10 +129,20 @@ namespace Mengine
 
         this->report( _doc, _size, size );
 #else
-        void * p = stdex_realloc( _mem, _size );
+        void * p = rprealloc( _mem, _size );
 #endif
 
         return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AllocatorService::startThread()
+    {
+        rpmalloc_thread_initialize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AllocatorService::stopThread()
+    {
+        rpmalloc_thread_finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::waitThread_()
@@ -152,14 +150,6 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
         m_mutexReport = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
-#else
-        m_mutexAllocatorPool = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_MESSAGE( "AllocatorService" ) );
-
-        stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
-            , (stdex_allocator_thread_lock_t)&Detail::s_stdex_thread_lock
-            , (stdex_allocator_thread_unlock_t)&Detail::s_stdex_thread_unlock
-        );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -167,10 +157,6 @@ namespace Mengine
     {
 #if MENGINE_ALLOCATOR_DEBUG
         m_mutexReport = nullptr;
-#else
-        stdex_allocator_finalize_threadsafe();
-
-        m_mutexAllocatorPool = nullptr;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

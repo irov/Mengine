@@ -4,8 +4,6 @@
 
 #include "Config/Config.h"
 
-#include "stdex/allocator.h"
-
 //////////////////////////////////////////////////////////////////////////
 //                          Entry point                                 //
 //////////////////////////////////////////////////////////////////////////
@@ -15,8 +13,6 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
     MENGINE_UNUSED( hPrevInstance );
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
-
-    stdex_allocator_initialize();
 
     {
         Mengine::Win32Application app;
@@ -34,8 +30,6 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
         app.finalize();
     }
-
-    stdex_allocator_finalize();
 
     return EXIT_SUCCESS;
 }

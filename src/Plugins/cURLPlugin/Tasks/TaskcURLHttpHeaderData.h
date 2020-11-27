@@ -8,7 +8,7 @@ namespace Mengine
         : public TaskcURLHttpBase
     {
     public:
-        TaskcURLHttpHeaderData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLTaskReceiverInterfacePtr & _receiver );
+        TaskcURLHttpHeaderData( GOAP::Allocator * _allocator, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLTaskReceiverInterfacePtr & _receiver );
         ~TaskcURLHttpHeaderData() override;
 
     protected:

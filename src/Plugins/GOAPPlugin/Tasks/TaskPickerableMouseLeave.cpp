@@ -156,8 +156,9 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseLeave::TaskPickerableMouseLeave( const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentPtr & _doc )
-        : m_pickerable( _pickerable )
+    TaskPickerableMouseLeave::TaskPickerableMouseLeave( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentPtr & _doc )
+        : TaskInterface( _allocator )
+        , m_pickerable( _pickerable )
         , m_filter( _filter )
 #if MENGINE_DOCUMENT_ENABLE
         , m_doc( _doc )

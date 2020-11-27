@@ -12,7 +12,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationTranslateTimeWithSkip( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc );
+        TaskTransformationTranslateTimeWithSkip( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc );
         ~TaskTransformationTranslateTimeWithSkip() override;
 
     protected:

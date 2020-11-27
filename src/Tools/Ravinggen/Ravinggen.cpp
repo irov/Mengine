@@ -152,8 +152,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     (void)hPrevInstance;
     (void)nShowCmd;
 
-    stdex_allocator_initialize();
-    
     {
         Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
         Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
@@ -225,8 +223,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         outputStream->write( "RGCD", 4 );
         outputStream->write( memoryBuffer, memorySize );
     }
-
-    stdex_allocator_finalize();
-
+        
     return 0;
 }

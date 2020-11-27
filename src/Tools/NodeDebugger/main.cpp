@@ -6,8 +6,6 @@
 
 #include "Kernel/String.h"
 
-#include "stdex/allocator.h"
-
 #include "Environment/Windows/WindowsIncluder.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -37,9 +35,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
     MENGINE_UNUSED( nShowCmd );
-
-    stdex_allocator_initialize();
-
+        
     {
         Mengine::ServiceProviderInterface * serviceProvider;
         if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
@@ -88,8 +84,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         SERVICE_PROVIDER_FINALIZE( serviceProvider );
     }
-
-    stdex_allocator_finalize();
 
     return 0;
 }

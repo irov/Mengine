@@ -4,8 +4,6 @@
 
 #include "Config/Config.h"
 
-#include "stdex/allocator.h"
-
 //////////////////////////////////////////////////////////////////////////
 //                          Entry point                                 //
 //////////////////////////////////////////////////////////////////////////
@@ -14,8 +12,6 @@ int main( int argc, char *argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
     MENGINE_UNUSED( environ );
-
-    stdex_allocator_initialize();
 
     {
         Mengine::Win32Application app;
@@ -33,8 +29,6 @@ int main( int argc, char *argv[] )
 
         app.finalize();
     }
-
-    stdex_allocator_finalize();
 
     return EXIT_SUCCESS;
 }

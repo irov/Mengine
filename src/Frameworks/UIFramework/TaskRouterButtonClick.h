@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskRouterButtonClick( const ConstString & _state, const RouterButtonEventReceiverPtr & _router );
+        TaskRouterButtonClick( GOAP::Allocator * _allocator, const ConstString & _state, const RouterButtonEventReceiverPtr & _router );
         ~TaskRouterButtonClick() override;
 
     protected:

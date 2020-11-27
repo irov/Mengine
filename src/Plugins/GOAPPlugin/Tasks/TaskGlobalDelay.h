@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalDelay( float _time, const DocumentPtr & _doc );
+        TaskGlobalDelay( GOAP::Allocator * _allocator, float _time, const DocumentPtr & _doc );
         ~TaskGlobalDelay() override;
 
     protected:

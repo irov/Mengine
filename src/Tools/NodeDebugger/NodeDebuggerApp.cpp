@@ -501,6 +501,10 @@ namespace Mengine
         {
             this->ReceiveSettings( payloadNode );
         }
+        else if( typeStr == "Network" )
+        {
+            this->ReceiveNetwork( payloadNode );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveArrow( const pugi::xml_node & _xmlContainer )
@@ -1470,15 +1474,56 @@ namespace Mengine
         {
             for( const NetworkDesk & desk : m_network )
             {
-                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Type: %s", desk.type.c_str() );
-                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Id: %ug", desk.id );
-                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Url: %s", desk.url.c_str() );
+                if( desk.type == "Request" )
+                {
+                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Type: %s", desk.type.c_str() );
+                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Id: %ug", desk.id );
+                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Url: %s", desk.url.c_str() );
 
-                ImGui::Separator();
+                    ImGui::Separator();
+
+                    this->ShowResponseDataForId( desk.id );
+
+                    ImGui::Separator();
+                }
             }
         }
 
         ImGui::EndChild();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ShowResponseDataForId( uint32_t _id )
+    {
+        VectorNetwork::iterator responseIterator = std::find_if( m_network.begin(), m_network.end(), [_id]( const NetworkDesk & _desk )
+        {
+            return (_id == _desk.id) && (_desk.type == "Response");
+        } );
+
+        char label_node[32];
+        sprintf( label_node, "Response %u"
+            , _id
+
+        );
+        if( ImGui::TreeNode( label_node ) )
+        {
+            if( responseIterator == m_network.end() )
+            {
+                ImGui::Text( "Not receive response for request ID: %ug", _id );
+            }
+            else
+
+            {
+                String correctResponse;
+                this->getCorrectJsonWithDelimeters( responseIterator->url, &correctResponse );
+                ImGui::Text( "%s", responseIterator->url.c_str() );
+                ImGui::TreePop();
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::getCorrectJsonWithDelimeters( const String & _responseJson, String * _out )
+    {
+        // TODO
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUISettingsTab()

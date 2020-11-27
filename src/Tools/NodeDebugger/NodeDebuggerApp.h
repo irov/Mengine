@@ -479,6 +479,9 @@ namespace Mengine
         void SendSceneRequest();
         void SendPauseRequest();
 
+        void ShowResponseDataForId( uint32_t _id );
+        void getCorrectJsonWithDelimeters( const String & _responseJson, String * _out );
+
     private:
         GLFWwindow * m_window;
         bool m_shutdown;

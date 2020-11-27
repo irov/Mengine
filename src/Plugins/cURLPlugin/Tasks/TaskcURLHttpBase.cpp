@@ -56,7 +56,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     TaskcURLHttpBase::TaskcURLHttpBase( GOAP::Allocator * _allocator, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_url( _url )
         , m_headers( _headers )
         , m_timeout( _timeout )

@@ -1,43 +1,13 @@
 #include "GOAPService.h"
+#include "GOAPAllocator.h"
 
 #include "Kernel/MemoryAllocator.h"
-#include "Kernel/AllocatorHelper.h"
-
-#include "GOAP/GOAP.h"
-
-#include "GOAP/SourceProviderInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GOAPService, Mengine::GOAPService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class MengineGOAPAllocator
-        : public GOAP::Allocator
-    {
-    public:
-        MengineGOAPAllocator()
-        {
-        }
-
-        ~MengineGOAPAllocator() override
-        {
-        }
-
-    protected:
-        void * allocate( size_t _size ) override
-        {
-            void * p = Helper::allocateMemory( _size, "goap" );
-
-            return p;
-        }
-
-        void deallocate( void * _ptr ) override
-        {
-            Helper::deallocateMemory( _ptr, "goap" );
-        }
-    };
     //////////////////////////////////////////////////////////////////////////
     GOAPService::GOAPService()
         : m_allocator( nullptr )
@@ -50,14 +20,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GOAPService::_initializeService()
     {
-        m_allocator = Helper::newT<MengineGOAPAllocator>();
+        m_allocator = Helper::newT<GOAPAllocator>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GOAPService::_finalizeService()
     {
-        Helper::deleteT( static_cast<MengineGOAPAllocator *>(m_allocator) );
+        Helper::deleteT( static_cast<GOAPAllocator *>(m_allocator) );
         m_allocator = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

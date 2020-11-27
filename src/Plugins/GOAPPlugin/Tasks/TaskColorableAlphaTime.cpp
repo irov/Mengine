@@ -91,7 +91,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TaskColorableAlphaTime::TaskColorableAlphaTime( GOAP::Allocator * _allocator, const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_colorable( _colorable )
         , m_affectorable( _affectorable )
         , m_easing( _easing )

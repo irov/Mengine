@@ -76,7 +76,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TaskButtonClick::TaskButtonClick( GOAP::Allocator * _allocator, const ButtonPtr & _button )
-        : TaskInterface( _allocator )
+        : GOAP::TaskInterface( _allocator )
         , m_button( _button )
     {
     }

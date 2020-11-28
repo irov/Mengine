@@ -14,22 +14,20 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
     MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
+    Mengine::Win32Application app;
+
+    bool initialize = app.initialize();
+
+    if( initialize == true )
     {
-        Mengine::Win32Application app;
-
-        bool initialize = app.initialize();
-
-        if( initialize == true )
-        {
-            app.loop();
-        }
-        else
-        {
-            ::MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
-        }
-
-        app.finalize();
+        app.loop();
     }
+    else
+    {
+        ::MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
+    }
+
+    app.finalize();
 
     return EXIT_SUCCESS;
 }

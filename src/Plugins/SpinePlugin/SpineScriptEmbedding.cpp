@@ -5,8 +5,7 @@
 
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
-
-#include "Frameworks/PythonFramework/DocumentTraceback.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Spine.h"
 #include "ResourceSpineAtlasDefault.h"

@@ -16,6 +16,8 @@
 #include <vector>
 
 //////////////////////////////////////////////////////////////////////////
+Mengine::PluginServiceInterface * g_pluginService = nullptr;
+//////////////////////////////////////////////////////////////////////////
 static jclass mActivityClass;
 static jmethodID jmethodID_getAndroidId;
 //////////////////////////////////////////////////////////////////////////
@@ -32,10 +34,14 @@ extern "C" {
     JNIEXPORT jboolean JNICALL
     MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeKernel_1hasPlugin )(JNIEnv * env, jclass cls, jstring name)
     {
+        if( g_pluginService == nullptr )
+        {
+            return false;
+        }
+
         const char * name_str = env->GetStringUTFChars( name, 0 );
 
-        bool exist = PLUGIN_SERVICE()
-            ->hasPlugin(name_str);
+        bool exist = g_pluginService->hasPlugin(name_str);
 
         env->ReleaseStringUTFChars( name, name_str );
 
@@ -56,6 +62,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeKernelModule::_initializeModule()
     {
+        Mengine::PluginServiceInterface * pluginService = PLUGIN_SERVICE();
+
+        if( pluginService == nullptr )
+        {
+            return false;
+        }
+
+        g_pluginService = pluginService;
+
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         pybind::kernel_interface * kernel = pybind::get_kernel();
 

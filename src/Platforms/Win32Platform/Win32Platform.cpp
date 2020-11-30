@@ -4078,7 +4078,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "system", "Current Path: %s"
+        LOGGER_MESSAGE_RELEASE( "Current Path: %s"
             , currentPath
         );
 

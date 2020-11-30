@@ -1,3 +1,4 @@
 LIBRARY "Mengine"
 EXPORTS initializeMengine @1
-EXPORTS finalizeMengine @2
+EXPORTS bootstrapMengine @2
+EXPORTS finalizeMengine @3

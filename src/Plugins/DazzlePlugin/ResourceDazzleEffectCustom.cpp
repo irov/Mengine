@@ -19,14 +19,14 @@ namespace Mengine
         m_effect = _effect;
     }
     //////////////////////////////////////////////////////////////////////////
-    const dz_effect_t * ResourceDazzleEffectCustom::getDazzleEffect() const
-    {
-        return m_effect;
-    }
+    //const dz_effect_t * ResourceDazzleEffectCustom::getDazzleEffect() const
+    //{
+    //    return m_effect;
+    //}
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr ResourceDazzleEffectCustom::getData() const
     {
-        return DataInterfacePtr::from( (const DazzleDataInterface *)this );
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceDazzleEffectCustom::_compile()

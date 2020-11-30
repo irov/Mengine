@@ -5,8 +5,7 @@
 
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
-
-#include "Frameworks/PythonFramework/DocumentTraceback.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Spine.h"
 #include "ResourceSpineAtlasDefault.h"
@@ -72,18 +71,6 @@ namespace Mengine
         pybind::interface_<Spine, pybind::bases<Node, Eventable, Animatable> >( _kernel, "Spine", false )
             .def( "setResourceSpineSkeleton", &Spine::setResourceSpineSkeleton )
             .def( "getResourceSpineSkeleton", &Spine::getResourceSpineSkeleton )
-            .def( "mixAnimation", &Spine::mixAnimation )
-            .def( "setStateAnimation", &Spine::setStateAnimation )
-            .def( "removeStateAnimation", &Spine::removeStateAnimation )
-            .def( "setStateAnimationSpeedFactor", &Spine::setStateAnimationSpeedFactor )
-            .def( "getStateAnimationSpeedFactor", &Spine::getStateAnimationSpeedFactor )
-            .def( "setStateAnimationTime", &Spine::setStateAnimationTime )
-            .def( "getStateAnimationTime", &Spine::getStateAnimationTime )
-            .def( "setStateAnimationFreeze", &Spine::setStateAnimationFreeze )
-            .def( "getStateAnimationFreeze", &Spine::getStateAnimationFreeze )
-            .def( "getStateAnimationDuration", &Spine::getStateAnimationDuration )
-            .def( "setStateAnimationLastFrame", &Spine::setStateAnimationLastFrame )
-            .def_static_native_kernel( "setEventListener", &Detail::s_Spine_setEventListener )
             ;
 
         pybind::interface_<ResourceSpineAtlas, pybind::bases<Resource> >( _kernel, "ResourceSpineAtlas", false )

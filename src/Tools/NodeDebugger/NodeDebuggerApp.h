@@ -6,6 +6,7 @@
 #include "Kernel/VectorString.h"
 #include "Kernel/Deque.h"
 #include "Kernel/Blobject.h"
+#include "Kernel/StringHelper.h"
 
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
@@ -480,7 +481,8 @@ namespace Mengine
         void SendPauseRequest();
 
         void ShowResponseDataForId( uint32_t _id );
-        void getCorrectJsonWithDelimeters( const String & _responseJson, String * _out );
+        void addTwoSpacesWithMultiplier( String * _out, int _multiplier );
+        void ShowResponseJpp( const jpp::object & _object, int _spaceCounter );
 
     private:
         GLFWwindow * m_window;

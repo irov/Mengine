@@ -1470,7 +1470,7 @@ namespace Mengine
         // TEMP
         ImGui::Separator();
 
-        if( ImGui::BeginChild( "Network", ImVec2( 1000, 1000 ), false, ImGuiWindowFlags_None ) )
+        if( ImGui::BeginChild( "Network", ImVec2( 1500, 1000 ), false, ImGuiWindowFlags_None ) )
         {
             for( const NetworkDesk & desk : m_network )
             {
@@ -1511,19 +1511,76 @@ namespace Mengine
                 ImGui::Text( "Not receive response for request ID: %ug", _id );
             }
             else
-
             {
-                String correctResponse;
-                this->getCorrectJsonWithDelimeters( responseIterator->url, &correctResponse );
-                ImGui::Text( "%s", responseIterator->url.c_str() );
+                int responseStrSize = responseIterator->url.size();
+                jpp::object responseJpp = jpp::load( responseIterator->url.c_str(), responseStrSize, nullptr, nullptr );
+                this->ShowResponseJpp( responseJpp, 0 );
+
                 ImGui::TreePop();
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::getCorrectJsonWithDelimeters( const String & _responseJson, String * _out )
+    void NodeDebuggerApp::addTwoSpacesWithMultiplier( String * _out, int _multiplier )
     {
-        // TODO
+        const int SPACES = 2;
+
+        for( int i = 0; i != SPACES * _multiplier; ++i )
+        {
+            *_out += ' ';
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, int _spaceCounter )
+    {
+        for( auto && [key, value] : _object )
+        {
+            String spaces;
+            this->addTwoSpacesWithMultiplier( &spaces, _spaceCounter );
+
+            String text;
+
+            jpp::e_type jppType = value.type();
+            if( jppType == jpp::e_type::JPP_OBJECT )
+            {
+                text = spaces + key;
+                ImGui::Text( "%s", text.c_str() );
+                this->ShowResponseJpp( value, ++_spaceCounter );
+            }
+            else
+            {
+                String valueStr;
+
+                if( jppType == jpp::e_type::JPP_INTEGER )
+                {
+                    int valueInteger = value;
+                    valueStr = Helper::stringFormat( "%d", valueInteger );
+                }
+                else if( jppType == jpp::e_type::JPP_REAL )
+                {
+                    float valueDouble = value;
+                    valueStr = Helper::stringFormat( "%f", valueDouble );
+                }
+                else if( jppType == jpp::e_type::JPP_FALSE )
+                {
+                    valueStr = "false";
+                }
+                else if( jppType == jpp::e_type::JPP_TRUE )
+                {
+                    valueStr = "true";
+                }
+                else
+                {
+                    valueStr = (const Char *)value;
+                }
+
+                text = spaces + key + ":" + valueStr.c_str();
+
+                ImGui::Text( "%s%s: ", spaces.c_str(), key );
+                ImGui::SameLine();
+                ImGui::TextColored( ImVec4( 0, 255, 255, 255 ), "%s", valueStr.c_str() );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUISettingsTab()

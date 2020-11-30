@@ -4,6 +4,9 @@
 #include "Interface/BootstrapperInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -21,6 +24,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef ServiceProviderInterface * (*FMengineInitialize)(void);
+    typedef bool (*FMengineBootstrap)(void);
     typedef void (*FMengineFinalize)(void);
     //////////////////////////////////////////////////////////////////////////
     Win32Application::Win32Application()
@@ -41,16 +45,16 @@ namespace Mengine
             return false;
         }
 
-        FARPROC proc = ::GetProcAddress( hInstance, "initializeMengine" );
+        FARPROC procInitializeMengine = ::GetProcAddress( hInstance, "initializeMengine" );
 
-        if( proc == nullptr )
+        if( procInitializeMengine == nullptr )
         {
             ::FreeLibrary( hInstance );
 
             return false;
         }
 
-        FMengineInitialize dlmengineInitialize = (FMengineInitialize)proc;
+        FMengineInitialize dlmengineInitialize = (FMengineInitialize)procInitializeMengine;
 
         ServiceProviderInterface * serviceProvider = dlmengineInitialize();
 
@@ -61,17 +65,27 @@ namespace Mengine
             return false;
         }
 
-        m_hInstance = hInstance;
-
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        if( BOOTSTRAPPER_SERVICE()
-            ->run() == false )
+        FARPROC procBootstrapMengine = ::GetProcAddress( hInstance, "bootstrapMengine" );
+
+        if( procBootstrapMengine == nullptr )
         {
-            LOGGER_CRITICAL( "invalid run bootstrap" );
+            ::FreeLibrary( hInstance );
 
             return false;
         }
+
+        FMengineBootstrap dlmengineBootstrap = (FMengineBootstrap)procBootstrapMengine;
+
+        if( dlmengineBootstrap() == false )
+        {
+            ::FreeLibrary( hInstance );
+
+            return false;
+        }
+
+        m_hInstance = hInstance; 
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 

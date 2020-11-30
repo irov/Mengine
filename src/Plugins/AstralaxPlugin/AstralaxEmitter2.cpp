@@ -252,16 +252,15 @@ namespace Mengine
             bool orthogonality;
             mt::vec3f position;
             mt::vec3f direction;
-
             m_cameraProvider->onProviderEmitterCamera( &orthogonality, &position, &direction );
-
-            MAGIC_CAMERA camera;
 
             MAGIC_VIEW view;
             if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
             {
                 return false;
             }
+
+            MAGIC_CAMERA camera;
 
             if( orthogonality == true )
             {
@@ -414,6 +413,7 @@ namespace Mengine
     void AstralaxEmitter2::restart()
     {
         Magic_Restart( m_emitterId );
+
         if( Magic_IsInterval1( m_emitterId ) == true )
         {
             //Magic_SetInterval1( m_id, m_leftBorder );
@@ -426,10 +426,12 @@ namespace Mengine
         m_angle = MT_RAD2DEG( _radians );
 
         Magic_SetDiagramAddition( m_emitterId, -1, MAGIC_DIAGRAM_DIRECTION, m_angle );
+
         int32_t k_par = Magic_GetParticlesTypeCount( m_emitterId );
-        for( int32_t j = 0; j < k_par; j++ )
+
+        for( int32_t i = 0; i != k_par; ++i )
         {
-            Magic_SetDiagramAddition( m_emitterId, j, MAGIC_DIAGRAM_DIRECTION, m_angle );
+            Magic_SetDiagramAddition( m_emitterId, i, MAGIC_DIAGRAM_DIRECTION, m_angle );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -726,4 +728,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -34,7 +34,6 @@ namespace Mengine
     {
     public:
         virtual void setDazzleEffect( const dz_effect_t * _effect ) = 0;
-        virtual const dz_effect_t * getDazzleEffect() const;
     };
     //////////////////////////////////////////////////////////////////////////
 }

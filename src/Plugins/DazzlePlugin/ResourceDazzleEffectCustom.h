@@ -12,7 +12,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceDazzleEffectCustom
         : public Resource
-        , private DazzleDataInterface
         , public UnknownResourceDazzleEffectCustomInterface
     {
         DECLARE_VISITABLE( Resource );
@@ -24,7 +23,7 @@ namespace Mengine
 
     public:
         void setDazzleEffect( const dz_effect_t * _effect ) override;
-        const dz_effect_t * getDazzleEffect() const override;
+        //const dz_effect_t * getDazzleEffect() const override;
 
     protected:
         DataInterfacePtr getData() const override;
@@ -37,6 +36,6 @@ namespace Mengine
         const dz_effect_t * m_effect;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveResourcePtr<ResourceDazzleEffectCustom> ResourceDazzleEffectJSONPtr;
+    typedef IntrusiveResourcePtr<ResourceDazzleEffectCustom> ResourceDazzleEffectCustomPtr;
     //////////////////////////////////////////////////////////////////////////
 }

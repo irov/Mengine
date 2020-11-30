@@ -232,12 +232,7 @@ namespace Mengine
             }
             else
             {
-                ::EnterCriticalSection( &m_taskLock );
-                m_task = nullptr;
-                ::LeaveCriticalSection( &m_taskLock );
-
-                LOGGER_ERROR( "invalid run"
-                );
+                LOGGER_ERROR( "invalid run" );
             }
 
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN

@@ -122,6 +122,8 @@ namespace Mengine
     protected:
         void createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m );
         void createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m );
+        void createFragmentShaderGLESSource_( Stringstream & ss, const MAGIC_MATERIAL * m );
+
         RenderFragmentShaderInterfacePtr cacheFragmentShader_( const MAGIC_MATERIAL * m );
     };
 }

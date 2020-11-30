@@ -64,7 +64,7 @@ namespace Mengine
         }
 
         uint32_t AnimationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4mb
-        float AnimationMemoryLimitThresholdCoeff = CONFIG_VALUE( "Limit", "AnimationMemoryLimitThresholdCoeff", 4.f ); //4mb
+        float AnimationMemoryLimitThresholdCoeff = CONFIG_VALUE( "Limit", "AnimationMemoryLimitThresholdCoeff", 4.f );
 
         if( total_memory > AnimationMemoryLimit && AnimationMemoryLimit != 0U )
         {

@@ -130,6 +130,13 @@ namespace Mengine
                 m_keyDown[code] = isDown;
 
                 Helper::pushKeyEvent( point.x, point.y, code, isDown, false );
+
+#ifdef MENGINE_PLATFORM_MOBILE
+                if( code == KC_RETURN )
+                {
+                    SDL_StopTextInput();
+                }
+#endif
             } break;
         case SDL_TEXTINPUT:
             {

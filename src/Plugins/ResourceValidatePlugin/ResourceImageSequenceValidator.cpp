@@ -63,19 +63,33 @@ namespace Mengine
             total_memory += textureSize;
         }
 
-        uint32_t animationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4mb
+        uint32_t AnimationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4mb
+        float AnimationMemoryLimitThresholdCoeff = CONFIG_VALUE( "Limit", "AnimationMemoryLimitThresholdCoeff", 4.f );
 
-        if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
+        if( total_memory > AnimationMemoryLimit && AnimationMemoryLimit != 0U )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
-                , _resource->getName().c_str()
-                , _resource->getGroupName().c_str()
-                , float( total_memory ) / (1024.f * 1024.f)
-                , float( animationMemoryLimit ) / (1024.f * 1024.f)
-                , float( total_memory ) / float( animationMemoryLimit )
-            );
+            if( float( total_memory ) / float( AnimationMemoryLimit ) > AnimationMemoryLimitThresholdCoeff )
+            {
+                LOGGER_ERROR( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %.2f)"
+                    , _resource->getName().c_str()
+                    , _resource->getGroupName().c_str()
+                    , float( total_memory ) / (1024.f * 1024.f)
+                    , float( AnimationMemoryLimit ) / (1024.f * 1024.f)
+                    , float( total_memory ) / float( AnimationMemoryLimit )
+                );
 
-            return false;
+                return false;
+            }
+            else
+            {
+                LOGGER_WARNING( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %.2f)"
+                    , _resource->getName().c_str()
+                    , _resource->getGroupName().c_str()
+                    , float( total_memory ) / (1024.f * 1024.f)
+                    , float( AnimationMemoryLimit ) / (1024.f * 1024.f)
+                    , float( total_memory ) / float( AnimationMemoryLimit )
+                );
+            }
         }
 
         return true;

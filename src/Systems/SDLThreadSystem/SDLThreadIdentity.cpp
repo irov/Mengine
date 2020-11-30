@@ -1,5 +1,7 @@
 #	include "SDLThreadIdentity.h"
 
+#include "Interface/AllocatorServiceInterface.h"
+
 #	include "Kernel/Logger.h"
 
 namespace Mengine
@@ -144,7 +146,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::main()
     {
-        for( ; m_exit == false; )
+        ALLOCATOR_SERVICE()
+            ->startThread();
+
+        while( m_exit == false )
         {
             if( SDL_LockMutex( m_conditionLock ) != 0 )
             {
@@ -167,6 +172,11 @@ namespace Mengine
                 LOGGER_ERROR( "invalid unlock mutex error: %s"
                     , SDL_GetError()
                 );
+            }
+
+            if( m_exit == true )
+            {
+                break;
             }
 
             if( SDL_LockMutex( m_processLock ) != 0 )
@@ -209,6 +219,9 @@ namespace Mengine
                 );
             }
         }
+
+        ALLOCATOR_SERVICE()
+            ->stopThread();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::processTask( ThreadTaskInterface * _task )
@@ -361,4 +374,5 @@ namespace Mengine
     {
         return m_priority;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

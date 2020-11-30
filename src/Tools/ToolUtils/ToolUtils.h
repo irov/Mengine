@@ -73,6 +73,11 @@ static T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
 
         wchar_t * arg_value = cmd_args[i + 1];
 
+        if( arg_value == nullptr )
+        {
+            return _default;
+        }
+
         std::wstring wstr_arg_value = arg_value;
 
         if( wstr_arg_value.front() == L'\"' && wstr_arg_value.back() == L'\"' )

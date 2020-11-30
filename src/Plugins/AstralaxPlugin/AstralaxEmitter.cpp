@@ -780,4 +780,5 @@ namespace Mengine
         *_position = vmi.v3.to_vec3f();
         *_direction = vmi.v0.to_vec3f();
     }
+    //////////////////////////////////////////////////////////////////////////
 }

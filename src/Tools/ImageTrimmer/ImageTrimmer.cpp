@@ -39,7 +39,7 @@ PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_PROVIDER_EXTERN( ServiceProvider )
+SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AllocatorService );
 SERVICE_EXTERN( DocumentService );

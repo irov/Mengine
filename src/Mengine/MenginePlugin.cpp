@@ -26,7 +26,18 @@ extern "C"
         SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
-        SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION );
+        if( SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            SERVICE_FINALIZE( DocumentService );
+            SERVICE_DESTROY( DocumentService );
+
+            SERVICE_FINALIZE( AllocatorService );
+            SERVICE_DESTROY( AllocatorService );
+
+            SERVICE_PROVIDER_FINALIZE( serviceProvider );
+
+            return nullptr;
+        }
 
         return serviceProvider;
     }

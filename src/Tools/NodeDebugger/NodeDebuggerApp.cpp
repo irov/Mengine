@@ -1470,7 +1470,7 @@ namespace Mengine
         // TEMP
         ImGui::Separator();
 
-        if( ImGui::BeginChild( "Network", ImVec2( 1500, 1000 ), false, ImGuiWindowFlags_None ) )
+        if( ImGui::BeginChild( "Network", ImVec2( 1200, 1000 ), false, ImGuiWindowFlags_None ) )
         {
             for( const NetworkDesk & desk : m_network )
             {

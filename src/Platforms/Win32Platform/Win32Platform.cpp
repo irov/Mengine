@@ -613,6 +613,8 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
+        LOGGER_MESSAGE_RELEASE( "run platform" );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

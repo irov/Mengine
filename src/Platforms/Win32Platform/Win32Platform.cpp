@@ -15,7 +15,6 @@
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
-#include "Win32MessageBoxLogger.h"
 
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
@@ -70,8 +69,6 @@
 #define MENGINE_WINDOW_CLASSNAME "MengineWindow"
 #endif
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Win32FileGroup );
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -111,6 +108,39 @@ namespace Mengine
     {
         ::setlocale( LC_ALL, MENGINE_SETLOCALE );
 
+        HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
+
+        if( hm_ntdll != NULL )
+        {
+            LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
+            *(FARPROC *)&RtlGetVersion = GetProcAddress( hm_ntdll, "RtlGetVersion" );
+
+            if( RtlGetVersion != NULL )
+            {
+                OSVERSIONINFOEXW osInfo;
+                osInfo.dwOSVersionInfoSize = sizeof( osInfo );
+
+                RtlGetVersion( &osInfo );
+
+                LOGGER_MESSAGE_RELEASE( "Windows version: %lu.%lu (build %lu)"
+                    , osInfo.dwMajorVersion
+                    , osInfo.dwMinorVersion
+                    , osInfo.dwBuildNumber
+                );
+
+                LOGGER_MESSAGE_RELEASE( "Windows platform: %lu"
+                    , osInfo.dwPlatformId
+                );
+
+                LOGGER_MESSAGE_RELEASE( "Windows service pack: %lu.%lu"
+                    , (DWORD)osInfo.wServicePackMajor
+                    , (DWORD)osInfo.wServicePackMinor
+                );
+            }
+
+            ::FreeLibrary( hm_ntdll );
+        }
+
         m_hInstance = ::GetModuleHandle( NULL );
 
         if( ::QueryPerformanceFrequency( &m_performanceFrequency ) == TRUE )
@@ -136,53 +166,92 @@ namespace Mengine
         m_touchpad = false;
         m_desktop = true;
 
+        if( HAS_OPTION( "win32" ) == true )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "win64" ) == true )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "mac" ) == true )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+
+            m_touchpad = false;
+            m_desktop = true;
+        }
+        else if( HAS_OPTION( "ios" ) == true )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+
+#ifdef MENGINE_PLATFORM_WINDOWS32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
+#ifdef MENGINE_PLATFORM_WINDOWS64
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
+#endif
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+        else if( HAS_OPTION( "android" ) == true )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+        else if( HAS_OPTION( "wp" ) == true )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
+
+            m_touchpad = true;
+            m_desktop = false;
+        }
+
+        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
+
+        if( option_platform != nullptr )
+        {
+            Char uppercase_option_platform[256];
+            Helper::toupper( option_platform, uppercase_option_platform, 255 );
+
+            m_platformTags.clear();
+            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+        }
+
+        if( HAS_OPTION( "touchpad" ) == true )
+        {
+            m_touchpad = true;
+        }
+
+        if( HAS_OPTION( "desktop" ) == true )
+        {
+            m_desktop = true;
+        }
+
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         const Char * windowClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
         Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH );
-
-        UNKNOWN_SERVICE_WAIT( Win32Platform, OptionsServiceInterface, [this]()
-        {
-            if( this->initializeOptionsService_() == false )
-            {
-                return false;
-            }
-
-            return true;
-        } );
-
-        UNKNOWN_SERVICE_WAIT( Win32Platform, LoggerServiceInterface, [this]()
-        {
-            if( this->initializeLoggerService_() == false )
-            {
-                return false;
-            }
-
-            return true;
-        } );
-
-        UNKNOWN_SERVICE_LEAVE( Win32Platform, LoggerServiceInterface, [this]()
-        {
-            this->finalizeLoggerService_();
-        } );
-
-        UNKNOWN_SERVICE_WAIT( Win32Platform, FileServiceInterface, [this]()
-        {
-            if( this->initializeFileService_() == false )
-            {
-                return false;
-            }
-
-            return true;
-        } );
-
-        UNKNOWN_SERVICE_LEAVE( Win32Platform, FileServiceInterface, [this]()
-        {
-            this->finalizeFileService_();
-        } );
-
 
         return true;
     }
@@ -245,189 +314,6 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_runService()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::setProcessDPIAware()
-    {
-        HMODULE hUser32 = ::LoadLibrary( L"user32.dll" );
-
-        if( hUser32 == NULL )
-        {
-            return false;
-        }
-
-        typedef BOOL( WINAPI * PSETPROCESSDPIAWARE )(VOID);
-        FARPROC pSetProcessDPIAware = ::GetProcAddress( hUser32, "SetProcessDPIAware" );
-
-        if( pSetProcessDPIAware == NULL )
-        {
-            ::FreeLibrary( hUser32 );
-
-            return false;
-        }
-
-        if( pSetProcessDPIAware() == FALSE )
-        {
-            ::FreeLibrary( hUser32 );
-
-            return false;
-        }
-
-        ::FreeLibrary( hUser32 );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::isDebuggerPresent() const
-    {
-        if( ::IsDebuggerPresent() == FALSE )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full )
-    {
-        MENGINE_UNUSED( _dumpPath );
-        MENGINE_UNUSED( _pExceptionPointers );
-        MENGINE_UNUSED( _full );
-
-        if( ::IsDebuggerPresent() == TRUE )
-        {
-            return false;
-        }
-
-        WString unicode_processDumpPath;
-        Helper::utf8ToUnicode( _dumpPath, &unicode_processDumpPath );
-
-        HANDLE hFile = ::CreateFile( unicode_processDumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
-
-        if( hFile == INVALID_HANDLE_VALUE )
-        {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid create file for '%ls' [error: %lu]"
-                , unicode_processDumpPath.c_str()
-                , error
-            );
-
-            return false;
-        }
-
-        HMODULE dbghelp_dll = ::LoadLibrary( L"dbghelp.dll" );
-
-        if( dbghelp_dll == NULL )
-        {
-            ::CloseHandle( hFile );
-
-            return false;
-        }
-
-        typedef BOOL( WINAPI * MINIDUMPWRITEDUMP )(
-            HANDLE hprocess, DWORD pid, HANDLE hfile, MINIDUMP_TYPE dumptype,
-            CONST PMINIDUMP_EXCEPTION_INFORMATION exceptionparam,
-            CONST PMINIDUMP_USER_STREAM_INFORMATION userstreamparam,
-            CONST PMINIDUMP_CALLBACK_INFORMATION callbackparam
-            );
-
-        MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress( dbghelp_dll, "MiniDumpWriteDump" );
-
-        if( MiniDumpWriteDump == NULL )
-        {
-            ::FreeLibrary( dbghelp_dll );
-            ::CloseHandle( hFile );
-
-            return false;
-        }
-
-
-        MINIDUMP_EXCEPTION_INFORMATION exinfo;
-
-        exinfo.ThreadId = ::GetCurrentThreadId();
-        exinfo.ExceptionPointers = (PEXCEPTION_POINTERS)_pExceptionPointers;
-        exinfo.ClientPointers = TRUE;
-
-        HANDLE hProcess = ::GetCurrentProcess();
-        DWORD dwProcessId = ::GetCurrentProcessId();
-
-        MINIDUMP_TYPE dumptype;
-
-        if( _full == false )
-        {
-            dumptype = MINIDUMP_TYPE( MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo );
-        }
-        else
-        {
-            dumptype = MINIDUMP_TYPE( MiniDumpWithFullMemory | MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithUnloadedModules | MiniDumpWithThreadInfo );
-        }
-
-        BOOL successful = (*MiniDumpWriteDump)(hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exinfo), NULL, NULL);
-
-        ::FreeLibrary( dbghelp_dll );
-        ::CloseHandle( hFile );
-
-        if( successful == FALSE )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
-
-        TimerDesc desc;
-        desc.id = new_id;
-        desc.milliseconds = _milliseconds;
-        desc.time = _milliseconds;
-        desc.lambda = _lambda;
-
-#ifdef MENGINE_DEBUG
-        desc.doc = _doc;
-#endif
-
-        m_timers.emplace_back( desc );
-
-        return new_id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::removeTimer( uint32_t _id )
-    {
-        VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
-
-        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
-
-        TimerDesc & desc = *it_found;
-
-        desc.id = 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32Platform::getTicks() const
-    {
-        if( m_performanceSupport == false )
-        {
-            return 0ULL;
-        }
-
-        LARGE_INTEGER performanceCount;
-        ::QueryPerformanceCounter( &performanceCount );
-
-        LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
-
-        return (uint64_t)ticks;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::runPlatform()
     {
         DateTimeProviderInterfacePtr dateTimeProvider =
             this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
@@ -543,7 +429,188 @@ namespace Mengine
         {
             LOGGER_MESSAGE_RELEASE( "Application not setup Process DPI Aware" );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::setProcessDPIAware()
+    {
+        HMODULE hUser32 = ::LoadLibrary( L"user32.dll" );
 
+        if( hUser32 == NULL )
+        {
+            return false;
+        }
+
+        typedef BOOL( WINAPI * PSETPROCESSDPIAWARE )(VOID);
+        FARPROC pSetProcessDPIAware = ::GetProcAddress( hUser32, "SetProcessDPIAware" );
+
+        if( pSetProcessDPIAware == NULL )
+        {
+            ::FreeLibrary( hUser32 );
+
+            return false;
+        }
+
+        if( pSetProcessDPIAware() == FALSE )
+        {
+            ::FreeLibrary( hUser32 );
+
+            return false;
+        }
+
+        ::FreeLibrary( hUser32 );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::isDebuggerPresent() const
+    {
+        if( ::IsDebuggerPresent() == FALSE )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::createProcessDump( const Char * _dumpPath, void * const _pExceptionPointers, bool _full )
+    {
+        MENGINE_UNUSED( _dumpPath );
+        MENGINE_UNUSED( _pExceptionPointers );
+        MENGINE_UNUSED( _full );
+
+        if( ::IsDebuggerPresent() == TRUE )
+        {
+            return false;
+        }
+
+        WString unicode_processDumpPath;
+        Helper::utf8ToUnicode( _dumpPath, &unicode_processDumpPath );
+
+        HANDLE hFile = ::CreateFile( unicode_processDumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+
+        if( hFile == INVALID_HANDLE_VALUE )
+        {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid create file for '%ls' [error: %lu]"
+                , unicode_processDumpPath.c_str()
+                , error
+            );
+
+            return false;
+        }
+
+        HMODULE dbghelp_dll = ::LoadLibrary( L"dbghelp.dll" );
+
+        if( dbghelp_dll == NULL )
+        {
+            ::CloseHandle( hFile );
+
+            return false;
+        }
+
+        typedef BOOL( WINAPI * MINIDUMPWRITEDUMP )(
+            HANDLE hprocess, DWORD pid, HANDLE hfile, MINIDUMP_TYPE dumptype,
+            CONST PMINIDUMP_EXCEPTION_INFORMATION exceptionparam,
+            CONST PMINIDUMP_USER_STREAM_INFORMATION userstreamparam,
+            CONST PMINIDUMP_CALLBACK_INFORMATION callbackparam
+            );
+
+        MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress( dbghelp_dll, "MiniDumpWriteDump" );
+
+        if( MiniDumpWriteDump == NULL )
+        {
+            ::FreeLibrary( dbghelp_dll );
+            ::CloseHandle( hFile );
+
+            return false;
+        }
+
+        MINIDUMP_EXCEPTION_INFORMATION exinfo;
+
+        exinfo.ThreadId = ::GetCurrentThreadId();
+        exinfo.ExceptionPointers = (PEXCEPTION_POINTERS)_pExceptionPointers;
+        exinfo.ClientPointers = TRUE;
+
+        HANDLE hProcess = ::GetCurrentProcess();
+        DWORD dwProcessId = ::GetCurrentProcessId();
+
+        MINIDUMP_TYPE dumptype;
+
+        if( _full == false )
+        {
+            dumptype = MINIDUMP_TYPE( MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo );
+        }
+        else
+        {
+            dumptype = MINIDUMP_TYPE( MiniDumpWithFullMemory | MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithUnloadedModules | MiniDumpWithThreadInfo );
+        }
+
+        BOOL successful = (*MiniDumpWriteDump)(hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exinfo), NULL, NULL);
+
+        ::FreeLibrary( dbghelp_dll );
+        ::CloseHandle( hFile );
+
+        if( successful == FALSE )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _doc );
+
+        UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
+
+        TimerDesc desc;
+        desc.id = new_id;
+        desc.milliseconds = _milliseconds;
+        desc.time = _milliseconds;
+        desc.lambda = _lambda;
+
+#ifdef MENGINE_DEBUG
+        desc.doc = _doc;
+#endif
+
+        m_timers.emplace_back( desc );
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::removeTimer( uint32_t _id )
+    {
+        VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
+
+        TimerDesc & desc = *it_found;
+
+        desc.id = 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t Win32Platform::getTicks() const
+    {
+        if( m_performanceSupport == false )
+        {
+            return 0ULL;
+        }
+
+        LARGE_INTEGER performanceCount;
+        ::QueryPerformanceCounter( &performanceCount );
+
+        LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
+
+        return (uint64_t)ticks;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::runPlatform()
+    {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
         return true;
@@ -950,6 +1017,14 @@ namespace Mengine
 
             if( handled == TRUE )
             {
+                LOGGER_INFO( "platform", "WND [%p] handled proccess wParam [%lu] lParam [%lu] visible [%u] (doc: %s)"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , MENGINE_DOCUMENT_STR( desc.doc )
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 return lResult;
             }
         }
@@ -961,7 +1036,8 @@ namespace Mengine
                 DWORD flagActive = LOWORD( wParam );
                 BOOL minimized = (BOOL)HIWORD( wParam );
 
-                LOGGER_INFO( "platform", "WND WM_ACTIVATE active [%lu] minimized [%u] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATE active [%lu] minimized [%u] visible [%u]"
+                    , hWnd
                     , flagActive
                     , minimized
                     , ::IsWindowVisible( hWnd )
@@ -986,18 +1062,53 @@ namespace Mengine
             }break;
         case WM_ACTIVATEAPP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATEAPP wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_SETFOCUS:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SETFOCUS wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_KILLFOCUS:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_KILLFOCUS wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_PAINT:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_PAINT wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_WTSSESSION_CHANGE:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_WTSSESSION_CHANGE wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 switch( wParam )
                 {
                 case WTS_SESSION_LOCK:
@@ -1016,19 +1127,23 @@ namespace Mengine
             }break;
         case WM_DISPLAYCHANGE:
             {
-                //DWORD width = LOWORD(lParam);
-                //DWORD height = HIWORD(lParam);
+                LOGGER_INFO( "platform", "WND [%p] WM_DISPLAYCHANGE wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
-                //Resolution desktopResolution;
-                //desktopResolution.setWidth( width );
-                //desktopResolution.setHeight( height );
-
-                //bool fullscreenMode = m_application->getFullscreenMode();
-
-                //this->notifyWindowModeChanged( desktopResolution, fullscreenMode );
             }break;
         case WM_SIZE:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SIZE wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( wParam == SIZE_MAXIMIZED )
                 {
                     LOGGER_INFO( "platform", "WND SIZE_MAXIMIZED" );
@@ -1056,6 +1171,13 @@ namespace Mengine
             }break;
         case WM_GETMINMAXINFO:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_GETMINMAXINFO wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 // Prevent the window from going smaller than some minimu size
                 MINMAXINFO * info = (MINMAXINFO *)lParam;
 
@@ -1064,12 +1186,26 @@ namespace Mengine
             }break;
         case WM_CLOSE:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_CLOSE wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_close = true;
 
                 return 0;
             }break;
         case WM_SYSKEYDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYDOWN wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
@@ -1084,6 +1220,13 @@ namespace Mengine
             }break;
         case WM_SYSKEYUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYUP wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
@@ -1098,6 +1241,13 @@ namespace Mengine
             }break;
         case WM_SYSCOMMAND:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSCOMMAND wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 switch( wParam )
                 {
                 case SC_CLOSE:
@@ -1132,6 +1282,13 @@ namespace Mengine
             }break;
         case WM_SETCURSOR:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SETCURSOR wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 bool client = LOWORD( lParam ) == HTCLIENT;
 
                 bool focus = APPLICATION_SERVICE()
@@ -1154,19 +1311,38 @@ namespace Mengine
                 return 0;
             }break;
         case WM_DESTROY:
-            LOGGER_MESSAGE_RELEASE( "Quit application" );
+            {
+                LOGGER_INFO( "platform", "WND [%p] WM_DESTROY wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
-            m_close = true;
+                LOGGER_MESSAGE_RELEASE( "Quit application" );
 
-            ::PostQuitMessage( 0 );
+                m_close = true;
 
-            return 0;
-        }
+                ::PostQuitMessage( 0 );
 
-        LRESULT input_result;
-        if( this->wndProcInput( hWnd, uMsg, wParam, lParam, &input_result ) == true )
-        {
-            return input_result;
+                return 0;
+            }break;
+        default:
+            {
+                LOGGER_INFO( "platform", "WND [%p] message [%u] wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , uMsg
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+                LRESULT input_result;
+                if( this->wndProcInput( hWnd, uMsg, wParam, lParam, &input_result ) == true )
+                {
+                    return input_result;
+                }
+            }break;
         }
 
         LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
@@ -1249,6 +1425,13 @@ namespace Mengine
         {
         case WM_TIMER:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_TIMER wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( wParam == MENGINE_UTIMER_MOUSE_EVENT )
                 {
                     m_mouseEvent.verify();
@@ -1259,6 +1442,13 @@ namespace Mengine
             }break;
         case UWM_MOUSE_LEAVE:
             {
+                LOGGER_INFO( "platform", "WND [%p] UWM_MOUSE_LEAVE wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_cursorInArea == true )
                 {
                     m_cursorInArea = false;
@@ -1297,7 +1487,12 @@ namespace Mengine
             //    }break;
         case WM_MOUSEMOVE:
             {
-                //::SetFocus( m_hWnd );
+                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEMOVE wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
@@ -1410,6 +1605,13 @@ namespace Mengine
             }break;
         case WM_MOUSEWHEEL:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEWHEEL wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 int32_t zDelta = (int32_t)(int16_t)(HIWORD( wParam ));
 
                 mt::vec2f point;
@@ -1427,6 +1629,13 @@ namespace Mengine
             }break;
         case WM_LBUTTONDBLCLK:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDBLCLK wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_isDoubleClick[0] = true;
 
                 handle = true;
@@ -1434,6 +1643,13 @@ namespace Mengine
             }break;
         case WM_RBUTTONDBLCLK:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDBLCLK wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_isDoubleClick[1] = true;
 
                 handle = true;
@@ -1441,6 +1657,13 @@ namespace Mengine
             }break;
         case WM_MBUTTONDBLCLK:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDBLCLK wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_isDoubleClick[2] = true;
 
                 handle = true;
@@ -1448,6 +1671,13 @@ namespace Mengine
             }break;
         case WM_LBUTTONDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDOWN wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
@@ -1462,6 +1692,13 @@ namespace Mengine
             break;
         case WM_LBUTTONUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONUP wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_isDoubleClick[0] == false )
                 {
                     mt::vec2f point;
@@ -1480,6 +1717,13 @@ namespace Mengine
             }break;
         case WM_RBUTTONDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDOWN wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
@@ -1493,6 +1737,13 @@ namespace Mengine
             }break;
         case WM_RBUTTONUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONUP wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_isDoubleClick[1] == false )
                 {
                     mt::vec2f point;
@@ -1511,6 +1762,13 @@ namespace Mengine
             }break;
         case WM_MBUTTONDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDOWN wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
@@ -1524,6 +1782,13 @@ namespace Mengine
             }break;
         case WM_MBUTTONUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONUP wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_isDoubleClick[2] == false )
                 {
                     mt::vec2f point;
@@ -1542,6 +1807,13 @@ namespace Mengine
             }break;
         case WM_KEYDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_KEYDOWN wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 UINT vkc = static_cast<UINT>(wParam);
 
                 mt::vec2f point;
@@ -1559,6 +1831,13 @@ namespace Mengine
             }break;
         case WM_KEYUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_KEYUP wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 UINT vkc = static_cast<UINT>(wParam);
 
                 mt::vec2f point;
@@ -1575,14 +1854,29 @@ namespace Mengine
                 *_result = FALSE;
             }break;
         case WM_UNICHAR:
-            if( wParam == UNICODE_NOCHAR )
             {
-                *_result = 1;
+                LOGGER_INFO( "platform", "WND [%p] WM_UNICHAR wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
+                if( wParam == UNICODE_NOCHAR )
+                {
+                    *_result = 1;
+                }
             }break;
         case WM_CHAR:
             {
-                Char utf8[5];
+                LOGGER_INFO( "platform", "WND [%p] WM_CHAR wParam [%lu] lParam [%lu] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+                Char utf8[5] = {'\0'};
                 if( s_sonvertUTF32toUTF8( (uint32_t)wParam, utf8 ) == true )
                 {
                     mt::vec2f point;
@@ -1599,6 +1893,9 @@ namespace Mengine
                     handle = true;
                     *_result = 0;
                 }
+            }break;
+        default:
+            {
             }break;
         }
 
@@ -4058,274 +4355,6 @@ namespace Mengine
         time_t time = ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
 
         return time;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::initializeFileService_()
-    {
-        LOGGER_INFO( "system", "Inititalizing File Service..." );
-
-        LOGGER_INFO( "system", "Initialize Win32 file group..." );
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
-
-        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
-        size_t currentPathLen = PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath );
-
-        if( currentPathLen == 0 )
-        {
-            LOGGER_ERROR( "failed to get current directory" );
-
-            return false;
-        }
-
-        LOGGER_MESSAGE_RELEASE( "Current Path: %s"
-            , currentPath
-        );
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            LOGGER_ERROR( "failed to mount application directory '%s'"
-                , currentPath
-            );
-
-            return false;
-        }
-
-#ifndef MENGINE_MASTER_RELEASE
-        if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            LOGGER_ERROR( "failed to mount dev directory '%s'"
-                , currentPath
-            );
-
-            return false;
-        }
-#endif
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::finalizeFileService_()
-    {
-#ifndef MENGINE_MASTER_RELEASE
-        if( FILE_SERVICE()
-            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
-        {
-            LOGGER_ERROR( "failed to unmount dev directory"
-            );
-        }
-#endif
-
-        if( FILE_SERVICE()
-            ->unmountFileGroup( ConstString::none() ) == false )
-        {
-            LOGGER_ERROR( "failed to unmount application directory"
-            );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::initializeOptionsService_()
-    {
-        LPCWSTR lpCmdLine = ::GetCommandLineW();
-
-        if( lpCmdLine == NULL )
-        {
-            return false;
-        }
-
-        int32_t pNumArgs;
-        LPWSTR * szArglist = ::CommandLineToArgvW( lpCmdLine, &pNumArgs );
-
-        if( szArglist == NULL )
-        {
-            return false;
-        }
-
-#   if (WINVER >= 0x0600)
-        DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
-#   else
-        DWORD dwConversionFlags = 0;
-#   endif
-
-        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
-
-        for( int32_t i = 1; i != pNumArgs; ++i )
-        {
-            PWSTR arg = szArglist[i];
-
-            CHAR utf_arg[1024];
-
-            int32_t utf_arg_size = ::WideCharToMultiByte(
-                CP_UTF8
-                , dwConversionFlags
-                , arg
-                , -1
-                , utf_arg
-                , 1024
-                , NULL
-                , NULL
-            );
-
-            if( utf_arg_size <= 0 )
-            {
-                return false;
-            }
-
-            arguments->addArgument( utf_arg );
-        }
-
-        ::LocalFree( szArglist );
-
-        if( OPTIONS_SERVICE()
-            ->setArguments( arguments ) == false )
-        {
-            return false;
-        }
-
-        if( HAS_OPTION( "win32" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
-        }
-        else if( HAS_OPTION( "win64" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
-        }
-        else if( HAS_OPTION( "mac" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
-
-            m_touchpad = false;
-            m_desktop = true;
-        }
-        else if( HAS_OPTION( "ios" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-
-#ifdef MENGINE_PLATFORM_WINDOWS32
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#endif
-
-#ifdef MENGINE_PLATFORM_WINDOWS64
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-#endif
-
-            m_touchpad = true;
-            m_desktop = false;
-        }
-        else if( HAS_OPTION( "android" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-
-            m_touchpad = true;
-            m_desktop = false;
-        }
-        else if( HAS_OPTION( "wp" ) )
-        {
-            m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
-
-            m_touchpad = true;
-            m_desktop = false;
-        }
-
-        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-        if( option_platform != nullptr )
-        {
-            Char uppercase_option_platform[256];
-            Helper::toupper( option_platform, uppercase_option_platform, 255 );
-
-            m_platformTags.clear();
-            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
-        }
-
-        if( HAS_OPTION( "touchpad" ) )
-        {
-            m_touchpad = true;
-        }
-
-        if( HAS_OPTION( "desktop" ) )
-        {
-            m_desktop = true;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::initializeLoggerService_()
-    {
-        Win32MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<Win32MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
-
-        loggerMessageBox->setVerboseLevel( LM_CRITICAL );
-
-        LOGGER_SERVICE()
-            ->registerLogger( loggerMessageBox );
-
-        m_loggerMessageBox = loggerMessageBox;
-
-        HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
-
-        if( hm_ntdll != NULL )
-        {
-            LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
-            *(FARPROC *)&RtlGetVersion = ::GetProcAddress( hm_ntdll, "RtlGetVersion" );
-
-            if( RtlGetVersion != NULL )
-            {
-                OSVERSIONINFOEXW osInfo;
-                osInfo.dwOSVersionInfoSize = sizeof( osInfo );
-
-                RtlGetVersion( &osInfo );
-
-                LOGGER_MESSAGE_RELEASE( "Windows version: %lu.%lu (build %lu)"
-                    , osInfo.dwMajorVersion
-                    , osInfo.dwMinorVersion
-                    , osInfo.dwBuildNumber
-                );
-
-                LOGGER_MESSAGE_RELEASE( "Windows platform: %lu"
-                    , osInfo.dwPlatformId
-                );
-
-                LOGGER_MESSAGE_RELEASE( "Windows service pack: %lu.%lu"
-                    , (DWORD)osInfo.wServicePackMajor
-                    , (DWORD)osInfo.wServicePackMinor
-                );
-            }
-
-            ::FreeLibrary( hm_ntdll );
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::finalizeLoggerService_()
-    {
-        if( m_loggerMessageBox != nullptr )
-        {
-            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
-            {
-                LOGGER_SERVICE()
-                    ->unregisterLogger( m_loggerMessageBox );
-            }
-
-            m_loggerMessageBox = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

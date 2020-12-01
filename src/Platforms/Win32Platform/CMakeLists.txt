@@ -14,8 +14,6 @@ src
     Win32AlreadyRunningMonitor.cpp
     Win32CPUInfo.h
     Win32CPUInfo.cpp
-    Win32MessageBoxLogger.h
-    Win32MessageBoxLogger.cpp
 )
 
 ADD_MENGINE_LIBRARY()

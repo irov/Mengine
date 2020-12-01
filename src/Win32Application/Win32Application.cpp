@@ -7,7 +7,13 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
 
+#include "Win32MessageBoxLogger.h"
+
+#include "Kernel/StringArguments.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
 #include <clocale>
@@ -27,6 +33,8 @@ namespace Mengine
     typedef bool (*FMengineBootstrap)(void);
     typedef void (*FMengineFinalize)(void);
     //////////////////////////////////////////////////////////////////////////
+    PLUGIN_EXPORT( Win32FileGroup );
+    //////////////////////////////////////////////////////////////////////////
     Win32Application::Win32Application()
         : m_hInstance( NULL )
     {
@@ -36,8 +44,161 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Application::initializeFileService_()
+    {
+        LOGGER_INFO( "system", "Inititalizing File Service..." );
+
+        LOGGER_INFO( "system", "Initialize Win32 file group..." );
+
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
+
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        size_t currentPathLen = PLATFORM_SERVICE()
+            ->getCurrentPath( currentPath );
+
+        if( currentPathLen == 0 )
+        {
+            LOGGER_ERROR( "failed to get current directory" );
+
+            return false;
+        }
+
+        LOGGER_MESSAGE_RELEASE( "Current Path: %s"
+            , currentPath
+        );
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount application directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount dev directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+#endif
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Application::initializeOptionsService_()
+    {
+        LPCWSTR lpCmdLine = ::GetCommandLineW();
+
+        if( lpCmdLine == NULL )
+        {
+            return false;
+        }
+
+        int32_t pNumArgs;
+        LPWSTR * szArglist = ::CommandLineToArgvW( lpCmdLine, &pNumArgs );
+
+        if( szArglist == NULL )
+        {
+            return false;
+        }
+
+#   if (WINVER >= 0x0600)
+        DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
+#   else
+        DWORD dwConversionFlags = 0;
+#   endif
+
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
+
+        for( int32_t i = 1; i != pNumArgs; ++i )
+        {
+            PWSTR arg = szArglist[i];
+
+            CHAR utf_arg[1024];
+            int32_t utf_arg_size = ::WideCharToMultiByte( CP_UTF8, dwConversionFlags, arg, -1, utf_arg, 1024, NULL, NULL );
+
+            if( utf_arg_size <= 0 )
+            {
+                return false;
+            }
+
+            arguments->addArgument( utf_arg );
+        }
+
+        ::LocalFree( szArglist );
+
+        if( OPTIONS_SERVICE()
+            ->setArguments( arguments ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Application::initializeLoggerService_()
+    {
+        if( LOGGER_SERVICE()
+            ->isSilent() == true )
+        {
+            return true;
+        }
+
+        Win32MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<Win32MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+        loggerMessageBox->setVerboseLevel( LM_CRITICAL );
+
+        LOGGER_SERVICE()
+            ->registerLogger( loggerMessageBox );
+
+        m_loggerMessageBox = loggerMessageBox;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Application::finalizeLoggerService_()
+    {
+        if( m_loggerMessageBox != nullptr )
+        {
+            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerMessageBox );
+            }
+
+            m_loggerMessageBox = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Application::finalizeFileService_()
+    {
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount dev directory"
+            );
+        }
+#endif
+
+        if( FILE_SERVICE()
+            ->unmountFileGroup( ConstString::none() ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount application directory"
+            );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()
     {
+#ifdef MENGINE_PLUGIN_MENGINE_DLL
         HINSTANCE hInstance = ::LoadLibrary( L"Mengine.dll" );
 
         if( hInstance == NULL )
@@ -64,8 +225,46 @@ namespace Mengine
 
             return false;
         }
+#else
+
+#endif
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
+
+        UNKNOWN_SERVICE_WAIT( Win32Application, OptionsServiceInterface, [this]()
+        {
+            if( this->initializeOptionsService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        UNKNOWN_SERVICE_WAIT( Win32Application, LoggerServiceInterface, [this]()
+        {
+            if( this->initializeLoggerService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        UNKNOWN_SERVICE_LEAVE( Win32Application, LoggerServiceInterface, [this]()
+        {
+            this->finalizeLoggerService_();
+        } );
+
+        UNKNOWN_SERVICE_WAIT( Win32Application, FileServiceInterface, [this]()
+        {
+            if( this->initializeFileService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
 
         FARPROC procBootstrapMengine = ::GetProcAddress( hInstance, "bootstrapMengine" );
 
@@ -85,7 +284,7 @@ namespace Mengine
             return false;
         }
 
-        m_hInstance = hInstance; 
+        m_hInstance = hInstance;
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 

@@ -2,6 +2,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Interface/LoggerInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -19,6 +21,19 @@ namespace Mengine
         void loop();
 
     protected:
+        bool initializeFileService_();
+        bool initializeOptionsService_();
+        bool initializeLoggerService_();
+        bool initializeArchiveService_();
+
+    protected:
+        void finalizeLoggerService_();
+        void finalizeFileService_();
+
+    protected:
         HINSTANCE m_hInstance;
+
+        LoggerInterfacePtr m_loggerMessageBox;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

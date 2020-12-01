@@ -135,6 +135,11 @@ namespace Mengine
         ::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
         ::SetUnhandledExceptionFilter( &Win32CriticalErrorsMonitorPlugin::s_exceptionHandler );
 
+        LOGGER_INFO( "system", "start critical errors monitor plugin" );
+        LOGGER_INFO( "system", "dump path: '%s'"
+            , m_dumpPath 
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

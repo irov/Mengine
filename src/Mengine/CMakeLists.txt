@@ -2,8 +2,9 @@ MENGINE_PROJECT(Mengine)
 
 ADD_FILTER(
 Mengine
-    MenginePlugin.cpp
+    MenginePlugin.h
     MenginePlugin.def
+    MenginePlugin.cpp
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MENGINE Mengine)

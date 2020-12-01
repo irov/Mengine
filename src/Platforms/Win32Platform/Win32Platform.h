@@ -187,16 +187,6 @@ namespace Mengine
         bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
 
     protected:
-        bool initializeFileService_();
-        bool initializeOptionsService_();
-        bool initializeLoggerService_();
-        bool initializeArchiveService_();
-
-    protected:
-        void finalizeLoggerService_();
-        void finalizeFileService_();
-
-    protected:
         WChar m_windowClassName[MENGINE_MAX_PATH] = {L'\0'};
 
         HINSTANCE m_hInstance;
@@ -210,8 +200,6 @@ namespace Mengine
         FactoryPtr m_factoryDateTimeProviders;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
-
-        LoggerInterfacePtr m_loggerMessageBox;
 
         Win32MouseEvent m_mouseEvent;
 

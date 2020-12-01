@@ -82,7 +82,7 @@ namespace Mengine
     struct __mengine_dummy_factory##Name{}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_EXTERN(Name)\
-    extern bool SERVICE_PROVIDER_NAME_CREATE( Name )(Mengine::ServiceProviderInterface**);
+    extern bool SERVICE_PROVIDER_NAME_CREATE( Name )(Mengine::ServiceProviderInterface**)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_CREATE( Name, Provider )\
     SERVICE_PROVIDER_NAME_CREATE(Name)(Provider)

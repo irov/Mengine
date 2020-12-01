@@ -986,8 +986,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxService::createFragmentShaderGLESSource_( Stringstream & ss, const MAGIC_MATERIAL * m )
     {
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
         int32_t textures = m->textures;
 
         for( int32_t i = 0; i != textures; ++i )

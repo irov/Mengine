@@ -1479,7 +1479,7 @@ namespace Mengine
                     ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Type: %s", desk.type.c_str() );
                     ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Id: %ug", desk.id );
                     ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Url: %s", desk.url.c_str() );
-
+                    
                     ImGui::Separator();
 
                     this->ShowResponseDataForId( desk.id );
@@ -1576,9 +1576,20 @@ namespace Mengine
 
                 text = spaces + key + ":" + valueStr.c_str();
 
+                String firstText = Helper::stringFormat( "%s%s: ", spaces.c_str(), key );
+
+                //TODO
+                //Need create unique label with ##
+                //ImGui::InputText( firstText.c_str(), (Char*)firstText.c_str(), firstText.size(), ImGuiInputTextFlags_ReadOnly );
+                
                 ImGui::Text( "%s%s: ", spaces.c_str(), key );
                 ImGui::SameLine();
-                ImGui::TextColored( ImVec4( 0, 255, 255, 255 ), "%s", valueStr.c_str() );
+               
+                //ImGui::TextColored( ImVec4( 0, 255, 255, 255 ), "%s", valueStr.c_str() );
+                ImGui::PushItemWidth( 100.f );
+                ImGui::InputText( "", (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
+                ImGui::PopItemWidth();
+                
             }
         }
     }

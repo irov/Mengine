@@ -562,5 +562,6 @@ namespace Mengine
         typedef Vector<NetworkDesk> VectorNetwork;
 
         VectorNetwork m_network;
+        uint32_t m_networkTextLabelCounter;
     };
 }

@@ -110,6 +110,7 @@ namespace Mengine
         , m_TextureCount( 0 )
         , m_SoundSourcesCount( 0 )
         , m_SoundBuffersCount( 0 )
+        , m_networkTextLabelCounter( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1576,20 +1577,16 @@ namespace Mengine
 
                 text = spaces + key + ":" + valueStr.c_str();
 
-                String firstText = Helper::stringFormat( "%s%s: ", spaces.c_str(), key );
-
-                //TODO
-                //Need create unique label with ##
-                //ImGui::InputText( firstText.c_str(), (Char*)firstText.c_str(), firstText.size(), ImGuiInputTextFlags_ReadOnly );
-                
                 ImGui::Text( "%s%s: ", spaces.c_str(), key );
                 ImGui::SameLine();
                
-                //ImGui::TextColored( ImVec4( 0, 255, 255, 255 ), "%s", valueStr.c_str() );
+                // TODO
+                String label = Helper::stringFormat( "##%d", m_networkTextLabelCounter );
+                ++m_networkTextLabelCounter;
+
                 ImGui::PushItemWidth( 100.f );
-                ImGui::InputText( "", (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
+                ImGui::InputText( label.c_str(), (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
                 ImGui::PopItemWidth();
-                
             }
         }
     }

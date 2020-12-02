@@ -110,7 +110,7 @@ namespace Mengine
             Char str_le[1024];
             win32Platform->getErrorMessage( error, str_le, 1023 );
 
-            LOGGER_ERROR( "invalid convert utf8 '%s' to unicode error: %s [%lu]"
+            LOGGER_ERROR( "invalid convert utf8 '%s' to unicode error: %s [error: %lu]"
                 , _utf8
                 , str_le
                 , error

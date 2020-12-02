@@ -49,7 +49,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid open '%ls' [error %lu]"
+            LOGGER_ERROR( "invalid open '%ls' [error: %lu]"
                 , fullPathTemp
                 , error
             );
@@ -110,7 +110,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid write %zu [error %lu]"
+            LOGGER_ERROR( "invalid write %zu [error: %lu]"
                 , _size
                 , error
             );
@@ -134,7 +134,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid flush [error %lu]"
+            LOGGER_ERROR( "invalid flush [error: %lu]"
                 , error
             );
 

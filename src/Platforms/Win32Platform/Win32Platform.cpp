@@ -2538,9 +2538,9 @@ namespace Mengine
 
             if( successful == FALSE )
             {
-                DWORD err = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                switch( err )
+                switch( error )
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
@@ -2562,7 +2562,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "directory '%ls' unknown [error: %lu]"
                             , path.c_str()
-                            , err
+                            , error
                         );
 
                         return false;
@@ -2632,13 +2632,13 @@ namespace Mengine
 
         if( ::DeleteFile( pathCorrect ) == FALSE )
         {
-            DWORD err = ::GetLastError();
+            DWORD error = ::GetLastError();
 
-            MENGINE_UNUSED( err );
+            MENGINE_UNUSED( error );
 
             LOGGER_ERROR( "file '%ls' [error: %lu]"
                 , pathCorrect
-                , err
+                , error
             );
 
             return false;
@@ -2697,13 +2697,13 @@ namespace Mengine
 
             if( ::DeleteFile( newFilePathCorrect ) == FALSE )
             {
-                DWORD err = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                MENGINE_UNUSED( err );
+                MENGINE_UNUSED( error );
 
                 LOGGER_ERROR( "invalid move file '%ls' [error: %lu]"
                     , newFilePathCorrect
-                    , err
+                    , error
                 );
             }
         }

@@ -101,8 +101,11 @@ namespace Mengine
 
         if( hd3d9 == nullptr )
         {
-            LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "Failed to load d3d9 dll '%s' [error: %lu]"
                 , utf8_d3d9DLL
+                , error
             );
 
             return false;
@@ -114,19 +117,22 @@ namespace Mengine
 
         if( pDirect3DCreate9 == nullptr )
         {
-            LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address" );
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address [error: %lu]"
+                , error 
+            );
 
             return false;
         }
 
         LOGGER_INFO( "render", "Initializing DX9RenderSystem..." );
 
-        IDirect3D9 * pD3D = pDirect3DCreate9( D3D_SDK_VERSION );
+        IDirect3D9 * pD3D = (*pDirect3DCreate9)(D3D_SDK_VERSION);
 
         if( pD3D == nullptr )
         {
-            LOGGER_ERROR( "Can't create D3D interface"
-            );
+            LOGGER_ERROR( "Can't create D3D interface" );
 
             return false;
         }
@@ -241,7 +247,7 @@ namespace Mengine
 
         if( m_hd3d9 != nullptr )
         {
-            FreeLibrary( m_hd3d9 );
+            ::FreeLibrary( m_hd3d9 );
             m_hd3d9 = nullptr;
         }
 

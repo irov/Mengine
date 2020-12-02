@@ -99,15 +99,13 @@ SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
 SERVICE_EXTERN( ComponentService );
-
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
-
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
 PLUGIN_EXPORT( Amplifier );
 PLUGIN_EXPORT( OggVorbis );
-
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_EXTERNAL_SOURCE
 PLUGIN_EXPORT( ExternalBootstrapper );
@@ -197,10 +195,6 @@ PLUGIN_EXPORT( NodeDebugger );
 PLUGIN_EXPORT( OzzAnimation );
 #endif
 
-#ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
-PLUGIN_EXPORT( MENGINE_EXTERNAL_FRAMEWORK_NAME );
-#endif
-
 #ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
 PLUGIN_EXPORT( PythonFramework );
 #endif
@@ -276,7 +270,6 @@ PLUGIN_EXPORT( AndroidNativeLinking );
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
 PLUGIN_EXPORT( AndroidNativeLocalNotifications );
 #endif
-
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -614,7 +607,7 @@ namespace Mengine
         {
             m_loggerFile = fileLog;
 
-            LOGGER_INFO( "bootstrapper", "write log to '%s'"
+            LOGGER_INFO( "bootstrapper", "write file log to '%s'"
                 , logFilename.c_str()
             );
         }
@@ -787,10 +780,6 @@ namespace Mengine
 
 #ifdef MENGINE_EXTERNAL_SOURCE
         MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_FRAMEWORK_NAME, "initialize Plugin External Framework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC

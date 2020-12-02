@@ -169,4 +169,5 @@ namespace Mengine
 
         m_pickerChildren.insert( it_insert, _childPicker );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

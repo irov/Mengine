@@ -18,4 +18,5 @@ namespace Mengine
             return IntrusivePtrView<T, D>( _ptr );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

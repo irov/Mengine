@@ -190,6 +190,8 @@ ADD_FILTER(
 Arrow
     Arrow.cpp
     Arrow.h
+    ArrowInputMousePositionProvider.cpp
+    ArrowInputMousePositionProvider.h
 )
 
 ADD_FILTER(

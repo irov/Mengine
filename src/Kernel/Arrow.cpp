@@ -12,47 +12,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class Arrow::ArrowInputMousePositionProvider
-        : public Factorable
-        , public InputMousePositionProviderInterface
-    {
-    public:
-        ArrowInputMousePositionProvider( Arrow * _arrow )
-            : m_arrow( _arrow )
-        {
-        }
-
-        ~ArrowInputMousePositionProvider() override
-        {
-        }
-
-    protected:
-        void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position, float _pressure ) override
-        {
-            MENGINE_UNUSED( _pressure );
-
-            if( _touchId != 0 )
-            {
-                return;
-            }
-
-            RenderInterface * render = m_arrow->getRender();
-
-            const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
-            const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
-
-            mt::vec2f wp;
-            m_arrow->calcMouseWorldPosition( renderCamera, renderViewport, _position, &wp );
-
-            mt::vec3f v3( wp.x, wp.y, 0.f );
-
-            m_arrow->setLocalPosition( v3 );
-        }
-
-    protected:
-        Arrow * m_arrow;
-    };
-    //////////////////////////////////////////////////////////////////////////
     Arrow::Arrow()
         : m_arrowType( EAT_POINT )
         , m_inputMousePositionProviderId( 0 )
@@ -91,7 +50,7 @@ namespace Mengine
         }
 
         m_inputMousePositionProviderId = INPUT_SERVICE()
-            ->addMousePositionProvider( Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this ) );
+            ->addMousePositionProvider( Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this ), MENGINE_DOCUMENT_FACTORABLE );
 
         const mt::vec2f & cursor_pos = INPUT_SERVICE()
             ->getCursorPosition( 0 );
@@ -364,4 +323,5 @@ namespace Mengine
 
         *_adaptScreenPoint = _screenPoint * windowScale + windowOffset;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

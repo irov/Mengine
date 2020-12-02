@@ -9,7 +9,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class BaseScriptablePrototypeGenerator
         : public FactoryPrototypeGenerator
         , public Observable
@@ -30,5 +29,5 @@ namespace Mengine
 
     protected:
         ScriptWrapperInterfacePtr m_scriptWrapper;
-    };    
+    };
 }

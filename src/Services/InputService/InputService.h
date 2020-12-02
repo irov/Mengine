@@ -46,7 +46,7 @@ namespace Mengine
         float getCursorPressure( uint32_t _touchId ) const override;
         bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const override;
 
-        uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) override;
+        uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc ) override;
         void removeMousePositionProvider( uint32_t _id ) override;
 
     public:
@@ -76,13 +76,17 @@ namespace Mengine
         {
             uint32_t id;
             InputMousePositionProviderInterfacePtr provider;
+
+#if MENGINE_DOCUMENT_ENABLE
+            DocumentPtr doc;
+#endif
         };
 
         typedef Vector<InputMousePositionProviderDesc> VectorMousePositionProviders;
         VectorMousePositionProviders m_mousePositionProviders;
 
         typedef Vector<InputUnionEvent> VectorInputEvents;
-        VectorInputEvents m_eventsAdd;
+        VectorInputEvents m_eventsAux;
         VectorInputEvents m_events;
 
         bool m_keyBuffer[256] = {false};

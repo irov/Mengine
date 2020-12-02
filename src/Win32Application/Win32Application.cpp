@@ -27,7 +27,7 @@
 #include "resource.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#ifdef MENGINE_PLUGIN_MENGINE_STATIC
 extern Mengine::ServiceProviderInterface * initializeMengine();
 extern bool bootstrapMengine();
 extern void finalizeMengine();
@@ -45,7 +45,9 @@ namespace Mengine
 #endif
     //////////////////////////////////////////////////////////////////////////
     Win32Application::Win32Application()
+#ifdef MENGINE_PLUGIN_MENGINE_DLL
         : m_hInstance( NULL )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -168,7 +170,7 @@ namespace Mengine
             return false;
         }
 #else
-        initializeMengine();
+        ServiceProviderInterface * serviceProvider = initializeMengine();
 #endif
 
         SERVICE_PROVIDER_SETUP( serviceProvider );

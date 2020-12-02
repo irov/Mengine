@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class Type, uint32_t Count>
     class DefaultPrototypeGenerator
         : public FactoryPrototypeGenerator
@@ -72,4 +73,5 @@ namespace Mengine
             return generator;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

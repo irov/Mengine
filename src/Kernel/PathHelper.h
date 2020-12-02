@@ -7,6 +7,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right );
         bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath * const _fullPath );
         FilePath getPathFolder( const FilePath & _fullpath );
@@ -22,5 +23,6 @@ namespace Mengine
         void pathCorrectBackslashToA( Char * const _out, const Char * _in );
         void pathRemoveBackslashA( Char * const _filePath );
         bool pathRemoveFileSpecA( Char * const _in );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

@@ -78,5 +78,7 @@ namespace Mengine
         {
             return Delegate<P, M, Tuple<std::remove_reference_t<Forwards> ...>>( _ptr, _method, std::forward_as_tuple( std::forward<Forwards &&>( _args ) ... ) );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
+    //////////////////////////////////////////////////////////////////////////
 }

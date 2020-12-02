@@ -298,5 +298,6 @@ namespace Mengine
 
             globalInputHandle->removeGlobalHandler( _id );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

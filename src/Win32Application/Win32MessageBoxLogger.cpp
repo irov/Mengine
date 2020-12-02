@@ -22,4 +22,5 @@ namespace Mengine
 
         ::MessageBoxA( NULL, _data, "Critical Error", MB_OK );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

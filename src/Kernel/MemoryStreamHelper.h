@@ -12,6 +12,7 @@ namespace Mengine
 {    
     namespace Helper
     {        
+        //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentPtr & _doc );        
@@ -24,7 +25,6 @@ namespace Mengine
         MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc );
         MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc );
+        //////////////////////////////////////////////////////////////////////////
     }
 }
-
-

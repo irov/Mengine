@@ -6,6 +6,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         uint32_t generateRandomDeviceSeed()
         {
             std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
@@ -17,5 +18,6 @@ namespace Mengine
 
             return now_ns_count;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

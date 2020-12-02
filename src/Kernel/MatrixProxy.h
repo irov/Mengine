@@ -5,6 +5,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MatrixProxy
         : public Node
         , public DummyRender

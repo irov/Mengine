@@ -1,8 +1,11 @@
 #pragma once
 
+#include "Config/Config.h"
+#include "Config/Typedef.h"
+
 namespace Mengine
 {
-    enum EKeyCode
+    enum EKeyCode : uint8_t
     {
         KC_UNASSIGNED = 0x00,
         KC_LBUTTON = 0x01,

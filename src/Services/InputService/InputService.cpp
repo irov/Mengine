@@ -188,8 +188,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isKeyDown( uint32_t _keyCode ) const
     {
-        MENGINE_ASSERTION_FATAL( _keyCode < 256 );
-
         bool isDown = m_keyBuffer[_keyCode];
 
         return isDown;
@@ -197,8 +195,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isExclusiveKeyDown( uint32_t _keyCode ) const
     {
-        MENGINE_ASSERTION_FATAL( _keyCode < 256 );
-
         bool isDown = m_keyBuffer[_keyCode];
 
         if( isDown == false )
@@ -382,8 +378,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::keyEvent_( const InputKeyEvent & _event )
     {
-        MENGINE_ASSERTION_FATAL( _event.code < 256 );
-
         bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
         bool isSpecial = this->isSpecialDown();
 

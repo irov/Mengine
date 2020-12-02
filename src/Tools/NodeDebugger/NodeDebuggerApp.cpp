@@ -1468,7 +1468,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUINetwork()
     {
-        // TEMP
         ImGui::Separator();
 
         if( ImGui::BeginChild( "Network", ImVec2( 1200, 1000 ), false, ImGuiWindowFlags_None ) )
@@ -1516,17 +1515,15 @@ namespace Mengine
                 int responseStrSize = responseIterator->url.size();
                 jpp::object responseJpp = jpp::load( responseIterator->url.c_str(), responseStrSize, nullptr, nullptr );
                 this->ShowResponseJpp( responseJpp, 0 );
-
-                ImGui::TreePop();
             }
+
+            ImGui::TreePop();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::addTwoSpacesWithMultiplier( String * _out, int _multiplier )
+    void NodeDebuggerApp::addSpacesWithMultiplier( String * _out, int _spacesCount, int _multiplier )
     {
-        const int SPACES = 2;
-
-        for( int i = 0; i != SPACES * _multiplier; ++i )
+        for( int i = 0; i != _spacesCount * _multiplier; ++i )
         {
             *_out += ' ';
         }
@@ -1537,7 +1534,7 @@ namespace Mengine
         for( auto && [key, value] : _object )
         {
             String spaces;
-            this->addTwoSpacesWithMultiplier( &spaces, _spaceCounter );
+            this->addSpacesWithMultiplier( &spaces, 2, _spaceCounter );
 
             String text;
 
@@ -1551,36 +1548,14 @@ namespace Mengine
             else
             {
                 String valueStr;
-
-                if( jppType == jpp::e_type::JPP_INTEGER )
-                {
-                    int valueInteger = value;
-                    valueStr = Helper::stringFormat( "%d", valueInteger );
-                }
-                else if( jppType == jpp::e_type::JPP_REAL )
-                {
-                    float valueDouble = value;
-                    valueStr = Helper::stringFormat( "%f", valueDouble );
-                }
-                else if( jppType == jpp::e_type::JPP_FALSE )
-                {
-                    valueStr = "false";
-                }
-                else if( jppType == jpp::e_type::JPP_TRUE )
-                {
-                    valueStr = "true";
-                }
-                else
-                {
-                    valueStr = (const Char *)value;
-                }
+                this->GetValueStringForJppType( value, jppType, &valueStr );
 
                 text = spaces + key + ":" + valueStr.c_str();
 
                 ImGui::Text( "%s%s: ", spaces.c_str(), key );
                 ImGui::SameLine();
                
-                // TODO
+                // TODO need make ability for copy text from ImGui::InputText
                 String label = Helper::stringFormat( "##%d", m_networkTextLabelCounter );
                 ++m_networkTextLabelCounter;
 
@@ -1588,6 +1563,32 @@ namespace Mengine
                 ImGui::InputText( label.c_str(), (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
                 ImGui::PopItemWidth();
             }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out )
+    {
+        if( _jppType == jpp::e_type::JPP_INTEGER )
+        {
+            int valueInteger = _object;
+            *_out = Helper::stringFormat( "%d", valueInteger );
+        }
+        else if( _jppType == jpp::e_type::JPP_REAL )
+        {
+            float valueDouble = _object;
+            *_out = Helper::stringFormat( "%f", valueDouble );
+        }
+        else if( _jppType == jpp::e_type::JPP_FALSE )
+        {
+            *_out = "false";
+        }
+        else if( _jppType == jpp::e_type::JPP_TRUE )
+        {
+            *_out = "true";
+        }
+        else
+        {
+            *_out = (const Char *)_object;
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -481,8 +481,9 @@ namespace Mengine
         void SendPauseRequest();
 
         void ShowResponseDataForId( uint32_t _id );
-        void addTwoSpacesWithMultiplier( String * _out, int _multiplier );
+        void addSpacesWithMultiplier( String * _out, int _spacesCount, int _multiplier );
         void ShowResponseJpp( const jpp::object & _object, int _spaceCounter );
+        void GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out );
 
     private:
         GLFWwindow * m_window;

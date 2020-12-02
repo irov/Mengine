@@ -222,6 +222,8 @@ endif()
 #dependencies libwebp
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
+    
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libwebp/dsp.h ${THIRDPARTY_DIR}/libwebp/src/dsp/dsp.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libwebp/CMakeLists.txt ${THIRDPARTY_DIR}/libwebp/CMakeLists.txt COPYONLY)
     
     set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)

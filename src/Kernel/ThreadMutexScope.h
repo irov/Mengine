@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ThreadMutexScope
     {
     public:
@@ -16,6 +17,7 @@ namespace Mengine
     protected:
         const ThreadMutexInterfacePtr & m_mutex;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_THREAD_MUTEX_SCOPE_II( Mutex, Line ) Mengine::ThreadMutexScope thread_mutex_scope_ ## Line ( Mutex )

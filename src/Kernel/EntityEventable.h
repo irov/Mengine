@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class EntityEventable
         : public Factorable
         , public Eventable

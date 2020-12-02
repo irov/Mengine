@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Interface/NotificationServiceInterface.h"
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Interface/LoggerInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 
 namespace Mengine
 {
@@ -21,18 +20,20 @@ namespace Mengine
     public:
         void loop();
 
-    protected:
-        bool initializeFileService_();
+    protected:        
         bool initializeOptionsService_();
         bool initializeLoggerService_();
         bool initializeArchiveService_();
 
     protected:
         void finalizeLoggerService_();
-
+        
     protected:
-        ServiceProviderInterface * m_serviceProvider;
+#ifdef MENGINE_PLUGIN_MENGINE_DLL
+        HINSTANCE m_hInstance;
+#endif
 
         LoggerInterfacePtr m_loggerMessageBox;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

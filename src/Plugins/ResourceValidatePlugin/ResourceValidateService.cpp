@@ -71,28 +71,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidateService::visitableResources_() const
     {
-        bool developmentMode = Helper::isDevelopmentMode();
         bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
-        if( developmentMode == true && noresourceCheck == false )
+        if( noresourceCheck == true )
         {
-            bool successful = true;
+            return;
+        }
 
-            RESOURCE_SERVICE()
-                ->foreachResources( [this, &successful]( const ResourcePtr & _resource )
+        bool developmentMode = Helper::isDevelopmentMode();
+
+        if( developmentMode == false )
+        {
+            return;
+        }
+        
+        bool successful = true;
+
+        RESOURCE_SERVICE()
+            ->foreachResources( [this, &successful]( const ResourcePtr & _resource )
+        {
+            if( this->visitableResource_( _resource ) == false )
             {
-                if( this->visitableResource_( _resource ) == false )
-                {
-                    successful = false;
+                successful = false;
 
-                    return;
-                }
-            } );
-
-            if( successful == false )
-            {
-                throw ExceptionNotificationFailed();
+                return;
             }
+        } );
+
+        if( successful == false )
+        {
+            throw ExceptionNotificationFailed();
         }
     }
 }

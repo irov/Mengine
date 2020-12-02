@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Entity
         : public Node
         , public Componentable

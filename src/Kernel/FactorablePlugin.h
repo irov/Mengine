@@ -40,4 +40,5 @@ namespace Mengine
             return IntrusivePtr<Type>( factorable );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -187,6 +187,10 @@ namespace Mengine
         bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
 
     protected:
+        bool initializeFileService_();
+        void finalizeFileService_();
+
+    protected:
         WChar m_windowClassName[MENGINE_MAX_PATH] = {L'\0'};
 
         HINSTANCE m_hInstance;

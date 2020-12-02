@@ -11,6 +11,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/PluginInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
@@ -68,6 +69,8 @@
 #ifndef MENGINE_WINDOW_CLASSNAME
 #define MENGINE_WINDOW_CLASSNAME "MengineWindow"
 #endif
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_EXPORT( Win32FileGroup );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
 //////////////////////////////////////////////////////////////////////////
@@ -252,6 +255,21 @@ namespace Mengine
         const Char * windowClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
         Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH );
+
+        SERVICE_WAIT( FileServiceInterface, [this]()
+        {
+            if( this->initializeFileService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( FileServiceInterface, [this]()
+        {
+            this->finalizeFileService_();
+        } );
 
         return true;
     }
@@ -4357,6 +4375,73 @@ namespace Mengine
         time_t time = ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
 
         return time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::initializeFileService_()
+    {
+        LOGGER_INFO( "system", "Inititalizing File Service..." );
+
+        LOGGER_INFO( "system", "Initialize Win32 file group..." );
+
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
+
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        size_t currentPathLen = PLATFORM_SERVICE()
+            ->getCurrentPath( currentPath );
+
+        if( currentPathLen == 0 )
+        {
+            LOGGER_ERROR( "failed to get current directory" );
+
+            return false;
+        }
+
+        LOGGER_MESSAGE_RELEASE( "Current Path: %s"
+            , currentPath
+        );
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount application directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount dev directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+#endif
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::finalizeFileService_()
+    {
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount dev directory"
+            );
+        }
+#endif
+
+        if( FILE_SERVICE()
+            ->unmountFileGroup( ConstString::none() ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount application directory"
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

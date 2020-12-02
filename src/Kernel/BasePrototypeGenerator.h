@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class BasePrototypeGenerator
         : public PrototypeGeneratorInterface
         , public Factorable
@@ -42,4 +43,5 @@ namespace Mengine
     {
         return m_prototype;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

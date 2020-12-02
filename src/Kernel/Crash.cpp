@@ -8,6 +8,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         void crash( const Char * _doc )
         {
             if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
@@ -20,5 +21,6 @@ namespace Mengine
             // cppcheck-suppress nullPointer
             *p = 0x7BADC0DE;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

@@ -3,13 +3,16 @@
 #include "Kernel/Node.h"
 #include "Kernel/Vector.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<uint32_t> VectorNodePath;
+    typedef Vector<UniqueId> VectorNodePath;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         NodePtr findUniqueNode( const NodePtr & _root, const VectorNodePath & _nodePath );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

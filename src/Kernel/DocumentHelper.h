@@ -39,7 +39,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
 }
-
+//////////////////////////////////////////////////////////////////////////
 #   define MENGINE_DOCUMENT_FORWARD (this->getDocument())
 #   define MENGINE_DOCUMENT_FORWARD_PTR(Ptr) (Ptr->getDocument())
 #   define MENGINE_DOCUMENT_FUNCTION [](const Mengine::Char * _file, const Mengine::Char * _function, uint32_t _line) { Mengine::DocumentPtr doc = DOCUMENT_SERVICE()->createDocument( nullptr, Mengine::Helper::Win32GetCurrentDllPath(), _file, _function, _line, "%s[%d]", _function, _line ); return doc;}(MENGINE_CODE_FILE, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE)

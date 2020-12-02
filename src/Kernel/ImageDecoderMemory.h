@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ImageDecoderMemory
         : public ImageDecoder
     {
@@ -17,6 +18,7 @@ namespace Mengine
     protected:
         size_t decodeData_( void * const _buffer, size_t _bufferSize ) const;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ImageDecoderMemory> ImageDecoderMemoryPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

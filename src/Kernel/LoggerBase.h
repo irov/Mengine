@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class LoggerBase
         : public LoggerInterface
         , public Factorable

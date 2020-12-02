@@ -20,18 +20,18 @@ namespace Mengine
     public:
         void loop();
 
-    protected:
-        bool initializeFileService_();
+    protected:        
         bool initializeOptionsService_();
         bool initializeLoggerService_();
         bool initializeArchiveService_();
 
     protected:
         void finalizeLoggerService_();
-        void finalizeFileService_();
-
+        
     protected:
+#ifdef MENGINE_PLUGIN_MENGINE_DLL
         HINSTANCE m_hInstance;
+#endif
 
         LoggerInterfacePtr m_loggerMessageBox;
     };

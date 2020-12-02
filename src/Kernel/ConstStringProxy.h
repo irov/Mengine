@@ -38,6 +38,21 @@ namespace Mengine
             return this->c_cstr();
         }
 
+    public:
+        bool operator == ( const ConstString & _cstr ) const
+        {
+            const ConstString & cstr = this->c_cstr();
+
+            return cstr == _cstr;
+        }
+
+        bool operator != ( const ConstString & _cstr ) const
+        {
+            const ConstString & cstr = this->c_cstr();
+
+            return cstr == _cstr;
+        }
+
     protected:
         const Char * m_string;
         ConstStringHolder::size_type m_size;

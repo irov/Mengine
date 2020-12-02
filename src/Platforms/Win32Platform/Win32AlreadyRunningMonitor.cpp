@@ -2,6 +2,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -18,10 +20,11 @@ namespace Mengine
     bool Win32AlreadyRunningMonitor::initialize( int32_t _policy, const WChar * _windowClassName, const WChar * _projectTitle )
     {
         // try to create mutex to sure that we are not running already
-        WString mutexName = L"MengineAlreadyRunningMonitorMutex_";
-        mutexName += _projectTitle;
+        WChar mutexName[MENGINE_MAX_PATH];
+        MENGINE_WCSCPY( mutexName, L"MengineAlreadyRunningMonitorMutex_" );
+        MENGINE_WCSCAT( mutexName, _projectTitle );
 
-        m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
+        m_mutex = ::CreateMutex( NULL, FALSE, mutexName );
 
         DWORD error = ::GetLastError();
         // already running
@@ -36,8 +39,7 @@ namespace Mengine
             HWND otherHwnd = ::FindWindow( _windowClassName, _projectTitle );
             ::SetForegroundWindow( otherHwnd );
 
-            LOGGER_ERROR( "AlreadyRunningMonitor FOCUS to other instance of engine"
-            );
+            LOGGER_ERROR( "AlreadyRunningMonitor FOCUS to other instance of engine" );
 
             return false;
         }
@@ -64,4 +66,5 @@ namespace Mengine
             m_mutex = NULL;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

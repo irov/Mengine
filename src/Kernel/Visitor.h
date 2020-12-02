@@ -25,4 +25,5 @@ namespace Mengine
     public:
         virtual R accept( T * _visited ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

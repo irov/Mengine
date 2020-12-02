@@ -131,7 +131,7 @@ namespace Mengine
             LRESULT result = ImGui_ImplWin32_WndProcHandler( hwnd, msg, wParam, lParam );
 
             return result;
-        } );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_handlerId = handlerId;
 #endif

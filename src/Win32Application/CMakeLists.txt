@@ -1,11 +1,5 @@
 MENGINE_PROJECT(Win32Application)
 
-ADD_FILTER(
-MessageBoxLogger
-    MessageBoxLogger.cpp
-    MessageBoxLogger.h
-)
-
 if(MENGINE_TOOLCHAIN_MSVC)
 ADD_FILTER(
 main
@@ -19,12 +13,13 @@ main
     mingw32_main.cpp
 )
 endif()
-
     
 ADD_FILTER(
 Win32Application
     Win32Application.cpp
     Win32Application.h
+    Win32MessageBoxLogger.h
+    Win32MessageBoxLogger.cpp
 )
 
 if(MENGINE_TOOLCHAIN_MINGW)
@@ -40,13 +35,16 @@ endif()
 if(MENGINE_TOOLCHAIN_MSVC)
     SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc)
 endif()
-    
+
 LINK_DIRECTORIES(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 ADD_MENGINE_EXECUTABLE()
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Bootstrapper)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${APPLICATION_LINK_LIBRARIES})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+
+if(MENGINE_PLUGIN_MENGINE_STATIC)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Mengine)
+endif()
 
 if(NOT MSVC)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} libole32.a)
@@ -57,7 +55,5 @@ if(MSVC)
 endif()
 
 if(MINGW)
-    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map")    
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map")
 endif()
-
-ADD_DEPENDENCIES(${PROJECT_NAME} ${APPLICATION_DEPENDENCIES})

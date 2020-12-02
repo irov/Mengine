@@ -45,6 +45,7 @@ src
     LoggerInterface.h
     LoggerServiceInterface.h
     ApplicationInterface.h
+    InputMousePositionProviderInterface.h
     InputServiceInterface.h
     InputHandlerInterface.h
     EasingInterface.h

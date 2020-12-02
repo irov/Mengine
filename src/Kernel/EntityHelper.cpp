@@ -11,6 +11,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         EntityPtr generateEntity( const EntityEventReceiverInterfacePtr & _eventReceiver, const DocumentPtr & _doc )
         {
             EntityPtr entity = PROTOTYPE_SERVICE()
@@ -36,5 +37,6 @@ namespace Mengine
 
             return entity;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

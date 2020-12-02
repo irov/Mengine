@@ -21,4 +21,5 @@ namespace Mengine
         bool intersection( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * const _out );
         bool difference( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * const _out );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -126,4 +126,5 @@ namespace Mengine
         m_receivers.clear();
         m_receiversMask = 0;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

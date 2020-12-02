@@ -191,12 +191,12 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
         LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdID.Revision );
 
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_caps) )
+        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_d3dCaps) )
         {
             return false;
         }
 
-        m_dxMaxCombinedTextureImageUnits = m_caps.MaxSimultaneousTextures;
+        m_dxMaxCombinedTextureImageUnits = m_d3dCaps.MaxSimultaneousTextures;
 
         if( m_dxMaxCombinedTextureImageUnits > MENGINE_MAX_TEXTURE_STAGES )
         {
@@ -314,9 +314,9 @@ namespace Mengine
 
         while( *pFormatList )
         {
-            if( SUCCEEDED( m_pD3D->CheckDeviceFormat( m_caps.AdapterOrdinal, m_caps.DeviceType, _backBufferFormat, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
+            if( SUCCEEDED( m_pD3D->CheckDeviceFormat( m_d3dCaps.AdapterOrdinal, m_d3dCaps.DeviceType, _backBufferFormat, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
             {
-                if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_caps.AdapterOrdinal, m_caps.DeviceType, _backBufferFormat, _backBufferFormat, *pFormatList ) ) )
+                if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_d3dCaps.AdapterOrdinal, m_d3dCaps.DeviceType, _backBufferFormat, _backBufferFormat, *pFormatList ) ) )
                 {
                     break;
                 }
@@ -430,30 +430,23 @@ namespace Mengine
 
         // Create D3D Device
 
-        D3DCAPS9 caps;
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
-        {
-            return false;
-        }
-
         LOGGER_MESSAGE_RELEASE( "Vertex Shader Version [%lu] [%s]"
-            , caps.VertexShaderVersion
-            , caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
+            , m_d3dCaps.VertexShaderVersion
+            , m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
         );
 
         LOGGER_MESSAGE_RELEASE( "Pixel Shader Version [%lu] [%s] [%s]"
-            , caps.PixelShaderVersion
-            , caps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
-            , caps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
+            , m_d3dCaps.PixelShaderVersion
+            , m_d3dCaps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
+            , m_d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
         );
 
         HRESULT hr;
 
-        if( (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
-            caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
+        if( (m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
+            m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
-            LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
-            );
+            LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
 
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                 , D3DCREATE_SOFTWARE_VERTEXPROCESSING
@@ -461,8 +454,21 @@ namespace Mengine
         }
         else
         {
+            DWORD device_flags = D3DCREATE_FPU_PRESERVE;
+
+            if( m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT )
+            {
+                device_flags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
+            }
+            else
+            {
+                LOGGER_MESSAGE_RELEASE( "force set D3DCREATE_SOFTWARE_VERTEXPROCESSING" );
+
+                device_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+            }
+
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                , D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
+                , device_flags
                 , m_d3dpp, &m_pD3DDevice );
 
             if( FAILED( hr ) )
@@ -476,7 +482,7 @@ namespace Mengine
 
                 Sleep( 100 );
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                    , D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
+                    , device_flags
                     , m_d3dpp, &m_pD3DDevice );
             }
 
@@ -491,7 +497,7 @@ namespace Mengine
 
                 Sleep( 100 );
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                    , D3DCREATE_HARDWARE_VERTEXPROCESSING
+                    , device_flags
                     , m_d3dpp, &m_pD3DDevice );
             }
 
@@ -572,6 +578,8 @@ namespace Mengine
             return false;
         }
 
+        DXCALL( m_pD3DDevice, GetDeviceCaps, (&m_d3dCaps) );
+
         LOGGER_INFO( "render", "Mode: resolution %d x %d x %s\n"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
@@ -618,7 +626,7 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
-        LOGGER_MESSAGE( "DirectX9 render initalized successfully!" );
+        LOGGER_MESSAGE_RELEASE( "DirectX9 create render window successfully!" );
 
         return true;
     }

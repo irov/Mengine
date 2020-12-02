@@ -11,7 +11,7 @@ namespace Mengine
         bool assertionHasObserver( Observable * _observer );
     }
 }
-
+//////////////////////////////////////////////////////////////////////////
 #if MENGINE_ASSERTION_DEBUG
 #   include "Kernel/Assertion.h"
 
@@ -19,3 +19,4 @@ namespace Mengine
 #else
 #   define MENGINE_ASSERTION_OBSERVABLE(Ptr, ...)
 #endif
+//////////////////////////////////////////////////////////////////////////

@@ -8,6 +8,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         void debugBreak()
         {
 #ifdef MENGINE_PLATFORM_WINDOWS
@@ -17,5 +18,6 @@ namespace Mengine
             }
 #endif
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

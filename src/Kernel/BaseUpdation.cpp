@@ -38,4 +38,5 @@ namespace Mengine
         UPDATE_SERVICE()
             ->replaceUpdatater( m_updatableProxyId, _deep );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -157,7 +157,7 @@ namespace Mengine
         IDirect3D9 * m_pD3D;
         IDirect3DDevice9 * m_pD3DDevice;
 
-        D3DCAPS9 m_caps;
+        D3DCAPS9 m_d3dCaps;
 
         D3DPRESENT_PARAMETERS m_d3dppW;
         D3DPRESENT_PARAMETERS m_d3dppFS;

@@ -25,4 +25,5 @@ namespace Mengine
         Char m_message[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
     };
 }
+//////////////////////////////////////////////////////////////////////////
 

@@ -18,5 +18,6 @@ namespace Mengine
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, const ConstString & _value );
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, const String & _value );
         bool writeIniSection( const OutputStreamInterfacePtr & _stream, const Char * _section );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

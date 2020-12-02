@@ -59,11 +59,11 @@ namespace Mengine
 
         if( size == INVALID_FILE_SIZE )
         {
-            DWORD dwError = ::GetLastError();
+            DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid file '%ls' size [error %lu]"
+            LOGGER_ERROR( "invalid file '%ls' size [error: %lu]"
                 , fullPath
-                , dwError
+                , error
             );
 
             this->close();
@@ -96,12 +96,12 @@ namespace Mengine
 
             if( dwPtr == INVALID_SET_FILE_POINTER )
             {
-                DWORD dwError = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                LOGGER_ERROR( "seek offset %zu size %zu get error '%lu'"
+                LOGGER_ERROR( "seek offset %zu size %zu [error: %lu]"
                     , m_offset
                     , m_size
-                    , dwError
+                    , error
                 );
 
                 return false;
@@ -130,12 +130,12 @@ namespace Mengine
 
         if( successful == FALSE )
         {
-            DWORD dwError = ::GetLastError();
+            DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid close '%s:%s' handle [error %lu]"
+            LOGGER_ERROR( "invalid close '%s:%s' handle [error: %lu]"
                 , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
                 , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
-                , dwError
+                , error
             );
         }
 
@@ -171,7 +171,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "file '%ls' invalid open error [%lu]"
+            LOGGER_ERROR( "file '%ls' invalid open [error: %lu]"
                 , _fullPath
                 , error
             );
@@ -286,12 +286,12 @@ namespace Mengine
         DWORD bytesRead = 0;
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
-            DWORD dwError = ::GetLastError();
+            DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "read %zu:%zu get error '%lu'"
+            LOGGER_ERROR( "read %zu:%zu [error: %lu]"
                 , _size
                 , m_size
-                , dwError
+                , error
             );
 
             return false;
@@ -323,12 +323,12 @@ namespace Mengine
 
             if( dwPtr == INVALID_SET_FILE_POINTER )
             {
-                DWORD dwError = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                LOGGER_ERROR( "seek %zu:%zu get error '%lu'"
+                LOGGER_ERROR( "seek %zu:%zu get [error: %lu]"
                     , _pos
                     , m_size
-                    , dwError
+                    , error
                 );
 
                 return false;
@@ -387,10 +387,10 @@ namespace Mengine
 
         if( ::GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
         {
-            DWORD dwError = ::GetLastError();
+            DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid get file time '%lu'"
-                , dwError
+            LOGGER_ERROR( "invalid get file time [error: %lu]"
+                , error
             );
 
             return false;

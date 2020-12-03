@@ -8,7 +8,7 @@
 #ifdef MENGINE_PLATFORM_WINDOWS64
 #define MENGINE_PRDWORD "lu"
 #else
-#define MENGINE_PRDWORD "u"
+#define MENGINE_PRDWORD "lu"
 #endif
 
 #ifdef MENGINE_PLATFORM_WINDOWS64
@@ -20,7 +20,7 @@
 #ifdef MENGINE_PLATFORM_WINDOWS64
 #define MENGINE_PRWPARAM "llu"
 #else
-#define MENGINE_PRWPARAM "lu"
+#define MENGINE_PRWPARAM "u"
 #endif
 
 #ifdef MENGINE_PLATFORM_WINDOWS64

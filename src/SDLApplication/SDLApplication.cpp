@@ -1,55 +1,14 @@
-#include "Config/Config.h"
-
 #include "SDLApplication.h"
 
-#include "Engine/Application.h"
-
-#include "Interface/LoggerInterface.h"
-#include "Interface/FileServiceInterface.h"
-#include "Interface/CodecServiceInterface.h"
-#include "Interface/ConverterServiceInterface.h"
-#include "Interface/MemoryServiceInterface.h"
-#include "Interface/PackageServiceInterface.h"
-#include "Interface/UserdataServiceInterface.h"
-#include "Interface/GraveyardServiceInterface.h"
-#include "Interface/ResourceServiceInterface.h"
-#include "Interface/SoundServiceInterface.h"
-#include "Interface/RenderServiceInterface.h"
-#include "Interface/UpdateServiceInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
-#include "Interface/TextServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
-#include "Interface/InputServiceInterface.h"
-#include "Interface/TimeSystemInterface.h"
-#include "Interface/OptionsServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ModuleServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
-#include "Interface/AccountServiceInterface.h"
-#include "Interface/SceneServiceInterface.h"
-#include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/ChronometerServiceInterface.h"
-#include "Interface/FrameworkInterface.h"
-#include "Interface/PluginServiceInterface.h"
-#include "Interface/PickerServiceInterface.h"
-#include "Interface/PlayerServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 #include "Interface/BootstrapperInterface.h"
-#include "Interface/ConfigServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
-
-#include <clocale>
-
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/FactoryDefault.h"
-#include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/StringArguments.h"
-#include "Kernel/FileLogger.h"
-#include "Kernel/Document.h"
-#include "Kernel/Logger.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/FilePathHelper.h"
-#include "Kernel/UnicodeHelper.h"
-#include "Kernel/Stringstream.h"
+#include "Interface/PluginServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -59,31 +18,28 @@
 #   include "SDLStdioLogger.h"
 #endif
 
+#include "Kernel/StringArguments.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/Logger.h"
+
 #include <ctime>
 #include <algorithm>
-
 #include <sstream>
 #include <iomanip>
 
-#include "SDL_filesystem.h"
-
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_MENGINE_STATIC
+extern Mengine::ServiceProviderInterface * initializeMengine();
+extern bool bootstrapMengine();
+extern void finalizeMengine();
+#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
-//////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AllocatorService );
-SERVICE_EXTERN( DocumentService );
-SERVICE_EXTERN( Bootstrapper );
-//////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( SDLFileGroup );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLApplication::SDLApplication()
-        : m_serviceProvider( nullptr )
-        , m_running( false )
-        , m_active( false )
-        , m_developmentMode( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -107,42 +63,6 @@ namespace Mengine
         {
             return false;
         }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeFileService_()
-    {
-        LOGGER_INFO( "application", "Initialize SDL file group..." );
-
-        PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FUNCTION );
-
-        // mount root
-        ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            LOGGER_ERROR( "failed to mount application directory"
-            );
-
-            return false;
-        }
-
-#ifndef MENGINE_MASTER_RELEASE
-        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        // mount root
-        if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), defaultFileGroup, nullptr, FilePath::none(), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            LOGGER_ERROR( "failed to mount dev directory"
-            );
-
-            return false;
-        }
-#endif
 
         return true;
     }
@@ -199,20 +119,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize( int32_t _argc, Char ** const _argv )
     {
-        ::setlocale( LC_ALL, "C" );
-
-        ServiceProviderInterface * serviceProvider;
-        if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
-        {
-            return false;
-        }
+#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#else
+        ServiceProviderInterface * serviceProvider = initializeMengine();
+#endif
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
-
-        m_serviceProvider = serviceProvider;
-
-        SERVICE_CREATE( AllocatorService, nullptr );
-        SERVICE_CREATE( DocumentService, nullptr );
 
         SERVICE_PROVIDER_GET()->waitService( "SDLApplication", OptionsServiceInterface::getStaticServiceID(), [this, _argc, _argv]()
         {
@@ -239,27 +152,11 @@ namespace Mengine
             this->finalizeLoggerService_();
         } );
 
-
-        UNKNOWN_SERVICE_WAIT( SDLApplication, FileServiceInterface, [this]()
-        {
-            if( this->initializeFileService_() == false )
-            {
-                return false;
-            }
-
-            return true;
-        } );
-
-        SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION );
-
-        if( BOOTSTRAPPER_SERVICE()
-            ->run() == false )
-        {
-            LOGGER_CRITICAL( "invalid bootstrap"
-            );
-
-            return false;
-        }
+#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#else
+        bootstrapMengine();
+#endif
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 
@@ -306,6 +203,8 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
         {
+            LOGGER_CRITICAL( "invalid create render window" );
+
             return false;
         }
 
@@ -329,18 +228,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
+        PLATFORM_SERVICE()
+            ->stopPlatform();
+
         BOOTSTRAPPER_SERVICE()
             ->stop();
 
-        SERVICE_FINALIZE( Bootstrapper );
-        SERVICE_DESTROY( Bootstrapper );
-
-        SERVICE_FINALIZE( DocumentService );
-        SERVICE_DESTROY( DocumentService );
-
-        SERVICE_FINALIZE( AllocatorService );
-        SERVICE_DESTROY( AllocatorService );
-
-        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
+#ifdef MENGINE_PLUGIN_MENGINE_DLL
+#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#else
+        finalizeMengine();
+#endif
     }
 }

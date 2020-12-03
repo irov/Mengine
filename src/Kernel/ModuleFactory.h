@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ModuleFactory
         : public ModuleFactoryInterface

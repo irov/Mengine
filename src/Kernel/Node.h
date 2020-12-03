@@ -17,11 +17,12 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Viewport.h"
 
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
 #   include <type_traits>
 #   include <stdexcept>
 #endif
-
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,7 @@ namespace Mengine
         ~Node() override;
 
     public:
-        NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
+        NodePtr findUniqueChild( UniqueId _uniqueIdentity ) const;
 
     protected:
         void refreshRenderRelation_( Node * _parent );

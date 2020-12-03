@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class Type, uint32_t Count, class F = Factory>
     class FactoryPool
         : public F
@@ -54,4 +55,5 @@ namespace Mengine
             return IntrusivePtr<F>( factory );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -107,10 +107,10 @@ namespace Mengine
 
         if( m_thread == NULL )
         {
-            DWORD error_code = ::GetLastError();
+            DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid create thread error code [%lu]"
-                , error_code
+            LOGGER_ERROR( "invalid create thread [error: %lu]"
+                , error
             );
 
             return false;

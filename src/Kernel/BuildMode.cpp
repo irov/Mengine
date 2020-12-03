@@ -33,5 +33,6 @@ namespace Mengine
         {
             return MENGINE_MASTER_VALUE( true, false );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

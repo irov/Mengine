@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class T>
     class FrameworkFactory
         : public FrameworkFactoryInterface

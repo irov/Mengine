@@ -10,6 +10,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class K, class T, class H = Hashgen<K>>
     class Hashtable
     {
@@ -1229,6 +1230,7 @@ namespace Mengine
 
         value_type * m_buffer;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 
 #undef MENGINE_HASHTABLE_DUMMY_ELEMENT

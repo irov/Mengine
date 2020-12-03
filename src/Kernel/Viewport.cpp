@@ -17,7 +17,6 @@ namespace Mengine
         : begin( _viewport.begin )
         , end( _viewport.end )
     {
-
     }
     //////////////////////////////////////////////////////////////////////////
     Viewport::Viewport( const mt::vec2f & _begin, const mt::vec2f & _end )

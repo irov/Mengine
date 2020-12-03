@@ -5,9 +5,10 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class C>
     struct Hashgen;
-
+    //////////////////////////////////////////////////////////////////////////
     template<>
     struct Hashgen<uint32_t>
     {
@@ -16,7 +17,7 @@ namespace Mengine
             return (HashType)_value;
         }
     };
-
+    //////////////////////////////////////////////////////////////////////////
     template<>
     struct Hashgen<uint64_t>
     {
@@ -25,7 +26,7 @@ namespace Mengine
             return (HashType)_value;
         }
     };
-
+    //////////////////////////////////////////////////////////////////////////
     template<class K, class V>
     struct Hashgen<Pair<K, V>>
     {
@@ -34,4 +35,5 @@ namespace Mengine
             return Hashgen<K>()(_value.first) + Hashgen<V>()(_value.second);
         }
     };
+    //////////////////////////////////////////////////////////////////////////
 }

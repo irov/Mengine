@@ -288,6 +288,11 @@ namespace Mengine
             m_vsync = false;
         }
 
+        if( HAS_OPTION( "maxfps" ) == true )
+        {
+            m_vsync = false;
+        }
+
         if( HAS_OPTION( "nofullscreen" ) == true )
         {
             m_nofullscreen = true;

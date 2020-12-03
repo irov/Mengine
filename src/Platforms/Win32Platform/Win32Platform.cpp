@@ -39,6 +39,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/StdIntTypes.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -358,7 +359,7 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "  Processor type: %lu", sysInfo.dwProcessorType );
         LOGGER_MESSAGE_RELEASE( "  Minimum application address: %p", sysInfo.lpMinimumApplicationAddress );
         LOGGER_MESSAGE_RELEASE( "  Maximum application address: %p", sysInfo.lpMaximumApplicationAddress );
-        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %lu", sysInfo.dwActiveProcessorMask );
+        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %" MENGINE_PRDWORD_PTR, sysInfo.dwActiveProcessorMask );
 
         LOGGER_MESSAGE_RELEASE( "CPU information:" );
 
@@ -1037,7 +1038,7 @@ namespace Mengine
 
             if( handled == TRUE )
             {
-                LOGGER_INFO( "platform", "WND [%p] handled proccess wParam [%u] lParam [%ld] visible [%u] (doc: %s)"
+                LOGGER_INFO( "platform", "WND [%p] handled proccess wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u] (doc: %s)"
                     , hWnd
                     , wParam
                     , lParam
@@ -1056,7 +1057,7 @@ namespace Mengine
                 DWORD flagActive = LOWORD( wParam );
                 BOOL minimized = (BOOL)HIWORD( wParam );
 
-                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATE active [%lu] minimized [%u] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATE active [%" MENGINE_PRDWORD "] minimized [%u] visible [%u]"
                     , hWnd
                     , flagActive
                     , minimized
@@ -1082,7 +1083,7 @@ namespace Mengine
             }break;
         case WM_ACTIVATEAPP:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATEAPP wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATEAPP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1092,7 +1093,7 @@ namespace Mengine
             }break;
         case WM_SETFOCUS:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_SETFOCUS wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_SETFOCUS wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1102,7 +1103,7 @@ namespace Mengine
             }break;
         case WM_KILLFOCUS:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_KILLFOCUS wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_KILLFOCUS wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1112,7 +1113,7 @@ namespace Mengine
             }break;
         case WM_PAINT:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_PAINT wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_PAINT wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1122,7 +1123,7 @@ namespace Mengine
             }break;
         case WM_WTSSESSION_CHANGE:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_WTSSESSION_CHANGE wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_WTSSESSION_CHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1147,7 +1148,7 @@ namespace Mengine
             }break;
         case WM_DISPLAYCHANGE:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_DISPLAYCHANGE wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_DISPLAYCHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1157,7 +1158,7 @@ namespace Mengine
             }break;
         case WM_SIZE:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_SIZE wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_SIZE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1191,7 +1192,7 @@ namespace Mengine
             }break;
         case WM_GETMINMAXINFO:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_GETMINMAXINFO wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_GETMINMAXINFO wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1206,7 +1207,7 @@ namespace Mengine
             }break;
         case WM_CLOSE:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_CLOSE wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_CLOSE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1219,7 +1220,7 @@ namespace Mengine
             }break;
         case WM_SYSKEYDOWN:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYDOWN wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1240,7 +1241,7 @@ namespace Mengine
             }break;
         case WM_SYSKEYUP:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYUP wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1261,7 +1262,7 @@ namespace Mengine
             }break;
         case WM_SYSCOMMAND:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_SYSCOMMAND wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSCOMMAND wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1302,7 +1303,7 @@ namespace Mengine
             }break;
         case WM_SETCURSOR:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_SETCURSOR wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_SETCURSOR wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1332,7 +1333,7 @@ namespace Mengine
             }break;
         case WM_DESTROY:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_DESTROY wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_DESTROY wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1349,7 +1350,7 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_INFO( "platform", "WND [%p] message [%u] wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] message [%u] wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , uMsg
                     , wParam
@@ -1445,7 +1446,7 @@ namespace Mengine
         {
         case WM_TIMER:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_TIMER wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_TIMER wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1462,7 +1463,7 @@ namespace Mengine
             }break;
         case UWM_MOUSE_LEAVE:
             {
-                LOGGER_INFO( "platform", "WND [%p] UWM_MOUSE_LEAVE wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] UWM_MOUSE_LEAVE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1507,7 +1508,7 @@ namespace Mengine
             //    }break;
         case WM_MOUSEMOVE:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEMOVE wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEMOVE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1625,7 +1626,7 @@ namespace Mengine
             }break;
         case WM_MOUSEWHEEL:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEWHEEL wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEWHEEL wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1649,7 +1650,7 @@ namespace Mengine
             }break;
         case WM_LBUTTONDBLCLK:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDBLCLK wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDBLCLK wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1663,7 +1664,7 @@ namespace Mengine
             }break;
         case WM_RBUTTONDBLCLK:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDBLCLK wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDBLCLK wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1677,7 +1678,7 @@ namespace Mengine
             }break;
         case WM_MBUTTONDBLCLK:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDBLCLK wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDBLCLK wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1691,7 +1692,7 @@ namespace Mengine
             }break;
         case WM_LBUTTONDOWN:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDOWN wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1712,7 +1713,7 @@ namespace Mengine
             break;
         case WM_LBUTTONUP:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONUP wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1737,7 +1738,7 @@ namespace Mengine
             }break;
         case WM_RBUTTONDOWN:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDOWN wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1757,7 +1758,7 @@ namespace Mengine
             }break;
         case WM_RBUTTONUP:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONUP wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1782,7 +1783,7 @@ namespace Mengine
             }break;
         case WM_MBUTTONDOWN:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDOWN wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1802,7 +1803,7 @@ namespace Mengine
             }break;
         case WM_MBUTTONUP:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONUP wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1827,7 +1828,7 @@ namespace Mengine
             }break;
         case WM_KEYDOWN:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_KEYDOWN wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_KEYDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1851,7 +1852,7 @@ namespace Mengine
             }break;
         case WM_KEYUP:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_KEYUP wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_KEYUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1875,7 +1876,7 @@ namespace Mengine
             }break;
         case WM_UNICHAR:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_UNICHAR wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_UNICHAR wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam
@@ -1889,7 +1890,7 @@ namespace Mengine
             }break;
         case WM_CHAR:
             {
-                LOGGER_INFO( "platform", "WND [%p] WM_CHAR wParam [%u] lParam [%ld] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_CHAR wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
                     , hWnd
                     , wParam
                     , lParam

@@ -2,7 +2,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ServantBase
         : public T

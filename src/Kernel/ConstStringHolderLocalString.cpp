@@ -10,4 +10,5 @@ namespace Mengine
     ConstStringHolderLocalString::~ConstStringHolderLocalString()
     {
     }
+    //////////////////////////////////////////////////////////////////////////
 }

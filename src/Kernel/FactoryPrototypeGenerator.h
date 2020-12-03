@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class FactoryPrototypeGenerator
         : public BasePrototypeGenerator
     {
@@ -37,4 +38,5 @@ namespace Mengine
     {
         return m_prototypeFactory;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

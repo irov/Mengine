@@ -1,22 +1,24 @@
 #pragma once
 
+#include "ArrowInputMousePositionProvider.h"
+
 #include "Kernel/Entity.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/Resolution.h"
+#include "Kernel/Polygon.h"
 
 #include "math/vec4.h"
 
-#include "Kernel/Polygon.h"
-
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     enum EArrowType
     {
         EAT_POINT,
         EAT_RADIUS,
         EAT_POLYGON
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class Arrow
         : public Entity
     {
@@ -72,8 +74,6 @@ namespace Mengine
         mutable Polygon m_polygonScreen;
 
         bool m_hided;
-
-        class ArrowInputMousePositionProvider;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Arrow> ArrowPtr;

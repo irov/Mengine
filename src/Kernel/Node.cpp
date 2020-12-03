@@ -320,13 +320,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    NodePtr Node::findUniqueChild( uint32_t _uniqueIdentity ) const
+    NodePtr Node::findUniqueChild( UniqueId _uniqueIdentity ) const
     {
         NodePtr found;
 
         this->foreachChildrenUnslugBreak( [&found, _uniqueIdentity]( const NodePtr & _child )
         {
-            uint32_t childUID = _child->getUniqueIdentity();
+            UniqueId childUID = _child->getUniqueIdentity();
 
             if( childUID != _uniqueIdentity )
             {
@@ -671,4 +671,5 @@ namespace Mengine
 
         return deep;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

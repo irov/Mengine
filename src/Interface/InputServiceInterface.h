@@ -3,6 +3,7 @@
 #include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputHandlerInterface.h"
+#include "Interface/InputMousePositionProviderInterface.h"
 
 #include "Config/Typedef.h"
 
@@ -28,15 +29,6 @@ namespace Mengine
         InputMouseEnterEvent enter;
         InputMouseLeaveEvent leave;
     };
-    //////////////////////////////////////////////////////////////////////////
-    class InputMousePositionProviderInterface
-        : public Interface
-    {
-    public:
-        virtual void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position, float _pressure ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<InputMousePositionProviderInterface> InputMousePositionProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class InputServiceInterface
         : public ServiceInterface
@@ -66,7 +58,7 @@ namespace Mengine
         virtual float getCursorPressure( uint32_t _touchId ) const = 0;
         virtual bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const = 0;
 
-        virtual uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) = 0;
+        virtual uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc ) = 0;
         virtual void removeMousePositionProvider( uint32_t _id ) = 0;
 
     public:
@@ -75,6 +67,7 @@ namespace Mengine
     public:
         virtual void pushEvent( const InputUnionEvent & _event ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define INPUT_SERVICE()\

@@ -5,6 +5,8 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/AssertionContainer.h"
 
 #include <algorithm>
 
@@ -24,17 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::_initializeService()
     {
-        for( uint32_t i = 0; i != MENGINE_INPUT_MAX_TOUCH; ++i )
-        {
-            m_cursorPosition[i] = mt::vec2f( 0.f, 0.f );
-            m_cursorPressure[i] = 0.f;
-        }
-
-        std::fill( m_keyBuffer, m_keyBuffer + sizeof( m_keyBuffer ), false );
-        std::fill( m_mouseBuffer, m_mouseBuffer + sizeof( m_mouseBuffer ), false );
-        std::fill( m_mouseBufferSpecial, m_mouseBufferSpecial + sizeof( m_mouseBufferSpecial ), false );
-
-        m_eventsAdd.reserve( 16 );
+        m_eventsAux.reserve( 16 );
         m_events.reserve( 16 );
 
         return true;
@@ -43,18 +35,28 @@ namespace Mengine
     void InputService::_finalizeService()
     {
         m_events.clear();
-        m_eventsAdd.clear();
+        m_eventsAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::_stopService()
     {
+#if MENGINE_DOCUMENT_ENABLE
+        for( const InputMousePositionProviderDesc & desc : m_mousePositionProviders )
+        {
+            LOGGER_ERROR( "forgot remove input mouse position provider (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_mousePositionProviders );
+
         m_mousePositionProviders.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::update()
     {
-        std::swap( m_events, m_eventsAdd );
-        m_eventsAdd.clear();
+        m_events = std::move( m_eventsAux );
 
         for( const InputUnionEvent & ev : m_events )
         {
@@ -91,7 +93,13 @@ namespace Mengine
             case IET_MOUSE_LEAVE:
                 {
                     this->mouseLeaveEvent_( ev.leave );
-                }
+                }break;
+            default:
+                {
+                    LOGGER_ERROR( "invalid input event type %u"
+                        , ev.type
+                    );
+                }break;
             }
         }
 
@@ -213,12 +221,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyMouseButtonDown() const
     {
-        return m_mouseBuffer[0] || m_mouseBuffer[1] || m_mouseBuffer[2];
+        bool isDown0 = m_mouseBuffer[0];
+        bool isDown1 = m_mouseBuffer[1];
+        bool isDown2 = m_mouseBuffer[2];
+
+        return isDown0 || isDown1 || isDown2;
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isMouseButtonDown( uint32_t _button ) const
     {
-        return m_mouseBuffer[_button];
+        MENGINE_ASSERTION_FATAL( _button < 3 );
+
+        bool isDown = m_mouseBuffer[_button];
+
+        return isDown;
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const
@@ -311,13 +327,17 @@ namespace Mengine
         return m_cursorPressure[_touchId];
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
+    uint32_t InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc )
     {
         UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         InputMousePositionProviderDesc desc;
         desc.id = new_id;
         desc.provider = _provider;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
         m_mousePositionProviders.emplace_back( desc );
 
@@ -353,7 +373,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::pushEvent( const InputUnionEvent & _event )
     {
-        m_eventsAdd.emplace_back( _event );
+        m_eventsAux.emplace_back( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::keyEvent_( const InputKeyEvent & _event )
@@ -384,8 +404,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
     {
+        MENGINE_ASSERTION_FATAL( _event.code < 3 );
+
         m_mouseBuffer[_event.code] = _event.isDown;
-        m_mouseBufferSpecial[_event.code] = this->isSpecialDown();
+
+        bool isDown = this->isSpecialDown();
+
+        m_mouseBufferSpecial[_event.code] = isDown;
 
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 

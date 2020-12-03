@@ -8,6 +8,10 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
@@ -27,6 +31,7 @@
 #include "Kernel/Stringalized.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/StringArguments.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -34,6 +39,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/StdIntTypes.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -53,13 +59,19 @@
 #include <cerrno>
 
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SETLOCALE
+#define MENGINE_SETLOCALE "C"
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DEVELOPMENT_USER_FOLDER_NAME
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME L"User"
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOW_CLASSNAME
-#define MENGINE_WINDOW_CLASSNAME L"MengineWindow"
+#define MENGINE_WINDOW_CLASSNAME "MengineWindow"
 #endif
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_EXPORT( Win32FileGroup );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
 //////////////////////////////////////////////////////////////////////////
@@ -98,6 +110,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
+        ::setlocale( LC_ALL, MENGINE_SETLOCALE );
+
         HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
 
         if( hm_ntdll != NULL )
@@ -156,7 +170,7 @@ namespace Mengine
         m_touchpad = false;
         m_desktop = true;
 
-        if( HAS_OPTION( "win32" ) )
+        if( HAS_OPTION( "win32" ) == true )
         {
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
@@ -165,7 +179,7 @@ namespace Mengine
             m_touchpad = false;
             m_desktop = true;
         }
-        else if( HAS_OPTION( "win64" ) )
+        else if( HAS_OPTION( "win64" ) == true )
         {
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
@@ -174,7 +188,7 @@ namespace Mengine
             m_touchpad = false;
             m_desktop = true;
         }
-        else if( HAS_OPTION( "mac" ) )
+        else if( HAS_OPTION( "mac" ) == true )
         {
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
@@ -182,7 +196,7 @@ namespace Mengine
             m_touchpad = false;
             m_desktop = true;
         }
-        else if( HAS_OPTION( "ios" ) )
+        else if( HAS_OPTION( "ios" ) == true )
         {
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
@@ -195,12 +209,10 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
 
-
-
             m_touchpad = true;
             m_desktop = false;
         }
-        else if( HAS_OPTION( "android" ) )
+        else if( HAS_OPTION( "android" ) == true )
         {
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
@@ -208,7 +220,7 @@ namespace Mengine
             m_touchpad = true;
             m_desktop = false;
         }
-        else if( HAS_OPTION( "wp" ) )
+        else if( HAS_OPTION( "wp" ) == true )
         {
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
@@ -228,18 +240,37 @@ namespace Mengine
             m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
 
-        if( HAS_OPTION( "touchpad" ) )
+        if( HAS_OPTION( "touchpad" ) == true )
         {
             m_touchpad = true;
         }
 
-        if( HAS_OPTION( "desktop" ) )
+        if( HAS_OPTION( "desktop" ) == true )
         {
             m_desktop = true;
         }
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
+
+        const Char * windowClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
+
+        Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH );
+
+        SERVICE_WAIT( FileServiceInterface, [this]()
+        {
+            if( this->initializeFileService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( FileServiceInterface, [this]()
+        {
+            this->finalizeFileService_();
+        } );
 
         return true;
     }
@@ -252,6 +283,28 @@ namespace Mengine
 
         m_cursors.clear();
 
+#ifdef MENGINE_DEBUG
+        for( const Win32ProcessDesc & desc : m_win32ProcessHandlers )
+        {
+            LOGGER_ERROR( "forgot remove win32 process handler (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_win32ProcessHandlers.clear();
+
+#ifdef MENGINE_DEBUG
+        for( const TimerDesc & desc : m_timers )
+        {
+            LOGGER_ERROR( "forgot remove win32 timer (doc: %s)"
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
+        m_timers.clear();
+
         if( m_hWnd != NULL )
         {
             ::CloseWindow( m_hWnd );
@@ -262,10 +315,10 @@ namespace Mengine
 
         if( m_hInstance != NULL )
         {
-            if( ::UnregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance ) == FALSE )
+            if( ::UnregisterClass( m_windowClassName, m_hInstance ) == FALSE )
             {
                 LOGGER_ERROR( "invalid UnregisterClass '%ls'"
-                    , MENGINE_WINDOW_CLASSNAME
+                    , m_windowClassName
                 );
             }
 
@@ -300,13 +353,13 @@ namespace Mengine
         ::GetSystemInfo( &sysInfo );
 
         LOGGER_MESSAGE_RELEASE( "Hardware information:" );
-        LOGGER_MESSAGE_RELEASE( "  OEM ID: %u", sysInfo.dwOemId );
-        LOGGER_MESSAGE_RELEASE( "  Number of processors: %u", sysInfo.dwNumberOfProcessors );
-        LOGGER_MESSAGE_RELEASE( "  Page size: %u", sysInfo.dwPageSize );
-        LOGGER_MESSAGE_RELEASE( "  Processor type: %u", sysInfo.dwProcessorType );
-        LOGGER_MESSAGE_RELEASE( "  Minimum application address: %lx", sysInfo.lpMinimumApplicationAddress );
-        LOGGER_MESSAGE_RELEASE( "  Maximum application address: %lx", sysInfo.lpMaximumApplicationAddress );
-        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %u", sysInfo.dwActiveProcessorMask );
+        LOGGER_MESSAGE_RELEASE( "  OEM ID: %lu", sysInfo.dwOemId );
+        LOGGER_MESSAGE_RELEASE( "  Number of processors: %lu", sysInfo.dwNumberOfProcessors );
+        LOGGER_MESSAGE_RELEASE( "  Page size: %lu", sysInfo.dwPageSize );
+        LOGGER_MESSAGE_RELEASE( "  Processor type: %lu", sysInfo.dwProcessorType );
+        LOGGER_MESSAGE_RELEASE( "  Minimum application address: %p", sysInfo.lpMinimumApplicationAddress );
+        LOGGER_MESSAGE_RELEASE( "  Maximum application address: %p", sysInfo.lpMaximumApplicationAddress );
+        LOGGER_MESSAGE_RELEASE( "  Active processor mask: %" MENGINE_PRDWORD_PTR, sysInfo.dwActiveProcessorMask );
 
         LOGGER_MESSAGE_RELEASE( "CPU information:" );
 
@@ -492,7 +545,6 @@ namespace Mengine
             return false;
         }
 
-
         MINIDUMP_EXCEPTION_INFORMATION exinfo;
 
         exinfo.ThreadId = ::GetCurrentThreadId();
@@ -579,6 +631,8 @@ namespace Mengine
     bool Win32Platform::runPlatform()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
+
+        LOGGER_MESSAGE_RELEASE( "run platform" );
 
         return true;
     }
@@ -984,6 +1038,14 @@ namespace Mengine
 
             if( handled == TRUE )
             {
+                LOGGER_INFO( "platform", "WND [%p] handled proccess wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u] (doc: %s)"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                    , MENGINE_DOCUMENT_STR( desc.doc )
+                );
+
                 return lResult;
             }
         }
@@ -995,7 +1057,8 @@ namespace Mengine
                 DWORD flagActive = LOWORD( wParam );
                 BOOL minimized = (BOOL)HIWORD( wParam );
 
-                LOGGER_INFO( "platform", "WND WM_ACTIVATE active [%lu] minimized [%u] visible [%u]"
+                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATE active [%" MENGINE_PRDWORD "] minimized [%u] visible [%u]"
+                    , hWnd
                     , flagActive
                     , minimized
                     , ::IsWindowVisible( hWnd )
@@ -1020,18 +1083,53 @@ namespace Mengine
             }break;
         case WM_ACTIVATEAPP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_ACTIVATEAPP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_SETFOCUS:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SETFOCUS wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_KILLFOCUS:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_KILLFOCUS wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_PAINT:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_PAINT wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
             }break;
         case WM_WTSSESSION_CHANGE:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_WTSSESSION_CHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 switch( wParam )
                 {
                 case WTS_SESSION_LOCK:
@@ -1050,19 +1148,23 @@ namespace Mengine
             }break;
         case WM_DISPLAYCHANGE:
             {
-                //DWORD width = LOWORD(lParam);
-                //DWORD height = HIWORD(lParam);
+                LOGGER_INFO( "platform", "WND [%p] WM_DISPLAYCHANGE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
-                //Resolution desktopResolution;
-                //desktopResolution.setWidth( width );
-                //desktopResolution.setHeight( height );
-
-                //bool fullscreenMode = m_application->getFullscreenMode();
-
-                //this->notifyWindowModeChanged( desktopResolution, fullscreenMode );
             }break;
         case WM_SIZE:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SIZE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( wParam == SIZE_MAXIMIZED )
                 {
                     LOGGER_INFO( "platform", "WND SIZE_MAXIMIZED" );
@@ -1090,6 +1192,13 @@ namespace Mengine
             }break;
         case WM_GETMINMAXINFO:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_GETMINMAXINFO wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 // Prevent the window from going smaller than some minimu size
                 MINMAXINFO * info = (MINMAXINFO *)lParam;
 
@@ -1098,12 +1207,26 @@ namespace Mengine
             }break;
         case WM_CLOSE:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_CLOSE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_close = true;
 
                 return 0;
             }break;
         case WM_SYSKEYDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
@@ -1118,6 +1241,13 @@ namespace Mengine
             }break;
         case WM_SYSKEYUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSKEYUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
@@ -1132,6 +1262,13 @@ namespace Mengine
             }break;
         case WM_SYSCOMMAND:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SYSCOMMAND wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 switch( wParam )
                 {
                 case SC_CLOSE:
@@ -1166,6 +1303,13 @@ namespace Mengine
             }break;
         case WM_SETCURSOR:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_SETCURSOR wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 bool client = LOWORD( lParam ) == HTCLIENT;
 
                 bool focus = APPLICATION_SERVICE()
@@ -1188,19 +1332,38 @@ namespace Mengine
                 return 0;
             }break;
         case WM_DESTROY:
-            LOGGER_MESSAGE_RELEASE( "Quit application" );
+            {
+                LOGGER_INFO( "platform", "WND [%p] WM_DESTROY wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
-            m_close = true;
+                LOGGER_MESSAGE_RELEASE( "Quit application" );
 
-            ::PostQuitMessage( 0 );
+                m_close = true;
 
-            return 0;
-        }
+                ::PostQuitMessage( 0 );
 
-        LRESULT input_result;
-        if( this->wndProcInput( hWnd, uMsg, wParam, lParam, &input_result ) == true )
-        {
-            return input_result;
+                return 0;
+            }break;
+        default:
+            {
+                LOGGER_INFO( "platform", "WND [%p] message [%u] wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , uMsg
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+                LRESULT input_result;
+                if( this->wndProcInput( hWnd, uMsg, wParam, lParam, &input_result ) == true )
+                {
+                    return input_result;
+                }
+            }break;
         }
 
         LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
@@ -1283,6 +1446,13 @@ namespace Mengine
         {
         case WM_TIMER:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_TIMER wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( wParam == MENGINE_UTIMER_MOUSE_EVENT )
                 {
                     m_mouseEvent.verify();
@@ -1293,6 +1463,13 @@ namespace Mengine
             }break;
         case UWM_MOUSE_LEAVE:
             {
+                LOGGER_INFO( "platform", "WND [%p] UWM_MOUSE_LEAVE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_cursorInArea == true )
                 {
                     m_cursorInArea = false;
@@ -1331,7 +1508,12 @@ namespace Mengine
             //    }break;
         case WM_MOUSEMOVE:
             {
-                //::SetFocus( m_hWnd );
+                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEMOVE wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
@@ -1444,6 +1626,13 @@ namespace Mengine
             }break;
         case WM_MOUSEWHEEL:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MOUSEWHEEL wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 int32_t zDelta = (int32_t)(int16_t)(HIWORD( wParam ));
 
                 mt::vec2f point;
@@ -1461,6 +1650,13 @@ namespace Mengine
             }break;
         case WM_LBUTTONDBLCLK:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDBLCLK wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_isDoubleClick[0] = true;
 
                 handle = true;
@@ -1468,6 +1664,13 @@ namespace Mengine
             }break;
         case WM_RBUTTONDBLCLK:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDBLCLK wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_isDoubleClick[1] = true;
 
                 handle = true;
@@ -1475,6 +1678,13 @@ namespace Mengine
             }break;
         case WM_MBUTTONDBLCLK:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDBLCLK wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 m_isDoubleClick[2] = true;
 
                 handle = true;
@@ -1482,6 +1692,13 @@ namespace Mengine
             }break;
         case WM_LBUTTONDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
@@ -1496,6 +1713,13 @@ namespace Mengine
             break;
         case WM_LBUTTONUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_LBUTTONUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_isDoubleClick[0] == false )
                 {
                     mt::vec2f point;
@@ -1514,6 +1738,13 @@ namespace Mengine
             }break;
         case WM_RBUTTONDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
@@ -1527,6 +1758,13 @@ namespace Mengine
             }break;
         case WM_RBUTTONUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_RBUTTONUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_isDoubleClick[1] == false )
                 {
                     mt::vec2f point;
@@ -1545,6 +1783,13 @@ namespace Mengine
             }break;
         case WM_MBUTTONDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
@@ -1558,6 +1803,13 @@ namespace Mengine
             }break;
         case WM_MBUTTONUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_MBUTTONUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 if( m_isDoubleClick[2] == false )
                 {
                     mt::vec2f point;
@@ -1576,6 +1828,13 @@ namespace Mengine
             }break;
         case WM_KEYDOWN:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_KEYDOWN wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 UINT vkc = static_cast<UINT>(wParam);
 
                 mt::vec2f point;
@@ -1593,6 +1852,13 @@ namespace Mengine
             }break;
         case WM_KEYUP:
             {
+                LOGGER_INFO( "platform", "WND [%p] WM_KEYUP wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
                 UINT vkc = static_cast<UINT>(wParam);
 
                 mt::vec2f point;
@@ -1609,14 +1875,29 @@ namespace Mengine
                 *_result = FALSE;
             }break;
         case WM_UNICHAR:
-            if( wParam == UNICODE_NOCHAR )
             {
-                *_result = 1;
+                LOGGER_INFO( "platform", "WND [%p] WM_UNICHAR wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
 
+                if( wParam == UNICODE_NOCHAR )
+                {
+                    *_result = 1;
+                }
             }break;
         case WM_CHAR:
             {
-                Char utf8[5];
+                LOGGER_INFO( "platform", "WND [%p] WM_CHAR wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%u]"
+                    , hWnd
+                    , wParam
+                    , lParam
+                    , ::IsWindowVisible( hWnd )
+                );
+
+                Char utf8[5] = {'\0'};
                 if( s_sonvertUTF32toUTF8( (uint32_t)wParam, utf8 ) == true )
                 {
                     mt::vec2f point;
@@ -1633,6 +1914,9 @@ namespace Mengine
                     handle = true;
                     *_result = 0;
                 }
+            }break;
+        default:
+            {
             }break;
         }
 
@@ -1673,7 +1957,7 @@ namespace Mengine
         {
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
-            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
+            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, m_windowClassName, m_projectTitle ) == false )
             {
                 LOGGER_ERROR( "Application invalid running monitor"
                 );
@@ -1700,7 +1984,7 @@ namespace Mengine
             , m_hInstance
             , m_icon
             , black_brush
-            , MENGINE_WINDOW_CLASSNAME );
+            , m_windowClassName );
 
         if( result == 0 )
         {
@@ -1724,7 +2008,7 @@ namespace Mengine
 
         DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
 
-        HWND hWnd = ::CreateWindowEx( dwExStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
+        HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName, m_projectTitle
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
             , NULL, NULL, m_hInstance, (LPVOID)this );
@@ -2255,9 +2539,9 @@ namespace Mengine
 
             if( successful == FALSE )
             {
-                DWORD err = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                switch( err )
+                switch( error )
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
@@ -2279,7 +2563,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "directory '%ls' unknown [error: %lu]"
                             , path.c_str()
-                            , err
+                            , error
                         );
 
                         return false;
@@ -2349,13 +2633,13 @@ namespace Mengine
 
         if( ::DeleteFile( pathCorrect ) == FALSE )
         {
-            DWORD err = ::GetLastError();
+            DWORD error = ::GetLastError();
 
-            MENGINE_UNUSED( err );
+            MENGINE_UNUSED( error );
 
             LOGGER_ERROR( "file '%ls' [error: %lu]"
                 , pathCorrect
-                , err
+                , error
             );
 
             return false;
@@ -2414,13 +2698,13 @@ namespace Mengine
 
             if( ::DeleteFile( newFilePathCorrect ) == FALSE )
             {
-                DWORD err = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                MENGINE_UNUSED( err );
+                MENGINE_UNUSED( error );
 
                 LOGGER_ERROR( "invalid move file '%ls' [error: %lu]"
                     , newFilePathCorrect
-                    , err
+                    , error
                 );
             }
         }
@@ -4002,13 +4286,19 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda )
+    uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         Win32ProcessDesc desc;
         desc.id = id;
         desc.lambda = _lambda;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
 
         m_win32ProcessHandlers.emplace_back( desc );
 
@@ -4086,6 +4376,73 @@ namespace Mengine
         time_t time = ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
 
         return time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::initializeFileService_()
+    {
+        LOGGER_INFO( "system", "Inititalizing File Service..." );
+
+        LOGGER_INFO( "system", "Initialize Win32 file group..." );
+
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
+
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        size_t currentPathLen = PLATFORM_SERVICE()
+            ->getCurrentPath( currentPath );
+
+        if( currentPathLen == 0 )
+        {
+            LOGGER_ERROR( "failed to get current directory" );
+
+            return false;
+        }
+
+        LOGGER_MESSAGE_RELEASE( "Current Path: %s"
+            , currentPath
+        );
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount application directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount dev directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+#endif
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::finalizeFileService_()
+    {
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount dev directory"
+            );
+        }
+#endif
+
+        if( FILE_SERVICE()
+            ->unmountFileGroup( ConstString::none() ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount application directory"
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

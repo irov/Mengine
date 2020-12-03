@@ -48,7 +48,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "file '%ls' invalid open [error %lu]"
+            LOGGER_ERROR( "file '%ls' invalid open [error: %lu]"
                 , concatenatePath
                 , error
             );
@@ -64,7 +64,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid create file mapping '%ls' error %lu"
+            LOGGER_ERROR( "invalid create file mapping '%ls' [error: %lu]"
                 , concatenatePath
                 , error
             );
@@ -83,7 +83,7 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid map view of file '%ls' error %lu"
+            LOGGER_ERROR( "invalid map view of file '%ls' [error: %lu]"
                 , concatenatePath
                 , error
             );
@@ -108,11 +108,11 @@ namespace Mengine
         {
             if( ::UnmapViewOfFile( m_memory ) == FALSE )
             {
-                DWORD uError = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                LOGGER_ERROR( "invalid UnmapViewOfFile %p error %lu"
+                LOGGER_ERROR( "invalid UnmapViewOfFile %p [error: %lu]"
                     , m_memory
-                    , uError
+                    , error
                 );
             }
 

@@ -73,5 +73,6 @@ namespace Mengine
     const VectorConstString & Tags::getValues() const
     {
         return m_values;
-    }    
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

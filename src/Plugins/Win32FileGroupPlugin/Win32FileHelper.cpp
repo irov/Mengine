@@ -31,11 +31,11 @@ namespace Mengine
 
             if( handle == INVALID_HANDLE_VALUE )
             {
-                DWORD err_code = ::GetLastError();
+                DWORD error = ::GetLastError();
 
-                LOGGER_ERROR( "invalid create file '%ls' err [%lu]"
+                LOGGER_ERROR( "invalid create file '%ls' [error: %lu]"
                     , pathCorrect
-                    , err_code
+                    , error
                 );
 
                 return INVALID_HANDLE_VALUE;
@@ -62,7 +62,7 @@ namespace Mengine
             {
                 DWORD error = ::GetLastError();
 
-                LOGGER_ERROR( "File invalid find ??? (%ls) [error %lu]"
+                LOGGER_ERROR( "File invalid find ??? (%ls) [error: %lu]"
                     , _path
                     , error
                 );

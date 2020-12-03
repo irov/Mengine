@@ -19,6 +19,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, bool * const _value );
         bool stringalized( const Char * _string, int8_t * const _value );
         bool stringalized( const Char * _string, uint8_t * const _value );
@@ -39,7 +40,7 @@ namespace Mengine
         bool stringalized( const Char * _string, Resolution * const _value );
         bool stringalized( const Char * _string, Color * const _value );
         bool stringalized( const Char * _string, AspectRatioViewport * const _value );
-
+        //////////////////////////////////////////////////////////////////////////
         bool stringalized( bool _value, Char * const _string, size_t _capacity );
         bool stringalized( int8_t _value, Char * const _string, size_t _capacity );
         bool stringalized( uint8_t _value, Char * const _string, size_t _capacity );
@@ -60,5 +61,6 @@ namespace Mengine
         bool stringalized( const Resolution & _value, Char * const _string, size_t _capacity );
         bool stringalized( const Color & _value, Char * const _string, size_t _capacity );
         bool stringalized( const AspectRatioViewport & _value, Char * const _string, size_t _capacity );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

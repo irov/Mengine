@@ -4,6 +4,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         NodePtr findUniqueNode( const NodePtr & _root, const VectorNodePath & _nodePath )
         {
             NodePtr finder = _root;
@@ -22,5 +23,6 @@ namespace Mengine
 
             return finder;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

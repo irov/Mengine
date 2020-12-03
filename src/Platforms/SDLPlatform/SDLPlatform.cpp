@@ -11,6 +11,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
@@ -64,6 +65,8 @@
 #   define SDL_IPHONE_MAX_GFORCE 5.0f
 #   endif
 #endif
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_EXPORT( SDLFileGroup );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::SDLPlatform );
 //////////////////////////////////////////////////////////////////////////
@@ -362,6 +365,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
+        ::setlocale( LC_ALL, "C" );
+
         SDL_version ver;
         SDL_GetVersion( &ver );
 
@@ -558,6 +563,21 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "Android SDK version: %d", AndroidSDKVersion );
         LOGGER_MESSAGE_RELEASE( "Android TV: %d", AndroidTV );
 #endif
+
+        SERVICE_WAIT( FileServiceInterface, [this]()
+        {
+            if( this->initializeFileService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( FileServiceInterface, [this]()
+        {
+            this->finalizeFileService_();
+        } );
 
         return true;
     }
@@ -2429,4 +2449,57 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->turnSound( _active );
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::initializeFileService_()
+    {
+        LOGGER_INFO( "application", "Initialize SDL file group..." );
+
+        PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            LOGGER_ERROR( "failed to mount application directory"
+            );
+
+            return false;
+        }
+
+#ifndef MENGINE_MASTER_RELEASE
+        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
+        // mount root
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), defaultFileGroup, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            LOGGER_ERROR( "failed to mount dev directory"
+            );
+
+            return false;
+        }
+#endif
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::finalizeFileService_()
+    {
+#ifndef MENGINE_MASTER_RELEASE
+        if( FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount dev directory"
+            );
+        }
+#endif
+
+        if( FILE_SERVICE()
+            ->unmountFileGroup( ConstString::none() ) == false )
+        {
+            LOGGER_ERROR( "failed to unmount application directory"
+            );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

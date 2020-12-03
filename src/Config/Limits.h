@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #include <limits.h>
 
 #define MENGINE_INT_MIN (INT_MIN)

@@ -174,11 +174,16 @@ namespace Mengine
         void setActive_( bool _active );
 
     protected:
+        bool initializeFileService_();
+        void finalizeFileService_();
+
+    protected:
         SDL_malloc_func m_old_SDL_malloc_func;
         SDL_calloc_func m_old_SDL_calloc_func;
         SDL_realloc_func m_old_SDL_realloc_func;
         SDL_free_func m_old_SDL_free_func;
 
+    protected:
         Tags m_platformTags;
         Resolution m_windowResolution;
         bool m_fullscreen;

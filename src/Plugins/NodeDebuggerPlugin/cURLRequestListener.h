@@ -2,6 +2,8 @@
 
 #include "Plugins/cURLPlugin/cURLInterface.h"
 
+#include "SceneDataProviderInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -14,23 +16,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<RequestData> VectorRequestData;
     //////////////////////////////////////////////////////////////////////////
-    class cURLRequestLogger
+    class cURLRequestListener
         : public Factorable
-        , public cURLRequestLoggerInterface
+        , public cURLRequestListenerInterface
     {
     public:
-        cURLRequestLogger();
-        ~cURLRequestLogger() override;
+        cURLRequestListener();
+        ~cURLRequestListener() override;
 
     public:
         void request( HttpRequestID  _id, const String & _url ) override;
         void response( HttpRequestID  _id, const String & _url ) override;
+
+        void setSceneDataProvider( const SceneDataProviderInterfacePtr & _sceneDataProvider );
 
     public:
         void getPreparedData( VectorRequestData * _outData );
 
     protected:
         VectorRequestData m_data;
+        SceneDataProviderInterfacePtr m_sceneDataProvider;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLRequestLogger> cURLRequestLoggerPtr;

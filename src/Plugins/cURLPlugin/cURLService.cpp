@@ -391,7 +391,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLService::setRequestListener( const cURLRequestLoggerInterfacePtr & _listener )
+    void cURLService::setRequestListener( const cURLRequestListenerInterfacePtr & _listener )
     {
         m_networkListener = _listener;
     }

@@ -24,6 +24,7 @@
 
 #include "NodeDebuggerSerialization.h"
 #include "cURLRequestLogger.h"
+#include "SceneDataProviderInterface.h"
 
 namespace Mengine
 {
@@ -52,6 +53,7 @@ namespace Mengine
     class NodeDebuggerModule
         : public ModuleBase
         , public ThreadWorkerInterface
+        , public SceneDataProviderInterface
     {
     public:
         NodeDebuggerModule();
@@ -124,6 +126,9 @@ namespace Mengine
         void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
         void notifyIncrefFactoryGeneration( uint32_t _generator );
+
+    public:
+        void setUpdateSceneFlag( bool _flag ) override;
 
     protected:
         uint32_t m_globalKeyHandlerF2;

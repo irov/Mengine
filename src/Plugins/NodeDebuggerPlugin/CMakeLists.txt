@@ -11,8 +11,10 @@ ADD_FILTER(
 
     NodeDebuggerSerialization.h
     
-    cURLRequestLogger.h
-    cURLRequestLogger.cpp
+    cURLRequestListener.h
+    cURLRequestListener.cpp
+    
+    InvalidateSceneInterface.h
 )
 
 ADD_FILTER(

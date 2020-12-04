@@ -1,17 +1,17 @@
-#include "cURLRequestLogger.h"
+#include "cURLRequestListener.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    cURLRequestLogger::cURLRequestLogger()
+    cURLRequestListener::cURLRequestListener()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    cURLRequestLogger::~cURLRequestLogger()
+    cURLRequestListener::~cURLRequestListener()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLRequestLogger::request( HttpRequestID _id, const String & _url )
+    void cURLRequestListener::request( HttpRequestID _id, const String & _url )
     {
         RequestData requestData;
 
@@ -20,9 +20,11 @@ namespace Mengine
         requestData.type = "Request";
 
         m_data.push_back( requestData );
+
+        m_sceneDataProvider->setUpdateSceneFlag( true );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLRequestLogger::response( HttpRequestID _id, const String & _url )
+    void cURLRequestListener::response( HttpRequestID _id, const String & _url )
     {
         RequestData responseData;
 
@@ -31,9 +33,16 @@ namespace Mengine
         responseData.type = "Response";
 
         m_data.push_back( responseData );
+
+        m_sceneDataProvider->setUpdateSceneFlag( true );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLRequestLogger::getPreparedData( VectorRequestData * _outData )
+    void cURLRequestListener::setSceneDataProvider( const SceneDataProviderInterfacePtr & _sceneDataProvider )
+    {
+        m_sceneDataProvider = _sceneDataProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLRequestListener::getPreparedData( VectorRequestData * _outData )
     {
         std::copy( m_data.begin(), m_data.end(), std::back_inserter( *_outData ) );
     }

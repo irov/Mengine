@@ -92,7 +92,12 @@ namespace Mengine
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
 
-        m_networkLogger = Helper::makeFactorableUnique<cURLRequestLogger>( MENGINE_DOCUMENT_FACTORABLE );
+        cURLRequestLoggerPtr logger = Helper::makeFactorableUnique<cURLRequestLogger>( MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ASSERTION_RETURN( logger != nullptr, false );
+
+        logger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ));
+
+        m_networkLogger = logger;
 
         CURL_SERVICE()
             ->setRequestListener( m_networkLogger );
@@ -1752,6 +1757,11 @@ namespace Mengine
         MENGINE_UNUSED( _generator );
 
         m_shouldUpdateScene = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::setUpdateSceneFlag( bool _flag )
+    {
+        m_shouldUpdateScene = _flag;
     }
     //////////////////////////////////////////////////////////////////////////
 }

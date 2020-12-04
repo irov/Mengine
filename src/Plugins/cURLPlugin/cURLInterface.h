@@ -62,7 +62,8 @@ namespace Mengine
         virtual bool cancelRequest( HttpRequestID _id ) = 0;
         
     public:
-        virtual void setRequestListener( const cURLRequestListenerInterfacePtr & _listener ) = 0;
+        virtual int32_t addRequestListener( const cURLRequestListenerInterfacePtr & _listener, const DocumentPtr & _doc ) = 0;
+        virtual void removeRequestListener( int32_t id ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

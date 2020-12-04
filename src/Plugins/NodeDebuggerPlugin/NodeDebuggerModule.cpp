@@ -60,6 +60,7 @@ namespace Mengine
         , m_shouldUpdateScene( false )
         , m_workerId( 0 )
         , m_globalKeyHandlerF2( 0 )
+        , m_requestListenerId( -1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -92,15 +93,15 @@ namespace Mengine
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
 
-        cURLRequestLoggerPtr logger = Helper::makeFactorableUnique<cURLRequestLogger>( MENGINE_DOCUMENT_FACTORABLE );
+        cURLRequestListenerPtr logger = Helper::makeFactorableUnique<cURLRequestListener>( MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ASSERTION_RETURN( logger != nullptr, false );
 
         logger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ));
 
         m_networkLogger = logger;
 
-        CURL_SERVICE()
-            ->setRequestListener( m_networkLogger );
+        m_requestListenerId = CURL_SERVICE()
+            ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -148,6 +149,9 @@ namespace Mengine
             Helper::removeGlobalHandler( m_globalKeyHandlerF2 );
             m_globalKeyHandlerF2 = 0;
         }
+
+        CURL_SERVICE()
+            ->removeRequestListener( m_requestListenerId );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const
@@ -358,11 +362,6 @@ namespace Mengine
     void NodeDebuggerModule::_update( bool _focus )
     {
         MENGINE_UNUSED( _focus );
-
-        if( m_currentTab == "network" )
-        {
-            this->sendNetwork();
-        }
 
         if( m_shouldRecreateServer == true )
         {

@@ -23,7 +23,7 @@
 #include "Kernel/Scene.h"
 
 #include "NodeDebuggerSerialization.h"
-#include "cURLRequestLogger.h"
+#include "cURLRequestListener.h"
 #include "SceneDataProviderInterface.h"
 
 namespace Mengine
@@ -150,6 +150,7 @@ namespace Mengine
         ArchivatorInterfacePtr m_archivator;
         String m_currentTab;
 
-        cURLRequestLoggerPtr m_networkLogger;
+        cURLRequestListenerPtr m_networkLogger;
+        int32_t m_requestListenerId;
     };
 }

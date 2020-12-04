@@ -13,7 +13,6 @@ namespace Mengine
     class cURLService
         : public ServiceBase<cURLServiceInterface>
         , public cURLReceiverInterface
-
     {
     public:
         cURLService();
@@ -37,7 +36,8 @@ namespace Mengine
         bool cancelRequest( HttpRequestID _id ) override;
 
     protected:
-        void setRequestListener( const cURLRequestListenerInterfacePtr & _listener ) override;
+        int32_t addRequestListener( const cURLRequestListenerInterfacePtr & _listener, const DocumentPtr & _doc ) override;
+        void removeRequestListener( int32_t id ) override;
 
     protected:
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override;
@@ -47,7 +47,17 @@ namespace Mengine
 
     protected:
         ThreadQueueInterfacePtr m_threadQueue;
-        cURLRequestListenerInterfacePtr m_networkListener;
+
+        struct RequestListenerDesk
+        {
+            cURLRequestListenerInterfacePtr listener;
+            int32_t id;
+#if MENGINE_DOCUMENT_ENABLE
+            DocumentPtr doc;
+#endif
+        };
+        typedef Vector< RequestListenerDesk > VectorNetworkListeners;
+        VectorNetworkListeners m_networkListeners;
 
         typedef Vector<ConstString> VectorThreads;
         VectorThreads m_threads;

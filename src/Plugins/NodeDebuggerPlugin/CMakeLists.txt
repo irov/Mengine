@@ -14,7 +14,7 @@ ADD_FILTER(
     cURLRequestListener.h
     cURLRequestListener.cpp
     
-    InvalidateSceneInterface.h
+    SceneDataProviderInterface.h
 )
 
 ADD_FILTER(

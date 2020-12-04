@@ -33,6 +33,6 @@ namespace Mengine
         HINSTANCE m_hInstance;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Win32DynamicLibrary> Win32DynamicLibraryPtr;
+    typedef IntrusivePtr<Win32DynamicLibrary, DynamicLibraryInterface> Win32DynamicLibraryPtr;
     //////////////////////////////////////////////////////////////////////////
 };

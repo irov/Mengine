@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLRequestListener::getPreparedData( VectorRequestData * _outData )
     {
-        std::copy( m_data.begin(), m_data.end(), std::back_inserter( *_outData ) );
+        _outData->assign( m_data.begin(), m_data.end() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

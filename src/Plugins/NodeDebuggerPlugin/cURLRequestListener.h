@@ -38,6 +38,6 @@ namespace Mengine
         SceneDataProviderInterfacePtr m_sceneDataProvider;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLRequestLogger> cURLRequestLoggerPtr;
+    typedef IntrusivePtr<cURLRequestListener> cURLRequestListenerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

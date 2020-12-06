@@ -654,6 +654,8 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
         SET(ALSOFT_ENABLE_SSE2_CODEGEN ON CACHE BOOL "Enable SSE2 code generation instead of x87 for 32-bit targets." FORCE)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
+        SET(ALSOFT_CPUEXT_SSE3 OFF CACHE BOOL "Enable SSE3 support" FORCE)
+        SET(ALSOFT_CPUEXT_SSE4_1 OFF CACHE BOOL "Enable SSE4.1 support" FORCE)
         
         if(MENGINE_TOOLCHAIN_MSVC)			
             SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)

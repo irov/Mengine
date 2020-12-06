@@ -203,7 +203,7 @@ namespace Mengine
             if( decodeSize < 0 )
             {
                 LOGGER_ERROR( "invalid ov_read [error: %s (%ld)]"
-                    , s_error_info( decodeSize )
+                    , s_error_info( (int32_t)decodeSize )
                     , decodeSize
                 );
 

@@ -52,11 +52,13 @@ namespace Mengine
         {
             cURLRequestListenerInterfacePtr listener;
             int32_t id;
+
 #if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc;
 #endif
         };
-        typedef Vector< RequestListenerDesk > VectorNetworkListeners;
+
+        typedef Vector<RequestListenerDesk> VectorNetworkListeners;
         VectorNetworkListeners m_networkListeners;
 
         typedef Vector<ConstString> VectorThreads;

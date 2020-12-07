@@ -60,7 +60,7 @@ namespace Mengine
         , m_shouldUpdateScene( false )
         , m_workerId( 0 )
         , m_globalKeyHandlerF2( 0 )
-        , m_requestListenerId( -1 )
+        , m_requestListenerId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ namespace Mengine
 #endif
 
         cURLRequestListenerPtr logger = Helper::makeFactorableUnique<cURLRequestListener>( MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ASSERTION_RETURN( logger != nullptr, false );
+        MENGINE_ASSERTION_FATAL( logger != nullptr );
 
         logger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ));
 
@@ -102,6 +102,8 @@ namespace Mengine
 
         m_requestListenerId = CURL_SERVICE()
             ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
 
         return true;
     }

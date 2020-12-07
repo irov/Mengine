@@ -483,7 +483,7 @@ namespace Mengine
         void ShowResponseDataForId( uint32_t _id );
         void addSpacesWithMultiplier( String * const _out, uint32_t _spacesCount, uint32_t _multiplier );
         void ShowResponseJpp( const jpp::object & _object, int _spaceCounter );
-        void GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out );
+        void GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out ) const;
 
     private:
         GLFWwindow * m_window;
@@ -560,9 +560,8 @@ namespace Mengine
             uint32_t id;
             String url;
         };
-        typedef Vector<NetworkDesk> VectorNetwork;
 
+        typedef Vector<NetworkDesk> VectorNetwork;
         VectorNetwork m_network;
-        uint32_t m_networkTextLabelCounter;
     };
 }

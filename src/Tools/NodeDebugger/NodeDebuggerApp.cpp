@@ -7,6 +7,7 @@
 #include "stb_image.h"
 
 #include "Kernel/Stringstream.h"
+#include "Kernel/Assertion.h"
 
 #include <chrono>
 #include <sstream>
@@ -110,7 +111,6 @@ namespace Mengine
         , m_TextureCount( 0 )
         , m_SoundSourcesCount( 0 )
         , m_SoundBuffersCount( 0 )
-        , m_networkTextLabelCounter( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1531,6 +1531,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, int _spaceCounter )
     {
+        uint32_t networkTextLabelCounter = 0;
         for( auto && [key, value] : _object )
         {
             String spaces;
@@ -1556,8 +1557,8 @@ namespace Mengine
                 ImGui::SameLine();
                
                 // TODO need make ability for copy text from ImGui::InputText
-                String label = Helper::stringFormat( "##%d", m_networkTextLabelCounter );
-                ++m_networkTextLabelCounter;
+                String label = Helper::stringFormat( "##%d", networkTextLabelCounter );
+                ++networkTextLabelCounter;
 
                 ImGui::PushItemWidth( 5.f + 8.f * valueStr.size() );
                 ImGui::InputText( label.c_str(), (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
@@ -1566,42 +1567,32 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out )
+    void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out ) const
     {
         switch( _jppType )
         {
         case jpp::e_type::JPP_INTEGER:
             {
-                int valueInteger = _object;
+                int32_t valueInteger = _object;
                 *_out = Helper::stringFormat( "%d", valueInteger );
-
-                break;
-            }
+            }break;
         case jpp::e_type::JPP_REAL:
             {
                 float valueDouble = _object;
                 *_out = Helper::stringFormat( "%f", valueDouble );
-
-                break;
-            }
+            }break;
         case jpp::e_type::JPP_FALSE:
             {
                 *_out = "false";
-                
-                break;
-            }
+            }break;
         case jpp::e_type::JPP_TRUE:
             {
                 *_out = "true";
-
-                break;
-            }
+            }break;
         case jpp::e_type::JPP_STRING:
             {
                 *_out = (const Char *)_object;
-
-                break;
-            }
+            }break;
         case jpp::e_type::JPP_ARRAY:
             {
                 for( const jpp::object & element : jpp::array(_object) )
@@ -1609,15 +1600,15 @@ namespace Mengine
                     jpp::e_type elementType = element.type();
                     this->GetValueStringForJppType( element, elementType, _out );
                 }
-
-                break;
-            }
+            }break;
         case jpp::e_type::JPP_NULL:
             {
                 *_out = "null";
-
-                break;
-            }
+            }break;
+        case jpp::e_type::JPP_OBJECT:
+            {
+                MENGINE_ASSERTION_FATAL( false );
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -151,6 +151,6 @@ namespace Mengine
         String m_currentTab;
 
         cURLRequestListenerPtr m_networkLogger;
-        int32_t m_requestListenerId;
+        UniqueId m_requestListenerId;
     };
 }

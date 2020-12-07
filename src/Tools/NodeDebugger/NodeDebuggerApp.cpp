@@ -1502,8 +1502,8 @@ namespace Mengine
         char label_node[32];
         sprintf( label_node, "Response %u"
             , _id
-
         );
+
         if( ImGui::TreeNode( label_node ) )
         {
             if( responseIterator == m_network.end() )
@@ -1523,13 +1523,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::addSpacesWithMultiplier( String * const _out, uint32_t _spacesCount, uint32_t _multiplier )
     {
-        for( uint32_t i = 0; i != _spacesCount * _multiplier; ++i )
-        {
-            *_out += ' ';
-        }
+        _out->append( _spacesCount * _multiplier, ' ' );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, int _spaceCounter )
+    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter )
     {
         uint32_t networkTextLabelCounter = 0;
         for( auto && [key, value] : _object )
@@ -1544,12 +1541,13 @@ namespace Mengine
             {
                 text = spaces + key;
                 ImGui::Text( "%s", text.c_str() );
-                this->ShowResponseJpp( value, ++_spaceCounter );
+                ++_spaceCounter;
+                this->ShowResponseJpp( value, _spaceCounter );
             }
             else
             {
                 String valueStr;
-                this->GetValueStringForJppType( value, jppType, &valueStr );
+                this->GetValueStringForJppType( value, jppType, &valueStr, _spaceCounter );
 
                 text = spaces + key + ":" + valueStr.c_str();
 
@@ -1567,7 +1565,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out ) const
+    void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out, uint32_t _spaceCounter )
     {
         switch( _jppType )
         {
@@ -1598,7 +1596,7 @@ namespace Mengine
                 for( const jpp::object & element : jpp::array(_object) )
                 {
                     jpp::e_type elementType = element.type();
-                    this->GetValueStringForJppType( element, elementType, _out );
+                    this->GetValueStringForJppType( element, elementType, _out, _spaceCounter );
                 }
             }break;
         case jpp::e_type::JPP_NULL:
@@ -1607,7 +1605,8 @@ namespace Mengine
             }break;
         case jpp::e_type::JPP_OBJECT:
             {
-                MENGINE_ASSERTION_FATAL( false );
+                ++_spaceCounter;
+                this->ShowResponseJpp( _object, _spaceCounter );
             }break;
         }
     }

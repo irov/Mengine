@@ -1529,31 +1529,42 @@ namespace Mengine
     void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter )
     {
         uint32_t networkTextLabelCounter = 0;
-        for( auto && [key, value] : _object )
+
+        String spaces;
+        this->addSpacesWithMultiplier( &spaces, 2, _spaceCounter );
+
+        jpp::e_type jppType = _object.type();
+
+        switch( jppType )
         {
-            String spaces;
-            this->addSpacesWithMultiplier( &spaces, 2, _spaceCounter );
-
-            String text;
-
-            jpp::e_type jppType = value.type();
-            if( jppType == jpp::e_type::JPP_OBJECT )
+        case jpp::e_type::JPP_OBJECT:
             {
-                text = spaces + key;
-                ImGui::Text( "%s", text.c_str() );
-                ++_spaceCounter;
-                this->ShowResponseJpp( value, _spaceCounter );
-            }
-            else
+                for( auto && [key, value] : _object )
+                {
+                    ImGui::Text( "%s%s: ", spaces.c_str(), key );
+                    ImGui::SameLine();
+
+                    ++_spaceCounter;
+                    this->ShowResponseJpp( value, _spaceCounter );
+                    --_spaceCounter;
+                }
+            }break;
+        case jpp::e_type::JPP_ARRAY:
+            {
+                uint32_t arrayElementsEnumerator = 0;
+                for( const jpp::object & element : jpp::array( _object ) )
+                {
+                    ImGui::Text( "%u:", arrayElementsEnumerator );
+                    ImGui::SameLine();
+
+                    this->ShowResponseJpp( element, _spaceCounter );
+                }
+            }break;
+        default:
             {
                 String valueStr;
-                this->GetValueStringForJppType( value, jppType, &valueStr, _spaceCounter );
-
-                text = spaces + key + ":" + valueStr.c_str();
-
-                ImGui::Text( "%s%s: ", spaces.c_str(), key );
-                ImGui::SameLine();
-               
+                this->GetValueStringForJppType( _object, jppType, &valueStr, _spaceCounter );
+                
                 // TODO need make ability for copy text from ImGui::InputText
                 String label = Helper::stringFormat( "##%d", networkTextLabelCounter );
                 ++networkTextLabelCounter;
@@ -1561,7 +1572,7 @@ namespace Mengine
                 ImGui::PushItemWidth( 5.f + 8.f * valueStr.size() );
                 ImGui::InputText( label.c_str(), (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
                 ImGui::PopItemWidth();
-            }
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1590,14 +1601,6 @@ namespace Mengine
         case jpp::e_type::JPP_STRING:
             {
                 *_out = (const Char *)_object;
-            }break;
-        case jpp::e_type::JPP_ARRAY:
-            {
-                for( const jpp::object & element : jpp::array(_object) )
-                {
-                    jpp::e_type elementType = element.type();
-                    this->GetValueStringForJppType( element, elementType, _out, _spaceCounter );
-                }
             }break;
         case jpp::e_type::JPP_NULL:
             {

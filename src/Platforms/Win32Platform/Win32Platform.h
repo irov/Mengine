@@ -153,10 +153,17 @@ namespace Mengine
         bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result );
 
     protected:
-        bool calcCursorPosition_( mt::vec2f * const _point ) const;
+        bool calcCursorPosition_( mt::vec2f * const _position ) const;
+        bool adaptCursorPosition_( POINT _point, mt::vec2f * const _position ) const;
+        bool getCursorPosition_( POINT _point, mt::vec2f * const _position ) const;
+
+    protected:
         DWORD getWindowStyle_( bool _fullsreen ) const;
         DWORD getWindowExStyle_( bool _fullsreen ) const;
         bool calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const;
+
+    protected:
+        bool sendChar_( WPARAM wParam );
 
     protected:
         void setActive_( bool _active );

@@ -1478,10 +1478,14 @@ namespace Mengine
                     ::InvalidateRect( hWnd, NULL, FALSE );
                     ::UpdateWindow( hWnd );
 
+                    POINT p;
+                    p.x = GET_X_LPARAM( lParam );
+                    p.y = GET_Y_LPARAM( lParam );
+
                     mt::vec2f point;
-                    if( this->calcCursorPosition_( &point ) == false )
+                    if( this->getCursorPosition_( p, &point ) == false )
                     {
-                        return 0;
+                        return false;
                     }
 
                     Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
@@ -1522,8 +1526,12 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
+                POINT p;
+                p.x = GET_X_LPARAM( lParam );
+                p.y = GET_Y_LPARAM( lParam );
+
                 mt::vec2f point;
-                if( this->calcCursorPosition_( &point ) == false )
+                if( this->getCursorPosition_( p, &point ) == false )
                 {
                     return false;
                 }
@@ -1570,50 +1578,24 @@ namespace Mengine
                     Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
                 }
 
-                int32_t x = (int32_t)(int16_t)LOWORD( lParam );
-                int32_t y = (int32_t)(int16_t)HIWORD( lParam );
-
                 if( m_lastMouse == false )
                 {
-                    POINT p;
-                    if( ::GetCursorPos( &p ) == FALSE )
-                    {
-                        DWORD error = ::GetLastError();
-
-                        LOGGER_ERROR( "invalid get cursor pos [error: %lu]"
-                            , error
-                        );
-
-                        return false;
-                    }
-
-                    if( ::ScreenToClient( hWnd, &p ) == FALSE )
-                    {
-                        DWORD error = ::GetLastError();
-
-                        LOGGER_ERROR( "invalid screen to client [error: %lu]"
-                            , error
-                        );
-
-                        return false;
-                    }
-
                     m_lastMouseX = p.x;
                     m_lastMouseY = p.y;
 
                     m_lastMouse = true;
                 }
 
-                int32_t dx = x - m_lastMouseX;
-                int32_t dy = y - m_lastMouseY;
+                int32_t dx = p.x - m_lastMouseX;
+                int32_t dy = p.y - m_lastMouseY;
 
                 if( dx == 0 && dy == 0 )
                 {
                     break;
                 }
 
-                m_lastMouseX = x;
-                m_lastMouseY = y;
+                m_lastMouseX = p.x;
+                m_lastMouseY = p.y;
 
                 float fdx = (float)dx;
                 float fdy = (float)dy;
@@ -1623,7 +1605,8 @@ namespace Mengine
                 {
                     DWORD error = ::GetLastError();
 
-                    LOGGER_ERROR( "invalid get client rect [error: %lu]"
+                    LOGGER_ERROR( "invalid hwnd [%p] get client rect [error: %lu]"
+                        , m_hWnd
                         , error
                     );
 
@@ -1649,13 +1632,17 @@ namespace Mengine
                     , lParam
                     , ::IsWindowVisible( hWnd )
                 );
+                
+                int32_t zDelta = GET_WHEEL_DELTA_WPARAM( wParam );
 
-                int32_t zDelta = (int32_t)(int16_t)(HIWORD( wParam ));
+                POINT p;
+                p.x = GET_X_LPARAM( lParam );
+                p.y = GET_Y_LPARAM( lParam );
 
                 mt::vec2f point;
-                if( this->calcCursorPosition_( &point ) == false )
+                if( this->getCursorPosition_( p, &point ) == false )
                 {
-                    return 0;
+                    return false;
                 }
 
                 int32_t wheel = zDelta / WHEEL_DELTA;
@@ -1716,10 +1703,14 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
+                POINT p;
+                p.x = GET_X_LPARAM( lParam );
+                p.y = GET_Y_LPARAM( lParam );
+
                 mt::vec2f point;
-                if( this->calcCursorPosition_( &point ) == false )
+                if( this->getCursorPosition_( p, &point ) == false )
                 {
-                    return 0;
+                    return false;
                 }
 
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
@@ -1739,10 +1730,14 @@ namespace Mengine
 
                 if( m_isDoubleClick[0] == false )
                 {
+                    POINT p;
+                    p.x = GET_X_LPARAM( lParam );
+                    p.y = GET_Y_LPARAM( lParam );
+
                     mt::vec2f point;
-                    if( this->calcCursorPosition_( &point ) == false )
+                    if( this->getCursorPosition_( p, &point ) == false )
                     {
-                        return 0;
+                        return false;
                     }
 
                     Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
@@ -1762,10 +1757,14 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
+                POINT p;
+                p.x = GET_X_LPARAM( lParam );
+                p.y = GET_Y_LPARAM( lParam );
+
                 mt::vec2f point;
-                if( this->calcCursorPosition_( &point ) == false )
+                if( this->getCursorPosition_( p, &point ) == false )
                 {
-                    return 0;
+                    return false;
                 }
 
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
@@ -1784,10 +1783,14 @@ namespace Mengine
 
                 if( m_isDoubleClick[1] == false )
                 {
+                    POINT p;
+                    p.x = GET_X_LPARAM( lParam );
+                    p.y = GET_Y_LPARAM( lParam );
+
                     mt::vec2f point;
-                    if( this->calcCursorPosition_( &point ) == false )
+                    if( this->getCursorPosition_( p, &point ) == false )
                     {
-                        return 0;
+                        return false;
                     }
 
                     Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
@@ -1807,10 +1810,14 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
+                POINT p;
+                p.x = GET_X_LPARAM( lParam );
+                p.y = GET_Y_LPARAM( lParam );
+
                 mt::vec2f point;
-                if( this->calcCursorPosition_( &point ) == false )
+                if( this->getCursorPosition_( p, &point ) == false )
                 {
-                    return 0;
+                    return false;
                 }
 
                 Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
@@ -1829,10 +1836,14 @@ namespace Mengine
 
                 if( m_isDoubleClick[2] == false )
                 {
+                    POINT p;
+                    p.x = GET_X_LPARAM( lParam );
+                    p.y = GET_Y_LPARAM( lParam );
+
                     mt::vec2f point;
-                    if( this->calcCursorPosition_( &point ) == false )
+                    if( this->getCursorPosition_( p, &point ) == false )
                     {
-                        return 0;
+                        return false;
                     }
 
                     Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
@@ -1857,7 +1868,7 @@ namespace Mengine
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
-                    return 0;
+                    return false;
                 }
 
                 EKeyCode code = (EKeyCode)vkc;
@@ -1881,7 +1892,7 @@ namespace Mengine
                 mt::vec2f point;
                 if( this->calcCursorPosition_( &point ) == false )
                 {
-                    return 0;
+                    return false;
                 }
 
                 EKeyCode code = (EKeyCode)vkc;
@@ -1902,8 +1913,19 @@ namespace Mengine
 
                 if( wParam == UNICODE_NOCHAR )
                 {
+                    handle = true;
                     *_result = 1;
+
+                    break;
                 }
+
+                if( this->sendChar_( wParam ) == false )
+                {
+                    return false;
+                }
+
+                handle = true;
+                *_result = 0;
             }break;
         case WM_CHAR:
             {
@@ -1914,23 +1936,13 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                Char utf8[5] = {'\0'};
-                if( s_sonvertUTF32toUTF8( (uint32_t)wParam, utf8 ) == true )
+                if( this->sendChar_( wParam ) == false )
                 {
-                    mt::vec2f point;
-                    if( this->calcCursorPosition_( &point ) == false )
-                    {
-                        return 0;
-                    }
-
-                    WChar text_code[2] = {L'\0'};
-                    Helper::utf8ToUnicode( utf8, text_code, 1 );
-
-                    Helper::pushTextEvent( point.x, point.y, text_code[0] );
-
-                    handle = true;
-                    *_result = 0;
+                    return false;
                 }
+
+                handle = true;
+                *_result = 0;
             }break;
         default:
             {
@@ -1938,6 +1950,31 @@ namespace Mengine
         }
 
         return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::sendChar_( WPARAM wParam )
+    {
+        Char utf8[5] = {'\0'};
+        if( s_sonvertUTF32toUTF8( (uint32_t)wParam, utf8 ) == false )
+        {
+            return false;
+        }
+
+        mt::vec2f point;
+        if( this->calcCursorPosition_( &point ) == false )
+        {
+            return false;
+        }
+
+        WChar text_code[2] = {L'\0'};
+        if( Helper::utf8ToUnicode( utf8, text_code, 1 ) == false )
+        {
+            return false;
+        }
+
+        Helper::pushTextEvent( point.x, point.y, text_code[0] );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     ATOM Win32Platform::registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
@@ -2034,12 +2071,16 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "Can't create window [error: %lu]"
+            LOGGER_ERROR( "can't create window [error: %lu]"
                 , error
             );
 
             return false;
         }
+
+        LOGGER_MESSAGE_RELEASE( "hWnd: %p"
+            , hWnd
+        );
 
         m_hWnd = hWnd;
 
@@ -2061,7 +2102,8 @@ namespace Mengine
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid register session notification [error: %lu]"
+            LOGGER_ERROR( "invalid hwnd [%p] register session notification [error: %lu]"
+                , m_hWnd
                 , error
             );
         }
@@ -2394,10 +2436,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::calcCursorPosition_( mt::vec2f * const _point ) const
+    bool Win32Platform::calcCursorPosition_( mt::vec2f * const _position ) const
     {
-        POINT cPos;
-        if( ::GetCursorPos( &cPos ) == FALSE )
+        POINT point;
+        if( ::GetCursorPos( &point ) == FALSE )
         {
             DWORD error = ::GetLastError();
 
@@ -2408,26 +2450,45 @@ namespace Mengine
             return false;
         }
 
+        bool result = this->adaptCursorPosition_( point, _position );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::adaptCursorPosition_( POINT _point, mt::vec2f * const _position ) const
+    {
+        POINT cPos = _point;
         if( ::ScreenToClient( m_hWnd, &cPos ) == FALSE )
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid screen to client [error: %lu]"
+            LOGGER_ERROR( "invalid hwnd [%p] screen [%lu %lu] to client [error: %lu]"
+                , m_hWnd
+                , _point.x
+                , _point.y
                 , error
             );
 
             return false;
         }
 
-        float x = static_cast<float>(cPos.x);
-        float y = static_cast<float>(cPos.y);
+        bool result = this->getCursorPosition_( cPos, _position );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getCursorPosition_( POINT _clientPoint, mt::vec2f * const _position ) const
+    {
+        float x = static_cast<float>(_clientPoint.x);
+        float y = static_cast<float>(_clientPoint.y);
 
         RECT rect;
         if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
         {
             DWORD error = ::GetLastError();
 
-            LOGGER_ERROR( "invalid get client rect [error: %lu]"
+            LOGGER_ERROR( "invalid hwnd [%p] get client rect [error: %lu]"
+                , m_hWnd
                 , error
             );
 
@@ -2437,8 +2498,8 @@ namespace Mengine
         float width = static_cast<float>(rect.right - rect.left);
         float height = static_cast<float>(rect.bottom - rect.top);
 
-        _point->x = x / width;
-        _point->y = y / height;
+        _position->x = x / width;
+        _position->y = y / height;
 
         return true;
     }
@@ -4139,7 +4200,8 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_le, 1023 );
 
-            LOGGER_ERROR( "invalid ShowWindow [error: %s (%lu)]"
+            LOGGER_ERROR( "invalid hwnd [%p] ShowWindow [error: %s (%lu)]"
+                , m_hWnd
                 , str_le
                 , error
             );

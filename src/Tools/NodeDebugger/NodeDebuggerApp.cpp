@@ -1494,7 +1494,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ShowResponseDataForId( uint32_t _id )
     {
-        VectorNetwork::iterator responseIterator = std::find_if( m_network.begin(), m_network.end(), [_id]( const NetworkDesk & _desk )
+        VectorNetwork::const_iterator responseIterator = std::find_if( m_network.cbegin(), m_network.cend(), [_id]( const NetworkDesk & _desk )
         {
             return (_id == _desk.id) && (_desk.type == "Response");
         } );
@@ -1521,9 +1521,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::addSpacesWithMultiplier( String * _out, int _spacesCount, int _multiplier )
+    void NodeDebuggerApp::addSpacesWithMultiplier( String * const _out, uint32_t _spacesCount, uint32_t _multiplier )
     {
-        for( int i = 0; i != _spacesCount * _multiplier; ++i )
+        for( uint32_t i = 0; i != _spacesCount * _multiplier; ++i )
         {
             *_out += ' ';
         }
@@ -1559,7 +1559,7 @@ namespace Mengine
                 String label = Helper::stringFormat( "##%d", m_networkTextLabelCounter );
                 ++m_networkTextLabelCounter;
 
-                ImGui::PushItemWidth( 100.f );
+                ImGui::PushItemWidth( 5.f + 8.f * valueStr.size() );
                 ImGui::InputText( label.c_str(), (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
                 ImGui::PopItemWidth();
             }
@@ -1568,27 +1568,56 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out )
     {
-        if( _jppType == jpp::e_type::JPP_INTEGER )
+        switch( _jppType )
         {
-            int valueInteger = _object;
-            *_out = Helper::stringFormat( "%d", valueInteger );
-        }
-        else if( _jppType == jpp::e_type::JPP_REAL )
-        {
-            float valueDouble = _object;
-            *_out = Helper::stringFormat( "%f", valueDouble );
-        }
-        else if( _jppType == jpp::e_type::JPP_FALSE )
-        {
-            *_out = "false";
-        }
-        else if( _jppType == jpp::e_type::JPP_TRUE )
-        {
-            *_out = "true";
-        }
-        else
-        {
-            *_out = (const Char *)_object;
+        case jpp::e_type::JPP_INTEGER:
+            {
+                int valueInteger = _object;
+                *_out = Helper::stringFormat( "%d", valueInteger );
+
+                break;
+            }
+        case jpp::e_type::JPP_REAL:
+            {
+                float valueDouble = _object;
+                *_out = Helper::stringFormat( "%f", valueDouble );
+
+                break;
+            }
+        case jpp::e_type::JPP_FALSE:
+            {
+                *_out = "false";
+                
+                break;
+            }
+        case jpp::e_type::JPP_TRUE:
+            {
+                *_out = "true";
+
+                break;
+            }
+        case jpp::e_type::JPP_STRING:
+            {
+                *_out = (const Char *)_object;
+
+                break;
+            }
+        case jpp::e_type::JPP_ARRAY:
+            {
+                for( const jpp::object & element : jpp::array(_object) )
+                {
+                    jpp::e_type elementType = element.type();
+                    this->GetValueStringForJppType( element, elementType, _out );
+                }
+
+                break;
+            }
+        case jpp::e_type::JPP_NULL:
+            {
+                *_out = "null";
+
+                break;
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

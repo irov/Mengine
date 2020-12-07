@@ -86,12 +86,9 @@ namespace Mengine
         , m_update( false )
         , m_icon( 0 )
         , m_close( false )
-        , m_vsync( false )
         , m_pauseUpdatingTime( -1.f )
         , m_prevTime( 0 )
         , m_cursorInArea( false )
-        , m_clickOutAreaLeftButton( false )
-        , m_clickOutAreaRightButton( false )
         , m_cursorMode( false )
         , m_cursor( nullptr )
         , m_lastMouse( false )
@@ -654,7 +651,7 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                MSG  msg;
+                MSG msg;
                 while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
                 {
                     ::TranslateMessage( &msg );
@@ -710,10 +707,6 @@ namespace Mengine
                     APPLICATION_SERVICE()
                         ->tick( frameTime );
                 }
-                else
-                {
-                    ::Sleep( 100 );
-                }
 
                 bool focus = APPLICATION_SERVICE()
                     ->isFocus();
@@ -732,7 +725,13 @@ namespace Mengine
                             ->flush();
                     }
                 }
-                else
+
+                APPLICATION_SERVICE()
+                    ->endUpdate();
+
+                m_update = false;
+
+                if( updating == false )
                 {
                     if( m_pauseUpdatingTime < 0.f )
                     {
@@ -741,11 +740,14 @@ namespace Mengine
 
                     ::Sleep( 100 );
                 }
-
-                APPLICATION_SERVICE()
-                    ->endUpdate();
-
-                m_update = false;
+                else
+                {
+                    if( APPLICATION_SERVICE()
+                        ->getVSync() == false )
+                    {
+                        ::Sleep( 1 );
+                    }
+                }
             }
         }
     }
@@ -1486,12 +1488,17 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
-                        m_clickOutAreaLeftButton = true;
+                        m_clickOutArea[0] = true;
                     }
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) != 0 )
                     {
-                        m_clickOutAreaRightButton = true;
+                        m_clickOutArea[1] = true;
+                    }
+
+                    if( (::GetKeyState( VK_MBUTTON ) & 0x8000) != 0 )
+                    {
+                        m_clickOutArea[2] = true;
                     }
                 }
 
@@ -1521,9 +1528,9 @@ namespace Mengine
                     return false;
                 }
 
-                if( m_clickOutAreaLeftButton == true )
+                if( m_clickOutArea[0] == true )
                 {
-                    m_clickOutAreaLeftButton = false;
+                    m_clickOutArea[0] = false;
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
@@ -1531,13 +1538,23 @@ namespace Mengine
                     }
                 }
 
-                if( m_clickOutAreaRightButton == true )
+                if( m_clickOutArea[1] == true )
                 {
-                    m_clickOutAreaRightButton = false;
+                    m_clickOutArea[1] = false;
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) == 0 )
                     {
                         Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                    }
+                }
+
+                if( m_clickOutArea[2] == true )
+                {
+                    m_clickOutArea[2] = false;
+
+                    if( (::GetKeyState( VK_MBUTTON ) & 0x8000) == 0 )
+                    {
+                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
                     }
                 }
 
@@ -2134,14 +2151,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::notifyVsyncChanged( bool _vsync )
     {
-        bool novsync = HAS_OPTION( "novsync" );
+        MENGINE_UNUSED( _vsync );
 
-        if( novsync == true )
-        {
-            return;
-        }
-
-        m_vsync = _vsync;
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::notifyCursorModeChanged( bool _mode )
@@ -4430,16 +4442,14 @@ namespace Mengine
         if( FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
         {
-            LOGGER_ERROR( "failed to unmount dev directory"
-            );
+            LOGGER_ERROR( "failed to unmount dev directory" );
         }
 #endif
 
         if( FILE_SERVICE()
             ->unmountFileGroup( ConstString::none() ) == false )
         {
-            LOGGER_ERROR( "failed to unmount application directory"
-            );
+            LOGGER_ERROR( "failed to unmount application directory" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

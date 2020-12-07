@@ -250,11 +250,8 @@ namespace Mengine
 
         float m_pauseUpdatingTime;
 
-        bool m_vsync;
-
         bool m_cursorInArea;
-        bool m_clickOutAreaLeftButton;
-        bool m_clickOutAreaRightButton;
+        bool m_clickOutArea[3] = {false};
         bool m_cursorMode;
 
         HCURSOR m_cursor;

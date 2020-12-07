@@ -80,7 +80,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ChronometerService::update()
     {
-        uint64_t currentTime = GET_TIME_MILLISECONDS();
+        uint64_t currentTime = TIME_SYSTEM()
+            ->getTimeMilliseconds();
 
         if( m_oldTime == 0 || currentTime - m_oldTime >= 1000 )
         {

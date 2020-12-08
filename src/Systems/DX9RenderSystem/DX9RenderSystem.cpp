@@ -119,7 +119,7 @@ namespace Mengine
             DWORD error = ::GetLastError();
 
             LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address [error: %lu]"
-                , error 
+                , error
             );
 
             return false;
@@ -367,7 +367,6 @@ namespace Mengine
         HWND windowHandle = win32Platform->getWindowHandle();
 
         m_d3dppW.hDeviceWindow = windowHandle;
-
         m_d3dppW.Windowed = TRUE;
 
         if( m_depth == true )
@@ -396,9 +395,7 @@ namespace Mengine
         m_d3dppFS.BackBufferCount = 1;
 
         m_d3dppFS.hDeviceWindow = windowHandle;
-
         m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
         m_d3dppFS.BackBufferFormat = m_displayMode.Format;
 
         if( m_depth == true )
@@ -476,7 +473,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , device_flags
                     , m_d3dpp, &m_pD3DDevice );
@@ -491,7 +489,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , device_flags
                     , m_d3dpp, &m_pD3DDevice );
@@ -506,7 +505,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
                     , m_d3dpp, &m_pD3DDevice );
@@ -521,7 +521,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_MIXED_VERTEXPROCESSING
                     , m_d3dpp, &m_pD3DDevice );
@@ -536,7 +537,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
                     , m_d3dpp, &m_pD3DDevice );
@@ -551,7 +553,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, windowHandle
                     , D3DCREATE_SOFTWARE_VERTEXPROCESSING
                     , m_d3dpp, &m_pD3DDevice );
@@ -665,10 +668,10 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
-    {        
+    {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-         DX9RenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
+        DX9RenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderImage, "invalid create render texture" );
 
@@ -901,8 +904,7 @@ namespace Mengine
 
             if( this->releaseResources_() == false )
             {
-                LOGGER_ERROR( "release resources"
-                );
+                LOGGER_ERROR( "release resources" );
             }
 
             return false;
@@ -1034,7 +1036,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         D3DVIEWPORT9 VP;
-
         VP.X = (DWORD)MT_floorf( _viewport.begin.x + 0.5f );
         VP.Y = (DWORD)MT_floorf( _viewport.begin.y + 0.5f );
 
@@ -1081,8 +1082,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed"
-            );
+            LOGGER_ERROR( "Graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1134,13 +1134,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::supportTextureNonPow2() const
     {
-        D3DCAPS9 caps;
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
-        {
-            return false;
-        }
-
-        if( (caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
+        if( (m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
         {
             return false;
         }
@@ -1251,7 +1245,8 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetTexture, (i, nullptr) )
             {
-                LOGGER_ERROR( "texture %d not reset", i
+                LOGGER_ERROR( "texture %u not reset"
+                    , i
                 );
             }
         }
@@ -1275,8 +1270,7 @@ namespace Mengine
 
         if( this->releaseResources_() == false )
         {
-            LOGGER_ERROR( "release resources"
-            );
+            LOGGER_ERROR( "release resources" );
 
             return false;
         }
@@ -1340,8 +1334,7 @@ namespace Mengine
         {
             if( this->releaseResources_() == false )
             {
-                LOGGER_ERROR( "invalid release resource"
-                );
+                LOGGER_ERROR( "invalid release resource" );
 
                 return;
             }
@@ -1375,6 +1368,11 @@ namespace Mengine
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
+            LOGGER_ERROR( "invalid initialize vertex buffer [%u] type [%u]"
+                , _vertexSize
+                , _bufferType
+            );
+
             return nullptr;
         }
 

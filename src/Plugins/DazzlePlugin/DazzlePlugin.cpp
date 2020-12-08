@@ -1,10 +1,12 @@
 #include "DazzlePlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "DazzleInterface.h"
 
+#include "DataflowDZZ.h"
 #include "DazzleEffect.h"
 #include "ResourceDazzleEffect.h"
 
@@ -113,6 +115,26 @@ namespace Mengine
         {
             return false;
         }
+
+        PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
+        {
+            DataflowDZZPtr dataflowDazzle = Helper::makeFactorableUnique<DataflowDZZ>( MENGINE_DOCUMENT_FACTORABLE );
+
+            if( dataflowDazzle->initialize() == false )
+            {
+                return false;
+            }
+
+            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "dazzle" ), dataflowDazzle, MENGINE_DOCUMENT_FACTORABLE );
+
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( DataServiceInterface, []()
+        {
+            DataflowInterfacePtr dataflowFE = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
+            dataflowFE->finalize();
+        } );
 
         return true;
     }

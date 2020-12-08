@@ -252,7 +252,7 @@ namespace Mengine
 
         const Char * windowClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
-        Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH );
+        Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH - 1 );
 
         SERVICE_WAIT( FileServiceInterface, [this]()
         {
@@ -818,7 +818,7 @@ namespace Mengine
         WChar unicode_shortpath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, MENGINE_MAX_PATH - 1 );
 
-        if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
+        if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH - 1 ) == false )
         {
             LOGGER_ERROR( "invalid convert shortpath to utf8" );
 
@@ -914,7 +914,7 @@ namespace Mengine
         );
 
         size_t utf8_size;
-        if( Helper::unicodeToUtf8( fullDir, _fontPath, MENGINE_MAX_PATH, &utf8_size ) == false )
+        if( Helper::unicodeToUtf8( fullDir, _fontPath, MENGINE_MAX_PATH - 1, &utf8_size ) == false )
         {
             _fontPath[0] = '\0';
 
@@ -4033,7 +4033,7 @@ namespace Mengine
         currentPath[len + 1] = L'\0';
 
         size_t path_len;
-        if( Helper::unicodeToUtf8( currentPath, _currentPath, MENGINE_MAX_PATH, &path_len ) == false )
+        if( Helper::unicodeToUtf8( currentPath, _currentPath, MENGINE_MAX_PATH - 1, &path_len ) == false )
         {
             _currentPath[0] = '\0';
 
@@ -4070,7 +4070,7 @@ namespace Mengine
             MENGINE_WCSCAT( currentPath, L"/" );
 
             size_t currentPathLen;
-            if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
+            if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH - 1, &currentPathLen ) == false )
             {
                 LOGGER_ERROR( "invalid convert path from unicode to utf8 '%ls'"
                     , currentPath
@@ -4147,7 +4147,7 @@ namespace Mengine
         MENGINE_WCSCAT( roamingPath, L"/" );
 
         size_t currentPathLen;
-        if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
+        if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH - 1, &currentPathLen ) == false )
         {
             LOGGER_ERROR( "invalid convert user path from unicode to utf8 '%ls'"
                 , roamingPath

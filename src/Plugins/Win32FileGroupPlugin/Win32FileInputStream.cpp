@@ -55,9 +55,8 @@ namespace Mengine
             return false;
         }
 
-        DWORD size = ::GetFileSize( m_hFile, NULL );
-
-        if( size == INVALID_FILE_SIZE )
+        LARGE_INTEGER lpFileSize;
+        if( ::GetFileSizeEx( m_hFile, &lpFileSize ) == FALSE )
         {
             DWORD error = ::GetLastError();
 
@@ -71,6 +70,8 @@ namespace Mengine
             return false;
         }
 
+        size_t size = (size_t)lpFileSize.QuadPart;
+
         if( _offset + _size > size )
         {
             LOGGER_ERROR( "invalid file '%ls' range %zu:%zu size %lu"
@@ -79,6 +80,8 @@ namespace Mengine
                 , _size
                 , size
             );
+
+            this->close();
 
             return false;
         }
@@ -92,9 +95,10 @@ namespace Mengine
 
         if( m_offset != 0 )
         {
-            DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>(m_offset), NULL, FILE_BEGIN );
+            LARGE_INTEGER liDistanceToMove = {m_offset};
 
-            if( dwPtr == INVALID_SET_FILE_POINTER )
+            LARGE_INTEGER dwPtr;
+            if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
                 DWORD error = ::GetLastError();
 
@@ -103,6 +107,8 @@ namespace Mengine
                     , m_size
                     , error
                 );
+
+                this->close();
 
                 return false;
             }
@@ -311,6 +317,15 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32FileInputStream::rseek( size_t _pos )
+    {
+        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::rseek" );
+
+        bool successful = this->seek_( m_size - _pos );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::seek_( size_t _pos )
     {
         if( _pos >= m_reading - m_capacity && _pos <= m_reading )
@@ -319,9 +334,10 @@ namespace Mengine
         }
         else
         {
-            DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>(m_offset + _pos), NULL, FILE_BEGIN );
+            LARGE_INTEGER liDistanceToMove = {m_offset + _pos};
 
-            if( dwPtr == INVALID_SET_FILE_POINTER )
+            LARGE_INTEGER dwPtr;
+            if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
                 DWORD error = ::GetLastError();
 
@@ -337,7 +353,9 @@ namespace Mengine
             m_carriage = 0;
             m_capacity = 0;
 
-            m_reading = dwPtr - m_offset;
+            size_t dwPtrSizet = static_cast<size_t>(dwPtr.QuadPart);
+
+            m_reading = dwPtrSizet - m_offset;
         }
 
         return true;
@@ -431,5 +449,5 @@ namespace Mengine
         return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-#endif    
+#endif
 }

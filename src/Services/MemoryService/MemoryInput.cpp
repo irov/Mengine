@@ -91,6 +91,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MemoryInput::rseek( size_t _pos )
+    {
+        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::rseek" );
+
+        if( _pos > m_size )
+        {
+            _pos = m_size;
+        }
+
+        m_pos = m_data + m_size - _pos;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MemoryInput::skip( size_t _pos )
     {
         MENGINE_THREAD_GUARD_SCOPE( this, "MemoryInput::skip" );
@@ -142,4 +156,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

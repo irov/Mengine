@@ -203,8 +203,7 @@ namespace Mengine
 
         if( size == 0 )
         {
-            LOGGER_ERROR( "invalid size (empty)"
-            );
+            LOGGER_ERROR( "invalid size (empty)" );
 
             return false;
         }

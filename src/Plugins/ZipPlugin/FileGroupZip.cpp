@@ -22,11 +22,21 @@
 
 #include "zlib.h"
 
-#define ZIP_LOCAL_FILE_HEADER_SIGNATURE 0x04034b50
+//////////////////////////////////////////////////////////////////////////
+#define ZIP_LOCAL_HEADER_SIGNATURE (0x04034b50)
+#define ZIP_CENTRAL_HEADER_SIGNATURE (0x02014b50)
+#define ZIP_END_HEADER_SIGNATURE (0x06054b50)
+#define ZIP_END_HEADER_SIGNATURE_64 (0x06064b50)
+#define ZIP_END_LOCAL_HEADER_SIGNATURE_64 (0x07064b50)
 #define ZIP_MAX_FILEPATH 1024
-
+#define ZIP_END_CENTRAL_DIR_SIZE 22
+#define ZIP_LOCAL_HEADER_SIZE 30
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+#pragma pack( push , 1 )
+    //////////////////////////////////////////////////////////////////////////
     struct ZipCentralDirectoryFileHeader
     {
         uint16_t versionMade;
@@ -47,16 +57,32 @@ namespace Mengine
         uint32_t relativeOffset;
     };
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_get_uint32( const uint8_t * _buff )
+    struct ZipLocalFileHeader
     {
-        uint32_t x;
-        x = (uint32_t)_buff[0];
-        x |= (uint32_t)_buff[1] << 8;
-        x |= (uint32_t)_buff[2] << 16;
-        x |= (uint32_t)_buff[3] << 24;
-
-        return x;
-    }
+        uint16_t versionNeeded;
+        uint16_t generalPurposeFlag;
+        uint16_t compressionMethod;
+        uint16_t lastModTime;
+        uint16_t lastModDate;
+        uint32_t crc32;
+        uint32_t compressedSize;
+        uint32_t uncompressedSize;
+        uint16_t fileNameLen;
+        uint16_t extraFieldLen;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct ZipEndOfCentralDirectoryFileHeader
+    {
+        uint16_t numberOfThisDisk;
+        uint16_t diskWhereCentralDirectoryStarts;
+        uint16_t numberOfCentralDirectoryRecordsOnThisDisk;
+        uint16_t totalNumberOfCentralDirectoryRecords;
+        uint32_t sizeOfCentralDirectoryBytes;
+        uint32_t offsetOfStartOfCentralDirectoryRelativeToStartOfArchive;
+        uint16_t commentLength;
+    };
+    //////////////////////////////////////////////////////////////////////////
+#pragma pack( pop )
     //////////////////////////////////////////////////////////////////////////
     FileGroupZip::FileGroupZip()
     {
@@ -109,96 +135,115 @@ namespace Mengine
             , m_folderPath.c_str()
         );
 
-        size_t zip_size = zipFile->size();
-        zipFile->seek( zip_size - 22 );
-
-        uint32_t header_position = (uint32_t)zipFile->tell();
-
-        uint8_t endof_central_dir[22];
-
-        if( zipFile->read( endof_central_dir, 22 ) != 22 )
+        if( zipFile->rseek( ZIP_END_CENTRAL_DIR_SIZE ) == false )
         {
-            LOGGER_ERROR( "invalid zip format '%s'"
-                , m_folderPath.c_str()
-            );
-
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( s_get_uint32( endof_central_dir ) == 0x06054B50, "bad 'End of Central Dir' signature zip '%s'"
+        size_t header_position = zipFile->tell();
+
+        uint32_t eocd_signature;
+        zipFile->read( &eocd_signature, sizeof( eocd_signature ) );
+
+        MENGINE_ASSERTION_FATAL( eocd_signature == ZIP_END_HEADER_SIGNATURE, "bad 'End of Central Dir' signature zip '%s'"
             , m_folderPath.c_str()
         );
 
-        uint32_t header_size = s_get_uint32( endof_central_dir + 12 );
-        uint32_t header_offset = s_get_uint32( endof_central_dir + 16 );
-        uint32_t arc_offset = header_position - header_offset - header_size;
+        ZipEndOfCentralDirectoryFileHeader eocd;
+        zipFile->read( &eocd, sizeof( eocd ) );
 
-        header_offset += arc_offset;
+        MENGINE_ASSERTION_FATAL( eocd.commentLength == 0 );
+        MENGINE_ASSERTION_FATAL( eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive != 0xffffffffU );
+
+        size_t header_size = (size_t)eocd.sizeOfCentralDirectoryBytes;
+        size_t header_offset = (size_t)eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive;
+
+        MENGINE_ASSERTION_FATAL( header_position >= header_size );
+        MENGINE_ASSERTION_FATAL( header_position >= header_offset );
+
+        if( zipFile->seek( header_offset ) == false )
+        {
+            return false;
+        }
 
         Char fileNameBuffer[ZIP_MAX_FILEPATH] = {'\0'};
 
         for( ;;)
         {
-            zipFile->seek( header_offset );
-
             uint32_t signature;
             zipFile->read( &signature, sizeof( signature ) );
 
-            if( signature != 0x02014B50 )
+            if( signature == ZIP_END_HEADER_SIGNATURE )
+            {
+                break;
+            }
+            else if( signature == ZIP_END_HEADER_SIGNATURE_64 )
             {
                 break;
             }
 
+            MENGINE_ASSERTION_FATAL( signature == ZIP_CENTRAL_HEADER_SIGNATURE, "unknown zlib header signature [%#010x]"
+                , signature
+            );
+
             ZipCentralDirectoryFileHeader header;
 
-            zipFile->read( &header.versionMade, sizeof( header.versionMade ) );
-            zipFile->read( &header.versionNeeded, sizeof( header.versionNeeded ) );
-            zipFile->read( &header.generalPurposeFlag, sizeof( header.generalPurposeFlag ) );
-            zipFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
-            zipFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
-            zipFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
-            zipFile->read( &header.crc32, sizeof( header.crc32 ) );
-            zipFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
-            zipFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
-            zipFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
-            zipFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
-            zipFile->read( &header.commentLen, sizeof( header.commentLen ) );
-            zipFile->read( &header.diskNumber, sizeof( header.diskNumber ) );
-            zipFile->read( &header.internalAttributes, sizeof( header.internalAttributes ) );
-            zipFile->read( &header.externalAttributes, sizeof( header.externalAttributes ) );
-            zipFile->read( &header.relativeOffset, sizeof( header.relativeOffset ) );
-
-            uint32_t fileOffset = header.relativeOffset + 30 + header.fileNameLen + header.extraFieldLen;
+            zipFile->read( &header, sizeof( header ) );
 
             zipFile->read( &fileNameBuffer, header.fileNameLen );
 
-            uint32_t file_header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
-            header_offset += file_header_size;
+            uint64_t uncompressedSize = header.uncompressedSize;
+            uint64_t compressedSize = header.compressedSize;
+            uint64_t relativeOffset = header.relativeOffset;
+
+            if( header.extraFieldLen != 0 )
+            {
+                uint16_t headerID;
+                uint16_t dataSize;
+
+                zipFile->read( &headerID, sizeof( headerID ) );
+                zipFile->read( &dataSize, sizeof( dataSize ) );
+
+                if( header.uncompressedSize == 0xffffffffU )
+                {
+                    uint64_t dataValue;
+                    zipFile->read( &dataValue, sizeof( dataValue ) );
+                    uncompressedSize = dataValue;
+                }
+
+                if( header.compressedSize == 0xffffffffU )
+                {
+                    uint64_t dataValue;
+                    zipFile->read( &dataValue, sizeof( dataValue ) );
+                    compressedSize = dataValue;
+                }
+
+                if( header.relativeOffset == 0xffffffffU )
+                {
+                    uint64_t dataValue;
+                    zipFile->read( &dataValue, sizeof( dataValue ) );
+                    relativeOffset = dataValue;
+                }
+            }
+
+            zipFile->skip( header.commentLen );
 
             FilePath filePath = Helper::stringizeFilePathSize( fileNameBuffer, header.fileNameLen );
 
-            if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
-            {
-                LOGGER_ERROR( "zip '%s' file '%s' invalid compress method %d"
-                    , m_folderPath.c_str()
-                    , filePath.c_str()
-                    , header.compressionMethod
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_FATAL( header.compressionMethod == Z_NO_COMPRESSION || header.compressionMethod == Z_DEFLATED, "zip '%s' file '%s' invalid compress method %d"
+                , m_folderPath.c_str()
+                , filePath.c_str()
+                , header.compressionMethod
+            );
 
             FileInfo fi;
-
-            fi.seek_pos = fileOffset;
-            fi.file_size = header.compressedSize;
-            fi.unz_size = header.uncompressedSize;
+            fi.seek_pos = (size_t)relativeOffset + ZIP_LOCAL_HEADER_SIZE + header.fileNameLen + header.commentLen;
+            fi.file_size = (size_t)compressedSize;
+            fi.unz_size = (size_t)uncompressedSize;
             fi.compr_method = header.compressionMethod;
 
             m_files.emplace( filePath, fi );
             m_indexes.push_back( filePath );
-
-            zipFile->skip( header.compressedSize );
         }
 
         m_zipFile = zipFile;
@@ -415,7 +460,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_files.find( _filePath ) != m_files.end(), "'%s' invalid found file '%s'"
             , this->getName().c_str()
-            , _filePath.c_str() 
+            , _filePath.c_str()
         );
 
         if( _streaming == true )
@@ -564,7 +609,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        LOGGER_ERROR( "unsupport method" );
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return nullptr;
     }
@@ -574,9 +619,7 @@ namespace Mengine
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _stream );
 
-        LOGGER_ERROR( "'%s' unsupport method"
-            , _filePath.c_str()
-        );
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }
@@ -585,8 +628,9 @@ namespace Mengine
     {
         MENGINE_UNUSED( _stream );
 
-        //Empty
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -433,7 +433,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::unregisterLogger( const LoggerInterfacePtr & _logger )
     {
-        VectorLoggers::iterator it_find =
+        VectorLoggers::iterator it_find = 
             std::find( m_loggers.begin(), m_loggers.end(), _logger );
 
         if( it_find == m_loggers.end() )
@@ -449,4 +449,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

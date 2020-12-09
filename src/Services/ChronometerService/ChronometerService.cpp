@@ -97,4 +97,5 @@ namespace Mengine
             m_oldTime = currentTime - currentTime % 1000;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

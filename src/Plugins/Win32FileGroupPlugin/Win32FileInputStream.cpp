@@ -95,7 +95,8 @@ namespace Mengine
 
         if( m_offset != 0 )
         {
-            LARGE_INTEGER liDistanceToMove = {m_offset};
+            LARGE_INTEGER liDistanceToMove;
+            liDistanceToMove.QuadPart = m_offset;
 
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
@@ -334,7 +335,8 @@ namespace Mengine
         }
         else
         {
-            LARGE_INTEGER liDistanceToMove = {m_offset + _pos};
+            LARGE_INTEGER liDistanceToMove;
+            liDistanceToMove.QuadPart = m_offset + _pos;
 
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )

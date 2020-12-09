@@ -1969,6 +1969,16 @@ namespace Mengine
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, str, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::getClipboardText( Char * _value, size_t _capacity ) const
+    {
+        MENGINE_UNUSED( _value );
+        MENGINE_UNUSED( _capacity );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     UnknownPointer SDLPlatform::getPlatformExtention()
     {
         return this;

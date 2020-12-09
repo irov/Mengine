@@ -584,6 +584,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TextFontInterfacePtr TextService::createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc )
     {
+        MENGINE_ASSERTION_FATAL( m_fonts.find( _fontName ) == nullptr, "alredy exist font '%s'"
+            , _fontName.c_str()
+        );
+
         TextFontInterfacePtr font = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
 

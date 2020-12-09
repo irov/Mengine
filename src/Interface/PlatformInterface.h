@@ -142,6 +142,9 @@ namespace Mengine
         virtual void messageBox( const Char * _caption, const Char * _format, ... ) const = 0;
 
     public:
+        virtual bool getClipboardText( Char * _value, size_t _capacity ) const = 0;
+
+    public:
         virtual UnknownPointer getPlatformExtention() = 0;
     };
 }

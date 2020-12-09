@@ -4355,6 +4355,42 @@ namespace Mengine
         ::MessageBoxA( NULL, str, _caption, MB_OK );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getClipboardText( Char * _value, size_t _capacity ) const
+    {
+        if( ::OpenClipboard( m_hWnd ) == FALSE )
+        {
+            return false;
+        }
+
+        HANDLE hglb = ::GetClipboardData( CF_TEXT );
+
+        if( hglb == NULL )
+        {
+            ::CloseClipboard();
+
+            return false;
+        }
+
+        LPVOID memglb = ::GlobalLock( hglb );
+
+        if( memglb == NULL )
+        {
+            ::CloseClipboard();
+
+            return false;
+        }
+
+        const Char * clipboardText = (const Char *)memglb;
+
+        MENGINE_STRNCPY( _value, clipboardText, _capacity );
+
+        ::GlobalUnlock( hglb );
+
+        ::CloseClipboard();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     UnknownPointer Win32Platform::getPlatformExtention()
     {
         return this;

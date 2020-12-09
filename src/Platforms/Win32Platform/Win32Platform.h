@@ -172,6 +172,9 @@ namespace Mengine
         void messageBox( const Char * _caption, const Char * _format, ... ) const override;
 
     protected:
+        bool getClipboardText( Char * _value, size_t _capacity ) const override;
+
+    protected:
         UnknownPointer getPlatformExtention() override;
 
     protected:

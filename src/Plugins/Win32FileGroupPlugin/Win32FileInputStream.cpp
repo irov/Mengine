@@ -74,7 +74,7 @@ namespace Mengine
 
         if( _offset + _size > size )
         {
-            LOGGER_ERROR( "invalid file '%ls' range %zu:%zu size %lu"
+            LOGGER_ERROR( "invalid file '%ls' range %zu:%zu size %zu"
                 , fullPath
                 , _offset
                 , _size

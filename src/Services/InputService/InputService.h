@@ -34,20 +34,22 @@ namespace Mengine
         bool isControlDown() const override;
 
     public:
-        bool isKeyDown( uint32_t _keyCode ) const override;
-        bool isExclusiveKeyDown( uint32_t _keyCode ) const override;
+        bool isKeyDown( EKeyCode _keyCode ) const override;
+        bool isExclusiveKeyDown( EKeyCode _keyCode ) const override;
         bool isAnyKeyDown() const override;
 
         bool isAnyMouseButtonDown() const override;
-        bool isMouseButtonDown( uint32_t _button ) const override;
+        bool isMouseButtonDown( EMouseCode _button ) const override;
 
+    public:
         void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point, float _pressure ) override;
         const mt::vec2f & getCursorPosition( uint32_t _touchId ) const override;
         float getCursorPressure( uint32_t _touchId ) const override;
         bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const override;
 
-        uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc ) override;
-        void removeMousePositionProvider( uint32_t _id ) override;
+    public:
+        UniqueId addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc ) override;
+        void removeMousePositionProvider( UniqueId _id ) override;
 
     public:
         void onFocus( bool _focus ) override;
@@ -74,7 +76,7 @@ namespace Mengine
 
         struct InputMousePositionProviderDesc
         {
-            uint32_t id;
+            UniqueId id;
             InputMousePositionProviderInterfacePtr provider;
 
 #if MENGINE_DOCUMENT_ENABLE

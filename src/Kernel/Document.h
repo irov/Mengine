@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Config/Config.h"
-
-#include "Kernel/String.h"
 #include "Kernel/Factorable.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

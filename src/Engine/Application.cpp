@@ -72,7 +72,6 @@
 #include "Kernel/List.h"
 #include "Kernel/BuildMode.h"
 
-#include "Config/Config.h"
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
 #include "Config/GitSHA1.h"

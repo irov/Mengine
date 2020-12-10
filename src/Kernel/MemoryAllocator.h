@@ -3,7 +3,6 @@
 #include "Kernel/Typename.h"
 #include "Kernel/AllocatorHelper.h"
 
-#include "Config/Config.h"
 #include "Config/Typeinfo.h"
 #include "Config/Char.h"
 

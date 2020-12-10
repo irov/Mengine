@@ -1645,14 +1645,7 @@ namespace Mengine
         RENDER_SERVICE()
             ->endScene( m_renderPipeline );
 
-        bool pipelineEmpty = m_renderPipeline->isEmpty();
-
         m_renderPipeline->clear();
-
-        if( pipelineEmpty == true )
-        {
-            return false;
-        }
 
         return true;
     }

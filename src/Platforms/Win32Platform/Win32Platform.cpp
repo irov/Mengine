@@ -4355,6 +4355,34 @@ namespace Mengine
         ::MessageBoxA( NULL, str, _caption, MB_OK );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::setClipboardText( const Char * _value ) const
+    {
+        size_t len = MENGINE_STRLEN( _value );
+
+        HGLOBAL hGlb = ::GlobalAlloc( GMEM_MOVEABLE, len + 1 );
+
+        LPVOID memGlb = ::GlobalLock( hGlb );
+
+        MENGINE_MEMCPY( memGlb, _value, len );
+
+        ::GlobalUnlock( memGlb );
+
+        if( ::OpenClipboard( m_hWnd ) == FALSE )
+        {
+            ::GlobalFree( hGlb );
+
+            return false;
+        }
+
+        ::EmptyClipboard();
+
+        ::SetClipboardData( CF_TEXT, hGlb );
+
+        ::CloseClipboard();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::getClipboardText( Char * _value, size_t _capacity ) const
     {
         if( ::OpenClipboard( m_hWnd ) == FALSE )
@@ -4362,29 +4390,29 @@ namespace Mengine
             return false;
         }
 
-        HANDLE hglb = ::GetClipboardData( CF_TEXT );
+        HANDLE hGlb = ::GetClipboardData( CF_TEXT );
 
-        if( hglb == NULL )
+        if( hGlb == NULL )
         {
             ::CloseClipboard();
 
             return false;
         }
 
-        LPVOID memglb = ::GlobalLock( hglb );
+        LPVOID memGlb = ::GlobalLock( hGlb );
 
-        if( memglb == NULL )
+        if( memGlb == NULL )
         {
             ::CloseClipboard();
 
             return false;
         }
 
-        const Char * clipboardText = (const Char *)memglb;
+        const Char * clipboardText = (const Char *)memGlb;
 
         MENGINE_STRNCPY( _value, clipboardText, _capacity );
 
-        ::GlobalUnlock( hglb );
+        ::GlobalUnlock( hGlb );
 
         ::CloseClipboard();
 

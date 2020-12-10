@@ -1030,14 +1030,49 @@ namespace Mengine
                 m_debugPause = true;
             }
 
+            if( _event.isAlt == true )
+            {
+                float timeFactor = 0.f;
+
+                switch( _event.code )
+                {
+                case KC_0: timeFactor = 0.5f; break;
+                case KC_1: timeFactor = 1.f; break;
+                case KC_2: timeFactor = 2.f; break;
+                case KC_3: timeFactor = 3.f; break;
+                case KC_4: timeFactor = 4.f; break;
+                case KC_5: timeFactor = 5.f; break;
+                case KC_6: timeFactor = 6.f; break;
+                case KC_7: timeFactor = 7.f; break;
+                case KC_8: timeFactor = 8.f; break;
+                case KC_9: timeFactor = 9.f; break;
+                default: break;
+                }
+
+                if( timeFactor > 0.f )
+                {
+                    TIMELINE_SERVICE()
+                        ->setTimeFactor( timeFactor );
+
+                    LOGGER_MESSAGE( "time factor: %f"
+                        , timeFactor
+                    );
+                }
+            }
+
             if( _event.code == KC_OEM_6 && _event.isDown == true )
             {
                 float timeFactor = TIMELINE_SERVICE()
                     ->getTimeFactor();
 
-                float TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
+                float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
 
-                timeFactor += TimeFactorStep;
+                if( _event.isAlt == true )
+                {
+                    Debug_TimeFactorStep = 1.f;
+                }
+
+                timeFactor += Debug_TimeFactorStep;
 
                 TIMELINE_SERVICE()
                     ->setTimeFactor( timeFactor );
@@ -1052,9 +1087,14 @@ namespace Mengine
                 float timeFactor = TIMELINE_SERVICE()
                     ->getTimeFactor();
 
-                float TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
+                float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
 
-                timeFactor -= TimeFactorStep;
+                if( _event.isAlt == true )
+                {
+                    Debug_TimeFactorStep = 1.f;
+                }
+
+                timeFactor -= Debug_TimeFactorStep;
 
                 if( timeFactor < 0.f )
                 {

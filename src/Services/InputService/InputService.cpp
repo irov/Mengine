@@ -379,6 +379,9 @@ namespace Mengine
     void InputService::keyEvent_( const InputKeyEvent & _event )
     {
         bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
+        bool isAlt = this->isAltDown();
+        bool isShift = this->isShiftDown();
+        bool isControl = this->isControlDown();
         bool isSpecial = this->isSpecialDown();
 
         m_keyBuffer[_event.code] = _event.isDown;
@@ -390,6 +393,9 @@ namespace Mengine
         event.code = _event.code;
         event.isDown = _event.isDown;
         event.isRepeat = isRepeat;
+        event.isAlt = isAlt;
+        event.isShift = isShift;
+        event.isControl = isControl;
         event.isSpecial = isSpecial;
 
         APPLICATION_SERVICE()

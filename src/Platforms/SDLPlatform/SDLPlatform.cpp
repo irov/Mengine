@@ -1,5 +1,3 @@
-#include "Config/Config.h"
-
 #include "SDLPlatform.h"
 
 #include "Interface/LoggerInterface.h"
@@ -82,6 +80,7 @@ namespace Mengine
         , m_sdlInput( nullptr )
         , m_icon( 0 )
         , m_prevTime( 0 )
+        , m_pauseUpdatingTime( -1.f )
         , m_shouldQuit( false )
         , m_running( false )
         , m_pause( false )
@@ -807,12 +806,14 @@ namespace Mengine
 
             if( updating == true )
             {
+                if( m_pauseUpdatingTime >= 0.f )
+                {
+                    frameTime = m_pauseUpdatingTime;
+                    m_pauseUpdatingTime = -1.f;
+                }
+
                 APPLICATION_SERVICE()
                     ->tick( frameTime );
-            }
-            else
-            {
-                SDL_Delay( 100 );
             }
 
             if( APPLICATION_SERVICE()
@@ -831,17 +832,30 @@ namespace Mengine
                     }
                 }
             }
-            else
-            {
-                SDL_Delay( 100 );
-            }
 
             APPLICATION_SERVICE()
                 ->endUpdate();
 
+            if( updating == false )
+            {
+                if( m_pauseUpdatingTime < 0.f )
+                {
+                    m_pauseUpdatingTime = frameTime;
+                }
+
+                SDL_Delay( 100 );
+            }
+            else
+            {
+                if( APPLICATION_SERVICE()
+                    ->getVSync() == false )
+                {
 #if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
-            SDL_Delay( 1 );
+                    SDL_Delay( 1 );
 #endif
+                }
+            }
+
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1967,6 +1981,15 @@ namespace Mengine
         }
 
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, str, nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::setClipboardText( const Char * _value ) const
+    {
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getClipboardText( Char * _value, size_t _capacity ) const

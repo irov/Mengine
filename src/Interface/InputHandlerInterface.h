@@ -31,6 +31,9 @@ namespace Mengine
         EKeyCode code;
         bool isDown;
         bool isRepeat;
+        bool isAlt;
+        bool isShift;
+        bool isControl;
         bool isSpecial;
     };
     //////////////////////////////////////////////////////////////////////////

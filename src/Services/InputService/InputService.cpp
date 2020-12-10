@@ -329,6 +329,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UniqueId InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         InputMousePositionProviderDesc desc;

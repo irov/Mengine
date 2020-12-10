@@ -5,7 +5,11 @@
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/InputMousePositionProviderInterface.h"
 
+#include "Kernel/KeyCode.h"
+#include "Kernel/MouseCode.h"
+
 #include "Config/Typedef.h"
+#include "Config/UniqueId.h"
 
 #include "math/vec2.h"
 
@@ -45,21 +49,23 @@ namespace Mengine
         virtual bool isControlDown() const = 0;
 
     public:
-        virtual bool isKeyDown( uint32_t _keyCode ) const = 0;
-        virtual bool isExclusiveKeyDown( uint32_t _keyCode ) const = 0;
+        virtual bool isKeyDown( EKeyCode _keyCode ) const = 0;
+        virtual bool isExclusiveKeyDown( EKeyCode _keyCode ) const = 0;
         virtual bool isAnyKeyDown() const = 0;
 
     public:
         virtual bool isAnyMouseButtonDown() const = 0;
-        virtual bool isMouseButtonDown( uint32_t _buttonId ) const = 0;
+        virtual bool isMouseButtonDown( EMouseCode _buttonId ) const = 0;
 
+    public:
         virtual void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point, float _pressure ) = 0;
         virtual const mt::vec2f & getCursorPosition( uint32_t _touchId ) const = 0;
         virtual float getCursorPressure( uint32_t _touchId ) const = 0;
         virtual bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const = 0;
 
-        virtual uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc ) = 0;
-        virtual void removeMousePositionProvider( uint32_t _id ) = 0;
+    public:
+        virtual UniqueId addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc ) = 0;
+        virtual void removeMousePositionProvider( UniqueId _id ) = 0;
 
     public:
         virtual void onFocus( bool _focus ) = 0;

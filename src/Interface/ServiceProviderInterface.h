@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Config/Config.h"
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
 #include "Config/Char.h"

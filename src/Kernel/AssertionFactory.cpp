@@ -1,5 +1,6 @@
-#include "Factory.h"
+#include "AssertionFactory.h"
 
+#if MENGINE_ASSERTION_DEBUG
 #include "Kernel/Assertion.h"
 
 #include "Config/StdIO.h"
@@ -29,3 +30,4 @@ namespace Mengine
         }
     }
 }
+#endif

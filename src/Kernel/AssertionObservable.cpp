@@ -1,5 +1,6 @@
 #include "Kernel/AssertionObservable.h"
 
+#if MENGINE_ASSERTION_DEBUG
 #include "Interface/NotificationServiceInterface.h"
 
 namespace Mengine
@@ -20,3 +21,4 @@ namespace Mengine
         }
     }
 }
+#endif

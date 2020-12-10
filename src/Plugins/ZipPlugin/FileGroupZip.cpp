@@ -140,8 +140,6 @@ namespace Mengine
             return false;
         }
 
-        size_t header_position = zipFile->tell();
-
         uint32_t eocd_signature;
         zipFile->read( &eocd_signature, sizeof( eocd_signature ) );
 
@@ -155,11 +153,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( eocd.commentLength == 0 );
         MENGINE_ASSERTION_FATAL( eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive != 0xffffffffU );
 
-        size_t header_size = (size_t)eocd.sizeOfCentralDirectoryBytes;
         size_t header_offset = (size_t)eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive;
-
-        MENGINE_ASSERTION_FATAL( header_position >= header_size );
-        MENGINE_ASSERTION_FATAL( header_position >= header_offset );
 
         if( zipFile->seek( header_offset ) == false )
         {

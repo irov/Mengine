@@ -332,8 +332,6 @@ namespace Mengine
             );
     }
     //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_PLATFORM_ANDROID
-    //////////////////////////////////////////////////////////////////////////
     static void * s_SDL_malloc_func( size_t size )
     {
         void * p = Helper::allocateMemory( size, "SDL" );
@@ -360,8 +358,6 @@ namespace Mengine
         Helper::deallocateMemory( mem, "SDL" );
     }
     //////////////////////////////////////////////////////////////////////////
-#endif
-    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
         ::setlocale( LC_ALL, "C" );
@@ -383,7 +379,6 @@ namespace Mengine
 
         SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
 
-#ifndef MENGINE_PLATFORM_ANDROID
         if( SDL_SetMemoryFunctions( &s_SDL_malloc_func, &s_SDL_calloc_func, &s_SDL_realloc_func, &s_SDL_free_func ) != 0 )
         {
             LOGGER_ERROR( "invalid set memory functions: %s"
@@ -392,7 +387,6 @@ namespace Mengine
 
             return false;
         }
-#endif
 
 #ifdef MENGINE_DEBUG
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_DEBUG );
@@ -1011,7 +1005,7 @@ namespace Mengine
             , attribute_GL_CONTEXT_MINOR_VERSION
         );
 
-        m_glContext = glContext;        
+        m_glContext = glContext;
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         Resolution resoultion;

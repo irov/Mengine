@@ -9,7 +9,11 @@
 #include "Config/StdString.h"
 
 #if MENGINE_ALLOCATOR_DEBUG == 0
-#   include "rpmalloc/rpmalloc.h"
+#   define MENGINE_ALLOCATOR_RPMALLOC 1
+
+#   if MENGINE_ALLOCATOR_RPMALLOC
+#       include "rpmalloc/rpmalloc.h"
+#   endif
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG
@@ -36,8 +40,10 @@ namespace Mengine
     bool AllocatorService::_initializeService()
     {
 #if MENGINE_ALLOCATOR_DEBUG == 0
+#   if MENGINE_ALLOCATOR_RPMALLOC
         rpmalloc_initialize();
         rpmalloc_thread_initialize();
+#   endif
 #endif
 
         SERVICE_WAIT( ThreadServiceInterface, [this]()
@@ -58,8 +64,10 @@ namespace Mengine
     void AllocatorService::_finalizeService()
     {
 #if MENGINE_ALLOCATOR_DEBUG == 0
+#   if MENGINE_ALLOCATOR_RPMALLOC
         rpmalloc_thread_finalize();
         rpmalloc_finalize();
+#   endif
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG
@@ -80,7 +88,11 @@ namespace Mengine
 
         this->report( _doc, _size, 0 );
 #else
+#   if MENGINE_ALLOCATOR_RPMALLOC
         void * p = rpmalloc( _size );
+#   else
+        void * p = ::malloc( _size );
+#   endif
 #endif
 
         return p;
@@ -99,7 +111,11 @@ namespace Mengine
 
         this->report( _doc, 0, size );
 #else
+#   if MENGINE_ALLOCATOR_RPMALLOC
         rpfree( _mem );
+#   else
+        ::free( _mem );
+#   endif
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -116,7 +132,11 @@ namespace Mengine
 
         this->report( _doc, total, 0 );
 #else
+#   if MENGINE_ALLOCATOR_RPMALLOC
         void * p = rpcalloc( _num, _size );
+#   else
+        void * p = ::calloc( _num, _size );
+#   endif
 #endif
 
         return p;
@@ -135,7 +155,11 @@ namespace Mengine
 
         this->report( _doc, _size, size );
 #else
+#   if MENGINE_ALLOCATOR_RPMALLOC
         void * p = rprealloc( _mem, _size );
+#   else
+        void * p = ::realloc( _mem, _size );
+#   endif
 #endif
 
         return p;
@@ -144,14 +168,18 @@ namespace Mengine
     void AllocatorService::startThread()
     {
 #if MENGINE_ALLOCATOR_DEBUG == 0
+#   if MENGINE_ALLOCATOR_RPMALLOC
         rpmalloc_thread_initialize();
+#   endif
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::stopThread()
     {
 #if MENGINE_ALLOCATOR_DEBUG == 0
+#   if MENGINE_ALLOCATOR_RPMALLOC
         rpmalloc_thread_finalize();
+#   endif
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

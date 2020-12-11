@@ -43,7 +43,7 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE% ^
     -S %CMAKELIST_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j8
 
 @popd
 
@@ -63,7 +63,7 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE% ^
     -S %CMAKELIST_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j8
 
 @popd
 
@@ -83,7 +83,7 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE% ^
     -S %CMAKELIST_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j8
 
 @popd
 
@@ -103,7 +103,7 @@ set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
     -DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE% ^
     -S %CMAKELIST_PATH%
     
-%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j4
+%CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j8
     
 @popd
 

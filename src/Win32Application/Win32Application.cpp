@@ -221,7 +221,10 @@ namespace Mengine
 
         m_hInstance = hInstance;
 #else
-        bootstrapMengine();
+        if( bootstrapMengine() == false )
+        {
+            return false;
+        }
 #endif
 
         LOGGER_MESSAGE( "Creating Render Window..." );

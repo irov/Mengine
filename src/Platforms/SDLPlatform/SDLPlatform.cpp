@@ -2486,8 +2486,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "failed to mount application directory"
-            );
+            LOGGER_ERROR( "failed to mount application directory" );
 
             return false;
         }
@@ -2498,10 +2497,9 @@ namespace Mengine
 
         // mount root
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), defaultFileGroup, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), defaultFileGroup, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "failed to mount dev directory"
-            );
+            LOGGER_ERROR( "failed to mount dev directory" );
 
             return false;
         }

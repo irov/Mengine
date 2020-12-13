@@ -108,7 +108,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
     {
-        for( const ResourceImagePtr frame : m_frames )
+        for( const ResourceImagePtr & frame : m_frames )
         {
             if( _lambdaFrames( frame ) == false )
             {

@@ -155,7 +155,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
 #else
-        bootstrapMengine();
+        if( bootstrapMengine() == false )
+        {
+            return false;
+        }
 #endif
 
         LOGGER_MESSAGE( "Creating Render Window..." );

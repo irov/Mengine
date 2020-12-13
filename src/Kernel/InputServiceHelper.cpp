@@ -68,6 +68,9 @@ namespace Mengine
             ev.key.code = _code;
             ev.key.isDown = _isDown;
             ev.key.isRepeat = _repeating;
+            ev.key.isAlt = false;
+            ev.key.isShift = false;
+            ev.key.isControl = false;
             ev.key.isSpecial = false;
 
             INPUT_SERVICE()

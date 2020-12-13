@@ -34,8 +34,7 @@ namespace Mengine
         size_t uncompressSize = 0;
         if( _archivator->decompress( _memory, _capacity, compress_memory, _size, &uncompressSize ) == false )
         {
-            LOGGER_ERROR( "invalid decompress"
-            );
+            LOGGER_ERROR( "invalid decompress" );
 
             return false;
         }
@@ -77,8 +76,7 @@ namespace Mengine
         size_t compressSize;
         if( _archivator->compress( memory_buffer, compressSize2, _buffer, _size, &compressSize, _compress ) == false )
         {
-            LOGGER_ERROR( "invalid compress"
-            );
+            LOGGER_ERROR( "invalid compress" );
 
             return nullptr;
         }
@@ -92,4 +90,5 @@ namespace Mengine
 
         return memory;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

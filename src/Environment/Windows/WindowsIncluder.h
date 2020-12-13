@@ -50,5 +50,6 @@
 #include <shellapi.h>
 #include <shlobj.h>
 
+#include <windowsx.h>
 #include <wtsapi32.h>
 #pragma warning(pop) 

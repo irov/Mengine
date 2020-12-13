@@ -62,7 +62,6 @@ namespace Mengine
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
         , m_frames( 0 )
-        , m_dxMaxCombinedTextureImageUnits( 0 )
         , m_textureMemoryUse( 0 )
         , m_textureCount( 0 )
         , m_vertexBufferCount( 0 )
@@ -120,7 +119,7 @@ namespace Mengine
             DWORD error = ::GetLastError();
 
             LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address [error: %lu]"
-                , error 
+                , error
             );
 
             return false;
@@ -163,8 +162,7 @@ namespace Mengine
         D3DDISPLAYMODE Mode;
         IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
         {
-            LOGGER_ERROR( "Can't determine desktop video mode"
-            );
+            LOGGER_ERROR( "Can't determine desktop video mode" );
 
             return false;
         }
@@ -175,8 +173,7 @@ namespace Mengine
         D3DADAPTER_IDENTIFIER9 AdID;
         IF_DXCALL( m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID) )
         {
-            LOGGER_ERROR( "Can't determine adapter identifier"
-            );
+            LOGGER_ERROR( "Can't determine adapter identifier" );
 
             return false;
         }
@@ -200,13 +197,6 @@ namespace Mengine
         IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_d3dCaps) )
         {
             return false;
-        }
-
-        m_dxMaxCombinedTextureImageUnits = m_d3dCaps.MaxSimultaneousTextures;
-
-        if( m_dxMaxCombinedTextureImageUnits > MENGINE_MAX_TEXTURE_STAGES )
-        {
-            m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
         }
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX9" );
@@ -377,7 +367,6 @@ namespace Mengine
         HWND windowHandle = win32Platform->getWindowHandle();
 
         m_d3dppW.hDeviceWindow = windowHandle;
-
         m_d3dppW.Windowed = TRUE;
 
         if( m_depth == true )
@@ -406,9 +395,7 @@ namespace Mengine
         m_d3dppFS.BackBufferCount = 1;
 
         m_d3dppFS.hDeviceWindow = windowHandle;
-
         m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
         m_d3dppFS.BackBufferFormat = m_displayMode.Format;
 
         if( m_depth == true )
@@ -486,7 +473,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , device_flags
                     , m_d3dpp, &m_pD3DDevice );
@@ -501,7 +489,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , device_flags
                     , m_d3dpp, &m_pD3DDevice );
@@ -516,7 +505,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
                     , m_d3dpp, &m_pD3DDevice );
@@ -531,7 +521,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_MIXED_VERTEXPROCESSING
                     , m_d3dpp, &m_pD3DDevice );
@@ -546,7 +537,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                     , D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
                     , m_d3dpp, &m_pD3DDevice );
@@ -561,7 +553,8 @@ namespace Mengine
                     , (uint32_t)hr
                 );
 
-                Sleep( 100 );
+                ::Sleep( 100 );
+
                 hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, windowHandle
                     , D3DCREATE_SOFTWARE_VERTEXPROCESSING
                     , m_d3dpp, &m_pD3DDevice );
@@ -584,6 +577,7 @@ namespace Mengine
             return false;
         }
 
+        //Get Devivce Caps after create device
         DXCALL( m_pD3DDevice, GetDeviceCaps, (&m_d3dCaps) );
 
         LOGGER_INFO( "render", "Mode: resolution %d x %d x %s\n"
@@ -674,10 +668,10 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
-    {        
+    {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-         DX9RenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
+        DX9RenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderImage, "invalid create render texture" );
 
@@ -910,8 +904,7 @@ namespace Mengine
 
             if( this->releaseResources_() == false )
             {
-                LOGGER_ERROR( "release resources"
-                );
+                LOGGER_ERROR( "release resources" );
             }
 
             return false;
@@ -1043,7 +1036,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         D3DVIEWPORT9 VP;
-
         VP.X = (DWORD)MT_floorf( _viewport.begin.x + 0.5f );
         VP.Y = (DWORD)MT_floorf( _viewport.begin.y + 0.5f );
 
@@ -1090,8 +1082,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed"
-            );
+            LOGGER_ERROR( "Graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1143,13 +1134,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::supportTextureNonPow2() const
     {
-        D3DCAPS9 caps;
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
-        {
-            return false;
-        }
-
-        if( (caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
+        if( (m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
         {
             return false;
         }
@@ -1159,7 +1144,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderSystem::getMaxCombinedTextureImageUnits() const
     {
-        return m_dxMaxCombinedTextureImageUnits;
+        DWORD MaxSimultaneousTextures = m_d3dCaps.MaxSimultaneousTextures;
+
+        if( MaxSimultaneousTextures > MENGINE_MAX_TEXTURE_STAGES )
+        {
+            return MENGINE_MAX_TEXTURE_STAGES;
+        }
+
+        return (uint32_t)MaxSimultaneousTextures;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
@@ -1192,11 +1184,13 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        if( _stage >= m_dxMaxCombinedTextureImageUnits )
+        uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
+
+        if( _stage >= MaxCombinedTextureImageUnits )
         {
             LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
-                , m_dxMaxCombinedTextureImageUnits
+                , MaxCombinedTextureImageUnits
             );
 
             return;
@@ -1224,9 +1218,9 @@ namespace Mengine
         {
             m_vertexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetIndices, (nullptr) )
+            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
             {
-                LOGGER_ERROR( "indices not reset" );
+                LOGGER_ERROR( "stream source not reset" );
             }
         }
 
@@ -1234,9 +1228,9 @@ namespace Mengine
         {
             m_indexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
+            IF_DXCALL( m_pD3DDevice, SetIndices, (nullptr) )
             {
-                LOGGER_ERROR( "stream source not reset" );
+                LOGGER_ERROR( "indices not reset" );
             }
         }
 
@@ -1251,7 +1245,8 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetTexture, (i, nullptr) )
             {
-                LOGGER_ERROR( "texture %d not reset", i
+                LOGGER_ERROR( "texture %u not reset"
+                    , i
                 );
             }
         }
@@ -1275,8 +1270,7 @@ namespace Mengine
 
         if( this->releaseResources_() == false )
         {
-            LOGGER_ERROR( "release resources"
-            );
+            LOGGER_ERROR( "release resources" );
 
             return false;
         }
@@ -1340,8 +1334,7 @@ namespace Mengine
         {
             if( this->releaseResources_() == false )
             {
-                LOGGER_ERROR( "invalid release resource"
-                );
+                LOGGER_ERROR( "invalid release resource" );
 
                 return;
             }
@@ -1375,6 +1368,11 @@ namespace Mengine
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
+            LOGGER_ERROR( "invalid initialize vertex buffer [%u] type [%u]"
+                , _vertexSize
+                , _bufferType
+            );
+
             return nullptr;
         }
 
@@ -1486,11 +1484,13 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        if( _stage >= m_dxMaxCombinedTextureImageUnits )
+        uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
+
+        if( _stage >= MaxCombinedTextureImageUnits )
         {
             LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
-                , m_dxMaxCombinedTextureImageUnits
+                , MaxCombinedTextureImageUnits
             );
 
             return;
@@ -1527,11 +1527,13 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        if( _stage >= m_dxMaxCombinedTextureImageUnits )
+        uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
+
+        if( _stage >= MaxCombinedTextureImageUnits )
         {
             LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
-                , m_dxMaxCombinedTextureImageUnits
+                , MaxCombinedTextureImageUnits
             );
 
             return;
@@ -1641,11 +1643,13 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        if( _stage >= m_dxMaxCombinedTextureImageUnits )
+        uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
+
+        if( _stage >= MaxCombinedTextureImageUnits )
         {
             LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
-                , m_dxMaxCombinedTextureImageUnits
+                , MaxCombinedTextureImageUnits
             );
 
             return;

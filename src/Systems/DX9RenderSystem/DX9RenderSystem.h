@@ -231,8 +231,6 @@ namespace Mengine
         mt::mat4f m_worldMatrix;
         mt::mat4f m_totalWVPInvMatrix;
 
-        uint32_t m_dxMaxCombinedTextureImageUnits;
-
         uint32_t m_textureMemoryUse;
         uint32_t m_textureCount;
         uint32_t m_vertexBufferCount;

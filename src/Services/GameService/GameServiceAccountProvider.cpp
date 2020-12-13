@@ -49,4 +49,5 @@ namespace Mengine
         EVENTABLE_OTHER_METHODT( m_eventable, EVENT_GAME_UNSELECT_ACCOUNT, GameEventReceiverInterface )
             ->onGameUselectAccount( _accountID );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

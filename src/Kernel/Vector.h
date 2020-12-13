@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class T>
     struct VectorStaticAssertionBoolSpecialization
     {
@@ -13,7 +14,8 @@ namespace Mengine
 
         typedef T type;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     template<class T, class A = StlAllocator<T>>
     using Vector = std::vector<typename VectorStaticAssertionBoolSpecialization<T>::type, A>;
+    //////////////////////////////////////////////////////////////////////////
 }

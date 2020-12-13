@@ -3,7 +3,6 @@
 #include "Interface/LoggerInterface.h"
 
 #include "Config/Char.h"
-#include "Config/Config.h"
 
 namespace Mengine
 {

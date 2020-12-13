@@ -5,6 +5,11 @@ src
     FEPlugin.h
     FEPlugin.cpp
     FEPlugin.def
+    
+    FEServiceInterface.h
+    FEService.h
+    FEService.cpp
+    
     FETextFontEffectBase.h
     FETextFontEffectBase.cpp
     FETextFontEffectFile.h

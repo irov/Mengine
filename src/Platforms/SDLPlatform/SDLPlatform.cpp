@@ -1,5 +1,3 @@
-#include "Config/Config.h"
-
 #include "SDLPlatform.h"
 
 #include "Interface/LoggerInterface.h"
@@ -82,6 +80,7 @@ namespace Mengine
         , m_sdlInput( nullptr )
         , m_icon( 0 )
         , m_prevTime( 0 )
+        , m_pauseUpdatingTime( -1.f )
         , m_shouldQuit( false )
         , m_running( false )
         , m_pause( false )
@@ -333,8 +332,6 @@ namespace Mengine
             );
     }
     //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_PLATFORM_ANDROID
-    //////////////////////////////////////////////////////////////////////////
     static void * s_SDL_malloc_func( size_t size )
     {
         void * p = Helper::allocateMemory( size, "SDL" );
@@ -361,8 +358,6 @@ namespace Mengine
         Helper::deallocateMemory( mem, "SDL" );
     }
     //////////////////////////////////////////////////////////////////////////
-#endif
-    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
         ::setlocale( LC_ALL, "C" );
@@ -384,7 +379,6 @@ namespace Mengine
 
         SDL_GetMemoryFunctions( &m_old_SDL_malloc_func, &m_old_SDL_calloc_func, &m_old_SDL_realloc_func, &m_old_SDL_free_func );
 
-#ifndef MENGINE_PLATFORM_ANDROID
         if( SDL_SetMemoryFunctions( &s_SDL_malloc_func, &s_SDL_calloc_func, &s_SDL_realloc_func, &s_SDL_free_func ) != 0 )
         {
             LOGGER_ERROR( "invalid set memory functions: %s"
@@ -393,7 +387,6 @@ namespace Mengine
 
             return false;
         }
-#endif
 
 #ifdef MENGINE_DEBUG
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_DEBUG );
@@ -807,12 +800,14 @@ namespace Mengine
 
             if( updating == true )
             {
+                if( m_pauseUpdatingTime >= 0.f )
+                {
+                    frameTime = m_pauseUpdatingTime;
+                    m_pauseUpdatingTime = -1.f;
+                }
+
                 APPLICATION_SERVICE()
                     ->tick( frameTime );
-            }
-            else
-            {
-                SDL_Delay( 100 );
             }
 
             if( APPLICATION_SERVICE()
@@ -831,17 +826,30 @@ namespace Mengine
                     }
                 }
             }
-            else
-            {
-                SDL_Delay( 100 );
-            }
 
             APPLICATION_SERVICE()
                 ->endUpdate();
 
+            if( updating == false )
+            {
+                if( m_pauseUpdatingTime < 0.f )
+                {
+                    m_pauseUpdatingTime = frameTime;
+                }
+
+                SDL_Delay( 100 );
+            }
+            else
+            {
+                if( APPLICATION_SERVICE()
+                    ->getVSync() == false )
+                {
 #if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
-            SDL_Delay( 1 );
+                    SDL_Delay( 1 );
 #endif
+                }
+            }
+
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -997,7 +1005,7 @@ namespace Mengine
             , attribute_GL_CONTEXT_MINOR_VERSION
         );
 
-        m_glContext = glContext;        
+        m_glContext = glContext;
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         Resolution resoultion;
@@ -1967,6 +1975,25 @@ namespace Mengine
         }
 
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, str, nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::setClipboardText( const Char * _value ) const
+    {
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::getClipboardText( Char * _value, size_t _capacity ) const
+    {
+        MENGINE_UNUSED( _value );
+        MENGINE_UNUSED( _capacity );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     UnknownPointer SDLPlatform::getPlatformExtention()

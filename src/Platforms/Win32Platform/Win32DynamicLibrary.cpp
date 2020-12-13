@@ -3,7 +3,6 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 
-#include "Config/Config.h"
 #include "Config/StdString.h"
 
 namespace Mengine
@@ -32,7 +31,7 @@ namespace Mengine
     bool Win32DynamicLibrary::load()
     {
         WChar unicode_name[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( m_name, unicode_name, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( m_name, unicode_name, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
@@ -52,7 +51,7 @@ namespace Mengine
         }
 
         WCHAR dllFilename[MENGINE_MAX_PATH] = {L'\0'};
-        ::GetModuleFileName( hInstance, dllFilename, MENGINE_MAX_PATH );
+        ::GetModuleFileName( hInstance, dllFilename, MENGINE_MAX_PATH - 1 );
 
         LOGGER_MESSAGE_RELEASE( "load dll: %ls"
             , dllFilename

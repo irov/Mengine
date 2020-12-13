@@ -783,7 +783,7 @@ namespace Mengine
             this->updateVolume();
         }
 
-        for( const SoundIdentityPtr & identity : m_soundStopListeners )
+        for( const SoundIdentityInterfacePtr & identity : m_soundStopListeners )
         {
             SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
             keep_listener->onSoundEnd( identity );

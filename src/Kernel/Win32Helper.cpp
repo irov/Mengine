@@ -46,7 +46,7 @@ namespace Mengine
                     , unicode_path
                     , (int)unicode_path_len
                     , _path
-                    , MENGINE_MAX_PATH
+                    , MENGINE_MAX_PATH - 1
                     , NULL
                     , NULL
                 );

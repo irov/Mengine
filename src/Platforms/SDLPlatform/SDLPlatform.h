@@ -151,6 +151,10 @@ namespace Mengine
     protected:
         void messageBox( const Char * _caption, const Char * _format, ... ) const override;
 
+    protected:
+        bool setClipboardText( const Char * _value ) const override;
+        bool getClipboardText( Char * _value, size_t _capacity ) const override;
+
     public:
         UnknownPointer getPlatformExtention() override;
 
@@ -229,6 +233,8 @@ namespace Mengine
         Char m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
 
         uint64_t m_prevTime;
+
+        float m_pauseUpdatingTime;
 
         bool m_shouldQuit;
         bool m_running;

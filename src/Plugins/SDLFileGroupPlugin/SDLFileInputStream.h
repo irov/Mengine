@@ -26,6 +26,7 @@ namespace Mengine
     public:
         size_t read( void * _buf, size_t _count ) override;
         bool seek( size_t _pos ) override;
+        bool rseek( size_t _pos ) override;
         bool skip( size_t _pos ) override;
         size_t tell() const override;
         size_t size() const override;

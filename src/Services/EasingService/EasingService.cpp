@@ -106,4 +106,5 @@ namespace Mengine
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Easing" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

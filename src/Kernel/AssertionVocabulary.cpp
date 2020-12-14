@@ -1,5 +1,6 @@
 #include "Factory.h"
 
+#if MENGINE_ASSERTION_DEBUG
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Assertion.h"
@@ -52,3 +53,4 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 }
+#endif

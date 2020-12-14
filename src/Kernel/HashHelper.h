@@ -2,7 +2,6 @@
 
 #include "Kernel/HashType.h"
 
-#include "Config/Config.h"
 #include "Config/Char.h"
 
 namespace Mengine

@@ -2,11 +2,6 @@
 
 #include "Interface/ServantInterface.h"
 
-#include "Kernel/Pointer.h"
-
-#include "Config/Config.h"
-#include "Config/Typedef.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

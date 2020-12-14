@@ -10,8 +10,6 @@
 #include "Kernel/Contentable.h"
 #include "Kernel/CompilableReference.h"
 
-#include "math/uv4.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -36,4 +34,5 @@ namespace Mengine
         virtual void setFECustom( const MemoryInterfacePtr & _memory ) = 0;
         virtual const MemoryInterfacePtr & getFECustom() const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

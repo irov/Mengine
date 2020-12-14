@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config/Config.h"
-
 #include "Kernel/Vector.h"
 
 #include "ozz/base/maths/simd_math.h"

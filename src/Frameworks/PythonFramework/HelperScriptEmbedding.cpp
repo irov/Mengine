@@ -287,13 +287,13 @@ namespace Mengine
                     ->isControlDown();
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_isKeyDown( uint32_t _keyCode ) const
+            bool s_isKeyDown( EKeyCode _keyCode ) const
             {
                 return INPUT_SERVICE()
                     ->isKeyDown( _keyCode );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_isExclusiveKeyDown( uint32_t _keyCode ) const
+            bool s_isExclusiveKeyDown( EKeyCode _keyCode ) const
             {
                 return INPUT_SERVICE()
                     ->isExclusiveKeyDown( _keyCode );
@@ -311,7 +311,7 @@ namespace Mengine
                     ->isAnyMouseButtonDown();
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_isMouseButtonDown( uint32_t _button ) const
+            bool s_isMouseButtonDown( EMouseCode _button ) const
             {
                 return INPUT_SERVICE()
                     ->isMouseButtonDown( _button );

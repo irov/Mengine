@@ -2,8 +2,6 @@
 
 #include "Kernel/Vector.h"
 
-#include "Config/Config.h"
-
 namespace Mengine
 {
     namespace Helper

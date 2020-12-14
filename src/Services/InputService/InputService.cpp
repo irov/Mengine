@@ -186,14 +186,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool InputService::isKeyDown( uint32_t _keyCode ) const
+    bool InputService::isKeyDown( EKeyCode _keyCode ) const
     {
         bool isDown = m_keyBuffer[_keyCode];
 
         return isDown;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool InputService::isExclusiveKeyDown( uint32_t _keyCode ) const
+    bool InputService::isExclusiveKeyDown( EKeyCode _keyCode ) const
     {
         bool isDown = m_keyBuffer[_keyCode];
 
@@ -228,7 +228,7 @@ namespace Mengine
         return isDown0 || isDown1 || isDown2;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool InputService::isMouseButtonDown( uint32_t _button ) const
+    bool InputService::isMouseButtonDown( EMouseCode _button ) const
     {
         MENGINE_ASSERTION_FATAL( _button < 3 );
 
@@ -327,8 +327,10 @@ namespace Mengine
         return m_cursorPressure[_touchId];
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc )
+    UniqueId InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         UniqueId new_id = GENERATE_UNIQUE_IDENTITY();
 
         InputMousePositionProviderDesc desc;
@@ -344,7 +346,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::removeMousePositionProvider( uint32_t _id )
+    void InputService::removeMousePositionProvider( UniqueId _id )
     {
         VectorMousePositionProviders::iterator it_found =
             std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_id]( const InputService::InputMousePositionProviderDesc & _desc )
@@ -379,6 +381,9 @@ namespace Mengine
     void InputService::keyEvent_( const InputKeyEvent & _event )
     {
         bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
+        bool isAlt = this->isAltDown();
+        bool isShift = this->isShiftDown();
+        bool isControl = this->isControlDown();
         bool isSpecial = this->isSpecialDown();
 
         m_keyBuffer[_event.code] = _event.isDown;
@@ -390,6 +395,9 @@ namespace Mengine
         event.code = _event.code;
         event.isDown = _event.isDown;
         event.isRepeat = isRepeat;
+        event.isAlt = isAlt;
+        event.isShift = isShift;
+        event.isControl = isControl;
         event.isSpecial = isSpecial;
 
         APPLICATION_SERVICE()
@@ -469,4 +477,5 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->mouseLeave( _event );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -60,6 +60,7 @@ namespace Mengine
         , m_shouldUpdateScene( false )
         , m_workerId( 0 )
         , m_globalKeyHandlerF2( 0 )
+        , m_requestListenerId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -91,6 +92,18 @@ namespace Mengine
 
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
+
+        cURLRequestListenerPtr logger = Helper::makeFactorableUnique<cURLRequestListener>( MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ASSERTION_FATAL( logger != nullptr );
+
+        logger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ));
+
+        m_networkLogger = logger;
+
+        m_requestListenerId = CURL_SERVICE()
+            ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
 
         return true;
     }
@@ -138,6 +151,9 @@ namespace Mengine
             Helper::removeGlobalHandler( m_globalKeyHandlerF2 );
             m_globalKeyHandlerF2 = 0;
         }
+
+        CURL_SERVICE()
+            ->removeRequestListener( m_requestListenerId );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const
@@ -334,6 +350,11 @@ namespace Mengine
             if( m_currentTab == "leak" )
             {
                 this->sendObjectsLeak();
+            }
+
+            if( m_currentTab == "network" )
+            {
+                this->sendNetwork();
             }
 
             m_shouldUpdateScene = false;
@@ -1343,6 +1364,43 @@ namespace Mengine
         this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendNetwork()
+    {
+        pugi::xml_document xml_doc;
+
+        pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Network" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        pugi::xml_node network_xml_objects = payloadNode.append_child( "Objects" );
+
+        VectorRequestData data;
+        m_networkLogger->getPreparedData( &data );
+
+        for( const RequestData & request : data )
+        {
+            pugi::xml_node xml_object = network_xml_objects.append_child( "Object" );
+
+            xml_object.append_attribute( "Type" ).set_value( request.type.c_str() );
+            xml_object.append_attribute( "Id" ).set_value( request.id );
+            xml_object.append_attribute( "Url" ).set_value( request.url.c_str() );
+        }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef MENGINE_DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::processPacket( NodeDebuggerPacket & _packet )
     {
         pugi::xml_document doc;
@@ -1700,6 +1758,11 @@ namespace Mengine
         MENGINE_UNUSED( _generator );
 
         m_shouldUpdateScene = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::setUpdateSceneFlag( bool _flag )
+    {
+        m_shouldUpdateScene = _flag;
     }
     //////////////////////////////////////////////////////////////////////////
 }

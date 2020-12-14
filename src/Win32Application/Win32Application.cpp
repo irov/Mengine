@@ -221,7 +221,10 @@ namespace Mengine
 
         m_hInstance = hInstance;
 #else
-        bootstrapMengine();
+        if( bootstrapMengine() == false )
+        {
+            return false;
+        }
 #endif
 
         LOGGER_MESSAGE( "Creating Render Window..." );
@@ -269,7 +272,7 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
         {
-            LOGGER_CRITICAL( "not create render window" );
+            LOGGER_CRITICAL( "invalid create render window" );
 
             return false;
         }

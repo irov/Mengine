@@ -9,4 +9,6 @@ set( sources
 
 include_directories( ${SOURCE_DIR}/rpmalloc )
 
+ADD_DEFINITIONS(-DENABLE_PRELOAD)
+
 add_library(${PROJECT_NAME} STATIC ${sources})

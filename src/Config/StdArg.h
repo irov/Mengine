@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #include <cstdarg>
 
 #ifndef MENGINE_VA_LIST_TYPE

@@ -6,6 +6,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -35,6 +36,13 @@ namespace Mengine
             m_factory = factory;
 
             return true;
+        }
+
+        void finalize() override
+        {
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+
+            m_factory = nullptr;
         }
 
     public:

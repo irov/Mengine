@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #ifndef MENGINE_BUILD_TIMESTAMP
 #define MENGINE_BUILD_TIMESTAMP "@MENGINE_BUILD_TIMESTAMP@"
 #endif

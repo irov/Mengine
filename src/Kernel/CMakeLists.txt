@@ -388,6 +388,7 @@ Assertion
     AssertionAllocator.h
     AssertionObservable.h
     AssertionObservable.cpp
+    AssertionOptional.h
 )
 
 ADD_FILTER(

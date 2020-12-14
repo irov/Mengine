@@ -292,6 +292,15 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLFileInputStream::rseek( size_t _pos )
+    {
+        MENGINE_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::seek" );
+
+        bool successful = this->seek_( m_size - _pos );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::seek_( size_t _pos )
     {
         if( _pos >= m_reading - m_capacity && _pos <= m_reading )

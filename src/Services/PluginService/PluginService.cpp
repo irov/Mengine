@@ -16,6 +16,10 @@
 #define MENGINE_PLUGIN_CREATE_FUNCTION_NAME "dllCreatePlugin"
 #endif
 
+#ifndef MENGINE_PLUGIN_DESTROY_FUNCTION_NAME
+#define MENGINE_PLUGIN_DESTROY_FUNCTION_NAME "dllDestroyPlugin"
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginService, Mengine::PluginService );
 //////////////////////////////////////////////////////////////////////////

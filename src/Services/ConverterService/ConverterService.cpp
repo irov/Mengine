@@ -67,19 +67,19 @@ namespace Mengine
         return converter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentPtr & _doc )
+    bool ConverterService::convert( const ConstString & _converterType, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentPtr & _doc )
     {
-        if( _converter.empty() == true )
+        if( _converterType.empty() == true )
         {
             *_out = _in;
 
             return true;
         }
 
-        ConverterInterfacePtr converter = this->createConverter( _converter, _doc );
+        ConverterInterfacePtr converter = this->createConverter( _converterType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( converter, "can't create converter '%s'"
-            , _converter.c_str()
+            , _converterType.c_str()
         );
 
         ConverterOptions options;
@@ -101,16 +101,14 @@ namespace Mengine
 
         if( options.inputFilePath.empty() == true )
         {
-            LOGGER_ERROR( "input file is empty"
-            );
+            LOGGER_ERROR( "input file is empty" );
 
             return false;
         }
 
         if( options.outputFilePath.empty() == true )
         {
-            LOGGER_ERROR( "output file is empty"
-            );
+            LOGGER_ERROR( "output file is empty" );
 
             return false;
         }
@@ -130,7 +128,7 @@ namespace Mengine
             InputStreamInterfacePtr oldFile = Helper::openInputStreamFile( options.fileGroup, options.inputFilePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( oldFile, "converter '%s' can't open input file '%s:%s' (time)"
-                , _converter.c_str()
+                , _converterType.c_str()
                 , options.fileGroup->getName().c_str()
                 , options.inputFilePath.c_str()
             );
@@ -143,7 +141,7 @@ namespace Mengine
             InputStreamInterfacePtr newFile = Helper::openInputStreamFile( options.fileGroup, options.outputFilePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( newFile, "converter '%s' can't open output file '%s:%s' (time)"
-                , _converter.c_str()
+                , _converterType.c_str()
                 , options.fileGroup->getName().c_str()
                 , options.outputFilePath.c_str()
             );
@@ -168,7 +166,7 @@ namespace Mengine
         }
 
         LOGGER_WARNING( "converter '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
-            , _converter.c_str()
+            , _converterType.c_str()
             , options.fileGroup->getName().c_str()
             , options.inputFilePath.c_str()
             , options.fileGroup->getName().c_str()
@@ -178,7 +176,7 @@ namespace Mengine
         if( converter->convert() == false )
         {
             LOGGER_ERROR( "can't convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
-                , _converter.c_str()
+                , _converterType.c_str()
                 , options.fileGroup->getName().c_str()
                 , options.inputFilePath.c_str()
                 , options.fileGroup->getName().c_str()

@@ -377,7 +377,9 @@ namespace Mengine
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
-            LOGGER_ERROR( "invalid initialize index buffer" );
+            LOGGER_ERROR( "invalid initialize index buffer (doc: %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             return nullptr;
         }
@@ -405,8 +407,9 @@ namespace Mengine
 
         if( vertexAttribute->initialize( _name, _elementSize ) == false )
         {
-            LOGGER_ERROR( "invalid initialize vertex attribute '%s'"
+            LOGGER_ERROR( "invalid initialize vertex attribute '%s' (doc: %s)"
                 , _name.c_str()
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -427,8 +430,9 @@ namespace Mengine
 
         if( shader->initialize( _name, _memory ) == false )
         {
-            LOGGER_ERROR( "invalid initialize shader '%s'"
+            LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -449,8 +453,9 @@ namespace Mengine
 
         if( shader->initialize( _name, _memory ) == false )
         {
-            LOGGER_ERROR( "invalid initialize shader '%s'"
+            LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;

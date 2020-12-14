@@ -3,6 +3,7 @@
 #include "Interface/SoundSystemInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ThreadGuard.h"
 
 #include "AL/al.h"
 
@@ -62,6 +63,8 @@ namespace Mengine
         int32_t m_channels;
         float m_length;
         bool m_isStereo;
+
+        MENGINE_THREAD_GUARD_INIT;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenALSoundBufferBase, SoundBufferInterface> OpenALSoundBufferBasePtr;

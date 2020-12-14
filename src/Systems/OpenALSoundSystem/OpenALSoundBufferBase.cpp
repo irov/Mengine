@@ -3,6 +3,7 @@
 #include "Interface/SoundCodecInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/ThreadGuardScope.h"
 
 namespace Mengine
 {
@@ -35,6 +36,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferBase::acquire()
     {
+        MENGINE_THREAD_GUARD_SCOPE( this, "OpenALSoundBufferBase::acquire" );
+
         if( ++m_refacquire == 1 )
         {
             if( this->_acquire() == false )
@@ -48,6 +51,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferBase::release()
     {
+        MENGINE_THREAD_GUARD_SCOPE( this, "OpenALSoundBufferBase::release" );
+
         MENGINE_ASSERTION_FATAL( m_refacquire > 0 );
 
         if( --m_refacquire == 0 )

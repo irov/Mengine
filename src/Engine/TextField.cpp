@@ -1653,9 +1653,10 @@ namespace Mengine
 
         if( Helper::getStringFormat( _text, textValue, textSize, m_textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "invalid string '%s:%s' format with args %" PRIuPTR ""
+            LOGGER_ERROR( "invalid formating string '%s:%s' format '%s' with args %" PRIuPTR ""
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
+                , textValue
                 , m_textFormatArgs.size()
             );
 
@@ -1794,10 +1795,10 @@ namespace Mengine
         String fmt;
         if( Helper::getStringFormat( &fmt, textValue, textSize, m_textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "invalid string '%s' textId '%s' text '%s' format with args %" PRIuPTR ""
+            LOGGER_ERROR( "invalid formating string '%s' textId '%s' text '%s' format with args %" PRIuPTR ""
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
-                , m_text.c_str()
+                , textValue
                 , m_textFormatArgs.size()
             );
 

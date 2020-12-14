@@ -92,6 +92,11 @@ namespace Mengine
                 }
             }
 
+            if( num_argumetns != _arguments.size() )
+            {
+                return false;
+            }
+
             return true;
         }
         //////////////////////////////////////////////////////////////////////////

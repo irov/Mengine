@@ -35,6 +35,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLReceiverInterface> cURLReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    class cURLRequestListenerInterface
+        : public Interface
+    {
+    public:
+        virtual void request( HttpRequestID  _id, const String & _url ) = 0;
+        virtual void response( HttpRequestID  _id, const String & _url ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<cURLRequestListenerInterface> cURLRequestListenerInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class cURLServiceInterface
         : public ServiceInterface
     {
@@ -50,6 +60,10 @@ namespace Mengine
 
     public:
         virtual bool cancelRequest( HttpRequestID _id ) = 0;
+        
+    public:
+        virtual int32_t addRequestListener( const cURLRequestListenerInterfacePtr & _listener, const DocumentPtr & _doc ) = 0;
+        virtual void removeRequestListener( int32_t id ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

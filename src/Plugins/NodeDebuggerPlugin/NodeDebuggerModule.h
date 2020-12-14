@@ -23,6 +23,8 @@
 #include "Kernel/Scene.h"
 
 #include "NodeDebuggerSerialization.h"
+#include "cURLRequestListener.h"
+#include "SceneDataProviderInterface.h"
 
 namespace Mengine
 {
@@ -51,6 +53,7 @@ namespace Mengine
     class NodeDebuggerModule
         : public ModuleBase
         , public ThreadWorkerInterface
+        , public SceneDataProviderInterface
     {
     public:
         NodeDebuggerModule();
@@ -93,6 +96,7 @@ namespace Mengine
         void sendSettings();
         void sendMemory();
         void sendObjectsLeak();
+        void sendNetwork();
 
     protected:
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
@@ -123,6 +127,9 @@ namespace Mengine
         void notifyRemoveSceneDestroy();
         void notifyIncrefFactoryGeneration( uint32_t _generator );
 
+    public:
+        void setUpdateSceneFlag( bool _flag ) override;
+
     protected:
         uint32_t m_globalKeyHandlerF2;
 
@@ -142,5 +149,8 @@ namespace Mengine
         VectorNodePath m_selectedNodePath;
         ArchivatorInterfacePtr m_archivator;
         String m_currentTab;
+
+        cURLRequestListenerPtr m_networkLogger;
+        UniqueId m_requestListenerId;
     };
 }

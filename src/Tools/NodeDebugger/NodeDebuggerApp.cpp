@@ -1541,9 +1541,12 @@ namespace Mengine
             {
                 for( auto && [key, value] : _object )
                 {
-                    ImGui::Text( "\n" );
-                    ImGui::Text( "%s%s: ", spaces.c_str(), key );
-                    ImGui::SameLine();
+                    ImGui::Text( "%s%s:", spaces.c_str(), key );
+                    jpp::e_type valueType = value.type();
+                    if( valueType != jpp::e_type::JPP_OBJECT && valueType != jpp::e_type::JPP_ARRAY )
+                    {
+                        ImGui::SameLine();
+                    }
 
                     ++_spaceCounter;
                     this->ShowResponseJpp( value, _spaceCounter );
@@ -1565,7 +1568,7 @@ namespace Mengine
             {
                 String valueStr;
                 this->GetValueStringForJppType( _object, jppType, &valueStr, _spaceCounter );
-                
+
                 // TODO need make ability for copy text from ImGui::InputText
                 String label = Helper::stringFormat( "##%d", networkTextLabelCounter );
                 ++networkTextLabelCounter;

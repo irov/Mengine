@@ -61,7 +61,7 @@ namespace Mengine
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
             , _resource->getLocale().c_str()
-            , converterType.c_str()
+            , content->getConverterType().c_str()
         );
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();

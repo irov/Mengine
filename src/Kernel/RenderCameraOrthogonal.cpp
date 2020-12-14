@@ -179,8 +179,8 @@ namespace Mengine
         Viewport renderViewport;
         this->makeViewport_( &renderViewport );
 
-        mt::vec2f rvbegin = renderViewport.begin;
-        mt::vec2f rvend = renderViewport.end;
+        const mt::vec2f & rvbegin = renderViewport.begin;
+        const mt::vec2f & rvend = renderViewport.end;
 
         mt::mat4f pm;
         mt::make_projection_ortho_lh_m4( pm, rvbegin.x, rvend.x, rvbegin.y, rvend.y, m_cameraNear, m_cameraFar );

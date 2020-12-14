@@ -26,6 +26,8 @@
 
 #include "curl/curl.h"
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( cURLService, Mengine::cURLService );
 //////////////////////////////////////////////////////////////////////////
@@ -151,6 +153,16 @@ namespace Mengine
         m_factoryTaskHeaderData = nullptr;
         m_factoryTaskGetMessage = nullptr;
 
+#ifdef MENGINE_DEBUG
+        for( const RequestListenerDesk & desc : m_networkListeners )
+        {
+            LOGGER_ERROR( "Forgot remove listener '%u' from cURLService '%s' (doc: %s)"
+                , desc.id
+                , MENGINE_DOCUMENT_STR( desc.doc )
+            );
+        }
+#endif
+
         curl_global_cleanup();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -222,6 +234,11 @@ namespace Mengine
 
         m_threadQueue->addTask( task );
 
+        for( const RequestListenerDesk & listenerDesc : m_networkListeners )
+        {
+            listenerDesc.listener->request( task_id, _url );
+        }
+
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -260,6 +277,11 @@ namespace Mengine
         m_receiverDescs.push_back( desc );
 
         m_threadQueue->addTask( task );
+
+        for( const RequestListenerDesk & listenerDesc : m_networkListeners )
+        {
+            listenerDesc.listener->request( task_id, _url );
+        }
 
         return task_id;
     }
@@ -387,8 +409,39 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    int32_t cURLService::addRequestListener( const cURLRequestListenerInterfacePtr & _listener, const DocumentPtr & _doc )
+    {
+        UniqueId id = GENERATE_UNIQUE_IDENTITY();
+
+        RequestListenerDesk desc;
+        desc.id = id;
+        desc.listener = _listener;
+
+#if MENGINE_DOCUMENT_ENABLE
+        desc.doc = _doc;
+#endif
+
+        m_networkListeners.emplace_back( desc );
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLService::removeRequestListener( int32_t _id )
+    {
+        m_networkListeners.erase( std::remove_if( m_networkListeners.begin(), m_networkListeners.end(), 
+            [_id]( const RequestListenerDesk  & _desc )
+        {
+            return _desc.id == _id;
+        } ));
+    }
+    //////////////////////////////////////////////////////////////////////////
     void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )
     {
+        for( const RequestListenerDesk & listenerDesc : m_networkListeners )
+        {
+            listenerDesc.listener->response( _id, _response );
+        }
+
         for( VectorReceiverDesc::iterator
             it = m_receiverDescs.begin(),
             it_end = m_receiverDescs.end();

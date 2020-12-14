@@ -7,6 +7,7 @@
 #include "stb_image.h"
 
 #include "Kernel/Stringstream.h"
+#include "Kernel/Assertion.h"
 
 #include <chrono>
 #include <sstream>
@@ -207,6 +208,14 @@ namespace Mengine
         {
             this->DoUIObjectsLeakTab();
         }} );
+        m_tabs.push_back( {
+            "network",
+            "Network",
+            true,
+            [this]()
+        {
+            this->DoUINetwork();
+        } } );
         m_tabs.push_back( {
             "settings",
             "Settings",
@@ -493,6 +502,10 @@ namespace Mengine
         {
             this->ReceiveSettings( payloadNode );
         }
+        else if( typeStr == "Network" )
+        {
+            this->ReceiveNetwork( payloadNode );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveArrow( const pugi::xml_node & _xmlContainer )
@@ -642,6 +655,28 @@ namespace Mengine
 
                 leaks.emplace_back( desc );
             }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveNetwork( const pugi::xml_node & _xmlContainer )
+    {
+        m_network.clear();
+
+        pugi::xml_node xml_network = _xmlContainer.child( "Network" );
+        pugi::xml_node xml_network_objects = _xmlContainer.child( "Objects" );
+
+        for( const pugi::xml_node & obj : xml_network_objects )
+        {
+            const pugi::char_t * type = obj.attribute( "Type" ).value();
+            const pugi::char_t * url = obj.attribute( "Url" ).value();
+            uint32_t id = obj.attribute( "Id" ).as_uint();
+
+            NetworkDesk desk;
+            desk.type = type;
+            desk.url = url;
+            desk.id = id;
+
+            m_network.emplace_back( desk );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1428,6 +1463,155 @@ namespace Mengine
             }
 
             ++index;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUINetwork()
+    {
+        ImGui::Separator();
+
+        if( ImGui::BeginChild( "Network", ImVec2( 1200, 1000 ), false, ImGuiWindowFlags_None ) )
+        {
+            for( const NetworkDesk & desk : m_network )
+            {
+                if( desk.type == "Request" )
+                {
+                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Type: %s", desk.type.c_str() );
+                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Id: %ug", desk.id );
+                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Url: %s", desk.url.c_str() );
+                    
+                    ImGui::Separator();
+
+                    this->ShowResponseDataForId( desk.id );
+
+                    ImGui::Separator();
+                }
+            }
+        }
+
+        ImGui::EndChild();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ShowResponseDataForId( uint32_t _id )
+    {
+        VectorNetwork::const_iterator responseIterator = std::find_if( m_network.cbegin(), m_network.cend(), [_id]( const NetworkDesk & _desk )
+        {
+            return (_id == _desk.id) && (_desk.type == "Response");
+        } );
+
+        char label_node[32];
+        sprintf( label_node, "Response %u"
+            , _id
+        );
+
+        if( ImGui::TreeNode( label_node ) )
+        {
+            if( responseIterator == m_network.end() )
+            {
+                ImGui::Text( "Not receive response for request ID: %ug", _id );
+            }
+            else
+            {
+                int responseStrSize = responseIterator->url.size();
+                jpp::object responseJpp = jpp::load( responseIterator->url.c_str(), responseStrSize, nullptr, nullptr );
+                this->ShowResponseJpp( responseJpp, 0 );
+            }
+
+            ImGui::TreePop();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::addSpacesWithMultiplier( String * const _out, uint32_t _spacesCount, uint32_t _multiplier )
+    {
+        _out->append( _spacesCount * _multiplier, ' ' );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter )
+    {
+        uint32_t networkTextLabelCounter = 0;
+
+        String spaces;
+        this->addSpacesWithMultiplier( &spaces, 2, _spaceCounter );
+
+        jpp::e_type jppType = _object.type();
+
+        switch( jppType )
+        {
+        case jpp::e_type::JPP_OBJECT:
+            {
+                for( auto && [key, value] : _object )
+                {
+                    ImGui::Text( "\n" );
+                    ImGui::Text( "%s%s: ", spaces.c_str(), key );
+                    ImGui::SameLine();
+
+                    ++_spaceCounter;
+                    this->ShowResponseJpp( value, _spaceCounter );
+                    --_spaceCounter;
+                }
+            }break;
+        case jpp::e_type::JPP_ARRAY:
+            {
+                uint32_t arrayElementsEnumerator = 0;
+                for( const jpp::object & element : jpp::array( _object ) )
+                {
+                    ImGui::Text( "%u:", arrayElementsEnumerator );
+                    ImGui::SameLine();
+
+                    this->ShowResponseJpp( element, _spaceCounter );
+                }
+            }break;
+        default:
+            {
+                String valueStr;
+                this->GetValueStringForJppType( _object, jppType, &valueStr, _spaceCounter );
+                
+                // TODO need make ability for copy text from ImGui::InputText
+                String label = Helper::stringFormat( "##%d", networkTextLabelCounter );
+                ++networkTextLabelCounter;
+
+                ImGui::PushItemWidth( 5.f + 8.f * valueStr.size() );
+                ImGui::InputText( label.c_str(), (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
+                ImGui::PopItemWidth();
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out, uint32_t _spaceCounter )
+    {
+        switch( _jppType )
+        {
+        case jpp::e_type::JPP_INTEGER:
+            {
+                int32_t valueInteger = _object;
+                *_out = Helper::stringFormat( "%d", valueInteger );
+            }break;
+        case jpp::e_type::JPP_REAL:
+            {
+                float valueDouble = _object;
+                *_out = Helper::stringFormat( "%f", valueDouble );
+            }break;
+        case jpp::e_type::JPP_FALSE:
+            {
+                *_out = "false";
+            }break;
+        case jpp::e_type::JPP_TRUE:
+            {
+                *_out = "true";
+            }break;
+        case jpp::e_type::JPP_STRING:
+            {
+                *_out = (const Char *)_object;
+            }break;
+        case jpp::e_type::JPP_NULL:
+            {
+                *_out = "null";
+            }break;
+        case jpp::e_type::JPP_OBJECT:
+            {
+                ++_spaceCounter;
+                this->ShowResponseJpp( _object, _spaceCounter );
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////

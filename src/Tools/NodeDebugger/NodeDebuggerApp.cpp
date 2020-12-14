@@ -1541,6 +1541,7 @@ namespace Mengine
             {
                 for( auto && [key, value] : _object )
                 {
+                    ImGui::Text( "\n" );
                     ImGui::Text( "%s%s: ", spaces.c_str(), key );
                     ImGui::SameLine();
 

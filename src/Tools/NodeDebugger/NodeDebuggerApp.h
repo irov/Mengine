@@ -6,6 +6,7 @@
 #include "Kernel/VectorString.h"
 #include "Kernel/Deque.h"
 #include "Kernel/Blobject.h"
+#include "Kernel/StringHelper.h"
 
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
@@ -435,6 +436,7 @@ namespace Mengine
         void ReceiveRenderable( const pugi::xml_node & _xmlContainer );
         void ReceiveMemory( const pugi::xml_node & _xmlContainer );
         void ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer );
+        void ReceiveNetwork( const pugi::xml_node & _xmlContainer );
         void ReceiveSettings( const pugi::xml_node & _xmlContainer );
 
     protected:
@@ -453,6 +455,7 @@ namespace Mengine
         void DoUISceneDebuggerTab();
         void DoUIMemoryTab();
         void DoUIObjectsLeakTab();
+        void DoUINetwork();
         void DoUISettingsTab();
         String DoIPInput( const String & _title, const String & _inIP );
         void DoNodeElement( DebuggerNode * _node, const String & _tag );
@@ -476,6 +479,11 @@ namespace Mengine
         void SendGameControlCommand( const String & _command );
         void SendSceneRequest();
         void SendPauseRequest();
+
+        void ShowResponseDataForId( uint32_t _id );
+        void addSpacesWithMultiplier( String * const _out, uint32_t _spacesCount, uint32_t _multiplier );
+        void ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter );
+        void GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out, uint32_t _spaceCounter );
 
     private:
         GLFWwindow * m_window;
@@ -545,5 +553,15 @@ namespace Mengine
         bool m_pauseRequested;
 
         String m_selectedSetting;
+
+        struct NetworkDesk
+        {
+            String type;
+            uint32_t id;
+            String url;
+        };
+
+        typedef Vector<NetworkDesk> VectorNetwork;
+        VectorNetwork m_network;
     };
 }

@@ -98,6 +98,14 @@ namespace Mengine
 
             if( filePathSize >= MENGINE_MAX_PATH )
             {
+                LOGGER_ERROR( "invalid full path max size:\nrelation: %s\nfolder: %s\nfile: %s\ntotal size %zu [max size: %zu]"
+                    , _relationPath.c_str()
+                    , _folderPath.c_str()
+                    , _filePath.c_str()
+                    , filePathSize
+                    , _capacity
+                );
+
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 
@@ -125,6 +133,10 @@ namespace Mengine
             if( UNICODE_SYSTEM()
                 ->utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, _capacity, nullptr ) == false )
             {
+                LOGGER_ERROR( "invalid utf8 '%s' to unicode"
+                    , utf8_filePath
+                );
+
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 
@@ -141,6 +153,14 @@ namespace Mengine
 
             if( filePathSize >= MENGINE_MAX_PATH )
             {
+                LOGGER_ERROR( "invalid full path max size:\nrelation: %s\nfolder: %s\nfile: %s\ntotal size %zu [max size: %zu]"
+                    , _relationPath.c_str()
+                    , _folderPath.c_str()
+                    , _filePath.c_str()
+                    , filePathSize
+                    , _capacity
+                );
+
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 
@@ -169,6 +189,10 @@ namespace Mengine
             if( UNICODE_SYSTEM()
                 ->utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, _capacity, nullptr ) == false )
             {
+                LOGGER_ERROR( "invalid utf8 '%s' to unicode"
+                    , utf8_filePath
+                );
+
                 return MENGINE_PATH_INVALID_LENGTH;
             }
 

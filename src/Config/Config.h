@@ -1,17 +1,5 @@
 #pragma once
 
-#ifndef MENGINE_MAX_PATH
-#define MENGINE_MAX_PATH 260
-#endif
-
-#ifndef MENGINE_PATH_DELIM
-#define MENGINE_PATH_DELIM '/'
-#endif
-
-#ifndef MENGINE_PATH_WDELIM
-#define MENGINE_PATH_WDELIM L'/'
-#endif
-
 #ifndef MENGINE_OFFSETOF
 #define MENGINE_OFFSETOF(T, V) offsetof(T, V)
 #endif
@@ -236,4 +224,28 @@
 #   endif
 #else
 #   define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args)
+#endif
+
+#ifndef MENGINE_MAX_PATH
+#   ifdef MENGINE_PLATFORM_WINDOWS
+#       define MENGINE_MAX_PATH 260
+#   elif MENGINE_PLATFORM_LINUX
+#       define MENGINE_MAX_PATH 1024
+#   elif MENGINE_PLATFORM_OSX
+#       define MENGINE_MAX_PATH 1024
+#   elif MENGINE_PLATFORM_IOS
+#       define MENGINE_MAX_PATH 1024
+#   elif MENGINE_PLATFORM_ANDROID
+#       define MENGINE_MAX_PATH 1024
+#   else
+#   error "undefine MENGINE_MAX_PATH for this platform"
+#   endif
+#endif
+
+#ifndef MENGINE_PATH_DELIM
+#define MENGINE_PATH_DELIM '/'
+#endif
+
+#ifndef MENGINE_PATH_WDELIM
+#define MENGINE_PATH_WDELIM L'/'
 #endif

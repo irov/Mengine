@@ -305,7 +305,7 @@ namespace Mengine
 
         if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
         {
-            const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
+            const ae_char_t * result_string_info = ae_get_movie_result_string_info( result_load_movie_data );
 
             LOGGER_ERROR( "invalid load data result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , result_string_info

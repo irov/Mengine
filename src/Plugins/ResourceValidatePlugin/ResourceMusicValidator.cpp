@@ -32,7 +32,7 @@ namespace Mengine
 
         if( fileGroup->existFile( filePath, true ) == false )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' music '%s' not exist"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' music '%s' not exist"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()
@@ -43,4 +43,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -183,7 +183,7 @@ namespace Mengine
         if( correct_count == m_size )
         {
             size_t bytesRead;
-            if( this->read_( _buf, correct_count, bytesRead ) == false )
+            if( this->read_( _buf, correct_count, &bytesRead ) == false )
             {
                 return 0;
             }
@@ -209,7 +209,7 @@ namespace Mengine
             void * toBuffer = (uint8_t *)_buf + tail;
 
             size_t bytesRead;
-            if( this->read_( toBuffer, toRead, bytesRead ) == false )
+            if( this->read_( toBuffer, toRead, &bytesRead ) == false )
             {
                 return 0;
             }
@@ -239,7 +239,7 @@ namespace Mengine
         }
 
         size_t bytesRead;
-        if( this->read_( m_readCache, MENGINE_FILE_STREAM_BUFFER_SIZE, bytesRead ) == false )
+        if( this->read_( m_readCache, MENGINE_FILE_STREAM_BUFFER_SIZE, &bytesRead ) == false )
         {
             return 0;
         }
@@ -256,11 +256,11 @@ namespace Mengine
         return readSize + tail;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::read_( void * _buf, size_t _size, size_t & _read )
+    bool SDLFileInputStream::read_( void * const _buf, size_t _size, size_t * const _read )
     {
         if( _size == 0 )
         {
-            _read = 0;
+            *_read = 0;
 
             return true;
         }
@@ -269,16 +269,12 @@ namespace Mengine
 
         if( bytesRead == 0 )
         {
-            LOGGER_ERROR( "read %zu:%zu get error: %s"
-                , _size
-                , m_size
-                , SDL_GetError()
-            );
+            *_read = 0;
 
-            return false;
+            return true;
         }
 
-        _read = bytesRead;
+        *_read = bytesRead;
 
         return true;
     }

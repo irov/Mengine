@@ -172,14 +172,46 @@ namespace Mengine
         {
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
-                if( ae_test_movie_layer_data_opacity_transparent( _layerData ) == AE_TRUE )
+                ae_float_t immutable_opacity;
+                if( ae_get_movie_layer_data_immutable_opacity( _layerData, &immutable_opacity ) == AE_FALSE )
                 {
-                    LOGGER_ERROR( "'%s' composition '%s' text layer '%s' opacity transparent"
-                        , resourceMovie2->getName().c_str()
-                        , compositionDataName
-                        , layerDataName
-                    );
+                    break;
                 }
+
+                if( immutable_opacity >= 0.00390625f )
+                {
+                    break;
+                }
+
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' text layer '%s' opacity transparent"
+                    , resourceMovie2->getName().c_str()
+                    , compositionDataName
+                    , layerDataName
+                );
+            }break;
+        case AE_MOVIE_LAYER_TYPE_VIDEO:
+            {
+                ae_float_t immutable_scale_x;
+                ae_float_t immutable_scale_y;
+                ae_float_t immutable_scale_z;
+                if( ae_get_movie_layer_data_immutable_scale( _layerData, &immutable_scale_x, &immutable_scale_y, &immutable_scale_z ) == AE_FALSE )
+                {
+                    break;
+                }
+
+                if( immutable_scale_x >= 0.9f && immutable_scale_y >= 0.9f && immutable_scale_z >= 0.9f )
+                {
+                    break;
+                }
+
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' video layer '%s' scale [%f - %f - %f]"
+                    , resourceMovie2->getName().c_str()
+                    , compositionDataName
+                    , layerDataName
+                    , immutable_scale_x
+                    , immutable_scale_y
+                    , immutable_scale_z
+                );
             }break;
         default:
             {
@@ -210,7 +242,7 @@ namespace Mengine
                         const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _callbackData->composition_data );
                         const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
 
-                        LOGGER_ERROR( "'%s' composition '%s' layer '%s' has track matte non-image type"
+                        LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' layer '%s' has track matte non-image type"
                             , resourceMovie2->getName().c_str()
                             , compositionDataName
                             , layerDataName
@@ -230,7 +262,7 @@ namespace Mengine
                         const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _callbackData->composition_data );
                         const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
 
-                        LOGGER_ERROR( "'%s' composition '%s' text layer '%s' has track matte non-image type"
+                        LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' text layer '%s' has track matte non-image type"
                             , resourceMovie2->getName().c_str()
                             , compositionDataName
                             , layerDataName
@@ -279,7 +311,7 @@ namespace Mengine
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "movie2 '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' don`t have Key Frames Pack Path"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
             );
@@ -293,7 +325,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "movie2 '%s' group '%s' can`t open file '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' can`t open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()
@@ -306,7 +338,7 @@ namespace Mengine
 
         if( memory == nullptr )
         {
-            LOGGER_ERROR( "movie2 '%s' group '%s' can`t load stream archive file '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' can`t load stream archive file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()
@@ -342,9 +374,9 @@ namespace Mengine
 
         if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
         {
-            const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
+            const ae_char_t * result_string_info = ae_get_movie_result_string_info( result_load_movie_data );
 
-            LOGGER_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()
@@ -360,7 +392,7 @@ namespace Mengine
 
         if( ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
         {
-            LOGGER_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
+            LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()
@@ -371,7 +403,7 @@ namespace Mengine
 
         if( ae_visit_movie_composition_data( movieData, __movie_composition_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
         {
-            LOGGER_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
+            LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()
@@ -385,4 +417,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

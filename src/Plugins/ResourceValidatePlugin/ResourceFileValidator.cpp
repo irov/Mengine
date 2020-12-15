@@ -28,7 +28,7 @@ namespace Mengine
 
         if( fileGroup->existFile( filePath, true ) == false )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' file group '%s' not found file '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file group '%s' not found file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -40,4 +40,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

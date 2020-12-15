@@ -37,7 +37,7 @@ namespace Mengine
             if( RESOURCEVALIDATE_SERVICE()
                 ->validResource( resourceImage ) == false )
             {
-                LOGGER_ERROR( "resource '%s' group '%s' invalid validate sequence resource '%s'"
+                LOGGER_MESSAGE_RELEASE( "resource '%s' group '%s' invalid validate sequence resource '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , resourceImage->getName().c_str()
@@ -70,7 +70,7 @@ namespace Mengine
         {
             if( float( total_memory ) / float( AnimationMemoryLimit ) > AnimationMemoryLimitThresholdCoeff )
             {
-                LOGGER_ERROR( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %.2f)"
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %.2f)"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , float( total_memory ) / (1024.f * 1024.f)
@@ -82,7 +82,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_WARNING( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %.2f)"
+                LOGGER_MESSAGE_RELEASE_WARNING( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %.2f)"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , float( total_memory ) / (1024.f * 1024.f)

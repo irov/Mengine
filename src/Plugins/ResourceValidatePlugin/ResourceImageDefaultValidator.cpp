@@ -12,6 +12,78 @@
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_allPixelsTransparency( const void * _buffer, uint32_t _size )
+        {
+            const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
+
+            for( uint32_t i = 0; i != _size; i += 4 )
+            {
+                if( pixel_memory[i + 3] != 0 )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_checkColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _column )
+        {
+            const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
+
+            for( uint32_t i = 0; i != _height; ++i )
+            {
+                if( pixel_memory[i * _width * 4 + _column * 4 + 3] != 0 )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_checkRowTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _row )
+        {
+            MENGINE_UNUSED( _height );
+
+            const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer) + _row * _width * 4;
+
+            for( uint32_t i = 0; i != _width; ++i )
+            {
+                if( pixel_memory[i * 4 + 3] != 0 )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_checkRowColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height )
+        {
+            for( uint32_t i = 0; i != _width; ++i )
+            {
+                if( Detail::s_checkColumnTransparency( _buffer, _width, _height, i ) == true )
+                {
+                    return true;
+                }
+            }
+
+            for( uint32_t j = 0; j != _height; ++j )
+            {
+                if( Detail::s_checkRowTransparency( _buffer, _width, _height, j ) == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefaultValidator::ResourceImageDefaultValidator()
     {
@@ -19,74 +91,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefaultValidator::~ResourceImageDefaultValidator()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_allPixelsTransparency( const void * _buffer, uint32_t _size )
-    {
-        const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
-
-        for( uint32_t i = 0; i != _size; i += 4 )
-        {
-            if( pixel_memory[i + 3] != 0 )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_checkColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _column )
-    {
-        const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
-
-        for( uint32_t i = 0; i != _height; ++i )
-        {
-            if( pixel_memory[i * _width * 4 + _column * 4 + 3] != 0 )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_checkRowTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _row )
-    {
-        MENGINE_UNUSED( _height );
-
-        const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer) + _row * _width * 4;
-
-        for( uint32_t i = 0; i != _width; ++i )
-        {
-            if( pixel_memory[i * 4 + 3] != 0 )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_checkRowColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height )
-    {
-        for( uint32_t i = 0; i != _width; ++i )
-        {
-            if( s_checkColumnTransparency( _buffer, _width, _height, i ) == true )
-            {
-                return true;
-            }
-        }
-
-        for( uint32_t j = 0; j != _height; ++j )
-        {
-            if( s_checkRowTransparency( _buffer, _width, _height, j ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefaultValidator::_validate( const ResourceImageDefaultPtr & _resource )
@@ -107,7 +111,7 @@ namespace Mengine
                 return true;
             }
 
-            LOGGER_ERROR( "resource '%s' group '%s' not exist file '%s:%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' not exist file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -121,7 +125,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -133,7 +137,7 @@ namespace Mengine
 
         if( stream->size() == 0 )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' stream '%s:%s' codec '%s' empty"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' stream '%s:%s' codec '%s' empty"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -151,7 +155,7 @@ namespace Mengine
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -164,7 +168,7 @@ namespace Mengine
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -185,7 +189,7 @@ namespace Mengine
 
         if( (width > limitTextureWidth && limitTextureWidth != 0U) || (height > limitTextureHeight && limitTextureHeight != 0U) )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid limit '%d:%d' texture size '%d:%d'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' invalid limit '%d:%d' texture size '%d:%d'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -216,7 +220,7 @@ namespace Mengine
 
         if( (test_size.x != width || test_size.y != height) && (test_size.x > 4.f && test_size.y > 4.f) )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %d:%d"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %d:%d"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -238,10 +242,7 @@ namespace Mengine
 
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, MENGINE_DOCUMENT_FACTORABLE );
 
-            if( buffer == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
             void * buffer_memory = buffer->getBuffer();
 
@@ -251,7 +252,7 @@ namespace Mengine
 
             if( imageDecoder->setOptions( &options ) == false )
             {
-                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' invalid optionizing"
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' invalid optionizing"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , content->getFileGroup()->getName().c_str()
@@ -264,7 +265,7 @@ namespace Mengine
 
             if( imageDecoder->decode( buffer_memory, texture_size ) == 0 )
             {
-                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decode '%s'"
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decode '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , content->getFileGroup()->getName().c_str()
@@ -275,9 +276,9 @@ namespace Mengine
                 return false;
             }
 
-            if( s_allPixelsTransparency( buffer_memory, texture_size ) == true )
+            if( Detail::s_allPixelsTransparency( buffer_memory, texture_size ) == true )
             {
-                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' all pixels transparency!"
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' all pixels transparency!"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , content->getFileGroup()->getName().c_str()
@@ -292,9 +293,9 @@ namespace Mengine
 
             if( check_imageRowColumnTransparency == true )
             {
-                if( s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
+                if( Detail::s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
                 {
-                    LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' row or column pixels transparency!"
+                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' row or column pixels transparency!"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , content->getFileGroup()->getName().c_str()
@@ -309,4 +310,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

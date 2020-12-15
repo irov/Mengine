@@ -130,7 +130,10 @@ namespace Mengine
             
             desc.id = 0;
             desc.status = ETS_FREE;
+            
+#if MENGINE_DOCUMENT_ENABLE
             desc.doc = nullptr;
+#endif
 
             successful = true;
         }

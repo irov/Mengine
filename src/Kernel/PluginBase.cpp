@@ -73,7 +73,7 @@ namespace Mengine
 
         if( m_availablePlugin == false )
         {
-            LOGGER_WARNING( "plugin '%s' not available"
+            LOGGER_MESSAGE_RELEASE( "plugin '%s' not available"
                 , this->getPluginName()
             );
 
@@ -84,7 +84,7 @@ namespace Mengine
 
         if( successful == false )
         {
-            LOGGER_WARNING( "plugin '%s' not initialize"
+            LOGGER_ERROR( "plugin '%s' not initialize"
                 , this->getPluginName()
             );
 

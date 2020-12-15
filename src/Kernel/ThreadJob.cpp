@@ -46,8 +46,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, UniqueId _id )
+    static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, UniqueId _id, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         if( desc.status != ETS_FREE )
         {
             return false;
@@ -64,6 +66,10 @@ namespace Mengine
             desc.id = _id;
             desc.status = ETS_WORK;
 
+#if MENGINE_DOCUMENT_ENABLE
+            desc.doc = _doc;
+#endif
+
             successful = true;
         }
 
@@ -72,8 +78,10 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
+    uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         MENGINE_ASSERTION_MEMORY_PANIC( _worker );
 
         if( this->isCancel() == true )
@@ -87,7 +95,7 @@ namespace Mengine
         {
             ThreadJobWorkerDesc & desc = m_workers[i];
 
-            if( s_thread_addWorker( desc, _worker, new_id ) == false )
+            if( s_thread_addWorker( desc, _worker, new_id, _doc ) == false )
             {
                 continue;
             }
@@ -122,6 +130,7 @@ namespace Mengine
             
             desc.id = 0;
             desc.status = ETS_FREE;
+            desc.doc = nullptr;
 
             successful = true;
         }
@@ -285,6 +294,11 @@ namespace Mengine
                 desc.id = 0;
 
                 desc.status = ETS_FREE;
+
+#if MENGINE_DOCUMENT_ENABLE
+                desc.doc = nullptr;
+#endif
+
                 desc.mutex->unlock();
             }break;
         case ETS_WORK:

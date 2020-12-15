@@ -101,26 +101,38 @@ namespace Mengine
     {
         if( m_renderCamera == nullptr )
         {
-            m_renderCamera = PROTOTYPE_SERVICE()
+            RenderCameraOrthogonalPtr renderCamera = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( m_renderCamera, "name '%s' invalid create Camera2D"
+            MENGINE_ASSERTION_MEMORY_PANIC( renderCamera, "name '%s' invalid create RenderCameraOrthogonal"
                 , this->getName().c_str()
             );
 
-            this->addChild( m_renderCamera );
+            const ConstString & name = this->getName();
+
+            renderCamera->setName( name );
+
+            this->addChild( renderCamera );
+
+            m_renderCamera = renderCamera;
         }
 
         if( m_renderViewport == nullptr )
         {
-            m_renderViewport = PROTOTYPE_SERVICE()
+            RenderViewportPtr renderViewport = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( m_renderViewport, "name '%s' invalid create RenderViewport"
+            MENGINE_ASSERTION_MEMORY_PANIC( renderViewport, "name '%s' invalid create RenderViewport"
                 , this->getName().c_str()
             );
 
-            this->addChild( m_renderViewport );
+            const ConstString & name = this->getName();
+
+            renderViewport->setName( name );
+
+            this->addChild( renderViewport );
+
+            m_renderViewport = renderViewport;
         }
 
         m_renderCamera->setProxyViewMatrix( true );

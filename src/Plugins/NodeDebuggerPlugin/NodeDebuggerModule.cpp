@@ -100,10 +100,13 @@ namespace Mengine
 
         m_networkLogger = logger;
 
-        m_requestListenerId = CURL_SERVICE()
-            ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_EXIST( cURLServiceInterface ) == true )
+        {
+            m_requestListenerId = CURL_SERVICE()
+                ->addRequestListener( m_networkLogger, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
+            MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
+        }
 
         return true;
     }
@@ -152,8 +155,11 @@ namespace Mengine
             m_globalKeyHandlerF2 = 0;
         }
 
-        CURL_SERVICE()
-            ->removeRequestListener( m_requestListenerId );
+        if( SERVICE_EXIST( cURLServiceInterface ) == true )
+        {
+            CURL_SERVICE()
+                ->removeRequestListener( m_requestListenerId );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const
@@ -569,7 +575,7 @@ namespace Mengine
         m_dataMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ) );
+        m_workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 

@@ -1443,7 +1443,7 @@ namespace Mengine
 
             _identity->worker = worker;
 
-            uint32_t bufferId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker );
+            uint32_t bufferId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker, MENGINE_DOCUMENT_FACTORABLE );
 
             if( bufferId == 0 )
             {

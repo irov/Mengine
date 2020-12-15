@@ -31,6 +31,10 @@ namespace Mengine
 
         AtomicUInt32 id;
         Atomic<EThreadStatus> status;
+
+#if MENGINE_DOCUMENT_ENABLE
+        DocumentPtr doc;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     class ThreadJob
@@ -44,7 +48,7 @@ namespace Mengine
         bool initialize( uint32_t _sleep, const DocumentPtr & _doc );
 
     public:
-        uint32_t addWorker( const ThreadWorkerInterfacePtr & _worker );
+        uint32_t addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc );
         bool removeWorker( uint32_t _id );
         bool pauseWorker( uint32_t _id );
         bool resumeWorker( uint32_t _id );

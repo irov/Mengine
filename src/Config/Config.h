@@ -227,18 +227,18 @@
 #endif
 
 #ifndef MENGINE_MAX_PATH
-#   ifdef MENGINE_PLATFORM_WINDOWS
+#   if defined(MENGINE_PLATFORM_WINDOWS)
 #       define MENGINE_MAX_PATH 260
-#   elif MENGINE_PLATFORM_LINUX
+#   elif defined(MENGINE_PLATFORM_LINUX)
 #       define MENGINE_MAX_PATH 1024
-#   elif MENGINE_PLATFORM_OSX
+#   elif defined(MENGINE_PLATFORM_OSX)
 #       define MENGINE_MAX_PATH 1024
-#   elif MENGINE_PLATFORM_IOS
+#   elif defined(MENGINE_PLATFORM_IOS)
 #       define MENGINE_MAX_PATH 1024
-#   elif MENGINE_PLATFORM_ANDROID
+#   elif defined(MENGINE_PLATFORM_ANDROID)
 #       define MENGINE_MAX_PATH 1024
 #   else
-#   error "undefine MENGINE_MAX_PATH for this platform"
+#       error "undefine MENGINE_MAX_PATH for this platform"
 #   endif
 #endif
 

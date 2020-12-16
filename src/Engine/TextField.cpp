@@ -8,6 +8,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/DocumentableHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
@@ -1157,12 +1158,13 @@ namespace Mengine
             return;
         }
 
-        TextEntryInterfacePtr textEntry = TEXT_SERVICE()
+        const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s' can't find text ID '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text field '%s' can't find text ID '%s' (doc: %s)"
             , this->getName().c_str()
             , aliasTestId.c_str()
+            , MENGINE_DOCUMENTABLE_STR( this, "TextField" )
         );
 
         m_totalTextEntry = textEntry;

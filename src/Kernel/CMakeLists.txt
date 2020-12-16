@@ -35,6 +35,8 @@ ADD_FILTER(
 Mixin\\\\Documentable
     Documentable.h
     Documentable.cpp
+    DocumentableHelper.h
+    DocumentableHelper.cpp
 )
 
 ADD_FILTER(

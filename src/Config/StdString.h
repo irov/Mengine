@@ -25,6 +25,10 @@
 #define MENGINE_STRCAT(a, b) ::strcat(a, b)
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_STRNCAT
+#define MENGINE_STRNCAT(a, b, n) ::strncat(a, b, n)
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STRCHR
 #define MENGINE_STRCHR(a, b) ::strchr(a, b)
 #endif

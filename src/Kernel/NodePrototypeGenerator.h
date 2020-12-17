@@ -53,9 +53,9 @@ namespace Mengine
             node->setUniqueIdentity( uniqueIdentity );
 
 #if MENGINE_DOCUMENT_ENABLE
-            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node '%s' type '%s'"
-                , node->getName().c_str()
+            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node type '%s' uid '%u'"
                 , node->getType().c_str()
+                , uniqueIdentity
             );
 
             doc->setParent( _doc );

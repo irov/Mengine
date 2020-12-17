@@ -74,7 +74,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Char * Document::getMessage() const
     {
-        return m_message.c_str();
+        const Char * str = m_message.c_str();
+
+        return str;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Document::getMessageSize() const
+    {
+        String::size_type size = m_message.size();
+
+        return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
 }

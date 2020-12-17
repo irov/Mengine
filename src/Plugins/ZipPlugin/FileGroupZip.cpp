@@ -312,55 +312,60 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int wildcards_mask( const Char * string, const Char * mask, int endofmask = 1 )
+    namespace Detail
     {
-        while( *string )
+        //////////////////////////////////////////////////////////////////////////
+        static int32_t wildcards_mask( const Char * string, const Char * mask, int endofmask = 1 )
         {
-            switch( *mask )
+            while( *string )
             {
-            case '\0':
+                switch( *mask )
                 {
-                    return endofmask;
-                }
-            case '*':
-                {
-                    ++mask;
-
-                    while( *string )
+                case '\0':
                     {
-                        int match = wildcards_mask( string, mask, endofmask );
+                        return endofmask;
+                    }
+                case '*':
+                    {
+                        ++mask;
 
-                        if( match >= 0 )
+                        while( *string )
                         {
-                            return match;
+                            int32_t match = Detail::wildcards_mask( string, mask, endofmask );
+
+                            if( match >= 0 )
+                            {
+                                return match;
+                            }
+
+                            ++string;
                         }
 
-                        ++string;
+                        return 1;
                     }
-
-                    return 1;
-                }
-            default:
-                {
-                    if( *string == *mask )
+                default:
                     {
-                        ++string;
-                        ++mask;
-                        break;
-                    }
-                    return -1;
-                }break;
+                        if( *string == *mask )
+                        {
+                            ++string;
+                            ++mask;
+                            break;
+                        }
+                        return -1;
+                    }break;
+                }
+            }
+
+            if( *mask == '\0' )
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
             }
         }
-
-        if( *mask == '\0' )
-        {
-            return 0;
-        }
-        else
-        {
-            return 1;
-        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
@@ -378,7 +383,7 @@ namespace Mengine
             const Char * path_str = path.c_str();
             const Char * mask_str = mask.c_str();
 
-            if( wildcards_mask( path_str, mask_str ) == 0 )
+            if( Detail::wildcards_mask( path_str, mask_str ) == 0 )
             {
                 _lambda( path );
             }

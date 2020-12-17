@@ -63,7 +63,7 @@ namespace Mengine
             }
 
             Char message[2048] = {'\0'};
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, 2047, _format, _args );
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, 2048, _format, _args );
 
             if( size_vsnprintf < 0 )
             {

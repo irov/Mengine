@@ -27,10 +27,13 @@ namespace Mengine
     struct ThreadJobWorkerDesc
     {
         ThreadMutexInterfacePtr mutex;
+        ThreadMutexInterfacePtr mutex_progress;
+
         ThreadWorkerInterfacePtr worker;
 
         AtomicUInt32 id;
         Atomic<EThreadStatus> status;
+        AtomicBool pause;
 
 #if MENGINE_DOCUMENT_ENABLE
         DocumentPtr doc;
@@ -46,6 +49,7 @@ namespace Mengine
 
     public:
         bool initialize( uint32_t _sleep, const DocumentPtr & _doc );
+        void finalize();
 
     public:
         uint32_t addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc );

@@ -74,8 +74,8 @@ namespace Mengine
         bool _3DNOW() const;
 
     protected:
-        int m_nIds;
-        int m_nExIds;
+        int32_t m_nIds;
+        int32_t m_nExIds;
         String m_vendor;
         String m_brand;
         bool m_isIntel;
@@ -86,7 +86,7 @@ namespace Mengine
         Bitset<32> m_f_7_ECX;
         Bitset<32> m_f_81_ECX;
         Bitset<32> m_f_81_EDX;
-        Vector<Array<int, 4>> m_data;
-        Vector<Array<int, 4>> m_extdata;
+        Vector<Array<int32_t, 4>> m_data;
+        Vector<Array<int32_t, 4>> m_extdata;
     };
 }

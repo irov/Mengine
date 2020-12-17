@@ -21,7 +21,7 @@ namespace Mengine
             uint32_t count = _factory->getCountObject();
 
             Char msg[1024] = {'\0'};
-            MENGINE_SNPRINTF( msg, 1023, "[Assert] Factory '%s' not empty ['%u']"
+            MENGINE_SNPRINTF( msg, 1024, "[Assert] Factory '%s' not empty ['%u']"
                 , name
                 , count
             );

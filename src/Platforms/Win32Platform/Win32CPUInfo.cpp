@@ -21,7 +21,6 @@ namespace Mengine
         , m_data{}
         , m_extdata{}
     {
-        //int cpuInfo[4] = {-1};
         Array<int32_t, 4> cpui;
 
         // Calling __cpuid with 0x0 as the function_id argument

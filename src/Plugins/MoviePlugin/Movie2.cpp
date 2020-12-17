@@ -307,6 +307,7 @@ namespace Mengine
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
                         if( mesh.vertexCount == 0 )
                         {

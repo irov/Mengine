@@ -38,7 +38,7 @@ namespace Mengine
         }
 
         Char buffer[20] = {'\0'};
-        MENGINE_SNPRINTF( buffer, 19, "%x%x", m_value, hash );
+        MENGINE_SNPRINTF( buffer, 20, "%x%x", m_value, hash );
 
         uint32_t unprotected_value = (m_value ^ hash) ^ (MENGINE_ABS( MENGINE_STRCMP( m_buffer, buffer ) ) * ~0U);
 

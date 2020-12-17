@@ -32,14 +32,14 @@ namespace Mengine
                 }
 
             public:
-                void onUpdate( uint32_t _id ) override
+                void onThreadWorkerUpdate( uint32_t _id ) override
                 {
                     MENGINE_UNUSED( _id );
 
                     m_update();
                 }
 
-                bool onWork( uint32_t _id ) override
+                bool onThreadWorkerWork( uint32_t _id ) override
                 {
                     MENGINE_UNUSED( _id );
 
@@ -48,7 +48,7 @@ namespace Mengine
                     return true;
                 }
 
-                void onDone( uint32_t _id ) override
+                void onThreadWorkerDone( uint32_t _id ) override
                 {
                     MENGINE_UNUSED( _id );
                 }
@@ -98,5 +98,6 @@ namespace Mengine
             THREAD_SERVICE()
                 ->destroyThread( _threadName );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

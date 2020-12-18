@@ -58,9 +58,9 @@ namespace Mengine
         bool resumeWorker( uint32_t _id );
 
     protected:
-        bool _onMain() override;
-        void _onUpdate() override;
-        void _onFinally() override;
+        bool _onThreadTaskMain() override;
+        void _onThreadTaskUpdate() override;
+        void _onThreadTaskFinally() override;
 
     protected:
         uint32_t m_sleep;

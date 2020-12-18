@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::preparation()
     {
-        this->_onPreparation();
+        this->_onThreadTaskPreparation();
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::main()
@@ -38,7 +38,7 @@ namespace Mengine
             return;
         }
 
-        bool successful = this->_onMain();
+        bool successful = this->_onThreadTaskMain();
 
         if( m_cancel == true )
         {
@@ -64,7 +64,7 @@ namespace Mengine
 
         m_mutex = _mutex;
 
-        m_run = this->_onRun();
+        m_run = this->_onThreadTaskRun();
 
         if( m_run == false )
         {
@@ -95,17 +95,17 @@ namespace Mengine
         return m_cancel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTask::_onPreparation()
+    void ThreadTask::_onThreadTaskPreparation()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTask::_onMain()
+    bool ThreadTask::_onThreadTaskMain()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTask::_onRun()
+    bool ThreadTask::_onThreadTaskRun()
     {
         return true;
     }
@@ -124,7 +124,7 @@ namespace Mengine
             return false;
         }
 
-        this->_onCancel();
+        this->_onThreadTaskCancel();
 
         if( m_run == false ||
             m_finish == true )
@@ -136,7 +136,7 @@ namespace Mengine
             {
                 m_complete = true;
 
-                this->_onComplete( false );
+                this->_onThreadTaskComplete( false );
             }
 
             return false;
@@ -145,12 +145,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTask::_onCancel()
+    void ThreadTask::_onThreadTaskCancel()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTask::_onFinally()
+    void ThreadTask::_onThreadTaskFinally()
     {
         //Empty
     }
@@ -167,7 +167,7 @@ namespace Mengine
             return true;
         }
 
-        this->_onUpdate();
+        this->_onThreadTaskUpdate();
 
         if( m_finish == true )
         {
@@ -177,7 +177,7 @@ namespace Mengine
             {
                 m_complete = true;
 
-                this->_onComplete( m_successful );
+                this->_onThreadTaskComplete( m_successful );
             }
         }
 
@@ -186,7 +186,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::finally()
     {
-        this->_onFinally();
+        this->_onThreadTaskFinally();
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::join()
@@ -212,21 +212,21 @@ namespace Mengine
 
         if( completeProcess == true )
         {
-            this->_onComplete( false );
+            this->_onThreadTaskComplete( false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTask::_onUpdate()
+    void ThreadTask::_onThreadTaskUpdate()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTask::_onJoin()
+    void ThreadTask::_onThreadTaskJoin()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTask::_onComplete( bool _successful )
+    void ThreadTask::_onThreadTaskComplete( bool _successful )
     {
         MENGINE_UNUSED( _successful );
 
@@ -237,4 +237,5 @@ namespace Mengine
     {
         return m_mutex;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

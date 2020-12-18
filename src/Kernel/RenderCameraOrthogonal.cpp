@@ -213,12 +213,6 @@ namespace Mengine
     {
         if( m_fixedOrthogonalViewport == false )
         {
-            float gameViewportAspect;
-            Viewport gameViewport;
-
-            APPLICATION_SERVICE()
-                ->getGameViewport( &gameViewportAspect, &gameViewport );
-
             Viewport renderViewportWM;
 
             const mt::mat4f & wm = this->getWorldMatrix();
@@ -228,6 +222,12 @@ namespace Mengine
             
             if( m_clampViewport == true )
             {
+                float gameViewportAspect;
+                Viewport gameViewport;
+
+                APPLICATION_SERVICE()
+                    ->getGameViewport( &gameViewportAspect, &gameViewport );
+
                 renderViewportWM.clamp( gameViewport );
             }
 

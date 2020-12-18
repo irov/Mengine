@@ -64,7 +64,7 @@ namespace Mengine
         float m_length;
         bool m_isStereo;
 
-        MENGINE_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT( OpenALSoundBufferBase );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenALSoundBufferBase, SoundBufferInterface> OpenALSoundBufferBasePtr;

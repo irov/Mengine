@@ -145,12 +145,12 @@ namespace Mengine
         return m_receiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLThreadTask::_onRun()
+    bool cURLThreadTask::_onThreadTaskRun()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLThreadTask::_onMain()
+    bool cURLThreadTask::_onThreadTaskMain()
     {
         CURL * curl = curl_easy_init();
 
@@ -277,7 +277,7 @@ namespace Mengine
         m_responseHeaders.emplace_back( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLThreadTask::_onComplete( bool _successful )
+    void cURLThreadTask::_onThreadTaskComplete( bool _successful )
     {
         m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_responseStatus, m_responseError, m_responseHeaders, m_responseData, m_responseCode, _successful );
         m_receiver = nullptr;

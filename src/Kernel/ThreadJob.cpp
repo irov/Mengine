@@ -36,16 +36,21 @@ namespace Mengine
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( _doc );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
             desc.mutex = mutex;
 
             ThreadMutexInterfacePtr mutex_progress = THREAD_SERVICE()
                 ->createMutex( _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( mutex_progress );
 
             desc.mutex_progress = mutex_progress;
 
             desc.worker = nullptr;
             desc.id = 0;
             desc.status = ETS_FREE;
+            desc.pause = false;
         }
 
         return true;
@@ -61,6 +66,7 @@ namespace Mengine
 
             desc.mutex = nullptr;
             desc.mutex_progress = nullptr;
+
             desc.worker = nullptr;
         }
     }
@@ -73,6 +79,14 @@ namespace Mengine
         {
             return false;
         }
+
+        if( desc.pause == true )
+        {
+            return false;
+        }
+
+        desc.mutex_progress->lock();
+        desc.mutex_progress->unlock();
 
         bool successful = false;
 
@@ -140,6 +154,9 @@ namespace Mengine
         bool successful = false;
 
         ThreadWorkerInterfacePtr worker;
+
+        desc.mutex_progress->lock();
+        desc.mutex_progress->unlock();
 
         desc.mutex->lock();
 
@@ -250,7 +267,6 @@ namespace Mengine
             return;
         }
 
-
         if( desc.status == ETS_WORK && desc.pause == false )
         {
             desc.mutex->lock();
@@ -267,7 +283,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadJob::_onMain()
+    bool ThreadJob::_onThreadTaskMain()
     {
         while( this->isCancel() == false )
         {
@@ -361,7 +377,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadJob::_onUpdate()
+    void ThreadJob::_onThreadTaskUpdate()
     {
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
         {
@@ -371,14 +387,20 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadJob::_onFinally()
+    void ThreadJob::_onThreadTaskFinally()
     {
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
         {
             ThreadJobWorkerDesc & desc = m_workers[i];
 
-            desc.worker = nullptr;
             desc.mutex = nullptr;
+            desc.mutex_progress = nullptr;
+
+            desc.worker = nullptr;
+
+            desc.status = ETS_FREE;
+            desc.pause = false;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

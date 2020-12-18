@@ -39,8 +39,8 @@ namespace Mengine
         const cURLReceiverInterfacePtr & getReceiver() const;
 
     protected:
-        bool _onRun() override;
-        bool _onMain() override;
+        bool _onThreadTaskRun() override;
+        bool _onThreadTaskMain() override;
 
     protected:
         virtual void _onCURL( CURL * _curl ) = 0;
@@ -50,7 +50,7 @@ namespace Mengine
         void setupWriteResponse( CURL * _curl );
 
     protected:
-        void _onComplete( bool _successful ) override;
+        void _onThreadTaskComplete( bool _successful ) override;
 
     public:
         void writeResponse( Char * const _ptr, size_t _size );

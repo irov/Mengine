@@ -24,8 +24,8 @@ namespace Mengine
         void _finalize() override;
 
     protected:
-        bool _onRun() override;
-        bool _onMain() override;
+        bool _onThreadTaskRun() override;
+        bool _onThreadTaskMain() override;
 
     protected:
         ConstString m_soundCodec;

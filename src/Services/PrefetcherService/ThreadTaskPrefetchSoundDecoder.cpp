@@ -40,9 +40,9 @@ namespace Mengine
         m_soundDecoder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchSoundDecoder::_onRun()
+    bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskRun()
     {
-        if( ThreadTaskPrefetch::_onRun() == false )
+        if( ThreadTaskPrefetch::_onThreadTaskRun() == false )
         {
             return false;
         }
@@ -63,7 +63,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchSoundDecoder::_onMain()
+    bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskMain()
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {

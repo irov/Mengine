@@ -18,6 +18,7 @@ namespace Mengine
         , m_cameraOffset( 0.f, 0.f )
         , m_proxyViewMatrix( false )
         , m_fixedOrthogonalViewport( false )
+        , m_clampViewport( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -147,6 +148,16 @@ namespace Mengine
         return m_proxyViewMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderCameraOrthogonal::setClampViewport( bool _value )
+    {
+        m_clampViewport = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool RenderCameraOrthogonal::getClampViewport() const
+    {
+        return m_clampViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonal::_updateViewMatrix() const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
@@ -214,8 +225,11 @@ namespace Mengine
 
             mt::mul_v2_v2_m4( renderViewportWM.begin, m_orthogonalViewport.begin, wm );
             mt::mul_v2_v2_m4( renderViewportWM.end, m_orthogonalViewport.end, wm );
-
-            renderViewportWM.clamp( gameViewport );
+            
+            if( m_clampViewport == true )
+            {
+                renderViewportWM.clamp( gameViewport );
+            }
 
             mt::mat4f wm_inv;
             mt::inv_m4_m4( wm_inv, wm );

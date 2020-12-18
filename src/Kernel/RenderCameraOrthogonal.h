@@ -43,6 +43,10 @@ namespace Mengine
         void setProxyViewMatrix( bool _value );
         bool getProxyViewMatrix() const;
 
+    public:
+        void setClampViewport( bool _value );
+        bool getClampViewport() const;
+
     protected:
         void _updateViewMatrix() const override;
         void _updateProjectionMatrix() const override;
@@ -68,6 +72,8 @@ namespace Mengine
 
         bool m_proxyViewMatrix;
         bool m_fixedOrthogonalViewport;
+
+        bool m_clampViewport;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<RenderCameraOrthogonal> RenderCameraOrthogonalPtr;

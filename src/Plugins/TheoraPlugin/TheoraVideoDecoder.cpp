@@ -65,12 +65,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::_initialize()
     {
-        MENGINE_MEMSET( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
-        MENGINE_MEMSET( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
-        MENGINE_MEMSET( &m_theoraState, 0, sizeof( m_theoraState ) );
-        MENGINE_MEMSET( &m_theoraComment, 0, sizeof( m_theoraComment ) );
-        MENGINE_MEMSET( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
-
         ogg_sync_init( &m_oggSyncState );
 
         theora_comment_init( &m_theoraComment );

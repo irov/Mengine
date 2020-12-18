@@ -270,16 +270,18 @@ namespace Mengine
         if( desc.status == ETS_WORK && desc.pause == false )
         {
             desc.mutex->lock();
+            ThreadWorkerInterface * worker = desc.worker.get();
             uint32_t id = desc.id;
-            ThreadWorkerInterfacePtr worker = desc.worker;
             desc.mutex->unlock();
 
             desc.mutex_progress->lock();
-            if( worker->onThreadWorkerWork( id ) == false )
+            bool result = worker->onThreadWorkerWork( id );
+            desc.mutex_progress->unlock();
+
+            if( result == false )
             {
                 desc.status = ETS_DONE;
             }
-            desc.mutex_progress->unlock();
         }
     }
     //////////////////////////////////////////////////////////////////////////

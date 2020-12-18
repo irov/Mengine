@@ -52,9 +52,9 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchDataflow::_onRun()
+    bool ThreadTaskPrefetchDataflow::_onThreadTaskRun()
     {
-        if( ThreadTaskPrefetch::_onRun() == false )
+        if( ThreadTaskPrefetch::_onThreadTaskRun() == false )
         {
             return false;
         }
@@ -75,7 +75,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchDataflow::_onMain()
+    bool ThreadTaskPrefetchDataflow::_onThreadTaskMain()
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {
@@ -114,7 +114,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetchDataflow::_onComplete( bool _successful )
+    void ThreadTaskPrefetchDataflow::_onThreadTaskComplete( bool _successful )
     {
         if( m_dataflow->isThreadFlow() == false && _successful == true )
         {
@@ -131,7 +131,7 @@ namespace Mengine
             }
         }
 
-        ThreadTaskPrefetch::_onComplete( _successful );
+        ThreadTaskPrefetch::_onThreadTaskComplete( _successful );
 
         m_dataflow = nullptr;
     }

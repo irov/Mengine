@@ -48,7 +48,7 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPacket::_onMain()
+    bool ThreadTaskPacket::_onThreadTaskMain()
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {
@@ -60,7 +60,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPacket::_onRun()
+    bool ThreadTaskPacket::_onThreadTaskRun()
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {
@@ -70,7 +70,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPacket::_onCancel()
+    void ThreadTaskPacket::_onThreadTaskCancel()
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {
@@ -78,7 +78,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPacket::_onUpdate()
+    void ThreadTaskPacket::_onThreadTaskUpdate()
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {
@@ -92,7 +92,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPacket::_onJoin()
+    void ThreadTaskPacket::_onThreadTaskJoin()
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {
@@ -102,7 +102,7 @@ namespace Mengine
         m_childMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPacket::_onComplete( bool _successful )
+    void ThreadTaskPacket::_onThreadTaskComplete( bool _successful )
     {
         MENGINE_UNUSED( _successful );
 
@@ -110,4 +110,5 @@ namespace Mengine
 
         m_tasks.clear();
     }
+    //////////////////////////////////////////////////////////////////////////
 }

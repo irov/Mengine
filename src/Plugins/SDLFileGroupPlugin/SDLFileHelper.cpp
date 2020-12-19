@@ -19,7 +19,7 @@ namespace Mengine
 
             if( filePathSize > _capacity )
             {
-                LOGGER_ERROR( "invalid full path max size:\nrelation: %s\nfolder: %s\nfile: %s\ntotal size %zu [max size: %zu]"
+                LOGGER_ERROR( "invalid full path max size:\nrelation: %s\nfolder: %s\nfile: %s\ntotal size %u [max size: %zu]"
                     , _relationPath.c_str()
                     , _folderPath.c_str()
                     , _filePath.c_str()
@@ -47,7 +47,7 @@ namespace Mengine
 
             if( filePathSize > _capacity )
             {
-                LOGGER_ERROR( "invalid full path max size:\nrelation: %s\nfolder: %s\nfile: %s\ntotal size %zu [max size: %zu]"
+                LOGGER_ERROR( "invalid full path max size:\nrelation: %s\nfolder: %s\nfile: %s\ntotal size %u [max size: %zu]"
                     , _relationPath.c_str()
                     , _folderPath.c_str()
                     , _filePath.c_str()

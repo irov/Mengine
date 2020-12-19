@@ -90,6 +90,13 @@ if(MENGINE_TARGET_MACOS)
         set(myApp_ASTRALAX)
     endif()
 
+    if(MENGINE_PLUGIN_SENTRY)
+    	set(myApp_SENTRY "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/crashpad_handler")
+    	set_source_files_properties(${myApp_ASTRALAX} PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS")
+    else()
+        set(myApp_SENTRY)
+    endif()
+
     if(MENGINE_PLUGIN_STEAM)
         set(myApp_STEAM "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/libsteam_api.dylib")
         set_source_files_properties(${myApp_STEAM} PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS")
@@ -112,7 +119,7 @@ if(MENGINE_TARGET_MACOS)
     string(TIMESTAMP MACOSX_FRAMEWORK_BUNDLE_VERSION "%Y.%m.%d.%H%M%S")
     string(TIMESTAMP MACOSX_FRAMEWORK_SHORT_VERSION_STRING "%Y.%m.%d")
 
-    ADD_EXECUTABLE(${PROJECT_NAME} MACOSX_BUNDLE ${myApp_DATAS} ${myApp_ICONS} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES})
+    ADD_EXECUTABLE(${PROJECT_NAME} MACOSX_BUNDLE ${myApp_DATAS} ${myApp_ICONS} ${myApp_ASTRALAX} ${myApp_SENTRY} ${myApp_STEAM} ${SRC_FILES})
 
     SET_XCODE_PROPERTY(${PROJECT_NAME} OTHER_CODE_SIGN_FLAGS "--deep")
     SET_XCODE_PROPERTY(${PROJECT_NAME} ONLY_ACTIVE_ARCH "No")

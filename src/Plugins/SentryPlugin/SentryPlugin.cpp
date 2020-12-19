@@ -126,7 +126,11 @@ namespace Mengine
             , sentryDSN
         );
 
+#ifdef MENGINE_PLATFORM_WINDOWS
         const Char * sentryHandler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
+#else
+        const Char * sentryHandler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler" );
+#endif
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
             , sentryHandler
@@ -158,27 +162,28 @@ namespace Mengine
         
         sentry_options_set_database_path( options, str_sentryDatabasePath );
 #endif
+        
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        size_t currentPathLen = PLATFORM_SERVICE()
+            ->getCurrentPath( currentPath );
+        
+        PathString sentryHandlerPath;
+        sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );
+        sentryHandlerPath.append( sentryHandler );
 
         LOGGER_MESSAGE( "Sentry Handler: %s"
-            , sentryHandler
+            , sentryHandlerPath.c_str()
         );
         
 #ifdef MENGINE_PLATFORM_WINDOWS
-        WChar unicode_sentryHandler[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::utf8ToUnicode( sentryHandler, unicode_sentryHandler, MENGINE_MAX_PATH - 1, nullptr );
+        WChar unicode_sentryHandlerPath[MENGINE_MAX_PATH] = {L'\0'};
+        Helper::utf8ToUnicode( sentryHandlerPath, unicode_sentryHandlerPath, MENGINE_MAX_PATH - 1, nullptr );
 
-        sentry_options_set_handler_pathw( options, unicode_sentryHandler );
+        sentry_options_set_handler_pathw( options, unicode_sentryHandlerPath );
 #else
-        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
-        PLATFORM_SERVICE()
-            ->getCurrentPath(currentPath);
+        const Char * str_sentryHandlerPath = sentryHandlerPath.c_str();
         
-        Char sentryHandlerPath[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_STRCPY(sentryHandlerPath, currentPath);
-        MENGINE_STRCAT(sentryHandlerPath, "../");
-        MENGINE_STRCAT(sentryHandlerPath, sentryHandler);
-        
-        sentry_options_set_handler_path( options, sentryHandlerPath );
+        sentry_options_set_handler_path( options, str_sentryHandlerPath );
 #endif
 
         sentry_options_set_dsn( options, sentryDSN );

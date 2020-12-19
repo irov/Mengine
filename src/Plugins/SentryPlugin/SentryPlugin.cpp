@@ -141,6 +141,10 @@ namespace Mengine
         PathString sentryDatabasePath;
         sentryDatabasePath.append( userPath, (PathString::size_type)userPathLen );
         sentryDatabasePath.append( ".sentry-native" );
+        
+        LOGGER_MESSAGE( "Sentry Database: %s"
+            , sentryDatabasePath.c_str()
+        );
 
 #ifdef MENGINE_PLATFORM_WINDOWS
         WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH] = {L'\0'};
@@ -148,16 +152,31 @@ namespace Mengine
 
         sentry_options_set_database_pathw( options, unicode_sentryDatabasePath );
 #else
-        sentry_options_set_database_path( options, sentryDatabasePath );
+        const Char * str_sentryDatabasePath = sentryDatabasePath.c_str();
+        
+        sentry_options_set_database_path( options, str_sentryDatabasePath );
 #endif
 
+        LOGGER_MESSAGE( "Sentry Handler: %s"
+            , sentryHandler
+        );
+        
 #ifdef MENGINE_PLATFORM_WINDOWS
         WChar unicode_sentryHandler[MENGINE_MAX_PATH] = {L'\0'};
         Helper::utf8ToUnicode( sentryHandler, unicode_sentryHandler, MENGINE_MAX_PATH - 1, nullptr );
 
         sentry_options_set_handler_pathw( options, unicode_sentryHandler );
 #else
-        sentry_options_set_handler_path( options, sentryHandler );
+        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getCurrentPath(currentPath);
+        
+        Char sentryHandlerPath[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_STRCPY(sentryHandlerPath, currentPath);
+        MENGINE_STRCAT(sentryHandlerPath, "../");
+        MENGINE_STRCAT(sentryHandlerPath, sentryHandler);
+        
+        sentry_options_set_handler_path( options, sentryHandlerPath );
 #endif
 
         sentry_options_set_dsn( options, sentryDSN );

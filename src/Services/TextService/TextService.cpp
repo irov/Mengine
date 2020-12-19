@@ -928,11 +928,7 @@ namespace Mengine
     const TextEntryInterfacePtr & TextService::getTextEntry( const ConstString & _key ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "can't find string associated with key - '%s'"
-            , _key.c_str()
-        );
-
+                
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -19,13 +19,13 @@ namespace Mengine
         bool initialize( const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath, const FilePath & _filePathTemp );
 
     protected:
-        bool _onRun() override;
+        bool _onThreadTaskRun() override;
 
     protected:
         void _onCURL( CURL * _curl ) override;
 
     protected:
-        void _onComplete( bool _successful ) override;
+        void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
         String m_login;

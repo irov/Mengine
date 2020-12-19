@@ -38,7 +38,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _streaming );
 
-        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::open" );
 
 #ifdef MENGINE_DEBUG
         m_relationPath = _relationPath;
@@ -200,7 +200,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileInputStream::read( void * const _buf, size_t _count )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::read" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::read" );
 
         size_t pos = m_reading - m_capacity + m_carriage;
 
@@ -311,7 +311,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::seek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::seek" );
 
         bool successful = this->seek_( _pos );
 
@@ -320,7 +320,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::rseek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::rseek" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::rseek" );
 
         bool successful = this->seek_( m_size - _pos );
 
@@ -365,7 +365,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::skip( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::skip" );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -378,7 +378,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileInputStream::tell() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::tell" );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -392,7 +392,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::eof() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::eof" );
 
         size_t current = m_reading - m_capacity + m_carriage;
 

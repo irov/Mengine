@@ -27,7 +27,7 @@ namespace Mengine
         void * m_ptr;
         size_t m_size;
 
-        MENGINE_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT( MemoryProxy );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryProxy> MemoryProxyPtr;

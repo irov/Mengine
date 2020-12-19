@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLFileInputStream
         : public FileInputStreamInterface
         , public Factorable
@@ -62,8 +63,6 @@ namespace Mengine
 
         uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE] = {0};
 
-        MENGINE_THREAD_GUARD_INIT;
-
 #ifdef MENGINE_DEBUG
         FilePath m_relationPath;
         FilePath m_folderPath;
@@ -72,6 +71,8 @@ namespace Mengine
 
         bool m_streaming;
         bool m_share;
+
+        MENGINE_THREAD_GUARD_INIT( SDLFileInputStream );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLFileInputStream> SDLFileInputStreamPtr;

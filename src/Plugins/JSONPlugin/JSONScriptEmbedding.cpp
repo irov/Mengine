@@ -57,7 +57,7 @@ namespace Mengine
                 }break;
             case jpp::e_type::JPP_INTEGER:
                 {
-                    int value = _obj;
+                    int32_t value = _obj;
 
                     return pybind::make_object_t( _kernel, value );
                 }break;

@@ -1,14 +1,15 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
+#include "Kernel/ThreadGuard.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
+#ifndef MENGINE_FACTORABLE_DEBUG
 #   ifdef MENGINE_DEBUG
-#       define MENGINE_FACTORABLE_DEBUG
+#       define MENGINE_FACTORABLE_DEBUG 1
 #   endif
 #else
-#   define MENGINE_FACTORABLE_DEBUG
+#   define MENGINE_FACTORABLE_DEBUG 0
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if MENGINE_DOCUMENT_ENABLE
@@ -50,7 +51,7 @@ namespace Mengine
     protected:
         virtual void _destroy();
 
-#ifdef MENGINE_FACTORABLE_DEBUG
+#if MENGINE_FACTORABLE_DEBUG
     public:
         bool isDestroyed() const;
 
@@ -71,10 +72,12 @@ namespace Mengine
 
         Factory * m_factory;
 
-#ifdef MENGINE_FACTORABLE_DEBUG
+#if MENGINE_FACTORABLE_DEBUG
         bool m_destroy;
         bool m_immortal;
 #endif
+
+        MENGINE_THREAD_GUARD_INIT( Factorable );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factorable> FactorablePtr;
@@ -97,7 +100,7 @@ namespace Mengine
             return false;
         }
 
-#ifdef MENGINE_FACTORABLE_DEBUG
+#if MENGINE_FACTORABLE_DEBUG
         if( _ptr->isDestroyed() == true )
         {
             return false;

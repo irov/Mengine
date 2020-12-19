@@ -39,18 +39,18 @@ namespace Mengine
         void join() override;
 
     protected:
-        virtual void _onPreparation();
-        virtual bool _onMain();
+        virtual void _onThreadTaskPreparation();
+        virtual bool _onThreadTaskMain();
 
     protected:
-        virtual bool _onRun();
-        virtual void _onCancel();
-        virtual void _onFinally();
-        virtual void _onUpdate();
-        virtual void _onJoin();
+        virtual bool _onThreadTaskRun();
+        virtual void _onThreadTaskCancel();
+        virtual void _onThreadTaskFinally();
+        virtual void _onThreadTaskUpdate();
+        virtual void _onThreadTaskJoin();
 
     protected:
-        virtual void _onComplete( bool _successful );
+        virtual void _onThreadTaskComplete( bool _successful );
 
     protected:
         const ThreadMutexInterfacePtr & getMutex() const;

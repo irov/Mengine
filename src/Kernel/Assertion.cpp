@@ -61,7 +61,7 @@ namespace Mengine
             MENGINE_VA_LIST_TYPE argList;
             MENGINE_VA_LIST_START( argList, _format );
 
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE - 1, _format, argList );
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
             MENGINE_UNUSED( size_vsnprintf );
 
             MENGINE_VA_LIST_END( argList );
@@ -83,7 +83,7 @@ namespace Mengine
             MENGINE_VA_LIST_TYPE argList;
             MENGINE_VA_LIST_START( argList, _format );
 
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE - 1, _format, argList );
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
             MENGINE_UNUSED( size_vsnprintf );
 
             MENGINE_VA_LIST_END( argList );

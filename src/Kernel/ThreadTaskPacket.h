@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ThreadTaskPacket
         : public ThreadTask
     {
@@ -22,16 +23,16 @@ namespace Mengine
         uint32_t countTask() const;
 
     protected:
-        bool _onMain() override;
+        bool _onThreadTaskMain() override;
 
     protected:
-        bool _onRun() override;
-        void _onCancel() override;
-        void _onUpdate() override;
-        void _onJoin() override;
+        bool _onThreadTaskRun() override;
+        void _onThreadTaskCancel() override;
+        void _onThreadTaskUpdate() override;
+        void _onThreadTaskJoin() override;
 
     protected:
-        void _onComplete( bool _successful ) override;
+        void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
         typedef Vector<ThreadTaskPtr> VectorThreadTasks;
@@ -39,6 +40,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_childMutex;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTaskPacket> ThreadTaskPacketPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -460,6 +460,11 @@ namespace Mengine
 
                 if( textEntry == nullptr )
                 {
+                    LOGGER_ERROR( "text entry '%s' not found (doc: %s)"
+                        , _textId.c_str()
+                        , MENGINE_DOCUMENT_STR( MENGINE_DOCUMENT_PYBIND )
+                    );
+
                     return "";
                 }
 

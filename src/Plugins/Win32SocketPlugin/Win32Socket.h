@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32Socket
         : public SocketInterface
         , public Win32SocketInputStream
@@ -24,11 +25,11 @@ namespace Mengine
         bool bind( const SocketConnectInfo & _info, bool _blocking = true ) override;
         void disconnect() override;
 
-        int checkForClientConnection() override;
+        int32_t checkForClientConnection() override;
         bool waitForData( uint32_t _timeoutMs ) override;
 
-        int send( const void * _data, size_t _numBytes ) override;
-        int receive( void * const _data, size_t _maxBytes ) override;
+        int32_t send( const void * _data, size_t _numBytes ) override;
+        int32_t receive( void * const _data, size_t _maxBytes ) override;
 
     public:
         OutputStreamInterfacePtr getSendStream() const override;

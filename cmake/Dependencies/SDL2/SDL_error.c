@@ -43,7 +43,7 @@ static char *SDL_GetErrorMsg(char *errstr, int maxlen);
 
 static SDL_bool suppressError = SDL_FALSE;
 
-int
+void
 SDL_SuppressError( SDL_bool _suppress )
 {
     suppressError = _suppress;

@@ -41,7 +41,7 @@ namespace Mengine
             MENGINE_VA_LIST_START( args, _format );
 
             Char str[2048] = {'\0'};
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, 2047, _format, args );
+            int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, 2048, _format, args );
 
             MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid stringize string format '%s'"
                 , _format

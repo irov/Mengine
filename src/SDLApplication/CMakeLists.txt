@@ -91,8 +91,10 @@ if(MENGINE_TARGET_MACOS)
     endif()
 
     if(MENGINE_PLUGIN_SENTRY)
-    	set(myApp_SENTRY "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/crashpad_handler")
-    	set_source_files_properties(${myApp_ASTRALAX} PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS")
+        set(myApp_SENTRY "$ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/crashpad_handler")
+        set_source_files_properties(${myApp_ASTRALAX} PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS")
+
+        set_source_files_properties($ENV{HOME}/${MENGINE_XCODE_DEPLOY_PATH}/crashpad_handler PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/" HEADER_FILE_ONLY 1)
     else()
         set(myApp_SENTRY)
     endif()

@@ -31,7 +31,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLGetAssetThreadTask::_onRun()
+    bool cURLGetAssetThreadTask::_onThreadTaskRun()
     {
         if( m_fileGroup->createDirectory( m_filePath ) == false )
         {
@@ -115,7 +115,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLGetAssetThreadTask::_onComplete( bool _successful )
+    void cURLGetAssetThreadTask::_onThreadTaskComplete( bool _successful )
     {
         bool successful_stream_flush = true;
 
@@ -131,7 +131,7 @@ namespace Mengine
         {
             m_fileGroup = nullptr;
 
-            cURLThreadTask::_onComplete( false );
+            cURLThreadTask::_onThreadTaskComplete( false );
 
             return;
         }
@@ -140,14 +140,14 @@ namespace Mengine
         {
             m_fileGroup = nullptr;
 
-            cURLThreadTask::_onComplete( false );
+            cURLThreadTask::_onThreadTaskComplete( false );
 
             return;
         }
 
         m_fileGroup = nullptr;
 
-        cURLThreadTask::_onComplete( true );
+        cURLThreadTask::_onThreadTaskComplete( true );
     }
     //////////////////////////////////////////////////////////////////////////
 }

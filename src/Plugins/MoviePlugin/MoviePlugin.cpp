@@ -98,7 +98,7 @@ namespace Mengine
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 4095, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 4096, _format, args );
         MENGINE_VA_LIST_END( args );
 
         if( size_vsnprintf < 0 )

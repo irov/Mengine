@@ -74,7 +74,7 @@ namespace Mengine
         va_start( argList, _format );
 
         Char format_msg[4096] = {'\0'};
-        MENGINE_VSNPRINTF( format_msg, 4095, _format, argList );
+        MENGINE_VSNPRINTF( format_msg, 4096, _format, argList );
 
         va_end( argList );
 

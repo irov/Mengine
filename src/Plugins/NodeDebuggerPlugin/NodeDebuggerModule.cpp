@@ -172,12 +172,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::onUpdate( uint32_t _id )
+    void NodeDebuggerModule::onThreadWorkerUpdate( uint32_t _id )
     {
         MENGINE_UNUSED( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::onWork( uint32_t )
+    bool NodeDebuggerModule::onThreadWorkerWork( uint32_t )
     {
         switch( m_serverState )
         {
@@ -307,7 +307,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::onDone( uint32_t )
+    void NodeDebuggerModule::onThreadWorkerDone( uint32_t )
     {
     }
     //////////////////////////////////////////////////////////////////////////

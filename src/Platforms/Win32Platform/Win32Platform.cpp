@@ -3384,7 +3384,7 @@ namespace Mengine
 
             pModuleInfo->SizeOfStruct = sizeof( IMAGEHLP_MODULE64 );
 
-            unsigned char pData[4096]; // reserve enough memory, so the bug in v6.3.5.1 does not lead to memory-overwrites...
+            uint8_t pData[4096]; // reserve enough memory, so the bug in v6.3.5.1 does not lead to memory-overwrites...
             MENGINE_MEMCPY( pData, pModuleInfo, sizeof( IMAGEHLP_MODULE64 ) );
 
             if( pSymGetModuleInfo64( hProcess, baseAddr, (IMAGEHLP_MODULE64 *)pData ) == FALSE )
@@ -3595,7 +3595,7 @@ namespace Mengine
             MENGINE_MEMSET( &Module, 0, sizeof( Module ) );
             Module.SizeOfStruct = sizeof( Module );
 
-            for( int frameNum = 0;; ++frameNum )
+            for( int32_t frameNum = 0;; ++frameNum )
             {
                 if( (*pStackWalk64)(imageType, hProcess, hThread, &frame, &contex, &ReadMemoryRoutine, pSymFunctionTableAccess64, pSymGetModuleBase64, NULL) == FALSE )
                 {
@@ -4338,7 +4338,7 @@ namespace Mengine
         MENGINE_VA_LIST_START( args, _format );
 
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
         MENGINE_VA_LIST_END( args );
 
         if( size_vsnprintf < 0 )

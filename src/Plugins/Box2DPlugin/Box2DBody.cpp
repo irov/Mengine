@@ -62,9 +62,9 @@ namespace Mengine
         , float _friction
         , float _restitution
         , bool _isSensor
-        , unsigned short _collisionMask
-        , unsigned short _categoryBits
-        , unsigned short _groupIndex )
+        , uint16_t _collisionMask
+        , uint16_t _categoryBits
+        , uint16_t _groupIndex )
     {
         uint32_t num_points = _polygon.size();
 
@@ -106,9 +106,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Box2DBody::addShapeCircle( float _radius, const mt::vec2f & _position,
-        float _density, float _friction, float _restitution, bool _isSensor,
-        unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
+    bool Box2DBody::addShapeCircle( float _radius, const mt::vec2f & _position
+        , float _density, float _friction, float _restitution, bool _isSensor
+        , uint16_t _collisionMask
+        , uint16_t _categoryBits
+        , uint16_t _groupIndex )
     {
         b2CircleShape shape;
         shape.m_radius = m_scaler.toBox2DWorld( _radius );
@@ -135,9 +137,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Box2DBody::addShapeBox( float _width, float _height, const mt::vec2f & _position, float _angle,
-        float _density, float _friction, float _restitution, bool _isSensor,
-        unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
+    bool Box2DBody::addShapeBox( float _width, float _height, const mt::vec2f & _position, float _angle
+        , float _density, float _friction, float _restitution, bool _isSensor
+        , uint16_t _collisionMask
+        , uint16_t _categoryBits
+        , uint16_t _groupIndex )
     {
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
         float b2_width = m_scaler.toBox2DWorld( _width );

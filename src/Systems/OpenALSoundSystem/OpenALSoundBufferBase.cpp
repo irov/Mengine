@@ -36,7 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferBase::acquire()
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "OpenALSoundBufferBase::acquire" );
+        MENGINE_THREAD_GUARD_SCOPE( OpenALSoundBufferBase, this, "OpenALSoundBufferBase::acquire" );
 
         if( ++m_refacquire == 1 )
         {
@@ -51,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferBase::release()
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "OpenALSoundBufferBase::release" );
+        MENGINE_THREAD_GUARD_SCOPE( OpenALSoundBufferBase, this, "OpenALSoundBufferBase::release" );
 
         MENGINE_ASSERTION_FATAL( m_refacquire > 0 );
 

@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ArchivatorLZ4::compressBound( size_t _size ) const
     {
-        int32_t size = ::LZ4_compressBound( (int)_size );
+        int32_t size = ::LZ4_compressBound( (int32_t)_size );
 
         size_t total_size = size;
 

@@ -383,7 +383,7 @@ namespace Mengine
     {
         MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
-        if( Magic_ChangeModel( m_emitterId, -1, (int)_count, triangle ) == MAGIC_ERROR )
+        if( Magic_ChangeModel( m_emitterId, -1, (int32_t)_count, triangle ) == MAGIC_ERROR )
         {
             return false;
         }

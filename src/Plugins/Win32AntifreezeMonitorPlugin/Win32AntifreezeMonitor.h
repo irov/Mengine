@@ -31,9 +31,9 @@ namespace Mengine
         void ping();
 
     protected:
-        void onUpdate( uint32_t _id ) override;
-        bool onWork( uint32_t _id ) override;
-        void onDone( uint32_t _id ) override;
+        void onThreadWorkerUpdate( uint32_t _id ) override;
+        bool onThreadWorkerWork( uint32_t _id ) override;
+        void onThreadWorkerDone( uint32_t _id ) override;
 
     protected:
         void notifyLoggerBegin( ELoggerLevel _level );

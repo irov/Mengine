@@ -41,7 +41,7 @@ namespace Mengine
         int32_t texture[8];
         uint32_t textures;
 
-        int material;
+        int32_t material;
     };
     //////////////////////////////////////////////////////////////////////////
     struct AstralaxEmitterRenderFlush

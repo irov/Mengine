@@ -33,19 +33,19 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetch::_onPreparation()
+    void ThreadTaskPrefetch::_onThreadTaskPreparation()
     {
         m_observer->onPrefetchPreparation();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetch::_onRun()
+    bool ThreadTaskPrefetch::_onThreadTaskRun()
     {
         bool successful = m_observer->onPrefetchRun();
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetch::_onCancel()
+    void ThreadTaskPrefetch::_onThreadTaskCancel()
     {
         if( m_observer != nullptr )
         {
@@ -53,7 +53,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetch::_onComplete( bool _successful )
+    void ThreadTaskPrefetch::_onThreadTaskComplete( bool _successful )
     {
         m_fileGroup = nullptr;
         m_stream = nullptr;

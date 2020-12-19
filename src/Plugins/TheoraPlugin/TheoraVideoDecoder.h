@@ -46,12 +46,12 @@ namespace Mengine
         bool decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _pitch );
 
     protected:
-        ogg_stream_state m_oggStreamState;
-        ogg_sync_state m_oggSyncState;
+        ogg_stream_state m_oggStreamState = {0};
+        ogg_sync_state m_oggSyncState = {0};
 
-        theora_comment m_theoraComment;
-        theora_info m_theoraInfo;
-        mutable theora_state m_theoraState;
+        theora_comment m_theoraComment = {0};
+        theora_info m_theoraInfo = {0};
+        mutable theora_state m_theoraState = {0};
 
         uint32_t m_pitch;
 

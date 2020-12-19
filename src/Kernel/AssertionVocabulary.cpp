@@ -42,7 +42,7 @@ namespace Mengine
             }
 
             Char msg[1024] = {'\0'};
-            MENGINE_SNPRINTF( msg, 1023, "[Assert] Vocabulary '%s' not empty ['%u']"
+            MENGINE_SNPRINTF( msg, 1024, "[Assert] Vocabulary '%s' not empty ['%u']"
                 , _category.c_str()
                 , count
             );

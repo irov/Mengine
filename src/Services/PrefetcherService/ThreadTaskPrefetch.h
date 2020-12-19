@@ -26,10 +26,10 @@ namespace Mengine
         MENGINE_INLINE const FileGroupInterfacePtr & getFileGroup() const;
 
     protected:
-        void _onPreparation() override;
-        bool _onRun() override;
-        void _onCancel() override;
-        void _onComplete( bool _successful ) override;
+        void _onThreadTaskPreparation() override;
+        bool _onThreadTaskRun() override;
+        void _onThreadTaskCancel() override;
+        void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
         FileGroupInterfacePtr m_fileGroup;

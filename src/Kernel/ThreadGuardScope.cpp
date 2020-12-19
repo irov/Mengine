@@ -1,6 +1,6 @@
 #include "ThreadGuardScope.h"
 
-
+#include "Kernel/Logger.h"
 #include "Kernel/Crash.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -13,6 +13,10 @@ namespace Mengine
     {
         if( m_guard.lock( true ) == true )
         {
+            LOGGER_ERROR( "thread safe issue: %s"
+                , _doc
+            );
+
             Helper::crash( m_doc );
         }
     }
@@ -21,6 +25,10 @@ namespace Mengine
     {
         if( m_guard.lock( false ) == false )
         {
+            LOGGER_ERROR( "thread safe issue: %s"
+                , m_doc
+            );
+
             Helper::crash( m_doc );
         }
     }

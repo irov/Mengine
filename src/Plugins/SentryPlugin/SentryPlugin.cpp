@@ -101,11 +101,13 @@ namespace Mengine
             return true;
         }
 
+#ifdef MENGINE_DEBUG
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
         {
             return true;
         }
+#endif
 
         LOGGER_MESSAGE_RELEASE( "Sentry: %s"
             , SENTRY_SDK_USER_AGENT

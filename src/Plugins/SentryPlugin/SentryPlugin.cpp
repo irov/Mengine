@@ -192,13 +192,20 @@ namespace Mengine
 
         sentry_options_set_release( options, MENGINE_BUILD_VERSION );
 
-        sentry_init( options );
+        if( sentry_init( options ) != 0 )
+        {
+            LOGGER_ERROR( "invalid initialize sentry plugin" );
+
+            return false;
+        }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &SentryPlugin::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &SentryPlugin::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
         SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
 
         loggerCapture->setVerboseLevel( LM_ERROR );
 

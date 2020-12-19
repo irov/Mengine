@@ -1807,7 +1807,10 @@ namespace Mengine
             return false;
         }
 
-        font->prepareText( fmt.c_str(), fmt.size(), _cacheText );
+        const Char * fmt_str = fmt.c_str();
+        size_t fmt_size = fmt.size();
+
+        font->prepareText( fmt_str, fmt_size, _cacheText );
 
         return true;
     }

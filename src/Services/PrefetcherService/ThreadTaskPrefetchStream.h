@@ -31,9 +31,9 @@ namespace Mengine
         void _finalize() override;
 
     protected:
-        bool _onRun() override;
-        bool _onMain() override;
-        void _onComplete( bool _successful ) override;
+        bool _onThreadTaskRun() override;
+        bool _onThreadTaskMain() override;
+        void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
         ArchivatorInterfacePtr m_archivator;

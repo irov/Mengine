@@ -65,7 +65,7 @@ namespace Mengine
 
         uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE] = {0};
 
-        MENGINE_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT( Win32FileInputStream );
 
 #ifdef MENGINE_DEBUG
         FilePath m_relationPath;

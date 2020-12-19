@@ -156,7 +156,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         for( const RequestListenerDesk & desc : m_networkListeners )
         {
-            LOGGER_ERROR( "Forgot remove listener '%u' from cURLService '%s' (doc: %s)"
+            LOGGER_ERROR( "Forgot remove listener '%u' from cURLService (doc: %s)"
                 , desc.id
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );

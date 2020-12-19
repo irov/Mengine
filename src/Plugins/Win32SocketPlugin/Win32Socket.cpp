@@ -40,7 +40,7 @@ namespace Mengine
             return false;
         }
 
-        int32_t connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
+        int32_t connect_result = ::connect( socket, addrinfo->ai_addr, (int32_t)addrinfo->ai_addrlen );
 
         freeaddrinfo( addrinfo );
 
@@ -158,7 +158,7 @@ namespace Mengine
             return 0;
         }
 
-        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char *>(_data), static_cast<int>(_numBytes), 0 );
+        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char *>(_data), (int32_t)_numBytes, 0 );
 
         return numBytesSent;
     }

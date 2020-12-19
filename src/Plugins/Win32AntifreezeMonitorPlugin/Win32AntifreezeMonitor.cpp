@@ -131,12 +131,12 @@ namespace Mengine
         m_refalive++;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::onUpdate( uint32_t _id )
+    void Win32AntifreezeMonitor::onThreadWorkerUpdate( uint32_t _id )
     {
         MENGINE_UNUSED( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32AntifreezeMonitor::onWork( uint32_t _id )
+    bool Win32AntifreezeMonitor::onThreadWorkerWork( uint32_t _id )
     {
         MENGINE_UNUSED( _id );
 
@@ -229,7 +229,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::onDone( uint32_t _id )
+    void Win32AntifreezeMonitor::onThreadWorkerDone( uint32_t _id )
     {
         MENGINE_UNUSED( _id );
 

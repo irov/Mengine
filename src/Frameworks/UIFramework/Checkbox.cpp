@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Checkbox::isBlock() const
     {
-        int value = m_semaphoreBlock->getValue();
+        int32_t value = m_semaphoreBlock->getValue();
 
         return value == 1 ? true : false;
     }

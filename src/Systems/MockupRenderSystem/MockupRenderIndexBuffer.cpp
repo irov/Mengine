@@ -6,6 +6,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Documentable.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/DocumentableHelper.h"
 
 #include "stdex/memorycopy.h"
 

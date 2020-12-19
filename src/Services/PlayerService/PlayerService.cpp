@@ -42,6 +42,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/DocumentableHelper.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Documentable.h"
 

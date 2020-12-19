@@ -62,9 +62,9 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchStream::_onRun()
+    bool ThreadTaskPrefetchStream::_onThreadTaskRun()
     {
-        if( ThreadTaskPrefetch::_onRun() == false )
+        if( ThreadTaskPrefetch::_onThreadTaskRun() == false )
         {
             return false;
         }
@@ -78,7 +78,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchStream::_onMain()
+    bool ThreadTaskPrefetchStream::_onThreadTaskMain()
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {
@@ -102,9 +102,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetchStream::_onComplete( bool _successful )
+    void ThreadTaskPrefetchStream::_onThreadTaskComplete( bool _successful )
     {
-        ThreadTaskPrefetch::_onComplete( _successful );
+        ThreadTaskPrefetch::_onThreadTaskComplete( _successful );
 
         m_archivator = nullptr;
     }

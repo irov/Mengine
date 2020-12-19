@@ -174,7 +174,7 @@ namespace Mengine
                 MENGINE_VA_LIST_START( args, _format );
 
                 Char msg[2048] = {'\0'};
-                int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 2047, _format, args );
+                int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 2048, _format, args );
 
                 MENGINE_VA_LIST_END( args );
 

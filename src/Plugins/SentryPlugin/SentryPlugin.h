@@ -5,8 +5,7 @@
 #include "SentryLoggerCapture.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class SentryPlugin
         : public PluginBase
     {

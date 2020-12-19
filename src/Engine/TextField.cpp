@@ -8,6 +8,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/DocumentableHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
@@ -1157,12 +1158,13 @@ namespace Mengine
             return;
         }
 
-        TextEntryInterfacePtr textEntry = TEXT_SERVICE()
+        const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "'%s' can't find text ID '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "text field '%s' can't find text ID '%s' (doc: %s)"
             , this->getName().c_str()
             , aliasTestId.c_str()
+            , MENGINE_DOCUMENTABLE_STR( this, "TextField" )
         );
 
         m_totalTextEntry = textEntry;
@@ -1617,7 +1619,7 @@ namespace Mengine
         MENGINE_VA_LIST_START( args, _format );
 
         Char str[MENGINE_TEXT_FIELD_MAX_TEXT] = {'\0'};
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_TEXT_FIELD_MAX_TEXT - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_TEXT_FIELD_MAX_TEXT, _format, args );
 
         MENGINE_VA_LIST_END( args );
 
@@ -1805,7 +1807,10 @@ namespace Mengine
             return false;
         }
 
-        font->prepareText( fmt.c_str(), fmt.size(), _cacheText );
+        const Char * fmt_str = fmt.c_str();
+        size_t fmt_size = fmt.size();
+
+        font->prepareText( fmt_str, fmt_size, _cacheText );
 
         return true;
     }

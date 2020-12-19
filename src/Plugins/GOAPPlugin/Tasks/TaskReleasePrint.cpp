@@ -16,7 +16,7 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
 
         MENGINE_VA_LIST_END( args );
 
@@ -32,7 +32,7 @@ namespace Mengine
     {
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, _args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, _format, _args );
 
         MENGINE_ASSERTION_FATAL( size_vsnprintf >= 0, "invalid string format '%s'"
             , _format

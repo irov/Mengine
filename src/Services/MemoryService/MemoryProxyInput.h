@@ -49,7 +49,7 @@ namespace Mengine
         uint8_t * m_pos;
         uint8_t * m_end;
 
-        MENGINE_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT( MemoryProxyInput );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryProxyInput> MemoryProxyInputPtr;

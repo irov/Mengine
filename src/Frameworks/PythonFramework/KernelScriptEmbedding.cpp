@@ -540,7 +540,7 @@ namespace Mengine
             String s_Node_getDebugId( Node * _node )
             {
                 Char debugId[256] = {'\0'};
-                MENGINE_SNPRINTF( debugId, 255, "%p"
+                MENGINE_SNPRINTF( debugId, 256, "%p"
                     , _node 
                 );
 

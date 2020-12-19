@@ -35,6 +35,7 @@ namespace Mengine
     public:
         void setMessage( const Char * _message );
         const Char * getMessage() const;
+        size_t getMessageSize() const;
 
     protected:
         DocumentPtr m_parent;

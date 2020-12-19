@@ -40,11 +40,11 @@ namespace Mengine
 
                 size_t unicode_path_len = MENGINE_WCSLEN( unicode_path );
 
-                int utf8_size = ::WideCharToMultiByte(
+                int32_t utf8_size = ::WideCharToMultiByte(
                     CP_UTF8
                     , dwConversionFlags
                     , unicode_path
-                    , (int)unicode_path_len
+                    , (int32_t)unicode_path_len
                     , _path
                     , MENGINE_MAX_PATH - 1
                     , NULL

@@ -47,7 +47,7 @@ namespace Mengine
         bool m_register;
 #endif
 
-        MENGINE_THREAD_GUARD_INIT;
+        MENGINE_THREAD_GUARD_INIT( Factory );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factory> FactoryPtr;

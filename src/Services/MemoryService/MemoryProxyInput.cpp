@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryProxyInput::read( void * _buf, size_t _count )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::read" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::read" );
 
         size_t cnt = _count;
         // Read over end of memory?
@@ -65,7 +65,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryProxyInput::seek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::seek" );
 
         if( _pos > m_size )
         {
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryProxyInput::rseek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::rseek" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::rseek" );
 
         if( _pos > m_size )
         {
@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryProxyInput::skip( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::skip" );
 
         if( m_pos + _pos > m_end )
         {
@@ -112,14 +112,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryProxyInput::eof() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::eof" );
 
         return m_pos == m_end;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryProxyInput::tell() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryProxyInput, this, "MemoryProxyInput::tell" );
 
         size_t distance = m_pos - m_data;
 

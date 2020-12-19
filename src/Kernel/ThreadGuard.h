@@ -3,6 +3,7 @@
 #include "Config/Atomic.h"
 #include "Config/Char.h"
 
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_THREAD_GUARD
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_THREAD_GUARD 1
@@ -10,7 +11,7 @@
 #       define MENGINE_THREAD_GUARD 0
 #   endif
 #endif
-
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     class ThreadGuard
@@ -32,22 +33,22 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #if MENGINE_THREAD_GUARD
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_INIT\
+#   define MENGINE_THREAD_GUARD_INIT(Type)\
     public:\
-    Mengine::ThreadGuard __mengine_thread_guard\
+    Mengine::ThreadGuard __mengine_thread_guard##Type\
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_CHECK(Self, Doc)\
-    Self->__mengine_thread_guard.check( Doc )
+#   define MENGINE_THREAD_GUARD_CHECK(Type, Self, Doc)\
+    Self->__mengine_thread_guard##Type.check( Doc )
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_RESET(Self)\
-    Self->__mengine_thread_guard.reset()
+#   define MENGINE_THREAD_GUARD_RESET(Type, Self)\
+    Self->__mengine_thread_guard##Type.reset()
     //////////////////////////////////////////////////////////////////////////
 #else
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_INIT
+#   define MENGINE_THREAD_GUARD_INIT(Type)
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_CHECK(Self, Doc)
+#   define MENGINE_THREAD_GUARD_CHECK(Type, Self, Doc)
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_RESET(Self)
+#   define MENGINE_THREAD_GUARD_RESET(Type, Self)
     //////////////////////////////////////////////////////////////////////////
 #endif

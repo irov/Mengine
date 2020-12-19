@@ -41,9 +41,9 @@ namespace Mengine
         m_imageDecoder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchImageDecoder::_onRun()
+    bool ThreadTaskPrefetchImageDecoder::_onThreadTaskRun()
     {
-        if( ThreadTaskPrefetch::_onRun() == false )
+        if( ThreadTaskPrefetch::_onThreadTaskRun() == false )
         {
             return false;
         }
@@ -66,7 +66,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPrefetchImageDecoder::_onMain()
+    bool ThreadTaskPrefetchImageDecoder::_onThreadTaskMain()
     {
         if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {

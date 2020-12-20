@@ -60,11 +60,11 @@ namespace Mengine
             return false;
         }
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleSteam::_initializeModule()
-    {
+        if( HAS_OPTION( "nosteam" ) == true )
+        {
+            return false;
+        }
+
         int32_t appId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
 
         if( HAS_OPTION( "steamappid" ) == true )
@@ -89,14 +89,15 @@ namespace Mengine
                     , appId
                 );
 
-#ifdef MENGINE_DEBUG
-                return true;
-#else
                 return false;
-#endif
             }
         }
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleSteam::_initializeModule()
+    {
         m_iso639_1["brazilian"] = STRINGIZE_STRING_LOCAL( "pt-br" );
         m_iso639_1["bulgarian"] = STRINGIZE_STRING_LOCAL( "bg" );
         m_iso639_1["czech"] = STRINGIZE_STRING_LOCAL( "cs" );

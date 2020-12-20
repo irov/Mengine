@@ -27,5 +27,7 @@ namespace Mengine
 
     protected:
         SentryLoggerCapturePtr m_loggerCapture;
+
+        bool m_sentryInitialize;
     };
 }

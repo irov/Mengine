@@ -35,5 +35,7 @@ namespace Mengine
 
         typedef Map<String, ConstString> MapISO639_1;
         MapISO639_1 m_iso639_1;
+
+        bool m_steamInitialize;
     };
 }

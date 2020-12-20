@@ -7,6 +7,7 @@
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ThreadGuardScope.h"
 
 namespace Mengine
 {
@@ -106,6 +107,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::compile()
     {
+        MENGINE_THREAD_GUARD_SCOPE( Resource, this, "Resource::compile" );
+
         if( ++m_compileReferenceCount == 1 )
         {
             LOGGER_INFO( "resource", "compile '%s:%s'"
@@ -128,6 +131,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::release()
     {
+        MENGINE_THREAD_GUARD_SCOPE( Resource, this, "Resource::release" );
+
         MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "'%s:%s' release compile ref count == 0"
             , this->getType().c_str()
             , this->getName().c_str()

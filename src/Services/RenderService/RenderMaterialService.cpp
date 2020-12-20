@@ -619,7 +619,9 @@ namespace Mengine
             return id;
         }
 
-        return ++m_materialEnumerator;
+        uint32_t new_id = ++m_materialEnumerator;
+
+        return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t RenderMaterialService::makeMaterialHash_( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const

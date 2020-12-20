@@ -1,11 +1,13 @@
 #pragma once
 
-#include "Kernel/Factorable.h"
-
 #include "ThreadTaskPrefetch.h"
+
+#include "Kernel/ThreadGuard.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PrefetchReceiver
         : public Factorable
     {
@@ -27,6 +29,8 @@ namespace Mengine
     protected:
         uint32_t m_prefetchRefcount;
         ThreadTaskPrefetchPtr m_prefetcher;
+
+        MENGINE_THREAD_GUARD_INIT( PrefetchReceiver );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PrefetchReceiver> PrefetchReceiverPtr;

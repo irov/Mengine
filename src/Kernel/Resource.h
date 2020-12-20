@@ -15,6 +15,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
+#include "Kernel/ThreadGuard.h"
 
 #ifdef MENGINE_DEBUG
 #   include <type_traits>
@@ -120,6 +121,8 @@ namespace Mengine
         bool m_keep;
         bool m_mapping;
         bool m_precompile;
+
+        MENGINE_THREAD_GUARD_INIT( Resource );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Resource> ResourcePtr;

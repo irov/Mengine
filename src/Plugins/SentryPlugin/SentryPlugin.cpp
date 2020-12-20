@@ -186,7 +186,7 @@ namespace Mengine
         sentry_options_set_handler_path( options, str_sentryHandlerPath );
 #endif
 
-        sentry_options_set_dsn( options, sentryDSN );
+        sentry_options_set_dsn( options, sentryDSN ); 
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, MENGINE_DEBUG_VALUE( 1, 0 ) );
 

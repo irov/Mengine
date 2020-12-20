@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLFileMappedStream
         : public FileMappedStreamInterface
         , public Factorable
@@ -21,4 +22,7 @@ namespace Mengine
         InputStreamInterfacePtr createFileStream( const DocumentPtr & _doc ) override;
         bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** const _memory ) override;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<SDLFileMappedStream> SDLFileMappedStreamPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

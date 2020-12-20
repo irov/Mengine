@@ -60,6 +60,11 @@ namespace Mengine
             return false;
         }
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleSteam::_initializeModule()
+    {
         int32_t appId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
 
         if( HAS_OPTION( "steamappid" ) == true )
@@ -84,44 +89,13 @@ namespace Mengine
                     , appId
                 );
 
+#ifdef MENGINE_DEBUG
+                return true;
+#else
                 return false;
+#endif
             }
         }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleSteam::_initializeModule()
-    {
-        //danish, dutch, english, finnish, french, german, italian, korean,
-        //norwegian, polish, portuguese, russian, schinese, spanish, swedish, tchinese, ukrainian
-
-        //  brazilian
-        //	bulgarian
-        //	czech
-        //	danish
-        //	dutch
-        //	english
-        //	finnish
-        //	french
-        //	german
-        //	greek
-        //	hungarian
-        //	italian
-        //	japanese
-        //	koreana
-        //	norwegian
-        //	polish
-        //	portuguese
-        //	romanian
-        //	russian
-        //	schinese
-        //	spanish
-        //	swedish
-        //	tchinese
-        //	thai
-        //	turkish
-        //	ukrainian
 
         m_iso639_1["brazilian"] = STRINGIZE_STRING_LOCAL( "pt-br" );
         m_iso639_1["bulgarian"] = STRINGIZE_STRING_LOCAL( "bg" );

@@ -106,7 +106,7 @@ namespace Mengine
             return 0;
         }
 
-        unicode_path[len] = L'/';
+        unicode_path[len] = MENGINE_PATH_WDELIM;
         unicode_path[len + 1] = L'\0';
 
         Helper::pathCorrectBackslashToW( unicode_path, unicode_path );

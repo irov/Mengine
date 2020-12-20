@@ -119,7 +119,7 @@ namespace Mengine
         accountString.append( relationPath );
         accountString.append( folderPath );
         accountString.append( _folderPath );
-        accountString.append( '/' );
+        accountString.append( MENGINE_PATH_DELIM );
 
         bool result = PLATFORM_SERVICE()
             ->existDirectory( accountString.c_str() );

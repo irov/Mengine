@@ -96,11 +96,6 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        if( _create == nullptr )
-        {
-            return false;
-        }
-
         UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();

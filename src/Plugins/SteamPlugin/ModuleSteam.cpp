@@ -40,6 +40,7 @@ namespace Mengine
         , m_user( nullptr )
         , m_userStats( nullptr )
         , m_friends( nullptr )
+        , m_steamInitialize( false )
         //, m_steamCallbackUserStatsReceived( this, &ModuleSteam::OnUserStatsReceived )
         //, m_steamCallbackUserStatsStored( this, &ModuleSteam::OnUserStatsStored )
         //, m_steamCallbackAchievementStored( this, &ModuleSteam::OnAchievementStored )
@@ -153,17 +154,23 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid SteamAPI_Init" );
 
+#ifdef MENGINE_DEBUG
+            return true;
+#else
             return false;
+#endif
         }
 
-        const char * AvailableGameLanguages = SteamApps()
+        m_steamInitialize = true;
+
+        const Char * AvailableGameLanguages = SteamApps()
             ->GetAvailableGameLanguages();
 
         LOGGER_MESSAGE_RELEASE( "available game languages: %s"
             , AvailableGameLanguages
         );
 
-        const char * CurrentGameLanguage = SteamApps()
+        const Char * CurrentGameLanguage = SteamApps()
             ->GetCurrentGameLanguage();
 
         LOGGER_MESSAGE_RELEASE( "steam game language: %s"
@@ -255,6 +262,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleSteam::_finalizeModule()
     {
+        if( m_steamInitialize == false )
+        {
+            return;
+        }
+
         m_userStats->StoreStats();
 
         SteamAPI_Shutdown();

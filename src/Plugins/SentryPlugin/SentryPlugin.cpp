@@ -82,12 +82,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     SentryPlugin::SentryPlugin()
-        : m_sentryInitialize( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     SentryPlugin::~SentryPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SentryPlugin::_unimportantPlugin() const
+    {
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SentryPlugin::_initializePlugin()
@@ -197,7 +201,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid initialize sentry plugin" );
 
-            return true; //unimportant
+            return false;
         }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
@@ -214,8 +218,6 @@ namespace Mengine
             ->registerLogger( loggerCapture );
 
         m_loggerCapture = loggerCapture;
-
-        m_sentryInitialize = true;
 
         return true;
     }
@@ -234,11 +236,6 @@ namespace Mengine
 
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
-        {
-            return;
-        }
-
-        if( m_sentryInitialize == false )
         {
             return;
         }

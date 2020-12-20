@@ -2,6 +2,7 @@
 
 #include "Config/Typedef.h"
 
+#include "Kernel/ThreadGuard.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine
@@ -26,6 +27,8 @@ namespace Mengine
 
     protected:
         uint32_t m_refcounter;
+
+        MENGINE_THREAD_GUARD_INIT( Reference );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Reference> ReferencePtr;

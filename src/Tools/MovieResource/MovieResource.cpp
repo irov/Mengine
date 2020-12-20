@@ -626,7 +626,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
     {
         message_error( "invalid load movie data '%s' version '%d.%d' load '%d.%d'\n"
-            , ae_get_result_string_info( result_load_movie_data )
+            , ae_get_movie_result_string_info( result_load_movie_data )
             , ae_get_movie_sdk_major_version()
             , ae_get_movie_sdk_minor_version()
             , major_version

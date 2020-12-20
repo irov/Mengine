@@ -3,7 +3,8 @@ MENGINE_PROJECT(SteamPlugin)
 ADD_FILTER(
 src
 	SteamPlugin.h
-	SteamPlugin.cpp   
+	SteamPlugin.cpp
+    SteamPlugin.def
     
     ModuleSteam.cpp
     ModuleSteam.h
@@ -13,11 +14,17 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/steam/public)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_STEAM)
 
-IF(MENGINE_PLATFORM_WIN32)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/steam_api.lib)
+IF(MENGINE_TARGET_WINDOWS)
+    IF(MENGINE_ARCHITECTURE_X86)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/steam_api.lib)
+    ENDIF()
+    
+    IF(MENGINE_ARCHITECTURE_X64)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/win64/steam_api64.lib)
+    ENDIF()
 ENDIF()
 
-if(MENGINE_PLATFORM_MAC)
+if(MENGINE_TARGET_MACOS)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/osx32/libsteam_api.dylib)
 endif()
 

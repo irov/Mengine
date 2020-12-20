@@ -1,5 +1,6 @@
 #include "PrefetchReceiver.h"
 
+#include "Kernel/ThreadGuardScope.h"
 #include "Kernel/Assertion.h"
 
 namespace Mengine
@@ -29,11 +30,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrefetchReceiver::acquire()
     {
+        MENGINE_THREAD_GUARD_SCOPE( PrefetchReceiver, this, "PrefetchReceiver::acquire" );
+
         ++m_prefetchRefcount;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetchReceiver::release()
     {
+        MENGINE_THREAD_GUARD_SCOPE( PrefetchReceiver, this, "PrefetchReceiver::release" );
+
         MENGINE_ASSERTION_FATAL( m_prefetchRefcount != 0 );
 
         if( --m_prefetchRefcount == 0 )

@@ -13,9 +13,27 @@
 #include "Kernel/Logger.h"
 #include "Kernel/UnicodeHelper.h"
 
+#include "Config/StdIO.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void SteamAPIWarningMessageHook( int _severity, const char * _msg )
+        {
+            if( _severity >= 1 )
+            {
+                LOGGER_ERROR( "[steam] %s", _msg );
+            }
+            else
+            {
+                LOGGER_WARNING( "[steam] %s", _msg );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     ModuleSteam::ModuleSteam()
         : m_client( nullptr )
@@ -30,19 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ModuleSteam::~ModuleSteam()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_SteamAPIWarningMessageHook( int _severity, const char * _msg )
-    {
-        if( _severity >= 1 )
-        {
-            LOGGER_ERROR( "[steam] %s", _msg );
-        }
-        else
-        {
-            LOGGER_WARNING( "[steam] %s", _msg );
-        }
-    }
+    } 
     //////////////////////////////////////////////////////////////////////////
     bool ModuleSteam::_availableModule() const
     {
@@ -59,7 +65,7 @@ namespace Mengine
         {
             const Char * str_steamappid = GET_OPTION_VALUE( "steamappid", "" );
 
-            if( sscanf( str_steamappid, "%d", &appId ) != 0 )
+            if( MENGINE_SSCANF( str_steamappid, "%d", &appId ) != 0 )
             {
                 LOGGER_ERROR( "invalid option steamappid '%s'"
                     , str_steamappid
@@ -153,14 +159,14 @@ namespace Mengine
         const char * AvailableGameLanguages = SteamApps()
             ->GetAvailableGameLanguages();
 
-        LOGGER_INFO( "steam", "available game languages '%s'"
+        LOGGER_MESSAGE_RELEASE( "available game languages: %s"
             , AvailableGameLanguages
         );
 
         const char * CurrentGameLanguage = SteamApps()
             ->GetCurrentGameLanguage();
 
-        LOGGER_WARNING( "game language '%s'"
+        LOGGER_MESSAGE_RELEASE( "steam game language: %s"
             , CurrentGameLanguage
         );
 
@@ -180,7 +186,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "not found game localization for language '%s' setup 'en'"
+            LOGGER_MESSAGE_RELEASE( "not found game localization for language '%s' setup 'en'"
                 , CurrentGameLanguage
             );
 
@@ -190,11 +196,19 @@ namespace Mengine
 
         m_client = SteamClient();
 
-        m_client->SetWarningMessageHook( &s_SteamAPIWarningMessageHook );
+        m_client->SetWarningMessageHook( &Detail::SteamAPIWarningMessageHook );
 
         HSteamPipe hSteamPipe = m_client->CreateSteamPipe();
 
         HSteamUser hSteamUser = m_client->ConnectToGlobalUser( hSteamPipe );
+
+        if( SteamUser()
+            ->BLoggedOn() == false )
+        {
+            LOGGER_ERROR( "Steam user is not logged in" );
+
+            return false;
+        }
 
         //m_user = m_client->GetISteamUser( hSteamUser, hSteamPipe, STEAMUSER_INTERFACE_VERSION );
         //
@@ -304,7 +318,7 @@ namespace Mengine
             String utf8_name;
             Helper::unicodeToUtf8( unicode_name, &utf8_name );
 
-            const char * str_name = utf8_name.c_str();
+            const Char * str_name = utf8_name.c_str();
 
             MapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( "Value" ) );
 
@@ -322,7 +336,7 @@ namespace Mengine
             String utf8_value;
             Helper::unicodeToUtf8( unicode_value, &utf8_value );
 
-            const char * str_value = utf8_value.c_str();
+            const Char * str_value = utf8_value.c_str();
 
             MapWParams::const_iterator it_type_found = _params.find( STRINGIZE_STRING_LOCAL( "Type" ) );
 
@@ -340,7 +354,7 @@ namespace Mengine
             if( unicode_type == L"float" )
             {
                 float f_value;
-                if( sscanf( str_value, "%f", &f_value ) != 1 )
+                if( MENGINE_SSCANF( str_value, "%f", &f_value ) != 1 )
                 {
                     LOGGER_ERROR( "invalid stat '%s' float value '%s'"
                         , str_name
@@ -363,7 +377,7 @@ namespace Mengine
             else if( unicode_type == L"int" )
             {
                 int32_t i_value;
-                if( sscanf( str_value, "%d", &i_value ) != 1 )
+                if( MENGINE_SSCANF( str_value, "%d", &i_value ) != 1 )
                 {
                     LOGGER_ERROR( "invalid stat '%s' int value '%s'"
                         , str_name

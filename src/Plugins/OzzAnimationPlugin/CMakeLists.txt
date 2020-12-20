@@ -5,6 +5,7 @@ src
     OzzAnimationPlugin.cpp
     OzzAnimationPlugin.h
     OzzAnimationPlugin.def
+    
     OzzAnimationInterface.h
     OzzDetail.cpp
     OzzDetail.h

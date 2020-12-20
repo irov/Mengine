@@ -1,0 +1,2 @@
+LIBRARY "SteamPlugin"
+EXPORTS dllCreatePlugin @1

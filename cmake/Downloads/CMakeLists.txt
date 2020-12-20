@@ -9,7 +9,7 @@ SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../download_template.cmake)
 
-DOWNLOAD_URL_HASH(boost https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.7z SHA256 903fd40074de8dc733d2f0b6b0642e43b714653eaeb79289b12161b9567fae97)
+DOWNLOAD_URL_HASH(boost https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.7z SHA256 3a8b314871646e7404886736273c053278ba71b11347f72d4751411d65d6d1a5)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
 DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
 

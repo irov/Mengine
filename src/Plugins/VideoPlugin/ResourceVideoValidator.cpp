@@ -22,6 +22,8 @@ namespace Mengine
     {
         const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
 
+        bool successful = true;
+
         const uint32_t MENGINE_VIDEO_SIZE_DIV = 8;
 
         if( dataInfo->frameWidth % MENGINE_VIDEO_SIZE_DIV != 0 ||
@@ -38,7 +40,7 @@ namespace Mengine
                 , MENGINE_VIDEO_SIZE_DIV
             );
 
-            return false;
+            successful = false;
         }
 
         uint32_t Limit_VideoWidth = CONFIG_VALUE( "Limit", "VideoWidth", 2048U );
@@ -56,7 +58,7 @@ namespace Mengine
                 , Limit_VideoHeight
             );
 
-            return false;
+            successful = false;
         }
 
         float Limit_VideoFrameRate = CONFIG_VALUE( "Limit", "VideoFrameRate", 30.f );
@@ -71,7 +73,7 @@ namespace Mengine
                 , Limit_VideoFrameRate
             );
 
-            return false;
+            successful = false;
         }
 
         float Limit_VideoContentFillrateCoeff = CONFIG_VALUE( "Limit", "VideoContentFillrateCoeff", 1.f );
@@ -96,10 +98,10 @@ namespace Mengine
                 , Limit_VideoContentFillrateCoeff
             );
 
-            return false;
+            successful = false;
         }
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource )
@@ -123,4 +125,5 @@ namespace Mengine
 
         return valid;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

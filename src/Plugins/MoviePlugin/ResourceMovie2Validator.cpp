@@ -390,6 +390,8 @@ namespace Mengine
             return false;
         }
 
+        bool successful = true;
+
         if( ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
@@ -398,7 +400,7 @@ namespace Mengine
                 , content->getFilePath().c_str()
             );
 
-            return false;
+            successful = false;
         }
 
         if( ae_visit_movie_composition_data( movieData, __movie_composition_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
@@ -409,13 +411,13 @@ namespace Mengine
                 , content->getFilePath().c_str()
             );
 
-            return false;
+            successful = false;
         }
 
         ae_delete_movie_data( movieData );
         ae_delete_movie_stream( movieStream );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
 }

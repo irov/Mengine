@@ -17,6 +17,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceFileValidator::_validate( const ResourceFilePtr & _resource )
     {
+        bool successful = true;
+
         const ContentInterface * content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
@@ -38,7 +40,7 @@ namespace Mengine
             return false;
         }
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
 }

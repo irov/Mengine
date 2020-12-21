@@ -16,8 +16,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceAstralaxValidator::_validate( const ResourceAstralaxPtr & _resource )
     {
-        const FilePath & filePath = _resource->getFilePath();
+        bool successful = true;
 
+        const FilePath & filePath = _resource->getFilePath();
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
@@ -41,10 +42,10 @@ namespace Mengine
                 , _resource->getFilePath().c_str()
             );
 
-            return false;
+            successful = false;
         }
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
 }

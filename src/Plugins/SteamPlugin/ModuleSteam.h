@@ -28,6 +28,9 @@ namespace Mengine
         void _message( const ConstString & _messageName, const MapWParams & _params ) override;
 
     protected:
+        void notifyPackagesLoad_();
+
+    protected:
         ISteamClient * m_client;
         ISteamUser * m_user;
         ISteamUserStats	* m_userStats;

@@ -931,7 +931,7 @@ namespace Mengine
                     ->createProcessDump( processDumpPath.c_str(), nullptr, true );
             }
 
-            if( _event.code == KC_F6 && _event.isDown )
+            if( _event.code == KC_F6 && _event.isDown == true )
             {
                 if( (m_debugMask & MENGINE_DEBUG_HOTSPOTS) != 0 )
                 {
@@ -943,7 +943,7 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F11 && _event.isDown )
+            if( _event.code == KC_F11 && _event.isDown == true )
             {
                 static bool wireframeMode = false;
 
@@ -961,7 +961,7 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F10 && _event.isDown )
+            if( _event.code == KC_F10 && _event.isDown == true )
             {
                 if( (m_debugMask & MENGINE_DEBUG_NODES) != 0 )
                 {
@@ -973,7 +973,7 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F8 && _event.isDown )
+            if( _event.code == KC_F8 && _event.isDown == true )
             {
                 if( (m_debugMask & MENGINE_DEBUG_TILEPOLYGON) != 0 )
                 {

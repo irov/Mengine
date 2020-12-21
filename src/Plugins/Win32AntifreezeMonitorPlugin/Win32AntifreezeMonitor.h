@@ -50,7 +50,7 @@ namespace Mengine
 
         Atomic<uint32_t> m_refalive;
         Atomic<uint32_t> m_reflogger;
-        uint32_t m_oldrefalive;
+        Atomic<uint32_t> m_oldrefalive;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32AntifreezeMonitor> Win32AntifreezeMonitorPtr;

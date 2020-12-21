@@ -9,6 +9,8 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/PackageServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/UnicodeHelper.h"
@@ -138,43 +140,7 @@ namespace Mengine
 
         m_steamInitialize = true;
 
-        const Char * AvailableGameLanguages = SteamApps()
-            ->GetAvailableGameLanguages();
-
-        LOGGER_MESSAGE_RELEASE( "available game languages: %s"
-            , AvailableGameLanguages
-        );
-
-        const Char * CurrentGameLanguage = SteamApps()
-            ->GetCurrentGameLanguage();
-
-        LOGGER_MESSAGE_RELEASE( "steam game language: %s"
-            , CurrentGameLanguage
-        );
-
-        MapISO639_1::const_iterator it_locale_found = m_iso639_1.find( CurrentGameLanguage );
-
-        if( it_locale_found != m_iso639_1.end() )
-        {
-            const ConstString & steam_locale = it_locale_found->second;
-
-            LOGGER_WARNING( "found locale '%s' for language '%s'"
-                , steam_locale.c_str()
-                , CurrentGameLanguage
-            );
-
-            APPLICATION_SERVICE()
-                ->setLocale( steam_locale );
-        }
-        else
-        {
-            LOGGER_MESSAGE_RELEASE( "not found game localization for language '%s' setup 'en'"
-                , CurrentGameLanguage
-            );
-
-            APPLICATION_SERVICE()
-                ->setLocale( STRINGIZE_STRING_LOCAL( "en" ) );
-        }
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &ModuleSteam::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
         m_client = SteamClient();
 
@@ -242,6 +208,8 @@ namespace Mengine
             return;
         }
 
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PACKAGES_LOAD );
+
         m_userStats->StoreStats();
 
         SteamAPI_Shutdown();
@@ -286,6 +254,10 @@ namespace Mengine
 
                 return;
             }
+
+            LOGGER_MESSAGE_RELEASE( "Steam set achievement '%s'"
+                , str_value
+            );
         }
         else if( _messageName == "SetStat" )
         {
@@ -360,6 +332,11 @@ namespace Mengine
 
                     return;
                 }
+
+                LOGGER_MESSAGE_RELEASE( "Steam stat '%s' set %f"
+                    , str_name
+                    , f_value
+                );
             }
             else if( unicode_type == L"int" )
             {
@@ -383,6 +360,11 @@ namespace Mengine
 
                     return;
                 }
+
+                LOGGER_MESSAGE_RELEASE( "Steam stat '%s' set %d"
+                    , str_name
+                    , i_value
+                );
             }
             else
             {
@@ -394,8 +376,65 @@ namespace Mengine
                 return;
             }
         }
+        else
+        {
+            LOGGER_ERROR( "unknown steam message '%s'"
+                , _messageName.c_str()
+            );
+        }
 
         m_userStats->StoreStats();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleSteam::notifyPackagesLoad_()
+    {
+        const Char * AvailableGameLanguages = SteamApps()
+            ->GetAvailableGameLanguages();
+
+        LOGGER_MESSAGE_RELEASE( "available game languages: %s"
+            , AvailableGameLanguages
+        );
+
+        const Char * CurrentGameLanguage = SteamApps()
+            ->GetCurrentGameLanguage();
+
+        LOGGER_MESSAGE_RELEASE( "steam game language: %s"
+            , CurrentGameLanguage
+        );
+
+        MapISO639_1::const_iterator it_locale_found = m_iso639_1.find( CurrentGameLanguage );
+
+        if( it_locale_found != m_iso639_1.end() )
+        {
+            const ConstString & steam_locale = it_locale_found->second;
+
+            LOGGER_WARNING( "found locale '%s' for language '%s'"
+                , steam_locale.c_str()
+                , CurrentGameLanguage
+            );
+
+            if( PACKAGE_SERVICE()
+                ->existLocalePackage( steam_locale, {} ) == false )
+            {
+                LOGGER_MESSAGE_RELEASE( "not found game localization for language '%s'"
+                    , CurrentGameLanguage
+                );
+            }
+            else
+            {
+                APPLICATION_SERVICE()
+                    ->setLocale( steam_locale );
+            }
+        }
+        else
+        {
+            LOGGER_MESSAGE_RELEASE( "not found game localization for language '%s' setup 'en'"
+                , CurrentGameLanguage
+            );
+
+            APPLICATION_SERVICE()
+                ->setLocale( STRINGIZE_STRING_LOCAL( "en" ) );
+        }
     }
     ////////////////////////////////////////////////////////////////////////////
     //void ModuleSteam::OnUserStatsReceived( UserStatsReceived_t * _pCallback )

@@ -607,8 +607,11 @@ namespace Mengine
         {
             m_loggerFile = fileLog;
 
-            LOGGER_INFO( "bootstrapper", "write file log to '%s'"
-                , logFilename.c_str()
+            Char fullLogFilename[MENGINE_MAX_PATH] = {'\0'};
+            userFileGroup->getFullPath( logFilename, fullLogFilename );
+
+            LOGGER_MESSAGE_RELEASE( "write file log to: %s"
+                , fullLogFilename
             );
         }
 

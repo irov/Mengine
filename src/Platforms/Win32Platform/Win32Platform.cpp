@@ -3670,7 +3670,7 @@ namespace Mengine
 
         if( hDbhHelp == NULL )
         {
-            LOGGER_ERROR( "invalid load dbghelp.dll" );
+            LOGGER_ERROR( "invalid load 'dbghelp.dll'" );
 
             return false;
         }

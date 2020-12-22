@@ -412,10 +412,12 @@ namespace Mengine
         BitmapGlyphSaxCallback tmsc( this, _fileGroup, _filePath );
 
         xmlsax_callbacks_t callbacks;
-        callbacks.begin_node = nullptr;
-        callbacks.end_node = nullptr;
+        callbacks.begin_node = []( const xmlsax_char_t *, void * )
+        {};
+        callbacks.end_node = []( const xmlsax_char_t *, void * )
+        {};
 
-        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _key, const xmlsax_char_t ** const _value, void * _userdata )
+        callbacks.node_attributes = []( const xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _key, const xmlsax_char_t ** const _value, void * _userdata )
         {
             MENGINE_UNUSED( _userdata );
 

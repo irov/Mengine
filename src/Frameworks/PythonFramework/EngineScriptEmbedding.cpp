@@ -148,7 +148,8 @@
 #include "Config/Lambda.h"
 
 #include "pybind/stl/stl_type_cast.hpp"
-#include "stdex/xml_sax_parser.h"
+
+#include "xmlsax/xmlsax.hpp"
 
 #include "utf8.h"
 
@@ -1577,63 +1578,52 @@ namespace Mengine
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            class PythonSaxCallback
+            struct python_xmlsax_desc
             {
-            public:
-                PythonSaxCallback( pybind::kernel_interface * _kernel, const pybind::object & _cb )
-                    : m_kernel( _kernel )
-                    , m_cb( _cb )
-                {
-                }
-
-                ~PythonSaxCallback()
-                {
-                }
-
-            protected:
-                PythonSaxCallback( const PythonSaxCallback & ) = delete;
-                void operator = ( const PythonSaxCallback & ) = delete;
-
-            public:
-                void callback_begin_node( const char * _node )
-                {
-                    pybind::object py_cb_begin = m_cb.get_attr( "begin" );
-
-                    py_cb_begin.call( _node );
-                }
-
-                void callback_node_attributes( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
-                {
-                    MENGINE_UNUSED( _node );
-
-                    pybind::dict py_attr( m_kernel, _count );
-
-                    for( uint32_t i = 0; i != _count; ++i )
-                    {
-                        const char * key = _keys[i];
-                        const char * value = _values[i];
-
-                        py_attr[key] = value;
-                    }
-
-                    pybind::object py_cb_attr = m_cb.get_attr( "attr" );
-
-                    py_cb_attr.call( py_attr );
-                }
-
-                void callback_end_node( const char * _node )
-                {
-                    MENGINE_UNUSED( _node );
-
-                    pybind::object py_cb_end = m_cb.get_attr( "end" );
-
-                    py_cb_end.call();
-                }
-
-            protected:
-                pybind::kernel_interface * m_kernel;
-                pybind::object m_cb;
+                pybind::kernel_interface * kernel;
+                pybind::object cb;
             };
+            //////////////////////////////////////////////////////////////////////////
+            static void python_callback_begin_node( const xmlsax_char_t * _node, void * _userdata )
+            {
+                python_xmlsax_desc * desc = (python_xmlsax_desc *)_userdata;
+
+                pybind::object py_cb_begin = desc->cb.get_attr( "begin" );
+
+                py_cb_begin.call( _node );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static void python_callback_node_attributes( const xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** _keys, const xmlsax_char_t ** _values, void * _userdata )
+            {
+                MENGINE_UNUSED( _node );
+
+                python_xmlsax_desc * desc = (python_xmlsax_desc *)_userdata;
+
+                pybind::dict py_attr( desc->kernel, _count );
+
+                for( uint32_t i = 0; i != _count; ++i )
+                {
+                    const char * key = _keys[i];
+                    const char * value = _values[i];
+
+                    py_attr[key] = value;
+                }
+
+                pybind::object py_cb_attr = desc->cb.get_attr( "attr" );
+
+                py_cb_attr.call( py_attr );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static void python_callback_end_node( const xmlsax_char_t * _node, void * _userdata )
+            {
+                MENGINE_UNUSED( _node );
+
+                python_xmlsax_desc * desc = (python_xmlsax_desc *)_userdata;
+
+                pybind::object py_cb_end = desc->cb.get_attr( "end" );
+
+                py_cb_end.call();
+            }
             //////////////////////////////////////////////////////////////////////////
             bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroupName, const FilePath & _filePath, const pybind::object & _cb )
             {
@@ -1648,8 +1638,16 @@ namespace Mengine
 
                 Char * memory = binary_buffer->getBuffer();
 
-                PythonSaxCallback pysc( _kernel, _cb );
-                if( stdex::xml_sax_parse( memory, pysc ) == false )
+                xmlsax_callbacks_t cb;
+                cb.begin_node = &python_callback_begin_node;
+                cb.node_attributes = &python_callback_node_attributes;
+                cb.end_node = &python_callback_end_node;
+
+                python_xmlsax_desc desc;
+                desc.kernel = _kernel;
+                desc.cb = _cb;
+
+                if( xmlsax_parse( memory, &cb, &desc ) == false )
                 {
                     return false;
                 }

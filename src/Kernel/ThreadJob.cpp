@@ -85,15 +85,16 @@ namespace Mengine
             return false;
         }
 
-        desc.mutex_progress->lock();
-        desc.mutex_progress->unlock();
+        
+        
 
         bool successful = false;
 
-        desc.mutex->lock();
-
         if( desc.status == ETS_FREE )
         {
+            desc.mutex->lock();
+            desc.mutex_progress->lock();
+
             desc.worker = _worker;
 
             desc.id = _id;
@@ -105,9 +106,10 @@ namespace Mengine
 #endif
 
             successful = true;
-        }
 
-        desc.mutex->unlock();
+            desc.mutex_progress->unlock();
+            desc.mutex->unlock();
+        }
 
         return successful;
     }
@@ -155,13 +157,11 @@ namespace Mengine
 
         ThreadWorkerInterfacePtr worker;
 
-        desc.mutex_progress->lock();
-        desc.mutex_progress->unlock();
-
-        desc.mutex->lock();
-
         if( desc.status != ETS_FREE )
         {
+            desc.mutex->lock();
+            desc.mutex_progress->lock();
+
             worker = desc.worker;
             desc.worker = nullptr;
 
@@ -174,9 +174,10 @@ namespace Mengine
 #endif
 
             successful = true;
-        }
 
-        desc.mutex->unlock();
+            desc.mutex_progress->unlock();
+            desc.mutex->unlock();
+        }
 
         if( successful == true )
         {
@@ -338,6 +339,8 @@ namespace Mengine
         case ETS_DONE:
             {
                 desc.mutex->lock();
+                desc.mutex_progress->lock();
+
                 worker = std::move( desc.worker );
 
                 id = desc.id;
@@ -350,6 +353,7 @@ namespace Mengine
                 desc.doc = nullptr;
 #endif
 
+                desc.mutex_progress->unlock();
                 desc.mutex->unlock();
             }break;
         case ETS_WORK:

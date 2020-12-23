@@ -39,7 +39,7 @@ namespace Mengine
             if( RESOURCEVALIDATE_SERVICE()
                 ->validResource( resourceImage ) == false )
             {
-                LOGGER_MESSAGE_RELEASE( "resource '%s' group '%s' invalid validate sequence resource '%s'"
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid validate sequence resource '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , resourceImage->getName().c_str()

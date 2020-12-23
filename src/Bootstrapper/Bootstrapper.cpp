@@ -515,7 +515,7 @@ namespace Mengine
 
         FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, (FilePath::size_type)userPathLen );
 
-        LOGGER_MESSAGE_RELEASE( "User Folder: %s"
+        LOGGER_MESSAGE( "User Folder: %s"
             , cs_userPath.c_str()
         );
 
@@ -610,7 +610,7 @@ namespace Mengine
             Char fullLogFilename[MENGINE_MAX_PATH] = {'\0'};
             userFileGroup->getFullPath( logFilename, fullLogFilename );
 
-            LOGGER_MESSAGE_RELEASE( "write file log to: %s"
+            LOGGER_MESSAGE( "write file log to: %s"
                 , fullLogFilename
             );
         }
@@ -965,7 +965,7 @@ namespace Mengine
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "failed to load plugin '%s'"
+                LOGGER_ERROR( "failed to load plugin '%s'"
                     , pluginName.c_str()
                 );
 
@@ -1020,7 +1020,7 @@ namespace Mengine
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "failed to load priority plugin '%s'"
+                LOGGER_ERROR( "failed to load priority plugin '%s'"
                     , pluginName.c_str()
                 );
 
@@ -1091,7 +1091,7 @@ namespace Mengine
             if( FRAMEWORK_SERVICE()
                 ->initializeFramework( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "failed to run framework '%s'"
+                LOGGER_ERROR( "failed to run framework '%s'"
                     , name.c_str()
                 );
 
@@ -1216,7 +1216,7 @@ namespace Mengine
             if( MODULE_SERVICE()
                 ->stopModule( name ) == false )
             {
-                LOGGER_CRITICAL( "failed to stop module '%s'"
+                LOGGER_ERROR( "failed to stop module '%s'"
                     , name.c_str()
                 );
             }
@@ -1297,7 +1297,7 @@ namespace Mengine
             if( FRAMEWORK_SERVICE()
                 ->finalizeFramework( name ) == false )
             {
-                LOGGER_CRITICAL( "failed to stop framework '%s'"
+                LOGGER_ERROR( "failed to stop framework '%s'"
                     , name.c_str()
                 );
             }

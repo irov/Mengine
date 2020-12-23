@@ -112,7 +112,7 @@ namespace Mengine
 
             if( config->hasSection( setting.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "invalid load '%s' settings no found section for '%s'"
+                LOGGER_ERROR( "invalid load '%s' settings no found section for '%s'"
                     , _filePath.c_str()
                     , setting.c_str()
                 );
@@ -127,7 +127,7 @@ namespace Mengine
 
             if( this->loadSetting( name, _fileGroup, filePath, _doc ) == false )
             {
-                LOGGER_CRITICAL( "invalid load setting '%s' file '%s'"
+                LOGGER_ERROR( "invalid load setting '%s' file '%s'"
                     , name.c_str()
                     , filePath.c_str()
                 );

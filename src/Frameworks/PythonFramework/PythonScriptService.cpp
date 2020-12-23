@@ -13,6 +13,8 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificatorInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 
@@ -432,11 +434,15 @@ namespace Mengine
         this->addGlobalModuleT( "_BUILD_PUBLISH", false );
 #endif
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &PythonScriptService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
+
 #ifdef MENGINE_DEBUG
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
@@ -930,6 +936,25 @@ namespace Mengine
     uint32_t PythonScriptService::getTracebackOffset() const
     {
         return m_tracebackOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptService::notifyAssertion_( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _message )
+    {
+        MENGINE_UNUSED( _level );
+        MENGINE_UNUSED( _test );
+        MENGINE_UNUSED( _file );
+        MENGINE_UNUSED( _line );
+        MENGINE_UNUSED( _message );
+
+        Char traceback[4096] = {'\0'};
+        if( m_kernel->get_traceback( traceback, 4095 ) == false )
+        {
+            return;
+        }
+
+        LOGGER_MESSAGE_RELEASE( "traceback:\n%s"
+            , traceback
+        );
     }
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG

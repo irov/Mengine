@@ -2078,10 +2078,6 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "hWnd: %p"
-            , hWnd
-        );
-
         m_hWnd = hWnd;
 
         HWND hWndFgnd = ::GetForegroundWindow();
@@ -4533,7 +4529,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "Current Path: %s"
+        LOGGER_MESSAGE( "Current Path: %s"
             , currentPath
         );
 

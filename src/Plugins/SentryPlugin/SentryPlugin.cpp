@@ -318,6 +318,7 @@ namespace Mengine
 
         sentry_set_extra( "Project", sentry_value_new_string( projectName ) );
 
+#ifdef MENGINE_DEBUG
         Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserName( userName );
@@ -327,6 +328,7 @@ namespace Mengine
         );
 
         sentry_set_extra( "User", sentry_value_new_string( userName ) );
+#endif
 
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();

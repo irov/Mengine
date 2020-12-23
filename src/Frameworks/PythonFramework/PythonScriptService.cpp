@@ -434,14 +434,18 @@ namespace Mengine
         this->addGlobalModuleT( "_BUILD_PUBLISH", false );
 #endif
 
+#ifdef MENGINE_DEBUG
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &PythonScriptService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_finalizeService()
     {
+#ifdef MENGINE_DEBUG
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
+#endif
 
 #ifdef MENGINE_DEBUG
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();

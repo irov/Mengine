@@ -814,7 +814,7 @@ namespace Mengine
             if( PACKAGE_SERVICE()
                 ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "invalid load package '%s'"
+                LOGGER_ERROR( "invalid load package '%s'"
                     , packagePath.c_str()
                 );
 
@@ -845,7 +845,7 @@ namespace Mengine
             if( SETTINGS_SERVICE()
                 ->loadSettings( _fileGroup, settingPath, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "invalid load setting '%s'"
+                LOGGER_ERROR( "invalid load setting '%s'"
                     , settingPath.c_str()
                 );
 

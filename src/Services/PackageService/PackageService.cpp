@@ -87,7 +87,7 @@ namespace Mengine
 
             if( config->hasSection( frameworkPack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "invalid load '%s' framework package no found section for '%s'"
+                LOGGER_ERROR( "invalid load '%s' framework package no found section for '%s'"
                     , _filePath.c_str()
                     , frameworkPack.c_str()
                 );
@@ -109,7 +109,7 @@ namespace Mengine
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", frameworkPack.c_str() ) ) == false )
             {
-                LOGGER_CRITICAL( "invalid add framework package '%s'"
+                LOGGER_ERROR( "invalid add framework package '%s'"
                     , pack.name.c_str()
                 );
 
@@ -135,7 +135,7 @@ namespace Mengine
 
             if( config->hasSection( resourcePack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "invalid load '%s' resource package no found section for '%s'"
+                LOGGER_ERROR( "invalid load '%s' resource package no found section for '%s'"
                     , _filePath.c_str()
                     , resourcePack.c_str()
                 );
@@ -158,7 +158,7 @@ namespace Mengine
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", resourcePack.c_str() ) ) == false )
             {
-                LOGGER_CRITICAL( "invalid add resource package '%s'"
+                LOGGER_ERROR( "invalid add resource package '%s'"
                     , pack.name.c_str()
                 );
 
@@ -184,7 +184,7 @@ namespace Mengine
 
             if( config->hasSection( languagePack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "invalid load '%s' language package no found section for '%s'"
+                LOGGER_ERROR( "invalid load '%s' language package no found section for '%s'"
                     , _filePath.c_str()
                     , languagePack.c_str()
                 );
@@ -209,7 +209,7 @@ namespace Mengine
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", languagePack.c_str() ) ) == false )
             {
-                LOGGER_CRITICAL( "invalid add language package '%s'"
+                LOGGER_ERROR( "invalid add language package '%s'"
                     , pack.name.c_str()
                 );
 
@@ -497,7 +497,7 @@ namespace Mengine
 
             if( resourceCheckCritical == false )
             {
-                LOGGER_CRITICAL( "Fix Resources" );
+                LOGGER_CRITICAL( "Please fix resources and restart application!" );
 
                 return false;
             }

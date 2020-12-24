@@ -34,7 +34,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::_acquire()
+    bool OpenALSoundBufferStream::_acquireSoundBuffer()
     {
         ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -55,7 +55,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferStream::_release()
+    void OpenALSoundBufferStream::_releaseSoundBuffer()
     {
         this->removeBuffers_();
 
@@ -301,7 +301,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::update()
+    bool OpenALSoundBufferStream::updateSoundBuffer()
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 

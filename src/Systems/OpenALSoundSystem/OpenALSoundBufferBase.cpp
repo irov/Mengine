@@ -34,13 +34,13 @@ namespace Mengine
         return m_soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferBase::acquire()
+    bool OpenALSoundBufferBase::acquireSoundBuffer()
     {
         MENGINE_THREAD_GUARD_SCOPE( OpenALSoundBufferBase, this, "OpenALSoundBufferBase::acquire" );
 
         if( ++m_refacquire == 1 )
         {
-            if( this->_acquire() == false )
+            if( this->_acquireSoundBuffer() == false )
             {
                 return false;
             }
@@ -49,7 +49,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferBase::release()
+    void OpenALSoundBufferBase::releaseSoundBuffer()
     {
         MENGINE_THREAD_GUARD_SCOPE( OpenALSoundBufferBase, this, "OpenALSoundBufferBase::release" );
 
@@ -57,18 +57,18 @@ namespace Mengine
 
         if( --m_refacquire == 0 )
         {
-            this->_release();
+            this->_releaseSoundBuffer();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferBase::_acquire()
+    bool OpenALSoundBufferBase::_acquireSoundBuffer()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferBase::_release()
+    void OpenALSoundBufferBase::_releaseSoundBuffer()
     {
         //Empty
     }

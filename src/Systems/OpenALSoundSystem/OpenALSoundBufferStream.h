@@ -26,8 +26,8 @@ namespace Mengine
         ~OpenALSoundBufferStream() override;
 
     public:
-        bool _acquire() override;
-        void _release() override;
+        bool _acquireSoundBuffer() override;
+        void _releaseSoundBuffer() override;
 
     public:
         bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
@@ -43,7 +43,7 @@ namespace Mengine
         bool getTimePos( ALuint _source, float * const _pos ) const override;
 
     public:
-        bool update() override;
+        bool updateSoundBuffer() override;
 
     protected:
         bool bufferData_( ALuint _alBufferId, size_t * const _bytes );

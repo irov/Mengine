@@ -14,11 +14,11 @@ namespace Mengine
         ~SilentSoundBuffer() override;
 
     public:
-        bool acquire() override;
-        void release() override;
+        bool acquireSoundBuffer() override;
+        void releaseSoundBuffer() override;
 
     public:
-        bool update() override;
+        bool updateSoundBuffer() override;
 
     public:
         const SoundDecoderInterfacePtr & getDecoder() const override;

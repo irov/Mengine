@@ -136,8 +136,8 @@ namespace Mengine
             return false;
         }
 
-        soundBuffer->acquire();
-        soundBuffer->release();
+        soundBuffer->acquireSoundBuffer();
+        soundBuffer->releaseSoundBuffer();
 
         return true;
     }

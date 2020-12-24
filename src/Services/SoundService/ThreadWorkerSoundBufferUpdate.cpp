@@ -35,7 +35,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        bool continue_update = m_soundBuffer->update();
+        bool continue_update = m_soundBuffer->updateSoundBuffer();
 
         if( continue_update == false )
         {

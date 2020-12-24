@@ -24,12 +24,12 @@ namespace Mengine
         OpenALSoundSystem * getSoundSystem() const;
 
     public:
-        bool acquire() override;
-        void release() override;
+        bool acquireSoundBuffer() override;
+        void releaseSoundBuffer() override;
 
     public:
-        virtual bool _acquire();
-        virtual void _release();
+        virtual bool _acquireSoundBuffer();
+        virtual void _releaseSoundBuffer();
 
     public:
         const SoundDecoderInterfacePtr & getDecoder() const override;

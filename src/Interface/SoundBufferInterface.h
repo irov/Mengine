@@ -10,11 +10,11 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual bool acquire() = 0;
-        virtual void release() = 0;
+        virtual bool acquireSoundBuffer() = 0;
+        virtual void releaseSoundBuffer() = 0;
 
     public:
-        virtual bool update() = 0;
+        virtual bool updateSoundBuffer() = 0;
 
     public:
         virtual const SoundDecoderInterfacePtr & getDecoder() const = 0;

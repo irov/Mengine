@@ -2,6 +2,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -14,6 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Affectorable::~Affectorable()
     {
+        MENGINE_ASSERTION_FATAL( m_affectorHub == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Affectorable::availableAffectorHub() const

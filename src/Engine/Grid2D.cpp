@@ -228,6 +228,8 @@ namespace Mengine
     void Grid2D::_dispose()
     {
         m_resourceImage = nullptr;
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Grid2D::_updateMaterial() const

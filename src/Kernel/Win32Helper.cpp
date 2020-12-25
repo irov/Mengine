@@ -12,6 +12,7 @@ namespace Mengine
     {
         namespace Detail
         {
+            //////////////////////////////////////////////////////////////////////////
             static bool __Win32GetCurrentDllPath( Char * const _path )
             {
                 MENGINE_UNUSED( _path );
@@ -58,6 +59,7 @@ namespace Mengine
                 return false;
 #endif
             }
+            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetCurrentDllPath()
@@ -85,5 +87,6 @@ namespace Mengine
 
             return id;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

@@ -26,6 +26,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource::~Resource()
     {
+        MENGINE_ASSERTION_FATAL( m_compileReferenceCount == 0 );
+        MENGINE_ASSERTION_FATAL( m_prefetchReferenceCount == 0 );
+        MENGINE_ASSERTION_FATAL( m_cache == false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setResourceBank( ResourceBankInterface * _bank )
@@ -107,13 +110,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::compile()
     {
-        MENGINE_THREAD_GUARD_SCOPE( Resource, this, "Resource::compile" );
+        MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::compile" );
 
         if( ++m_compileReferenceCount == 1 )
         {
-            LOGGER_INFO( "resource", "compile '%s:%s'"
+            LOGGER_INFO( "resource", "compile '%s:%s' group '%s'"
                 , this->getType().c_str()
                 , this->getName().c_str()
+                , this->getGroupName().c_str()
             );
 
             if( Compilable::compile() == false )
@@ -131,18 +135,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::release()
     {
-        MENGINE_THREAD_GUARD_SCOPE( Resource, this, "Resource::release" );
+        MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::release" );
 
-        MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "'%s:%s' release compile ref count == 0"
+        MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "'%s:%s' group '%s' release compile refcount == 0"
             , this->getType().c_str()
             , this->getName().c_str()
+            , this->getGroupName().c_str()
         );
 
         if( --m_compileReferenceCount == 0 )
         {
-            LOGGER_INFO( "resource", "release '%s:%s'"
+            LOGGER_INFO( "resource", "release '%s:%s' group '%s'"
                 , this->getType().c_str()
                 , this->getName().c_str()
+                , this->getGroupName().c_str()
             );
 
             Compilable::release();
@@ -155,6 +161,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::prefetch( const LambdaPrefetch & _lambda )
     {
+        MENGINE_THREAD_GUARD_SCOPE( ResourcePrefetch, this, "Resource::prefetch" );
+
         if( m_prefetchReferenceCount == 0 )
         {
             if( _lambda() == false )
@@ -170,12 +178,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::unfetch( const LambdaUnfetch & _lambda )
     {
-        if( m_prefetchReferenceCount == 0 )
-        {
-            return false;
-        }
+        MENGINE_THREAD_GUARD_SCOPE( ResourcePrefetch, this, "Resource::unfetch" );
 
-        if( --m_prefetchReferenceCount == 0 )
+        MENGINE_ASSERTION_FATAL( m_prefetchReferenceCount != 0, "'%s:%s' group '%s' unfetch refcount == 0"
+            , this->getType().c_str()
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+        );
+
+        --m_prefetchReferenceCount;
+
+        if( m_prefetchReferenceCount == 0 )
         {
             if( _lambda() == false )
             {
@@ -190,9 +203,10 @@ namespace Mengine
     {
         if( this->compile() == false )
         {
-            LOGGER_ERROR( "resource '%s:%s' invalid increment reference"
+            LOGGER_ERROR( "resource '%s:%s' group '%s' invalid increment reference"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
+                , this->getGroupName().c_str()
             );
 
             return false;

@@ -2,6 +2,7 @@
 
 #include "Interface/LoggerServiceInterface.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -15,6 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     StreamLogger::~StreamLogger()
     {
+        MENGINE_ASSERTION_FATAL( m_stream == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void StreamLogger::setStream( const OutputStreamInterfacePtr & _stream )

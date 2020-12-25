@@ -73,5 +73,7 @@ namespace Mengine
     {
         m_zone->removeActor( m_actor );
         m_actor = nullptr;
+
+        Node::_deactivate();
     }
 }

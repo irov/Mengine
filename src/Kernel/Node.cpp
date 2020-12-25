@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_dispose()
     {
-        //Empty
+        this->clearAffectorHub();
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_destroy()
@@ -66,6 +66,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( this->isActivate() == false );
 
         this->release();
+
+        this->clearAffectorHub();
 
         this->removeChildren( []( const NodePtr & )
         {} );

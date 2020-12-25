@@ -71,6 +71,8 @@ namespace Mengine
     void Layer2D::_dispose()
     {
         m_resourceImageMask = nullptr;
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::setSize( const mt::vec2f & _size )

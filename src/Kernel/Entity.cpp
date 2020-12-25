@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -15,6 +16,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Entity::~Entity()
     {
+        MENGINE_ASSERTION_FATAL( m_behaviorEventable == nullptr );
+        MENGINE_ASSERTION_FATAL( m_behavior == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::setPrototype( const ConstString & _prototype )
@@ -185,6 +188,8 @@ namespace Mengine
                 , this->getName().c_str()
             );
         }
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_destroy()

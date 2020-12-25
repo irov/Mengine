@@ -315,13 +315,13 @@ Resource
 )
 
 ADD_FILTER(
-Resource\\\\Image
+ResourceImage
     ResourceImage.cpp
     ResourceImage.h
 )
 
 ADD_FILTER(
-Resource\\\\Content
+Contentable
     Contentable.h
     BaseContent.cpp
     BaseContent.h

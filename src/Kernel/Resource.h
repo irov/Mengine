@@ -122,7 +122,8 @@ namespace Mengine
         bool m_mapping;
         bool m_precompile;
 
-        MENGINE_THREAD_GUARD_INIT( Resource );
+        MENGINE_THREAD_GUARD_INIT( ResourceCompile );
+        MENGINE_THREAD_GUARD_INIT( ResourcePrefetch );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Resource> ResourcePtr;

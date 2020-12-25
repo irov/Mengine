@@ -1550,6 +1550,8 @@ namespace Mengine
     void TextField::_dispose()
     {
         m_textFormatArgContexts.clear();
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getMaxCharCount() const

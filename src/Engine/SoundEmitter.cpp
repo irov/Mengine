@@ -68,6 +68,8 @@ namespace Mengine
     void SoundEmitter::_dispose()
     {
         m_surfaceSound = nullptr;
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
 }

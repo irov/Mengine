@@ -12,6 +12,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         ScenePtr makeScene( const SceneEventReceiverInterfacePtr & _eventReceiver, const DocumentPtr & _doc )
         {
             ScenePtr scene = PROTOTYPE_SERVICE()
@@ -43,5 +44,6 @@ namespace Mengine
 
             return scene;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

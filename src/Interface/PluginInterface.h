@@ -48,7 +48,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_DECLARE( Name )\
     public:\
-        MENGINE_INLINE const Mengine::Char * getPluginName() const override { return Name; };\
+        const Mengine::Char * getPluginName() const override { return Name; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FUNCTION(Name)\

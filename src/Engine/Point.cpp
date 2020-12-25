@@ -62,7 +62,7 @@ namespace Mengine
     {
         this->removeLinkedPoint();
 
-        Node::_destroy();
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Point::_updateMaterial() const

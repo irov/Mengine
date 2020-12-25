@@ -59,9 +59,11 @@ namespace Mengine
 
     public:
         bool initialize();
+        void finalize();
 
     protected:
         virtual bool _initialize();
+        virtual void _finalize();
 
     public:
         void activate();

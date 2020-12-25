@@ -54,6 +54,8 @@ namespace Mengine
     void ImGUIRender::_deactivate()
     {
         //Empty
+
+        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIRender::setProvider( const LambdaImGUIProvider & _provider )

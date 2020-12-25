@@ -34,6 +34,7 @@ namespace Mengine
 
     public:
         void setViewport( const Viewport & _viewport );
+        bool getViewport( Viewport * const _viewport ) const;
         void removeViewport();
 
     protected:
@@ -42,6 +43,7 @@ namespace Mengine
 
     public:
         bool setImageMask( const ResourceImagePtr & _resourceImageMask );
+        bool getImageMask( ResourceImagePtr * _resourceImageMask ) const;
         void removeImageMask();
 
     protected:

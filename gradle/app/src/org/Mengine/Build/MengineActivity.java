@@ -92,16 +92,6 @@ public class MengineActivity extends SDLActivity {
             AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
         }        
     }
-    
-    @Override
-    protected void brokenLoadLibraries(String msg) {
-        Log.e(TAG, "An error occurred while trying to start the application. Please try again and/or reinstall."
-            + System.getProperty("line.separator")
-            + System.getProperty("line.separator")
-            + "Error: " + msg);
-        
-        throw new UnsatisfiedLinkError(msg);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -447,16 +437,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         return false;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Linking Methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static boolean openURL(final String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
-        _instance.startActivity(Intent.createChooser(intent, ""));
-        
-        return true;
     }
 
     public static boolean openMail(final String email, final String subject, final String body) {

@@ -147,6 +147,14 @@ PLUGIN_EXPORT( ResourceDebugger );
 PLUGIN_EXPORT( MetabufLoader );
 #endif
 
+#ifdef MENGINE_PLUGIN_PVRTC_STATIC
+PLUGIN_EXPORT( PVRTC );
+#endif
+
+#ifdef MENGINE_PLUGIN_ETC1_STATIC
+PLUGIN_EXPORT( ETC1 );
+#endif
+
 #ifdef MENGINE_PLUGIN_DDS_STATIC
 PLUGIN_EXPORT( DDS );
 #endif
@@ -857,6 +865,14 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec...", MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec...", MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
+
+#ifdef MENGINE_PLUGIN_PVRTC_STATIC
+        MENGINE_ADD_PLUGIN( PVRTC, "initialize Plugin PVRTC...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_ETC1_STATIC
+        MENGINE_ADD_PLUGIN( ETC1, "initialize Plugin ETC1...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #ifdef MENGINE_PLUGIN_DDS_STATIC
         MENGINE_ADD_PLUGIN( DDS, "initialize Plugin DDS...", MENGINE_DOCUMENT_FACTORABLE );

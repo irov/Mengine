@@ -29,6 +29,5 @@ namespace Mengine
         };
 
         ETC1Header m_header = {};
-        bool m_needSeek;
     };
 }

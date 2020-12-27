@@ -7,6 +7,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionContainer.h"
 
 #include "math/utils.h"
 
@@ -26,6 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Scheduler::~Scheduler()
     {
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_schedulers );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_schedulersAdd );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::initialize()
@@ -643,4 +646,5 @@ namespace Mengine
 
         return false;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

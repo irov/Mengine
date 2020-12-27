@@ -92,8 +92,7 @@ namespace Mengine
 
         if( m_kernel->code_check( py_code ) == false )
         {
-            LOGGER_ERROR( "marshal get object not code"
-            );
+            LOGGER_ERROR( "marshal get object not code" );
 
             return false;
         }

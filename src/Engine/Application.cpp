@@ -300,7 +300,7 @@ namespace Mengine
         if( HAS_OPTION( "author" ) == true || HAS_OPTION( "support" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
+                ->messageBox( "Mengine", "author: IROV\nemail for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
         if( HAS_OPTION( "buildcommit" ) == true )
@@ -313,14 +313,16 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE( "Build Commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
 
+        const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
+
         if( HAS_OPTION( "resourcecommit" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "resource commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+                ->messageBox( "Mengine", "content commit: %s", Info_ResourceCommit );
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "Content Commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+            LOGGER_MESSAGE_RELEASE( "Content Commit: %s", Info_ResourceCommit );
         }
 
         if( HAS_OPTION( "buildversion" ) == true )
@@ -814,7 +816,7 @@ namespace Mengine
             if( PACKAGE_SERVICE()
                 ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "invalid load package '%s'"
+                LOGGER_ERROR( "invalid load package '%s'"
                     , packagePath.c_str()
                 );
 
@@ -845,7 +847,7 @@ namespace Mengine
             if( SETTINGS_SERVICE()
                 ->loadSettings( _fileGroup, settingPath, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_CRITICAL( "invalid load setting '%s'"
+                LOGGER_ERROR( "invalid load setting '%s'"
                     , settingPath.c_str()
                 );
 
@@ -931,7 +933,7 @@ namespace Mengine
                     ->createProcessDump( processDumpPath.c_str(), nullptr, true );
             }
 
-            if( _event.code == KC_F6 && _event.isDown )
+            if( _event.code == KC_F6 && _event.isDown == true )
             {
                 if( (m_debugMask & MENGINE_DEBUG_HOTSPOTS) != 0 )
                 {
@@ -943,7 +945,7 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F11 && _event.isDown )
+            if( _event.code == KC_F11 && _event.isDown == true )
             {
                 static bool wireframeMode = false;
 
@@ -961,7 +963,7 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F10 && _event.isDown )
+            if( _event.code == KC_F10 && _event.isDown == true )
             {
                 if( (m_debugMask & MENGINE_DEBUG_NODES) != 0 )
                 {
@@ -973,7 +975,7 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F8 && _event.isDown )
+            if( _event.code == KC_F8 && _event.isDown == true )
             {
                 if( (m_debugMask & MENGINE_DEBUG_TILEPOLYGON) != 0 )
                 {

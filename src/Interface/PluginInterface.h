@@ -39,6 +39,7 @@ namespace Mengine
         virtual bool isInitializePlugin() const = 0;
         virtual bool isAvailablePlugin() const = 0;
         virtual bool isSystemPlugin() const = 0;
+        virtual bool isUnimportantPlugin() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PluginInterface> PluginInterfacePtr;
@@ -47,7 +48,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_DECLARE( Name )\
     public:\
-        MENGINE_INLINE const Mengine::Char * getPluginName() const override { return Name; };\
+        const Mengine::Char * getPluginName() const override { return Name; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FUNCTION(Name)\

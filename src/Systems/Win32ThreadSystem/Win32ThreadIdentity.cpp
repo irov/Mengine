@@ -34,7 +34,7 @@ namespace Mengine
 #pragma warning(disable: 6320 6322)  
             __try
             {
-                RaiseException( MS_VC_EXCEPTION, 0, sizeof( info ) / sizeof( ULONG_PTR ), (ULONG_PTR *)& info );
+                ::RaiseException( MS_VC_EXCEPTION, 0, sizeof( info ) / sizeof( ULONG_PTR ), (ULONG_PTR *)& info );
             }
             __except( EXCEPTION_EXECUTE_HANDLER )
             {
@@ -69,18 +69,17 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         catch( const std::exception & ex )
         {
-            LOGGER_CRITICAL( "std::exception exception '%s'"
+            LOGGER_ERROR( "std::exception exception '%s'"
                 , ex.what()
             );
         }
         catch( ... )
         {
-            LOGGER_CRITICAL( "unknown exception"
-            );
+            LOGGER_ERROR( "unknown exception" );
         }
 #endif
 
-        ExitThread( 0 );
+        ::ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )

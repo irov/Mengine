@@ -29,6 +29,9 @@ namespace Mengine
         bool removePackage( const ConstString & _name ) override;
         const PackageInterfacePtr & getPackage( const ConstString & _name ) const override;
 
+    public:
+        bool existLocalePackage( const ConstString & _locale, const Tags & _platformTags ) const override;
+
     public:        
         void visitPackages( const LambdaPackage & _lambda ) const override;
 
@@ -49,6 +52,6 @@ namespace Mengine
         FactoryPtr m_factoryPackage;
 
     protected:
-        bool loadLocalePacksByName_( VectorPackages & _packs, const ConstString & _locale, const Tags & _platformTags ) const;
+        bool loadLocalePacksByName_( const ConstString & _locale, const Tags & _platformTags, VectorPackages * const _packs ) const;
     };
 }

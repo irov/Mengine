@@ -1514,7 +1514,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getResourceGitSHA1()
             {
-                return MENGINE_RESOURCE_GIT_SHA1;
+                const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
+
+                return Info_ResourceCommit;
             }
             //////////////////////////////////////////////////////////////////////////
             const Char * s_getBuildMode()

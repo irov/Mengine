@@ -37,6 +37,7 @@ namespace Mengine
         bool isInitializePlugin() const override;
         bool isAvailablePlugin() const override;
         bool isSystemPlugin() const override;
+        bool isUnimportantPlugin() const override;
 
     protected:
         void _destroy() override;
@@ -47,6 +48,7 @@ namespace Mengine
         virtual void _destroyPlugin();
         virtual bool _availablePlugin() const;
         virtual bool _systemPlugin() const;
+        virtual bool _unimportantPlugin() const;
 
     protected:
         bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory, const DocumentPtr & _doc );
@@ -61,5 +63,6 @@ namespace Mengine
         bool m_initializePlugin;
         bool m_availablePlugin;
         bool m_systemPlugin;
+        bool m_unimportantPlugin;
     };
 }

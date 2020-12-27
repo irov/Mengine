@@ -140,8 +140,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
+        uint32_t refalive = m_refalive;
         uint32_t oldrefalive = m_oldrefalive;
-        m_oldrefalive = m_refalive;
+
+        m_oldrefalive = refalive;
 
         if( oldrefalive == 0 )
         {
@@ -220,7 +222,7 @@ namespace Mengine
         bool sceneProcess = SCENE_SERVICE()
             ->isProcess();
 
-        MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for %u seconds, and create dump '%s' [scene process: %s]"
+        MENGINE_ERROR_FATAL( "Antifreeze monitor detect freeze process for [%u] seconds, and create dump '%s' [scene process: %s]"
             , m_seconds
             , processDumpPath.c_str()
             , sceneProcess == true ? "yes" : "no"
@@ -247,6 +249,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _level );
 
+        MENGINE_ASSERTION_FATAL( m_reflogger != 0 );
+
         --m_reflogger;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -256,4 +260,5 @@ namespace Mengine
 
         m_reflogger += 1024;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -24,14 +24,14 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_alBufferId == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::_acquire()
+    bool OpenALSoundBufferMemory::_acquireSoundBuffer()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferMemory::_release()
+    void OpenALSoundBufferMemory::_releaseSoundBuffer()
     {
         if( m_alBufferId != 0 )
         {
@@ -42,7 +42,7 @@ namespace Mengine
         m_soundDecoder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::update()
+    bool OpenALSoundBufferMemory::updateSoundBuffer()
     {
         return false;
     }
@@ -51,12 +51,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_alBufferId == 0 );
 
-        m_alBufferId = m_soundSystem->genBufferId();
+        ALuint alBufferId = m_soundSystem->genBufferId();
 
-        if( m_alBufferId == 0 )
+        if( alBufferId == 0 )
         {
-            LOGGER_ERROR( "invalid gen buffer"
-            );
+            LOGGER_ERROR( "invalid gen buffer" );
 
             return false;
         }
@@ -73,7 +72,7 @@ namespace Mengine
         MemoryInterfacePtr binary_memory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, "invalid sound %u [memory %zu]"
-            , m_alBufferId
+            , alBufferId
             , size
         );
 
@@ -83,8 +82,10 @@ namespace Mengine
 
         if( decode_size == 0 )
         {
+            m_soundSystem->releaseBufferId( alBufferId );
+
             LOGGER_ERROR( "invalid sound %u decode %zu"
-                , m_alBufferId
+                , alBufferId
                 , size
             );
 
@@ -106,18 +107,26 @@ namespace Mengine
                 m_isStereo = true;
             }break;
         default:
-            LOGGER_ERROR( "invliad format channels '%d'"
-                , m_channels
-            );
+            {
+                m_soundSystem->releaseBufferId( alBufferId );
 
-            return false;
+                LOGGER_ERROR( "invliad format channels '%d'"
+                    , m_channels
+                );
+
+                return false;
+            }
         }
 
         ALsizei al_decode_size = (ALsizei)decode_size;
-        IF_OPENAL_CALL( alBufferData, (m_alBufferId, m_format, binary_memory_buffer, al_decode_size, m_frequency) )
+        IF_OPENAL_CALL( alBufferData, (alBufferId, m_format, binary_memory_buffer, al_decode_size, m_frequency) )
         {
+            m_soundSystem->releaseBufferId( alBufferId );
+
             return false;
         }
+
+        m_alBufferId = alBufferId;
 
         return true;
     }

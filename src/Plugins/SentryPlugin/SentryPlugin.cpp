@@ -89,6 +89,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SentryPlugin::_unimportantPlugin() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SentryPlugin::_initializePlugin()
     {
         if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
@@ -313,6 +318,7 @@ namespace Mengine
 
         sentry_set_extra( "Project", sentry_value_new_string( projectName ) );
 
+#ifdef MENGINE_DEBUG
         Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserName( userName );
@@ -322,6 +328,7 @@ namespace Mengine
         );
 
         sentry_set_extra( "User", sentry_value_new_string( userName ) );
+#endif
 
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
@@ -386,15 +393,13 @@ namespace Mengine
         sentry_set_extra( "Engine Commit", sentry_value_new_string( ENGINE_GIT_SHA1 ) );
 #endif
 
-#ifdef MENGINE_RESOURCE_GIT_SHA1
-        const Char * RESOURCE_GIT_SHA1 = MENGINE_RESOURCE_GIT_SHA1;
+        const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
 
         LOGGER_MESSAGE( "Sentry set extra [Resource Commit: %s]"
-            , RESOURCE_GIT_SHA1
+            , Info_ResourceCommit
         );
 
-        sentry_set_extra( "Resource Commit", sentry_value_new_string( RESOURCE_GIT_SHA1 ) );
-#endif
+        sentry_set_extra( "Resource Commit", sentry_value_new_string( Info_ResourceCommit ) );
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {

@@ -26,6 +26,9 @@ namespace Mengine
         virtual const PackageInterfacePtr & getPackage( const ConstString & _name ) const = 0;
 
     public:
+        virtual bool existLocalePackage( const ConstString & _locale, const Tags & _platformTags ) const = 0;
+
+    public:
         typedef Lambda<void( const PackageInterfacePtr & )> LambdaPackage;
         virtual void visitPackages( const LambdaPackage & _lambda ) const = 0;
 

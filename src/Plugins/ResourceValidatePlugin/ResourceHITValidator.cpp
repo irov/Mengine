@@ -36,7 +36,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_MESSAGE_RELEASE( "resource '%s' group '%s' invalid open file '%s:%s'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()

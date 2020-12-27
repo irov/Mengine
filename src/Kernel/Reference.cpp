@@ -1,5 +1,6 @@
 #include "Reference.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/ThreadGuardScope.h"
 
 namespace Mengine
@@ -12,6 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Reference::~Reference()
     {
+        MENGINE_ASSERTION_FATAL( m_refcounter == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Reference::incrementReference()
@@ -35,10 +37,7 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( Reference, this, "Reference::decrementReference" );
 
-        if( m_refcounter == 0 )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( m_refcounter != 0, "decrement reference refcount == 0" );
 
         if( --m_refcounter == 0 )
         {

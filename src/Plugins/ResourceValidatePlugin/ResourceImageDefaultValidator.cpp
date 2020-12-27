@@ -179,6 +179,8 @@ namespace Mengine
             return false;
         }
 
+        bool successful = true;
+
         const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
         uint32_t limitTextureWidth = CONFIG_VALUE( "Limit", "TextureWidth", 2048U );
@@ -200,7 +202,7 @@ namespace Mengine
                 , dataInfo->height
             );
 
-            return false;
+            successful = false;
         }
 
         const mt::vec2f & size = resource->getSize();
@@ -231,7 +233,7 @@ namespace Mengine
                 , height
             );
 
-            return false;
+            successful = false;
         }
 
         bool check_imageTransparency = CONFIG_VALUE( "Check", "ImageTransparency", false );
@@ -286,7 +288,7 @@ namespace Mengine
                     , content->getCodecType().c_str()
                 );
 
-                return false;
+                successful = false;
             }
 
             bool check_imageRowColumnTransparency = CONFIG_VALUE( "Check", "ImageRowColumnTransparency", false );
@@ -303,12 +305,12 @@ namespace Mengine
                         , content->getCodecType().c_str()
                     );
 
-                    return false;
+                    successful = false;
                 }
             }
         }
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -79,6 +79,8 @@ namespace Mengine
             m_semaphoreBlock->clearObserverProviders();
             m_semaphoreBlock = nullptr;
         }
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Button::_activate()
@@ -163,6 +165,8 @@ namespace Mengine
             m_chain->cancel();
             m_chain = nullptr;
         }
+
+        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void Button::__setState( EButtonState _state )

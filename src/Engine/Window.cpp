@@ -466,6 +466,8 @@ namespace Mengine
     void Window::_dispose()
     {
         m_resourceWindow = nullptr;
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Window::setClientSizeClip( const mt::vec2f & _clientSize )

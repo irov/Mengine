@@ -3,17 +3,23 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Error.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
 
 #if MENGINE_ALLOCATOR_DEBUG == 0
+#   define MENGINE_ALLOCATOR_RPMALLOC 0
+#else
+#   ifndef MENGINE_ALLOCATOR_RPMALLOC
 #   define MENGINE_ALLOCATOR_RPMALLOC 1
-
-#   if MENGINE_ALLOCATOR_RPMALLOC
-#       include "rpmalloc/rpmalloc.h"
 #   endif
+#endif
+
+#if MENGINE_ALLOCATOR_RPMALLOC
+#   include "rpmalloc/rpmalloc.h"
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG
@@ -25,6 +31,43 @@ SERVICE_FACTORY( AllocatorService, Mengine::AllocatorService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+#if MENGINE_ALLOCATOR_DEBUG
+    //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
+#define MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 32
+#endif
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        void setMemoryOverrideCorruptionTrap( void * _p, size_t _size )
+        {
+            uint8_t * b = (uint8_t *)_p + _size;
+
+            MENGINE_MEMSET( b, 0xEF, MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool checkMemoryOverrideCorruptionTrap( void * _p, size_t _size )
+        {
+            uint8_t * b = (uint8_t *)_p + _size - MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
+
+            for( size_t index = 0; index != MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE; ++index )
+            {
+                if( b[index] == 0xEF )
+                {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     AllocatorService::AllocatorService()
 #if MENGINE_ALLOCATOR_DEBUG
@@ -84,9 +127,13 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        void * p = ::malloc( _size );
+        void * p = ::malloc( _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        this->report( _doc, _size, 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( p );
+
+        Detail::setMemoryOverrideCorruptionTrap( p, _size );
+
+        this->report( _doc, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE, 0 );
 #else
 #   if MENGINE_ALLOCATOR_RPMALLOC
         void * p = rpmalloc( _size );
@@ -105,11 +152,23 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        size_t size = _mem == nullptr ? 0 : _msize( _mem );
+        if( _mem == nullptr )
+        {
+            return;
+        }
+
+        size_t old_size = _msize( _mem );
+
+        if( Detail::checkMemoryOverrideCorruptionTrap( _mem, old_size ) == true )
+        {
+            MENGINE_ERROR_FATAL( "memory corruption: %s"
+                , _doc
+            );
+        }
 
         ::free( _mem );
 
-        this->report( _doc, 0, size );
+        this->report( _doc, 0, old_size );
 #else
 #   if MENGINE_ALLOCATOR_RPMALLOC
         rpfree( _mem );
@@ -127,10 +186,16 @@ namespace Mengine
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
         size_t total = _num * _size;
-        void * p = ::malloc( total );
-        ::memset( p, 0x00, total );
 
-        this->report( _doc, total, 0 );
+        void * p = ::malloc( total + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( p );
+
+        MENGINE_MEMSET( p, 0x00, total );
+
+        Detail::setMemoryOverrideCorruptionTrap( p, total );
+
+        this->report( _doc, total + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE, 0 );
 #else
 #   if MENGINE_ALLOCATOR_RPMALLOC
         void * p = rpcalloc( _num, _size );
@@ -149,11 +214,37 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        size_t size = _mem == nullptr ? 0 : _msize( _mem );
+        void * p = nullptr;
 
-        void * p = ::realloc( _mem, _size );
+        if( _mem == nullptr )
+        {
+            p = ::realloc( _mem, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        this->report( _doc, _size, size );
+            MENGINE_ASSERTION_MEMORY_PANIC( p );
+
+            Detail::setMemoryOverrideCorruptionTrap( p, _size );
+
+            this->report( _doc, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE, 0 );
+        }
+        else
+        {
+            size_t old_size = _msize( _mem );
+
+            if( Detail::checkMemoryOverrideCorruptionTrap( _mem, old_size ) == true )
+            {
+                MENGINE_ERROR_FATAL( "memory corruption: %s"
+                    , _doc
+                );
+            }
+
+            p = ::realloc( _mem, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( p );
+
+            Detail::setMemoryOverrideCorruptionTrap( p, _size );
+
+            this->report( _doc, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE, old_size );
+        }
 #else
 #   if MENGINE_ALLOCATOR_RPMALLOC
         void * p = rprealloc( _mem, _size );
@@ -221,7 +312,7 @@ namespace Mengine
         *_doc = "";
 
         return 0;
-#endif        
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AllocatorService::get_report_total() const

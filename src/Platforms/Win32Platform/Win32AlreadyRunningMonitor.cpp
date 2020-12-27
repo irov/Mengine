@@ -3,6 +3,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -20,7 +21,7 @@ namespace Mengine
     bool Win32AlreadyRunningMonitor::initialize( int32_t _policy, const WChar * _windowClassName, const WChar * _projectTitle )
     {
         // try to create mutex to sure that we are not running already
-        WChar mutexName[MENGINE_MAX_PATH];
+        WChar mutexName[MENGINE_MAX_PATH] = {L'\0'};
         MENGINE_WCSCPY( mutexName, L"MengineAlreadyRunningMonitorMutex_" );
         MENGINE_WCSCAT( mutexName, _projectTitle );
 
@@ -39,18 +40,19 @@ namespace Mengine
             HWND otherHwnd = ::FindWindow( _windowClassName, _projectTitle );
             ::SetForegroundWindow( otherHwnd );
 
-            LOGGER_ERROR( "AlreadyRunningMonitor FOCUS to other instance of engine" );
+            LOGGER_MESSAGE_RELEASE( "AlreadyRunningMonitor FOCUS to other instance of engine" );
 
             return false;
         }
 
         if( _policy == EARP_SHOWMESSAGE )
         {
-            WString message = WString( L"Another instance of " )
-                + _projectTitle
-                + WString( L" is already running" );
+            WChar message[1024] = {L'\0'};
+            MENGINE_WNSPRINTF( message, 1024, L"Another instance of '%ls' is already running"
+                , _projectTitle 
+            );
 
-            ::MessageBoxW( NULL, message.c_str(), _projectTitle, MB_ICONWARNING );
+            ::MessageBoxW( NULL, message, _projectTitle, MB_ICONWARNING );
 
             return false;
         }

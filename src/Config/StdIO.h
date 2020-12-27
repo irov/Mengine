@@ -45,6 +45,10 @@ namespace Mengine
 #define MENGINE_WSPRINTF(Buffer, ...) ::wsprintf(Buffer, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_WNSPRINTF
+#define MENGINE_WNSPRINTF(Buffer, Capacity, ...) ::wnsprintf(Buffer, Capacity, __VA_ARGS__ )
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SPRINTF
 #define MENGINE_SPRINTF(Buffer, ...) ::sprintf(Buffer, __VA_ARGS__ )
 #endif

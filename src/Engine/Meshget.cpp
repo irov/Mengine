@@ -50,6 +50,8 @@ namespace Mengine
     void Meshget::_dispose()
     {
         m_surface = nullptr;
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Meshget::setSurface( const SurfacePtr & _surface )

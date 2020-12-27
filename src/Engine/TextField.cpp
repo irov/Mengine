@@ -302,7 +302,7 @@ namespace Mengine
 
             for( const VectorTextLines & lines : lines2 )
             {
-                mt::vec2f offset2;
+                mt::vec2f offset2(0.f, 0.f);
 
                 for( const TextLine & line : lines )
                 {

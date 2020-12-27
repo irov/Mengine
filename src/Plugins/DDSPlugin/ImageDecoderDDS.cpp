@@ -30,8 +30,7 @@ namespace Mengine
 
         if( magic != MENGINE_FOURCC( 'D', 'D', 'S', ' ' ) )
         {
-            LOGGER_ERROR( "invalid dds magic"
-            );
+            LOGGER_ERROR( "invalid dds magic" );
 
             return false;
         }
@@ -42,8 +41,7 @@ namespace Mengine
         //Check valid structure sizes
         if( header.dwSize != 124 && header.ddspf.dwSize != 32 )
         {
-            LOGGER_ERROR( "invalid dds file header"
-            );
+            LOGGER_ERROR( "invalid dds file header" );
 
             return false;
         }

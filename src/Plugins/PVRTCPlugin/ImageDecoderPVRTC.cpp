@@ -1,12 +1,12 @@
 #include "ImageDecoderPVRTC.h"
-#include "Kernel/Logger.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/PixelFormat.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EPixelType
+    enum EPVRTCPixelType
     {
         PVRTC2RGB = 0,
         PVRTC2RGBA,
@@ -73,8 +73,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderPVRTC::_decode( void * const _buffer, size_t _bufferSize )
     {
-        // TODO: investigate why sizeof(PVRTextureHeader) != 52
-        m_stream->seek( 52 + m_header.metaDataSize );
         size_t read = m_stream->read( _buffer, _bufferSize );
 
         return read == _bufferSize ? read : 0;
@@ -82,9 +80,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPVRTC::_prepareData()
     {
-        m_stream->seek( 0 );
-
         m_stream->read( &m_header, 52 );
+
+        MENGINE_ASSERTION_FATAL( m_header.numFaces == 1 );
+        MENGINE_ASSERTION_FATAL( m_header.numSurfaces == 1 );
 
         switch( m_header.pixelFormat )
         {
@@ -124,9 +123,9 @@ namespace Mengine
             m_dataInfo.mipmaps = 1;
         }
 
-        bool isValid = m_header.numFaces == 1  // supported only 1 face
-            && m_header.numSurfaces == 1;  // supported only 1 surface
+        m_stream->skip( m_header.metaDataSize );
 
-        return isValid;
+        return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

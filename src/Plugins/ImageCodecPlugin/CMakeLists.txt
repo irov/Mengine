@@ -5,18 +5,6 @@ src
     ImageCodecPlugin.h
     ImageCodecPlugin.cpp
 )
-    
-ADD_FILTER(
-etc1
-    ImageDecoderETC1.cpp
-    ImageDecoderETC1.h
-)
-
-ADD_FILTER(
-pvrtc
-    ImageDecoderPVRTC.cpp
-    ImageDecoderPVRTC.h
-)
 
 ADD_FILTER(
 hit

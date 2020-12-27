@@ -4,9 +4,6 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "ImageDecoderPVRTC.h"
-#include "ImageDecoderETC1.h"
-
 #include "ImageDecoderHTF.h"
 #include "ImageEncoderHTF.h"
 #include "ImageDecoderACF.h"
@@ -36,14 +33,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageCodecPlugin::_initializePlugin()
     {
-        Helper::registerDecoder<ImageDecoderPVRTC>( STRINGIZE_STRING_LOCAL( "pvrImage" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerDecoder<ImageDecoderETC1>( STRINGIZE_STRING_LOCAL( "etcImage" ), MENGINE_DOCUMENT_FACTORABLE );
-        
         Helper::registerDecoder<ImageDecoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ), STRINGIZE_STRING_LOCAL( "pvrImage" ) );
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ), STRINGIZE_STRING_LOCAL( "etcImage" ) );
         CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ), STRINGIZE_STRING_LOCAL( "htfImage" ) );
         CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ), STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
@@ -60,8 +52,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImageCodecPlugin::_finalizePlugin()
     {
-        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
-        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "etcImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "htfImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
@@ -71,8 +61,6 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ) );
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ) );
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ) );
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ) );
 

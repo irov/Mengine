@@ -4,9 +4,6 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "ImageDecoderDDS.h"
-#include "ImageEncoderDDS.h"
-
 #include "ImageDecoderPVRTC.h"
 #include "ImageDecoderETC1.h"
 
@@ -41,21 +38,17 @@ namespace Mengine
     {
         Helper::registerDecoder<ImageDecoderPVRTC>( STRINGIZE_STRING_LOCAL( "pvrImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderETC1>( STRINGIZE_STRING_LOCAL( "etcImage" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerDecoder<ImageDecoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
-
+        
         Helper::registerDecoder<ImageDecoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<ImageDecoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ), STRINGIZE_STRING_LOCAL( "pvrImage" ) );
-        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "dds" ), STRINGIZE_STRING_LOCAL( "ddsImage" ) );
         CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ), STRINGIZE_STRING_LOCAL( "etcImage" ) );
         CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ), STRINGIZE_STRING_LOCAL( "htfImage" ) );
         CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ), STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
         Helper::registerEncoder<ImageEncoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerEncoder<ImageEncoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
-
-        Helper::registerEncoder<ImageEncoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         Helper::registerDecoder<PickDecoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerEncoder<PickEncoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -69,19 +62,16 @@ namespace Mengine
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "etcImage" ) );
-        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "htfImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "htfImage" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "acfImage" ) );
-        Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
         Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ) );
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "dds" ) );
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ) );
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ) );
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ) );

@@ -147,6 +147,10 @@ PLUGIN_EXPORT( ResourceDebugger );
 PLUGIN_EXPORT( MetabufLoader );
 #endif
 
+#ifdef MENGINE_PLUGIN_DDS_STATIC
+PLUGIN_EXPORT( DDS );
+#endif
+
 #ifdef MENGINE_PLUGIN_JPEG_STATIC
 PLUGIN_EXPORT( JPEG );
 #endif
@@ -853,6 +857,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec...", MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec...", MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
+
+#ifdef MENGINE_PLUGIN_DDS_STATIC
+        MENGINE_ADD_PLUGIN( DDS, "initialize Plugin DDS...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #ifdef MENGINE_PLUGIN_JPEG_STATIC
         MENGINE_ADD_PLUGIN( JPEG, "initialize Plugin JPEG...", MENGINE_DOCUMENT_FACTORABLE );

@@ -47,15 +47,6 @@ acf
     ImageVerifyACF.h
 )
 
-ADD_FILTER(
-dds
-    ImageCodecDDS.h
-    ImageDecoderDDS.cpp
-    ImageDecoderDDS.h
-    ImageEncoderDDS.cpp
-    ImageEncoderDDS.h
-)
-
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IMAGECODEC)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})

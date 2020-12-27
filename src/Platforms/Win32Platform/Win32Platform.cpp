@@ -742,8 +742,10 @@ namespace Mengine
                 }
                 else
                 {
+                    bool maxfps = HAS_OPTION( "maxfps" );
+
                     if( APPLICATION_SERVICE()
-                        ->getVSync() == false )
+                        ->getVSync() == false && maxfps == false )
                     {
                         ::Sleep( 1 );
                     }

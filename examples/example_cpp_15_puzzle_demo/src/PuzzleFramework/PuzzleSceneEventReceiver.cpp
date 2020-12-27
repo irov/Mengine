@@ -125,6 +125,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     PuzzleSceneEventReceiver::PuzzleSceneEventReceiver()
+        : m_scene( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -241,6 +242,7 @@ namespace Mengine
         this->clearNodes();
 
         this->clearGameNode();
+        this->clearGame();
     }
     //////////////////////////////////////////////////////////////////////////
     void PuzzleSceneEventReceiver::onEntityCompile( const EntityBehaviorInterfacePtr & _behavior )
@@ -734,13 +736,13 @@ namespace Mengine
             // wait start
             auto && [race_btn_space, race_mouse_l] = Cook::addRace<2>( _scope_while );
 
-            Cook::addGlobalKeyPress( race_btn_space, EKeyCode::KC_SPACE, true, nullptr );
-            Cook::addGlobalMouseButton( race_mouse_l, EMouseCode::MC_LBUTTON, true, nullptr );
+            Cook::addGlobalKeyPress( race_btn_space, EKeyCode::KC_SPACE, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalMouseButton( race_mouse_l, EMouseCode::MC_LBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             // start
             Cook::addFunction( _scope_while, this, &PuzzleSceneEventReceiver::enableBorders, true );
 
-            Cook::addGlobalDelay( _scope_while, 500.f );
+            Cook::addGlobalDelay( _scope_while, 500.f, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addFunction( _scope_while, this, &PuzzleSceneEventReceiver::enableTexts, true );
 
@@ -748,7 +750,7 @@ namespace Mengine
 
             GOAP::SourceInterfacePtr scope_until_random = Cook::addRepeat( _scope_while, [this]( const GOAP::SourceInterfacePtr & _scope_repeat )
             {
-                Cook::addGlobalDelay( _scope_repeat, 150.f );
+                Cook::addGlobalDelay( _scope_repeat, 150.f, MENGINE_DOCUMENT_FACTORABLE );
 
                 Cook::addFunction( _scope_repeat, [this]()
                 {
@@ -781,16 +783,16 @@ namespace Mengine
             // reset
             auto && [race_reset_btn_r, race_reset_btn_space] = Cook::addRace<2>( race_reset );
 
-            Cook::addGlobalKeyPress( race_reset_btn_r, EKeyCode::KC_R, true, nullptr );
-            Cook::addGlobalKeyPress( race_reset_btn_space, EKeyCode::KC_SPACE, true, nullptr );
+            Cook::addGlobalKeyPress( race_reset_btn_r, EKeyCode::KC_R, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalKeyPress( race_reset_btn_space, EKeyCode::KC_SPACE, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addPrint( race_reset, "RESET GAME" );
 
             // quit
             auto && [race_quit_btn_q, race_quit_btn_esc] = Cook::addRace<2>( race_quit );
 
-            Cook::addGlobalKeyPress( race_quit_btn_q, EKeyCode::KC_Q, true, nullptr );
-            Cook::addGlobalKeyPress( race_quit_btn_esc, EKeyCode::KC_ESCAPE, true, nullptr );
+            Cook::addGlobalKeyPress( race_quit_btn_q, EKeyCode::KC_Q, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            Cook::addGlobalKeyPress( race_quit_btn_esc, EKeyCode::KC_ESCAPE, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addPrint( race_quit, "GOODBYE!" );
 
@@ -809,7 +811,7 @@ namespace Mengine
                 uint32_t idx = 0;
                 for( auto && [race, hotpspot] : Cook::addRaceZip( race_turn_hotspot, m_hotspots ) )
                 {
-                    Cook::addPickerableMouseButton( race, hotpspot, EMouseCode::MC_LBUTTON, true, true, nullptr );
+                    Cook::addPickerableMouseButton( race, hotpspot, EMouseCode::MC_LBUTTON, true, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                     Cook::addScope( race, this, &PuzzleSceneEventReceiver::scopeMakeTurn, idx );
 
@@ -819,23 +821,23 @@ namespace Mengine
                 // turn arrows
                 auto && [race_turn_arrows_up, race_turn_arrows_down, race_turn_arrows_left, race_turn_arrows_right] = Cook::addRace<4>( race_turn_arrows );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_up, EKeyCode::KC_UP, true, nullptr );
+                Cook::addGlobalKeyPress( race_turn_arrows_up, EKeyCode::KC_UP, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_up, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_DOWN );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_down, EKeyCode::KC_DOWN, true, nullptr );
+                Cook::addGlobalKeyPress( race_turn_arrows_down, EKeyCode::KC_DOWN, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_down, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_UP );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_left, EKeyCode::KC_LEFT, true, nullptr );
+                Cook::addGlobalKeyPress( race_turn_arrows_left, EKeyCode::KC_LEFT, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_left, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_RIGHT );
 
-                Cook::addGlobalKeyPress( race_turn_arrows_right, EKeyCode::KC_RIGHT, true, nullptr );
+                Cook::addGlobalKeyPress( race_turn_arrows_right, EKeyCode::KC_RIGHT, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
                 Cook::addScope( race_turn_arrows_right, this, &PuzzleSceneEventReceiver::scopeMakeTurnToDirection, DIRECTION_LEFT );
 
                 // text
                 auto && [race_text_btn_t, race_text_mouse_r] = Cook::addRace<2>( race_text );
 
-                Cook::addGlobalKeyPress( race_text_btn_t, EKeyCode::KC_T, true, nullptr );
-                Cook::addGlobalMouseButton( race_text_mouse_r, EMouseCode::MC_RBUTTON, true, nullptr );
+                Cook::addGlobalKeyPress( race_text_btn_t, EKeyCode::KC_T, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+                Cook::addGlobalMouseButton( race_text_mouse_r, EMouseCode::MC_RBUTTON, true, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 Cook::addFunction( race_text, [this]()
                 {
@@ -1008,18 +1010,18 @@ namespace Mengine
             MENGINE_UNUSED( _iterator );
             MENGINE_UNUSED( _count );
 
-            Cook::addLocalDelay( _scope_for, delay );
+            Cook::addLocalDelay( _scope_for, delay, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addFunction( _scope_for, this, &PuzzleSceneEventReceiver::enableBorders, false );
 
-            Cook::addLocalDelay( _scope_for, delay );
+            Cook::addLocalDelay( _scope_for, delay, MENGINE_DOCUMENT_FACTORABLE );
 
             Cook::addFunction( _scope_for, this, &PuzzleSceneEventReceiver::enableBorders, true );
 
             return true;
         } );
 
-        Cook::addLocalDelay( _scope, delay );
+        Cook::addLocalDelay( _scope, delay, MENGINE_DOCUMENT_FACTORABLE );
 
         Cook::addFunction( _scope, this, &PuzzleSceneEventReceiver::enableBorders, false );
         Cook::addFunction( _scope, this, &PuzzleSceneEventReceiver::enableTexts, false );
@@ -1030,6 +1032,12 @@ namespace Mengine
     void PuzzleSceneEventReceiver::resetGame()
     {
         m_semaphoreGameOver->setValue( 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PuzzleSceneEventReceiver::clearGame()
+    {
+        m_semaphoreRandomOver = nullptr;
+        m_semaphoreGameOver = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void PuzzleSceneEventReceiver::clearGameNode()

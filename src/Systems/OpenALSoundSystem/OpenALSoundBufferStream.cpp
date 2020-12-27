@@ -323,8 +323,11 @@ namespace Mengine
             ALuint bufferId;
             OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, 1, &bufferId) );
 
-            size_t bytesWritten;
-            this->bufferData_( bufferId, &bytesWritten );
+            size_t bytesWritten = 0;
+            if( this->bufferData_( bufferId, &bytesWritten ) == false )
+            {
+                continue;
+            }
 
             if( bytesWritten == 0 )
             {

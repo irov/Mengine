@@ -9,7 +9,10 @@
 #include "Config/StdString.h"
 
 #if MENGINE_ALLOCATOR_DEBUG == 0
+#   ifndef MENGINE_ALLOCATOR_RPMALLOC
 #   define MENGINE_ALLOCATOR_RPMALLOC 1
+#   endif
+#   else
 
 #   if MENGINE_ALLOCATOR_RPMALLOC
 #       include "rpmalloc/rpmalloc.h"

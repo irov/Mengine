@@ -2418,7 +2418,6 @@ namespace Mengine
 
                 if( (loop == false && --m_playIterator == 0) || interrupt == true )
                 {
-                    lastFrame = frameCount - 1;
                     m_currentFrame = frameCount - 1;
 
                     if( interrupt == false )

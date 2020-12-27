@@ -5,10 +5,7 @@ src
     PNGPlugin.cpp
     PNGPlugin.def
     PNGPlugin.h
-)
 
-ADD_FILTER(
-png
     ImageDecoderPNG.cpp
     ImageDecoderPNG.h
     ImageEncoderPNG.cpp

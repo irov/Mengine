@@ -5,10 +5,7 @@ src
     JPEGPlugin.h
     JPEGPlugin.def
     JPEGPlugin.cpp
-)
 
-ADD_FILTER(
-jpeg  
     ImageDecoderJPEG.cpp
     ImageDecoderJPEG.h
     ImageEncoderJPEG.cpp

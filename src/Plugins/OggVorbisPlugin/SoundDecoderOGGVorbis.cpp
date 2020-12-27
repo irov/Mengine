@@ -192,7 +192,7 @@ namespace Mengine
 
             if( decodeSize == OV_HOLE )
             {
-                LOGGER_CRITICAL( "ov_read return OV_HOLE [size %ld]"
+                LOGGER_ERROR( "ov_read return OV_HOLE [size %ld]"
                     , decodeSize
                 );
 

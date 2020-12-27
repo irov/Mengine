@@ -47,6 +47,8 @@ namespace Mengine
     void OpenALSoundSource::finalize()
     {
         this->releaseSourceId_();
+
+        m_soundBuffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::play()

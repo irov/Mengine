@@ -26,6 +26,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSequenceValidator::_validate( const ResourceImageSequencePtr & _resource )
     {
+        bool successful = true;
+
         size_t total_memory = 0;
 
         const VectorFrameImageSequence & sequences = _resource->getSequence();
@@ -37,13 +39,13 @@ namespace Mengine
             if( RESOURCEVALIDATE_SERVICE()
                 ->validResource( resourceImage ) == false )
             {
-                LOGGER_MESSAGE_RELEASE( "resource '%s' group '%s' invalid validate sequence resource '%s'"
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid validate sequence resource '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , resourceImage->getName().c_str()
                 );
 
-                return false;
+                successful = false;
             }
 
             const mt::vec2f & size = resourceImage->getSize();
@@ -78,7 +80,7 @@ namespace Mengine
                     , float( total_memory ) / float( AnimationMemoryLimit )
                 );
 
-                return false;
+                successful = false;
             }
             else
             {
@@ -92,6 +94,6 @@ namespace Mengine
             }
         }
 
-        return true;
+        return successful;
     }
 }

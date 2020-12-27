@@ -22,6 +22,8 @@ namespace Mengine
     {
         const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
 
+        bool successful = true;
+
         const uint32_t MENGINE_VIDEO_SIZE_DIV = 8;
 
         if( dataInfo->frameWidth % MENGINE_VIDEO_SIZE_DIV != 0 ||
@@ -38,7 +40,7 @@ namespace Mengine
                 , MENGINE_VIDEO_SIZE_DIV
             );
 
-            return false;
+            successful = false;
         }
 
         uint32_t Limit_VideoWidth = CONFIG_VALUE( "Limit", "VideoWidth", 2048U );
@@ -56,7 +58,7 @@ namespace Mengine
                 , Limit_VideoHeight
             );
 
-            return false;
+            successful = false;
         }
 
         float Limit_VideoFrameRate = CONFIG_VALUE( "Limit", "VideoFrameRate", 30.f );
@@ -71,30 +73,35 @@ namespace Mengine
                 , Limit_VideoFrameRate
             );
 
-            return false;
+            successful = false;
         }
 
-        float Limit_VideoContentResolutionCoeff = CONFIG_VALUE( "Limit", "VideoContentResolutionCoeff", 1.f );
+        float Limit_VideoContentFillrateCoeff = CONFIG_VALUE( "Limit", "VideoContentFillrateCoeff", 1.f );
 
         const Resolution & resolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
-        if( dataInfo->width / resolution.getWidthF() > Limit_VideoContentResolutionCoeff ||
-            dataInfo->height / resolution.getHeightF() > Limit_VideoContentResolutionCoeff )
+        float videoFillrate = (float)(dataInfo->width * dataInfo->height);
+        
+        float resolutionWidth = resolution.getWidthF();
+        float resolutionHeight = resolution.getHeightF();
+
+        float resolutionFillrate = resolutionWidth * resolutionHeight;
+
+        if( videoFillrate > resolutionFillrate * Limit_VideoContentFillrateCoeff )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' path '%s' override content resolution coeff %f:%f more that %f"
+            LOGGER_ERROR( "resource '%s' group '%s' path '%s' override fillrate %f [coeff %f]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
-                , dataInfo->width / resolution.getWidthF()
-                , dataInfo->height / resolution.getHeightF()
-                , Limit_VideoContentResolutionCoeff
+                , videoFillrate / resolutionFillrate
+                , Limit_VideoContentFillrateCoeff
             );
 
-            return false;
+            successful = false;
         }
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource )
@@ -118,4 +125,5 @@ namespace Mengine
 
         return valid;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

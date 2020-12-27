@@ -272,7 +272,7 @@ namespace Mengine
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
         {
-            LOGGER_CRITICAL( "invalid create render window" );
+            LOGGER_CRITICAL( "Invalid create render window" );
 
             return false;
         }

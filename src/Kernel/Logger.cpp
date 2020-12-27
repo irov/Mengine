@@ -75,32 +75,35 @@ namespace Mengine
 
         size_t size = 0;
 
-        size_t size_timestamp = LOGGER_SERVICE()
-            ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
-
-        if( size_timestamp > 0 )
+        if( m_level < LM_CRITICAL )
         {
-            size += size_timestamp;
-        }
+            size_t size_timestamp = LOGGER_SERVICE()
+                ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
 
-        if( m_category.empty() == false )
-        {
-            size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
-                , m_category.c_str()
-            );
-
-            if( size_category > 0 )
+            if( size_timestamp > 0 )
             {
-                size += size_category;
+                size += size_timestamp;
             }
-        }
 
-        size_t size_functionstamp = LOGGER_SERVICE()
-            ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+            if( m_category.empty() == false )
+            {
+                size_t size_category = MENGINE_SNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, "[%s] "
+                    , m_category.c_str()
+                );
 
-        if( size_functionstamp > 0 )
-        {
-            size += size_functionstamp;
+                if( size_category > 0 )
+                {
+                    size += size_category;
+                }
+            }
+
+            size_t size_functionstamp = LOGGER_SERVICE()
+                ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );
+
+            if( size_functionstamp > 0 )
+            {
+                size += size_functionstamp;
+            }
         }
 
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
@@ -114,7 +117,9 @@ namespace Mengine
             const Char msg[] = "invalid message :(\n";
             this->logMessage( msg, MENGINE_STATIC_STRING_LENGTH( msg ) );
 
-            int32_t size_sprintf = MENGINE_SPRINTF( str, "%s", _format );
+            int32_t size_sprintf = MENGINE_SPRINTF( str, "%s"
+                , _format 
+            );
 
             if( size_sprintf < 0 )
             {

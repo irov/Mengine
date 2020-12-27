@@ -105,12 +105,17 @@ namespace Mengine
             break;
         }
 
-        m_modules.emplace_back( module );
+        bool available = module->isAvailableModule();
 
-        m_waits.erase( std::remove_if( m_waits.begin(), m_waits.end(), [_name]( const WaitModuleDesc & _desc )
+        if( available == true )
         {
-            return _desc.name == _name;
-        } ), m_waits.end() );
+            m_modules.emplace_back( module );
+
+            m_waits.erase( std::remove_if( m_waits.begin(), m_waits.end(), [_name]( const WaitModuleDesc & _desc )
+            {
+                return _desc.name == _name;
+            } ), m_waits.end() );
+        }
 
         return true;
     }

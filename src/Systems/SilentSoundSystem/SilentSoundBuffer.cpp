@@ -21,19 +21,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SilentSoundBuffer::acquire()
+    bool SilentSoundBuffer::acquireSoundBuffer()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundBuffer::release()
+    void SilentSoundBuffer::releaseSoundBuffer()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SilentSoundBuffer::update()
+    bool SilentSoundBuffer::updateSoundBuffer()
     {
         float timePos = this->getTimePos( 0U );
 

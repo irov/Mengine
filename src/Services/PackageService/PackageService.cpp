@@ -87,7 +87,7 @@ namespace Mengine
 
             if( config->hasSection( frameworkPack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "invalid load '%s' framework pack no found section for '%s'"
+                LOGGER_ERROR( "invalid load '%s' framework package no found section for '%s'"
                     , _filePath.c_str()
                     , frameworkPack.c_str()
                 );
@@ -109,7 +109,7 @@ namespace Mengine
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", frameworkPack.c_str() ) ) == false )
             {
-                LOGGER_CRITICAL( "invalid add framework pack '%s'"
+                LOGGER_ERROR( "invalid add framework package '%s'"
                     , pack.name.c_str()
                 );
 
@@ -135,7 +135,7 @@ namespace Mengine
 
             if( config->hasSection( resourcePack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "invalid load '%s' resource pack no found section for '%s'"
+                LOGGER_ERROR( "invalid load '%s' resource package no found section for '%s'"
                     , _filePath.c_str()
                     , resourcePack.c_str()
                 );
@@ -158,7 +158,7 @@ namespace Mengine
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", resourcePack.c_str() ) ) == false )
             {
-                LOGGER_CRITICAL( "invalid add resource pack '%s'"
+                LOGGER_ERROR( "invalid add resource package '%s'"
                     , pack.name.c_str()
                 );
 
@@ -184,7 +184,7 @@ namespace Mengine
 
             if( config->hasSection( languagePack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "invalid load '%s' language pack no found section for '%s'"
+                LOGGER_ERROR( "invalid load '%s' language package no found section for '%s'"
                     , _filePath.c_str()
                     , languagePack.c_str()
                 );
@@ -209,13 +209,15 @@ namespace Mengine
 
             if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", languagePack.c_str() ) ) == false )
             {
-                LOGGER_CRITICAL( "invalid add language pack '%s'"
+                LOGGER_ERROR( "invalid add language package '%s'"
                     , pack.name.c_str()
                 );
 
                 return false;
             }
         }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PACKAGES_LOAD );
 
         return true;
     }
@@ -366,6 +368,40 @@ namespace Mengine
         return PackageInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PackageService::existLocalePackage( const ConstString & _locale, const Tags & _platformTags ) const
+    {
+        for( const PackagePtr & package : m_packages )
+        {
+            const Tags & packPlatform = package->getPlatfromTags();
+
+            if( _platformTags.hasTags( packPlatform ) == false )
+            {
+                continue;
+            }
+
+            if( _locale.empty() == true )
+            {
+                return true;
+            }
+
+            const ConstString & packageLocale = package->getLocale();
+
+            if( packageLocale.empty() == true )
+            {
+                continue;
+            }
+
+            if( packageLocale != _locale )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PackageService::visitPackages( const LambdaPackage & _lambda ) const
     {
         for( const PackagePtr & package : m_packages )
@@ -374,7 +410,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadLocalePacksByName_( VectorPackages & _packs, const ConstString & _locale, const Tags & _platformTags ) const
+    bool PackageService::loadLocalePacksByName_( const ConstString & _locale, const Tags & _platformTags, VectorPackages * const _packs ) const
     {
         bool hasLocale = false;
 
@@ -394,7 +430,7 @@ namespace Mengine
                 continue;
             }
 
-            _packs.emplace_back( package );
+            _packs->emplace_back( package );
 
             hasLocale = true;
         }
@@ -408,28 +444,28 @@ namespace Mengine
 
         VectorPackages packages;
 
-        for( const PackagePtr & pack : m_packages )
+        for( const PackagePtr & package : m_packages )
         {
-            const Tags & packPlatform = pack->getPlatfromTags();
+            const Tags & packPlatform = package->getPlatfromTags();
 
             if( _platformTags.hasTags( packPlatform ) == false )
             {
                 continue;
             }
 
-            const ConstString & locale = pack->getLocale();
+            const ConstString & locale = package->getLocale();
 
             if( locale.empty() == false )
             {
                 continue;
             }
 
-            packages.emplace_back( pack );
+            packages.emplace_back( package );
         }
 
-        if( this->loadLocalePacksByName_( packages, _locale, _platformTags ) == false )
+        if( this->loadLocalePacksByName_( _locale, _platformTags, &packages ) == false )
         {
-            if( this->loadLocalePacksByName_( packages, STRINGIZE_STRING_LOCAL( "en" ), _platformTags ) == false )
+            if( this->loadLocalePacksByName_( STRINGIZE_STRING_LOCAL( "en" ), _platformTags, &packages ) == false )
             {
                 LOGGER_WARNING( "not set locale pack" );
             }
@@ -461,7 +497,7 @@ namespace Mengine
 
             if( resourceCheckCritical == false )
             {
-                LOGGER_CRITICAL( "Fix Resources" );
+                LOGGER_CRITICAL( "Please fix resources and restart application!" );
 
                 return false;
             }

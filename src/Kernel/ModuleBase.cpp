@@ -51,7 +51,7 @@ namespace Mengine
 
         if( m_availableModule == false )
         {
-            return false;
+            return true;
         }
 
         bool successful = this->_initializeModule();

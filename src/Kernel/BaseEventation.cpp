@@ -15,6 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseEventation::~BaseEventation() noexcept
     {
+        MENGINE_ASSERTION_FATAL( m_receiver == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver )

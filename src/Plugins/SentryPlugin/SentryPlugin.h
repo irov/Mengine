@@ -16,6 +16,9 @@ namespace Mengine
         ~SentryPlugin() override;
 
     protected:
+        bool _unimportantPlugin() const override;
+
+    protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
         void _destroyPlugin() override;

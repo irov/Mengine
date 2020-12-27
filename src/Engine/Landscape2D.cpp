@@ -74,6 +74,8 @@ namespace Mengine
     void Landscape2D::_dispose()
     {
         m_images.clear();
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Landscape2D::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const

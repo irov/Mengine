@@ -109,6 +109,8 @@ namespace Mengine
             m_semaphoreValue->clearObserverProviders();
             m_semaphoreValue = nullptr;
         }
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Checkbox::_activate()
@@ -204,6 +206,8 @@ namespace Mengine
             m_chain->cancel();
             m_chain = nullptr;
         }
+
+        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void Checkbox::__setState( bool _value, ECheckboxState _state )

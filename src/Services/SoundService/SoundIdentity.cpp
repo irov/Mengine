@@ -17,13 +17,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::~SoundIdentity()
     {
+        MENGINE_ASSERTION_FATAL( source == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundIdentity::initialize()
     {
         const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
 
-        if( soundBuffer->acquire() == false )
+        if( soundBuffer->acquireSoundBuffer() == false )
         {
             return false;
         }
@@ -36,7 +37,7 @@ namespace Mengine
         if( source != nullptr )
         {
             const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
-            soundBuffer->release();
+            soundBuffer->releaseSoundBuffer();
             source = nullptr;
         }
 

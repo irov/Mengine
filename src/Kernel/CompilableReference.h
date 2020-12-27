@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Compilable.h"
+#include "Kernel/ThreadGuard.h"
 
 namespace Mengine
 {
@@ -21,6 +22,8 @@ namespace Mengine
 
     private:
         uint32_t m_compileReference;
+
+        MENGINE_THREAD_GUARD_INIT( CompilableReference );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<CompilableReference> CompilableReferencePtr;

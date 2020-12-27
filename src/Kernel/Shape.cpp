@@ -75,6 +75,8 @@ namespace Mengine
     void Shape::_dispose()
     {
         m_surface = nullptr;
+
+        Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Shape::update( const UpdateContext * _context )
@@ -120,4 +122,5 @@ namespace Mengine
     {
         this->invalidateVerticesColor();
     }
+    //////////////////////////////////////////////////////////////////////////
 }

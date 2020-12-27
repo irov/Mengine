@@ -147,6 +147,14 @@ PLUGIN_EXPORT( ResourceDebugger );
 PLUGIN_EXPORT( MetabufLoader );
 #endif
 
+#ifdef MENGINE_PLUGIN_JPEG_STATIC
+PLUGIN_EXPORT( JPEG );
+#endif
+
+#ifdef MENGINE_PLUGIN_PNG_STATIC
+PLUGIN_EXPORT( PNG );
+#endif
+
 #ifdef MENGINE_PLUGIN_WEBP_STATIC
 PLUGIN_EXPORT( WebP );
 #endif
@@ -845,6 +853,14 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec...", MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec...", MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
+
+#ifdef MENGINE_PLUGIN_JPEG_STATIC
+        MENGINE_ADD_PLUGIN( JPEG, "initialize Plugin JPEG...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_PNG_STATIC
+        MENGINE_ADD_PLUGIN( PNG, "initialize Plugin PNG...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #ifdef MENGINE_PLUGIN_WEBP_STATIC
         MENGINE_ADD_PLUGIN( WebP, "initialize Plugin WebP...", MENGINE_DOCUMENT_FACTORABLE );

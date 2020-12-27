@@ -83,6 +83,10 @@
 #define MENGINE_MEMMOVE(d, v, s) ::memmove(d, v, s)
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_MEMCMP
+#define MENGINE_MEMCMP(a, b, n) ::memcmp(a, b, n)
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_TOUPPER
 #define MENGINE_TOUPPER(c) ::toupper(c)
 #endif

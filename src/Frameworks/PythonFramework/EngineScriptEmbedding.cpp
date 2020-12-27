@@ -1436,7 +1436,7 @@ namespace Mengine
                     ->minimizeWindow();
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * _screen )
+            bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * const _screen )
             {
                 const ArrowPtr & arrow = PLAYER_SERVICE()
                     ->getArrow();

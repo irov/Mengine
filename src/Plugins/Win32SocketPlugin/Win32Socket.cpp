@@ -5,6 +5,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     Win32Socket::Win32Socket()
         : m_socket( INVALID_SOCKET )
         , m_isBlocking( true )
@@ -198,4 +199,5 @@ namespace Mengine
     {
         return m_socket;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

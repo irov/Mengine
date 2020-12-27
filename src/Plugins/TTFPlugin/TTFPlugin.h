@@ -11,8 +11,7 @@
 #include "freetype/ftglyph.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class TTFPlugin
         : public PluginBase
     {

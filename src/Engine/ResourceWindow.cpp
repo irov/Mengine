@@ -31,10 +31,25 @@ namespace Mengine
                     continue;
                 }
 
+                const Char * element_names[] = {"background", "left top", "top", "right top", "right", "right bottom", "bottom", "left bottom", "left"};
+
+                LOGGER_ERROR( "resource window '%s' not set element [%s]"
+                    , this->getName().c_str()
+                    , element_names[i]
+                );
+
                 return false;
             }
 
-            element.resourceImage->compile();
+            if( element.resourceImage->compile() == false )
+            {
+                LOGGER_ERROR( "resource window '%s' not compile image resource '%s'"
+                    , this->getName().c_str()
+                    , element.resourceImage->getName().c_str()
+                );
+
+                return false;
+            }
         }
 
         return true;
@@ -104,4 +119,5 @@ namespace Mengine
 
         return offset;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

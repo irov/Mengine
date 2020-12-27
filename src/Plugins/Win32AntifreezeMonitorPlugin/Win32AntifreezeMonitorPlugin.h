@@ -5,8 +5,7 @@
 #include "Win32AntifreezeMonitor.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class Win32AntifreezeMonitorPlugin
         : public PluginBase
     {

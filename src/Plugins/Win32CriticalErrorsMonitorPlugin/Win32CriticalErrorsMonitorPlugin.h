@@ -5,8 +5,7 @@
 #include "Kernel/PluginBase.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class Win32CriticalErrorsMonitorPlugin
         : public PluginBase
     {

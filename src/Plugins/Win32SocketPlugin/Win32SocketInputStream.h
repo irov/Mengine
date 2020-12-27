@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32SocketInputStream
         : public InputStreamInterface
         , virtual public Win32SocketProviderInterface

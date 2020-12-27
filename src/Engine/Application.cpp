@@ -300,7 +300,7 @@ namespace Mengine
         if( HAS_OPTION( "author" ) == true || HAS_OPTION( "support" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
+                ->messageBox( "Mengine", "author: IROV\nemail for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
         if( HAS_OPTION( "buildcommit" ) == true )
@@ -313,14 +313,16 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE( "Build Commit: %s", MENGINE_ENGINE_GIT_SHA1 );
         }
 
+        const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
+
         if( HAS_OPTION( "resourcecommit" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "resource commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+                ->messageBox( "Mengine", "content commit: %s", Info_ResourceCommit );
         }
         else
         {
-            LOGGER_MESSAGE_RELEASE( "Content Commit: %s", MENGINE_RESOURCE_GIT_SHA1 );
+            LOGGER_MESSAGE_RELEASE( "Content Commit: %s", Info_ResourceCommit );
         }
 
         if( HAS_OPTION( "buildversion" ) == true )

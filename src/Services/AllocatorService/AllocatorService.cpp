@@ -3,20 +3,22 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
 
 #if MENGINE_ALLOCATOR_DEBUG == 0
+#   define MENGINE_ALLOCATOR_RPMALLOC 0
+#else
 #   ifndef MENGINE_ALLOCATOR_RPMALLOC
 #   define MENGINE_ALLOCATOR_RPMALLOC 1
 #   endif
-#   else
+#endif
 
-#   if MENGINE_ALLOCATOR_RPMALLOC
-#       include "rpmalloc/rpmalloc.h"
-#   endif
+#if MENGINE_ALLOCATOR_RPMALLOC
+#   include "rpmalloc/rpmalloc.h"
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG
@@ -89,6 +91,8 @@ namespace Mengine
 
         void * p = ::malloc( _size );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( p );
+
         this->report( _doc, _size, 0 );
 #else
 #   if MENGINE_ALLOCATOR_RPMALLOC
@@ -129,9 +133,11 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
+        void * p = ::calloc( _num, _size );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( p );
+
         size_t total = _num * _size;
-        void * p = ::malloc( total );
-        ::memset( p, 0x00, total );
 
         this->report( _doc, total, 0 );
 #else
@@ -152,11 +158,13 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
         //MENGINE_ASSERTION_FATAL( _heapchk() == _HEAPOK );
 
-        size_t size = _mem == nullptr ? 0 : _msize( _mem );
+        size_t old_size = _mem == nullptr ? 0 : _msize( _mem );
 
         void * p = ::realloc( _mem, _size );
 
-        this->report( _doc, _size, size );
+        MENGINE_ASSERTION_MEMORY_PANIC( p );
+
+        this->report( _doc, _size, old_size );
 #else
 #   if MENGINE_ALLOCATOR_RPMALLOC
         void * p = rprealloc( _mem, _size );

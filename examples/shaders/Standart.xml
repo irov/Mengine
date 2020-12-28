@@ -124,7 +124,7 @@
         <FragmentShader Name = "Fragment_Blend_OnlyColor"/>
         <VertexAttribute Name = "Vertex2D_UV1"/>
         
-        <Sampler Count = "1"/>        
+        <Sampler Count = "1"/>
     </Program>        
     
     <Program Name = "Color">
@@ -133,11 +133,19 @@
         <VertexAttribute Name = "Vertex2D_UV0"/>
         
         <Sampler Count = "0"/>
-    </Program>      
+    </Program>
+    
+    <Program Name = "Ozz_Blend">
+        <VertexShader Name = "Vertex_Blend"/>
+        <FragmentShader Name = "Ozz_Fragment_Blend"/>
+        <VertexAttribute Name = "Vertex2D_UV1"/>
+        
+        <Sampler Count = "1"/>
+    </Program>
     
 	<Material Name = "Texture_TrackMatte_Blend">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
@@ -155,7 +163,7 @@
     
     <Material Name = "Texture_TrackMatte_Blend_Premultiply">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>   
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
                 
@@ -182,7 +190,7 @@
         
 	<Material Name = "Texture_TrackMatteInverted_Blend">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
@@ -200,7 +208,7 @@
 
 	<Material Name = "Texture_TrackMatteInverted_Blend_Premultiply">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
@@ -209,7 +217,7 @@
     
 	<Material Name = "Texture_TrackMatteInverted_Intensive">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE"/>
         
@@ -630,4 +638,13 @@
         
         <Program Name = "Legendary_ExternalAlpha"/>
     </Material>
+    
+	<Material Name = "Ozz_Texture_Blend">
+        <AlphaBlend Enable = "1"/>
+        <DepthBufferWrite Enable = "0"/>        
+        
+        <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>  
+        
+        <Program Name = "Ozz_Blend"/>
+	</Material>    
 </DataBlock>

@@ -1,6 +1,7 @@
 #include "BaseEventation.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionContainer.h"
 
 #include <algorithm>
 
@@ -15,7 +16,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseEventation::~BaseEventation() noexcept
     {
-        //MENGINE_ASSERTION_FATAL( m_receiver == nullptr );
+        MENGINE_ASSERTION_FATAL( m_receiver == nullptr );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_receivers );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver )
@@ -35,7 +37,9 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
         MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
 
-        if( (m_receiversMask & (1ULL << _event)) != 0 )
+        uint64_t flag = m_receiversMask & (1ULL << _event);
+
+        if( flag != 0 )
         {
             VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
             {
@@ -117,7 +121,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
 
-        return ((m_receiverMask | m_receiversMask) & (1ULL << _event)) != 0;
+        uint64_t flag = (m_receiverMask | m_receiversMask) & (1ULL << _event);
+
+        return flag != 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::removeEvents() noexcept

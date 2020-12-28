@@ -624,6 +624,8 @@ namespace Mengine
             return false;
         }
 
+        MENGINE_ASSERTION_FATAL( textFont->isCompileFont() == false );
+
         textFont->finalize();
 
         return true;

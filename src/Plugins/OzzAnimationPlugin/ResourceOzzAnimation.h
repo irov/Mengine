@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceOzzAnimation
         : public Resource
         , private BaseContent

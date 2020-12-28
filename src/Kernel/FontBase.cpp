@@ -41,26 +41,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::compileFont()
     {
-        bool successful = this->incrementReference();
+        bool successful = this->compile();
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void FontBase::releaseFont()
     {
-        this->decrementReference();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool FontBase::_incrementZero()
-    {
-        bool successful = this->compile();
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FontBase::_decrementZero()
-    {
         this->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::isCompileFont() const
+    {
+        return this->isCompile();
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::prefetch( const PrefetcherObserverInterfacePtr & _observer )

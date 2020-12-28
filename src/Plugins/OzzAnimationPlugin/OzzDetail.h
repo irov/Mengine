@@ -11,14 +11,15 @@ namespace Mengine
 {
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         const size_t ozz_normals_size = sizeof( float ) * 3;
         const size_t ozz_tangents_size = sizeof( float ) * 6;
         const size_t ozz_positions_size = sizeof( float ) * 9;
         const size_t ozz_colors_size = sizeof( uint8_t ) * 4;
         const size_t ozz_uvs_size = sizeof( float ) * 2;
-
+        //////////////////////////////////////////////////////////////////////////
         const size_t ozz_vertex_size = ozz_normals_size + ozz_tangents_size + ozz_positions_size + ozz_colors_size + ozz_uvs_size;
-
+        //////////////////////////////////////////////////////////////////////////
         struct Part
         {
             typedef ozz::vector<float> VectorPositions;
@@ -62,7 +63,7 @@ namespace Mengine
             typedef ozz::vector<float> VectorJointWeights;
             VectorJointWeights joint_weights;  // Stride equals influences_count - 1
         };
-
+        //////////////////////////////////////////////////////////////////////////
         struct Mesh
         {
             typedef ozz::vector<Part> VectorParts;
@@ -79,11 +80,12 @@ namespace Mengine
             typedef ozz::vector<ozz::math::Float4x4> VectorInversBindPoses;
             VectorInversBindPoses inverse_bind_poses;
         };
-
+        //////////////////////////////////////////////////////////////////////////
         uint32_t getPartVertexCount( const Part & _part );
         uint32_t getPartInfluencesCount( const Part & _part );
-
+        //////////////////////////////////////////////////////////////////////////
         uint32_t getMeshVertexCount( const Mesh & _mesh );
+        //////////////////////////////////////////////////////////////////////////
     }
 }
 
@@ -91,24 +93,26 @@ namespace ozz
 {
     namespace io
     {
+        //////////////////////////////////////////////////////////////////////////
         OZZ_IO_TYPE_TAG( "ozz-sample-Mesh-Part", Mengine::Detail::Part );
         OZZ_IO_TYPE_VERSION( 1, Mengine::Detail::Part );
-
+        //////////////////////////////////////////////////////////////////////////
         OZZ_IO_TYPE_TAG( "ozz-sample-Mesh", Mengine::Detail::Mesh );
         OZZ_IO_TYPE_VERSION( 1, Mengine::Detail::Mesh );
-
+        //////////////////////////////////////////////////////////////////////////
         template <>
         struct Extern<Mengine::Detail::Part>
         {
             static void Save( OArchive & _archive, const Mengine::Detail::Part * _parts, size_t _count );
             static void Load( IArchive & _archive, Mengine::Detail::Part * _parts, size_t _count, uint32_t _version );
         };
-
+        //////////////////////////////////////////////////////////////////////////
         template <>
         struct Extern<Mengine::Detail::Mesh>
         {
             static void Save( OArchive & _archive, const Mengine::Detail::Mesh * _meshes, size_t _count );
             static void Load( IArchive & _archive, Mengine::Detail::Mesh * _meshes, size_t _count, uint32_t _version );
         };
+        //////////////////////////////////////////////////////////////////////////
     }
 }

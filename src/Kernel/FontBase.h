@@ -3,15 +3,13 @@
 #include "Interface/TextFontInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Compilable.h"
-#include "Kernel/Reference.h"
+#include "Kernel/CompilableReference.h"
 
 namespace Mengine
 {
     class FontBase
         : public TextFontInterface
-        , public Compilable
-        , public Reference
+        , public CompilableReference
     {
     public:
         FontBase();
@@ -30,8 +28,7 @@ namespace Mengine
         void releaseFont() override;
 
     public:
-        bool _incrementZero() override;
-        void _decrementZero() override;
+        bool isCompileFont() const override;
 
     public:
         bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) override;

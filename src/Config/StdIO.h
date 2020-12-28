@@ -14,6 +14,7 @@ namespace Mengine
 {
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE int32_t __mengine_VSPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, va_list _argList )
         {
             int32_t size_vsnprintf = ::vsnprintf( _buffer, _bufferCount, _format, _argList );
@@ -27,6 +28,7 @@ namespace Mengine
 
             return size_correct;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }
 //////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,7 @@ namespace Mengine
 {
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE int32_t __mengine_SNPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, ... )
         {
             MENGINE_VA_LIST_TYPE args;
@@ -70,6 +73,7 @@ namespace Mengine
 
             return size_vsnprintf;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }
 //////////////////////////////////////////////////////////////////////////

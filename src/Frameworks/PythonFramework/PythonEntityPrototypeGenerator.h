@@ -23,6 +23,7 @@ namespace Mengine
         const pybind::object & getGenerator() const;
 
     public:
+        void setPythonType( const pybind::object & _type );
         const pybind::object & getPythonType();
 
     public:

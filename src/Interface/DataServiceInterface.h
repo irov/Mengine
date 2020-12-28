@@ -11,8 +11,7 @@
 #include "Kernel/ConstString.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class DataServiceInterface
         : public ServiceInterface
     {

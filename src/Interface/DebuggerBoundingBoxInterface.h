@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DebuggerBoundingBoxInterface
         : public Mixin
     {

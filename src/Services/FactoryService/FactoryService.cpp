@@ -193,13 +193,13 @@ namespace Mengine
         m_factories.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::visitFactories( const VisitorFactoryServicePtr & _visitor )
+    void FactoryService::foreachFactories( const LambdaFactory & _lambda )
     {
         for( const FactoryDesc & desc : m_factories )
         {
             const Factory * factory = desc.factory;
 
-            _visitor->visit( factory );
+            _lambda( factory );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -16,6 +16,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ConfigInterface
         : public ServantInterface
     {

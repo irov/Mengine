@@ -29,7 +29,7 @@ namespace Mengine
         void unregisterFactory( const Factory * _factory ) override;
 
     public:
-        void visitFactories( const VisitorFactoryServicePtr & _visitor ) override;
+        void foreachFactories( const LambdaFactory & _lambda ) override;
 
     protected:
         void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) override;

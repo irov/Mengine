@@ -10,6 +10,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ContentInterface
         : public Interface
     {

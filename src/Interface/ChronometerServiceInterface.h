@@ -6,7 +6,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ChronometerServiceInterface
         : public ServiceInterface
     {

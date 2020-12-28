@@ -8,17 +8,7 @@
 #include "Kernel/Factory.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    class VisitorFactoryInterface
-        : public Interface
-    {
-    public:
-        virtual void visit( const Factory * _factory ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<VisitorFactoryInterface> VisitorFactoryServicePtr;
-    //////////////////////////////////////////////////////////////////////////
+{    
     class FactoryServiceInterface
         : public ServiceInterface
     {
@@ -29,7 +19,8 @@ namespace Mengine
         virtual void unregisterFactory( const Factory * _factory ) = 0;
 
     public:
-        virtual void visitFactories( const VisitorFactoryServicePtr & _visitor ) = 0;
+        typedef Lambda<void( const Factory * )> LambdaFactory;
+        virtual void foreachFactories( const LambdaFactory & _lambda ) = 0;
 
     public:
         virtual void increfFactoryGeneration() = 0;
@@ -41,8 +32,7 @@ namespace Mengine
     public:
         virtual void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) = 0;
         virtual void debugFactoryDestroyObject( const Factory * _factory, const Factorable * _factorable ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
+    };    
 }
 //////////////////////////////////////////////////////////////////////////
 #define FACTORY_SERVICE()\

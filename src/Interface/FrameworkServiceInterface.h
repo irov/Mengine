@@ -7,8 +7,7 @@
 #include "Config/Char.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class FrameworkServiceInterface
         : public ServiceInterface
     {

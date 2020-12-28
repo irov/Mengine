@@ -147,7 +147,7 @@ namespace Mengine
 
     public:
         void setFixedDisplayResolution( bool _fixedDisplayResolution ) override;
-        bool getFixedDisplayResolution() override;
+        bool getFixedDisplayResolution() const override;
 
     public:
         void updateNotification();

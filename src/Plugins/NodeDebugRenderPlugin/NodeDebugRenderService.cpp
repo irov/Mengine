@@ -477,8 +477,7 @@ namespace Mengine
             else if( m_showDebugText == 5 )
             {
                 class MyVisitorFactoryService
-                    : public VisitorFactoryInterface
-                    , public Factorable
+                    : public Factorable
                 {
                 public:
                     MyVisitorFactoryService()
@@ -492,8 +491,8 @@ namespace Mengine
                 protected:
                     void operator = ( const MyVisitorFactoryService & ) = delete;
 
-                protected:
-                    void visit( const Factory * _factory ) override
+                public:
+                    void visit( const Factory * _factory )
                     {
                         uint32_t count = _factory->getCountObject();
 
@@ -551,7 +550,10 @@ namespace Mengine
 
                 MyVisitorFactoryServicePtr mvcts = Helper::makeFactorableUnique<MyVisitorFactoryService>( MENGINE_DOCUMENT_FACTORABLE );
                 FACTORY_SERVICE()
-                    ->visitFactories( mvcts );
+                    ->foreachFactories( [mvcts]( const Factory * _factory )
+                {
+                    mvcts->visit( _factory );
+                } );
 
                 String msg_python = mvcts->getMsg();
                 ss << msg_python << std::endl;

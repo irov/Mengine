@@ -2107,7 +2107,7 @@ namespace Mengine
             ->setFixedDisplayResolution( m_currentResolution, m_fixedDisplayResolution );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::getFixedDisplayResolution()
+    bool Application::getFixedDisplayResolution() const
     {
         return m_fixedDisplayResolution;
     }

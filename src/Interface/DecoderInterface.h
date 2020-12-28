@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/Interface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/InputStreamInterface.h"
 
+#include "Config/Typedef.h"
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DecoderInterface
         : public Interface
     {

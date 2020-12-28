@@ -49,6 +49,7 @@ namespace Mengine
 
             return vertex_count;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }
 
@@ -56,6 +57,7 @@ namespace ozz
 {
     namespace io
     {
+        //////////////////////////////////////////////////////////////////////////
         void Extern<Mengine::Detail::Part>::Save( OArchive & _archive, const Mengine::Detail::Part * _parts, size_t _count )
         {
             for( const Mengine::Detail::Part & part : Mengine::Helper::makeRange( _parts, _count ) )
@@ -69,7 +71,7 @@ namespace ozz
                 _archive << part.joint_weights;
             }
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void Extern<Mengine::Detail::Part>::Load( IArchive & _archive, Mengine::Detail::Part * _parts, size_t _count, uint32_t _version )
         {
             MENGINE_UNUSED( _version );
@@ -85,7 +87,7 @@ namespace ozz
                 _archive >> part.joint_weights;
             }
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void Extern<Mengine::Detail::Mesh>::Save( OArchive & _archive, const Mengine::Detail::Mesh * _meshes, size_t _count )
         {
             for( const Mengine::Detail::Mesh & mesh : Mengine::Helper::makeRange( _meshes, _count ) )
@@ -96,7 +98,7 @@ namespace ozz
                 _archive << mesh.inverse_bind_poses;
             }
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void Extern<Mengine::Detail::Mesh>::Load( IArchive & _archive, Mengine::Detail::Mesh * _meshes, size_t _count, uint32_t _version )
         {
             MENGINE_UNUSED( _version );
@@ -109,6 +111,7 @@ namespace ozz
                 _archive >> mesh.inverse_bind_poses;
             }
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 
 }

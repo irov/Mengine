@@ -14,6 +14,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SamplerOzzAnimation
         : public SamplerOzzAnimationInterface
         , public BaseAnimation

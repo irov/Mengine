@@ -79,6 +79,11 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonEntityPrototypeGenerator::setPythonType( const pybind::object & _type )
+    {
+        m_type = _type;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const pybind::object & PythonEntityPrototypeGenerator::getPythonType()
     {
         if( m_type.is_invalid() == false )

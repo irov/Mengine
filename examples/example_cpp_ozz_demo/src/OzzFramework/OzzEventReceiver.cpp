@@ -119,15 +119,6 @@ namespace Mengine
 
         resourceOzzMesh->compile();
 
-        ResourcePtr resourceOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
-
-        ContentInterface * resourceOzzAnimationContent = resourceOzzAnimation->getContent();
-
-        resourceOzzAnimationContent->setFileGroup( fileGroup );
-        resourceOzzAnimationContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/robot_animation.ozz" ) );
-
-        resourceOzzAnimation->compile();
-
         NodePtr nodeOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
 
         UnknownNodeOzzAnimationInterface * unknownNodeOzzAnimation = nodeOzzAnimation->getUnknown();
@@ -147,6 +138,22 @@ namespace Mengine
         unknownNodeOzzAnimation->setResourceOzzImage( resourceImageDefault );
         unknownNodeOzzAnimation->setResourceOzzSkeleton( resourceOzzSkeleton );
         unknownNodeOzzAnimation->setResourceOzzMesh( resourceOzzMesh );
+
+        ResourcePtr resourceOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
+
+        ContentInterface * resourceOzzAnimationContent = resourceOzzAnimation->getContent();
+
+        resourceOzzAnimationContent->setFileGroup( fileGroup );
+        resourceOzzAnimationContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/robot_animation.ozz" ) );
+
+        resourceOzzAnimation->compile();
+
+        SamplerOzzAnimationInterfacePtr samplerOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
+
+        samplerOzzAnimation->setResourceOzzSkeleton( resourceOzzSkeleton );
+        samplerOzzAnimation->setResourceOzzAnimation( resourceOzzAnimation );
+
+        unknownNodeOzzAnimation->addOzzAnimationSampler( samplerOzzAnimation );
 
         m_node->addChild( nodeOzzAnimation );
 

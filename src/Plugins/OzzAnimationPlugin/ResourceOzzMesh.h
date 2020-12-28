@@ -13,6 +13,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceOzzMesh
         : public Resource
         , private BaseContent

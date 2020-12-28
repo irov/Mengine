@@ -30,7 +30,11 @@
     
     <VertexShader Name = "Vertex_Blend_ExternalAlpha" RenderPlatform = "DX9">
         <File Path = "DX9_Vertex_Blend_ExternalAlpha.txt" Converter="text2vso" Compile="1"/>
-    </VertexShader>    
+    </VertexShader>
+    
+    <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "DX9">
+        <File Path = "DX9_Ozz_Fragment_Blend.txt" Converter="text2pso" Compile="1"/>
+    </FragmentShader>   
     
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "DX9">
         <File Path = "DX9_Fragment_Blend.txt" Converter="text2pso" Compile="1"/>

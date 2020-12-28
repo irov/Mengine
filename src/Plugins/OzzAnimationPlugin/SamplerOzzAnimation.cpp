@@ -64,10 +64,10 @@ namespace Mengine
             return;
         }
 
-        if( this->isPlay() == false )
-        {
-            return;
-        }
+        //if( this->isPlay() == false )
+        //{
+        //    return;
+        //}
 
         float totalTiming = this->calcTotalTime( _context );
 
@@ -232,4 +232,5 @@ namespace Mengine
 
         return duration;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

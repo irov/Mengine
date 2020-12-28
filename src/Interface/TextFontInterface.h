@@ -73,6 +73,9 @@ namespace Mengine
         virtual void releaseFont() = 0;
 
     public:
+        virtual bool isCompileFont() const = 0;
+
+    public:
         virtual bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) = 0;
         virtual bool unfetch() = 0;
 

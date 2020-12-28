@@ -28,14 +28,15 @@ namespace Mengine
         ~ResourceOzzMesh() override;
 
     public:
-        const Detail::Mesh & getMesh() const;
+        ozz::span<Detail::Mesh> getMeshes();
+        ozz::span<const Detail::Mesh> getMeshes() const;
 
     protected:
         bool _compile() override;
         void _release() override;
 
     protected:
-        Detail::Mesh m_mesh;
+        ozz::vector<Detail::Mesh> m_meshes;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceOzzMesh> ResourceOzzMeshPtr;

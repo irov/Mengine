@@ -23,9 +23,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const Detail::Mesh & ResourceOzzMesh::getMesh() const
+    ozz::span<Detail::Mesh> ResourceOzzMesh::getMeshes()
     {
-        return m_mesh;
+        return ozz::make_span( m_meshes );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ozz::span<const Detail::Mesh> ResourceOzzMesh::getMeshes() const
+    {
+        return ozz::make_span( m_meshes );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceOzzMesh::_compile()
@@ -49,7 +54,11 @@ namespace Mengine
 
         ozz::io::IArchive ozz_archive( &ozz_stream );
 
-        ozz_archive >> m_mesh;
+        while( ozz_archive.TestTag<Detail::Mesh>() == true )
+        {
+            m_meshes.resize( m_meshes.size() + 1 );
+            ozz_archive >> m_meshes.back();
+        }
 
         return true;
     }

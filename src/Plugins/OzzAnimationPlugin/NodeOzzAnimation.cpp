@@ -9,6 +9,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
 
@@ -50,7 +51,6 @@ namespace Mengine
     static constexpr uint32_t ozz_uvs_offset = ozz_colors_offset + ozz_colors_size;
     //////////////////////////////////////////////////////////////////////////
     NodeOzzAnimation::NodeOzzAnimation()
-        : m_upperBodyRoot( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -214,24 +214,29 @@ namespace Mengine
         m_upperBodyJointWeights.resize( num_soa_joints );
         m_blendedLocals.resize( num_soa_joints );
 
-        const Detail::Mesh & mesh = m_resourceMesh->getMesh();
+        ozz::span<const Detail::Mesh> meshes = m_resourceMesh->getMeshes();
 
-        Detail::Mesh::VectorJointRemaps::size_type num_mesh_joint_remaps = mesh.joint_remaps.size();
-
-        m_skinningMatrices.resize( num_mesh_joint_remaps );
-
-        // Finds the "Spine1" joint in the joint hierarchy.
-        const ozz::span<const char * const> & joint_names = skeleton.joint_names();
-
-        for( int32_t i = 0; i < num_joints; ++i )
+        size_t num_skinning_matrices = 0;
+        for( const Detail::Mesh & mesh : meshes )
         {
-            const Char * joint_name = joint_names[i];
+            num_skinning_matrices =
+                ozz::math::Max( num_skinning_matrices, mesh.joint_remaps.size() );
+        }
 
-            if( MENGINE_STRSTR( joint_name, "Spine1" ) != nullptr )
+        m_skinningMatrices.resize( num_skinning_matrices );
+
+        for( const Detail::Mesh & mesh : meshes )
+        {
+            uint16_t highestJointIndex = Detail::getMeshHighestJointIndex( mesh );
+
+            if( num_joints >= highestJointIndex )
             {
-                m_upperBodyRoot = i;
-                break;
+                continue;
             }
+
+            LOGGER_ERROR( "The provided mesh doesn't match skeleton (joint count mismatch)." );
+
+            return false;
         }
 
         for( int32_t i = 0; i != num_soa_joints; ++i )
@@ -256,22 +261,34 @@ namespace Mengine
         RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
             ->createVertexBuffer( ozz_vertex_stride, BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
 
-        const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
+        ozz::span<Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
-        uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        uint32_t max_vertex_count = 0;
+        for( const Detail::Mesh & ozz_mesh : ozz_meshes )
+        {
+            uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
-        vertexBuffer->resize( vertex_count );
+            max_vertex_count += vertex_count;
+        }
+
+        vertexBuffer->resize( max_vertex_count );
 
         m_vertexBuffer = vertexBuffer;
 
         RenderIndexBufferInterfacePtr indexStream = RENDER_SYSTEM()
             ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
 
-        const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
+        uint32_t max_indices_count = 0;
+        for( const Detail::Mesh & ozz_mesh : ozz_meshes )
+        {
+            const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
-        Detail::Mesh::VectorTriangleIndices::size_type triangle_indices_buffer_size = triangle_indices.size();
+            Detail::Mesh::VectorTriangleIndices::size_type indices_count = triangle_indices.size();
 
-        indexStream->resize( (uint32_t)triangle_indices_buffer_size );
+            max_indices_count += indices_count;
+        }
+
+        indexStream->resize( max_indices_count );
 
         m_indexBuffer = indexStream;
 
@@ -381,231 +398,237 @@ namespace Mengine
             return;
         }
 
-        const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
+        ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
-        Detail::Mesh::VectorJointRemaps::size_type mesh_joint_remap_count = ozz_mesh.joint_remaps.size();
-
-        // Builds skinning matrices, based on the output of the animation stage.
-        for( size_t i = 0; i != mesh_joint_remap_count; ++i )
+        for( const Detail::Mesh & ozz_mesh : ozz_meshes )
         {
-            uint16_t joint_index = ozz_mesh.joint_remaps[i];
-            const ozz::math::Float4x4 & model = m_models[joint_index];
+            Detail::Mesh::VectorJointRemaps::size_type mesh_joint_remap_count = ozz_mesh.joint_remaps.size();
 
-            const ozz::math::Float4x4 & bind_poses = ozz_mesh.inverse_bind_poses[i];
-
-            m_skinningMatrices[i] = model * bind_poses;
-        }
-
-        // Renders skin.
-        size_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
-
-        // Positions and normals are interleaved to improve caching while executing
-        // skinning job.
-
-        size_t skinned_data_size = vertex_count * ozz_vertex_stride;
-
-        // Reallocate vertex buffer.
-        size_t vbo_size = skinned_data_size;
-        void * vbo_map = m_vertexMemory->newBuffer( vbo_size );
-
-        // Iterate mesh parts and fills vbo.
-        // Runs a skinning job per mesh part. Triangle indices are shared
-        // across parts.
-        size_t processed_vertex_count = 0;
-        for( const Detail::Part & part : ozz_mesh.parts )
-        {
-            // Skip this iteration if no vertex.
-            uint32_t part_vertex_count = Detail::getPartVertexCount( part );
-
-            if( part_vertex_count == 0 )
+            // Builds skinning matrices, based on the output of the animation stage.
+            for( size_t i = 0; i != mesh_joint_remap_count; ++i )
             {
-                continue;
+                uint16_t joint_index = ozz_mesh.joint_remaps[i];
+                const ozz::math::Float4x4 & model = m_models[joint_index];
+
+                const ozz::math::Float4x4 & bind_poses = ozz_mesh.inverse_bind_poses[i];
+
+                m_skinningMatrices[i] = model * bind_poses;
             }
 
-            // Fills the job.
-            ozz::geometry::SkinningJob skinning_job;
-            skinning_job.vertex_count = static_cast<int32_t>(part_vertex_count);
-            uint32_t part_influences_count = Detail::getPartInfluencesCount( part );
+            // Renders skin.
+            size_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
-            // Clamps joints influence count according to the option.
-            skinning_job.influences_count = part_influences_count;
+            // Positions and normals are interleaved to improve caching while executing
+            // skinning job.
 
-            // Setup skinning matrices, that came from the animation stage before being
-            // multiplied by inverse model-space bind-pose.
-            skinning_job.joint_matrices = ozz::make_span( m_skinningMatrices );
+            size_t skinned_data_size = vertex_count * ozz_vertex_stride;
 
-            // Setup joint's indices.
-            skinning_job.joint_indices = ozz::make_span( part.joint_indices );
-            skinning_job.joint_indices_stride = sizeof( uint16_t ) * part_influences_count;
+            // Reallocate vertex buffer.
+            size_t vbo_size = skinned_data_size;
+            void * vbo_map = m_vertexMemory->newBuffer( vbo_size );
 
-            // Setup joint's weights.
-            if( part_influences_count > 1 )
+            // Iterate mesh parts and fills vbo.
+            // Runs a skinning job per mesh part. Triangle indices are shared
+            // across parts.
+            size_t processed_vertex_count = 0;
+            for( const Detail::Part & part : ozz_mesh.parts )
             {
-                skinning_job.joint_weights = ozz::make_span( part.joint_weights );
-                skinning_job.joint_weights_stride = sizeof( float ) * (part_influences_count - 1);
-            }
+                // Skip this iteration if no vertex.
+                uint32_t part_vertex_count = Detail::getPartVertexCount( part );
 
-            // Setup input positions, coming from the loaded mesh.
-            skinning_job.in_positions = ozz::make_span( part.positions );
-            skinning_job.in_positions_stride = sizeof( float ) * Detail::Part::kPositionsCpnts;
+                if( part_vertex_count == 0 )
+                {
+                    continue;
+                }
 
-            // Setup output positions, coming from the rendering output mesh buffers.
-            // We need to offset the buffer every loop.
-            float * out_positions_begin = reinterpret_cast<float *>(
-                ozz::PointerStride( vbo_map, ozz_positions_offset + processed_vertex_count *
-                    ozz_vertex_stride ));
+                // Fills the job.
+                ozz::geometry::SkinningJob skinning_job;
+                skinning_job.vertex_count = static_cast<int32_t>(part_vertex_count);
+                uint32_t part_influences_count = Detail::getPartInfluencesCount( part );
 
-            float * out_positions_end = ozz::PointerStride(
-                out_positions_begin, part_vertex_count * ozz_vertex_stride );
+                // Clamps joints influence count according to the option.
+                skinning_job.influences_count = part_influences_count;
 
-            skinning_job.out_positions = {out_positions_begin, out_positions_end};
-            skinning_job.out_positions_stride = ozz_vertex_stride;
+                // Setup skinning matrices, that came from the animation stage before being
+                // multiplied by inverse model-space bind-pose.
+                skinning_job.joint_matrices = ozz::make_span( m_skinningMatrices );
 
-            // Setup normals if input are provided.
-            //float* out_normal_begin = reinterpret_cast<float*>(ozz::PointerStride(
-            //    vbo_map, ozz_normals_offset + processed_vertex_count * ozz_vertex_stride ));
-            //const float* out_normal_end = ozz::PointerStride(
-            //    out_normal_begin, part_vertex_count * ozz_vertex_stride );
+                // Setup joint's indices.
+                skinning_job.joint_indices = ozz::make_span( part.joint_indices );
+                skinning_job.joint_indices_stride = sizeof( uint16_t ) * part_influences_count;
 
-            // Setup input normals, coming from the loaded mesh.
-            //skinning_job.in_normals = ozz::make_range( part.normals );
-            //skinning_job.in_normals_stride =
-                //sizeof( float ) * Detail::Part::kNormalsCpnts;
+                // Setup joint's weights.
+                if( part_influences_count > 1 )
+                {
+                    skinning_job.joint_weights = ozz::make_span( part.joint_weights );
+                    skinning_job.joint_weights_stride = sizeof( float ) * (part_influences_count - 1);
+                }
 
-            // Setup output normals, coming from the rendering output mesh buffers.
-            // We need to offset the buffer every loop.
-            //skinning_job.out_normals.begin = out_normal_begin;
-            //skinning_job.out_normals.end = out_normal_end;
-            //skinning_job.out_normals_stride = ozz_vertex_stride;
+                // Setup input positions, coming from the loaded mesh.
+                skinning_job.in_positions = ozz::make_span( part.positions );
+                skinning_job.in_positions_stride = sizeof( float ) * Detail::Part::kPositionsCpnts;
 
-            // Setup tangents if input are provided.
-            //float* out_tangent_begin = reinterpret_cast<float*>(ozz::PointerStride(
-            //    vbo_map, ozz_tangents_offset + processed_vertex_count * ozz_vertex_stride ));
-            //const float* out_tangent_end = ozz::PointerStride(
-            //    out_tangent_begin, part_vertex_count * ozz_vertex_stride );
+                // Setup output positions, coming from the rendering output mesh buffers.
+                // We need to offset the buffer every loop.
+                float * out_positions_begin = reinterpret_cast<float *>(
+                    ozz::PointerStride( vbo_map, ozz_positions_offset + processed_vertex_count *
+                        ozz_vertex_stride ));
 
-            // Setup input tangents, coming from the loaded mesh.
-            //skinning_job.in_tangents = ozz::make_range( part.tangents );
-            //skinning_job.in_tangents_stride =
-                //sizeof( float ) * Detail::Part::kTangentsCpnts;
+                float * out_positions_end = ozz::PointerStride(
+                    out_positions_begin, part_vertex_count * ozz_vertex_stride );
 
-            // Setup output tangents, coming from the rendering output mesh buffers.
-            // We need to offset the buffer every loop.
-            //skinning_job.out_tangents.begin = out_tangent_begin;
-            //skinning_job.out_tangents.end = out_tangent_end;
-            //skinning_job.out_tangents_stride = ozz_vertex_stride;
+                skinning_job.out_positions = {out_positions_begin, out_positions_end};
+                skinning_job.out_positions_stride = ozz_vertex_stride;
+
+                // Setup normals if input are provided.
+                //float* out_normal_begin = reinterpret_cast<float*>(ozz::PointerStride(
+                //    vbo_map, ozz_normals_offset + processed_vertex_count * ozz_vertex_stride ));
+                //const float* out_normal_end = ozz::PointerStride(
+                //    out_normal_begin, part_vertex_count * ozz_vertex_stride );
+
+                // Setup input normals, coming from the loaded mesh.
+                //skinning_job.in_normals = ozz::make_range( part.normals );
+                //skinning_job.in_normals_stride =
+                    //sizeof( float ) * Detail::Part::kNormalsCpnts;
+
+                // Setup output normals, coming from the rendering output mesh buffers.
+                // We need to offset the buffer every loop.
+                //skinning_job.out_normals.begin = out_normal_begin;
+                //skinning_job.out_normals.end = out_normal_end;
+                //skinning_job.out_normals_stride = ozz_vertex_stride;
+
+                // Setup tangents if input are provided.
+                //float* out_tangent_begin = reinterpret_cast<float*>(ozz::PointerStride(
+                //    vbo_map, ozz_tangents_offset + processed_vertex_count * ozz_vertex_stride ));
+                //const float* out_tangent_end = ozz::PointerStride(
+                //    out_tangent_begin, part_vertex_count * ozz_vertex_stride );
+
+                // Setup input tangents, coming from the loaded mesh.
+                //skinning_job.in_tangents = ozz::make_range( part.tangents );
+                //skinning_job.in_tangents_stride =
+                    //sizeof( float ) * Detail::Part::kTangentsCpnts;
+
+                // Setup output tangents, coming from the rendering output mesh buffers.
+                // We need to offset the buffer every loop.
+                //skinning_job.out_tangents.begin = out_tangent_begin;
+                //skinning_job.out_tangents.end = out_tangent_end;
+                //skinning_job.out_tangents_stride = ozz_vertex_stride;
 
 
-            // Execute the job, which should succeed unless a parameter is invalid.
-            if( skinning_job.Run() == false )
-            {
-                return;
-            }
+                // Execute the job, which should succeed unless a parameter is invalid.
+                if( skinning_job.Run() == false )
+                {
+                    return;
+                }
 
-            Color color;
-            this->calcTotalColor( &color );
+                Color color;
+                this->calcTotalColor( &color );
 
-            // Handles colors which aren't affected by skinning.
-            // Optimal path used when the right number of colors is provided.
-            if( part.colors.empty() == false )
-            {
-                const uint8_t * part_colors_buffer = reinterpret_cast<const uint8_t *>(&part.colors[0]);
+                // Handles colors which aren't affected by skinning.
+                // Optimal path used when the right number of colors is provided.
+                if( part.colors.empty() == false )
+                {
+                    const uint8_t * part_colors_buffer = reinterpret_cast<const uint8_t *>(&part.colors[0]);
+                    for( uint8_t
+                        * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
+                        *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
+                        it != it_end;
+                        it += ozz_vertex_stride )
+                    {
+                        uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
+
+                        Helper::multiplyColorBuffer( color, vbo_colors_buffer, part_colors_buffer );
+
+                        part_colors_buffer += ozz_colors_size;
+                    }
+                }
+                else
+                {
+                    ColorValue_ARGB argb = color.getAsARGB();
+
+                    for( uint8_t
+                        * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
+                        *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
+                        it != it_end;
+                        it += ozz_vertex_stride )
+                    {
+                        uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
+
+                        MENGINE_MEMCPY( vbo_colors_buffer, &argb, ozz_colors_size );
+                    }
+                }
+
+                const uint8_t * part_uvs_buffer = reinterpret_cast<const uint8_t *>(&part.uvs[0]);
                 for( uint8_t
-                    * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
-                    *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
+                    * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_uvs_offset,
+                    *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_uvs_offset;
                     it != it_end;
                     it += ozz_vertex_stride )
                 {
-                    uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
+                    uint8_t * vbo_uvs_buffer = reinterpret_cast<uint8_t *>(it);
 
-                    Helper::multiplyColorBuffer( color, vbo_colors_buffer, part_colors_buffer );
+                    MENGINE_MEMCPY( vbo_uvs_buffer, part_uvs_buffer, ozz_uvs_size );
 
-                    part_colors_buffer += ozz_colors_size;
+                    part_uvs_buffer += ozz_uvs_size;
                 }
+
+                // Some more vertices were processed.
+                processed_vertex_count += part_vertex_count;
             }
-            else
-            {
-                ColorValue_ARGB argb = color.getAsARGB();
-
-                for( uint8_t
-                    * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
-                    *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
-                    it != it_end;
-                    it += ozz_vertex_stride )
-                {
-                    uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
-
-                    MENGINE_MEMCPY( vbo_colors_buffer, &argb, ozz_colors_size );
-                }
-            }
-
-            const uint8_t * part_uvs_buffer = reinterpret_cast<const uint8_t *>(&part.uvs[0]);
-            for( uint8_t
-                * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_uvs_offset,
-                *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_uvs_offset;
-                it != it_end;
-                it += ozz_vertex_stride )
-            {
-                uint8_t * vbo_uvs_buffer = reinterpret_cast<uint8_t *>(it);
-
-                MENGINE_MEMCPY( vbo_uvs_buffer, part_uvs_buffer, ozz_uvs_size );
-
-                part_uvs_buffer += ozz_uvs_size;
-            }
-
-            // Some more vertices were processed.
-            processed_vertex_count += part_vertex_count;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
-        const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
+        ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
-        // Renders skin.
-        uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
-
-        // Reallocate vertex buffer.
-        uint32_t vbo_size = vertex_count;
-        void * vbo_buffer = m_vertexMemory->getBuffer();
-
-        struct OzzVertex
+        for( const Detail::Mesh & ozz_mesh : ozz_meshes )
         {
-            mt::vec3f position;
-            uint32_t color;
-            mt::vec2f uv;
-        };
+            // Renders skin.
+            uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
-        m_vertexBuffer->draw( vbo_buffer, vbo_size );
+            // Reallocate vertex buffer.
+            uint32_t vbo_size = vertex_count;
+            void * vbo_buffer = m_vertexMemory->getBuffer();
 
-        const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
+            struct OzzVertex
+            {
+                mt::vec3f position;
+                uint32_t color;
+                mt::vec2f uv;
+            };
 
-        const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
-        size_t indices_count = triangle_indices.size();
+            m_vertexBuffer->draw( vbo_buffer, vbo_size );
 
-        m_indexBuffer->draw( triangle_indices_buffer_data, indices_count );
+            const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
-        const mt::mat4f & wm = this->getWorldMatrix();
+            const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
+            size_t indices_count = triangle_indices.size();
 
-        if( _context->transformation == nullptr )
-        {
-            m_renderWorldMatrix = wm;
+            m_indexBuffer->draw( triangle_indices_buffer_data, indices_count );
+
+            const mt::mat4f & wm = this->getWorldMatrix();
+
+            if( _context->transformation == nullptr )
+            {
+                m_renderWorldMatrix = wm;
+            }
+            else
+            {
+                const mt::mat4f & transformationWorldMatrix = _context->transformation->getTransformationWorldMatrix();
+
+                m_renderWorldMatrix = wm * transformationWorldMatrix;
+            }
+
+            RenderContext new_context;
+            new_context.viewport = _context->viewport;
+            new_context.camera = _context->camera;
+            new_context.transformation = this;
+            new_context.scissor = _context->scissor;
+            new_context.target = _context->target;
+
+            _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, (uint32_t)indices_count, MENGINE_DOCUMENT_FORWARD );
         }
-        else
-        {
-            const mt::mat4f & transformationWorldMatrix = _context->transformation->getTransformationWorldMatrix();
-
-            m_renderWorldMatrix = wm * transformationWorldMatrix;
-        }
-
-        RenderContext new_context;
-        new_context.viewport = _context->viewport;
-        new_context.camera = _context->camera;
-        new_context.transformation = this;
-        new_context.scissor = _context->scissor;
-        new_context.target = _context->target;
-
-        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, (uint32_t)indices_count, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
 }

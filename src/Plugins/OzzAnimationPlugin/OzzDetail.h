@@ -85,6 +85,7 @@ namespace Mengine
         uint32_t getPartInfluencesCount( const Part & _part );
         //////////////////////////////////////////////////////////////////////////
         uint32_t getMeshVertexCount( const Mesh & _mesh );
+        uint16_t getMeshHighestJointIndex( const Mesh & _mesh );
         //////////////////////////////////////////////////////////////////////////
     }
 }

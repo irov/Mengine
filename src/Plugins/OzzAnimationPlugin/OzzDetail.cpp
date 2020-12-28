@@ -24,7 +24,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t getPartInfluencesCount( const Part & _part )
         {
-            uint32_t _vertex_count = getPartVertexCount( _part );
+            uint32_t _vertex_count = Detail::getPartVertexCount( _part );
 
             if( _vertex_count == 0 )
             {
@@ -42,12 +42,24 @@ namespace Mengine
 
             for( const Part & part : _mesh.parts )
             {
-                uint32_t part_vertex_count = getPartVertexCount( part );
+                uint32_t part_vertex_count = Detail::getPartVertexCount( part );
 
                 vertex_count += part_vertex_count;
             }
 
             return vertex_count;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint16_t getMeshHighestJointIndex( const Mesh & _mesh )
+        {
+            if( _mesh.joint_remaps.empty() == true )
+            {
+                return 0;
+            }
+            
+            uint16_t index = _mesh.joint_remaps.back();
+
+            return index;
         }
         //////////////////////////////////////////////////////////////////////////
     }

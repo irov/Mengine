@@ -111,4 +111,5 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

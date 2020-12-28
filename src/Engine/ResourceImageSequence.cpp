@@ -32,11 +32,11 @@ namespace Mengine
 
         for( const FrameImageSequence & sequence : m_sequence )
         {
-            if( sequence.resource->compile() == false )
+            if( sequence.resourceImage->compile() == false )
             {
                 LOGGER_ERROR( "resource sequence '%s' not compile image resource '%s'"
                     , this->getName().c_str()
-                    , sequence.resource->getName().c_str()
+                    , sequence.resourceImage->getName().c_str()
                 );
             }
         }
@@ -48,7 +48,7 @@ namespace Mengine
     {
         for( const FrameImageSequence & sequence : m_sequence )
         {
-            sequence.resource->release();
+            sequence.resourceImage->release();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ namespace Mengine
     void ResourceImageSequence::addFrame( const ResourceImagePtr & _resourceImage, float _delay )
     {
         FrameImageSequence frame;        
-        frame.resource = _resourceImage;
+        frame.resourceImage = _resourceImage;
         frame.delay = _delay;
 
         m_sequence.emplace_back( frame );
@@ -141,7 +141,7 @@ namespace Mengine
 
         const FrameImageSequence & sequence = m_sequence[_index];
 
-        const ResourceImagePtr & resource = sequence.resource;
+        const ResourceImagePtr & resource = sequence.resourceImage;
 
         return resource;
     }
@@ -155,4 +155,5 @@ namespace Mengine
     {
         return m_duration;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

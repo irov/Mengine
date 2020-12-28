@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceCursorSystem
         : public ResourceCursor
         , private BaseContent

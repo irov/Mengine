@@ -86,4 +86,5 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

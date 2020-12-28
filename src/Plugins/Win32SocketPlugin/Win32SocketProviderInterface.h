@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32SocketProviderInterface
         : public Mixin
     {

@@ -10,6 +10,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceVideo
         : public Resource
         , private BaseContent

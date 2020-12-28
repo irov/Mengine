@@ -30,4 +30,5 @@ namespace Mengine
     {
         Helper::deleteT( static_cast<Win32FileGroupDirectory *>(_obj) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceImageSubstract
         : public ResourceImage
     {

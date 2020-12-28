@@ -1,0 +1,3 @@
+LIBRARY "PVRTCPlugin"
+EXPORTS
+   dllCreatePlugin @1

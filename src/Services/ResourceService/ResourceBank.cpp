@@ -70,7 +70,7 @@ namespace Mengine
         for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
             const ResourcePtrView & resource = value.element;
-       
+
             resource->setResourceBank( nullptr );
             resource->finalize();
 
@@ -92,7 +92,7 @@ namespace Mengine
     {
         for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
-            const ResourcePtrView & resource = value.element;
+            Resource * resource = value.element.get();
 
             bool precompile = resource->isPrecompile();
 
@@ -107,14 +107,39 @@ namespace Mengine
 
             if( keep == true )
             {
+                m_resourcesGroup.erase( value );
+                m_resources.erase( value.key2 );
+
                 resource->setResourceBank( nullptr );
                 resource->finalize();
 
-                IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
+                IntrusivePtrBase::intrusive_ptr_dec_ref( resource );
+            }
+        }
 
-                m_resourcesGroup.erase( value );
-                
-                m_resources.erase( value.key1 );
+        for( const HashtableResources::value_type & value : m_resources )
+        {
+            Resource * resource = value.element.get();
+
+            bool precompile = resource->isPrecompile();
+
+            if( precompile == true )
+            {
+                resource->release();
+            }
+
+            resource->setPrecompile( false );
+
+            bool keep = resource->isKeep();
+
+            if( keep == true )
+            {
+                m_resources.erase( value.key );
+
+                resource->setResourceBank( nullptr );
+                resource->finalize();
+
+                IntrusivePtrBase::intrusive_ptr_dec_ref( resource );
             }
         }
     }
@@ -221,7 +246,6 @@ namespace Mengine
         const ConstString & groupName = _resource->getGroupName();
         const ConstString & name = _resource->getName();
         bool keep = _resource->isKeep();
-
 
         if( _resource->isMapping() == true )
         {

@@ -35,6 +35,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SurfaceTrackMatte::_finalize()
+    {
+        m_programVariable = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceTrackMatte::setResourceImage( const ResourceImagePtr & _resourceImage )
     {
         if( m_resourceImage == _resourceImage )

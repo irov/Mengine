@@ -142,7 +142,7 @@ namespace Mengine
             if( desc.plugin->isSystemPlugin() == true &&
                 this->isInitializeService() == true )
             {
-                m_plugins.emplace_back( desc );
+                m_plugins.push_back( desc );
 
                 continue;
             }
@@ -163,7 +163,7 @@ namespace Mengine
             if( desc.plugin->isSystemPlugin() == true &&
                 this->isInitializeService() == true )
             {
-                m_plugins.emplace_back( desc );
+                m_plugins.push_back( desc );
 
                 continue;
             }

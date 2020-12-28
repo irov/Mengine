@@ -1436,7 +1436,7 @@ namespace Mengine
                     ->minimizeWindow();
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * _screen )
+            bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * const _screen )
             {
                 const ArrowPtr & arrow = PLAYER_SERVICE()
                     ->getArrow();
@@ -1460,7 +1460,10 @@ namespace Mengine
                     ->getCursorPosition( _touchId );
 
                 mt::vec2f pos_screen;
-                this->s_calcMouseScreenPosition( _pos, &pos_screen );
+                if( this->s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
+                {
+                    return;
+                }
 
                 mt::vec2f mp = pos_screen - cp;
 
@@ -1470,7 +1473,10 @@ namespace Mengine
             void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
             {
                 mt::vec2f pos_screen;
-                this->s_calcMouseScreenPosition( _pos, &pos_screen );
+                if( this->s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
+                {
+                    return;
+                }
 
                 Helper::pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _code, 0.f, _isDown );
             }

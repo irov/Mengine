@@ -150,13 +150,13 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         try
         {
             if (Build.VERSION.SDK_INT >= 17) {
-                android.util.DisplayMetrics realMetrics = new android.util.DisplayMetrics();
+                DisplayMetrics realMetrics = new DisplayMetrics();
                 mDisplay.getRealMetrics( realMetrics );
                 nDeviceWidth = realMetrics.widthPixels;
                 nDeviceHeight = realMetrics.heightPixels;
             }
+        } catch(Exception ignored) {
         }
-        catch ( java.lang.Throwable throwable ) {}
 
         synchronized(SDLActivity.getContext()) {
             // In case we're waiting on a size change after going fullscreen, send a notification.
@@ -173,12 +173,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         boolean skip = false;
         int requestedOrientation = SDLActivity.mSingleton.getRequestedOrientation();
 
-        if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-        {
-            // Accept any
-        }
-        else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT || requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT)
-        {
+        if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT || requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT) {
             if (mWidth > mHeight) {
                skip = true;
             }
@@ -232,6 +227,19 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int deviceId = event.getDeviceId();
         int source = event.getSource();
 
+        if (source == InputDevice.SOURCE_UNKNOWN) {
+            InputDevice device = InputDevice.getDevice(deviceId);
+            if (device != null) {
+                source = device.getSources();
+            }
+        }
+
+//        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+//            Log.v("SDL", "key down: " + keyCode + ", deviceId = " + deviceId + ", source = " + source);
+//        } else if (event.getAction() == KeyEvent.ACTION_UP) {
+//            Log.v("SDL", "key up: " + keyCode + ", deviceId = " + deviceId + ", source = " + source);
+//        }
+
         // Dispatch the different events depending on where they come from
         // Some SOURCE_JOYSTICK, SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
         // So, we try to process them as JOYSTICK/DPAD/GAMEPAD events first, if that fails we try them as KEYBOARD
@@ -252,24 +260,14 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             }
         }
 
-        if (source == InputDevice.SOURCE_UNKNOWN) {
-            InputDevice device = InputDevice.getDevice(deviceId);
-            if (device != null) {
-                source = device.getSources();
-            }
-        }
-
         if ((source & InputDevice.SOURCE_KEYBOARD) != 0) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                //Log.v("SDL", "key down: " + keyCode);
                 if (SDLActivity.isTextInputEvent(event)) {
                     SDLInputConnection.nativeCommitText(String.valueOf((char) event.getUnicodeChar()), 1);
                 }
                 SDLActivity.onNativeKeyDown(keyCode);
                 return true;
-            }
-            else if (event.getAction() == KeyEvent.ACTION_UP) {
-                //Log.v("SDL", "key up: " + keyCode);
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
                 SDLActivity.onNativeKeyUp(keyCode);
                 return true;
             }
@@ -296,22 +294,34 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         /* Ref: http://developer.android.com/training/gestures/multi.html */
-        final int touchDevId = event.getDeviceId();
+        int touchDevId = event.getDeviceId();
         final int pointerCount = event.getPointerCount();
         int action = event.getActionMasked();
         int pointerFingerId;
-        int mouseButton;
         int i = -1;
         float x,y,p;
+
+        /*
+         * Prevent id to be -1, since it's used in SDL internal for synthetic events
+         * Appears when using Android emulator, eg:
+         *  adb shell input mouse tap 100 100
+         *  adb shell input touchscreen tap 100 100
+         */
+        if (touchDevId < 0) {
+            touchDevId -= 1;
+        }
 
         // 12290 = Samsung DeX mode desktop mouse
         // 12290 = 0x3002 = 0x2002 | 0x1002 = SOURCE_MOUSE | SOURCE_TOUCHSCREEN
         // 0x2   = SOURCE_CLASS_POINTER
         if (event.getSource() == InputDevice.SOURCE_MOUSE || event.getSource() == (InputDevice.SOURCE_MOUSE | InputDevice.SOURCE_TOUCHSCREEN)) {
+            int mouseButton = 1;
             try {
-                mouseButton = (Integer) event.getClass().getMethod("getButtonState").invoke(event);
-            } catch(Exception e) {
-                mouseButton = 1;    // oh well.
+                Object object = event.getClass().getMethod("getButtonState").invoke(event);
+                if (object != null) {
+                    mouseButton = (Integer) object;
+                }
+            } catch(Exception ignored) {
             }
 
             // We need to check if we're in relative mouse mode and get the axis offset rather than the x/y values
@@ -342,6 +352,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 case MotionEvent.ACTION_DOWN:
                     // Primary pointer up/down, the index is always zero
                     i = 0;
+                    /* fallthrough */
                 case MotionEvent.ACTION_POINTER_UP:
                 case MotionEvent.ACTION_POINTER_DOWN:
                     // Non primary pointer up/down
@@ -408,7 +419,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
             // Since we may have an orientation set, we won't receive onConfigurationChanged events.
             // We thus should check here.
-            int newOrientation = SDLActivity.SDL_ORIENTATION_UNKNOWN;
+            int newOrientation;
 
             float x, y;
             switch (mDisplay.getRotation()) {
@@ -427,6 +438,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                     y = -event.values[1];
                     newOrientation = SDLActivity.SDL_ORIENTATION_PORTRAIT_FLIPPED;
                     break;
+                case Surface.ROTATION_0:
                 default:
                     x = event.values[0];
                     y = event.values[1];
@@ -473,8 +485,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 // Change our action value to what SDL's code expects.
                 if (action == MotionEvent.ACTION_BUTTON_PRESS) {
                     action = MotionEvent.ACTION_DOWN;
-                }
-                else if (action == MotionEvent.ACTION_BUTTON_RELEASE) {
+                } else { /* MotionEvent.ACTION_BUTTON_RELEASE */
                     action = MotionEvent.ACTION_UP;
                 }
 

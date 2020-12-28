@@ -75,6 +75,7 @@ namespace Mengine
         void resetGame();
 
     protected:
+        void clearGame();
         void clearGameNode();
 
         void clearSprites();
@@ -87,8 +88,6 @@ namespace Mengine
     protected:
         NodePtr m_gameNode;
         GOAP::ChainInterfacePtr m_chain;
-
-        ShapeQuadFixedPtr m_background;
 
         VectorShapeQuadFixedPtr m_sprites;
         VectorHotSpotPolygonPtr m_hotspots;

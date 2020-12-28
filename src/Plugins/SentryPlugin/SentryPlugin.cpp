@@ -393,15 +393,13 @@ namespace Mengine
         sentry_set_extra( "Engine Commit", sentry_value_new_string( ENGINE_GIT_SHA1 ) );
 #endif
 
-#ifdef MENGINE_RESOURCE_GIT_SHA1
-        const Char * RESOURCE_GIT_SHA1 = MENGINE_RESOURCE_GIT_SHA1;
+        const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
 
         LOGGER_MESSAGE( "Sentry set extra [Resource Commit: %s]"
-            , RESOURCE_GIT_SHA1
+            , Info_ResourceCommit
         );
 
-        sentry_set_extra( "Resource Commit", sentry_value_new_string( RESOURCE_GIT_SHA1 ) );
-#endif
+        sentry_set_extra( "Resource Commit", sentry_value_new_string( Info_ResourceCommit ) );
 
         if( HAS_OPTION( "sentrycrash" ) == true )
         {

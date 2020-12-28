@@ -26,6 +26,7 @@ namespace Mengine
 
     public:
         bool _initialize() override;
+        void _finalize() override;
 
     public:
         void setResourceImage( const ResourceImagePtr & _resourceImage );

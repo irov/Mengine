@@ -1,0 +1,3 @@
+LIBRARY "JPEGPlugin"
+EXPORTS
+   dllCreatePlugin @1

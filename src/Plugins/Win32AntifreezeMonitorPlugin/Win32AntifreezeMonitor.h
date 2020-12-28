@@ -15,6 +15,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Win32AntifreezeMonitor
         : public ThreadWorkerInterface
         , public Observable

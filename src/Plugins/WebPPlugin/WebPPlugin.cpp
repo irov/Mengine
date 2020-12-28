@@ -55,4 +55,5 @@ namespace Mengine
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "webpImage" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

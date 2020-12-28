@@ -34,7 +34,7 @@ namespace Mengine
 
         for( const FrameImageSequence & sequence : sequences )
         {
-            const ResourceImagePtr & resourceImage = sequence.resource;
+            const ResourceImagePtr & resourceImage = sequence.resourceImage;
 
             if( RESOURCEVALIDATE_SERVICE()
                 ->validResource( resourceImage ) == false )

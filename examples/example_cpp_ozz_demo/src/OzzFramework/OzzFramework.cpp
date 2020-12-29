@@ -44,4 +44,5 @@ namespace Mengine
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

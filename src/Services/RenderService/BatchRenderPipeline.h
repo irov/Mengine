@@ -3,6 +3,7 @@
 #include "Interface/RenderPipelineInterface.h"
 #include "Interface/RenderBatchInterface.h"
 #include "Interface/RenderExternalInterface.h"
+#include "Interface/RenderServiceInterface.h"
 
 #include "Kernel/RenderPrimitive.h"
 #include "Kernel/Factory.h"
@@ -76,7 +77,8 @@ namespace Mengine
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc ) override;
+            , uint32_t _vertexCount, uint32_t _indexCount
+            , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentPtr & _doc ) override;
 
         void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
@@ -148,6 +150,8 @@ namespace Mengine
         bool insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t _vbPos, uint32_t _ibPos ) const;
             
     protected:
+        RenderServiceInterface * m_renderService;
+
         ERenderBatchMode m_batchMode;
 
         typedef DynamicArray<RenderObject> DynamicArrayRenderObjects;

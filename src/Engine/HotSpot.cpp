@@ -123,6 +123,13 @@ namespace Mengine
             ->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
+    void HotSpot::_dispose()
+    {
+        this->removeEvents();
+
+        Node::_dispose();
+    }
+    //////////////////////////////////////////////////////////////////////////
     Scriptable * HotSpot::getPickerScriptable()
     {
         return this;

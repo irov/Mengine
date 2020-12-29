@@ -654,8 +654,6 @@ namespace Mengine
         for( const HashtableSockets::value_type & value : m_sockets )
         {
             const HotSpotPolygonPtr & hotspot = value.element;
-            EventationInterface * eventation = hotspot->getEventation();
-            eventation->removeEvents();
             hotspot->dispose();
             hotspot->removeChildren( []( const NodePtr & )
             {} );

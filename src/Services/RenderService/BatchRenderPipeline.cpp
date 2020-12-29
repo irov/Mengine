@@ -1,7 +1,5 @@
 #include "BatchRenderPipeline.h"
 
-#include "Interface/RenderServiceInterface.h"
-#include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/RenderUtils.h"
@@ -28,7 +26,8 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
-        : m_batchMode( ERBM_NORMAL )
+        : m_renderService( nullptr )
+        , m_batchMode( ERBM_NORMAL )
 #ifdef MENGINE_DEBUG
         , m_debugStepRenderMode( false )
         , m_debugStopRenderObjects( false )
@@ -100,6 +99,8 @@ namespace Mengine
             }break;
         }
 
+        m_renderService = RENDER_SERVICE();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -128,7 +129,8 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc )
+        , uint32_t _vertexCount, uint32_t _indexCount
+        , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -174,13 +176,11 @@ namespace Mengine
 
         IntrusivePtrBase::intrusive_ptr_setup( rp.material, _material.get() );
 
+        rp.baseVertexIndex = _baseVertexIndex;
         rp.minIndex = 0;
-        rp.startIndex = 0;
-
         rp.vertexCount = _vertexCount;
+        rp.startIndex = _startIndex;
         rp.indexCount = _indexCount;
-
-        rp.baseVertexIndex = 0;
 
         RenderObject & ro = m_renderObjects.emplace();
 
@@ -257,8 +257,7 @@ namespace Mengine
 
         const RenderVertexAttributeInterfacePtr & vertexAttribute = program->getVertexAttribute();
 
-        const RenderBatchInterfacePtr & batch = RENDER_SERVICE()
-            ->requestRenderBatch( vertexAttribute, _vertexCount, _indexCount, _doc );
+        const RenderBatchInterfacePtr & batch = m_renderService->requestRenderBatch( vertexAttribute, _vertexCount, _indexCount, _doc );
 
         const RenderVertexBufferInterfacePtr & vertexBuffer = batch->getVertexBuffer();
         const RenderIndexBufferInterfacePtr & indexBuffer = batch->getIndexBuffer();
@@ -666,23 +665,20 @@ namespace Mengine
             const RenderProgramVariableInterfacePtr & programVariable = renderPass.programVariable;
             const RenderExternalInterfacePtr & external = renderPass.external;
 
-            RENDER_SERVICE()
-                ->beginRenderPass( vertexBuffer, indexBuffer, viewport, camera, transformation, scissor, target, programVariable );
+            m_renderService->beginRenderPass( vertexBuffer, indexBuffer, viewport, camera, transformation, scissor, target, programVariable );
 
             if( external == nullptr )
             {
                 const RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
 
-                RENDER_SERVICE()
-                    ->renderPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
+                m_renderService->renderPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
             }
             else
             {
                 external->onRenderExternal();
             }
 
-            RENDER_SERVICE()
-                ->endRenderPass( renderPass.target );
+            m_renderService->endRenderPass( renderPass.target );
         }
     }
     //////////////////////////////////////////////////////////////////////////

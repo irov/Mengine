@@ -75,7 +75,7 @@ namespace Mengine
 
         size_t size = 0;
 
-        if( m_level < LM_CRITICAL )
+        if( m_level > LM_CRITICAL )
         {
             size_t size_timestamp = LOGGER_SERVICE()
                 ->makeTimeStamp( str + size, size, MENGINE_LOGGER_MAX_MESSAGE - size - 2 );

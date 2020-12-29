@@ -37,7 +37,7 @@ namespace Mengine
     protected:
         MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count ) override;
         bool unlock() override;
-        bool draw( const void * _buffer, size_t _size ) override;
+        bool draw( const void * _buffer, uint32_t _offset, uint32_t _count ) override;
 
     public:
         void release();

@@ -157,11 +157,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderIndexBuffer::draw( const void * _buffer, size_t _size )
+    bool OpenGLRenderIndexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
+        if( _offset + _count > m_indexCount )
+        {
+            return nullptr;
+        }
+
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
-        GLCALL( glBufferData, (GL_ELEMENT_ARRAY_BUFFER, _size, nullptr, GL_STREAM_DRAW) );
-        GLCALL( glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, 0, _size, _buffer) );
+
+        const uint32_t bufferOffset = _offset * m_indexSize;
+        const uint32_t bufferSize = _count * m_indexSize;
+
+        GLCALL( glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, bufferOffset, bufferSize, _buffer) );
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
 
         return  true;

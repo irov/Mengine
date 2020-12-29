@@ -641,10 +641,11 @@
     
 	<Material Name = "Ozz_Texture_Blend">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferTest Enable = "1"/>
+        <DepthBufferWrite Enable = "1"/>
         
-        <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>  
+        <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Ozz_Blend"/>
-	</Material>    
+	</Material>
 </DataBlock>

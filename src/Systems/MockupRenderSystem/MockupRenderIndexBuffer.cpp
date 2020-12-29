@@ -92,10 +92,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderIndexBuffer::draw( const void * _buffer, size_t _size )
+    bool MockupRenderIndexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
         MENGINE_UNUSED( _buffer );
-        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _offset );
+        MENGINE_UNUSED( _count );
 
         return true;
     }

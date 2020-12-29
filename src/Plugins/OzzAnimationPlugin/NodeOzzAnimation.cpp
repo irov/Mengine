@@ -234,7 +234,9 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "The provided mesh doesn't match skeleton (joint count mismatch)." );
+            LOGGER_ERROR( "compile error '%s' the provided mesh doesn't match skeleton (joint count mismatch)."
+                , this->getName().c_str()
+            );
 
             return false;
         }
@@ -245,7 +247,7 @@ namespace Mengine
         }
 
         // Extracts the list of children of the shoulder.
-        ozz::animation::IterateJointsDF( skeleton, [this]( int _joint, int )
+        ozz::animation::IterateJointsDF( skeleton, [this]( int32_t _joint, int32_t )
         {
             float upper_body_joint_weight_setting = 1.f;
 
@@ -309,7 +311,7 @@ namespace Mengine
             }
         }
 
-        //this->updateAnimation_();
+        this->updateAnimation_();
 
         return true;
     }
@@ -582,6 +584,9 @@ namespace Mengine
     {
         ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
+        uint32_t vertex_base = 0;
+        uint32_t index_base = 0;
+
         for( const Detail::Mesh & ozz_mesh : ozz_meshes )
         {
             // Renders skin.
@@ -598,14 +603,17 @@ namespace Mengine
                 mt::vec2f uv;
             };
 
-            m_vertexBuffer->draw( vbo_buffer, vbo_size );
+            OzzVertex * v = (OzzVertex *)vbo_buffer;
+            (void)v;
+
+            m_vertexBuffer->draw( vbo_buffer, vertex_base, vbo_size );
 
             const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
             const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
-            size_t indices_count = triangle_indices.size();
+            uint32_t indices_count = triangle_indices.size();
 
-            m_indexBuffer->draw( triangle_indices_buffer_data, indices_count );
+            m_indexBuffer->draw( triangle_indices_buffer_data, index_base, indices_count );
 
             const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -627,7 +635,10 @@ namespace Mengine
             new_context.scissor = _context->scissor;
             new_context.target = _context->target;
 
-            _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, (uint32_t)indices_count, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, (uint32_t)indices_count, 0, 0, MENGINE_DOCUMENT_FORWARD );
+
+            vertex_base += vertex_count;
+            index_base += indices_count;
         }
     }
     //////////////////////////////////////////////////////////////////////////

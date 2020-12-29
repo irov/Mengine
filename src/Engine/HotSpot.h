@@ -90,6 +90,9 @@ namespace Mengine
         void _invalidateWorldMatrix() const override;
 
     protected:
+        void _dispose() override;
+
+    protected:
         bool m_outward;
         bool m_global;
         bool m_exclusive;

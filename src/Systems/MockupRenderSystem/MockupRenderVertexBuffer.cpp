@@ -67,9 +67,9 @@ namespace Mengine
     {
         if( _offset + _count > m_vertexCount )
         {
-            LOGGER_ERROR( "%d offset %d more max size %d"
-                , _count
+            LOGGER_ERROR( "offset %u count %u more max size %u"
                 , _offset
+                , _count                
                 , m_vertexCount
             );
 
@@ -88,10 +88,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderVertexBuffer::draw( const void * _buffer, size_t _size )
+    bool MockupRenderVertexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
         MENGINE_UNUSED( _buffer );
-        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _offset );
+        MENGINE_UNUSED( _count );
 
         return true;
     }

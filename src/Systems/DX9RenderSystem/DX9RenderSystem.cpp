@@ -353,7 +353,7 @@ namespace Mengine
 
         m_d3dppW.BackBufferWidth = m_windowResolution.getWidth();
         m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
-        m_d3dppW.BackBufferFormat = D3DFMT_UNKNOWN;
+        m_d3dppW.BackBufferFormat = m_displayMode.Format;
         m_d3dppW.BackBufferCount = 1;
 
         m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;

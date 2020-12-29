@@ -28,7 +28,8 @@ namespace Mengine
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc ) = 0;
+            , uint32_t _vertexCount, uint32_t _indexCount
+            , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentPtr & _doc ) = 0;
 
         virtual void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material

@@ -146,7 +146,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pD3DIndexBuffer, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
-            LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
+            LOGGER_ERROR( "invalid lock count %u offset %u (doc '%s')"
                 , _count
                 , _offset
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
@@ -166,7 +166,8 @@ namespace Mengine
 
         IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
-            LOGGER_ERROR( "invalid"
+            LOGGER_ERROR( "invalid (doc: %s)"
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );
 
             return false;
@@ -175,26 +176,41 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size )
+    bool DX9RenderIndexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
-        UINT sizeToLock = (UINT)(_size * m_indexSize);
-
-        void * lock_memory = nullptr;
-        IF_DXCALL( m_pD3DIndexBuffer, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
+        if( _offset + _count > m_indexCapacity )
         {
-            LOGGER_ERROR( "invalid lock size %zu (doc '%s')"
-                , _size
+            LOGGER_ERROR( "draw count %u offset %u more capacity %u (doc '%s')"
+                , _count
+                , _offset
+                , m_indexCapacity
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
             return false;
         }
 
-        stdex::memorycopy( lock_memory, 0, _buffer, _size * m_indexSize );
+        UINT offsetToLock = (UINT)(_offset * m_indexSize);
+        UINT sizeToLock = (UINT)(_count * m_indexSize);
+
+        void * lock_memory = nullptr;
+        IF_DXCALL( m_pD3DIndexBuffer, Lock, (offsetToLock, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
+        {
+            LOGGER_ERROR( "invalid lock offset %u size %u (doc '%s')"
+                , offsetToLock
+                , sizeToLock
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
+            );
+
+            return false;
+        }
+
+        stdex::memorycopy( lock_memory, 0, _buffer, _count * m_indexSize );
 
         IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
-            LOGGER_ERROR( "invalid unlock"
+            LOGGER_ERROR( "invalid unlock (doc: %s)"
+                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )
             );
 
             return false;

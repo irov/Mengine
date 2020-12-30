@@ -74,7 +74,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
-        //MENGINE_ASSERTION_FATAL( m_dataTTF == nullptr );
+        MENGINE_ASSERTION_FATAL( m_dataTTF == nullptr );
 
         this->clearGlyphs_();
 

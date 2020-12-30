@@ -136,18 +136,9 @@ namespace Mengine
         FactoryPtr m_factoryTextEntry;
         FactoryPtr m_factoryTextLocalePackage;
 
-        typedef Pool<ConstStringHolderLocalString, 1024> PoolConstStringHolderLocalString;
-        PoolConstStringHolderLocalString m_poolLocalString;
-
-        typedef IntrusiveList<ConstStringHolderLocalString> IntrusiveListConstStringHolderLocalString;
-        IntrusiveListConstStringHolderLocalString m_holdersLocalString;
-
         VectorU32String m_lineDelims;
 
     protected:
         class TextManagerLoadSaxCallback;
-        class TextManagerUnloadSaxCallback;
-
-        void createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * const _cstr );
     };
 }

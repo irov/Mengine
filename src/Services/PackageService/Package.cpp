@@ -64,11 +64,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Package::finalize()
     {
+        this->unmountFileGroup_();
+
         m_resourcesDesc.clear();
 
         m_parentPackage = nullptr;
         m_baseFileGroup = nullptr;
-        m_fileGroup = nullptr;
 
         m_scriptsPackages.clear();
         m_fontsDesc.clear();
@@ -197,20 +198,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unmountFileGroup_()
+    void Package::unmountFileGroup_()
     {
-        if( FILE_SERVICE()
-            ->unmountFileGroup( m_name ) == false )
-        {
-            LOGGER_ERROR( "failed to mount package '%s' path '%s'"
-                , m_name.c_str()
-                , m_filePath.c_str()
-            );
+        FILE_SERVICE()
+            ->unmountFileGroup( m_name );
 
-            return false;
-        }
-
-        return true;
+        m_fileGroup = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadPackage_()
@@ -638,11 +631,6 @@ namespace Mengine
             {
                 return false;
             }
-        }
-
-        if( this->unmountFileGroup_() == false )
-        {
-            return false;
         }
 
         return true;

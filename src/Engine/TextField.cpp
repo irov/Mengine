@@ -71,10 +71,11 @@ namespace Mengine
             return false;
         }
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &TextField::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_TEXT_MODE, &TextField::notifyDebugMode, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS, &TextField::notifyChangeTextAliasArguments, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TextField::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &TextField::notifyChangeLocalePrepare_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &TextField::notifyChangeLocalePost_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_TEXT_MODE, &TextField::notifyDebugMode_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS, &TextField::notifyChangeTextAliasArguments_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TextField::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
 
         this->invalidateTextLines();
 
@@ -83,6 +84,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_deactivate()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_TEXT_MODE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS );
@@ -132,7 +134,28 @@ namespace Mengine
         m_vertexDataTextWM.swap( vertexDataTextWM );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    void TextField::notifyChangeLocalePrepare_( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    {
+        MENGINE_UNUSED( _prevLocale );
+        MENGINE_UNUSED( _currentlocale );
+
+        if( m_totalFont != nullptr )
+        {
+            m_totalFont->releaseFont();
+            m_totalFont = nullptr;
+        }
+
+        for( const CacheFont & cache : m_cacheFonts )
+        {
+            const TextFontInterfacePtr & font = cache.font;
+
+            font->releaseFont();
+        }
+
+        m_cacheFonts.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::notifyChangeLocalePost_( const ConstString & _prevLocale, const ConstString & _currentlocale )
     {
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
@@ -140,14 +163,14 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyDebugMode( bool _debugMode )
+    void TextField::notifyDebugMode_( bool _debugMode )
     {
         m_debugMode = _debugMode;
 
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyChangeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
+    void TextField::notifyChangeTextAliasArguments_( const ConstString & _environment, const ConstString & _alias )
     {
         if( m_aliasEnvironment != _environment || m_textId != _alias )
         {
@@ -157,7 +180,7 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyRenderDeviceLostPrepare()
+    void TextField::notifyRenderDeviceLostPrepare_()
     {
         this->invalidateTextEntry();
     }

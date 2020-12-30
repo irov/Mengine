@@ -70,7 +70,7 @@ namespace Mengine
 
     protected:
         bool mountFileGroup_( const DocumentPtr & _doc );
-        bool unmountFileGroup_();
+        void unmountFileGroup_();
         bool loadPackage_();
 
     protected:

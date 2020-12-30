@@ -23,11 +23,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ozz::span<Detail::Mesh> ResourceOzzMesh::getMeshes()
-    {
-        return ozz::make_span( m_meshes );
-    }
-    //////////////////////////////////////////////////////////////////////////
     ozz::span<const Detail::Mesh> ResourceOzzMesh::getMeshes() const
     {
         return ozz::make_span( m_meshes );

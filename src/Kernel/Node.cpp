@@ -5,6 +5,7 @@
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/UpdationInterface.h"
+#include "Interface/EventationInterface.h"
 
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/IntrusivePtrScope.h"
@@ -58,6 +59,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_dispose()
     {
+        EventationInterface * eventation = this->getEventation();
+
+        if( eventation != nullptr )
+        {
+            eventation->removeEvents();
+        }
+
         this->clearAffectorHub();
     }
     //////////////////////////////////////////////////////////////////////////

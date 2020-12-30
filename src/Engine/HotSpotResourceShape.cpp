@@ -49,7 +49,7 @@ namespace Mengine
     {
         m_resourceShape = nullptr;
 
-        Node::_dispose();
+        HotSpotPolygon::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpotResourceShape::setResourceShape( const ResourceShapePtr & _resourceShape )

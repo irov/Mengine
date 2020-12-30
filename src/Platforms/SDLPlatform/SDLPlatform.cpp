@@ -2511,20 +2511,12 @@ namespace Mengine
     void SDLPlatform::finalizeFileService_()
     {
 #ifndef MENGINE_MASTER_RELEASE
-        if( FILE_SERVICE()
-            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) ) == false )
-        {
-            LOGGER_ERROR( "failed to unmount dev directory"
-            );
-        }
+        FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 #endif
 
-        if( FILE_SERVICE()
-            ->unmountFileGroup( ConstString::none() ) == false )
-        {
-            LOGGER_ERROR( "failed to unmount application directory"
-            );
-        }
+        FILE_SERVICE()
+            ->unmountFileGroup( ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

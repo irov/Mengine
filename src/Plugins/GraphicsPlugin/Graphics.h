@@ -14,6 +14,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Graphics
         : public Node
         , public BaseRender

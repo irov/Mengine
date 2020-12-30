@@ -161,7 +161,7 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCount )
         {
-            return nullptr;
+            return false;
         }
 
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );

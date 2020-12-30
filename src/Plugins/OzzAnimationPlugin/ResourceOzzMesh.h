@@ -28,7 +28,6 @@ namespace Mengine
         ~ResourceOzzMesh() override;
 
     public:
-        ozz::span<Detail::Mesh> getMeshes();
         ozz::span<const Detail::Mesh> getMeshes() const;
 
     protected:

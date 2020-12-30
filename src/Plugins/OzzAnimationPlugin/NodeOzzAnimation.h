@@ -91,9 +91,15 @@ namespace Mengine
 
         ozz::vector<ozz::math::SimdFloat4> m_upperBodyJointWeights;
 
-        MemoryBufferInterfacePtr m_vertexMemory;
-        RenderVertexBufferInterfacePtr m_vertexBuffer;
-        RenderIndexBufferInterfacePtr m_indexBuffer;
+        struct RenderMeshDesc
+        {
+            MemoryBufferInterfacePtr vertexMemory;
+            RenderVertexBufferInterfacePtr vertexBuffer;
+            RenderIndexBufferInterfacePtr indexBuffer;
+        };
+
+        typedef Vector<RenderMeshDesc> VectorRenderMeshDescs;
+        VectorRenderMeshDescs m_renderMeshes;
 
         RenderMaterialInterfacePtr m_material;
 

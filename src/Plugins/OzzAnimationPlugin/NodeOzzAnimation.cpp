@@ -257,42 +257,44 @@ namespace Mengine
             weight_setting = ozz::math::SetI( weight_setting, ozz::math::simd_float4::Load1( upper_body_joint_weight_setting ), _joint % 4 );
         } );
 
-        m_vertexMemory = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+        ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
-        RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
-            ->createVertexBuffer( ozz_vertex_stride, BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
+        m_renderMeshes.reserve( ozz_meshes.size() );
 
-        ozz::span<Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
-
-        uint32_t max_vertex_count = 0;
         for( const Detail::Mesh & ozz_mesh : ozz_meshes )
         {
+            MemoryBufferInterfacePtr vertexMemory = MEMORY_SERVICE()
+                ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory );
+
+            RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
+                ->createVertexBuffer( ozz_vertex_stride, BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer );
+
             uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
-            max_vertex_count += vertex_count;
-        }
+            vertexBuffer->resize( vertex_count );
 
-        vertexBuffer->resize( max_vertex_count );
+            RenderIndexBufferInterfacePtr indexBuffer = RENDER_SYSTEM()
+                ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_vertexBuffer = vertexBuffer;
+            MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer );
 
-        RenderIndexBufferInterfacePtr indexStream = RENDER_SYSTEM()
-            ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
-
-        uint32_t max_indices_count = 0;
-        for( const Detail::Mesh & ozz_mesh : ozz_meshes )
-        {
             const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
             Detail::Mesh::VectorTriangleIndices::size_type indices_count = triangle_indices.size();
 
-            max_indices_count += indices_count;
+            indexBuffer->resize( indices_count );
+
+            RenderMeshDesc desc;
+            desc.vertexMemory = vertexMemory;
+            desc.vertexBuffer = vertexBuffer;
+            desc.indexBuffer = indexBuffer;
+
+            m_renderMeshes.push_back( desc );
         }
-
-        indexStream->resize( max_indices_count );
-
-        m_indexBuffer = indexStream;
 
         const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture();
 
@@ -323,9 +325,7 @@ namespace Mengine
         m_upperBodyJointWeights.clear();
         m_blendedLocals.clear();
 
-        m_vertexMemory = nullptr;
-        m_vertexBuffer = nullptr;
-        m_indexBuffer = nullptr;
+        m_renderMeshes.clear();
 
         m_material = nullptr;
 
@@ -402,8 +402,11 @@ namespace Mengine
 
         ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
+        uint32_t ozz_mesh_index = 0;
         for( const Detail::Mesh & ozz_mesh : ozz_meshes )
         {
+            const RenderMeshDesc & desc = m_renderMeshes[ozz_mesh_index++];
+
             Detail::Mesh::VectorJointRemaps::size_type mesh_joint_remap_count = ozz_mesh.joint_remaps.size();
 
             // Builds skinning matrices, based on the output of the animation stage.
@@ -418,7 +421,7 @@ namespace Mengine
             }
 
             // Renders skin.
-            size_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+            uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
             // Positions and normals are interleaved to improve caching while executing
             // skinning job.
@@ -427,7 +430,8 @@ namespace Mengine
 
             // Reallocate vertex buffer.
             size_t vbo_size = skinned_data_size;
-            void * vbo_map = m_vertexMemory->newBuffer( vbo_size );
+
+            void * vbo_map = desc.vertexMemory->newBuffer( vbo_size );
 
             // Iterate mesh parts and fills vbo.
             // Runs a skinning job per mesh part. Triangle indices are shared
@@ -584,17 +588,17 @@ namespace Mengine
     {
         ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
 
-        uint32_t vertex_base = 0;
-        uint32_t index_base = 0;
-
+        uint32_t ozz_mesh_index = 0;
         for( const Detail::Mesh & ozz_mesh : ozz_meshes )
         {
+            const RenderMeshDesc & desc = m_renderMeshes[ozz_mesh_index++];
+
             // Renders skin.
             uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
             // Reallocate vertex buffer.
             uint32_t vbo_size = vertex_count;
-            void * vbo_buffer = m_vertexMemory->getBuffer();
+            void * vbo_buffer = desc.vertexMemory->getBuffer();
 
             struct OzzVertex
             {
@@ -606,14 +610,14 @@ namespace Mengine
             OzzVertex * v = (OzzVertex *)vbo_buffer;
             (void)v;
 
-            m_vertexBuffer->draw( vbo_buffer, vertex_base, vbo_size );
+            desc.vertexBuffer->draw( vbo_buffer, 0, vbo_size );
 
             const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
             const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
             uint32_t indices_count = triangle_indices.size();
 
-            m_indexBuffer->draw( triangle_indices_buffer_data, index_base, indices_count );
+            desc.indexBuffer->draw( triangle_indices_buffer_data, 0, indices_count );
 
             const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -635,10 +639,7 @@ namespace Mengine
             new_context.scissor = _context->scissor;
             new_context.target = _context->target;
 
-            _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, (uint32_t)indices_count, 0, 0, MENGINE_DOCUMENT_FORWARD );
-
-            vertex_base += vertex_count;
-            index_base += indices_count;
+            _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, desc.vertexBuffer, desc.indexBuffer, vertex_count, (uint32_t)indices_count, 0, 0, MENGINE_DOCUMENT_FORWARD );
         }
     }
     //////////////////////////////////////////////////////////////////////////

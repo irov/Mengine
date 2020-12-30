@@ -121,7 +121,7 @@ namespace Mengine
     {
         m_resourceTestPick = nullptr;
 
-        Node::_dispose();
+        HotSpot::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotImage::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const

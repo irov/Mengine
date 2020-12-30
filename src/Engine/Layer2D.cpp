@@ -72,7 +72,7 @@ namespace Mengine
     {
         m_resourceImageMask = nullptr;
 
-        Node::_dispose();
+        Layer::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::setSize( const mt::vec2f & _size )
@@ -182,13 +182,19 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _resourceImageMask, "image mask is nullptr" );
 
-        MENGINE_ASSERTION_FATAL( m_hasImageMask == false );
+        if( m_resourceImageMask == _resourceImageMask &&
+            m_hasImageMask == true )
+        {
+            return true;
+        }
 
         m_resourceImageMask = _resourceImageMask;
 
         if( this->createRenderTarget_() == false )
         {
             LOGGER_ERROR( "invalid create render target" );
+
+            m_resourceImageMask = nullptr;
 
             return false;
         }
@@ -215,6 +221,8 @@ namespace Mengine
         m_hasImageMask = false;
 
         this->clearRenderTarget_();
+
+        m_resourceImageMask = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::createRenderTarget_()
@@ -267,8 +275,6 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid get material" );
 
-        m_materialImageMask = material;
-
         Viewport v;
         renderTarget->calcViewport( m_size, &v );
 
@@ -284,7 +290,13 @@ namespace Mengine
         m_verticesImageMaskWM[2].uv[1] = uv_mask.p2;
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
 
-        m_renderTarget = Helper::makeFactorableUnique<Layer2DRenderTarget>( MENGINE_DOCUMENT_FACTORABLE, this );
+        RenderInterfacePtr layer2DRenderTarget = Helper::makeFactorableUnique<Layer2DRenderTarget>( MENGINE_DOCUMENT_FACTORABLE, this );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( layer2DRenderTarget, "invalid make render target" );
+
+        m_renderTarget = layer2DRenderTarget;
+
+        m_materialImageMask = material;
 
         return true;
     }

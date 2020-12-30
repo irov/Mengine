@@ -3960,8 +3960,6 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "gridBurnTransparency", nodeScriptMethod, &EngineScriptMethod::s_gridBurnTransparency );
 
-        pybind::def_functor( _kernel, "setLocale", nodeScriptMethod, &EngineScriptMethod::s_setLocale );
-
         pybind::def_functor_args( _kernel, "createAffector", nodeScriptMethod, &EngineScriptMethod::s_createAffector );
         pybind::def_functor_args( _kernel, "addAffector", nodeScriptMethod, &EngineScriptMethod::s_addAffector );
         pybind::def_functor( _kernel, "removeAffector", nodeScriptMethod, &EngineScriptMethod::s_removeAffector );

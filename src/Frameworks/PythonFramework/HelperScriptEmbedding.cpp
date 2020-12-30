@@ -18,6 +18,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/PackageServiceInterface.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHierarchy.h"
@@ -118,7 +119,25 @@ namespace Mengine
                 return _kernel->is_wrap( _obj );
             }
             //////////////////////////////////////////////////////////////////////////
-            const ConstString & s_getLanguagePack()
+            bool s_setLocale( const ConstString & _locale )
+            {
+                if( PACKAGE_SERVICE()
+                    ->existLocalePackage( _locale, {} ) == false )
+                {
+                    LOGGER_ERROR( "not found game localization for language '%s'"
+                        , _locale.c_str()
+                    );
+
+                    return false;
+                }
+
+                APPLICATION_SERVICE()
+                    ->setLocale( _locale );
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const ConstString & s_getLocale()
             {
                 const ConstString & locale = APPLICATION_SERVICE()
                     ->getLocale();
@@ -3714,7 +3733,8 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "is_type_class", helperScriptMethod, &HelperScriptMethod::s_is_type_class );
         pybind::def_functor_kernel( _kernel, "is_wrap", helperScriptMethod, &HelperScriptMethod::s_is_wrap );
 
-        pybind::def_functor( _kernel, "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );
+        pybind::def_functor( _kernel, "setLocale", helperScriptMethod, &HelperScriptMethod::s_setLocale );
+        pybind::def_functor( _kernel, "getLocale", helperScriptMethod, &HelperScriptMethod::s_getLocale );
 
         pybind::def_functor( _kernel, "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
         pybind::def_functor( _kernel, "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );

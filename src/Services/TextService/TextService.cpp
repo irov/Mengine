@@ -89,22 +89,6 @@ namespace Mengine
 
         m_packages.clear();
 
-        for( IntrusiveListConstStringHolderLocalString::iterator it = m_holdersLocalString.begin(); it != m_holdersLocalString.end(); )
-        {
-            IntrusiveListConstStringHolderLocalString::iterator it_erase = it;
-
-            ConstStringHolderLocalString * holder = *it;
-            ++it;
-
-            m_holdersLocalString.erase( it_erase );
-
-            m_poolLocalString.destroyT( holder );
-        }
-
-        m_holdersLocalString.clear();
-
-        m_poolLocalString.clear();
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePackage );
 
@@ -141,11 +125,10 @@ namespace Mengine
                 return;
             }
 
-            ConstString text_key;
-
-
             Char text_str_value[4096] = {'\0'};
             size_t text_str_size = 0;
+
+            ConstString textKey;
             ConstString fontName;
 
             float charOffset = 0.f;
@@ -171,7 +154,7 @@ namespace Mengine
 
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &text_key );
+                    textKey = Helper::stringizeString( str_value );
                 }
                 else if( MENGINE_STRCMP( str_key, "Value" ) == 0 )
                 {
@@ -185,7 +168,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read text key '%s' value |%s| invalid utf8 char |%s|"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                             , str_value_valid
                         );
@@ -206,7 +189,7 @@ namespace Mengine
                 }
                 else if( MENGINE_STRCMP( str_key, "Font" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &fontName );
+                    fontName = Helper::stringizeString( str_value );
 
                     params |= EFP_FONT;
                 }
@@ -218,7 +201,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' charOffset '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -235,7 +218,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -255,7 +238,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -272,7 +255,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Override '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -289,7 +272,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Override' '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -321,7 +304,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -351,7 +334,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -364,7 +347,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Scale '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -381,7 +364,7 @@ namespace Mengine
                         LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
-                            , text_key.c_str()
+                            , textKey.c_str()
                             , str_value
                         );
                     }
@@ -394,7 +377,7 @@ namespace Mengine
                         , m_fileGroup->getName().c_str()
                         , m_filePath.c_str()
                         , str_key
-                        , text_key.c_str()
+                        , textKey.c_str()
                     );
                 }
             }
@@ -404,18 +387,18 @@ namespace Mengine
                 LOGGER_ERROR( "'%s:%s' invalid text key '%s' value is empty"
                     , m_fileGroup->getName().c_str()
                     , m_filePath.c_str()
-                    , text_key.c_str()
+                    , textKey.c_str()
                 );
             }
 
             Tags tags;
 
-            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, tags, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
+            if( m_textManager->addTextEntry( textKey, text_str_value, text_str_size, tags, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
                     , m_fileGroup->getName().c_str()
                     , m_filePath.c_str()
-                    , text_key.c_str()
+                    , textKey.c_str()
                 );
             }
         }
@@ -481,27 +464,29 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-
-    class TextService::TextManagerUnloadSaxCallback
+    bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-    public:
-        TextManagerUnloadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
-            : m_textManager( _textManager )
-            , m_fileGroup( _fileGroup )
-            , m_filePath( _filePath )
+        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( package->initialize( _fileGroup, _filePath ) == false )
         {
+            return false;
         }
 
-        ~TextManagerUnloadSaxCallback()
-        {
-        }
+        MemoryInterfacePtr xml_memory = package->getXmlBuffer();
 
-    protected:
-        void operator = ( const TextManagerUnloadSaxCallback & ) = delete;
+        Char * xml_buff = xml_memory->getBuffer();
 
-    public:
-        void parse( const char * _node, uint32_t _count, const char ** const _keys, const char ** const _values )
+        xmlsax_callbacks_t callbacks;
+        callbacks.begin_node = []( const xmlsax_char_t *, void * )
+        {};
+        callbacks.end_node = []( const xmlsax_char_t *, void * )
+        {};
+
+        callbacks.node_attributes = []( const xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _keys, const xmlsax_char_t ** const _values, void * _userdata )
         {
+            TextService * textService = (TextService *)(_userdata);
+
             if( MENGINE_STRCMP( _node, "Text" ) != 0 )
             {
                 return;
@@ -516,7 +501,7 @@ namespace Mengine
 
                 if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, &text_key );
+                    text_key = Helper::stringizeString( str_value );
                 }
             }
 
@@ -525,47 +510,10 @@ namespace Mengine
                 return;
             }
 
-            m_textManager->removeTextEntry( text_key );
-        }
-
-    protected:
-        TextService * m_textManager;
-
-        const FileGroupInterfacePtr & m_fileGroup;
-        const FilePath & m_filePath;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
-    {
-        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( package->initialize( _fileGroup, _filePath ) == false )
-        {
-            return false;
-        }
-
-        MemoryInterfacePtr xml_memory = package->getXmlBuffer();
-
-        Char * xml_buff = xml_memory->getBuffer();
-
-        TextManagerUnloadSaxCallback tmsc( this, _fileGroup, _filePath );
-
-        xmlsax_callbacks_t callbacks;
-        callbacks.begin_node = []( const xmlsax_char_t *, void * )
-        {};
-        callbacks.end_node = []( const xmlsax_char_t *, void * )
-        {};
-
-        callbacks.node_attributes = []( const xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _key, const xmlsax_char_t ** const _value, void * _userdata )
-        {
-            MENGINE_UNUSED( _userdata );
-
-            TextManagerUnloadSaxCallback * callback = (TextManagerUnloadSaxCallback *)_userdata;
-
-            callback->parse( _node, _count, _key, _value );
+            textService->removeTextEntry( text_key );
         };
 
-        if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )
+        if( xmlsax_parse( xml_buff, &callbacks, this ) == false )
         {
             return false;
         }
@@ -1137,23 +1085,6 @@ namespace Mengine
         }
 
         return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void TextService::createLocalString_( const Char * _text, ConstString::size_type _size, ConstString * const _cstr )
-    {
-        ConstStringHolderLocalString * holder = m_poolLocalString.createT();
-
-        holder->setup( _text, _size, -1 );
-
-        if( STRINGIZE_SERVICE()
-            ->stringizeExternal( holder, _cstr ) == false )
-        {
-            m_poolLocalString.destroyT( holder );
-        }
-        else
-        {
-            m_holdersLocalString.push_back( holder );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     const VectorU32String & TextService::getLineDelims() const

@@ -164,7 +164,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::unmountFileGroup( const ConstString & _name )
+    void FileService::unmountFileGroup( const ConstString & _name )
     {
         const FileGroupInterfacePtr & groupInterface = m_fileGroups.erase( _name );
 
@@ -178,8 +178,6 @@ namespace Mengine
         {
             m_defaultFileGroup = nullptr;
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileService::hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * const _fileGroup ) const

@@ -169,10 +169,11 @@ namespace Mengine
         void _dispose() override;
 
     protected:
-        void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
-        void notifyDebugMode( bool _debugMode );
-        void notifyChangeTextAliasArguments( const ConstString & _environment, const ConstString & _alias );
-        void notifyRenderDeviceLostPrepare();
+        void notifyChangeLocalePrepare_( const ConstString & _prevLocale, const ConstString & _currentlocale );
+        void notifyChangeLocalePost_( const ConstString & _prevLocale, const ConstString & _currentlocale );
+        void notifyDebugMode_( bool _debugMode );
+        void notifyChangeTextAliasArguments_( const ConstString & _environment, const ConstString & _alias );
+        void notifyRenderDeviceLostPrepare_();
 
     protected:
         void updateVertices_( const TextFontInterfacePtr & _font ) const;

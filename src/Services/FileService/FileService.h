@@ -27,7 +27,7 @@ namespace Mengine
 
     public:
         bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentPtr & _doc ) override;
-        bool unmountFileGroup( const ConstString & _name ) override;
+        void unmountFileGroup( const ConstString & _name ) override;
 
     public:
         bool hasFileGroup( const ConstString & _fileGroupName, FileGroupInterfacePtr * const _fileGroup ) const override;

@@ -19,6 +19,7 @@
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/Document.h"
 
 #include "Config/StdString.h"
@@ -56,7 +57,7 @@ namespace Mengine
             // Allocates enough memory to store the header + required alignment space.
             const size_t to_allocate = _size + sizeof( Header ) + _alignment - 1;
             char * unaligned = reinterpret_cast<char *>(Helper::allocateMemory( to_allocate, "ozz" ));
-            if( !unaligned )
+            if( unaligned == nullptr )
             {
                 return nullptr;
             }
@@ -73,7 +74,7 @@ namespace Mengine
 
         void Deallocate( void * _block ) override
         {
-            if( _block )
+            if( _block != nullptr )
             {
                 Header * header = reinterpret_cast<Header *>(
                     reinterpret_cast<char *>(_block) - sizeof( Header ));
@@ -175,6 +176,8 @@ namespace Mengine
 
         ozz::memory::SetDefaulAllocator( m_allocatorOld );
         m_allocatorOld = nullptr;
+
+        MENGINE_ASSERTION_ALLOCATOR( "ozz" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

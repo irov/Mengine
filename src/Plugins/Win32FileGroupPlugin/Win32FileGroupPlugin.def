@@ -1,0 +1,3 @@
+LIBRARY "Win32FileGroupPlugin"
+EXPORTS
+    dllCreatePlugin @1

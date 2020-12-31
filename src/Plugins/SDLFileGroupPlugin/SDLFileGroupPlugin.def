@@ -1,0 +1,2 @@
+LIBRARY "SDLFileGroupPlugin"
+EXPORTS dllCreatePlugin @1

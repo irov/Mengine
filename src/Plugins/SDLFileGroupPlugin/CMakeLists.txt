@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     SDLFileGroupPlugin.h
     SDLFileGroupPlugin.cpp
+    SDLFileGroupPlugin.def
+    
     SDLFileGroupDirectory.cpp
     SDLFileGroupDirectory.h
 	SDLFileGroupDirectoryFactory.h

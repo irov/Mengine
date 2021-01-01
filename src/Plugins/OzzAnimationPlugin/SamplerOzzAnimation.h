@@ -50,7 +50,7 @@ namespace Mengine
 
     protected:
         void updateTiming_( float _timing );
-        void updateAnimation_();
+        bool updateAnimation_();
 
     protected:
         bool _play( uint32_t _playId, float _time ) override;

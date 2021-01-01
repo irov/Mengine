@@ -72,7 +72,11 @@ namespace Mengine
         float totalTiming = this->calcTotalTime( _context );
 
         this->updateTiming_( totalTiming );
-        this->updateAnimation_();
+        
+        if( this->updateAnimation_() == false )
+        {
+            return;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_compile()
@@ -98,7 +102,10 @@ namespace Mengine
         m_locals.resize( num_soa_joints );
         m_cache.Resize( num_joints );
 
-        this->updateAnimation_();
+        if( this->updateAnimation_() == false )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -141,31 +148,37 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::updateAnimation_()
+    bool SamplerOzzAnimation::updateAnimation_()
     {
         // Early out if this sampler weight makes it irrelevant during blending.
         if( m_weight <= 0.f )
         {
-            return;
+            return true;
         }
 
         const ozz::animation::Animation & ozz_animation = m_resourceOzzAnimation->getOzzAnimation();
+
+        float duration = ozz_animation.duration() * 1000.f;
+        float ratio = m_time / duration;
 
         // Setup sampling job.
         ozz::animation::SamplingJob sampling_job;
         sampling_job.animation = &ozz_animation;
         sampling_job.cache = &m_cache;
-
-        float duration = ozz_animation.duration() * 1000.f;
-        float ratio = m_time / duration;
         sampling_job.ratio = ratio;
         sampling_job.output = make_span( m_locals );
 
         // Samples animation.
         if( sampling_job.Run() == false )
         {
-            return;
+            LOGGER_ERROR( "ozz sampler '%s' invalid sampling job"
+                , this->getName().c_str()
+            );
+
+            return false;
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_play( uint32_t _playId, float _time )

@@ -8,8 +8,6 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
-#include "Plugins/OzzAnimationPlugin/OzzAnimationInterface.h"
-
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
 #include "Engine/ShapeQuadFixed.h"
@@ -29,6 +27,7 @@
 #include "Kernel/TimepipeHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Vector.h"
+#include "Kernel/GlobalInputHandlerHelper.h"
 
 namespace Mengine
 {
@@ -107,24 +106,14 @@ namespace Mengine
         ContentInterface * resourceOzzSkeletonContent = resourceOzzSkeleton->getContent();
 
         resourceOzzSkeletonContent->setFileGroup( fileGroup );
-        resourceOzzSkeletonContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/ruby_skeleton.ozz" ) );
-
-        if( resourceOzzSkeleton->compile() == false )
-        {
-            return false;
-        }
+        resourceOzzSkeletonContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/pab_skeleton.ozz" ) );
 
         ResourcePtr resourceOzzMesh = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), MENGINE_DOCUMENT_FUNCTION );
 
         ContentInterface * resourceOzzMeshContent = resourceOzzMesh->getContent();
 
         resourceOzzMeshContent->setFileGroup( fileGroup );
-        resourceOzzMeshContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/ruby_mesh.ozz" ) );
-
-        if( resourceOzzMesh->compile() == false )
-        {
-            return false;
-        }
+        resourceOzzMeshContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/arnaud_mesh.ozz" ) );
 
         NodePtr nodeOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
 
@@ -140,37 +129,61 @@ namespace Mengine
         resourceImageDefaultContent->setFileGroup( fileGroup );
         resourceImageDefaultContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/texture.png" ) );
 
-        if( resourceImageDefault->compile() == false )
-        {
-            return false;
-        }
-
         unknownNodeOzzAnimation->setResourceOzzImage( resourceImageDefault );
         unknownNodeOzzAnimation->setResourceOzzSkeleton( resourceOzzSkeleton );
         unknownNodeOzzAnimation->setResourceOzzMesh( resourceOzzMesh );
 
+        SamplerOzzAnimationInterfacePtr samplerOzzAnimation_walk = this->createOzzSampler( fileGroup, STRINGIZE_FILEPATH_LOCAL( "ozz/pab_walk.ozz" ), resourceOzzSkeleton, 0.f );
+        SamplerOzzAnimationInterfacePtr samplerOzzAnimation_jog = this->createOzzSampler( fileGroup, STRINGIZE_FILEPATH_LOCAL( "ozz/pab_jog.ozz" ), resourceOzzSkeleton, 0.f );
+
+        unknownNodeOzzAnimation->addOzzAnimationSampler( samplerOzzAnimation_walk );
+        unknownNodeOzzAnimation->addOzzAnimationSampler( samplerOzzAnimation_jog );
+
+        m_node->addChild( nodeOzzAnimation );
+
+        Helper::addGlobalKeyHandler( KC_1, true, [samplerOzzAnimation_walk, samplerOzzAnimation_jog]( const InputKeyEvent & )
+        {
+            samplerOzzAnimation_walk->setWeight( 1.f );
+            samplerOzzAnimation_jog->setWeight( 0.f );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        Helper::addGlobalKeyHandler( KC_2, true, [samplerOzzAnimation_walk, samplerOzzAnimation_jog]( const InputKeyEvent & )
+        {
+            samplerOzzAnimation_walk->setWeight( 0.75f );
+            samplerOzzAnimation_jog->setWeight( 0.25f );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        Helper::addGlobalKeyHandler( KC_3, true, [samplerOzzAnimation_walk, samplerOzzAnimation_jog]( const InputKeyEvent & )
+        {
+            samplerOzzAnimation_walk->setWeight( 0.25f );
+            samplerOzzAnimation_jog->setWeight( 0.75f );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        Helper::addGlobalKeyHandler( KC_4, true, [samplerOzzAnimation_walk, samplerOzzAnimation_jog]( const InputKeyEvent & )
+        {
+            samplerOzzAnimation_walk->setWeight( 0.f );
+            samplerOzzAnimation_jog->setWeight( 1.f );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SamplerOzzAnimationInterfacePtr OzzEventReceiver::createOzzSampler( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ResourcePtr & _resourceOzzSkeleton, float _weight )
+    {
         ResourcePtr resourceOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
 
         ContentInterface * resourceOzzAnimationContent = resourceOzzAnimation->getContent();
 
-        resourceOzzAnimationContent->setFileGroup( fileGroup );
-        resourceOzzAnimationContent->setFilePath( STRINGIZE_FILEPATH_LOCAL( "ozz/ruby_animation.ozz" ) );
-
-        if( resourceOzzAnimation->compile() == false )
-        {
-            return false;
-        }
+        resourceOzzAnimationContent->setFileGroup( _fileGroup );
+        resourceOzzAnimationContent->setFilePath( _filePath );
 
         SamplerOzzAnimationInterfacePtr samplerOzzAnimation = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_FUNCTION );
 
-        samplerOzzAnimation->setResourceOzzSkeleton( resourceOzzSkeleton );
+        samplerOzzAnimation->setResourceOzzSkeleton( _resourceOzzSkeleton );
         samplerOzzAnimation->setResourceOzzAnimation( resourceOzzAnimation );
+        samplerOzzAnimation->setWeight( _weight );
 
-        unknownNodeOzzAnimation->addOzzAnimationSampler( samplerOzzAnimation );
-
-        m_node->addChild( nodeOzzAnimation );
-
-        return true;
+        return samplerOzzAnimation;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OzzEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )

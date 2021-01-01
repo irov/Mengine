@@ -313,7 +313,10 @@ namespace Mengine
             }
         }
 
-        this->updateAnimation_();
+        if( this->updateAnimation_() == false )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -351,13 +354,15 @@ namespace Mengine
         this->updateAnimation_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeOzzAnimation::updateAnimation_()
+    bool NodeOzzAnimation::updateAnimation_()
     {
         ozz::animation::BlendingJob::Layer layers[32];
         uint32_t layers_iterator = 0;
 
         for( const SamplerOzzAnimationPtr & sampler : m_samplers )
         {
+            MENGINE_ASSERTION_FATAL( layers_iterator != 32 );
+
             if( sampler->isCompile() == false )
             {
                 continue;
@@ -385,7 +390,11 @@ namespace Mengine
         // Blends.
         if( blend_job.Run() == false )
         {
-            return;
+            LOGGER_ERROR( "ozz node '%s' invalid blend job"
+                , this->getName().c_str()
+            );
+
+            return false;
         }
 
         // Setup local-to-model conversion job.
@@ -397,7 +406,11 @@ namespace Mengine
         // Run ltm job.
         if( ltm_job.Run() == false )
         {
-            return;
+            LOGGER_ERROR( "ozz node '%s' invalid local to model job"
+                , this->getName().c_str()
+            );
+
+            return false;
         }
 
         ozz::span<const Detail::Mesh> ozz_meshes = m_resourceMesh->getMeshes();
@@ -524,11 +537,15 @@ namespace Mengine
                 // Execute the job, which should succeed unless a parameter is invalid.
                 if( skinning_job.Run() == false )
                 {
-                    return;
+                    LOGGER_ERROR( "ozz node '%s' invalid skinning job"
+                        , this->getName().c_str()
+                    );
+
+                    return false;
                 }
 
-                Color color;
-                this->calcTotalColor( &color );
+                Color total_color;
+                this->calcTotalColor( &total_color );
 
                 // Handles colors which aren't affected by skinning.
                 // Optimal path used when the right number of colors is provided.
@@ -543,14 +560,14 @@ namespace Mengine
                     {
                         uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
 
-                        Helper::multiplyColorBuffer( color, vbo_colors_buffer, part_colors_buffer );
+                        Helper::multiplyColorBuffer( total_color, vbo_colors_buffer, part_colors_buffer );
 
                         part_colors_buffer += ozz_colors_size;
                     }
                 }
                 else
                 {
-                    ColorValue_ARGB argb = color.getAsARGB();
+                    ColorValue_ARGB argb = total_color.getAsARGB();
 
                     for( uint8_t
                         * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
@@ -582,6 +599,8 @@ namespace Mengine
                 processed_vertex_count += part_vertex_count;
             }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
@@ -599,16 +618,6 @@ namespace Mengine
             // Reallocate vertex buffer.
             uint32_t vbo_size = vertex_count;
             void * vbo_buffer = desc.vertexMemory->getBuffer();
-
-            struct OzzVertex
-            {
-                mt::vec3f position;
-                uint32_t color;
-                mt::vec2f uv;
-            };
-
-            OzzVertex * v = (OzzVertex *)vbo_buffer;
-            (void)v;
 
             desc.vertexBuffer->draw( vbo_buffer, 0, vbo_size );
 

@@ -74,7 +74,7 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        void updateAnimation_();
+        bool updateAnimation_();
 
     protected:
         ResourceImagePtr m_resourceImage;

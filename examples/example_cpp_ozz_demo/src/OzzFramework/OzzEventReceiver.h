@@ -3,8 +3,7 @@
 #include "Kernel/Factory.h"
 #include "Kernel/DummySceneEventReceiver.h"
 
-#include "Plugins/Box2DPlugin/Box2DInterface.h"
-#include "Plugins/GraphicsPlugin/GraphicsInterface.h"
+#include "Plugins/OzzAnimationPlugin/OzzAnimationInterface.h"
 
 #include "Interface/TimepipeServiceInterface.h"
 
@@ -29,6 +28,9 @@ namespace Mengine
         bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override;
         bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
+
+    protected:
+        SamplerOzzAnimationInterfacePtr createOzzSampler( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ResourcePtr & _resourceOzzSkeleton, float _weight );
 
     protected:
         Scene * m_scene;

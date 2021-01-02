@@ -4,6 +4,8 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
 
+#include "Environment/Python/PythonForwardDeclaration.h"
+
 #include "Kernel/ConstString.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/FilePath.h"
@@ -11,15 +13,8 @@
 #include "Kernel/Vector.h"
 
 //////////////////////////////////////////////////////////////////////////
-extern "C"
-{
-    struct _object;
-    typedef _object PyObject;
-}
-//////////////////////////////////////////////////////////////////////////
 namespace pybind
 {
-    class kernel_interface;
     class object;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -27,9 +22,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ScriptModuleInterface> ScriptModuleInterfacePtr;
-    typedef IntrusivePtr<class ScriptCodeDataInterface, class DataInterface> ScriptCodeDataInterfacePtr;
     typedef IntrusivePtr<class ScriptEmbeddingInterface> ScriptEmbeddingInterfacePtr;
-    typedef IntrusivePtr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     struct ScriptModulePackage
     {

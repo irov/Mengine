@@ -174,8 +174,9 @@ namespace Mengine
         template<class T_Receiver>
         void registerPythonEventReceiverMethod( pybind::kernel_interface * _kernel, const pybind::object & _obj, const EventablePtr & _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
-            registerPythonEventReceiverMethod<T_Receiver>( _kernel, _obj, _eventable.get(), _method, _event, _doc );
+            Helper::registerPythonEventReceiverMethod<T_Receiver>( _kernel, _obj, _eventable.get(), _method, _event, _doc );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }
 //////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,6 @@
 
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
@@ -53,7 +52,7 @@ namespace Mengine
             .def_static( "getFrame", &Detail::ResourceTexturepacker_getFrame )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceTexturepacker>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -62,6 +61,6 @@ namespace Mengine
     {
         _kernel->remove_scope<ResourceTexturepacker>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
     }
 }

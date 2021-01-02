@@ -23,4 +23,5 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( NodeAreaOfInterestTriggerEventReceiverInterface, EVENT_AREAOFINTEREST_TRIGGER_ENTER );
     EVENTATION_TYPEID( NodeAreaOfInterestTriggerEventReceiverInterface, EVENT_AREAOFINTEREST_TRIGGER_LEAVE );
+    //////////////////////////////////////////////////////////////////////////
 }

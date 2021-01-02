@@ -1,7 +1,6 @@
 #include "AreaOfInterestScriptEmbedding.h"
 
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -79,6 +78,7 @@ namespace Mengine
 
             return zone;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AreaOfInterestScriptEmbedding::AreaOfInterestScriptEmbedding()
@@ -124,8 +124,8 @@ namespace Mengine
 
         pybind::def_function( _kernel, "createAreaOfInterestZone", &Detail::s_createAreaOfInterestZone );
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeAreaOfInterestTrigger>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeAreaOfInterestActor>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<NodeAreaOfInterestTrigger>( _kernel, STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<NodeAreaOfInterestActor>( _kernel, STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -137,8 +137,8 @@ namespace Mengine
         _kernel->remove_scope<NodeAreaOfInterestTrigger>();
         _kernel->remove_scope<NodeAreaOfInterestActor>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ) );
     }
 }
 

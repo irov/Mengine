@@ -5,6 +5,8 @@
 
 #include "Kernel/Win32Helper.h"
 
+#include "pybind/kernel_interface.hpp"
+
 //////////////////////////////////////////////////////////////////////////
 #if MENGINE_DOCUMENT_ENABLE
 #   define MENGINE_DOCUMENT_PYBIND [](const Mengine::Char * _file, const Mengine::Char * _function, uint32_t _line) \

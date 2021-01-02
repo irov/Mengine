@@ -2,7 +2,7 @@
 
 #include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
@@ -10,6 +10,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/AssertionType.h"
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Typeinfo.h"
@@ -115,4 +116,20 @@ namespace Mengine
 
         pybind::class_type_scope_interface_ptr m_scope;
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void registerScriptWrapping( pybind::kernel_interface * _kernel, const ConstString & _type, const DocumentPtr & _doc )
+        {
+            VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), _type, Helper::makeFactorableUnique<PythonScriptWrapper<T>>( _doc, _kernel ), _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE void unregisterScriptWrapping( const ConstString & _type )
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), _type );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
 }

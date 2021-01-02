@@ -3,7 +3,6 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -76,7 +75,7 @@ namespace Mengine
         pybind::interface_<ResourceOzzSkeleton, pybind::bases<Resource>>( _kernel, "ResourceOzzSkeleton", false )
             ;
 
-        pybind::interface_<SamplerOzzAnimationInterface, pybind::bases<Identity, Animatable, Eventable, Scriptable>>( _kernel, "SamplerOzzAnimationInterface" )
+        pybind::interface_<SamplerOzzAnimationInterface, pybind::bases<Identity, Compilable, Animatable, Eventable, Scriptable>>( _kernel, "SamplerOzzAnimationInterface" )
             .def( "setResourceOzzAnimation", &SamplerOzzAnimationInterface::setResourceOzzAnimation )
             .def( "getResourceOzzAnimation", &SamplerOzzAnimationInterface::getResourceOzzAnimation )
             .def( "setResourceOzzSkeleton", &SamplerOzzAnimationInterface::setResourceOzzSkeleton )
@@ -101,13 +100,13 @@ namespace Mengine
             .def( "findOzzAnimationSampler", &NodeOzzAnimation::findOzzAnimationSampler )
             .def( "getOzzAnimationSamplerCount", &NodeOzzAnimation::getOzzAnimationSamplerCount )
             .def( "getOzzAnimationSampler", &NodeOzzAnimation::getOzzAnimationSampler )
-            ;        
+            ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzAnimation>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzMesh>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzSkeleton>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<SamplerOzzAnimation>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeOzzAnimation>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceOzzAnimation>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceOzzMesh>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceOzzSkeleton>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<SamplerOzzAnimation>( _kernel, STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<NodeOzzAnimation>( _kernel, STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -120,10 +119,10 @@ namespace Mengine
         _kernel->remove_scope<SamplerOzzAnimationInterface>();
         _kernel->remove_scope<NodeOzzAnimation>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ) );
     }
 }

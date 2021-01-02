@@ -5,7 +5,6 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"

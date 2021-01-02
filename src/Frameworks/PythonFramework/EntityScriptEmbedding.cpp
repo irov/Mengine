@@ -315,9 +315,9 @@ namespace Mengine
 
         m_implement = entityScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<PythonScriptWrapper<Arrow>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), Helper::makeFactorableUnique<PythonScriptWrapper<Entity>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), Helper::makeFactorableUnique<PythonScriptWrapper<Scene>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Arrow>( _kernel, STRINGIZE_STRING_LOCAL( "Arrow" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Entity>( _kernel, STRINGIZE_STRING_LOCAL( "Entity" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Scene>( _kernel, STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -331,8 +331,8 @@ namespace Mengine
 
         m_implement = nullptr;
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Arrow" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Entity" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Scene" ) );
     }
 }

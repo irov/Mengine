@@ -32,11 +32,11 @@ namespace Mengine
         {
             const ConstString & prototype = this->getPrototype();
 
-            ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), prototype );
+            ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), prototype );
 
             if( scriptWrapper == nullptr )
             {
-                LOGGER_WARNING( "Scriptable category '%s' prototype '%s' generetor not found ClassWrapping"
+                LOGGER_WARNING( "Scriptable category '%s' prototype '%s' generetor not found script wrapping"
                     , this->getCategory().c_str()
                     , prototype.c_str()
                 );

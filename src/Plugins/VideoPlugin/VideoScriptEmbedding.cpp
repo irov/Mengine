@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -59,8 +58,8 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceVideo>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<SurfaceVideo>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceVideo>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceVideo" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<SurfaceVideo>( _kernel, STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -70,8 +69,8 @@ namespace Mengine
         _kernel->remove_scope<ResourceVideo>();
         _kernel->remove_scope<SurfaceVideo>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

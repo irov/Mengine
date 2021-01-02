@@ -1,7 +1,5 @@
 #include "Scriptable.h"
 
-#include "Interface/ScriptWrapperInterface.h"
-
 #include "Kernel/ExceptionHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"

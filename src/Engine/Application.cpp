@@ -30,7 +30,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"

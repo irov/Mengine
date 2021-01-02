@@ -1948,6 +1948,18 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_Node_removeEventListener( Node * _node )
+            {
+                EventationInterface * eventation = _node->getEventation();
+
+                if( eventation == nullptr )
+                {
+                    return;
+                }
+                
+                eventation->removeEvents();
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_Node_scaleStop( Node * _node )
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -2523,6 +2535,8 @@ namespace Mengine
 
             .def_proxy_static_args( "accMoveTo", scriptMethod, &KernelScriptMethod::s_Node_accMoveTo )
             .def_proxy_static_args( "accAngleTo", scriptMethod, &KernelScriptMethod::s_Node_accAngleTo )
+
+            .def_proxy_static( "removeEventListener", scriptMethod, &KernelScriptMethod::s_Node_removeEventListener )
             ;
 
         pybind::interface_<Affector, pybind::bases<Updatable>>( _kernel, "Affector", true )

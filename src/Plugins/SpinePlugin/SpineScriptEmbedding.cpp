@@ -88,10 +88,10 @@ namespace Mengine
             .def( "getResourceSpineAtlas", &ResourceSpineSkeleton::getResourceSpineAtlas )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Spine" ), Helper::makeFactorableUnique<PythonScriptWrapper<Spine> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineSkeleton> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineAtlasDefault> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineAtlasTexturepacker> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Spine>( _kernel, STRINGIZE_STRING_LOCAL( "Spine" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceSpineSkeleton>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceSpineAtlasDefault>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceSpineAtlasTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -104,9 +104,9 @@ namespace Mengine
         _kernel->remove_scope<ResourceSpineAtlasTexturepacker>();
         _kernel->remove_scope<ResourceSpineSkeleton>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Spine" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Spine" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ) );
     }
 }

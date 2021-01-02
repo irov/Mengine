@@ -5,7 +5,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ScriptModuleInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 
 #include "PythonGameEventReceiver.h"
 

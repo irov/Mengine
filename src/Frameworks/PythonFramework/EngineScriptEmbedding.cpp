@@ -4007,8 +4007,8 @@ namespace Mengine
 
         m_implement = nodeScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<PythonValueFollowerLinear>( _kernel, STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<PythonValueFollowerAcceleration>( _kernel, STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -4054,8 +4054,8 @@ namespace Mengine
 
         m_implement = nullptr;
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
 
         PROTOTYPE_SERVICE()->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
         PROTOTYPE_SERVICE()->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );

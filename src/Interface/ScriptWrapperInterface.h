@@ -2,11 +2,7 @@
 
 #include "Interface/Interface.h"
 
-extern "C"
-{
-    struct _object;
-    typedef _object PyObject;
-}
+#include "Environment/Python/PythonForwardDeclaration.h"
 
 namespace Mengine
 {

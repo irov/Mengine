@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
@@ -95,10 +94,10 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_AstralaxEmitter_setEventListener )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<PythonScriptWrapper<AstralaxEmitter>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), Helper::makeFactorableUnique<PythonScriptWrapper<AstralaxEmitter>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceAstralax>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceAstralax>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AstralaxEmitter>( _kernel, STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AstralaxEmitter>( _kernel, STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceAstralax>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceAstralax>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceParticle" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -108,10 +107,10 @@ namespace Mengine
         _kernel->remove_scope<ResourceAstralax>();
         _kernel->remove_scope<AstralaxEmitter>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
     }
 }
 

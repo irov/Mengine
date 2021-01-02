@@ -114,7 +114,7 @@ namespace Mengine
             .def_static_kernel( "getJSON", &Helper::s_getJSON )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceJSON>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceJSON>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceJSON" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -123,6 +123,7 @@ namespace Mengine
     {
         _kernel->remove_scope<ResourceJSON>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

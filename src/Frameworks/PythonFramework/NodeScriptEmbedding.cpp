@@ -665,15 +665,6 @@ namespace Mengine
                 return _kernel->ret_none();
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_HotSpot_removeEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
-            {
-                MENGINE_UNUSED( _args );
-                MENGINE_UNUSED( _kwds );
-
-                _node->removeEvents();
-
-                return _kernel->ret_none();
-            }
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<NodeScriptMethod> NodeScriptMethodPtr;
@@ -1003,8 +994,7 @@ namespace Mengine
                 .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                 .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
                 .def( "isMousePickerOver", &HotSpot::isMousePickerOver )
-                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
-                .def_proxy_native_kernel( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
+                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )                
                 ;
 
             pybind::interface_<HotSpotGlobal, pybind::bases<HotSpot>>( _kernel, "HotSpotGlobal", false )
@@ -1151,7 +1141,7 @@ namespace Mengine
         }
 
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class>>(MENGINE_DOCUMENT_FACTORABLE, _kernel), MENGINE_DOCUMENT_FACTORABLE)
+    Helper::registerScriptWrapping<Class>(_kernel, STRINGIZE_STRING_LOCAL(#Class), MENGINE_DOCUMENT_FACTORABLE)
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );
@@ -1231,7 +1221,7 @@ namespace Mengine
         MENGINE_UNUSED( _kernel );
 
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
-    VOCABULARY_REMOVE(STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class))
+    Helper::unregisterScriptWrapping(STRINGIZE_STRING_LOCAL(#Class))
 
         UNSCRIPT_CLASS_WRAPPING( Node );
         UNSCRIPT_CLASS_WRAPPING( Layer );

@@ -479,7 +479,7 @@ namespace Mengine
         this->removeGlobalModule( "Mengine" );
         this->removeGlobalModule( "_PYTHON_VERSION" );
 
-        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ClassWrapping" ) );
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ) );
 
         if( m_moduleFinder != nullptr )
         {

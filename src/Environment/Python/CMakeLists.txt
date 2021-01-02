@@ -6,6 +6,7 @@ src
     PythonEventReceiver.h
     PythonAnimatableEventReceiver.h
     PythonDocumentTraceback.h
+    PythonForwardDeclaration.h
 )
 
 ADD_MENGINE_INTERFACE(Environment)

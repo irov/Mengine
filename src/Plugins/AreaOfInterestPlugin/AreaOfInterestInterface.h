@@ -69,9 +69,6 @@ namespace Mengine
 	public:
 		virtual AreaOfInterestZoneInterfacePtr createZone( const DocumentPtr & _doc ) = 0;
         virtual void removeZone( const AreaOfInterestZoneInterfacePtr & _zone ) = 0;
-
-	public:
-		virtual void updateZones() = 0;
 	};
 }
 //////////////////////////////////////////////////////////////////////////

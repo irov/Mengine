@@ -10,8 +10,6 @@ src
 
     AreaOfInterestService.cpp
     AreaOfInterestService.h
-    ModuleAreaOfInterest.cpp
-    ModuleAreaOfInterest.h
     AreaOfInterestZone.cpp
     AreaOfInterestZone.h 
     NodeAreaOfInterestTrigger.cpp

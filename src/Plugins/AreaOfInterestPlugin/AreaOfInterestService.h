@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/TimepipeInterface.h"
+
 #include "AreaOfInterestInterface.h"
 
 #include "AreaOfInterestZone.h"
@@ -12,6 +14,7 @@ namespace Mengine
 {
     class AreaOfInterestService
         : public ServiceBase<AreaOfInterestServiceInterface>
+        , public TimepipeInterface
     {
     public:
         AreaOfInterestService();
@@ -26,7 +29,7 @@ namespace Mengine
         void removeZone( const AreaOfInterestZoneInterfacePtr & _zone ) override;
 
     public:
-        void updateZones() override;
+        void onTimepipe( const UpdateContext * _contet ) override;
 
     protected:
         typedef Vector<AreaOfInterestZonePtr> VectorAreaOfInterestZones;
@@ -34,7 +37,4 @@ namespace Mengine
 
         FactoryPtr m_factoryAreaOfInterestZones;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AreaOfInterestService> AreaOfInterestPtr;
-    //////////////////////////////////////////////////////////////////////////
 }

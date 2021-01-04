@@ -215,7 +215,7 @@ namespace Mengine
 
         if( m_projectVersion != projectVersion )
         {
-            LOGGER_ERROR( "account '%s' failed invalid project version '%d' need '%d'"
+            LOGGER_ERROR( "account '%s' failed invalid project version '%u' need '%u'"
                 , m_id.c_str()
                 , projectVersion
                 , m_projectVersion
@@ -259,10 +259,15 @@ namespace Mengine
     {
         OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file, "can't open file for writing. Account '%s' settings not saved '%s'"
-            , m_id.c_str()
-            , m_settingsPath.c_str()
-        );
+        if( file == nullptr )
+        {
+            LOGGER_ERROR( "can't open file for writing. Account '%s' settings not saved '%s'"
+                , m_id.c_str()
+                , m_settingsPath.c_str()
+            );
+
+            return false;
+        }
 
         Helper::writeIniSection( file, "[ACCOUNT]" );
 
@@ -300,7 +305,6 @@ namespace Mengine
     InputStreamInterfacePtr Account::openReadBinaryFile( const FilePath & _filePath )
     {
         PathString path;
-
         path += m_folderPath;
         path += _filePath;
 
@@ -308,10 +312,15 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "account '%s' invalid open file '%s'"
-            , m_id.c_str()
-            , fullFilePath.c_str()
-        );
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
+                , m_id.c_str()
+                , fullFilePath.c_str()
+            );
+
+            return nullptr;
+        }
 
         return stream;
     }
@@ -326,10 +335,15 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "account '%s' invalid open file '%s'"
-            , m_id.c_str()
-            , _filePath.c_str()
-        );
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
+                , m_id.c_str()
+                , _filePath.c_str()
+            );
+
+            return nullptr;
+        }
 
         return stream;
     }
@@ -352,17 +366,27 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = this->openReadBinaryFile( _filePath );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "account '%s' invalid open file '%s'"
-            , m_id.c_str()
-            , _filePath.c_str()
-        );
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
+                , m_id.c_str()
+                , _filePath.c_str()
+            );
+
+            return nullptr;
+        }
 
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "account '%s' invalid load stream archive '%s'"
-            , m_id.c_str()
-            , _filePath.c_str()
-        );
+        if( binaryBuffer == nullptr )
+        {
+            LOGGER_ERROR( "account '%s' invalid load stream archive '%s'"
+                , m_id.c_str()
+                , _filePath.c_str()
+            );
+
+            return nullptr;
+        }
 
         return binaryBuffer;
     }
@@ -381,10 +405,15 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = this->openWriteBinaryFile( _filepath );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, "account '%s' invalid open file '%s'"
-            , m_id.c_str()
-            , _filepath.c_str()
-        );
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
+                , m_id.c_str()
+                , _filepath.c_str()
+            );
+
+            return false;
+        }
 
         const void * data_memory = _data;
         size_t data_size = _size;

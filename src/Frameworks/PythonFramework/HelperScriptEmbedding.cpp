@@ -2865,28 +2865,43 @@ namespace Mengine
                 const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                     ->getAccount( _accountID );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid get account '%s'"
-                    , _accountID.c_str()
-                );
+                if( account == nullptr )
+                {
+                    LOGGER_ERROR( "invalid get account '%s'"
+                        , _accountID.c_str()
+                    );
+
+                    return _kernel->ret_none();
+                }
 
                 FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
                 MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filePath );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "account '%s' invalid load file '%ls'"
-                    , _accountID.c_str()
-                    , _filePath.c_str()
-                );
+                if( binaryBuffer == nullptr )
+                {
+                    LOGGER_ERROR( "account '%s' invalid load file '%ls'"
+                        , _accountID.c_str()
+                        , _filePath.c_str()
+                    );
+
+                    return _kernel->ret_none();
+                }
 
                 void * binaryBuffer_memory = binaryBuffer->getBuffer();
                 size_t binaryBuffer_size = binaryBuffer->getSize();
 
                 PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( py_data, "account '%s' invalid unpickle file '%ls'"
-                    , _accountID.c_str()
-                    , _filePath.c_str()
-                );
+                if( py_data == nullptr )
+                {
+                    LOGGER_ERROR( "account '%s' invalid unpickle file '%ls'"
+                        , _accountID.c_str()
+                        , _filePath.c_str()
+                    );
+
+                    return _kernel->ret_none();
+                }
 
                 binaryBuffer = nullptr;
 

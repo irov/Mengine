@@ -250,6 +250,12 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
+        if( PLATFORM_SERVICE()
+            ->alreadyRunningMonitor() == false )
+        {
+            return true;
+        }
+
         PLATFORM_SERVICE()
             ->setIcon( IDI_MENGINE );
 

@@ -187,6 +187,12 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
+        if( PLATFORM_SERVICE()
+            ->alreadyRunningMonitor() == false )
+        {
+            return true;
+        }
+
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();
 

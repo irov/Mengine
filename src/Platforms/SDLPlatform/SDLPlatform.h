@@ -64,6 +64,9 @@ namespace Mengine
         size_t getProjectTitle( Char * const _projectTitle ) const override;
 
     public:
+        bool alreadyRunningMonitor() override;
+
+    public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
 
     public:

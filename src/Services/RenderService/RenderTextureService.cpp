@@ -346,8 +346,7 @@ namespace Mengine
 
         if( imageLoader->load( image ) == false )
         {
-            LOGGER_ERROR( "invalid decode image"
-            );
+            LOGGER_ERROR( "invalid decode image" );
 
             image->unlock( 0, false );
 

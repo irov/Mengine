@@ -1328,7 +1328,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<Movie, pybind::bases<Node, Eventable, Animatable>>( _kernel, "Movie", false )
+        pybind::interface_<Movie, pybind::bases<Node>>( _kernel, "Movie", false )
             .def( "setResourceMovie", &Movie::setResourceMovie )
             .def( "getResourceMovie", &Movie::getResourceMovie )
             .def( "hasMovieLayer", &Movie::hasMovieLayer )

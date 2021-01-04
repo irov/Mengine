@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ScriptHolder
         : public Node
-        , public BaseEventation
+        , private BaseEventation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();

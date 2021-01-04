@@ -21,7 +21,9 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
-        const mt::box2f * bb = this->getBoundingBox();
+        const Mengine::RenderInterface * render = this->getRender();
+
+        const mt::box2f * bb = render->getBoundingBox();
 
         _renderPipeline->addRenderQuad( _context, material, vertices, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
@@ -41,8 +43,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::updateVerticesColor() const
     {
+        const Mengine::RenderInterface * render = this->getRender();
+
         Color color;
-        this->calcTotalColor( &color );
+        render->calcTotalColor( &color );
 
         const Color & surfaceColor = m_surface->getColor();
 

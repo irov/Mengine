@@ -270,7 +270,9 @@ namespace Mengine
                     {
                         ShapeQuadFixed * node = Helper::reinterpretNodeCast<ShapeQuadFixed *>( mesh.element_userdata );
 
-                        const mt::box2f * bb = node->getBoundingBox();
+                        RenderInterface * render = node->getRender();
+
+                        const mt::box2f * bb = render->getBoundingBox();
 
                         if( bb != nullptr )
                         {
@@ -571,7 +573,10 @@ namespace Mengine
                 );
 
                 node->setName( layer.name );
-                node->setExternalRender( true );
+
+                RenderInterface * render = node->getRender();
+
+                render->setExternalRender( true );
 
                 node->setSurface( surface );
 
@@ -1485,7 +1490,9 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceSound->setName( c_name );
 
-                    surfaceSound->setLoop( _callbackData->incessantly );
+                    AnimationInterface * animation = surfaceSound->getAnimation();
+
+                    animation->setLoop( _callbackData->incessantly );
                     surfaceSound->setInterpolateVolume( false );
 
                     if( ae_has_movie_layer_data_option( layer_data, AE_OPTION( '\0', '\0', 'v', 'o' ) ) == AE_TRUE )
@@ -1951,7 +1958,9 @@ namespace Mengine
             }break;
         case AE_MOVIE_COMPOSITION_END:
             {
-                m2->end();
+                AnimationInterface * animation = m2->getAnimation();
+
+                animation->end();
             }break;
         }
     }
@@ -2077,7 +2086,9 @@ namespace Mengine
 
         if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
         {
-            m2sc->end();
+            AnimationInterface * animation = m2sc->getAnimation();
+
+            animation->end();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2516,8 +2527,10 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
+        const Mengine::RenderInterface * render = this->getRender();
+
         Color total_color;
-        this->calcTotalColor( &total_color );
+        render->calcTotalColor( &total_color );
 
         float total_color_r = total_color.getR();
         float total_color_g = total_color.getG();

@@ -81,7 +81,7 @@ namespace Mengine
         m_effect = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::isValid()
+    bool TTFFont::isValid() const
     {
         if( m_effect != nullptr )
         {

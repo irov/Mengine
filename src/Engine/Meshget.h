@@ -45,9 +45,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Meshget
         : public Node
-        , public BaseUpdation
-        , public BaseRender
-        , public BaseEventation
+        , private BaseUpdation
+        , private BaseRender
+        , private BaseEventation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();

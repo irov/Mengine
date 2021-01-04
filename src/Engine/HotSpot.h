@@ -12,8 +12,8 @@ namespace Mengine
 {
     class HotSpot
         : public Node
-        , public BaseEventation
-        , public BasePicker
+        , private BaseEventation
+        , private BasePicker
         , public InputHandlerInterface
     {
         DECLARE_VISITABLE( Node );

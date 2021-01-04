@@ -11,7 +11,7 @@ namespace Mengine
 {
     class BitmapFont
         : public FontBase
-        , public BaseContent
+        , private BaseContent
     {
         DECLARE_CONTENTABLE();
 
@@ -28,7 +28,7 @@ namespace Mengine
         void finalize() override;
 
     protected:
-        bool isValid() override;
+        bool isValid() const override;
 
     protected:
         bool _compile() override;

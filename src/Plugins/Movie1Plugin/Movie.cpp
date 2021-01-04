@@ -1427,10 +1427,12 @@ namespace Mengine
         surface->setName( _layer.name );
         surface->setResourceImageSequence( resourceImageSequence );
 
-        surface->setIntervalStart( _layer.startInterval );
-        surface->setPlayCount( _layer.playCount );
-        surface->setStretch( _layer.stretch );
-        surface->setLoop( _layer.loop );
+        AnimationInterface * animation = surface->getAnimation();
+
+        animation->setIntervalStart( _layer.startInterval );
+        animation->setPlayCount( _layer.playCount );
+        animation->setStretch( _layer.stretch );
+        animation->setLoop( _layer.loop );
 
         if( this->setupBlendingMode_( _layer, surface ) == false )
         {
@@ -1610,11 +1612,12 @@ namespace Mengine
 
         surfaceSound->setResourceSound( resourceSound );
 
-        surfaceSound->setIntervalStart( _layer.startInterval );
+        AnimationInterface * animation = surfaceSound->getAnimation();
 
-        surfaceSound->setPlayCount( _layer.playCount );
-        surfaceSound->setStretch( _layer.stretch );
-        surfaceSound->setLoop( _layer.loop );
+        animation->setIntervalStart( _layer.startInterval );
+        animation->setPlayCount( _layer.playCount );
+        animation->setStretch( _layer.stretch );
+        animation->setLoop( _layer.loop );
 
         layer_sound->setSurfaceSound( surfaceSound );
 
@@ -1646,11 +1649,13 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound );
 
         surfaceSound->setResourceSound( resourceSound );
-        surfaceSound->setIntervalStart( _layer.startInterval );
 
-        surfaceSound->setPlayCount( 1 );
-        surfaceSound->setStretch( _layer.stretch );
-        surfaceSound->setLoop( _layer.loop );
+        AnimationInterface * animation = surfaceSound->getAnimation();
+
+        animation->setIntervalStart( _layer.startInterval );
+        animation->setPlayCount( 1 );
+        animation->setStretch( _layer.stretch );
+        animation->setLoop( _layer.loop );
 
         layer_sound->setSurfaceSound( surfaceSound );
 

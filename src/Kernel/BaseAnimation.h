@@ -57,6 +57,7 @@ namespace Mengine
         bool pause() override;
         void resume( float _time ) override;
         bool interrupt() override;
+        void end() override;
 
     public:
         bool isPlay() const override;
@@ -74,9 +75,6 @@ namespace Mengine
 
     protected:
         float calcTotalTime( const UpdateContext * _context ) const;
-
-    public:
-        void end();
 
     protected:
         virtual void _setLoop( bool _value );

@@ -28,8 +28,8 @@ namespace Mengine
     class SurfaceSound
         : public Surface
         , public Soundable
-        , public BaseEventation
-        , public BaseAnimation
+        , private BaseEventation
+        , private BaseAnimation
         , public SoundListenerInterface
     {
         DECLARE_ANIMATABLE();

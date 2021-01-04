@@ -29,8 +29,10 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceAstralax::setFilePath );
-        metadata->getm_File_Converter( resource, &ResourceAstralax::setConverterType );
+        ContentInterface * content = resource->getContent();
+
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
 
         uint32_t atlasCount = metadata->get_AtlasCount_Value();
 
@@ -48,7 +50,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "resource '%s' container '%s' can't get atlas image '%s'"
                 , resource->getName().c_str()
-                , resource->getFilePath().c_str()
+                , resource->getContent()->getFilePath().c_str()
                 , resourceImageName.c_str()
             );
 

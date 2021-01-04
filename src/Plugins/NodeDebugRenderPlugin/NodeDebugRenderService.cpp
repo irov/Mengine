@@ -119,7 +119,7 @@ namespace Mengine
             return;
         }
 
-        RenderInterface * selfRender = _node->getRender();
+        const RenderInterface * selfRender = _node->getRender();
 
         if( selfRender != nullptr )
         {

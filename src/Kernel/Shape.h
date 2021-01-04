@@ -10,8 +10,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Shape
         : public Node
-        , public BaseUpdation
-        , public BaseRender
+        , private BaseUpdation
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
@@ -64,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Shape> ShapePtr;
     //////////////////////////////////////////////////////////////////////////
-    void Shape::prepareVerticesWM() const
+    MENGINE_INLINE void Shape::prepareVerticesWM() const
     {
         if( m_invalidateVerticesLocal == true )
         {
@@ -87,4 +87,5 @@ namespace Mengine
             this->updateVerticesColor();
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

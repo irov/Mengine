@@ -29,8 +29,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class NodeOzzAnimation
         : public Node
-        , public BaseUpdation
-        , public BaseRender
+        , private BaseUpdation
+        , private BaseRender
         , public RenderTransformationInterface
         , public UnknownNodeOzzAnimationInterface
     {

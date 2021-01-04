@@ -58,10 +58,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Movie
         : public Node
-        , public BaseEventation
-        , public BaseAnimation
-        , public BaseUpdation
-        , public BaseRender
+        , private BaseEventation
+        , private BaseAnimation
+        , private BaseUpdation
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();

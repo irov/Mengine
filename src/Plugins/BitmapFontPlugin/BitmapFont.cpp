@@ -53,7 +53,7 @@ namespace Mengine
         m_textureOutline = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::isValid()
+    bool BitmapFont::isValid() const
     {
         const ContentInterface * content = this->getContent();
 

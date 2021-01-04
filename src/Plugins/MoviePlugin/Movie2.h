@@ -47,10 +47,10 @@ namespace Mengine
     class Movie2
         : public Node
         , public UnknownMovie2Interface
-        , public BaseUpdation
-        , public BaseRender
-        , public BaseEventation
-        , public BaseAnimation
+        , private BaseUpdation
+        , private BaseRender
+        , private BaseEventation
+        , private BaseAnimation
     {
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Node );

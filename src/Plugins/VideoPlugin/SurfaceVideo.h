@@ -23,8 +23,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SurfaceVideo
         : public Surface
-        , public BaseEventation
-        , public BaseAnimation
+        , private BaseEventation
+        , private BaseAnimation
         , public UnknownVideoSurfaceInterface
     {
         DECLARE_UNKNOWABLE();

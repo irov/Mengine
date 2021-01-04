@@ -4,22 +4,16 @@
 
 #include "Kernel/UpdateContext.h"
 
+#include "Kernel/UpdateMode.h"
+
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum EUpdateMode
-    {
-        EUM_NODE_BASE,
-        EUM_NODE_AFFECTOR,
-        EUM_SERVICE_BEFORE,
-        EUM_SERVICE_AFTER,
-    };
     //////////////////////////////////////////////////////////////////////////
     class UpdationInterface
         : public Interface
     {
     public:
-        virtual void activate( EUpdateMode _mode, uint32_t _deep ) = 0;
+        virtual bool activate( EUpdateMode _mode, uint32_t _deep ) = 0;
         virtual void deactivate() = 0;
         virtual void replace( uint32_t _deep ) = 0;
 

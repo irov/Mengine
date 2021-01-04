@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Button
         : public Node
-        , public BaseEventation
+        , private BaseEventation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();

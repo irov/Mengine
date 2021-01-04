@@ -2002,25 +2002,37 @@ namespace Mengine
         return atom;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createWindow( const Resolution & _resolution, bool _fullscreen )
+    bool Win32Platform::alreadyRunningMonitor()
     {
-        m_windowResolution = _resolution;
-        m_fullscreen = _fullscreen;
-
         bool Platform_AlreadyRunning = CONFIG_VALUE( "Platform", "AlreadyRunning", true );
 
         if( Platform_AlreadyRunning == true && HAS_OPTION( "noalreadyrunning" ) == false )
         {
             m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
-            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, m_windowClassName, m_projectTitle ) == false )
+            bool stop;
+            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, m_windowClassName, m_projectTitle, &stop ) == false )
             {
-                LOGGER_ERROR( "Application invalid running monitor"
-                );
+                LOGGER_ERROR( "invalid initialize already running monitor" );
+
+                return true;
+            }
+
+            if( stop == true )
+            {
+                m_close = true;
 
                 return false;
             }
         }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::createWindow( const Resolution & _resolution, bool _fullscreen )
+    {
+        m_windowResolution = _resolution;
+        m_fullscreen = _fullscreen;
 
         bool Platform_WithoutWindow = CONFIG_VALUE( "Platform", "WithoutWindow", false );
 

@@ -47,11 +47,8 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid open '%ls' [error: %lu]"
+            LOGGER_ERROR( "invalid open '%ls'"
                 , fullPathTemp
-                , error
             );
 
             return false;
@@ -97,6 +94,11 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->moveFile( fullPathTemp, fullPath ) == false )
         {
+            LOGGER_ERROR( "invalid move close file from '%s' to '%s'"
+                , fullPathTemp
+                , fullPath
+            );
+
             return false;
         }
 

@@ -413,6 +413,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::registerLogger( const LoggerInterfacePtr & _logger )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         VectorLoggers::iterator it_find =
             std::find( m_loggers.begin(), m_loggers.end(), _logger );
 
@@ -433,6 +435,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::unregisterLogger( const LoggerInterfacePtr & _logger )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         VectorLoggers::iterator it_find = 
             std::find( m_loggers.begin(), m_loggers.end(), _logger );
 

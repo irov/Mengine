@@ -62,7 +62,7 @@ namespace Mengine
             {
                 DWORD error = ::GetLastError();
 
-                LOGGER_ERROR( "File invalid find ??? (%ls) [error: %lu]"
+                LOGGER_ERROR( "file invalid find ??? (%ls) [error: %lu]"
                     , _path
                     , error
                 );
@@ -76,7 +76,7 @@ namespace Mengine
 
             if( MENGINE_WCSCMP( filename, wfd.cFileName ) != 0 )
             {
-                LOGGER_ERROR( "File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
+                LOGGER_ERROR( "file invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
                     , _path
                     , filename
                     , wfd.cFileName

@@ -2529,7 +2529,7 @@ namespace Mengine
             return true;
         }
 
-        DWORD attributes = GetFileAttributes( fullPath );
+        DWORD attributes = ::GetFileAttributes( fullPath );
 
         if( attributes == INVALID_FILE_ATTRIBUTES )
         {
@@ -2616,11 +2616,7 @@ namespace Mengine
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
-                        LOGGER_ERROR( "directory '%ls' alredy exists"
-                            , path.c_str()
-                        );
-
-                        return false;
+                         continue;
                     }break;
                 case ERROR_PATH_NOT_FOUND:
                     {

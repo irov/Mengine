@@ -176,11 +176,8 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "file '%ls' invalid open [error: %lu]"
+            LOGGER_ERROR( "file '%ls' invalid open"
                 , _fullPath
-                , error
             );
 
             return false;

@@ -64,15 +64,6 @@ namespace Mengine
             _emitter->changeEmitterImage( resource );
         }
         //////////////////////////////////////////////////////////////////////////
-        static float s_AstralaxEmitter_getDuration( AstralaxEmitter * _emitter )
-        {
-            const AnimationInterface * animation = _emitter->getAnimation();
-
-            float duration = animation->getDuration();
-
-            return duration;
-        }
-        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
@@ -97,8 +88,6 @@ namespace Mengine
             .def( "removeEmitterImage", &AstralaxEmitter::removeEmitterImage )
             .def( "changeEmitterPolygon", &AstralaxEmitter::changeEmitterPolygon )
             .def( "removeEmitterPolygon", &AstralaxEmitter::removeEmitterPolygon )
-
-            .def_static_deprecated( "getDuration", &Detail::s_AstralaxEmitter_getDuration, "use getAnimation" )
 
             .def( "setEmitterRandomMode", &AstralaxEmitter::setEmitterRandomMode )
             .def( "getEmitterRandomMode", &AstralaxEmitter::getEmitterRandomMode )

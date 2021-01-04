@@ -161,14 +161,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2ScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<Movie2, pybind::bases<Node, Animatable>>( _kernel, "Movie2", false )
+        pybind::interface_<Movie2, pybind::bases<Node>>( _kernel, "Movie2", false )
             .def( "setResourceMovie2", &Movie2::setResourceMovie2 )
             .def( "getResourceMovie2", &Movie2::getResourceMovie2 )
             .def( "setCompositionName", &Movie2::setCompositionName )
             .def( "getCompositionName", &Movie2::getCompositionName )
             .def( "setTextAliasEnvironment", &Movie2::setTextAliasEnvironment )
             .def( "getTextAliasEnvironment", &Movie2::getTextAliasEnvironment )
-            .def_deprecated( "getDuration", &Movie2::getDuration, "Use animation" )
             .def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
             .def( "removeWorkArea", &Movie2::removeWorkArea )
             .def( "hasSubComposition", &Movie2::hasSubComposition )

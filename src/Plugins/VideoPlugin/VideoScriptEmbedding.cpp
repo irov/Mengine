@@ -50,7 +50,7 @@ namespace Mengine
         pybind::interface_<ResourceVideo, pybind::bases<Resource>>( _kernel, "ResourceVideo", false )
             ;
 
-        pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable>>( _kernel, "SurfaceVideo", false )
+        pybind::interface_<SurfaceVideo, pybind::bases<Surface>>( _kernel, "SurfaceVideo", false )
             .def( "setResourceVideo", &SurfaceVideo::setResourceVideo )
             .def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
             .def( "getWidth", &SurfaceVideo::getWidth )

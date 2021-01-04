@@ -183,7 +183,7 @@ namespace Mengine
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
-            return nullptr;
+            return false;
         }
 
         UINT offsetToLock = (UINT)(_offset * m_vertexSize);
@@ -192,7 +192,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pD3DVertexBuffer, Lock, (offsetToLock, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
-            LOGGER_ERROR( "invalid lock offset %u size %zu (doc %s)"
+            LOGGER_ERROR( "invalid lock offset %u size %u (doc %s)"
                 , offsetToLock
                 , sizeToLock
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderVertexBuffer" )

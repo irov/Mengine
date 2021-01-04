@@ -66,4 +66,5 @@ namespace Mengine
             Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableInterrupt", EVENT_ANIMATION_INTERRUPT, _doc );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

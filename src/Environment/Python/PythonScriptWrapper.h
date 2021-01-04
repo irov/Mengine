@@ -11,6 +11,7 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Typeinfo.h"
@@ -132,4 +133,5 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
     }
+    //////////////////////////////////////////////////////////////////////////
 }

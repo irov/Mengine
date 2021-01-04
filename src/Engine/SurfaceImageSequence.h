@@ -31,8 +31,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SurfaceImageSequence
         : public Surface
-        , public BaseEventation
-        , public BaseAnimation
+        , private BaseEventation
+        , private BaseAnimation
     {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Kernel/Mixin.h"
 
 namespace Mengine

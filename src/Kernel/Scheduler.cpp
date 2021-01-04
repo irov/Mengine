@@ -17,8 +17,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Scheduler::Scheduler()
-        : m_updataterId( INVALID_UPDATABLE_ID )
-        , m_speedFactor( 1.f )
+        : m_speedFactor( 1.f )
         , m_time( 0.f )
         , m_freezeAll( false )
         , m_update( false )
@@ -35,25 +34,19 @@ namespace Mengine
     {
         UpdationInterface * updation = this->getUpdation();
 
-        uint32_t updataterId = UPDATE_SERVICE()
-            ->createUpdatater( EUM_SERVICE_BEFORE, 0U, UpdationInterfacePtr( updation ) );
-
-        if( updataterId == INVALID_UPDATABLE_ID )
+        if( updation->activate( EUM_SERVICE_BEFORE, 0U ) == false )
         {
             return false;
         }
-
-        m_updataterId = updataterId;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Scheduler::finalize()
     {
-        UPDATE_SERVICE()
-            ->removeUpdatater( m_updataterId );
+        UpdationInterface * updation = this->getUpdation();
 
-        m_updataterId = INVALID_UPDATABLE_ID;
+        updation->deactivate();
 
 #ifdef MENGINE_DEBUG
         m_schedulers.insert( m_schedulers.end(), m_schedulersAdd.begin(), m_schedulersAdd.end() );

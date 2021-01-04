@@ -11,7 +11,7 @@ namespace Mengine
     class EntityEventable
         : public Factorable
         , public Eventable
-        , public BaseEventation
+        , private BaseEventation
     {
         DECLARE_EVENTABLE();
 

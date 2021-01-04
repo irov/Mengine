@@ -9,7 +9,7 @@ namespace Mengine
 {
     class RenderCameraOrthogonalTarget
         : public Node
-        , public BaseUpdation
+        , private BaseUpdation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();

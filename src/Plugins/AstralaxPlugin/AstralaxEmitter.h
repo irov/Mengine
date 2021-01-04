@@ -36,10 +36,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class AstralaxEmitter
         : public Node
-        , public BaseEventation
-        , public BaseUpdation
-        , public BaseRender
-        , public BaseAnimation
+        , private BaseEventation
+        , private BaseUpdation
+        , private BaseRender
+        , private BaseAnimation
         , public AstralaxPositionProviderInterface
         , public AstralaxCameraProviderInterface
         , public UnknownAstralaxEmitterInterface

@@ -49,6 +49,7 @@ namespace Mengine
         virtual bool pause() = 0;
         virtual void resume( float _time ) = 0;
         virtual bool interrupt() = 0;
+        virtual void end() = 0;
 
     public:
         virtual bool isPlay() const = 0;

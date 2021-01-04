@@ -20,6 +20,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "pybind/pybind.hpp"
 

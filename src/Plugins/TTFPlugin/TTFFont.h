@@ -30,7 +30,7 @@ namespace Mengine
         : public FontBase
         , public UnknownTTFFontInterface
         , public Observable
-        , public BaseContent
+        , private BaseContent
     {
         DECLARE_CONTENTABLE();
         DECLARE_UNKNOWABLE();
@@ -51,7 +51,7 @@ namespace Mengine
         void finalize() override;
 
     protected:
-        bool isValid() override;
+        bool isValid() const override;
 
     protected:
         bool _compile() override;

@@ -2,7 +2,6 @@
 
 #include "SceneEventReceiverInterface.h"
 
-#include "Kernel/BaseEventation.h"
 #include "Kernel/EventableHelper.h"
 #include "Kernel/Logger.h"
 

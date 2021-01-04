@@ -488,7 +488,10 @@ namespace Mengine
         {
             uint32_t deep = this->getLeafDeep();
 
-            updation->activate( EUM_NODE_BASE, deep );
+            if( updation->activate( EUM_NODE_BASE, deep ) == false )
+            {
+                return false;
+            }
         }
 
         RenderInterface * render = this->getRender();

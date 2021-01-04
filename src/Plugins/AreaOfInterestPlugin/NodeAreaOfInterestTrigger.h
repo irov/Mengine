@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class NodeAreaOfInterestTrigger
         : public Node
-        , public BaseEventation
+        , private BaseEventation
         , public AreaOfInterestTriggerProviderInterface
     {
         DECLARE_VISITABLE( Node );

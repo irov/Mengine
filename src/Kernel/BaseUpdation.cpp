@@ -2,6 +2,8 @@
 
 #include "Interface/UpdateServiceInterface.h"
 
+#include "Kernel/Assertion.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -12,12 +14,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseUpdation::~BaseUpdation()
     {
+        MENGINE_ASSERTION_FATAL( m_updatableProxyId == INVALID_UPDATABLE_ID );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseUpdation::activate( EUpdateMode _mode, uint32_t _deep )
+    bool BaseUpdation::activate( EUpdateMode _mode, uint32_t _deep )
     {
-        m_updatableProxyId = UPDATE_SERVICE()
+        uint32_t updatableProxyId = UPDATE_SERVICE()
             ->createUpdatater( _mode, _deep, UpdationInterfacePtr::from( this ) );
+
+        if( updatableProxyId == INVALID_UPDATABLE_ID )
+        {
+            return false;
+        }
+
+        m_updatableProxyId = updatableProxyId;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::deactivate()

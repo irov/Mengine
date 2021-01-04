@@ -422,7 +422,9 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
-        const mt::box2f * bb = this->getBoundingBox();
+        const Mengine::RenderInterface * render = this->getRender();
+
+        const mt::box2f * bb = render->getBoundingBox();
 
         _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_indices, m_indexCount, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
@@ -445,8 +447,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapePacMan::updateVerticesColor() const
     {
+        const Mengine::RenderInterface * render = this->getRender();
+
         Color color;
-        this->calcTotalColor( &color );
+        render->calcTotalColor( &color );
 
         const Color & surfaceColor = m_surface->getColor();
 

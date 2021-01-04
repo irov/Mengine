@@ -18,8 +18,10 @@ namespace Mengine
     {
         bool successful = true;
 
-        const FilePath & filePath = _resource->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const ContentInterface * content = _resource->getContent();
+
+        const FilePath & filePath = content->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
@@ -29,7 +31,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create container file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
             );
 
             return false;
@@ -39,7 +41,7 @@ namespace Mengine
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' can't valid container '%s'"
                 , _resource->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
             );
 
             successful = false;

@@ -48,6 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         static void s_AstralaxEmitter_changeEmitterImage( pybind::kernel_interface * _kernel, AstralaxEmitter * _emitter, const ConstString & _emitterImageName )
         {
             MENGINE_UNUSED( _kernel );
@@ -62,6 +63,16 @@ namespace Mengine
 
             _emitter->changeEmitterImage( resource );
         }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_AstralaxEmitter_getDuration( AstralaxEmitter * _emitter )
+        {
+            const AnimationInterface * animation = _emitter->getAnimation();
+
+            float duration = animation->getDuration();
+
+            return duration;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
@@ -71,7 +82,7 @@ namespace Mengine
             .def( "getResourceImage", &ResourceAstralax::getResourceImage )
             ;
 
-        pybind::interface_<AstralaxEmitter, pybind::bases<Node, Eventable, Animatable>>( _kernel, "ParticleEmitter2", false )
+        pybind::interface_<AstralaxEmitter, pybind::bases<Node>>( _kernel, "ParticleEmitter2", false )
             .def_deprecated( "setResourceParticle", &AstralaxEmitter::setResourceAstralax, "use setResourceAstralax" )
             .def_deprecated( "getResourceParticle", &AstralaxEmitter::getResourceAstralax, "use getResourceAstralax" )
             .def( "setResourceAstralax", &AstralaxEmitter::setResourceAstralax )
@@ -87,7 +98,7 @@ namespace Mengine
             .def( "changeEmitterPolygon", &AstralaxEmitter::changeEmitterPolygon )
             .def( "removeEmitterPolygon", &AstralaxEmitter::removeEmitterPolygon )
 
-            .def( "getDuration", &AstralaxEmitter::getDuration )
+            .def_static_deprecated( "getDuration", &Detail::s_AstralaxEmitter_getDuration, "use getAnimation" )
 
             .def( "setEmitterRandomMode", &AstralaxEmitter::setEmitterRandomMode )
             .def( "getEmitterRandomMode", &AstralaxEmitter::getEmitterRandomMode )

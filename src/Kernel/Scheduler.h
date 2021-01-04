@@ -16,7 +16,7 @@ namespace Mengine
         : public SchedulerInterface
         , public Factorable
         , public Updatable
-        , public BaseUpdation
+        , private BaseUpdation
     {
     public:
         DECLARE_UPDATABLE();
@@ -72,8 +72,6 @@ namespace Mengine
 
     protected:
         ConstString m_name;
-
-        uint32_t m_updataterId;
 
         float m_speedFactor;
         float m_time;

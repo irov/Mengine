@@ -14,12 +14,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DazzleEffect
         : public Node
-        , public BaseEventation
-        , public BaseUpdation
-        , public BaseRender
-        , public BaseAnimation
+        , private BaseEventation
+        , private BaseUpdation
+        , private BaseRender
+        , private BaseAnimation
         , public UnknownDazzleEffectInterface
     {
         DECLARE_VISITABLE( Node );

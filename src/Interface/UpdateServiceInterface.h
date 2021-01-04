@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-
 #include "Interface/UpdationInterface.h"
+
+#include "Kernel/UpdateMode.h"
 
 namespace Mengine
 {

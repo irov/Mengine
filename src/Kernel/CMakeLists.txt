@@ -68,6 +68,7 @@ ADD_FILTER(
 Mixin\\\\Updatable
     Updatable.h
     UpdateContext.h
+    UpdateMode.h
 )
 
 ADD_FILTER(

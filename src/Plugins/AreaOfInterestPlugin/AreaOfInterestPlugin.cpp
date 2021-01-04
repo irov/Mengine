@@ -4,16 +4,13 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "ModuleAreaOfInterest.h"
-
 #include "NodeAreaOfInterestTrigger.h"
 #include "NodeAreaOfInterestActor.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "AreaOfInterestScriptEmbedding.h"
+#   include "AreaOfInterestScriptEmbedding.h"
 #endif
 
-#include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
 
@@ -54,9 +51,6 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), Helper::makeFactorableUnique<NodePrototypeGenerator<NodeAreaOfInterestActor, 32>>( MENGINE_DOCUMENT_FACTORABLE ) );
-
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAreaOfInterest" )
-            , Helper::makeModuleFactory<ModuleAreaOfInterest>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

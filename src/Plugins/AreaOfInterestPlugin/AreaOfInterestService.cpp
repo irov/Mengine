@@ -1,5 +1,7 @@
 #include "AreaOfInterestService.h"
 
+#include "Interface/TimepipeServiceInterface.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/DocumentHelper.h"
@@ -20,6 +22,9 @@ namespace Mengine
     bool AreaOfInterestService::_initializeService()
     {
         m_factoryAreaOfInterestZones = Helper::makeFactoryPool<AreaOfInterestZone, 8>( MENGINE_DOCUMENT_FACTORABLE );
+
+        TIMEPIPE_SERVICE()
+            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -55,8 +60,10 @@ namespace Mengine
         zone->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AreaOfInterestService::updateZones()
+    void AreaOfInterestService::onTimepipe( const UpdateContext * _contet )
     {
+        MENGINE_UNUSED( _contet );
+
         for( const AreaOfInterestZonePtr & zone : m_zones )
         {
             zone->update();

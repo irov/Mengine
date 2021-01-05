@@ -52,6 +52,6 @@ namespace Mengine
         VectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MockupRenderVertexAttribute> MockupRenderVertexAttributePtr;
+    typedef IntrusivePtr<MockupRenderVertexAttribute, RenderVertexAttributeInterface> MockupRenderVertexAttributePtr;
     //////////////////////////////////////////////////////////////////////////
 }

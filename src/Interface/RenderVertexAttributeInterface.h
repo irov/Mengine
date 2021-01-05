@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderVertexAttributeInterface
         : public Mixin
     {

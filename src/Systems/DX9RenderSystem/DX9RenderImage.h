@@ -78,6 +78,6 @@ namespace Mengine
         float m_hwHeightInv;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderImage> DX9RenderImagePtr;
+    typedef IntrusivePtr<DX9RenderImage, RenderImageInterface> DX9RenderImagePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -30,6 +30,6 @@ namespace Mengine
         bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MockupRenderFragmentShader> MockupRenderFragmentShaderPtr;
+    typedef IntrusivePtr<MockupRenderFragmentShader, RenderFragmentShaderInterface> MockupRenderFragmentShaderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

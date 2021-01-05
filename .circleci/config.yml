@@ -22,5 +22,6 @@ jobs:
           command: |
             pushd gradle
             chmod +x ./gradlew
+            ./gradle wrapper
             ./gradlew assembleRelease
             popd

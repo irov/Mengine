@@ -26,8 +26,8 @@ jobs:
       - run:
           name: download dependencies
           command: |
-            pushd build/download
-            sudo bash ./download_unix.bash
+            pushd build/downloads
+            sudo bash downloads_unix.bash
             popd
             
       - run:

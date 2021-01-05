@@ -18,10 +18,21 @@ jobs:
             sudo apt-get upgrade
             
       - run:
+          name: install gradle
+          command: |
+            sudo apt-get gradle
+
+      - run:
+          name: gradle wrapper
+          command: |
+            pushd gradle
+            gradle wrapper
+            popd
+            
+      - run:
           name: assemble release
           command: |
             pushd gradle
             chmod +x ./gradlew
-            ./gradlew wrapper
             ./gradlew assembleRelease
             popd

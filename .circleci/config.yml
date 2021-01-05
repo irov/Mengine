@@ -24,6 +24,13 @@ jobs:
             sudo apt upgrade gradle
             
       - run:
+          name: download dependencies
+          command: |
+            pushd build/download
+            sudo bash ./download_unix.bash
+            popd
+            
+      - run:
           name: assemble release
           command: |
             pushd gradle

@@ -99,7 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::disable()
     {
-        //DXCALL( m_pD3DDevice, SetVertexDeclaration, (nullptr) );
+        DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )

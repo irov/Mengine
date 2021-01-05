@@ -1275,30 +1275,21 @@ namespace Mengine
         {
             m_vertexShaderEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetVertexShader, (NULL) )
-            {
-                return false;
-            }
+            DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
         }
 
         if( m_fragmentShaderEnable == true )
         {
             m_fragmentShaderEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetPixelShader, (NULL) )
-            {
-                return false;
-            }
+            DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
         }
 
         if( m_vertexAttributeEnable == true )
         {
             m_vertexAttributeEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) )
-            {
-                return false;
-            }
+            DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
         }
 
         return true;
@@ -1868,15 +1859,53 @@ namespace Mengine
             const RenderVertexShaderInterfacePtr & vertexShader = dx9_program->getVertexShader();
             const RenderFragmentShaderInterfacePtr & fragmentShader = dx9_program->getFragmentShader();
 
-            m_vertexAttributeEnable = vertexAttribute != nullptr;
-            m_vertexShaderEnable = vertexShader != nullptr;
-            m_fragmentShaderEnable = fragmentShader != nullptr;
+            bool vertexAttributeEnable = vertexAttribute != nullptr;
+            bool vertexShaderEnable = vertexShader != nullptr;
+            bool fragmentShaderEnable = fragmentShader != nullptr;
+
+            if( m_vertexAttributeEnable == true && vertexAttributeEnable == false )
+            {
+                m_vertexAttributeEnable = false;
+
+                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+            }
+
+            if( m_vertexShaderEnable == true && vertexShaderEnable == false )
+            {
+                m_vertexShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+            }
+
+            if( m_fragmentShaderEnable == true && fragmentShaderEnable == false )
+            {
+                m_fragmentShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+            }
         }
         else
         {
-            DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
-            DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
-            DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+            if( m_vertexShaderEnable == true )
+            {
+                m_vertexShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+            }
+
+            if( m_fragmentShaderEnable == true )
+            {
+                m_vertexShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+            }
+
+            if( m_vertexAttributeEnable == true )
+            {
+                m_vertexShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -70,27 +70,15 @@ namespace Mengine
         {
             m_vertexShader->enable( _pD3DDevice );
         }
-        else
-        {
-            DXCALL( _pD3DDevice, SetVertexShader, (NULL) );
-        }
 
         if( m_fragmentShader != nullptr )
         {
             m_fragmentShader->enable( _pD3DDevice );
         }
-        else
-        {
-            DXCALL( _pD3DDevice, SetPixelShader, (NULL) );
-        }
 
         if( m_vertexAttribute != nullptr )
         {
             m_vertexAttribute->enable();
-        }
-        else
-        {
-            DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

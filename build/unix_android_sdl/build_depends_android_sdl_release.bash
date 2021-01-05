@@ -1,3 +1,3 @@
 #! /bin/bash
 
-sh ./build_depends_android_sdl.sh Release
+bash build_depends_android_sdl.bash Release

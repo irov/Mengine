@@ -20,7 +20,7 @@ jobs:
       - run:
           name: install gradle
           command: |
-            sudo apt-get gradle
+            sudo apt-get install gradle
 
       - run:
           name: gradle wrapper

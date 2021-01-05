@@ -1,18 +1,12 @@
 #!/bin/bash
 
-if [ $1 -eq 0 ]; then
-    echo "invalid arguments, please select configuration"
-    
-    exit 1
-fi
-
 BUILD_TYPE=$1
 
 echo Starting dependencies build $BUILD_TYPE configuration...
 
 ANDROID_PLATFORM=android-19
 ANDROID_CMAKE_VERSION=3.10.2.4988404
-ANDROID_SDK=~/Library/Android/sdk
+ANDROID_SDK=~/Android/Sdk
 ANDROID_NDK=$ANDROID_SDK/ndk-bundle
 ANDROID_SYSROOT=$ANDROID_NDK/sysroot
 CMAKE_PATH=$ANDROID_SDK/cmake/$ANDROID_CMAKE_VERSION/bin

@@ -23,11 +23,6 @@ jobs:
             sudo apt-get install gradle
 
       - run:
-          name: install ninja
-          command: |
-            sudo apt-get install ninja
-
-      - run:
           name: download dependencies
           command: |
             pushd build/downloads

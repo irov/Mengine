@@ -35,6 +35,8 @@ Mengine is an multiple platforms engine for creating and running graphical games
 	path = ../.gitconfig
 ```
 
+[CODESTYLE](https://github.com/irov/Mengine/wiki/Codestyle)
+
 Code Guards
 -------
 

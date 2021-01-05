@@ -25,9 +25,9 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        RenderVertexAttributeInterfacePtr getVertexAttribute() const override;
-        RenderVertexShaderInterfacePtr getVertexShader() const override;
-        RenderFragmentShaderInterfacePtr getFragmentShader() const override;
+        const RenderVertexAttributeInterfacePtr & getVertexAttribute() const override;
+        const RenderVertexShaderInterfacePtr & getVertexShader() const override;
+        const RenderFragmentShaderInterfacePtr & getFragmentShader() const override;
 
     protected:
         ConstString m_name;

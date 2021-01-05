@@ -25,9 +25,9 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        RenderVertexAttributeInterfacePtr getVertexAttribute() const override;
-        RenderVertexShaderInterfacePtr getVertexShader() const override;
-        RenderFragmentShaderInterfacePtr getFragmentShader() const override;
+        const RenderVertexAttributeInterfacePtr & getVertexAttribute() const override;
+        const RenderVertexShaderInterfacePtr & getVertexShader() const override;
+        const RenderFragmentShaderInterfacePtr & getFragmentShader() const override;
 
     public:
         bool initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute );
@@ -38,6 +38,7 @@ namespace Mengine
 
     public:
         void enable( IDirect3DDevice9 * _pD3DDevice );
+        void disable( IDirect3DDevice9 * _pD3DDevice );
 
     public:
         void bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks );
@@ -51,6 +52,6 @@ namespace Mengine
         DX9RenderVertexAttributePtr m_vertexAttribute;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderProgram> DX9RenderProgramPtr;
+    typedef IntrusivePtr<DX9RenderProgram, class RenderProgramInterface> DX9RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
 }

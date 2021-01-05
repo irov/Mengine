@@ -40,6 +40,6 @@ namespace Mengine
         bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderVertexShader> DX9RenderVertexShaderPtr;
+    typedef IntrusivePtr<DX9RenderVertexShader, RenderVertexShaderInterface> DX9RenderVertexShaderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

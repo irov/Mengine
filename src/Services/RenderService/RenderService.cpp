@@ -400,8 +400,6 @@ namespace Mengine
             batch->deviceLostPrepare();
         }
 
-        this->restoreRenderSystemStates_();
-
         m_nullTexture = nullptr;
         m_whitePixelTexture = nullptr;
     }
@@ -450,14 +448,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-        this->restoreRenderSystemStates_();
-
         _renderPipeline->prepare();
 
         if( m_renderSystem->beginScene() == false )
         {
             return false;
         }
+
+        this->restoreRenderSystemStates_();
 
         this->clearFrameBuffer_();
 

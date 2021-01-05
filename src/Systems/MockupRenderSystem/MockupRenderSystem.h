@@ -10,9 +10,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class MockupRenderImage> MockupRenderImagePtr;
-    typedef IntrusivePtr<class MockupRenderVertexShader> MockupRenderVertexShaderPtr;
-    typedef IntrusivePtr<class MockupRenderFragmentShader> MockupRenderFragmentShaderPtr;
-    typedef IntrusivePtr<class MockupRenderVertexAttribute> MockupRenderVertexAttributePtr;
+    typedef IntrusivePtr<class MockupRenderVertexShader, class RenderVertexShaderInterface> MockupRenderVertexShaderPtr;
+    typedef IntrusivePtr<class MockupRenderFragmentShader, class RenderFragmentShaderInterface> MockupRenderFragmentShaderPtr;
+    typedef IntrusivePtr<class MockupRenderVertexAttribute, class RenderVertexAttributeInterface> MockupRenderVertexAttributePtr;
     typedef IntrusivePtr<class MockupRenderProgram> MockupRenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
     class MockupRenderImageTarget;

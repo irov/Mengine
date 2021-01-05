@@ -27,7 +27,7 @@ jobs:
           name: gradle wrapper
           command: |
             pushd gradle
-            gradle wrapper
+            gradle wrapper --gradle-version=6.5
             popd
             
       - run:

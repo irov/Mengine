@@ -9,5 +9,16 @@ jobs:
 
     steps:
       - checkout
+      
       - run:
-          command: ./gradlew build
+          name: install CMake
+          command: |
+            choco install cmake -y
+            $env:Path+=";$Env:ProgramFiles\CMake\bin"
+            
+      - run:
+          name: assemble release
+          command: |
+            pushd gradle
+            ./gradlew assembleRelease
+            popd

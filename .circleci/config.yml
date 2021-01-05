@@ -13,9 +13,9 @@ jobs:
       - run:
           name: install CMake
           command: |
-            apt-get update
-            apt-get install cmake
-            apt-get upgrade
+            sudo apt-get update
+            sudo apt-get install cmake
+            sudo apt-get upgrade
             
       - run:
           name: assemble release

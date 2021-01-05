@@ -13,8 +13,9 @@ jobs:
       - run:
           name: install CMake
           command: |
-            choco install cmake -y
-            $env:Path+=";$Env:ProgramFiles\CMake\bin"
+            apt-get update
+            apt-get install cmake
+            apt-get upgrade
             
       - run:
           name: assemble release

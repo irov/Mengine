@@ -939,6 +939,13 @@ namespace Mengine
         return len;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::alreadyRunningMonitor()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
         m_windowResolution = _resolution;

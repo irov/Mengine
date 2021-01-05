@@ -27,7 +27,7 @@ namespace Mengine
         ~Win32AlreadyRunningMonitor() override;
 
     public:
-        bool initialize( int32_t _policy, const WChar * _windowClassName, const WChar * _projectTitle );
+        bool initialize( EAlreadyRunningPolicy _policy, const WChar * _windowClassName, const WChar * _projectTitle, bool * const _stop );
         void finalize();
 
     protected:

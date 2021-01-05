@@ -196,7 +196,7 @@ android {
     
     externalNativeBuild {
         cmake {
-            path "../../CMake/Android_SDL/CMakeLists.txt"
+            path "../../cmake/Android_SDL/CMakeLists.txt"
             version "3.10.2"
         }
     }
@@ -269,19 +269,6 @@ sentry {
     uploadNativeSymbols true
     includeNativeSources true
 }
-
-task openal_copy_bsinc_inc(type: Copy) {
-    from "../../cmake/Dependencies/openal-soft/bsinc_inc.h"
-    into "../../dependencies/openal-soft"
-}
-
-task openal_CMakeLists(type: Copy) {
-    from "../../cmake/Dependencies/openal-soft/CMakeLists.txt"
-    into "../../dependencies/openal-soft"
-}
-
-preBuild.dependsOn openal_copy_bsinc_inc
-preBuild.dependsOn openal_CMakeLists
 
 ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 

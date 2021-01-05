@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  android: circleci/android@0.2.1
+
+jobs:
+  build:
+    executor: android/android
+
+    steps:
+      - checkout
+      
+      - run:
+          name: install CMake
+          command: |
+            sudo apt-get update
+            sudo apt-get install cmake
+            sudo apt-get upgrade
+            
+      - run:
+          name: install gradle
+          command: |
+            sudo apt-get install gradle
+            sudo apt upgrade gradle
+            
+      - run:
+          name: download dependencies
+          command: |
+            pushd build/downloads
+            sudo bash downloads_unix.bash
+            popd
+            
+      - run:
+          name: assemble release
+          command: |
+            pushd gradle
+            chmod +x ./gradlew
+            ./gradlew assembleRelease
+            popd

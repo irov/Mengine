@@ -250,6 +250,12 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
+        if( PLATFORM_SERVICE()
+            ->alreadyRunningMonitor() == false )
+        {
+            return true;
+        }
+
         PLATFORM_SERVICE()
             ->setIcon( IDI_MENGINE );
 
@@ -294,11 +300,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()
     {
-        PLATFORM_SERVICE()
-            ->stopPlatform();
+        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->stopPlatform();
+        }
 
-        BOOTSTRAPPER_SERVICE()
-            ->stop();
+        if( SERVICE_EXIST( Mengine::BootstrapperInterface ) == true )
+        {
+            BOOTSTRAPPER_SERVICE()
+                ->stop();
+        }
 
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
         FARPROC procFinalizeMengine = ::GetProcAddress( m_hInstance, "finalizeMengine" );

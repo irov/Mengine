@@ -166,4 +166,5 @@ namespace Mengine
         LOGGER_SERVICE()
             ->logMessage( m_level, m_flag, m_color, _msg, _size );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

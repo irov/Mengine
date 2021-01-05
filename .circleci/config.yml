@@ -11,7 +11,7 @@ jobs:
       - checkout
       
       - run:
-          name: install CMake
+          name: install cmake
           command: |
             sudo apt-get update
             sudo apt-get install cmake
@@ -21,8 +21,12 @@ jobs:
           name: install gradle
           command: |
             sudo apt-get install gradle
-            sudo apt upgrade gradle
-            
+
+      - run:
+          name: install ninja
+          command: |
+            sudo apt-get install ninja
+
       - run:
           name: download dependencies
           command: |

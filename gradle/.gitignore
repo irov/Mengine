@@ -8,7 +8,7 @@
 /build
 /captures
 .externalNativeBuild
-/gradle
+/gradle/wrapper/gradle-wrapper.jar
 /app/google-services.json
 /app/res
 

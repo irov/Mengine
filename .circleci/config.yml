@@ -35,5 +35,5 @@ jobs:
           command: |
             pushd gradle
             chmod +x ./gradlew
-            ./gradlew assembleRelease --stacktrace --debug
+            ./gradlew assembleRelease
             popd

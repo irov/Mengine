@@ -1,3 +1,3 @@
-#! /bin/bash
+#!/bin/bash
 
-bash build_depends_android_sdl.bash Debug
+./build_depends_android_sdl "Debug"

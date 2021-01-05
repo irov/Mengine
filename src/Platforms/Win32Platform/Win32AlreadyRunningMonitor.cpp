@@ -18,43 +18,71 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32AlreadyRunningMonitor::initialize( int32_t _policy, const WChar * _windowClassName, const WChar * _projectTitle )
+    bool Win32AlreadyRunningMonitor::initialize( EAlreadyRunningPolicy _policy, const WChar * _windowClassName, const WChar * _projectTitle, bool * const _stop )
     {
         // try to create mutex to sure that we are not running already
         WChar mutexName[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WCSCPY( mutexName, L"MengineAlreadyRunningMonitorMutex_" );
+        MENGINE_WCSCPY( mutexName, L"Mengine_ARM_Mutex_" );
+        MENGINE_WCSCAT( mutexName, _windowClassName );
         MENGINE_WCSCAT( mutexName, _projectTitle );
 
-        m_mutex = ::CreateMutex( NULL, FALSE, mutexName );
+        HANDLE mutex = ::CreateMutex( NULL, FALSE, mutexName );
+
+        if( mutex == NULL )
+        {
+            return false;
+        }
 
         DWORD error = ::GetLastError();
         // already running
 
         if( error != ERROR_ALREADY_EXISTS )
         {
+            m_mutex = mutex;
+
+            *_stop = false;
+
             return true;
         }
 
-        if( _policy == EARP_SETFOCUS )
+        ::CloseHandle( mutex );
+
+        switch( _policy )
         {
-            HWND otherHwnd = ::FindWindow( _windowClassName, _projectTitle );
-            ::SetForegroundWindow( otherHwnd );
+        case Mengine::EARP_NONE:
+            {
+                *_stop = false;
+            }break;
+        case Mengine::EARP_SETFOCUS:
+            {
+                HWND otherHwnd = ::FindWindow( _windowClassName, _projectTitle );
+                ::SetForegroundWindow( otherHwnd );
 
-            LOGGER_MESSAGE_RELEASE( "AlreadyRunningMonitor FOCUS to other instance of engine" );
+                LOGGER_MESSAGE_RELEASE( "FOCUS to other instance of application [%ls]"
+                    , _projectTitle
+                );
 
-            return false;
-        }
+                *_stop = true;
 
-        if( _policy == EARP_SHOWMESSAGE )
-        {
-            WChar message[1024] = {L'\0'};
-            MENGINE_WNSPRINTF( message, 1024, L"Another instance of '%ls' is already running"
-                , _projectTitle 
-            );
+                return true;
+            }break;
+        case Mengine::EARP_SHOWMESSAGE:
+            {
+                WChar message[1024] = {L'\0'};
+                MENGINE_WNSPRINTF( message, 1024, L"Another instance of '%ls' is already running"
+                    , _projectTitle
+                );
 
-            ::MessageBoxW( NULL, message, _projectTitle, MB_ICONWARNING );
+                ::MessageBoxW( NULL, message, _projectTitle, MB_ICONWARNING );
 
-            return false;
+                *_stop = false;
+
+                return true;
+            }break;
+        default:
+            {
+                return false;
+            }break;
         }
 
         return true;

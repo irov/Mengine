@@ -23,6 +23,6 @@ set "YEAR=2017"
 @popd
 
 :end
-@echo Done
 
 @pause
+@exit /b %errorlevel%

@@ -2,7 +2,6 @@
 
 if ["%~1"]==[""] (
   @echo invalid arguments, please select configuration
-  (call)
   goto end
 )
 

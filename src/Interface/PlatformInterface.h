@@ -54,6 +54,9 @@ namespace Mengine
         virtual size_t getProjectTitle( Char * const _projectTitle ) const = 0;
 
     public:
+        virtual bool alreadyRunningMonitor() = 0;
+
+    public:
         virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;
 
     public:

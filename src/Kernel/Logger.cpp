@@ -128,7 +128,7 @@ namespace Mengine
 
             size += size_sprintf;
 
-            str[size] = '\n';
+            str[size + 0] = '\n';
             str[size + 1] = '\0';
 
             this->logMessage( _format, (size_t)(size + 1) );

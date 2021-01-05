@@ -31,9 +31,16 @@ jobs:
             popd
             
       - run:
+          name: build dependencies
+          command: |
+            pushd build/unix_android_sdl
+            sudo bash build_depends_android_sdl_release.bash
+            popd
+            
+      - run:
           name: assemble release
           command: |
             pushd gradle
             chmod +x ./gradlew
-            ./gradlew assembleRelease
+            ./gradlew assembleRelease -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PANDROID_APP_ABI_FILTERS="arm64-v8a, armeabi-v7a" --stacktrace
             popd

@@ -423,7 +423,9 @@ endif()
 
 #dependencies openssl
 if(MENGINE_DEPENDENCE_OPENSSL AND NOT MENGINE_TARGET_IOS)
-    message("================openssl================")
+    message("================openssl================")    
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openssl/threads_pthread.c ${THIRDPARTY_DIR}/openssl/crypto/threads_pthread.c COPYONLY)
+    
     set(WITH_APPS OFF CACHE BOOL "WITH_APPS" FORCE)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openssl ${CMAKE_TEMP_DIR}/openssl)

@@ -7,12 +7,12 @@ android {
     buildToolsVersion '30.0.2'
     compileSdkVersion 30
 
-    ext.getBooleanProperty = { name ->
+    ext.getBooleanProperty = { name, d ->
         def p = project.getProperties().get(name, null)
 
         if( p == null )
         {
-            return false
+            return d
         }
 
         if( p as Integer == 0 )
@@ -63,7 +63,7 @@ android {
         targetSdkVersion 30
         
         print 'ANDROID_APP_BUILD_PUBLISH = '
-        println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH")
+        println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
         
         print 'ANDROID_APP_BUILD_NUMBER = '
         println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", null)
@@ -73,7 +73,7 @@ android {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
         }
 
-        if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
+        if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) == true) {
             versionCode = 400000000 + buildNumber
         } else {
             versionCode = 300000000 + buildNumber
@@ -105,11 +105,11 @@ android {
         multiDexEnabled true
         
         print 'ANDROID_APP_EMULATOR_ENABLE = '
-        println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE")
+        println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false)
         
-        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == false) {
+        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {
-                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
+                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false) == true) {
                     abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
                 }
                 else
@@ -122,19 +122,19 @@ android {
 
     splits {
         abi {
-            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == true) {
+            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == true) {
                 enable true
             } else {
                 enable false
             }
             
             print 'ANDROID_APP_SPLIT_ENABLE = '
-            println getBooleanProperty("ANDROID_APP_SPLIT_ENABLE")
+            println getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
             
             reset()
 
-            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == false) {
-                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
+            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
+                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false) == true) {
                     include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
                 } else {
                     include "arm64-v8a", "armeabi-v7a"
@@ -156,13 +156,13 @@ android {
                         "-DANDROID_STL=c++_shared", 
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON",
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
                         
                 }
                 
-                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
                     firebaseCrashlytics {
                         mappingFileUploadEnabled true
                     }
@@ -180,12 +180,12 @@ android {
                         "-DANDROID_STL=c++_shared",
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
                         "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
                 
-                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
                     firebaseCrashlytics {
                         nativeSymbolUploadEnabled true
                     }
@@ -208,7 +208,7 @@ android {
                 println MANIFEST_SRC_FILE
             
                 manifest.srcFile MANIFEST_SRC_FILE
-            } else if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
+            } else if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) == true) {
                 println 'MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
             
                 manifest.srcFile 'AndroidManifestPublish.xml'
@@ -257,7 +257,7 @@ android {
     }
     
     afterEvaluate {
-        if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+        if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
             build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
     }
@@ -311,5 +311,7 @@ dependencies {
     implementation project(':libraries:OpenAL32')
 }
 
-apply plugin: 'com.google.gms.google-services'
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true ) {
+    apply plugin: 'com.google.gms.google-services'
+}
 

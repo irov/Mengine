@@ -42,3 +42,5 @@ cmake -G $CMAKE_GENERATOR \
 cmake --build . --config $BUILD_TYPE
 
 popd
+
+[ $? -eq 0 ]  || exit 1

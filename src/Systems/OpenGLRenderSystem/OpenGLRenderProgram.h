@@ -42,11 +42,11 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        RenderVertexAttributeInterfacePtr getVertexAttribute() const override;
+        const RenderVertexAttributeInterfacePtr & getVertexAttribute() const override;
 
     public:
-        RenderFragmentShaderInterfacePtr getFragmentShader() const override;
-        RenderVertexShaderInterfacePtr getVertexShader() const override;
+        const RenderFragmentShaderInterfacePtr & getFragmentShader() const override;
+        const RenderVertexShaderInterfacePtr & getVertexShader() const override;
 
     public:
         bool initialize( const ConstString & _name, const OpenGLRenderVertexShaderPtr & _vertexShader, const OpenGLRenderFragmentShaderPtr & _fragmentShader, const OpenGLRenderVertexAttributePtr & _vertexAttribute, uint32_t _samplerCount );

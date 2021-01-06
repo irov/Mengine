@@ -35,4 +35,5 @@ namespace Mengine
     void CameraDebugGizmoPlugin::_finalizePlugin()
     {
     }
+    //////////////////////////////////////////////////////////////////////////
 }

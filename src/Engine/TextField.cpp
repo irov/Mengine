@@ -1822,12 +1822,21 @@ namespace Mengine
         String fmt;
         if( Helper::getStringFormat( &fmt, textValue, textSize, m_textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "invalid formating string '%s' textId '%s' text '%s' format with args %" PRIuPTR ""
+            LOGGER_ERROR( "text field '%s' invalid formating string textId '%s' (base '%s') text '%s' format with args %" PRIuPTR " [alias env: %s]"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
+                , m_textId.c_str()
                 , textValue
                 , m_textFormatArgs.size()
+                , m_aliasEnvironment.c_str()
             );
+
+            for( const String & arg : m_textFormatArgs )
+            {
+                LOGGER_ERROR( "arg: %s"
+                    , arg.c_str() 
+                );
+            }
 
             return false;
         }

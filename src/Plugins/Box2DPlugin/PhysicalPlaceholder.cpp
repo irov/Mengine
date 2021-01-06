@@ -44,4 +44,5 @@ namespace Mengine
 
         m_transformationFlag = TRANSFORMATION_INVALIDATE_ALL;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

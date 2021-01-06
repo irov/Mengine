@@ -201,6 +201,9 @@ namespace Mengine
         bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
 
     protected:
+        bool isNeedWindowRender() const;
+
+    protected:
         bool initializeFileService_();
         void finalizeFileService_();
 

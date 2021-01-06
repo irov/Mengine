@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class TaskcURLHttpGet
         : public TaskcURLHttpBase
     {

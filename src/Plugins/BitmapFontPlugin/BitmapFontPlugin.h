@@ -3,8 +3,7 @@
 #include "Kernel/PluginBase.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class BitmapFontPlugin
         : public PluginBase
     {

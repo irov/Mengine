@@ -35,6 +35,7 @@ namespace Mengine
             protected:
                 LambdaTaskReceiver m_f;
             };
+            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
         void addHttpGet( const GOAP::SourceInterfacePtr & _source, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc )

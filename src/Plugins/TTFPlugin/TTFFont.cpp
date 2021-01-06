@@ -286,7 +286,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
         {
             return _glyph.ch == _code;
         } );
@@ -686,7 +686,7 @@ namespace Mengine
         return m_ttfSpacing;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * const _face )
+    bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const
     {
         FT_Face face = m_dataTTF->getFTFace();
 

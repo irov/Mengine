@@ -142,6 +142,7 @@ endif()
 
 if (UNIX)
   add_definitions( -D_GNU_SOURCE )
+  add_definitions( -D_BSD_SOURCE )
 endif()
 
 

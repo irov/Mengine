@@ -15,11 +15,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class DX9RenderImage> DX9RenderImagePtr;
-    typedef IntrusivePtr<class DX9RenderVertexShader> DX9RenderVertexShaderPtr;
-    typedef IntrusivePtr<class DX9RenderFragmentShader> DX9RenderFragmentShaderPtr;
-    typedef IntrusivePtr<class DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
-    typedef IntrusivePtr<class DX9RenderProgram> DX9RenderProgramPtr;
+    typedef IntrusivePtr<class DX9RenderImage, class RenderImageInterface> DX9RenderImagePtr;
+    typedef IntrusivePtr<class DX9RenderVertexShader, class RenderVertexShaderInterface> DX9RenderVertexShaderPtr;
+    typedef IntrusivePtr<class DX9RenderFragmentShader, class RenderFragmentShaderInterface> DX9RenderFragmentShaderPtr;
+    typedef IntrusivePtr<class DX9RenderVertexAttribute, class RenderVertexAttributeInterface> DX9RenderVertexAttributePtr;
+    typedef IntrusivePtr<class DX9RenderProgram, class RenderProgramInterface> DX9RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
     class DX9RenderVertexBuffer;
     class DX9RenderIndexBuffer;
@@ -238,9 +238,13 @@ namespace Mengine
 
         bool m_vertexBufferEnable;
         bool m_indexBufferEnable;
+        bool m_vertexAttributeEnable;
+        bool m_vertexShaderEnable;
+        bool m_fragmentShaderEnable;
 
         bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
 
         bool m_waitForVSync;
+        bool m_lostDevice;
     };
 }

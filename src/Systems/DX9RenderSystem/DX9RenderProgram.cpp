@@ -20,17 +20,17 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr DX9RenderProgram::getVertexAttribute() const
+    const RenderVertexAttributeInterfacePtr & DX9RenderProgram::getVertexAttribute() const
     {
         return m_vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr DX9RenderProgram::getVertexShader() const
+    const RenderVertexShaderInterfacePtr & DX9RenderProgram::getVertexShader() const
     {
         return m_vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr DX9RenderProgram::getFragmentShader() const
+    const RenderFragmentShaderInterfacePtr & DX9RenderProgram::getFragmentShader() const
     {
         return m_fragmentShader;
     }
@@ -70,24 +70,33 @@ namespace Mengine
         {
             m_vertexShader->enable( _pD3DDevice );
         }
-        else
-        {
-            DXCALL( _pD3DDevice, SetVertexShader, (nullptr) );
-        }
 
         if( m_fragmentShader != nullptr )
         {
             m_fragmentShader->enable( _pD3DDevice );
-
-        }
-        else
-        {
-            DXCALL( _pD3DDevice, SetPixelShader, (nullptr) );
         }
 
         if( m_vertexAttribute != nullptr )
         {
             m_vertexAttribute->enable();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgram::disable( IDirect3DDevice9 * _pD3DDevice )
+    {
+        if( m_vertexShader != nullptr )
+        {
+            DXCALL( _pD3DDevice, SetVertexShader, (NULL) );
+        }
+
+        if( m_fragmentShader != nullptr )
+        {
+            DXCALL( _pD3DDevice, SetPixelShader, (NULL) );
+        }
+
+        if( m_vertexAttribute != nullptr )
+        {
+            DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -708,13 +708,7 @@ namespace Mengine
                         ->tick( frameTime );
                 }
 
-                bool focus = APPLICATION_SERVICE()
-                    ->isFocus();
-
-                bool nopause = APPLICATION_SERVICE()
-                    ->getNopause();
-
-                if( (focus == true && m_active == true) || nopause == true )
+                if( this->isNeedWindowRender() == true )
                 {
                     bool sucessful = APPLICATION_SERVICE()
                         ->render();
@@ -3747,6 +3741,32 @@ namespace Mengine
         *_error = error;
 
         return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::isNeedWindowRender() const
+    { 
+        if( ::IsIconic( m_hWnd ) == TRUE )
+        {
+            return false;
+        }
+
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
+
+        if( nopause == true )
+        {
+            return true;
+        }
+
+        bool focus = APPLICATION_SERVICE()
+            ->isFocus();
+
+        if( focus == true && m_active == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::sleep( uint32_t _ms )

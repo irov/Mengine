@@ -58,14 +58,17 @@ namespace Mengine
         , m_depth( false )
         , m_adapterToUse( D3DADAPTER_DEFAULT )
         , m_deviceType( D3DDEVTYPE_HAL )
-        , m_waitForVSync( false )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
+        , m_vertexShaderEnable( false )
+        , m_fragmentShaderEnable( false )
         , m_frames( 0 )
         , m_textureMemoryUse( 0 )
         , m_textureCount( 0 )
         , m_vertexBufferCount( 0 )
         , m_indexBufferCount( 0 )
+        , m_waitForVSync( false )
+        , m_lostDevice( false )
     {
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
@@ -851,8 +854,7 @@ namespace Mengine
 
             if( Mode.Format == D3DFMT_UNKNOWN )
             {
-                LOGGER_ERROR( "Can't determine desktop video mode D3DFMT_UNKNOWN"
-                );
+                LOGGER_ERROR( "Can't determine desktop video mode D3DFMT_UNKNOWN" );
 
                 return false;
             }
@@ -862,8 +864,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "restore failed"
-            );
+            LOGGER_ERROR( "restore failed" );
 
             return false;
         }
@@ -875,31 +876,33 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
+        HRESULT cooperativeLevel = m_pD3DDevice->TestCooperativeLevel();
 
-        if( hr == D3DERR_DEVICELOST )
+        if( cooperativeLevel == D3DERR_DEVICELOST )
         {
-            LOGGER_MESSAGE_RELEASE( "device lost wait to reset" );
+            m_lostDevice = true;
+
+            LOGGER_MESSAGE_RELEASE( "device lost [begin scene]" );
 
             ::Sleep( 200 );
 
             return false;
         }
-        else if( hr == D3DERR_DEVICENOTRESET )
+        else if( cooperativeLevel == D3DERR_DEVICENOTRESET )
         {
-            LOGGER_MESSAGE_RELEASE( "device reset" );
+            m_lostDevice = true;
+
+            LOGGER_MESSAGE_RELEASE( "device reset [begin scene]" );
 
             if( this->resetDevice_() == false )
             {
-                ::Sleep( 50 );
-
                 return false;
             }
         }
-        else if( FAILED( hr ) )
+        else if( FAILED( cooperativeLevel ) )
         {
             LOGGER_ERROR( "invalid TestCooperativeLevel [%ld]"
-                , hr
+                , cooperativeLevel
             );
 
             if( this->releaseResources_() == false )
@@ -909,6 +912,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_lostDevice = false;
 
         IF_DXCALL( m_pD3DDevice, BeginScene, () )
         {
@@ -931,24 +936,39 @@ namespace Mengine
 
         HRESULT cooperativeLevel = m_pD3DDevice->TestCooperativeLevel();
 
-        if( cooperativeLevel == D3DERR_DEVICELOST ||
-            cooperativeLevel == D3DERR_DEVICENOTRESET )
+        if( cooperativeLevel == D3DERR_DEVICELOST )
         {
+            m_lostDevice = true;
+
+            LOGGER_MESSAGE_RELEASE( "device lost [swap buffers]" );
+
             return;
+        }
+
+        if( cooperativeLevel == D3DERR_DEVICENOTRESET )
+        {
+            m_lostDevice = true;
+
+            LOGGER_MESSAGE_RELEASE( "device reset [swap buffers]" );
+
+            if( this->resetDevice_() == false )
+            {
+                return;
+            }
         }
 
         HRESULT hr = m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
 
         if( hr == D3DERR_DEVICELOST )
         {
-            LOGGER_ERROR( "device lost in swap buffers" );
+            m_lostDevice = true;
 
-            this->releaseResources_();
+            LOGGER_ERROR( "device lost [present]" );
         }
         else if( FAILED( hr ) )
         {
             LOGGER_ERROR( "failed to swap buffers [%ld]"
-                , hr
+                , cooperativeLevel
             );
         }
 
@@ -1218,7 +1238,7 @@ namespace Mengine
         {
             m_vertexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
+            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
             {
                 LOGGER_ERROR( "stream source not reset" );
             }
@@ -1228,7 +1248,7 @@ namespace Mengine
         {
             m_indexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetIndices, (nullptr) )
+            IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
             {
                 LOGGER_ERROR( "indices not reset" );
             }
@@ -1243,7 +1263,7 @@ namespace Mengine
 
             m_textureEnable[i] = false;
 
-            IF_DXCALL( m_pD3DDevice, SetTexture, (i, nullptr) )
+            IF_DXCALL( m_pD3DDevice, SetTexture, (i, NULL) )
             {
                 LOGGER_ERROR( "texture %u not reset"
                     , i
@@ -1251,14 +1271,25 @@ namespace Mengine
             }
         }
 
-        IF_DXCALL( m_pD3DDevice, SetVertexShader, (nullptr) )
+        if( m_vertexShaderEnable == true )
         {
-            return false;
+            m_vertexShaderEnable = false;
+
+            DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
         }
 
-        IF_DXCALL( m_pD3DDevice, SetPixelShader, (nullptr) )
+        if( m_fragmentShaderEnable == true )
         {
-            return false;
+            m_fragmentShaderEnable = false;
+
+            DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+        }
+
+        if( m_vertexAttributeEnable == true )
+        {
+            m_vertexAttributeEnable = false;
+
+            DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
         }
 
         return true;
@@ -1283,36 +1314,42 @@ namespace Mengine
             handler->onRenderReset();
         }
 
-        HRESULT hr = m_pD3DDevice->Reset( m_d3dpp );
+        HRESULT cooperativeLevel = m_pD3DDevice->Reset( m_d3dpp );
 
-        if( hr == D3DERR_DEVICELOST )
+        if( cooperativeLevel == D3DERR_DEVICELOST )
         {
+            LOGGER_MESSAGE_RELEASE( "device lost [reset]" );
+
             ::Sleep( 200 );
 
-            return false;
+            m_lostDevice = true;
+
+            return true;
         }
-        else if( hr == D3DERR_INVALIDCALL )
+        else if( cooperativeLevel == D3DERR_INVALIDCALL )
         {
-            const Char * message = Helper::getDX9ErrorMessage( hr );
+            const Char * message = Helper::getDX9ErrorMessage( cooperativeLevel );
 
             MENGINE_ERROR_FATAL( "failed to reset device: %s (hr:%x)"
                 , message
-                , (uint32_t)hr
+                , (uint32_t)cooperativeLevel
             );
 
             return false;
         }
-        else if( FAILED( hr ) == true )
+        else if( FAILED( cooperativeLevel ) == true )
         {
-            const Char * message = Helper::getDX9ErrorMessage( hr );
+            const Char * message = Helper::getDX9ErrorMessage( cooperativeLevel );
 
             LOGGER_ERROR( "failed to reset device: %s (hr:%x)"
                 , message
-                , (uint32_t)hr
+                , (uint32_t)cooperativeLevel
             );
 
             return false;
         }
+
+        m_lostDevice = false;
 
         for( DX9RenderResourceHandler * handler : m_renderResourceHandlers )
         {
@@ -1396,7 +1433,7 @@ namespace Mengine
 
             m_vertexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
+            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
             {
                 return false;
             }
@@ -1444,7 +1481,7 @@ namespace Mengine
 
             m_indexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetIndices, (nullptr) )
+            IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
             {
                 return false;
             }
@@ -1504,7 +1541,7 @@ namespace Mengine
         }
         else
         {
-            DXCALL( m_pD3DDevice, SetTexture, (_stage, nullptr) );
+            DXCALL( m_pD3DDevice, SetTexture, (_stage, NULL) );
 
             m_textureEnable[_stage] = false;
         }
@@ -1817,12 +1854,58 @@ namespace Mengine
             DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
 
             dx9_program->enable( m_pD3DDevice );
+
+            const RenderVertexAttributeInterfacePtr & vertexAttribute = dx9_program->getVertexAttribute();
+            const RenderVertexShaderInterfacePtr & vertexShader = dx9_program->getVertexShader();
+            const RenderFragmentShaderInterfacePtr & fragmentShader = dx9_program->getFragmentShader();
+
+            bool vertexAttributeEnable = vertexAttribute != nullptr;
+            bool vertexShaderEnable = vertexShader != nullptr;
+            bool fragmentShaderEnable = fragmentShader != nullptr;
+
+            if( m_vertexAttributeEnable == true && vertexAttributeEnable == false )
+            {
+                m_vertexAttributeEnable = false;
+
+                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+            }
+
+            if( m_vertexShaderEnable == true && vertexShaderEnable == false )
+            {
+                m_vertexShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+            }
+
+            if( m_fragmentShaderEnable == true && fragmentShaderEnable == false )
+            {
+                m_fragmentShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+            }
         }
         else
         {
-            DXCALL( m_pD3DDevice, SetVertexShader, (nullptr) );
+            if( m_vertexShaderEnable == true )
+            {
+                m_vertexShaderEnable = false;
 
-            DXCALL( m_pD3DDevice, SetPixelShader, (nullptr) );
+                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+            }
+
+            if( m_fragmentShaderEnable == true )
+            {
+                m_vertexShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+            }
+
+            if( m_vertexAttributeEnable == true )
+            {
+                m_vertexShaderEnable = false;
+
+                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1842,8 +1925,7 @@ namespace Mengine
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
-            LOGGER_ERROR( "invalid initialize program variable"
-            );
+            LOGGER_ERROR( "invalid initialize program variable" );
 
             return nullptr;
         }

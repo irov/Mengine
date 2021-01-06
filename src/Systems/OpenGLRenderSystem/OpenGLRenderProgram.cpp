@@ -30,17 +30,17 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr OpenGLRenderProgram::getVertexAttribute() const
+    const RenderVertexAttributeInterfacePtr & OpenGLRenderProgram::getVertexAttribute() const
     {
         return m_vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr OpenGLRenderProgram::getFragmentShader() const
+    const RenderFragmentShaderInterfacePtr & OpenGLRenderProgram::getFragmentShader() const
     {
         return m_fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr OpenGLRenderProgram::getVertexShader() const
+    const RenderVertexShaderInterfacePtr & OpenGLRenderProgram::getVertexShader() const
     {
         return m_vertexShader;
     }

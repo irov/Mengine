@@ -19,5 +19,6 @@ namespace Mengine
         MENGINE_DLL_EXPORT void addHttpGet( const GOAP::SourceInterfacePtr & _source, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc );
         MENGINE_DLL_EXPORT void addHttpHeaderData( const GOAP::SourceInterfacePtr & _source, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc );
         MENGINE_DLL_EXPORT void addHttpPost( const GOAP::SourceInterfacePtr & _source, const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

@@ -59,6 +59,6 @@ namespace Mengine
         VectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
+    typedef IntrusivePtr<DX9RenderVertexAttribute, RenderVertexAttributeInterface> DX9RenderVertexAttributePtr;
     //////////////////////////////////////////////////////////////////////////
 }

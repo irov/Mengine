@@ -62,6 +62,6 @@ namespace Mengine
         VectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderVertexAttribute> OpenGLRenderVertexAttributePtr;
+    typedef IntrusivePtr<OpenGLRenderVertexAttribute, RenderVertexAttributeInterface> OpenGLRenderVertexAttributePtr;
     //////////////////////////////////////////////////////////////////////////
 }

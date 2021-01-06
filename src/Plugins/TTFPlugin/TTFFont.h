@@ -83,7 +83,7 @@ namespace Mengine
         bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) override;
 
     protected:
-        bool loadFaceGlyph_( GlyphCode _code, FT_Face * const _face );
+        bool loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const;
 
     protected:
         void notifyRenderDeviceLostPrepare();

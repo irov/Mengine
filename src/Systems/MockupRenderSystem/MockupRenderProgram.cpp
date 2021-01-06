@@ -36,17 +36,17 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr MockupRenderProgram::getVertexAttribute() const
+    const RenderVertexAttributeInterfacePtr & MockupRenderProgram::getVertexAttribute() const
     {
         return m_vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr MockupRenderProgram::getVertexShader() const
+    const RenderVertexShaderInterfacePtr & MockupRenderProgram::getVertexShader() const
     {
         return m_vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr MockupRenderProgram::getFragmentShader() const
+    const RenderFragmentShaderInterfacePtr & MockupRenderProgram::getFragmentShader() const
     {
         return m_fragmentShader;
     }

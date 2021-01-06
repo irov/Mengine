@@ -3,8 +3,7 @@
 #include "Kernel/FactoryPrototypeGenerator.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class BitmapFontPrototypeGenerator
         : public FactoryPrototypeGenerator
     {

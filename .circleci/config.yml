@@ -11,7 +11,7 @@ jobs:
       - checkout
       
       - run:
-          name: install CMake
+          name: install cmake
           command: |
             sudo apt-get update
             sudo apt-get install cmake
@@ -21,8 +21,12 @@ jobs:
           name: install gradle
           command: |
             sudo apt-get install gradle
-            sudo apt upgrade gradle
-            
+
+      - run:
+          name: install ninja-build
+          command: |
+            sudo apt-get install ninja-build
+
       - run:
           name: download dependencies
           command: |
@@ -31,9 +35,16 @@ jobs:
             popd
             
       - run:
+          name: build dependencies
+          command: |
+            pushd build/unix_android_sdl
+            sudo bash build_depends_android_sdl.bash Release
+            popd
+            
+      - run:
           name: assemble release
           command: |
             pushd gradle
             chmod +x ./gradlew
-            ./gradlew assembleRelease
+            ./gradlew assembleRelease -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PANDROID_APP_ABI_FILTERS="arm64-v8a, armeabi-v7a" --stacktrace
             popd

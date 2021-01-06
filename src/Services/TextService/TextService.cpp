@@ -812,10 +812,7 @@ namespace Mengine
 
         TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
 
-        if( textEntry == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry );
 
         m_texts.emplace( _key, textEntry );
 

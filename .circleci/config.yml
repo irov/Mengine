@@ -28,6 +28,11 @@ jobs:
             sudo apt-get install ninja-build
 
       - run:
+          name: install pthread
+          command: |
+            sudo apt-get install pthread
+
+      - run:
           name: download dependencies
           command: |
             pushd build/downloads

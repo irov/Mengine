@@ -30,7 +30,7 @@ jobs:
       - run:
           name: install pthread
           command: |
-            sudo apt-get install pthread
+            sudo apt-get install libpthread-stubs0-dev
 
       - run:
           name: download dependencies

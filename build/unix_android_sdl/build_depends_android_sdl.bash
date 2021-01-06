@@ -24,7 +24,11 @@ cmake -G $CMAKE_GENERATOR \
 
 cmake --build . --config $BUILD_TYPE
 
+status=$?
+
 popd
+
+[ $status -eq 0 ]  || exit 1
 
 mkdir -p $SOLUTION_DIR/$BUILD_TYPE/arm64-v8a
 pushd $SOLUTION_DIR/$BUILD_TYPE/arm64-v8a
@@ -41,6 +45,8 @@ cmake -G $CMAKE_GENERATOR \
 
 cmake --build . --config $BUILD_TYPE
 
+status=$?
+
 popd
 
-[ $? -eq 0 ]  || exit 1
+[ $status -eq 0 ]  || exit 1

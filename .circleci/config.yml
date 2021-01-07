@@ -42,7 +42,7 @@ jobs:
             popd
             
       - run:
-          name: assemble release
+          name: assemble
           command: |
             pushd gradle
             chmod +x ./gradlew

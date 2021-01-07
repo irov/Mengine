@@ -312,6 +312,7 @@ dependencies {
 }
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true ) {
+    println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE'
     apply plugin: 'com.google.gms.google-services'
 }
 

@@ -46,5 +46,5 @@ jobs:
           command: |
             pushd gradle
             chmod +x ./gradlew
-            ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PANDROID_APP_ABI_FILTERS="arm64-v8a, armeabi-v7a" --stacktrace
+            ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" -PANDROID_APP_ABI_FILTERS="arm64-v8a, armeabi-v7a" --stacktrace
             popd

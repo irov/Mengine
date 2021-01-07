@@ -1,18 +1,15 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'io.sentry.android.gradle'
 
 android {
     buildToolsVersion '30.0.2'
     compileSdkVersion 30
 
-    ext.getBooleanProperty = { name ->
+    ext.getBooleanProperty = { name, d ->
         def p = project.getProperties().get(name, null)
 
         if( p == null )
         {
-            return false
+            return d
         }
 
         if( p as Integer == 0 )
@@ -63,7 +60,7 @@ android {
         targetSdkVersion 30
         
         print 'ANDROID_APP_BUILD_PUBLISH = '
-        println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH")
+        println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)
         
         print 'ANDROID_APP_BUILD_NUMBER = '
         println project.getProperties().get("ANDROID_APP_BUILD_NUMBER", null)
@@ -73,7 +70,7 @@ android {
             buildNumber = ANDROID_APP_BUILD_NUMBER as Integer
         }
 
-        if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
+        if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) == true) {
             versionCode = 400000000 + buildNumber
         } else {
             versionCode = 300000000 + buildNumber
@@ -105,11 +102,11 @@ android {
         multiDexEnabled true
         
         print 'ANDROID_APP_EMULATOR_ENABLE = '
-        println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE")
+        println getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false)
         
-        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == false) {
+        if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {
-                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
+                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false) == true) {
                     abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
                 }
                 else
@@ -122,19 +119,19 @@ android {
 
     splits {
         abi {
-            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == true) {
+            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == true) {
                 enable true
             } else {
                 enable false
             }
             
             print 'ANDROID_APP_SPLIT_ENABLE = '
-            println getBooleanProperty("ANDROID_APP_SPLIT_ENABLE")
+            println getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
             
             reset()
 
-            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE") == false) {
-                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE") == true) {
+            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
+                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false) == true) {
                     include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
                 } else {
                     include "arm64-v8a", "armeabi-v7a"
@@ -156,13 +153,13 @@ android {
                         "-DANDROID_STL=c++_shared", 
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON",
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
                         
                 }
                 
-                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
                     firebaseCrashlytics {
                         mappingFileUploadEnabled true
                     }
@@ -180,12 +177,12 @@ android {
                         "-DANDROID_STL=c++_shared",
                         "-DANDROID_TOOLCHAIN=clang",
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
-                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") ? "ON" : "OFF"),
+                        "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
                         "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
                 
-                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
                     firebaseCrashlytics {
                         nativeSymbolUploadEnabled true
                     }
@@ -208,7 +205,7 @@ android {
                 println MANIFEST_SRC_FILE
             
                 manifest.srcFile MANIFEST_SRC_FILE
-            } else if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH") == true) {
+            } else if (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) == true) {
                 println 'MANIFEST_SRC_FILE = AndroidManifestPublish.xml'
             
                 manifest.srcFile 'AndroidManifestPublish.xml'
@@ -257,17 +254,10 @@ android {
     }
     
     afterEvaluate {
-        if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS") == true) {
+        if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
             build.finalizedBy(uploadCrashlyticsSymbolFileRelease)
         }
     }
-}
-
-sentry {
-    autoProguardConfig true
-    autoUpload true
-    uploadNativeSymbols true
-    includeNativeSources true
 }
 
 ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
@@ -290,26 +280,49 @@ dependencies {
     implementation project(':unity-ads')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "androidx.core:core:1.3.2"
-    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.devtodev:android:1.13'
-    implementation 'com.google.android.gms:play-services-ads:19.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.google.firebase:firebase-core:18.0.0'
-    implementation 'com.google.firebase:firebase-analytics:18.0.0'
-    implementation 'com.google.firebase:firebase-auth:20.0.1'
-    implementation 'com.google.firebase:firebase-firestore:22.0.1'
-    implementation 'com.google.firebase:firebase-crashlytics-ndk:17.3.0'
-    implementation 'com.google.firebase:firebase-messaging:21.0.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'io.sentry:sentry-android:2.3.1'
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
 }
 
-apply plugin: 'com.google.gms.google-services'
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true ) {
+    println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE'
 
+    dependencies {
+        implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+        implementation 'com.google.android.gms:play-services-ads:19.6.0'
+        implementation 'com.google.firebase:firebase-core:18.0.0'
+        implementation 'com.google.firebase:firebase-analytics:18.0.0'
+        implementation 'com.google.firebase:firebase-auth:20.0.1'
+        implementation 'com.google.firebase:firebase-firestore:22.0.1'
+        implementation 'com.google.firebase:firebase-crashlytics-ndk:17.3.0'
+        implementation 'com.google.firebase:firebase-messaging:21.0.1'
+    }
+
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
+}
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
+    println 'ANDROID_APP_ENABLE_SENTRY'
+
+    dependencies {
+        implementation 'io.sentry:sentry-android:2.3.1'
+    }
+
+    apply plugin: 'io.sentry.android.gradle'
+
+    sentry {
+        autoProguardConfig true
+        autoUpload true
+        uploadNativeSymbols true
+        includeNativeSources true
+    }
+}

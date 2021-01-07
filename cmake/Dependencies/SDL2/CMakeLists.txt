@@ -1253,7 +1253,6 @@ elseif(UNIX AND NOT APPLE AND NOT ANDROID AND NOT RISCOS)
         set(HAVE_IBUS_IBUS_H TRUE)
         include_directories(${IBUS_INCLUDE_DIRS})
         list(APPEND EXTRA_LIBS ${IBUS_LIBRARIES})
-        add_definitions(-DSDL_USE_IME)
       endif()
 
       if (HAVE_IBUS_IBUS_H OR HAVE_FCITX)

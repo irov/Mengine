@@ -42,16 +42,14 @@ namespace Mengine
 
         Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "webp" ), STRINGIZE_STRING_LOCAL( "webpImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "webp" ), STRINGIZE_STRING_LOCAL( "webpImage" ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void WebPPlugin::_finalizePlugin()
     {
-        CODEC_SERVICE()
-            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "webp" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "webp" ) );
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "webpImage" ) );
     }

@@ -151,8 +151,7 @@ namespace Mengine
             dataflow->finalize();
         } );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "aek" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "aek" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
@@ -207,8 +206,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
 
-        CODEC_SERVICE()
-            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "aek" ) );
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "aek" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {

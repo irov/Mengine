@@ -395,7 +395,7 @@ namespace Mengine
                 continue;
             }
 
-            MENGINE_ASSERTION_FATAL( _minus <= _add );
+            MENGINE_ASSERTION_FATAL( r.count + _add >= _minus );
 
             MENGINE_STRCPY( r.doc, _doc );
 

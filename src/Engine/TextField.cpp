@@ -1714,7 +1714,9 @@ namespace Mengine
 
         m_textFormatArgs = _args;
 
-        m_textFormatArgContexts.resize( _args.size() );
+        VectorString::size_type textFormatArgsSize = m_textFormatArgs.size();
+
+        m_textFormatArgContexts.resize( textFormatArgsSize );
 
         this->invalidateFont();
         this->invalidateTextLines();

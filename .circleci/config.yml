@@ -38,13 +38,13 @@ jobs:
           name: build dependencies
           command: |
             pushd build/unix_android_sdl
-            sudo bash build_depends_android_sdl.bash Release
+            sudo bash build_depends_android_sdl.bash Debug
             popd
             
       - run:
-          name: assemble release
+          name: assemble
           command: |
             pushd gradle
             chmod +x ./gradlew
-            ./gradlew assembleRelease -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PANDROID_APP_ABI_FILTERS="arm64-v8a, armeabi-v7a" --stacktrace
+            ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" -PANDROID_APP_ABI_FILTERS="arm64-v8a, armeabi-v7a" --stacktrace --no-daemon
             popd

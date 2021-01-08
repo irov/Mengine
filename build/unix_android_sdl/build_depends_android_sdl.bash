@@ -23,16 +23,14 @@ function build_dependencies {
         -DANDROID_TOOLCHAIN=clang \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
         -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_TYPE \
-        -S $CMAKELIST_PATH || return 1
+        -S $CMAKELIST_PATH || exit 1
 
-    cmake --build . --config $BUILD_TYPE || return 1
+    cmake --build . --config $BUILD_TYPE || exit 1
     
     popd
-
-    return 0
 }
 
-[[ $(build_dependencies x86) -eq 0 ]]  || exit 1
-[[ $(build_dependencies x86_64) -eq 0 ]]  || exit 1
-[[ $(build_dependencies armeabi-v7a) -eq 0 ]]  || exit 1
-[[ $(build_dependencies arm64-v8a) -eq 0 ]]  || exit 1
+$(build_dependencies x86)
+$(build_dependencies x86_64)
+$(build_dependencies armeabi-v7a)
+$(build_dependencies arm64-v8a)

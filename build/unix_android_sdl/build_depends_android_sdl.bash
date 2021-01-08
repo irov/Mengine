@@ -9,7 +9,7 @@ CMAKE_GENERATOR="Ninja"
 CMAKELIST_PATH=$PWD/../../cmake/Depends_Android_SDL
 SOLUTION_DIR=$PWD/../../solutions/dependencies_android_sdl
 
-build_dependencies () {
+function build_dependencies {
     mkdir -p $SOLUTION_DIR/$BUILD_TYPE/$1
     pushd $SOLUTION_DIR/$BUILD_TYPE/$1
 
@@ -29,10 +29,10 @@ build_dependencies () {
 
     popd
 
-    echo $status
+    return $status
 }
 
-[ $(build_dependencies x86) -eq 0 ]  || exit 1
-[ $(build_dependencies x86_64) -eq 0 ]  || exit 1
-[ $(build_dependencies armeabi-v7a) -eq 0 ]  || exit 1
-[ $(build_dependencies arm64-v8a) -eq 0 ]  || exit 1
+if ! build_dependencies x86; then exit 1
+if ! build_dependencies x86_64; then exit 1
+if ! build_dependencies armeabi-v7a; then exit 1
+if ! build_dependencies arm64-v8a; then exit 1

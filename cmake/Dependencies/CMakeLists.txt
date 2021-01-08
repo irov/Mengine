@@ -5,7 +5,6 @@ OPTION(MENGINE_DEPENDENCE_LZ4 "lz4" ON)
 OPTION(MENGINE_DEPENDENCE_BOX2D "Box2D" ON)
 OPTION(MENGINE_DEPENDENCE_OGG "ogg" ON)
 OPTION(MENGINE_DEPENDENCE_VORBIS "vorbis" ON)
-OPTION(MENGINE_DEPENDENCE_VORBISFILE "vorbisfile" ON)
 OPTION(MENGINE_DEPENDENCE_THEORA "theora" ON)
 OPTION(MENGINE_DEPENDENCE_ZLIB "zlib" ON)
 OPTION(MENGINE_DEPENDENCE_GRAPHICS "graphics" ON)
@@ -45,7 +44,6 @@ MESSAGE("MENGINE_DEPENDENCE_XMLSAX: ${MENGINE_DEPENDENCE_XMLSAX}")
 MESSAGE("MENGINE_DEPENDENCE_LZ4: ${MENGINE_DEPENDENCE_LZ4}")
 MESSAGE("MENGINE_DEPENDENCE_OGG: ${MENGINE_DEPENDENCE_OGG}")
 MESSAGE("MENGINE_DEPENDENCE_VORBIS: ${MENGINE_DEPENDENCE_VORBIS}")
-MESSAGE("MENGINE_DEPENDENCE_VORBISFILE: ${MENGINE_DEPENDENCE_VORBISFILE}")
 MESSAGE("MENGINE_DEPENDENCE_THEORA: ${MENGINE_DEPENDENCE_THEORA}")
 MESSAGE("MENGINE_DEPENDENCE_ZLIB: ${MENGINE_DEPENDENCE_ZLIB}")
 MESSAGE("MENGINE_DEPENDENCE_GRAPHICS: ${MENGINE_DEPENDENCE_GRAPHICS}")
@@ -85,7 +83,6 @@ PROJECT(Dependencies)
 
 message("============@@##START##@@============")
 
-#dependencies zlib
 if(MENGINE_DEPENDENCE_ZLIB)
     message("================zlib================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
@@ -104,7 +101,6 @@ if(MENGINE_DEPENDENCE_ZLIB)
     message("ZLIB_INCLUDE_DIR: ${ZLIB_INCLUDE_DIR}")
 endif()
 
-#dependencies graphics
 if(MENGINE_DEPENDENCE_GRAPHICS)
     message("================graphics================")
     
@@ -117,7 +113,6 @@ if(MENGINE_DEPENDENCE_GRAPHICS)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/graphics ${CMAKE_TEMP_DIR}/graphics)
 endif()
 
-#dependencies jansson
 if(MENGINE_DEPENDENCE_JANSSON)
     message("================jansson================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/CMakeLists.txt ${THIRDPARTY_DIR}/jansson/CMakeLists.txt COPYONLY)
@@ -137,14 +132,12 @@ if(MENGINE_DEPENDENCE_JANSSON)
     message("JANSSON_INCLUDE_DIRS: ${JANSSON_INCLUDE_DIRS}")
 endif()
 
-#dependencies dazzle
 if(MENGINE_DEPENDENCE_DAZZLE)
     message("================dazzle================")
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/dazzle ${CMAKE_TEMP_DIR}/dazzle)
 endif()
 
-#dependencies Box2D
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================Box2D================")
     SET(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "BOX2D_BUILD_UNIT_TESTS" FORCE)
@@ -154,13 +147,11 @@ if(MENGINE_DEPENDENCE_BOX2D)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/box2d ${CMAKE_TEMP_DIR}/box2d)
 endif()
 
-#dependencies lz4
 if(MENGINE_DEPENDENCE_LZ4)
     message("================lz4================")
     ADD_SUBDIRECTORY(lz4)
 endif()
 
-#dependencies ogg
 if(MENGINE_DEPENDENCE_OGG)
     message("================libogg================")
     SET(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
@@ -174,17 +165,18 @@ if(MENGINE_DEPENDENCE_OGG)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libogg/CMakeLists.txt ${THIRDPARTY_DIR}/libogg/CMakeLists.txt COPYONLY)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libogg ${CMAKE_TEMP_DIR}/libogg)
+    
+    set(OGG_LIBRARY ogg CACHE STRING "OGG_LIBRARY" FORCE)
+    set(OGG_INCLUDE_DIR "${THIRDPARTY_DIR}/libogg/include" CACHE INTERNAL "OGG_INCLUDE_DIR" FORCE)
+    
+    message("OGG_LIBRARY: ${OGG_LIBRARY}")
+    message("OGG_INCLUDE_DIR: ${OGG_INCLUDE_DIR}")    
 endif()
 
-#dependencies vorbis
 if(MENGINE_DEPENDENCE_VORBIS)
     message("================libvorbis================")
-    ADD_SUBDIRECTORY(libvorbis)
-endif()
 
-if(MENGINE_DEPENDENCE_VORBISFILE)
-    message("================libvorbisfile================")
-    ADD_SUBDIRECTORY(libvorbisfile)
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libvorbis ${CMAKE_TEMP_DIR}/libvorbis)
 endif()
 
 if(MENGINE_DEPENDENCE_THEORA)
@@ -210,7 +202,6 @@ if(MENGINE_DEPENDENCE_PYTHON)
     ADD_SUBDIRECTORY(python)
 endif()
 
-#dependencies xmlsax
 if(MENGINE_DEPENDENCE_XMLSAX)
     message("================xmlsax================")
     set(XMLSAX_EXTERNAL_BUILD ON CACHE BOOL "XMLSAX_EXTERNAL_BUILD" FORCE)
@@ -219,7 +210,6 @@ if(MENGINE_DEPENDENCE_XMLSAX)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/xmlsax ${CMAKE_TEMP_DIR}/xmlsax)
 endif()
 
-#dependencies libwebp
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
     
@@ -244,13 +234,11 @@ if(MENGINE_DEPENDENCE_WEBP)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libwebp ${CMAKE_TEMP_DIR}/libwebp)
 endif()
 
-#dependencies spine
 if(MENGINE_DEPENDENCE_SPINE)
     message("================spine================")
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/spine/spine-c ${CMAKE_TEMP_DIR}/spine-c)
 endif() 
 
-#dependencies stdex
 if(MENGINE_DEPENDENCE_STDEX)
     message("================stdex================")
     set(STDEX_EXTERNAL_BUILD ON CACHE BOOL "STDEX_EXTERNAL_BUILD" FORCE)
@@ -260,7 +248,6 @@ if(MENGINE_DEPENDENCE_STDEX)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/stdex ${CMAKE_TEMP_DIR}/stdex)
 endif()
 
-#dependencies libfe
 if(MENGINE_DEPENDENCE_FE)
     message("================libfe================")
 	set(FE_EXTERNAL_BUILD ON CACHE BOOL "FE_EXTERNAL_BUILD" FORCE)
@@ -269,7 +256,6 @@ if(MENGINE_DEPENDENCE_FE)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libfe ${CMAKE_TEMP_DIR}/libfe)
 endif()
 
-#dependencies ozz
 if(MENGINE_DEPENDENCE_OZZ)
 message("================ozz================")
     set(ozz_build_tools OFF CACHE BOOL "ozz_build_tools" FORCE)
@@ -288,7 +274,6 @@ message("================ozz================")
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/ozz ${CMAKE_TEMP_DIR}/ozz)
 endif()
 
-#dependencies libmovie
 if(MENGINE_DEPENDENCE_LIBMOVIE)
     message("================libmovie================")
 	set(LIBMOVIE_EXTERNAL_BUILD ON CACHE BOOL "LIBMOVIE_EXTERNAL_BUILD" FORCE)
@@ -301,7 +286,6 @@ if(MENGINE_DEPENDENCE_LIBMOVIE)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libmovie ${CMAKE_TEMP_DIR}/libmovie)
 endif()
 
-#dependencies jpp
 if(MENGINE_DEPENDENCE_JPP)
     message("================jpp================")
     set(JPP_EXTERNAL_BUILD ON CACHE BOOL "JPP_EXTERNAL_BUILD" FORCE)
@@ -313,7 +297,6 @@ if(MENGINE_DEPENDENCE_JPP)
     add_dependencies(jpp jansson)
 endif()
 
-#dependencies pugixml
 if(MENGINE_DEPENDENCE_PUGIXML)
     message("================pugixml================")
     set(BUILD_SHARED_LIBS OFF CACHE STRING "BUILD_SHARED_LIBS" FORCE)
@@ -326,7 +309,6 @@ if(MENGINE_DEPENDENCE_PUGIXML)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/pugixml ${CMAKE_TEMP_DIR}/pugixml)
 endif()
 
-#dependencies GOAP
 if(MENGINE_DEPENDENCE_GOAP)
     message("================GOAP================")
     set(LIBGOAP_EXTERNAL_BUILD ON CACHE BOOL "LIBGOAP_EXTERNAL_BUILD" FORCE)
@@ -337,7 +319,6 @@ if(MENGINE_DEPENDENCE_GOAP)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/GOAP ${CMAKE_TEMP_DIR}/GOAP)
 endif()
 
-#dependencies metabuf
 if(MENGINE_DEPENDENCE_METABUF)
     message("================metabuf================")
 	set(METABUF_EXTERNAL_BUILD ON CACHE BOOL "METABUF_EXTERNAL_BUILD" FORCE)
@@ -358,7 +339,6 @@ if(MENGINE_DEPENDENCE_METABUF)
     add_dependencies(metabuf pugixml)
 endif()
 
-#dependencies libmath
 if(MENGINE_DEPENDENCE_MATH)
     message("================libmath================")
 	set(LIBMATH_EXTERNAL_BUILD ON CACHE BOOL "LIBMATH_EXTERNAL_BUILD" FORCE)
@@ -367,7 +347,6 @@ if(MENGINE_DEPENDENCE_MATH)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libmath ${CMAKE_TEMP_DIR}/libmath)
 endif()
 
-#dependencies tinyini
 if(MENGINE_DEPENDENCE_TINYINI)
     message("================tinyini================")
     set(TINYINI_EXTERNAL_BUILD ON CACHE BOOL "TINYINI_EXTERNAL_BUILD" FORCE)
@@ -375,7 +354,6 @@ if(MENGINE_DEPENDENCE_TINYINI)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/tinyini ${CMAKE_TEMP_DIR}/tinyini)
 endif()
 
-#dependencies freetype
 if(MENGINE_DEPENDENCE_FREETYPE)
     message("================freetype================")    
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/ftoption.h ${THIRDPARTY_DIR}/freetype/include/freetype/config/ftoption.h COPYONLY)
@@ -421,7 +399,6 @@ if(MENGINE_DEPENDENCE_FREETYPE)
     endif()
 endif()
 
-#dependencies openssl
 if(MENGINE_DEPENDENCE_OPENSSL AND NOT MENGINE_TARGET_IOS)
     message("================openssl================")    
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openssl/CMakeLists.txt ${THIRDPARTY_DIR}/openssl/CMakeLists.txt COPYONLY)
@@ -448,7 +425,6 @@ if(MENGINE_DEPENDENCE_OPENSSL AND NOT MENGINE_TARGET_IOS)
     message("OPENSSL_USE_STATIC_LIBS: ${OPENSSL_USE_STATIC_LIBS}")
 endif()
 
-#dependencies curl
 if(MENGINE_DEPENDENCE_CURL)
     message("================curl================")
     
@@ -531,7 +507,6 @@ if(MENGINE_DEPENDENCE_CURL)
     add_dependencies(libcurl zlib)
 endif()
 
-#dependencies sentry
 if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX OR MENGINE_TARGET_MACOS)
     if(MENGINE_DEPENDENCE_SENTRY)
         message("================sentry================")
@@ -564,7 +539,6 @@ if(MENGINE_DEPENDENCE_RPMALLOC)
     ADD_SUBDIRECTORY(rpmalloc)
 endif()
 
-#dependencies SDL2
 if(MENGINE_DEPENDENCE_SDL2)
     message("================SDL2================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/Android.mk ${THIRDPARTY_DIR}/SDL2/Android.mk COPYONLY)
@@ -626,7 +600,6 @@ if(MENGINE_DEPENDENCE_SDL2)
     endif()
 endif()
 
-#dependencies openal-soft
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     message("================openal-soft================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
@@ -675,8 +648,6 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     endif()    
 endif()
 
-
-#dependencies libpng
 if(MENGINE_DEPENDENCE_PNG)
     message("================libpng================")    
     set(PNG_BUILD_ZLIB ON CACHE BOOL "PNG_BUILD_ZLIB" FORCE)
@@ -697,7 +668,6 @@ if(MENGINE_DEPENDENCE_PNG)
     add_dependencies(png_static zlib)
 endif()
 
-#dependencies pybind
 if(MENGINE_DEPENDENCE_PYBIND)
     message("================pybind================")
     set(PYBIND_PROJECT_NAME "pybind" CACHE STRING "PYBIND_PROJECT_NAME" FORCE)
@@ -716,14 +686,12 @@ if(MENGINE_DEPENDENCE_PYBIND)
     add_dependencies(pybind_python python)
 endif()
 
-#dependencies imgui
 if(MENGINE_DEPENDENCE_IMGUI)
     message("================imgui================")
     ADD_SUBDIRECTORY(imgui)
 endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)
-    #dependencies python3
     if(MENGINE_DEPENDENCE_PYTHON3)        
         message("================python3================")
         ADD_SUBDIRECTORY(python3)
@@ -733,8 +701,6 @@ if(MENGINE_TOOLCHAIN_MSVC)
         add_dependencies(python3_decimal python3)
     endif()
 	
-    
-    #dependencies pybind3
     if(MENGINE_DEPENDENCE_PYBIND3)
         message("================pybind3================")
 		set(PYBIND_PROJECT_NAME "pybind3" CACHE STRING "PYBIND_PROJECT_NAME" FORCE)
@@ -752,7 +718,6 @@ if(MENGINE_TOOLCHAIN_MSVC)
         add_dependencies(pybind3 python3 python3_decimal)
     endif()
 	
-    #dependencies glad
     if(MENGINE_DEPENDENCE_GLAD)
         message("================glad================")
         set(GLAD_INSTALL ON CACHE BOOL "GLAD_INSTALL" FORCE)
@@ -762,7 +727,6 @@ if(MENGINE_TOOLCHAIN_MSVC)
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/glad ${CMAKE_TEMP_DIR}/glad)
     endif()
 	
-    #dependencies glfw3
     if(MENGINE_DEPENDENCE_GLFW3)
         message("================glfw3================")
 		set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "GLFW_BUILD_EXAMPLES" FORCE)

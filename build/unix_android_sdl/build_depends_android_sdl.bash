@@ -32,7 +32,7 @@ function build_dependencies {
     return $status
 }
 
-if ! build_dependencies x86; then exit 1
-if ! build_dependencies x86_64; then exit 1
-if ! build_dependencies armeabi-v7a; then exit 1
-if ! build_dependencies arm64-v8a; then exit 1
+[[ $(build_dependencies x86) -eq 0 ]]  || exit 1
+[[ $(build_dependencies x86_64) -eq 0 ]]  || exit 1
+[[ $(build_dependencies armeabi-v7a) -eq 0 ]]  || exit 1
+[[ $(build_dependencies arm64-v8a) -eq 0 ]]  || exit 1

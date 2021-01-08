@@ -32,7 +32,7 @@ build_dependencies () {
     echo $status
 }
 
-[ build_dependencies x86 -eq 0 ]  || exit 1
-[ build_dependencies x86_64 -eq 0 ]  || exit 1
-[ build_dependencies armeabi-v7a -eq 0 ]  || exit 1
-[ build_dependencies arm64-v8a -eq 0 ]  || exit 1
+[ $(build_dependencies x86) -eq 0 ]  || exit 1
+[ $(build_dependencies x86_64) -eq 0 ]  || exit 1
+[ $(build_dependencies armeabi-v7a) -eq 0 ]  || exit 1
+[ $(build_dependencies arm64-v8a) -eq 0 ]  || exit 1

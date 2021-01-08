@@ -660,27 +660,15 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
         SET(ALSOFT_CPUEXT_SSE3 OFF CACHE BOOL "Enable SSE3 support" FORCE)
         SET(ALSOFT_CPUEXT_SSE4_1 OFF CACHE BOOL "Enable SSE4.1 support" FORCE)
+        SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
         
-        if(MENGINE_TOOLCHAIN_MSVC)			
-            SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
+        if(MENGINE_TOOLCHAIN_MSVC)
             SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)
         endif()
         
         if(MENGINE_TOOLCHAIN_MINGW)
             SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
             SET(ALSOFT_STATIC_LIBGCC ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
-        endif()
-        
-        if(MENGINE_TARGET_ANDROID)
-            SET(OPENAL_SHARED ON CACHE BOOL "OPENAL_SHARED" FORCE)
-        endif()
-        
-        if(MENGINE_TARGET_MACOS)
-            SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
-        endif()
-        
-        if(MENGINE_TARGET_UNIX)
-            SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
         endif()
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openal-soft ${CMAKE_TEMP_DIR}/openal-soft)

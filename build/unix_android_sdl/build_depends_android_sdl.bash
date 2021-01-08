@@ -10,20 +10,22 @@ CMAKELIST_PATH=$PWD/../../cmake/Depends_Android_SDL
 SOLUTION_DIR=$PWD/../../solutions/dependencies_android_sdl
 
 function build_dependencies {
-    mkdir -p $SOLUTION_DIR/$BUILD_TYPE/$1
-    pushd $SOLUTION_DIR/$BUILD_TYPE/$1
+    ABI=$1
+
+    mkdir -p $SOLUTION_DIR/$BUILD_TYPE/$ABI
+    pushd $SOLUTION_DIR/$BUILD_TYPE/$ABI
 
     cmake -G $CMAKE_GENERATOR \
         -DANDROID_PLATFORM=$ANDROID_PLATFORM \
         -DANDROID_ARM_NEON=TRUE \
-        -DANDROID_ABI=$1 \
+        -DANDROID_ABI=$ABI \
         -DANDROID_STL=c++_shared \
         -DANDROID_TOOLCHAIN=clang \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
         -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_TYPE \
-        -S $CMAKELIST_PATH || exit 1
+        -S $CMAKELIST_PATH || return 1
 
-    cmake --build . --config $BUILD_TYPE || exit 1
+    cmake --build . --config $BUILD_TYPE || return 1
     
     popd
 

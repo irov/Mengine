@@ -30,7 +30,7 @@ function build_dependencies {
     popd
 }
 
-$(build_dependencies x86)
-$(build_dependencies x86_64)
-$(build_dependencies armeabi-v7a)
-$(build_dependencies arm64-v8a)
+build_dependencies "x86"
+build_dependencies "x86_64"
+build_dependencies "armeabi-v7a"
+build_dependencies "arm64-v8a"

@@ -44,7 +44,7 @@ namespace Mengine
             void * malloc( size_t _size ) override
             {
                 void * p = ALLOCATOR_SERVICE()
-                    ->malloc( _size, "python" );
+                    ->malloc( _size, "python3" );
 
                 return p;
             }
@@ -52,7 +52,7 @@ namespace Mengine
             void * calloc( size_t _num, size_t _size ) override
             {
                 void * p = ALLOCATOR_SERVICE()
-                    ->calloc( _num, _size, "python" );
+                    ->calloc( _num, _size, "python3" );
 
                 return p;
             }
@@ -60,7 +60,7 @@ namespace Mengine
             void * realloc( void * _ptr, size_t _size ) override
             {
                 void * p = ALLOCATOR_SERVICE()
-                    ->realloc( _ptr, _size, "python" );
+                    ->realloc( _ptr, _size, "python3" );
 
                 return p;
             }
@@ -68,7 +68,7 @@ namespace Mengine
             void free( void * _ptr ) override
             {
                 ALLOCATOR_SERVICE()
-                    ->free( _ptr, "python" );
+                    ->free( _ptr, "python3" );
             }
         };
     }
@@ -106,7 +106,7 @@ namespace Mengine
         MENGINE_WCSCAT( exportPath, L"Python3Lib/" );
 
         WChar shortpath_exportPath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH - 1 );
+        DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
 
         if( ShortPathNameLen == 0 )
         {
@@ -148,7 +148,7 @@ namespace Mengine
             MENGINE_WCSCAT( stdPath, L"Python3Lib/" );
 
             WChar shortpath_stdPath[MENGINE_MAX_PATH] = {L'\0'};
-            ::GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH - 1 );
+            ::GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH );
 
             py_syspath.append( shortpath_stdPath );
         }
@@ -159,7 +159,7 @@ namespace Mengine
             MENGINE_WCSCAT( xlsxPath, L"XlsxExport/" );
 
             WChar shortpath_xlsxPath[MENGINE_MAX_PATH] = {L'\0'};
-            ::GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH - 1 );
+            ::GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH );
 
             py_syspath.append( shortpath_xlsxPath );
         }
@@ -219,7 +219,7 @@ namespace Mengine
         bool exist = false;
         PyObject * py_xlsxExporter = kernel->module_import( "xlsxExporter", exist );
 
-        if( py_xlsxExporter == 0 )
+        if( py_xlsxExporter == nullptr )
         {
             return false;
         }
@@ -253,4 +253,5 @@ namespace Mengine
             , utf8_msg
         );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

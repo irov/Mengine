@@ -125,7 +125,7 @@ namespace Mengine
         m_iso639_1["tchinese"] = STRINGIZE_STRING_LOCAL( "zh-tr" );
         m_iso639_1["thai"] = STRINGIZE_STRING_LOCAL( "th" );
         m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( "tr" );
-        m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( "uk" );
+        m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( "ua" );
 
         if( SteamAPI_Init() == false )
         {

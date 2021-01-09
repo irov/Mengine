@@ -9,44 +9,28 @@ CMAKE_GENERATOR="Ninja"
 CMAKELIST_PATH=$PWD/../../cmake/Depends_Android_SDL
 SOLUTION_DIR=$PWD/../../solutions/dependencies_android_sdl
 
-mkdir -p $SOLUTION_DIR/$BUILD_TYPE/armeabi-v7a
-pushd $SOLUTION_DIR/$BUILD_TYPE/armeabi-v7a
+function build_dependencies {
+    ABI=$1
 
-cmake -G $CMAKE_GENERATOR \
-    -DANDROID_PLATFORM=$ANDROID_PLATFORM \
-    -DANDROID_ARM_NEON=TRUE \
-    -DANDROID_ABI=armeabi-v7a \
-    -DANDROID_STL=c++_shared \
-    -DANDROID_TOOLCHAIN=clang \
-    -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-    -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_TYPE \
-    -S $CMAKELIST_PATH
+    mkdir -p $SOLUTION_DIR/$BUILD_TYPE/$ABI
+    pushd $SOLUTION_DIR/$BUILD_TYPE/$ABI
 
-cmake --build . --config $BUILD_TYPE
+    cmake -G $CMAKE_GENERATOR \
+        -DANDROID_PLATFORM=$ANDROID_PLATFORM \
+        -DANDROID_ARM_NEON=TRUE \
+        -DANDROID_ABI=$ABI \
+        -DANDROID_STL=c++_shared \
+        -DANDROID_TOOLCHAIN=clang \
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+        -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_TYPE \
+        -S $CMAKELIST_PATH || exit 1
 
-status=$?
+    cmake --build . --config $BUILD_TYPE || exit 1
+    
+    popd
+}
 
-popd
-
-[ $status -eq 0 ]  || exit 1
-
-mkdir -p $SOLUTION_DIR/$BUILD_TYPE/arm64-v8a
-pushd $SOLUTION_DIR/$BUILD_TYPE/arm64-v8a
-
-cmake -G $CMAKE_GENERATOR \
-    -DANDROID_PLATFORM=$ANDROID_PLATFORM \
-    -DANDROID_ARM_NEON=TRUE \
-    -DANDROID_ABI=arm64-v8a \
-    -DANDROID_STL=c++_shared \
-    -DANDROID_TOOLCHAIN=clang \
-    -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-    -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_TYPE \
-    -S $CMAKELIST_PATH
-
-cmake --build . --config $BUILD_TYPE
-
-status=$?
-
-popd
-
-[ $status -eq 0 ]  || exit 1
+$(build_dependencies x86)
+$(build_dependencies x86_64)
+$(build_dependencies armeabi-v7a)
+$(build_dependencies arm64-v8a)

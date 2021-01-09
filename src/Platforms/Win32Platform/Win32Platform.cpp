@@ -812,7 +812,7 @@ namespace Mengine
         }
 
         WChar unicode_shortpath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, MENGINE_MAX_PATH - 1 );
+        DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, MENGINE_MAX_PATH );
 
         if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH - 1 ) == false )
         {

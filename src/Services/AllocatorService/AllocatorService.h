@@ -63,8 +63,8 @@ namespace Mengine
         struct ReportDesc
         {
             Char doc[2048] = {'\0'};
-            AtomicUInt32 count;
-            AtomicUInt32 total_alloc;
+            AtomicUInt32 count = 0;
+            AtomicUInt32 total_alloc = 0;
         };
 
         ReportDesc m_reports[2048];

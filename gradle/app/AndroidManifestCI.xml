@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.Mengine.Build"
+    package="org.libsdl.app"
     android:installLocation="preferExternal">
 
     <!-- OpenGL ES 2.0 -->
@@ -21,12 +21,13 @@
     <application
         android:label="${app_name_gradle}"
         android:allowBackup="true"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:hardwareAccelerated="true"
         tools:replace="android:label"
         android:extractNativeLibs="true">
 
         <activity
-            android:name="MengineActivity"
+            android:name="SDLActivity"
             android:label="${app_name_gradle}"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:clearTaskOnLaunch="true"
@@ -39,8 +40,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver android:name="org.Mengine.Build.LocalNotifications.NotificationPublisher"/>
-        <service android:name="org.Mengine.Build.LocalNotifications.NotificationJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 </manifest>

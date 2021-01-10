@@ -214,8 +214,16 @@ android {
                 
                 manifest.srcFile 'AndroidManifest.xml'
             }
-            
-            java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
+
+            if (project.hasProperty("ASSETS_JAVA_SRC_DIR")) {
+                print 'ASSETS_JAVA_SRC_DIR = '
+                println ASSETS_JAVA_SRC_DIR
+
+                java.srcDirs = [ASSETS_JAVA_SRC_DIR, '../../dependencies/SDL2/android-project/app/src/main/java/']
+            }
+            else {
+                java.srcDirs = ['../../dependencies/SDL2/android-project/app/src/main/java/']
+            }
             
             if (project.hasProperty("ASSETS_RES_DIR")) {
                 print 'ASSETS_RES_DIR = '

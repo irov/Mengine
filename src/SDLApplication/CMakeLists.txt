@@ -193,46 +193,16 @@ IF(MENGINE_TARGET_IOS)
 ENDIF()
 
 IF(MENGINE_TARGET_ANDROID)
-    add_library( SDL2
-            SHARED
-            IMPORTED )
-             
-    set_target_properties( # Specifies the target library.
-            SDL2
-            # Specifies the parameter you want to define.
-            PROPERTIES IMPORTED_LOCATION
-
-            # Provides the path to the library you want to import.
-            ${MENGINE_REPOSITORY}/gradle/libraries/SDL2/build/intermediates/ndkBuild/${CMAKE_BUILD_TYPE}/obj/local/${ANDROID_ABI}/libSDL2.so
-            )
-
-    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} SDL2)
-    
-    add_library( hidapi
-            SHARED
-            IMPORTED )
-             
-    set_target_properties( # Specifies the target library.
-            hidapi
-            # Specifies the parameter you want to define.
-            PROPERTIES IMPORTED_LOCATION
-
-            # Provides the path to the library you want to import.
-            ${MENGINE_REPOSITORY}/gradle/libraries/SDL2/build/intermediates/ndkBuild/${CMAKE_BUILD_TYPE}/obj/local/${ANDROID_ABI}/libhidapi.so
-            )
-
-    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} hidapi)
-
-    target_link_libraries(  ${PROJECT_NAME}
-                            stdc++
-                            c
-                            m
-                            dl
-                            log
-                            android
-                            OpenSLES
-                            GLESv1_CM
-                            GLESv2
+    target_link_libraries(${PROJECT_NAME}
+        stdc++
+        c
+        m
+        dl
+        log
+        android
+        OpenSLES
+        GLESv1_CM
+        GLESv2
     )
 endif()
 

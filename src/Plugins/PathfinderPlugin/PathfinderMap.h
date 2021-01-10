@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PathfinderMap
         : public PathfinderMapInterface
     {
@@ -30,6 +31,10 @@ namespace Mengine
         bool getPath( uint16_t _fromX, uint16_t _fromY, uint16_t _toX, uint16_t _toY, PathfinderPathDesc * const _path ) const override;
 
     protected:
+        bool walkerBresenham_( uint16_t _fromX, uint16_t _fromY, uint16_t _toX, uint16_t _toY, PathfinderPathDesc * const _path ) const;
+        bool makeFunnels_( uint16_t _fromX, uint16_t _fromY, uint16_t _toX, uint16_t _toY ) const;
+
+    protected:
         uint16_t m_width;
         uint16_t m_height;
 
@@ -42,8 +47,18 @@ namespace Mengine
 
         typedef Vector<CellDesc> VectorCells;
         VectorCells m_cells;
+
+        typedef Vector<uint16_t> VectorFunnels;
+        VectorFunnels m_funnels;
+
+    protected:
+        MENGINE_INLINE const CellDesc & getCellDesc_( uint16_t _fromX, uint16_t _fromY ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PathfinderMap> PathfinderMapPtr;
     //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const PathfinderMap::CellDesc & PathfinderMap::getCellDesc_( uint16_t _fromX, uint16_t _fromY ) const
+    {
+        return m_cells[_fromX + _fromY * m_width];
+    }
 }

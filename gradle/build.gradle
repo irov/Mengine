@@ -4,8 +4,6 @@ ext {
 
 buildscript {
     repositories {
-        mavenLocal()
-        mavenCentral()
         google()
         jcenter()
     }

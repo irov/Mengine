@@ -366,6 +366,7 @@ namespace Mengine
         kernel->set_module_finder( py_moduleFinder.ptr() );
 
         m_factoryScriptModule = Helper::makeFactoryPool<PythonScriptModule, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryEntityEventable = Helper::makeFactoryPool<EntityEventable, 64>( MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_DEBUG
         pybind::def_functor( m_kernel, "addLogFunction", this, &PythonScriptService::addLogFunction );
@@ -516,8 +517,10 @@ namespace Mengine
         m_poolPythonString.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryEntityEventable );
 
         m_factoryScriptModule = nullptr;
+        m_factoryEntityEventable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_stopService()
@@ -623,8 +626,7 @@ namespace Mengine
     {
         if( _type.is_invalid() == true || _type.is_none() == true )
         {
-            LOGGER_ERROR( "type invalid"
-            );
+            LOGGER_ERROR( "type invalid" );
 
             return nullptr;
         }
@@ -635,14 +637,13 @@ namespace Mengine
 
             if( m_kernel->type_initialize( py_type_ptr ) == false )
             {
-                LOGGER_ERROR( "type invalid initialize"
-                );
+                LOGGER_ERROR( "type invalid initialize" );
 
                 return nullptr;
             }
         }
 
-        EventablePtr eventable = Helper::makeFactorableUnique<EntityEventable>( MENGINE_DOCUMENT_FACTORABLE );
+        EntityEventablePtr eventable = m_factoryEntityEventable->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCreate", EVENT_ENTITY_CREATE, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDestroy", EVENT_ENTITY_DESTROY, MENGINE_DOCUMENT_FACTORABLE );

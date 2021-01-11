@@ -130,6 +130,7 @@ namespace Mengine
         IntrusiveListConstStringHolderPythonString m_holdersPythonString;
 
         FactoryPtr m_factoryScriptModule;
+        FactoryPtr m_factoryEntityEventable;
 
         bool m_initializeModules;
 

@@ -9,6 +9,10 @@ jobs:
 
     steps:
       - checkout
+      - accept-licenses
+      - install-ndk:
+        ndk-sha: bcf4023eb8cb6976a4c7cff0a8a8f145f162bf4d
+        ndk-version: android-ndk-r21d
       
       - run:
           name: install cmake
@@ -26,6 +30,11 @@ jobs:
           name: install ninja-build
           command: |
             sudo apt-get install ninja-build
+            
+      - run:
+          name: sdkmanager cmake
+          command: |
+            sdkmanager "cmake;3.10.2.4988404"
 
       - run:
           name: download dependencies

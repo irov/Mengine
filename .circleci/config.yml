@@ -13,7 +13,7 @@ jobs:
       - accept-licenses
       
       - install-ndk
-        ndk-version: android-ndk-r21d
+          ndk-version: android-ndk-r21d
         
       - run:
           name: install cmake

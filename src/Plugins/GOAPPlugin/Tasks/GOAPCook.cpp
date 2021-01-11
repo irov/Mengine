@@ -154,9 +154,16 @@ namespace Mengine
             Cook::addTask<TaskTransformationTranslateTimeWithSkip>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc )
+        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc )
         {
-            Cook::addTask<TaskColorableAlphaTime>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
+            Cook::addTask<TaskColorableAlphaTime>( _source, _colorable, _affectorable, _easing, _to, _time, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addRenderableAlphaTime( const GOAP::SourceInterfacePtr & _source, const RenderablePtr & _renderable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentPtr & _doc )
+        {
+            const RenderInterface * render = _renderable->getRender();
+
+            Cook::addTask<TaskColorableAlphaTime>( _source, ColorablePtr::from( render ), _affectorable, _easing, _to, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addPrint( const GOAP::SourceInterfacePtr & _source, const Char * _format, ... )

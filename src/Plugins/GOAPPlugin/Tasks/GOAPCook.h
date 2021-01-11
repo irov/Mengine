@@ -2,6 +2,7 @@
 
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/SchedulerInterface.h"
+#include "Interface/RenderInterface.h"
 
 #include "TaskEnum.h"
 #include "TaskNotify.h"
@@ -55,7 +56,8 @@ namespace Mengine
         void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc );
         void addTransformationTranslateTimeWithSkip( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc );
 
-        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentPtr & _doc );
+        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentPtr & _doc );
+        void addRenderableAlphaTime( const GOAP::SourceInterfacePtr & _source, const RenderablePtr & _renderable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentPtr & _doc );
 
         void addPrint( const GOAP::SourceInterfacePtr & _source, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
         void addReleasePrint( const GOAP::SourceInterfacePtr & _source, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );

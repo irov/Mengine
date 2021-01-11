@@ -175,6 +175,7 @@ endif()
 
 if(MENGINE_DEPENDENCE_VORBIS)
     message("================libvorbis================")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libvorbis/CMakeLists.txt ${THIRDPARTY_DIR}/libvorbis/CMakeLists.txt COPYONLY)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libvorbis ${CMAKE_TEMP_DIR}/libvorbis)
 endif()

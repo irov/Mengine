@@ -140,7 +140,7 @@ if( MINGW )
   set( CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all" )
 endif()
 
-if (UNIX)
+if (UNIX AND NOT ANDROID)
   add_definitions( -D_GNU_SOURCE )
   add_definitions( -D_BSD_SOURCE )
 endif()

@@ -337,7 +337,6 @@ Vertices
 
 ADD_FILTER(
 Thread
-    ThreadHandle.h
     ThreadEnum.h
     ThreadTask.h
     ThreadTask.cpp

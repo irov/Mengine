@@ -97,11 +97,4 @@ namespace Mengine
 
         return static_cast<uint64_t>(threadId);
     }
-    //////////////////////////////////////////////////////////////////////////
-    ThreadHandle SDLThreadSystem::getCurrentThread() const
-    {
-        //ToDo
-
-        return nullptr;
-    }
 }

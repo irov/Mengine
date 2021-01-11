@@ -59,7 +59,7 @@ namespace Mengine
                 ->getPlatformExtention();
 
             Char stack_msg[8096] = {'\0'};
-            extension->getCallstack( nullptr, stack_msg, 8095, nullptr );
+            extension->getCallstack( ~0U, stack_msg, 8095, nullptr );
 
             MENGINE_STRCAT( exception_msg, "stack:\n" );
             MENGINE_STRCAT( exception_msg, stack_msg );

@@ -170,11 +170,11 @@ namespace Mengine
         Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
             ->getPlatformExtention();
 
-        ThreadHandle currentThread = THREAD_SERVICE()
-            ->getMainThread();
+        uint64_t mainThreadId = THREAD_SERVICE()
+            ->getMainThreadId();
 
         Char stack_msg[8096] = {'\0'};
-        if( extension->getCallstack( currentThread, stack_msg, 8095, nullptr ) == false )
+        if( extension->getCallstack( mainThreadId, stack_msg, 8095, nullptr ) == false )
         {
             LOGGER_ERROR( "Antifreeze monitor invalid callstack" );
         }

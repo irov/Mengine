@@ -89,7 +89,7 @@ namespace Mengine
             ->getPlatformExtention();
 
         Char stack[8096] = {'\0'};
-        if( extension->getCallstack( nullptr, stack, 8095, pExceptionPointers->ContextRecord ) == false )
+        if( extension->getCallstack( ~0U, stack, 8095, pExceptionPointers->ContextRecord ) == false )
         {
             LOGGER_CRITICAL( "Catch exception and write dumb '%s'"
                 , g_monitor->m_dumpPath

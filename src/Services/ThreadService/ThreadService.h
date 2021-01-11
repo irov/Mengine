@@ -58,7 +58,6 @@ namespace Mengine
     public:
         bool isMainThread() const override;
         uint64_t getMainThreadId() const override;
-        ThreadHandle getMainThread() const override;
 
     protected:
         uint32_t m_threadCount;
@@ -91,7 +90,6 @@ namespace Mengine
         VectorThreadDescs m_threads;
 
         uint64_t m_mainThreadId;
-        ThreadHandle m_mainThread;
 
     protected:
         void tryFastProcessTask_( ThreadTaskDesc & _desc );

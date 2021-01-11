@@ -2,7 +2,6 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Kernel/ThreadHandle.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
@@ -28,7 +27,6 @@ namespace Mengine
 
     public:
         uint64_t getCurrentThreadId() const override;
-        ThreadHandle getCurrentThread() const override;
 
     protected:
         FactoryPtr m_factoryThreadIdentity;

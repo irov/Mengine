@@ -3655,15 +3655,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( ThreadHandle _thread, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
+    bool Win32Platform::getCallstack( uint64_t _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
     {
-        HANDLE hThread = (HANDLE)_thread;
-
-        if( hThread == nullptr )
-        {
-            hThread = ::GetCurrentThread();
-        }
-
         HANDLE hProcess = ::GetCurrentProcess();
 
         HMODULE hDbhHelp = ::LoadLibraryW( L"dbghelp.dll" );
@@ -3708,9 +3701,40 @@ namespace Mengine
             return false;
         }
 
+        if( _threadId == ~0U )
+        {
+            _threadId = (uint64_t)::GetCurrentThreadId();
+        }
+
+        HANDLE hThread = ::OpenThread( THREAD_QUERY_INFORMATION, FALSE, (DWORD)_threadId );
+
+        if( hThread == NULL )
+        {
+            DWORD error = ::GetLastError();
+
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_le, 1023 );
+
+            LOGGER_ERROR( "invalid open thread [%u] ShowWindow [error: %s (%lu)]"
+                , _threadId
+                , str_le
+                , error
+            );
+
+
+            LOGGER_ERROR( "invalid load 'dbghelp.dll'" );
+
+            ::FreeLibrary( hDbhHelp );
+            ::FreeLibrary( hKernel32 );
+
+            return false;
+        }
+
         bool successful = Detail::GetCallstack( _stack, _capacity, (PCONTEXT)_context, hDbhHelp, hKernel32, hThread, hProcess );
 
         (*pSymCleanup)(hProcess);
+
+        ::CloseHandle( hThread );
 
         ::FreeLibrary( hDbhHelp );
         ::FreeLibrary( hKernel32 );
@@ -3719,9 +3743,9 @@ namespace Mengine
     }
 #else
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getCallstack( ThreadHandle _thread, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
+    bool Win32Platform::getCallstack( uint64_t _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const
     {
-        MENGINE_UNUSED( _thread );
+        MENGINE_UNUSED( _threadId );
         MENGINE_UNUSED( _stack );
         MENGINE_UNUSED( _capacity );
         MENGINE_UNUSED( _context );

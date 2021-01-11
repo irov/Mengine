@@ -3,7 +3,6 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ThreadQueueInterface.h"
 
-#include "Kernel/ThreadHandle.h"
 #include "Kernel/ThreadEnum.h"
 #include "Kernel/ThreadJob.h"
 #include "Kernel/ConstString.h"
@@ -49,7 +48,6 @@ namespace Mengine
     public:
         virtual bool isMainThread() const = 0;
         virtual uint64_t getMainThreadId() const = 0;
-        virtual ThreadHandle getMainThread() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

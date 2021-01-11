@@ -230,7 +230,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontBase::prepareText( const Char * _text, size_t _size, U32String * const _out )
+    bool FontBase::prepareText( const Char * _text, size_t _size, U32String * const _out )
     {
         const Char * text_str = _text;
         size_t text_len = _size;
@@ -246,6 +246,14 @@ namespace Mengine
 
             if( err != utf8::internal::UTF8_OK )
             {
+                LOGGER_ERROR( "text '%.*s' invalid utf8 [%u]"
+                    , _size
+                    , _text
+                    , err 
+                );
+
+                ++text_it;
+
                 continue;
             }
 
@@ -276,6 +284,8 @@ namespace Mengine
 
             _out->push_back( (Char32)code );
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::prepareGlyph( const U32String & _text, const DocumentPtr & _doc )

@@ -56,7 +56,7 @@ namespace Mengine
 
     public:
         bool validateText( const ConstString & _key, const Char * _text, size_t _size ) const override;
-        void prepareText( const Char * _text, size_t _size, U32String * const _out ) override;
+        bool prepareText( const Char * _text, size_t _size, U32String * const _out ) override;
         bool prepareGlyph( const U32String & _text, const DocumentPtr & _doc ) override;
 
     protected:

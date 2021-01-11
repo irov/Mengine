@@ -1793,11 +1793,17 @@ namespace Mengine
             {
                 const Char notextId[] = "[NONE]";
 
-                font->prepareText( notextId, MENGINE_STATIC_STRING_LENGTH( notextId ), _cacheText );
+                if( font->prepareText( notextId, MENGINE_STATIC_STRING_LENGTH( notextId ), _cacheText ) == false )
+                {
+                    return false;
+                }
             }
             else
             {
-                font->prepareText( textId.c_str(), textId.size(), _cacheText );
+                if( font->prepareText( textId.c_str(), textId.size(), _cacheText ) == false )
+                {
+                    return false;
+                }                
             }            
 
             return true;
@@ -1846,7 +1852,10 @@ namespace Mengine
         const Char * fmt_str = fmt.c_str();
         size_t fmt_size = fmt.size();
 
-        font->prepareText( fmt_str, fmt_size, _cacheText );
+        if( font->prepareText( fmt_str, fmt_size, _cacheText ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

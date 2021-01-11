@@ -16,7 +16,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseEventation::~BaseEventation() noexcept
     {
-        MENGINE_ASSERTION_FATAL( m_receiver == nullptr );
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_receivers );
     }
     //////////////////////////////////////////////////////////////////////////

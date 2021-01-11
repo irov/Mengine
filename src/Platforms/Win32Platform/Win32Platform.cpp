@@ -3538,7 +3538,30 @@ namespace Mengine
                 MENGINE_MEMSET( &contex, 0, sizeof( CONTEXT ) );
                 contex.ContextFlags = CONTEXT_FULL;
 
-                (*pRtlCaptureContext)(&contex);
+                if( hThread == ::GetCurrentThread() )
+                {
+                    (*pRtlCaptureContext)(&contex);
+                }
+                else
+                {
+                    if( ::SuspendThread( hThread ) == (DWORD)-1 )
+                    {
+                        return FALSE;
+                    }
+
+                    if( ::GetThreadContext( hThread, &contex ) == FALSE )
+                    {
+                        DWORD error = ::GetLastError();
+
+                        LOGGER_ERROR( "invalid get thread context [error: %lu]"
+                            , error
+                        );
+
+                        ::ResumeThread( hThread );
+
+                        return FALSE;
+                    }
+                }
             }
             else
             {
@@ -3548,10 +3571,8 @@ namespace Mengine
             STACKFRAME64 frame;
             MENGINE_MEMSET( &frame, 0, sizeof( frame ) );
 
-            DWORD imageType = IMAGE_FILE_MACHINE_I386;
-
 #ifdef _M_IX86
-            imageType = IMAGE_FILE_MACHINE_I386;
+            DWORD imageType = IMAGE_FILE_MACHINE_I386;
             frame.AddrPC.Offset = contex.Eip;
             frame.AddrPC.Mode = AddrModeFlat;
             frame.AddrFrame.Offset = contex.Ebp;
@@ -3559,7 +3580,7 @@ namespace Mengine
             frame.AddrStack.Offset = contex.Esp;
             frame.AddrStack.Mode = AddrModeFlat;
 #elif _M_X64
-            imageType = IMAGE_FILE_MACHINE_AMD64;
+            DWORD imageType = IMAGE_FILE_MACHINE_AMD64;
             frame.AddrPC.Offset = contex.Rip;
             frame.AddrPC.Mode = AddrModeFlat;
             frame.AddrFrame.Offset = contex.Rsp;
@@ -3567,7 +3588,7 @@ namespace Mengine
             frame.AddrStack.Offset = contex.Rsp;
             frame.AddrStack.Mode = AddrModeFlat;
 #elif _M_IA64
-            imageType = IMAGE_FILE_MACHINE_IA64;
+            DWORD imageType = IMAGE_FILE_MACHINE_IA64;
             frame.AddrPC.Offset = contex.StIIP;
             frame.AddrPC.Mode = AddrModeFlat;
             frame.AddrFrame.Offset = contex.IntSp;
@@ -3595,20 +3616,28 @@ namespace Mengine
             MENGINE_MEMSET( &Module, 0, sizeof( Module ) );
             Module.SizeOfStruct = sizeof( Module );
 
+            uint32_t recursionFrame = 0;
+
             for( int32_t frameNum = 0;; ++frameNum )
             {
                 if( (*pStackWalk64)(imageType, hProcess, hThread, &frame, &contex, &ReadMemoryRoutine, pSymFunctionTableAccess64, pSymGetModuleBase64, NULL) == FALSE )
                 {
                     LOGGER_ERROR( "invalid pStackWalk64" );
 
+                    if( _context == NULL )
+                    {
+                        ::ResumeThread( hThread );
+                    }
+
                     return false;
                 }
 
                 if( frame.AddrPC.Offset == frame.AddrReturn.Offset )
                 {
-                    LOGGER_ERROR( "invalid frame.AddrPC.Offset == frame.AddrReturn.Offset" );
-
-                    return false;
+                    if( ++recursionFrame == 1024 )
+                    {
+                        break;
+                    }
                 }
 
                 CallstackEntry csEntry;
@@ -3649,6 +3678,11 @@ namespace Mengine
                 {
                     break;
                 }
+            }
+
+            if( _context == NULL )
+            {
+                ::ResumeThread( hThread );
             }
 
             return true;
@@ -3706,7 +3740,7 @@ namespace Mengine
             _threadId = (uint64_t)::GetCurrentThreadId();
         }
 
-        HANDLE hThread = ::OpenThread( THREAD_QUERY_INFORMATION, FALSE, (DWORD)_threadId );
+        HANDLE hThread = ::OpenThread( THREAD_GET_CONTEXT | THREAD_SUSPEND_RESUME | THREAD_QUERY_INFORMATION, FALSE, (DWORD)_threadId );
 
         if( hThread == NULL )
         {

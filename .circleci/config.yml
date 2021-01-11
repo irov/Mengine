@@ -10,6 +10,8 @@ jobs:
     steps:
       - checkout
       
+      - android/accept-licenses
+      
       - android/install-ndk:
           ndk-sha: bcf4023eb8cb6976a4c7cff0a8a8f145f162bf4d
           ndk-version: android-ndk-r21d
@@ -34,7 +36,8 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            sudo sdkmanager "cmake;3.10.2.4988404"
+            yes | sdkmanager "cmake;3.10.2.4988404"
+          shell: /bin/bash -e
 
       - run:
           name: download dependencies

@@ -12,7 +12,7 @@ jobs:
       
       - accept-licenses
       
-      - install-ndk
+      - install-ndk:
           ndk-version: android-ndk-r21d
         
       - run:

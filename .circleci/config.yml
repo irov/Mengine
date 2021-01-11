@@ -12,7 +12,7 @@ jobs:
       - checkout
       
       - android/install-ndk:
-          ndk-sha1: bcf4023eb8cb6976a4c7cff0a8a8f145f162bf4d
+          ndk-sha: bcf4023eb8cb6976a4c7cff0a8a8f145f162bf4d
           ndk-version: android-ndk-r21d
         
       - run:

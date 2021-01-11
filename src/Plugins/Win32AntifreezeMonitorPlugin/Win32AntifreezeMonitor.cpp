@@ -87,6 +87,8 @@ namespace Mengine
 
         m_dateTimeProvider = dateTimeProvider;
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &Win32AntifreezeMonitor::notifyChangeLocalePrepare, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &Win32AntifreezeMonitor::notifyChangeLocalePost, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_BEGIN, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_END, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ABORT, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
@@ -121,6 +123,8 @@ namespace Mengine
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
 
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_BEGIN );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_END );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ABORT );
@@ -236,6 +240,22 @@ namespace Mengine
         MENGINE_UNUSED( _id );
 
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    {
+        MENGINE_UNUSED( _prevLocale );
+        MENGINE_UNUSED( _currentlocale );
+
+        ++m_reflogger;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    {
+        MENGINE_UNUSED( _prevLocale );
+        MENGINE_UNUSED( _currentlocale );
+
+        --m_reflogger;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level )

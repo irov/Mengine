@@ -6,6 +6,7 @@
 #include "Kernel/ThreadJob.h"
 #include "Kernel/Observable.h"
 #include "Kernel/Factorable.h"
+#include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 #include "Kernel/LoggerLevel.h"
 
@@ -37,6 +38,8 @@ namespace Mengine
         void onThreadWorkerDone( uint32_t _id ) override;
 
     protected:
+        void notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale );
+        void notifyChangeLocalePost( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyLoggerBegin( ELoggerLevel _level );
         void notifyLoggerEnd( ELoggerLevel _level );
         void notifyAbort( const Char * _doc );

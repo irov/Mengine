@@ -58,7 +58,7 @@ namespace Mengine
         m_seconds = seconds;
 
         ThreadJobPtr threadJob = THREAD_SERVICE()
-            ->createJob( seconds * 1000, MENGINE_DOCUMENT_FACTORABLE );
+            ->createJob( m_seconds * 1000, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( threadJob, "invalid create thread job" );
 
@@ -258,6 +258,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_reflogger != 0 );
 
         --m_reflogger;
+        
+        m_refalive++;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level )
@@ -274,6 +276,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_reflogger != 0 );
 
         --m_reflogger;
+
+        m_refalive++;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyAbort( const Char * _doc )

@@ -5,7 +5,7 @@ orbs:
 
 jobs:
   build:
-    executor: android
+    executor: android/android
 
     steps:
       - checkout

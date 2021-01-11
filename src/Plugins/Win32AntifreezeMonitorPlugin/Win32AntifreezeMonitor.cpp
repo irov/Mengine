@@ -255,6 +255,8 @@ namespace Mengine
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
 
+        MENGINE_ASSERTION_FATAL( m_reflogger != 0 );
+
         --m_reflogger;
     }
     //////////////////////////////////////////////////////////////////////////

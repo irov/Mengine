@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     executor:
-      name: android
+      name: android/android
       sdk-version: 30
 
     steps:

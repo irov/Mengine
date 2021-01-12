@@ -9,6 +9,9 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/Assertion.h"
 
+#include "Config/StdIO.h"
+#include "Config/StdString.h"
+
 #include <chrono>
 #include <sstream>
 #include <iterator>
@@ -53,20 +56,6 @@ extern "C"
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static int jpp_dump_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
-    {
-        FILE * f = (FILE *)_ud;
-
-        size_t writebyte = fwrite( _buffer, _size, 1, f );
-
-        if( writebyte != 1 )
-        {
-            return -1;
-        }
-
-        return 0;
-    }
     //////////////////////////////////////////////////////////////////////////
     static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t * _socket, const int _timeoutMs )
     {
@@ -158,10 +147,11 @@ namespace Mengine
         glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        glfwSetScrollCallback( m_window, ImGui_ImplGlfw_ScrollCallback );
-        glfwSetCharCallback( m_window, ImGui_ImplGlfw_CharCallback );
-        glfwSetKeyCallback( m_window, ImGui_ImplGlfw_KeyCallback );
         glfwSetMouseButtonCallback( m_window, ImGui_ImplGlfw_MouseButtonCallback );
+        glfwSetScrollCallback( m_window, ImGui_ImplGlfw_ScrollCallback );
+        glfwSetKeyCallback( m_window, ImGui_ImplGlfw_KeyCallback );
+        glfwSetCharCallback( m_window, ImGui_ImplGlfw_CharCallback );
+        
         glfwSetWindowSizeCallback( m_window, []( GLFWwindow * _wnd, int _width, int _height )
         {
             NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
@@ -234,6 +224,8 @@ namespace Mengine
             this->OnConnectButton();
         }
 
+        ImGui_ImplGlfwGL3_CreateDeviceObjects();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -243,20 +235,19 @@ namespace Mengine
 
         while( GL_FALSE == glfwWindowShouldClose( m_window ) )
         {
-            glfwPollEvents();
-
             const double currentTimerValue = glfwGetTime();
             const double dt = currentTimerValue - lastTimerValue;
             lastTimerValue = currentTimerValue;
 
-            Update( dt );
+            this->Update( dt );
+
+            glfwPollEvents();
+            ImGui_ImplGlfwGL3_NewFrame();
 
             glClearColor( 0.412f, 0.796f, 1.0f, 1.0f );
             glClear( GL_COLOR_BUFFER_BIT );
 
-            ImGui_ImplGlfwGL3_NewFrame();
-
-            DoUI();
+            this->DoUI();
 
             ImGui::Render();
             ImGui_ImplGlfwGL3_RenderDrawData( ImGui::GetDrawData() );
@@ -268,6 +259,10 @@ namespace Mengine
     void NodeDebuggerApp::Shutdown()
     {
         m_shutdown = true;
+
+
+        ImGui_ImplGlfwGL3_Shutdown();
+        ImGui::DestroyContext();
 
         glfwTerminate();
         zed_net_shutdown();
@@ -1499,12 +1494,12 @@ namespace Mengine
             return (_id == _desk.id) && (_desk.type == "Response");
         } );
 
-        char label_node[32];
-        sprintf( label_node, "Response %u"
+        Char label_node[32] = {'\0'};
+        MENGINE_SPRINTF( label_node, "Response %u"
             , _id
         );
 
-        if( ImGui::TreeNode( label_node ) )
+        if( ImGui::TreeNode( label_node ) == true )
         {
             if( responseIterator == m_network.end() )
             {
@@ -1512,9 +1507,12 @@ namespace Mengine
             }
             else
             {
-                int responseStrSize = responseIterator->url.size();
-                jpp::object responseJpp = jpp::load( responseIterator->url.c_str(), responseStrSize, nullptr, nullptr );
-                this->ShowResponseJpp( responseJpp, 0 );
+                const Char * responseStr = responseIterator->url.c_str();
+                String::size_type responseStrSize = responseIterator->url.size();
+                jpp::object responseJpp = jpp::load( responseStr, responseStrSize, nullptr, nullptr );
+
+                uint32_t labelCounter = 0;
+                this->ShowResponseJpp( responseJpp, 0, &labelCounter );
             }
 
             ImGui::TreePop();
@@ -1526,10 +1524,8 @@ namespace Mengine
         _out->append( _spacesCount * _multiplier, ' ' );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter )
+    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter, uint32_t * const _labelCounter )
     {
-        uint32_t networkTextLabelCounter = 0;
-
         String spaces;
         this->addSpacesWithMultiplier( &spaces, 2, _spaceCounter );
 
@@ -1539,29 +1535,122 @@ namespace Mengine
         {
         case jpp::e_type::JPP_OBJECT:
             {
+                uint32_t objectElementsEnumerator = 0;
+
                 for( auto && [key, value] : _object )
                 {
-                    ImGui::Text( "%s%s:", spaces.c_str(), key );
                     jpp::e_type valueType = value.type();
                     if( valueType != jpp::e_type::JPP_OBJECT && valueType != jpp::e_type::JPP_ARRAY )
                     {
+                        ImGui::Text( "%s%s:", spaces.c_str(), key );
+
                         ImGui::SameLine();
+
+                        this->ShowResponseJpp( value, _spaceCounter, _labelCounter );
+                    }
+                    else
+                    {
+                        Char label[32] = {'\0'};
+                        MENGINE_SPRINTF( label, "##o%u%u"
+                            , *_labelCounter
+                            , objectElementsEnumerator
+                        );
+
+                        bool openTree = ImGui::TreeNodeEx( label, ImGuiTreeNodeFlags_None );
+
+                        ImGui::SameLine();
+                        ImGui::Text( "%s%s:", spaces.c_str(), key );
+                        ImGui::SameLine();
+
+                        Char buffer_value[256] = {'\0'};
+                        
+                        struct buffer_desc
+                        {
+                            Char * buffer;
+                            size_t capacity;
+                            bool end;
+                        };
+
+                        buffer_desc desc;
+                        desc.buffer = buffer_value;
+                        desc.capacity = 128;
+                        desc.end = false;
+
+                        jpp::dump_compact( value, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+                        {
+                            buffer_desc * desc = (buffer_desc *)_ud;
+
+                            if( desc->capacity > _size )
+                            {
+                                desc->capacity -= _size;
+                            }
+                            else
+                            {
+                                _size = desc->capacity;
+                                desc->capacity = 0;
+                                desc->end = true;
+                            }
+
+                            MENGINE_STRNCAT( desc->buffer, _buffer, _size );
+
+                            return 0;
+                        }, &desc );
+
+                        if( desc.end == true )
+                        {
+                            MENGINE_STRCAT( desc.buffer, "..." );
+                        }
+
+                        ImGui::TextColored( ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ), "%s", buffer_value );
+
+                        if( openTree == true )
+                        {
+                            ++_spaceCounter;
+                            this->ShowResponseJpp( value, _spaceCounter, _labelCounter );
+                            --_spaceCounter;
+
+                            ImGui::TreePop();
+                        }
                     }
 
-                    ++_spaceCounter;
-                    this->ShowResponseJpp( value, _spaceCounter );
-                    --_spaceCounter;
+                    ++objectElementsEnumerator;
                 }
             }break;
         case jpp::e_type::JPP_ARRAY:
             {
                 uint32_t arrayElementsEnumerator = 0;
+
                 for( const jpp::object & element : jpp::array( _object ) )
                 {
-                    ImGui::Text( "%u:", arrayElementsEnumerator );
-                    ImGui::SameLine();
+                    jpp::e_type elementType = element.type();
 
-                    this->ShowResponseJpp( element, _spaceCounter );
+                    if( elementType != jpp::e_type::JPP_OBJECT && elementType != jpp::e_type::JPP_ARRAY )
+                    {
+                        ImGui::TextColored( ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ), "%s %u", spaces.c_str(), arrayElementsEnumerator );
+
+                        ImGui::SameLine();
+
+                        this->ShowResponseJpp( element, _spaceCounter, _labelCounter );
+                    }
+                    else
+                    {
+                        Char label[32] = {'\0'};
+                        MENGINE_SPRINTF( label, "##a%u%u"
+                            , *_labelCounter
+                            , arrayElementsEnumerator
+                        );
+
+                        if( ImGui::TreeNodeEx( label, ImGuiTreeNodeFlags_None, "%s %u", spaces.c_str(), arrayElementsEnumerator ) == true )
+                        {
+                            ++_spaceCounter;
+                            this->ShowResponseJpp( element, _spaceCounter, _labelCounter );
+                            --_spaceCounter;
+
+                            ImGui::TreePop();
+                        }
+                    }
+
+                    ++arrayElementsEnumerator;
                 }
             }break;
         default:
@@ -1570,11 +1659,16 @@ namespace Mengine
                 this->GetValueStringForJppType( _object, jppType, &valueStr, _spaceCounter );
 
                 // TODO need make ability for copy text from ImGui::InputText
-                String label = Helper::stringFormat( "##%d", networkTextLabelCounter );
-                ++networkTextLabelCounter;
 
-                ImGui::PushItemWidth( 5.f + 8.f * valueStr.size() );
-                ImGui::InputText( label.c_str(), (Char *)valueStr.c_str(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
+                ++*_labelCounter;
+
+                Char label[32] = {'\0'};
+                MENGINE_SPRINTF( label, "##v%u"
+                    , *_labelCounter
+                );
+
+                ImGui::PushItemWidth( 25.f + 8.f * valueStr.size() );
+                ImGui::InputText( label, valueStr.data(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
                 ImGui::PopItemWidth();
             }break;
         }
@@ -1609,11 +1703,6 @@ namespace Mengine
         case jpp::e_type::JPP_NULL:
             {
                 *_out = "null";
-            }break;
-        case jpp::e_type::JPP_OBJECT:
-            {
-                ++_spaceCounter;
-                this->ShowResponseJpp( _object, _spaceCounter );
             }break;
         }
     }
@@ -1733,7 +1822,20 @@ namespace Mengine
             {
                 FILE * f = fopen( desc.file.c_str(), "wb" );
 
-                bool successful = jpp::dump( desc.json, &jpp_dump_callback, f );
+                bool successful = jpp::dump( desc.json, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+                {
+                    FILE * f = (FILE *)_ud;
+
+                    size_t writebyte = fwrite( _buffer, _size, 1, f );
+
+                    if( writebyte != 1 )
+                    {
+                        return -1;
+                    }
+
+                    return 0;
+                }, f );
+
                 MENGINE_UNUSED( successful );
 
                 fclose( f );

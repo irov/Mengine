@@ -247,7 +247,7 @@ namespace Mengine
             if( err != utf8::internal::UTF8_OK )
             {
                 LOGGER_ERROR( "text '%.*s' invalid utf8 [%u]"
-                    , _size
+                    , (int32_t)_size
                     , _text
                     , err 
                 );

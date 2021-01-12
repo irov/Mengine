@@ -35,6 +35,7 @@ function build_dependencies {
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
         -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_TYPE \
         -DCMAKE_MAKE_PROGRAM=$CMAKE_MAKE_PROGRAM \
+        -DCMAKE_TOOLCHAIN_FILE=$CMAKE_TOOLCHAIN_FILE \
         -S $CMAKELIST_PATH || exit 1
 
     $CMAKE_EXE --build . --config $BUILD_TYPE || exit 1

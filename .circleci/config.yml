@@ -16,8 +16,8 @@ jobs:
       
       - android/install-ndk:
           ndk-sha: bcf4023eb8cb6976a4c7cff0a8a8f145f162bf4d
-          ndk-version: android-ndk-r21d
-        
+          ndk-version: android-ndk-r22
+          
       - run:
           name: install cmake
           command: |
@@ -60,5 +60,5 @@ jobs:
           command: |
             pushd gradle
             chmod +x ./gradlew
-            ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" -PANDROID_APP_ABI_FILTERS="arm64-v8a, armeabi-v7a" --debug --stacktrace --no-daemon --max-workers=2
+            ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" --debug --stacktrace --no-daemon --max-workers=2
             popd

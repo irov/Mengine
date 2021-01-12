@@ -230,7 +230,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::prepareText( const Char * _text, size_t _size, U32String * const _out )
+    bool FontBase::prepareText( const Char * _text, size_t _size, U32String * const _out ) const
     {
         const Char * text_str = _text;
         size_t text_len = _size;
@@ -252,9 +252,7 @@ namespace Mengine
                     , err 
                 );
 
-                ++text_it;
-
-                continue;
+                return false;
             }
 
             switch( code )

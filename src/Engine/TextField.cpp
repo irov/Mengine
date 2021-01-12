@@ -1,4 +1,4 @@
-#include "TextField.h" 
+﻿#include "TextField.h" 
 
 #include "Interface/TextServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -325,7 +325,7 @@ namespace Mengine
 
             for( const VectorTextLines & lines : lines2 )
             {
-                mt::vec2f offset2(0.f, 0.f);
+                mt::vec2f offset2( 0.f, 0.f );
 
                 for( const TextLine & line : lines )
                 {
@@ -1656,7 +1656,7 @@ namespace Mengine
             );
 
             return;
-        }        
+        }
 
         this->setText( String( str, size_vsnprintf ) );
     }
@@ -1795,6 +1795,14 @@ namespace Mengine
 
                 if( font->prepareText( notextId, MENGINE_STATIC_STRING_LENGTH( notextId ), _cacheText ) == false )
                 {
+                    LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env: %s]"
+                        , this->getName().c_str()
+                        , this->getTotalTextId().c_str()
+                        , m_textId.c_str()
+                        , notextId
+                        , m_aliasEnvironment.c_str()
+                    );
+
                     return false;
                 }
             }
@@ -1802,9 +1810,17 @@ namespace Mengine
             {
                 if( font->prepareText( textId.c_str(), textId.size(), _cacheText ) == false )
                 {
+                    LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env: %s]"
+                        , this->getName().c_str()
+                        , this->getTotalTextId().c_str()
+                        , m_textId.c_str()
+                        , textId.c_str()
+                        , m_aliasEnvironment.c_str()
+                    );
+
                     return false;
-                }                
-            }            
+                }
+            }
 
             return true;
         }
@@ -1830,7 +1846,7 @@ namespace Mengine
         String fmt;
         if( Helper::getStringFormat( &fmt, textValue, textSize, m_textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "text field '%s' invalid formating string textId '%s' (base '%s') text '%s' format with args %" PRIuPTR " [alias env: %s]"
+            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" PRIuPTR " [alias env: %s]"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textId.c_str()
@@ -1842,7 +1858,7 @@ namespace Mengine
             for( const String & arg : m_textFormatArgs )
             {
                 LOGGER_ERROR( "arg: %s"
-                    , arg.c_str() 
+                    , arg.c_str()
                 );
             }
 
@@ -1854,6 +1870,14 @@ namespace Mengine
 
         if( font->prepareText( fmt_str, fmt_size, _cacheText ) == false )
         {
+            LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid prepare text '%s' [alias env: %s]"
+                , this->getName().c_str()
+                , this->getTotalTextId().c_str()
+                , m_textId.c_str()
+                , fmt.c_str()
+                , m_aliasEnvironment.c_str()
+            );
+
             return false;
         }
 

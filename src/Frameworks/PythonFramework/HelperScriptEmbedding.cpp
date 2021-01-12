@@ -554,7 +554,9 @@ namespace Mengine
                             , _args.repr().c_str()
                         );
 
-                        const Char * str = py_obj.str().c_str();
+                        pybind::string_view sv = py_obj.str();
+
+                        const Char * str = sv.c_str();
 
                         arguments.emplace_back( str );
                     }

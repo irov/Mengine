@@ -15,7 +15,7 @@ jobs:
       - android/accept-licenses
       
       - android/install-ndk:
-          ndk-sha: bcf4023eb8cb6976a4c7cff0a8a8f145f162bf4d
+          ndk-sha: 82274313aba10da6177fd41868f56a0f9651dd81
           ndk-version: android-ndk-r22
           
       - run:

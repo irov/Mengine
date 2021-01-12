@@ -1499,11 +1499,29 @@ namespace Mengine
             , _id
         );
 
-        if( ImGui::TreeNode( label_node ) == true )
+        bool openNode = ImGui::TreeNode( label_node );
+
+        ImGui::SameLine();
+
+        Char label[32];
+        MENGINE_SPRINTF( label, "copy##%u"
+            , _id
+        );
+
+        ImGui::Button( label );
+
+        bool clicked = ImGui::IsItemClicked( 0 );
+
+        if( openNode == true )
         {
             if( responseIterator == m_network.end() )
             {
                 ImGui::Text( "Not receive response for request ID: %ug", _id );
+
+                if( clicked == true )
+                {
+                    ImGui::SetClipboardText( "Not receive response for request" );
+                }
             }
             else
             {
@@ -1513,6 +1531,20 @@ namespace Mengine
 
                 uint32_t labelCounter = 0;
                 this->ShowResponseJpp( responseJpp, 0, &labelCounter );
+
+                if( clicked == true )
+                {
+                    String jppstr;
+                    jpp::dump( responseJpp, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+                    {
+                        String * jppstr = (String *)_ud;
+
+                        jppstr->append( _buffer, _size );
+
+                        return 0;
+                    }, &jppstr );
+                    ImGui::SetClipboardText( jppstr.c_str() );
+                }
             }
 
             ImGui::TreePop();

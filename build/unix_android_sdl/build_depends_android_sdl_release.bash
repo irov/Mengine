@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/bin/bash ./build_depends_android_sdl.bash "Release"
+/bin/bash ./build_depends_android_sdl.bash "release"

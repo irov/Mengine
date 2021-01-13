@@ -155,7 +155,7 @@ android {
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON",
-                        "-DCMAKE_BUILD_TYPE:STRING=Debug"
+                        "-DCMAKE_BUILD_TYPE:STRING=debug"
                         
                 }
                 
@@ -179,7 +179,7 @@ android {
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
-                        "-DCMAKE_BUILD_TYPE:STRING=Release"
+                        "-DCMAKE_BUILD_TYPE:STRING=release"
                 }
                 
                 if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {

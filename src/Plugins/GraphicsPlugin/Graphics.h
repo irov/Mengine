@@ -17,8 +17,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Graphics
         : public Node
-        , public BaseRender
         , public GraphicsInterface
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

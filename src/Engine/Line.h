@@ -8,10 +8,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Line
         : public Node
-        , public BaseRender
         , public Materialable
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
@@ -44,4 +45,7 @@ namespace Mengine
 
         mutable RenderVertex2D m_vertices[4];
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<Line> LinePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

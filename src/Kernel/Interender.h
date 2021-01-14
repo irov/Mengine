@@ -8,8 +8,8 @@ namespace Mengine
 {
     class Interender
         : public Node
-        , public BaseRender
-        , public DummyPicker
+        , private BaseRender
+        , private DummyPicker
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

@@ -5,9 +5,10 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MovieSlot
         : public Node
-        , public BaseRender
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

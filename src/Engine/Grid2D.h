@@ -17,10 +17,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Grid2D
         : public Node
-        , public BaseRender
         , public Materialable
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

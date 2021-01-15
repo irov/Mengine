@@ -19,12 +19,6 @@ jobs:
           ndk-version: android-ndk-r22
           
       - run:
-          name: chown lib
-          command: |
-            sudo mkdir lib
-            chown -R $USER:$USER lib
-          
-      - run:
           name: install cmake
           command: |
             sudo apt-get update
@@ -65,6 +59,6 @@ jobs:
           name: assemble
           command: |
             pushd gradle
-            chmod +x ./gradlew
+            sudo chmod +x gradlew
             ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" --stacktrace --no-daemon --max-workers=2
             popd

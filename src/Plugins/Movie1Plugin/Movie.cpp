@@ -9,8 +9,6 @@
 
 #include "ResourceMovie.h"
 
-#include "Engine/ResourceImageSequence.h"
-#include "Engine/ResourceImageSolid.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceShape.h"
@@ -24,6 +22,8 @@
 #include "Engine/SurfaceImageSequence.h"
 #include "Engine/SurfaceSound.h"
 
+#include "Kernel/ResourceImageSequence.h"
+#include "Kernel/ResourceImageSolid.h"
 #include "Kernel/Layer.h"
 #include "Kernel/Scene.h"
 #include "Kernel/NodeHelper.h"
@@ -1297,7 +1297,7 @@ namespace Mengine
     {
         const ConstString & groupName = m_resourceMovie->getGroupName();
 
-        const ResourceImageSolidPtr & resource = RESOURCE_SERVICE()
+        ResourceImageSolidPtr resource = RESOURCE_SERVICE()
             ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "'%s' resource '%s' can't compile sprite '%s' imageSolid resource = NULL"
@@ -1528,7 +1528,7 @@ namespace Mengine
 
         const ConstString & groupName = m_resourceMovie->getGroupName();
 
-        const ResourceInternalObjectPtr & resourceInternalObject = RESOURCE_SERVICE()
+        ResourceInternalObjectPtr resourceInternalObject = RESOURCE_SERVICE()
             ->getResourceReference( groupName, _layer.source );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceInternalObject );

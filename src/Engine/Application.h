@@ -168,6 +168,11 @@ namespace Mengine
         void updateDebugOpenFile_();
         void notifyDebugOpenFile_( const Char * _folder, const Char * _filePath, bool _streaming );
 
+    protected:
+        void updateDebugResourceCompile_();
+        void notifyDebugResourceCompile_( Resource * _resource );
+
+
     protected:        
         RenderPipelineInterfacePtr m_renderPipeline;
 
@@ -226,6 +231,7 @@ namespace Mengine
 
         bool m_debugPause;
         bool m_debugFileOpen;
+        bool m_debugResourceCompile;
 
         bool m_initailizeGame;
     };

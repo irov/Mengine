@@ -51,7 +51,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Engine/ResourceImageSequence.h"
+#include "Kernel/ResourceImageSequence.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 

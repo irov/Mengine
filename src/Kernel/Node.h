@@ -40,7 +40,9 @@ namespace Mengine
         , public Affectorable
         , public AffectorHubProviderInterface
         , public Visitable
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         , public Scriptable
+#endif
         , public Animatable
         , public Eventable
         , public Pickerable

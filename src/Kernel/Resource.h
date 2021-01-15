@@ -24,8 +24,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceBankInterface;
-
+    //////////////////////////////////////////////////////////////////////////
     class Resource
         : public Factorable
         , public Compilable
@@ -79,6 +80,9 @@ namespace Mengine
         virtual void _finalize();
 
     public:
+        MENGINE_INLINE bool isInitialize() const;
+
+    public:
         bool compile() override;
         void release() override;
 
@@ -104,9 +108,6 @@ namespace Mengine
         virtual void _uncache();
 
     protected:
-        void _destroy() override;
-
-    protected:
         ResourceBankInterface * m_resourceBank;
 
         uint32_t m_compileReferenceCount;
@@ -115,7 +116,8 @@ namespace Mengine
         ConstString m_locale;
         ConstString m_groupName;
         Tags m_tags;
-
+        
+        bool m_initialize;
         bool m_cache;
         bool m_groupCache;
         bool m_keep;
@@ -161,6 +163,11 @@ namespace Mengine
     MENGINE_INLINE bool Resource::isPrecompile() const
     {
         return m_precompile;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool Resource::isInitialize() const
+    {
+        return m_initialize;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Resource::getCompileReferenceCount() const

@@ -54,6 +54,13 @@ namespace Mengine
         void _release() override;
 
     protected:
+        bool _initialize() override;
+        void _finalize() override;
+
+    protected:
+        bool initializeFrames_();
+
+    protected:
         uint32_t m_atlasWidth;
         uint32_t m_atlasHeight;
 
@@ -70,7 +77,13 @@ namespace Mengine
         typedef Hashtable<ConstString, ResourceImagePtr> HashtableTexturepackerFrames;
         HashtableTexturepackerFrames m_hashtableFrames;
 
-        VectorResourceImages m_frames;
+        struct FrameDesc
+        {
+            ResourceImagePtr resourceImage;
+        };
+
+        typedef Vector<FrameDesc> VectorFrames;
+        VectorFrames m_frames;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceTexturepacker> ResourceTexturepackerPtr;

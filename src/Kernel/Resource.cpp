@@ -16,6 +16,7 @@ namespace Mengine
         : m_resourceBank( nullptr )
         , m_compileReferenceCount( 0 )
         , m_prefetchReferenceCount( 0 )
+        , m_initialize( false )
         , m_cache( false )
         , m_groupCache( false )
         , m_keep( false )
@@ -28,7 +29,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_compileReferenceCount == 0 );
         MENGINE_ASSERTION_FATAL( m_prefetchReferenceCount == 0 );
+        MENGINE_ASSERTION_FATAL( m_initialize == false );
         MENGINE_ASSERTION_FATAL( m_cache == false );
+        MENGINE_ASSERTION_FATAL( m_resourceBank == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setResourceBank( ResourceBankInterface * _bank )
@@ -78,9 +81,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::initialize()
     {
-        bool successful = this->_initialize();
+        MENGINE_ASSERTION_FATAL( m_initialize == false );
 
-        return successful;
+        if( this->_initialize() == false )
+        {
+            return false;
+        }
+
+        m_initialize = true;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Resource::_initialize()
@@ -92,7 +102,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::finalize()
     {
+        MENGINE_ASSERTION_FATAL( m_initialize == true );
+
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "resource '%s' type '%s' not release before finalize"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
+
         this->_finalize();
+
+        m_initialize = false;
 
         ContentInterface * content = this->getContent();
 
@@ -112,6 +131,8 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::compile" );
 
+        MENGINE_ASSERTION_FATAL( m_initialize == true );
+
         if( ++m_compileReferenceCount == 1 )
         {
             LOGGER_INFO( "resource", "compile '%s:%s' group '%s'"
@@ -120,8 +141,16 @@ namespace Mengine
                 , this->getGroupName().c_str()
             );
 
+            if( this->getName() == "bg/bg_header" )
+            {
+                int i = 0;
+                (void)i;
+            }
+
             if( Compilable::compile() == false )
             {
+                m_compileReferenceCount = 0;
+
                 return false;
             }
 
@@ -136,6 +165,8 @@ namespace Mengine
     void Resource::release()
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::release" );
+
+        MENGINE_ASSERTION_FATAL( m_initialize == true );
 
         MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "'%s:%s' group '%s' release compile refcount == 0"
             , this->getType().c_str()
@@ -236,14 +267,6 @@ namespace Mengine
     void Resource::_uncache()
     {
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Resource::_destroy()
-    {
-        if( m_resourceBank != nullptr )
-        {
-            m_resourceBank->destroyResource( this );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

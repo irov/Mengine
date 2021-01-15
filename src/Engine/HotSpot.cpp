@@ -125,7 +125,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Scriptable * HotSpot::getPickerScriptable()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         return this;
+#else
+        return nullptr;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     Eventable * HotSpot::getPickerEventable()

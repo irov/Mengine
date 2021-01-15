@@ -1,6 +1,6 @@
 #include "LoaderResourceImageSolid.h"
 
-#include "Engine/ResourceImageSolid.h"
+#include "Kernel/ResourceImageSolid.h"
 
 #include "Metacode/Metacode.h"
 
@@ -33,5 +33,5 @@ namespace Mengine
 
         return true;
     }
-
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -11,7 +11,6 @@
 #include "Engine/TextField.h"
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"
-#include "Engine/ResourceImageSequence.h"
 
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -21,6 +20,7 @@
 #include "Kernel/Shape.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
+#include "Kernel/ResourceImageSequence.h"
 
 #include "NodeDebuggerSerialization.h"
 #include "cURLRequestListener.h"

@@ -1176,11 +1176,21 @@ namespace Mengine
         static float s_getMovieDuration( const ConstString & _resourceName )
         {
             const ResourceMoviePtr & resourceMovie = RESOURCE_SERVICE()
-                ->getResource( ConstString::none(), _resourceName );
+                ->getResourceReference( ConstString::none(), _resourceName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, "invalid movie resource '%s'"
                 , _resourceName.c_str()
             );
+
+            if( resourceMovie->compile() == false )
+            {
+                LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                    , resourceMovie->getName().c_str()
+                    , resourceMovie->getType().c_str()
+                );
+
+                return 0.f;
+            }
 
             float duration = resourceMovie->getDuration();
 
@@ -1239,10 +1249,20 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
         {
-            const ResourceMoviePtr & resource = RESOURCE_SERVICE()
-                ->getResource( ConstString::none(), _resourceName );
+            ResourceMoviePtr resource = RESOURCE_SERVICE()
+                ->getResourceReference( ConstString::none(), _resourceName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource );
+
+            if( resource->compile() == false )
+            {
+                LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                    , resource->getName().c_str()
+                    , resource->getType().c_str()
+                );
+
+                return false;
+            }
 
             bool result = s_hasMovieElement2( resource, _slotName, _typeName );
 

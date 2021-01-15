@@ -105,6 +105,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::addFrame( const ResourceImagePtr & _resourceImage, float _delay )
     {
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false );
+
         FrameImageSequence frame;        
         frame.resourceImage = _resourceImage;
         frame.delay = _delay;
@@ -114,6 +116,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::setSequence( const VectorFrameImageSequence & _sequence )
     {
+        MENGINE_ASSERTION_FATAL( m_sequence.empty() == true );
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false );
+
         m_sequence = _sequence;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -124,20 +129,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceImageSequence::getSequenceResource( uint32_t _index ) const
     {
-#ifdef MENGINE_DEBUG
-        uint32_t sequenceCount = this->getSequenceCount();
-
-        if( _index >= sequenceCount )
-        {
-            LOGGER_ERROR( "'%s' sequence '%u' out of range '%u'"
-                , this->getName().c_str()
-                , _index
-                , sequenceCount
-            );
-
-            return ResourceImagePtr::none();
-        }
-#endif
+        MENGINE_ASSERTION_FATAL( _index < this->getSequenceCount(), "'%s' sequence '%u' out of range '%u'"
+            , this->getName().c_str()
+            , _index
+            , this->getSequenceCount()
+        );
 
         const FrameImageSequence & sequence = m_sequence[_index];
 

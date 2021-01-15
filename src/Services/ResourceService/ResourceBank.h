@@ -31,7 +31,6 @@ namespace Mengine
         void destroyResource( Resource * _resource ) override;
 
     public:
-        const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const override;
         const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const override;
 
         bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const override;

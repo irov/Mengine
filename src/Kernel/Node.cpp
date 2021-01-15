@@ -44,7 +44,9 @@ namespace Mengine
         this->removeChildren( []( const NodePtr & )
         {} );
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         this->unwrap();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::disposeAll()
@@ -80,7 +82,9 @@ namespace Mengine
         this->removeChildren( []( const NodePtr & )
         {} );
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         this->unwrap();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::activate()

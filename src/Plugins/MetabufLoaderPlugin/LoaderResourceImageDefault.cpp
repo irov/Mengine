@@ -2,7 +2,7 @@
 
 #include "Interface/CodecServiceInterface.h"
 
-#include "Engine/ResourceImageDefault.h"
+#include "Kernel/ResourceImageDefault.h"
 
 #include "Metacode/Metacode.h"
 
@@ -58,10 +58,9 @@ namespace Mengine
             resource->setSize( maxSize );
         }
 
-        metadata->getm_File_Offset( resource, &ResourceImageDefault::setOffset );        
-
-        resource->correctUVTexture();
+        metadata->getm_File_Offset( resource, &ResourceImageDefault::setOffset );
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -37,16 +37,17 @@
 #include "Kernel/ConstStringHelper.h"
 
 #include "Engine/ResourceFile.h"
-#include "Engine/ResourceImageDefault.h"
-#include "Engine/ResourceImageSubstractRGBAndAlpha.h"
-#include "Engine/ResourceImageSubstract.h"
-#include "Engine/ResourceImageSequence.h"
-#include "Engine/ResourceImageSolid.h"
-#include "Engine/ResourceImageData.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
+
+#include "Kernel/ResourceImageDefault.h"
+#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceImageSubstract.h"
+#include "Kernel/ResourceImageSequence.h"
+#include "Kernel/ResourceImageSolid.h"
+#include "Kernel/ResourceImageData.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
@@ -1102,6 +1103,15 @@ namespace Mengine
                     , _type.c_str()
                 );
 
+                if( resource->initialize() == false )
+                {
+                    LOGGER_ERROR( "invalid initialize resource '%s'"
+                        , _type.c_str()
+                    );
+
+                    return nullptr;
+                }
+
                 return resource;
             }
             //////////////////////////////////////////////////////////////////////////
@@ -1168,11 +1178,21 @@ namespace Mengine
             const ResourcePtr & s_getResource( const ConstString & _name )
             {
                 const ResourcePtr & resource = RESOURCE_SERVICE()
-                    ->getResource( ConstString::none(), _name );
+                    ->getResourceReference( ConstString::none(), _name );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "not exist resource '%s'"
                     , _name.c_str()
                 );
+
+                if( resource->compile() == false )
+                {
+                    LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                        , resource->getName().c_str()
+                        , resource->getType().c_str()
+                    );
+
+                    return ResourcePtr::none();
+                }
 
                 return resource;
             }
@@ -1248,11 +1268,21 @@ namespace Mengine
                 );
 
                 const ResourceImagePtr & resource = RESOURCE_SERVICE()
-                    ->getResource( ConstString::none(), _resource );
+                    ->getResourceReference( ConstString::none(), _resource );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "image resource not getting '%s'"
                     , _resource.c_str()
                 );
+
+                if( resource->compile() == false )
+                {
+                    LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                        , resource->getName().c_str()
+                        , resource->getType().c_str()
+                    );
+
+                    return;
+                }
 
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -1397,12 +1427,30 @@ namespace Mengine
 
                 resource->setName( _resourceName );
 
-                mt::uv4f uv_image;
-                mt::uv4f uv_alpha;
+                ContentInterface * content = resource->getContent();
 
-                if( resource->setup( fileGroup, _filePath, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
+                content->setFileGroup( fileGroup );
+                content->setFilePath( _filePath );
+
+                const ConstString & newCodecType = CODEC_SERVICE()
+                    ->findCodecType( _filePath );
+
+                if( newCodecType.empty() == true )
                 {
-                    LOGGER_ERROR( "invalid setup image '%s:%s'"
+                    return nullptr;
+                }
+
+                content->setCodecType( newCodecType );
+
+                resource->setMaxSize( maxSize );
+                resource->setSize( maxSize );
+                resource->setOffset( mt::vec2f( 0.f, 0.f ) );
+
+                resource->setAlpha( true );
+
+                if( resource->initialize() == false )
+                {
+                    LOGGER_ERROR( "invalid initialize image '%s:%s'"
                         , fileGroup->getName().c_str()
                         , _filePath.c_str()
                     );
@@ -1426,6 +1474,15 @@ namespace Mengine
 
                 resource->setMaxSize( _maxSize );
                 resource->setSize( _maxSize );
+
+                if( resource->initialize() == false )
+                {
+                    LOGGER_ERROR( "invalid initialize image solid '%s'"
+                        , _resourceName.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 return resource;
             }
@@ -1885,12 +1942,22 @@ namespace Mengine
                     , _resourceFilePath.c_str()
                 );
 
-                const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
-                    ->getResource( ConstString::none(), _resourceFilePath );
+                const ResourceFilePtr & resource = RESOURCE_SERVICE()
+                    ->getResourceReference( ConstString::none(), _resourceFilePath );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resourceFile );
+                MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
-                const ContentInterface * content = resourceFile->getContent();
+                if( resource->compile() == false )
+                {
+                    LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                        , resource->getName().c_str()
+                        , resource->getType().c_str()
+                    );
+
+                    return false;
+                }
+
+                const ContentInterface * content = resource->getContent();
 
                 const FilePath & filePath = content->getFilePath();
                 const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
@@ -1899,7 +1966,7 @@ namespace Mengine
 
                 if( stream == nullptr )
                 {
-                    resourceFile->release();
+                    resource->release();
 
                     return false;
                 }
@@ -1910,12 +1977,12 @@ namespace Mengine
 
                 if( stream->read( memory_buffer, size ) != size )
                 {
-                    resourceFile->release();
+                    resource->release();
 
                     return false;
                 }
 
-                resourceFile->release();
+                resource->release();
 
                 return true;
             }

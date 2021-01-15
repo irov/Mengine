@@ -839,7 +839,7 @@ namespace Mengine
             ResourcePtr resource = RESOURCE_SERVICE()
                 ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT_MESSAGE( "locale '%s' group '%s' name '%s' type '%s'", _locale.c_str(), groupName.c_str(), name.c_str(), type.c_str() ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, "file '%s' invalid create resource '%s:%s' name '%s' type '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, "file '%s' category '%s' group '%s' resource '%s' type '%s' invalid create"
                 , _filePath.c_str()
                 , _fileGroup->getName().c_str()
                 , groupName.c_str()
@@ -858,24 +858,38 @@ namespace Mengine
 
             LoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( loader, "file '%s' resource '%s:%s' invalid create loader '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( loader, "file '%s' category '%s' group '%s' resource '%s' type '%s' invalid create loader"
                 , _filePath.c_str()
                 , _fileGroup->getName().c_str()
                 , groupName.c_str()
-                , type.c_str()
+                , resource->getName().c_str()
+                , resource->getType().c_str()
             );
 
             if( loader->load( resource, meta_resource ) == false )
             {
-                LOGGER_ERROR( "file '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
+                LOGGER_ERROR( "file '%s' category '%s' group '%s' resource '%s' type '%s' invalid load"
                     , _filePath.c_str()
                     , _fileGroup->getName().c_str()
                     , groupName.c_str()
-                    , name.c_str()
-                    , type.c_str()
+                    , resource->getName().c_str()
+                    , resource->getType().c_str()
                 );
 
                 continue;
+            }
+
+            if( resource->initialize() == false )
+            {
+                LOGGER_ERROR( "file '%s' category '%s' group '%s' resource '%s' type '%s' invalid initialize"
+                    , _filePath.c_str()
+                    , _fileGroup->getName().c_str()
+                    , groupName.c_str()
+                    , resource->getName().c_str()
+                    , resource->getType().c_str()
+                );
+
+                return false;
             }
 
             bool precompile = false;

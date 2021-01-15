@@ -2,8 +2,7 @@
 
 #include "Interface/ResourceBankInterface.h"
 
-#include "Engine/ResourceImageSequence.h"
-
+#include "Kernel/ResourceImageSequence.h"
 #include "Kernel/AssertionResourceType.h"
 
 #include "Metacode/Metacode.h"
@@ -60,4 +59,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

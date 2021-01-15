@@ -19,6 +19,12 @@ jobs:
           ndk-version: android-ndk-r22
           
       - run:
+          name: chown lib
+          command: |
+            sudo mkdir lib
+            chown -R $USER:$USER lib
+          
+      - run:
           name: install cmake
           command: |
             sudo apt-get update

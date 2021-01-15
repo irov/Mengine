@@ -60,5 +60,5 @@ jobs:
           command: |
             pushd gradle
             chmod +x ./gradlew
-            sudo ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" --stacktrace --no-daemon --max-workers=2
+            ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" --stacktrace --no-daemon --max-workers=2
             popd

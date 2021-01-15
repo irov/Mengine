@@ -193,6 +193,42 @@ IF(MENGINE_TARGET_IOS)
 ENDIF()
 
 IF(MENGINE_TARGET_ANDROID)
+    IF(UNIX)
+        string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_CORRECT)
+    ELSE()
+        SET(CMAKE_BUILD_TYPE_CORRECT ${CMAKE_BUILD_TYPE})
+    ENDIF()
+
+    add_library( SDL2
+            SHARED
+            IMPORTED )
+             
+    set_target_properties( # Specifies the target library.
+            SDL2
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+
+            # Provides the path to the library you want to import.
+            ${MENGINE_REPOSITORY}/gradle/libraries/SDL2/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libSDL2.so
+            )
+
+    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} SDL2)
+    
+    add_library( hidapi
+            SHARED
+            IMPORTED )
+             
+    set_target_properties( # Specifies the target library.
+            hidapi
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+
+            # Provides the path to the library you want to import.
+            ${MENGINE_REPOSITORY}/gradle/libraries/SDL2/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libhidapi.so
+            )
+
+    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} hidapi)
+
     target_link_libraries(${PROJECT_NAME}
         stdc++
         c

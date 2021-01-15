@@ -9,11 +9,12 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<class Movie> MoviePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class MovieInternalObject
         : public Node
-        , public BaseRender
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

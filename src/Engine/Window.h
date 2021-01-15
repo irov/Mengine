@@ -13,8 +13,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Window
         : public Node
-        , public BaseRender
         , public FixedVertices<ResourceWindow_Count * 4>
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

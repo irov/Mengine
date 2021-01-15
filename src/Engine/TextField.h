@@ -24,9 +24,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TextField
         : public Node
-        , public BaseRender
         , public Materialable
         , public Observable
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

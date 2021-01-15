@@ -9,12 +9,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ImGUIRender
         : public Node
-        , public BaseRender
         , public RenderExternalInterface
         , public ImGUIRenderProviderInterface
         , public UnknownImGUIRenderInterface
+        , private BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();

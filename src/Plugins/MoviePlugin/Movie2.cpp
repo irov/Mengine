@@ -285,7 +285,9 @@ namespace Mengine
                     {
                         TextField * node = Helper::reinterpretNodeCast<TextField *>( mesh.element_userdata );
 
-                        const mt::box2f * bb = node->getBoundingBox();
+                        const RenderInterface * render = node->getRender();
+
+                        const mt::box2f * bb = render->getBoundingBox();
 
                         if( bb != nullptr )
                         {
@@ -417,7 +419,9 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
                 node->setName( layer.name );
-                node->setExternalRender( true );
+
+                RenderInterface * render = node->getRender();
+                render->setExternalRender( true );
 
                 node->setTextId( layer.name );
                 node->setTextAliasEnvironment( m_aliasEnvironment );
@@ -697,6 +701,15 @@ namespace Mengine
         }
 
         m_astralaxEmitters.clear();
+
+        for( const HashtableSubCompositions::value_type & value : m_subCompositions )
+        {
+            const Movie2SubCompositionPtr & subComposition = value.element;
+
+            EventationInterface * eventation = subComposition->getEventation();
+
+            eventation->removeEvents();
+        }
 
         m_subCompositions.clear();
     }

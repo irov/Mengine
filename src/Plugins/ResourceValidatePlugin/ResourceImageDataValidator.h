@@ -2,8 +2,7 @@
 
 #include "ResourceValidatorHelper.h"
 
-#include "Engine/ResourceImageData.h"
-
+#include "Kernel/ResourceImageData.h"
 #include "Kernel/Factorable.h"
 
 namespace Mengine

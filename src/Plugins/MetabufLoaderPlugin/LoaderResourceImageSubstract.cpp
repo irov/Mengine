@@ -2,7 +2,7 @@
 
 #include "Interface/ResourceBankInterface.h"
 
-#include "Engine/ResourceImageSubstract.h"
+#include "Kernel/ResourceImageSubstract.h"
 
 #include "Metacode/Metacode.h"
 
@@ -67,8 +67,7 @@ namespace Mengine
 
         metadata->getm_Image_Offset( resource, &ResourceImageSubstract::setOffset );
 
-        resource->correctUVTexture();
-
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

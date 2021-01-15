@@ -110,15 +110,14 @@
 #include "SurfaceSolidColor.h"
 
 // All Resource type
-#include "ResourceImageSequence.h"
-#include "ResourceImageData.h"
+#include "Kernel/ResourceImageSequence.h"
+#include "Kernel/ResourceImageData.h"
+#include "Kernel/ResourceImageSolid.h"
+#include "Kernel/ResourceImageDefault.h"
+#include "Kernel/ResourceImageSubstract.h"
+#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+
 #include "ResourceMusic.h"
-
-#include "ResourceImageSolid.h"
-#include "ResourceImageDefault.h"
-#include "ResourceImageSubstract.h"
-#include "ResourceImageSubstractRGBAndAlpha.h"
-
 #include "ResourceFile.h"
 #include "ResourceSound.h"
 #include "ResourceWindow.h"
@@ -175,6 +174,7 @@ namespace Mengine
         , m_inputMouseButtonEventBlock( false )
         , m_debugPause( false )
         , m_debugFileOpen( false )
+        , m_debugResourceCompile( false )
         , m_initailizeGame( false )
     {
     }
@@ -1119,6 +1119,13 @@ namespace Mengine
             //        ->enableRedAlertMode( !enable );
             //}
 
+            if( _event.code == KC_F3 && _event.isDown == true )
+            {
+                m_debugResourceCompile = !m_debugResourceCompile;
+
+                this->updateDebugResourceCompile_();
+            }
+
             if( _event.code == KC_F4 && _event.isDown == true )
             {
                 m_debugFileOpen = !m_debugFileOpen;
@@ -1299,6 +1306,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Application::updateDebugResourceCompile_()
+    {
+        if( m_debugResourceCompile == true )
+        {
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &Application::notifyDebugResourceCompile_, MENGINE_DOCUMENT_FACTORABLE );
+        }
+        else
+        {
+            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugOpenFile_( const Char * _folder, const Char * _filePath, bool _streaming )
     {
         bool isMainThread = THREAD_SERVICE()
@@ -1343,6 +1362,14 @@ namespace Mengine
                     );
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::notifyDebugResourceCompile_( Resource * _resource )
+    {
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("compile %s type %s"
+            , _resource->getName().c_str()
+            , _resource->getType().c_str()
+            );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::mouseWheel( const InputMouseWheelEvent & _event )
@@ -2226,8 +2253,8 @@ namespace Mengine
         if( m_cursorMode == true && m_cursorResource != nullptr )
         {
             const ConstString & name = m_cursorResource->getName();
-            const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
             const ContentInterface * content = m_cursorResource->getContent();
+            const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
             PLATFORM_SERVICE()
                 ->notifyCursorIconSetup( name, content, buffer );
@@ -2243,18 +2270,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::setCursorIcon( const ConstString & _resourceName )
     {
+        ResourceCursorPtr cursorResource = RESOURCE_SERVICE()
+            ->getResourceReference( ConstString::none(), _resourceName );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( cursorResource, "can't find resource cursor '%s'"
+            , _resourceName.c_str()
+        );
+
+        if( cursorResource->compile() == false )
+        {
+            LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                , cursorResource->getName().c_str()
+                , cursorResource->getType().c_str()
+            );
+
+            return;
+        }
+
         if( m_cursorResource != nullptr )
         {
             m_cursorResource->release();
             m_cursorResource = nullptr;
         }
-
-        const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()
-            ->getResource( ConstString::none(), _resourceName );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( cursorResource, "can't find resource cursor '%s'"
-            , _resourceName.c_str()
-        );
 
         m_cursorResource = cursorResource;
 
@@ -2264,8 +2301,8 @@ namespace Mengine
         }
 
         const ConstString & name = m_cursorResource->getName();
-        const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
         const ContentInterface * content = m_cursorResource->getContent();
+        const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
         PLATFORM_SERVICE()
             ->notifyCursorIconSetup( name, content, buffer );

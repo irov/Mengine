@@ -187,12 +187,6 @@ Resource\\\\File
 )
 
 ADD_FILTER(
-Resource\\\\ImageSequence
-    ResourceImageSequence.cpp
-    ResourceImageSequence.h
-)
-
-ADD_FILTER(
 Resource\\\\ResourceMusic
     ResourceMusic.h
     ResourceMusic.cpp
@@ -205,20 +199,6 @@ Resource\\\\Cursor
     ResourceCursorICO.h
     ResourceCursorSystem.cpp
     ResourceCursorSystem.h
-)
-
-ADD_FILTER(
-Resource\\\\Image
-    ResourceImageData.cpp
-    ResourceImageData.h
-    ResourceImageSolid.h
-    ResourceImageSolid.cpp
-    ResourceImageDefault.cpp
-    ResourceImageDefault.h
-    ResourceImageSubstract.cpp
-    ResourceImageSubstract.h
-    ResourceImageSubstractRGBAndAlpha.cpp
-    ResourceImageSubstractRGBAndAlpha.h
 )
 
 ADD_FILTER(

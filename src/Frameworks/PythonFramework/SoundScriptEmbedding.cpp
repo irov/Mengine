@@ -180,10 +180,20 @@ namespace Mengine
                     , _resourceName.c_str()
                     );
 
-                const ResourceSoundPtr & resource = RESOURCE_SERVICE()
-                    ->getResource( ConstString::none(), _resourceName );
+                ResourceSoundPtr resource = RESOURCE_SERVICE()
+                    ->getResourceReference( ConstString::none(), _resourceName );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource );
+
+                if( resource->compile() == false )
+                {
+                    LOGGER_ERROR( "resource '%s' type '%s' is not compile!"
+                        , resource->getName().c_str()
+                        , resource->getType().c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer( _doc );
 

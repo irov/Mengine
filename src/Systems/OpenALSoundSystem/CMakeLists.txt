@@ -32,15 +32,15 @@ IF(MENGINE_TARGET_UNIX)
 ENDIF()
 
 IF(MENGINE_TARGET_ANDROID)
-    add_library( OpenAL32
-            SHARED
-            IMPORTED )
-         
     IF(UNIX)
         string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_CORRECT)
     ELSE()
         SET(CMAKE_BUILD_TYPE_CORRECT ${CMAKE_BUILD_TYPE})
     ENDIF()
+    
+    add_library( OpenAL32
+            SHARED
+            IMPORTED )
 
     set_target_properties( # Specifies the target library.
             OpenAL32

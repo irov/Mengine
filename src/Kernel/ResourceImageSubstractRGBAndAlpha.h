@@ -1,0 +1,44 @@
+#pragma once
+
+#include "Kernel/ResourceImage.h"
+
+#include "Config/Typedef.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    class ResourceImageSubstractRGBAndAlpha
+        : public ResourceImage
+    {
+        DECLARE_VISITABLE( ResourceImage );
+
+    public:
+        ResourceImageSubstractRGBAndAlpha();
+        ~ResourceImageSubstractRGBAndAlpha() override;
+
+    public:
+        void setResourceImageRGB( const ResourceImagePtr & _resourceImageRGBName );
+        const ResourceImagePtr & getResourceRGB() const;
+
+        void setResourceImageAlpha( const ResourceImagePtr & _resourceImageAlphaName );
+        const ResourceImagePtr & getResourceAlpha() const;
+
+    protected:
+        bool _compile() override;
+        void _release() override;
+
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+
+    public:
+        void correctUVTexture();
+
+    protected:
+        ResourceImagePtr m_resourceImageRGB;
+        ResourceImagePtr m_resourceImageAlpha;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveResourcePtr<ResourceImageSubstractRGBAndAlpha> ResourceImageSubstractRGBAndAlphaPtr;
+    //////////////////////////////////////////////////////////////////////////
+}

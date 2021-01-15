@@ -69,10 +69,10 @@ namespace Mengine
 
         for( const HashtableGroupResources::value_type & value : m_resourcesGroup )
         {
-            const ResourcePtrView & resource = value.element;
+            ResourcePtrView resource = value.element;
 
-            resource->setResourceBank( nullptr );
             resource->finalize();
+            resource->setResourceBank( nullptr );
 
             bool keep = resource->isKeep();
 
@@ -110,8 +110,8 @@ namespace Mengine
                 m_resourcesGroup.erase( value );
                 m_resources.erase( value.key2 );
 
-                resource->setResourceBank( nullptr );
                 resource->finalize();
+                resource->setResourceBank( nullptr );
 
                 IntrusivePtrBase::intrusive_ptr_dec_ref( resource );
             }
@@ -136,8 +136,8 @@ namespace Mengine
             {
                 m_resources.erase( value.key );
 
-                resource->setResourceBank( nullptr );
                 resource->finalize();
+                resource->setResourceBank( nullptr );
 
                 IntrusivePtrBase::intrusive_ptr_dec_ref( resource );
             }
@@ -154,20 +154,6 @@ namespace Mengine
 
         ResourcePtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, "not registered resource type '%s'"
-            , _type.c_str()
-        );
-
-        if( resource->initialize() == false )
-        {
-            LOGGER_ERROR( "resource '%s' invalid initialize (doc: %s)"
-                , _type.c_str()
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-
-            return nullptr;
-        }
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
             , _locale.c_str()
@@ -204,8 +190,8 @@ namespace Mengine
 
             if( prev_resource != nullptr )
             {
-                prev_resource->setResourceBank( nullptr );
                 prev_resource->finalize();
+                prev_resource->setResourceBank( nullptr );
                 prev_resource->setMapping( false );
 
                 bool prev_keep = prev_resource->isKeep();
@@ -234,14 +220,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::destroyResource( Resource * _resource )
     {
+        MENGINE_ASSERTION_FATAL( _resource->getCompileReferenceCount() == 0 );
+
         MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
         );
 
-        _resource->setResourceBank( nullptr );
-
         _resource->finalize();
+        _resource->setResourceBank( nullptr );
 
         const ConstString & groupName = _resource->getGroupName();
         const ConstString & name = _resource->getName();
@@ -261,46 +248,6 @@ namespace Mengine
         {
             IntrusivePtrBase::intrusive_ptr_dec_ref( _resource );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceBank::getResource( const ConstString & _groupName, const ConstString & _name ) const
-    {
-        MENGINE_ASSERTION_MAIN_THREAD_GUARD();
-
-        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
-
-        if( group_resource != nullptr )
-        {
-            if( group_resource->compile() == false )
-            {
-                LOGGER_ERROR( "resource '%s' '%s' is not compile!"
-                    , _name.c_str()
-                    , group_resource->getType().c_str()
-                );
-
-                return ResourcePtr::none();
-            }
-
-            return group_resource;
-        }
-
-        const ResourcePtr & global_resource = m_resources.find( _name );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( global_resource, "resource '%s' does not exist"
-            , _name.c_str()
-        );
-
-        if( global_resource->compile() == false )
-        {
-            LOGGER_ERROR( "resource '%s' '%s' is not compile!"
-                , _name.c_str()
-                , global_resource->getType().c_str()
-            );
-
-            return ResourcePtr::none();
-        }
-
-        return global_resource;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceBank::getResourceReference( const ConstString & _groupName, const ConstString & _name ) const

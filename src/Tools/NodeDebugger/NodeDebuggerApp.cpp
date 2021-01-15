@@ -1360,8 +1360,8 @@ namespace Mengine
         {
             ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 1.f, 0.f, 1.f ) );
 
-            char label_node[32];
-            sprintf( label_node, "##tree_node_%u"
+            Char label_node[32] = {'\0'};
+            MENGINE_SPRINTF( label_node, "##tree_node_%u"
                 , index
             );
 
@@ -1396,7 +1396,7 @@ namespace Mengine
                     );
 
                     ImGui::InputTextMultiline( label_text
-                        , (char *)leak.message.data()
+                        , (Char *)leak.message.data()
                         , leak.message.size()
                         , ImVec2( -1.f, ImGui::GetTextLineHeight() * 2.5f )
                         , ImGuiInputTextFlags_ReadOnly
@@ -1437,7 +1437,7 @@ namespace Mengine
                             //);
 
                             ImGui::InputTextMultiline( label_text
-                                , (char *)parent.message.data()
+                                , (Char *)parent.message.data()
                                 , parent.message.size()
                                 , ImVec2( -1.f, ImGui::GetTextLineHeight() * 2.5f )
                                 , ImGuiInputTextFlags_ReadOnly
@@ -1471,15 +1471,30 @@ namespace Mengine
             {
                 if( desk.type == "Request" )
                 {
-                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Type: %s", desk.type.c_str() );
-                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Id: %ug", desk.id );
-                    ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Url: %s", desk.url.c_str() );
+                    Char label_node[32] = {'\0'};
+                    MENGINE_SPRINTF( label_node, "Url: ##request%u"
+                        , desk.id
+                    );
+
+                    bool openNode = ImGui::TreeNode( label_node );
+
+                    ImGui::SameLine();
+
+                    Char label[32] = {'\0'};
+                    MENGINE_SPRINTF( label, "##url%u", desk.id );
+
+                    ImGui::InputText( label, (Char *)desk.url.data(), desk.url.size(), ImGuiInputTextFlags_ReadOnly );
                     
-                    ImGui::Separator();
+                    if( openNode == true )
+                    {
+                        ImGui::Separator();
 
-                    this->ShowResponseDataForId( desk.id );
+                        this->ShowResponseDataForId( desk.id );
 
-                    ImGui::Separator();
+                        ImGui::Separator();
+
+                        ImGui::TreePop();
+                    }
                 }
             }
         }
@@ -1494,16 +1509,7 @@ namespace Mengine
             return (_id == _desk.id) && (_desk.type == "Response");
         } );
 
-        Char label_node[32] = {'\0'};
-        MENGINE_SPRINTF( label_node, "Response %u"
-            , _id
-        );
-
-        bool openNode = ImGui::TreeNode( label_node );
-
-        ImGui::SameLine();
-
-        Char label[32];
+        Char label[32] = {'\0'};
         MENGINE_SPRINTF( label, "copy##%u"
             , _id
         );
@@ -1512,42 +1518,37 @@ namespace Mengine
 
         bool clicked = ImGui::IsItemClicked( 0 );
 
-        if( openNode == true )
+        if( responseIterator == m_network.end() )
         {
-            if( responseIterator == m_network.end() )
+            ImGui::Text( "Not receive response for request ID: %ug", _id );
+
+            if( clicked == true )
             {
-                ImGui::Text( "Not receive response for request ID: %ug", _id );
-
-                if( clicked == true )
-                {
-                    ImGui::SetClipboardText( "Not receive response for request" );
-                }
+                ImGui::SetClipboardText( "Not receive response for request" );
             }
-            else
+        }
+        else
+        {
+            const Char * responseStr = responseIterator->url.c_str();
+            String::size_type responseStrSize = responseIterator->url.size();
+            jpp::object responseJpp = jpp::load( responseStr, responseStrSize, nullptr, nullptr );
+
+            uint32_t labelCounter = 0;
+            this->ShowResponseJpp( responseJpp, 0, &labelCounter );
+
+            if( clicked == true )
             {
-                const Char * responseStr = responseIterator->url.c_str();
-                String::size_type responseStrSize = responseIterator->url.size();
-                jpp::object responseJpp = jpp::load( responseStr, responseStrSize, nullptr, nullptr );
-
-                uint32_t labelCounter = 0;
-                this->ShowResponseJpp( responseJpp, 0, &labelCounter );
-
-                if( clicked == true )
+                String jppstr;
+                jpp::dump( responseJpp, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
                 {
-                    String jppstr;
-                    jpp::dump( responseJpp, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
-                    {
-                        String * jppstr = (String *)_ud;
+                    String * jppstr = (String *)_ud;
 
-                        jppstr->append( _buffer, _size );
+                    jppstr->append( _buffer, _size );
 
-                        return 0;
-                    }, &jppstr );
-                    ImGui::SetClipboardText( jppstr.c_str() );
-                }
+                    return 0;
+                }, &jppstr );
+                ImGui::SetClipboardText( jppstr.c_str() );
             }
-
-            ImGui::TreePop();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2129,7 +2130,7 @@ namespace Mengine
 
         auto uiEditorString = [_node]( const char * _caption, String & _prop )
         {
-            char testValue[2048] = {0};
+            char testValue[2048] = {'\0'};
             strcpy( testValue, _prop.c_str() );
             testValue[2047] = 0;
             bool input = ImGui::InputText( _caption, testValue, 2048 );
@@ -2143,14 +2144,12 @@ namespace Mengine
 
         auto uiReadOnlyString = [_node]( const char * _caption, const String & _prop )
         {
-            char testValue[2048] = {0};
-            strcpy( testValue, _prop.c_str() );
-            testValue[2047] = 0;
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            Char testValue[2048] = {'\0'};
+            MENGINE_STRNCPY( testValue, _prop.c_str(), 2047 );
+
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::InputText( _caption, testValue, 2048 );
+            ImGui::InputText( _caption, testValue, 2048, ImGuiInputTextFlags_ReadOnly );
             ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
         };
 
         auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )

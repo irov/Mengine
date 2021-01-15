@@ -319,6 +319,18 @@ ADD_FILTER(
 ResourceImage
     ResourceImage.cpp
     ResourceImage.h
+    ResourceImageData.cpp
+    ResourceImageData.h
+    ResourceImageSolid.h
+    ResourceImageSolid.cpp
+    ResourceImageDefault.cpp
+    ResourceImageDefault.h
+    ResourceImageSubstract.cpp
+    ResourceImageSubstract.h
+    ResourceImageSubstractRGBAndAlpha.cpp
+    ResourceImageSubstractRGBAndAlpha.h
+    ResourceImageSequence.cpp
+    ResourceImageSequence.h    
 )
 
 ADD_FILTER(
@@ -699,6 +711,7 @@ Core
     DebugBreak.h
     DebugBreak.cpp
     
+    ResourcePointer.h
     UnknownPointer.h
     
     BuildMode.h

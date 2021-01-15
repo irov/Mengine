@@ -7,6 +7,8 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/Resource.h"
+#include "Kernel/ResourcePointer.h"
 
 #include "Config/Lambda.h"
 
@@ -20,7 +22,6 @@ namespace Mengine
     public:
         virtual ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const DocumentPtr & _doc ) = 0;
 
-
     public:
         virtual ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc ) = 0;
 
@@ -28,9 +29,7 @@ namespace Mengine
         virtual bool removeResource( const ResourcePtr & _resource ) = 0;
 
     public:
-        virtual const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const = 0;
         virtual const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const = 0;
-
         virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const = 0;
 
     public:
@@ -43,19 +42,7 @@ namespace Mengine
                 return false;
             }
 
-#ifdef MENGINE_DEBUG
-            if( resource == nullptr )
-            {
-                return false;
-            }
-
-            if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
-            {
-                throw;
-            }
-#endif
-
-            * _resource = stdex::intrusive_static_cast<T>(resource);
+            * _resource = Helper::staticResourceCast<T>( resource );
 
             return true;
         }

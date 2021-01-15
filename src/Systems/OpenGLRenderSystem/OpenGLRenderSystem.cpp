@@ -214,7 +214,7 @@ namespace Mengine
         GLCALL( glDepthFunc, (GL_LESS) );
 
 #ifdef MENGINE_RENDER_OPENGL
-        GLuint vertexArrayId;
+        GLuint vertexArrayId = 0;
         GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
         if( vertexArrayId == 0 )
@@ -1018,7 +1018,7 @@ namespace Mengine
         MENGINE_UNUSED( _fullscreen );
 
 #ifdef MENGINE_RENDER_OPENGL
-        GLuint vertexArrayId;
+        GLuint vertexArrayId = 0;
         GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
         if( vertexArrayId == 0 )

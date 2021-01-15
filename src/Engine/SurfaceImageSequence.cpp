@@ -2,8 +2,7 @@
 
 #include "Interface/TimelineServiceInterface.h"
 
-#include "ResourceImageSequence.h"
-
+#include "Kernel/ResourceImageSequence.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -147,16 +146,6 @@ namespace Mengine
         for( uint32_t frameId = 0; frameId != sequenceCount; ++frameId )
         {
             const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( frameId );
-
-            if( resourceImage->compile() == false )
-            {
-                LOGGER_ERROR( "'%s' invalid compile %d frame"
-                    , this->getName().c_str()
-                    , m_currentFrame
-                );
-
-                return false;
-            }
 
             RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
 

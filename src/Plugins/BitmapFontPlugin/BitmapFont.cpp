@@ -47,8 +47,6 @@ namespace Mengine
     {
         m_glyph = nullptr;
 
-        m_fileGroup = nullptr;
-
         m_textureFont = nullptr;
         m_textureOutline = nullptr;
     }

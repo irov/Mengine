@@ -24,7 +24,7 @@ src
     ImageDecoderResourcePrefetcher.h
     ImageDecoderResourcePrefetcher.cpp
     SoundDecoderResourcePrefetcher.h
-    SoundDecoderResourcePrefetcher.cpp    
+    SoundDecoderResourcePrefetcher.cpp
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)
@@ -44,4 +44,3 @@ if(MENGINE_USE_SCRIPT_SERVICE)
 endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Engine)

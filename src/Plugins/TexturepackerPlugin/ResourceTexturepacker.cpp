@@ -15,6 +15,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/ResourceImageSubstract.h"
 
 #include "Config/StdString.h"
 
@@ -67,6 +68,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceTexturepacker::setResourceImage( const ResourceImagePtr & _resourceImage )
     {
+        if( _resourceImage == nullptr )
+        {
+            m_resourceImage = nullptr;
+            m_extraResourceImage = false;
+
+            return;
+        }
+
+        MENGINE_ASSERTION_FATAL( m_extraResourceImage == false );
+
         m_resourceImage = _resourceImage;
 
         if( m_resourceImage != nullptr )
@@ -91,6 +102,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const
     {
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true );
+
         const ResourceImagePtr & image = m_hashtableFrames.find( _name );
 
         if( image == nullptr )
@@ -108,9 +121,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
     {
-        for( const ResourceImagePtr & frame : m_frames )
+        MENGINE_ASSERTION_FATAL( this->isCompile() == true );
+
+        for( const FrameDesc & desc : m_frames )
         {
-            if( _lambdaFrames( frame ) == false )
+            const ResourceImagePtr & resourceImage = desc.resourceImage;
+
+            if( _lambdaFrames( resourceImage ) == false )
             {
                 return false;
             }
@@ -131,19 +148,75 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
     {
-        if( m_resourceImage != nullptr )
+        m_resourceImage->compile();
+
+        for( const FrameDesc & desc : m_frames )
         {
-            if( m_resourceImage->compile() == false )
-            {
-                return false;
-            }
+            const ResourceImagePtr & resourceImage = desc.resourceImage;
+
+            resourceImage->compile();
         }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceTexturepacker::_release()
+    {     
+        for( const FrameDesc & desc : m_frames )
+        {
+            const ResourceImagePtr & resourceImage = desc.resourceImage;
+
+            resourceImage->release();
+        }
+
+        m_resourceImage->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceTexturepacker::_initialize()
+    {
+        MENGINE_ASSERTION_FATAL( m_resourceJSON != nullptr );
 
         if( m_resourceJSON->compile() == false )
         {
             return false;
         }
 
+        bool successful = this->initializeFrames_();
+
+        m_resourceJSON->release();
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceTexturepacker::_finalize()
+    {
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
+        m_hashtableFrames.clear();
+
+        for( const FrameDesc & desc : m_frames )
+        {
+            const ResourceImagePtr & resourceImage = desc.resourceImage;
+
+            resourceBank->removeResource( resourceImage );
+        }
+
+        m_frames.clear();
+
+        if( m_resourceImage != nullptr )
+        {
+            if( m_extraResourceImage == false )
+            {
+                resourceBank->removeResource( m_resourceImage );
+            }
+        }
+
+        m_resourceJSON = nullptr;
+        m_resourceImage = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceTexturepacker::initializeFrames_()
+    {
         ResourceBankInterface * resourceBank = this->getResourceBank();
 
         UnknownResourceJSONInterface * unknownResourceJSON = m_resourceJSON->getUnknown();
@@ -165,15 +238,15 @@ namespace Mengine
 
             const Char * root_meta_image = root_meta["image"];
 
-            ResourceImagePtr resource = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            ResourceImagePtr resourceImage = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource );
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
             const ContentInterface * json_content = m_resourceJSON->getContent();
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
 
-            ContentInterface * resource_content = resource->getContent();
+            ContentInterface * resource_content = resourceImage->getContent();
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
 
@@ -218,15 +291,20 @@ namespace Mengine
                 atlasSize.y = (float)dataInfo->height;
             }
 
-            resource->setMaxSize( atlasSize );
-            resource->setSize( atlasSize );
+            resourceImage->setMaxSize( atlasSize );
+            resourceImage->setSize( atlasSize );
 
-            if( resource->compile() == false )
+            if( resourceImage->initialize() == false )
             {
+                LOGGER_ERROR( "sub resource '%s' type '%s' invalid initialize"
+                    , resourceImage->getName().c_str()
+                    , resourceImage->getType().c_str()
+                );
+
                 return false;
             }
 
-            m_resourceImage = resource;
+            m_resourceImage = resourceImage;
             m_extraResourceImage = false;
         }
 
@@ -250,8 +328,6 @@ namespace Mengine
         bool atlasHasAlpha = m_resourceImage->hasAlpha();
         bool atlasIsPremultiply = m_resourceImage->isPremultiply();
         bool atlasIsPow2 = m_resourceImage->isPow2();
-        const RenderTextureInterfacePtr & atlasTexture = m_resourceImage->getTexture();
-        const RenderTextureInterfacePtr & atlasTextureAlpha = m_resourceImage->getTextureAlpha();
 
         jpp::object root_frames = root["frames"];
 
@@ -297,16 +373,15 @@ namespace Mengine
                 }
             }
 
-            ResourceImagePtr image = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImage" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            ResourceImageSubstractPtr resourceImage = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageSubstract" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( image );
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
-            image->setName( c_name );
-            image->setTexture( atlasTexture );
-            image->setTextureAlpha( atlasTextureAlpha );
+            resourceImage->setName( c_name );
+            resourceImage->setResourceImage( m_resourceImage );
 
             mt::vec2f maxSize( (float)sourceSize_w, (float)sourceSize_h );
-            image->setMaxSize( maxSize );
+            resourceImage->setMaxSize( maxSize );
 
             if( trimmed == true )
             {
@@ -318,14 +393,14 @@ namespace Mengine
                 int32_t spriteSourceSize_h = spriteSourceSize["h"];
 
                 mt::vec2f offset( (float)spriteSourceSize_x, (float)spriteSourceSize_y );
-                image->setOffset( offset );
+                resourceImage->setOffset( offset );
 
                 mt::vec2f size( (float)spriteSourceSize_w, (float)spriteSourceSize_h );
-                image->setSize( size );
+                resourceImage->setSize( size );
             }
             else
             {
-                image->setSize( maxSize );
+                resourceImage->setSize( maxSize );
             }
 
             mt::vec4f uv_mask( (float)frame_x, (float)frame_y, (float)(frame_x + frame_w), (float)(frame_y + frame_h) );
@@ -337,59 +412,37 @@ namespace Mengine
             mt::uv4f uv;
             mt::uv4_from_mask( uv, uv_mask );
 
-            image->setUVImage( uv );
-            image->setUVAlpha( uv );
-            image->setUVTextureImage( uv );
-            image->setUVTextureAlpha( uv );
+            resourceImage->setUVImage( uv );
+            resourceImage->setUVAlpha( uv );
+            resourceImage->setUVTextureImage( uv );
+            resourceImage->setUVTextureAlpha( uv );
 
-            image->setUVImageRotate( rotated );
-            image->setUVAlphaRotate( rotated );
+            resourceImage->setUVImageRotate( rotated );
+            resourceImage->setUVAlphaRotate( rotated );
 
-            image->setAlpha( atlasHasAlpha );
-            image->setPremultiply( atlasIsPremultiply );
-            image->setPow2( atlasIsPow2 );
+            resourceImage->setAlpha( atlasHasAlpha );
+            resourceImage->setPremultiply( atlasIsPremultiply );
+            resourceImage->setPow2( atlasIsPow2 );
 
-            if( image->compile() == false )
+            if( resourceImage->initialize() == false )
             {
+                LOGGER_ERROR( "frame resource '%s' type '%s' invalid initialize"
+                    , resourceImage->getName().c_str()
+                    , resourceImage->getType().c_str()
+                );
+
                 return false;
             }
 
-            m_hashtableFrames.emplace( c_name, image );
-            m_frames.push_back( image );
+            m_hashtableFrames.emplace( c_name, resourceImage );
+
+            FrameDesc desc;
+            desc.resourceImage = resourceImage;
+
+            m_frames.push_back( desc );
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceTexturepacker::_release()
-    {
-        ResourceBankInterface * resourceBank = this->getResourceBank();
-
-        if( m_resourceJSON != nullptr )
-        {
-            m_resourceJSON->release();
-        }
-
-        if( m_resourceImage != nullptr )
-        {
-            m_resourceImage->release();
-
-            if( m_extraResourceImage == false )
-            {
-                resourceBank->removeResource( m_resourceImage );
-            }
-        }
-
-        m_hashtableFrames.clear();
-
-        for( const ResourceImagePtr & frame : m_frames )
-        {
-            frame->release();
-
-            resourceBank->removeResource( frame );
-        }
-
-        m_frames.clear();
     }
     //////////////////////////////////////////////////////////////////////////
 }

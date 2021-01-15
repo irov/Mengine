@@ -21,8 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImage::~ResourceImage()
     {
-        MENGINE_ASSERTION_FATAL( m_texture == nullptr );
-        MENGINE_ASSERTION_FATAL( m_textureAlpha == nullptr );
+
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::setTexture( const RenderTextureInterfacePtr & _texture )

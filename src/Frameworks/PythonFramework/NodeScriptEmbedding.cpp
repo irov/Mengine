@@ -27,20 +27,14 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/UnicodeHelper.h"
 
-#include "Engine/ResourceImageData.h"
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceMusic.h"
-#include "Engine/ResourceImageSequence.h"
 #include "Engine/ResourceSound.h"
-#include "Engine/ResourceImageSolid.h"
-#include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
 #include "Engine/ResourceCursorICO.h"
 #include "Engine/ResourceCursorSystem.h"
-#include "Engine/ResourceImageSubstractRGBAndAlpha.h"
-#include "Engine/ResourceImageSubstract.h"
 
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
@@ -88,6 +82,12 @@
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImageData.h"
+#include "Kernel/ResourceImageSequence.h"
+#include "Kernel/ResourceImageSolid.h"
+#include "Kernel/ResourceImageDefault.h"
+#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceImageSubstract.h"
 
 #include "Engine/Layer2D.h"
 #include "Engine/Meshget.h"

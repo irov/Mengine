@@ -3,6 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/DummyPicker.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -10,10 +11,12 @@ namespace Mengine
         : public Node
         , protected BaseRender
         , protected DummyPicker
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_PICKERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Interender();

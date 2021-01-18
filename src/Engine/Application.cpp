@@ -510,7 +510,6 @@ namespace Mengine
             return false;\
         }
 
-        NODE_FACTORY( Node );
         NODE_FACTORY( Entity );
         NODE_FACTORY( Arrow );
         NODE_FACTORY( Scene );
@@ -572,7 +571,6 @@ namespace Mengine
         PROTOTYPE_SERVICE()\
             ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type) )
 
-        NODE_FACTORY( Node );
         NODE_FACTORY( Entity );
         NODE_FACTORY( Arrow );
         NODE_FACTORY( Scene );

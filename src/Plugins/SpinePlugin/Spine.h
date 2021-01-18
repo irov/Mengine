@@ -8,6 +8,7 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorRenderIndex.h"
@@ -21,14 +22,16 @@ namespace Mengine
 {
     class Spine
         : public Node
+        , public UnknownSpineInterface
         , public BaseUpdation
         , public BaseRender
-        , public UnknownSpineInterface
+        , public BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Spine();

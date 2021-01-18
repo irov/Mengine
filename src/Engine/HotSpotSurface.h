@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class HotSpotSurface
         : public HotSpotPolygon
     {

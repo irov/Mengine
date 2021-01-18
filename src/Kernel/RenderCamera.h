@@ -14,8 +14,8 @@ namespace Mengine
 {
     class RenderCamera
         : public Node
-        , public RenderCameraInterface
         , public Observable
+        , public RenderCameraInterface        
         , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );

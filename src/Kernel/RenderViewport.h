@@ -14,8 +14,8 @@ namespace Mengine
 {
     class RenderViewport
         : public Node
-        , public RenderViewportInterface
         , public Observable
+        , public RenderViewportInterface        
         , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );

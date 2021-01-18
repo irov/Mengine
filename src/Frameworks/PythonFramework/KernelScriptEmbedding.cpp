@@ -552,8 +552,13 @@ namespace Mengine
                 return String( debugId );
             }
             //////////////////////////////////////////////////////////////////////////
-            NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
+            NodePtr s_Node_createChildren( Node * _node, ConstString _type )
             {
+                if( _type == STRINGIZE_STRING_LOCAL( "Node" ) )
+                {
+                    _type = STRINGIZE_STRING_LOCAL( "Interender" );
+                }
+
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
 

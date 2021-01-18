@@ -1037,8 +1037,13 @@ namespace Mengine
                 _node->dispose();
             }
             //////////////////////////////////////////////////////////////////////////
-            NodePtr s_createNode( const ConstString & _type )
+            NodePtr s_createNode( ConstString _type )
             {
+                if( _type == STRINGIZE_STRING_LOCAL( "Node" ) )
+                {
+                    _type = STRINGIZE_STRING_LOCAL( "Interender" );
+                }
+
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
 

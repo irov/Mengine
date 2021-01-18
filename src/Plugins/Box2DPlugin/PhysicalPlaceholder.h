@@ -12,7 +12,7 @@ namespace Mengine
     class PhysicalPlaceholder
         : public Node
         , public UnknownPhysicalPlaceholderInterface
-        , public BaseTransformation
+        , protected BaseTransformation
     {
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Node );

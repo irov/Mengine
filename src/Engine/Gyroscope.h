@@ -7,7 +7,7 @@ namespace Mengine
 {
     class Gyroscope
         : public Node
-        , public BaseTransformation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();

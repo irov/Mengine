@@ -1,6 +1,7 @@
 ﻿#include "TextField.h" 
 
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
@@ -1195,7 +1196,7 @@ namespace Mengine
 
         if( m_font == nullptr )
         {
-            const TextFontInterfacePtr & defaultFont = TEXT_SERVICE()
+            const TextFontInterfacePtr & defaultFont = FONT_SERVICE()
                 ->getDefaultFont();
 
             return defaultFont;

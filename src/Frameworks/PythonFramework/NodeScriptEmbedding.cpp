@@ -16,6 +16,7 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 
 #include "Kernel/Reference.h"
 #include "Kernel/Eventable.h"
@@ -260,7 +261,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_TextField_setFontName( TextField * _textField, const ConstString & _fontName )
             {
-                const TextFontInterfacePtr & font = TEXT_SERVICE()
+                const TextFontInterfacePtr & font = FONT_SERVICE()
                     ->getFont( _fontName );
 
                 _textField->setFont( font );

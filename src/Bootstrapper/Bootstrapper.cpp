@@ -85,6 +85,7 @@ SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( ResourceService );
 SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( TextService );
+SERVICE_EXTERN( FontService );
 SERVICE_EXTERN( WatchdogService );
 SERVICE_EXTERN( GraveyardService );
 SERVICE_EXTERN( PackageService );
@@ -774,6 +775,7 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( SceneService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ResourceService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( TextService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( FontService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( WatchdogService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( GraveyardService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PackageService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1424,6 +1426,7 @@ namespace Mengine
         SERVICE_FINALIZE( GraveyardService );
         SERVICE_FINALIZE( ResourceService );
         SERVICE_FINALIZE( TextService );
+        SERVICE_FINALIZE( FontService );
         SERVICE_FINALIZE( SettingsService );
         SERVICE_FINALIZE( DataService );
 
@@ -1496,6 +1499,7 @@ namespace Mengine
         SERVICE_DESTROY( GraveyardService );
         SERVICE_DESTROY( ResourceService );
         SERVICE_DESTROY( TextService );
+        SERVICE_DESTROY( FontService );
         SERVICE_DESTROY( DataService );
         SERVICE_DESTROY( LoaderService );
         SERVICE_DESTROY( TimelineService );

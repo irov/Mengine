@@ -1,6 +1,7 @@
 #include "TextChar.h"
 
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/StringHelper.h"
@@ -80,7 +81,7 @@ namespace Mengine
 
                 ConstString c_FontName = Helper::stringizeString( buffer_name );
 
-                const TextFontInterfacePtr & font = TEXT_SERVICE()
+                const TextFontInterfacePtr & font = FONT_SERVICE()
                     ->getFont( c_FontName );
 
                 VectorCacheFonts::iterator it_found = std::find_if( _cacheFonts->begin(), _cacheFonts->end(), [&font]( const CacheFont & cache )

@@ -3,6 +3,7 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/UserdataServiceInterface.h"
@@ -659,7 +660,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadFont_( const FilePath & _filePath )
     {
-        bool successful = TEXT_SERVICE()
+        bool successful = FONT_SERVICE()
             ->loadFonts( m_fileGroup, _filePath );
 
         return successful;
@@ -667,7 +668,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::unloadFont_( const FilePath & _filePath )
     {
-        bool successful = TEXT_SERVICE()
+        bool successful = FONT_SERVICE()
             ->unloadFonts( m_fileGroup, _filePath );
 
         return successful;

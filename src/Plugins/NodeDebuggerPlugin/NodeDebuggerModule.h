@@ -103,7 +103,7 @@ namespace Mengine
         void serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode );
         void serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode );
         void serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode );
-        void serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode );
+        void serializeTransformation( const TransformablePtr & _transformable, pugi::xml_node & _xmlParentNode );
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
         void serializeAnimation( const Compilable * _compilable, const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );

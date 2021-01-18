@@ -255,7 +255,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             Polygon s_polygon_wm( Node * _node, const Polygon & _polygon )
             {
-                const mt::mat4f & wm = _node->getWorldMatrix();
+                const TransformationInterface * transformation = _node->getTransformation();
+
+                const mt::mat4f & wm = transformation->getWorldMatrix();
 
                 Polygon polygon;
                 _polygon.mul_wm( &polygon, wm );
@@ -277,10 +279,10 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _right, "invalid right pointer" );
 
                 const Polygon & left_poligon = _left->getPolygon();
-                const mt::mat4f & left_wm = _left->getWorldMatrix();
+                const mt::mat4f & left_wm = _left->getTransformation()->getWorldMatrix();
 
                 const Polygon & right_poligon = _right->getPolygon();
-                const mt::mat4f & right_wm = _right->getWorldMatrix();
+                const mt::mat4f & right_wm = _right->getTransformation()->getWorldMatrix();
 
                 Polygon left_polygon_wm;
                 left_poligon.mul_wm( &left_polygon_wm, left_wm );
@@ -949,7 +951,9 @@ namespace Mengine
                 const ArrowPtr & arrow = PLAYER_SERVICE()
                     ->getArrow();
 
-                arrow->setLocalHide( _hide );
+                RenderInterface * render = arrow->getRender();
+
+                render->setLocalHide( _hide );
             }
             //////////////////////////////////////////////////////////////////////////
             const Resolution & s_getCurrentResolution()
@@ -1103,16 +1107,13 @@ namespace Mengine
                     , _type.c_str()
                 );
 
-                if( resource->initialize() == false )
-                {
-                    LOGGER_ERROR( "invalid initialize resource '%s'"
-                        , _type.c_str()
-                    );
-
-                    return nullptr;
-                }
-
                 return resource;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removeResource( const ResourcePtr & _resource )
+            {
+                RESOURCE_SERVICE()
+                    ->removeResource( _resource );
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_directResourceCompile( const ConstString & _nameResource )
@@ -1503,8 +1504,10 @@ namespace Mengine
                     return false;
                 }
 
-                const RenderCameraInterfacePtr & renderCamera = arrow->getRenderCamera();
-                const RenderViewportInterfacePtr & renderViewport = arrow->getRenderViewport();
+                const RenderInterface * render = arrow->getRender();
+
+                const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
+                const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
 
                 arrow->calcMouseScreenPosition( renderCamera, renderViewport, _pos, _screen );
 
@@ -2675,7 +2678,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec3f s_getCameraPosition( const RenderCameraInterfacePtr & _camera, const NodePtr & _node )
             {
-                const mt::vec3f & wp = _node->getWorldPosition();
+                const TransformationInterface * transformation = _node->getTransformation();
+
+                const mt::vec3f & wp = transformation->getWorldPosition();
 
                 const mt::mat4f & vm = _camera->getCameraViewMatrix();
 
@@ -3866,6 +3871,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "setArrowLayer", nodeScriptMethod, &EngineScriptMethod::s_setArrowLayer );
 
         pybind::def_functor( _kernel, "createResource", nodeScriptMethod, &EngineScriptMethod::s_createResource );
+        pybind::def_functor( _kernel, "removeResource", nodeScriptMethod, &EngineScriptMethod::s_removeResource );
+
         pybind::def_functor( _kernel, "directResourceCompile", nodeScriptMethod, &EngineScriptMethod::s_directResourceCompile );
         pybind::def_functor( _kernel, "directResourceRelease", nodeScriptMethod, &EngineScriptMethod::s_directResourceRelease );
         pybind::def_functor( _kernel, "getResource", nodeScriptMethod, &EngineScriptMethod::s_getResource );

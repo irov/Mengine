@@ -10,7 +10,7 @@ namespace Mengine
     class FETextFontEffectFile
         : public FETextFontEffectBase
         , public UnknownFEFileInterface
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_UNKNOWABLE();
         DECLARE_CONTENTABLE();

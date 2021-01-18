@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Kernel/Node.h"
-#include "Kernel/BaseEventation.h"
+#include "NodeAreaOfInterestTriggerEventReceiverInterface.h"
 
 #include "AreaOfInterestInterface.h"
 
-#include "NodeAreaOfInterestTriggerEventReceiverInterface.h"
+#include "Kernel/Node.h"
+#include "Kernel/BaseEventation.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -19,11 +20,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class NodeAreaOfInterestTrigger
         : public Node
-        , private BaseEventation
         , public AreaOfInterestTriggerProviderInterface
+        , protected BaseEventation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         NodeAreaOfInterestTrigger();

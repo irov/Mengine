@@ -120,6 +120,8 @@ namespace Mengine
             content->setFileGroup( nullptr );
             content->setDataflow( nullptr );
         }
+
+        m_resourceBank = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::_finalize()

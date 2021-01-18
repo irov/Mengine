@@ -16,7 +16,7 @@ namespace Mengine
         : public IntrusiveSlugLinkedPtr<Affector, void, IntrusivePtr, IntrusivePtrBase>
         , public Factorable
         , public Updatable
-        , private BaseUpdation
+        , protected BaseUpdation
     {
         DECLARE_UPDATABLE();
 

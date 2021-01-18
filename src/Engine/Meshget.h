@@ -12,6 +12,7 @@
 #include "Kernel/VectorRenderIndex.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "Kernel/Vector.h"
 
@@ -45,14 +46,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Meshget
         : public Node
-        , private BaseUpdation
-        , private BaseRender
-        , private BaseEventation
+        , protected BaseUpdation
+        , protected BaseRender
+        , protected BaseEventation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Meshget();

@@ -3,6 +3,7 @@
 #include "Kernel/Layer.h"
 #include "Kernel/DummyRender.h"
 #include "Kernel/DummyPicker.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderViewport.h"
@@ -17,12 +18,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Layer2D
         : public Layer
-        , public DummyRender
-        , public DummyPicker
+        , protected DummyRender
+        , protected DummyPicker
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Layer );
         DECLARE_RENDERABLE();
         DECLARE_PICKERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Layer2D();

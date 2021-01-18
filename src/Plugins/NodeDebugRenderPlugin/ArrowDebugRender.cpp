@@ -15,7 +15,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ArrowDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Arrow * _node )
     {
-        const mt::mat4f & wm = _node->getWorldMatrix();
+        const TransformationInterface * transformation = _node->getTransformation();
+
+        const mt::mat4f & wm = transformation->getWorldMatrix();
 
         EArrowType arrowType = _node->getArrowType();
 

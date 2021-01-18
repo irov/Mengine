@@ -2,13 +2,15 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class MovieSceneEffect
         : public Node
-        , private BaseRender
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

@@ -755,7 +755,7 @@ namespace Mengine
         mt::vec3f scale;
         mt::vec2f skew;
         mt::vec3f orientation;
-        this->getTransformation( &transformationFlag, &position, &origin, &scale, &skew, &orientation );
+        this->getTransformationData( &transformationFlag, &position, &origin, &scale, &skew, &orientation );
 
         mt::mat4f wm;
         this->calcWorldMatrix( &wm, transformationFlag | TRANSFORMATION_INVALIDATE_ORIGIN, position, origin + m_positionProviderOriginOffset, scale, skew, orientation );

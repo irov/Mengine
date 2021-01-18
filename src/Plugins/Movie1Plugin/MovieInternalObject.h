@@ -14,7 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class MovieInternalObject
         : public Node
-        , private BaseRender
+        , protected BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

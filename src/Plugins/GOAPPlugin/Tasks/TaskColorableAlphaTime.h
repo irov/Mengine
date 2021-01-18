@@ -2,7 +2,6 @@
 
 #include "GOAP/TaskInterface.h"
 
-#include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Colorable.h"
 #include "Kernel/Document.h"
@@ -13,7 +12,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskColorableAlphaTime( GOAP::Allocator * _allocator, const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc );
+        TaskColorableAlphaTime( GOAP::Allocator * _allocator, const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentPtr & _doc );
         ~TaskColorableAlphaTime() override;
 
     protected:

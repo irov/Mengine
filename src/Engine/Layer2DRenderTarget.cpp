@@ -21,7 +21,9 @@ namespace Mengine
         const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
         const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();
 
-        const mt::box2f * bb = m_layer->getBoundingBox();
+        const RenderInterface * render = m_layer->getRender();
+
+        const mt::box2f * bb = render->getBoundingBox();
 
         _renderPipeline->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
     }

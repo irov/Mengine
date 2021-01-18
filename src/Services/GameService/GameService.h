@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class GameService
         : public ServiceBase<GameServiceInterface>
-        , private BaseEventation
+        , protected BaseEventation
     {
         DECLARE_EVENTABLE();
 

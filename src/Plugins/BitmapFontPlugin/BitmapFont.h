@@ -11,7 +11,7 @@ namespace Mengine
 {
     class BitmapFont
         : public FontBase
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_CONTENTABLE();
 

@@ -1,5 +1,7 @@
 #include "TaskTransformationTranslate.h"
 
+#include "Interface/TransformationInterface.h"
+
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -14,9 +16,9 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationTranslateAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, const mt::vec3f & _deltha, const mt::vec3f & _to, float _speed )
+            TaskTransformationTranslateAffector( GOAP::NodeInterface * _node, const TransformablePtr & _transformable, const mt::vec3f & _deltha, const mt::vec3f & _to, float _speed )
                 : m_node( _node )
-                , m_transformation( _transformation )
+                , m_transformable( _transformable )
                 , m_deltha( _deltha )
                 , m_to( _to )
                 , m_speed( _speed )
@@ -30,11 +32,13 @@ namespace Mengine
         public:
             bool _affect( const UpdateContext * _context, float * const _used ) override
             {
+                TransformationInterface * transformation = m_transformable->getTransformation();
+
                 float time = _context->time;
 
                 mt::vec3f translate = m_deltha * time;
 
-                const mt::vec3f & position = m_transformation->getLocalPosition();
+                const mt::vec3f & position = transformation->getLocalPosition();
 
                 float way_sqrlength = mt::sqrlength_v3_v3( position, m_to );
                 float translate_sqrlength = mt::sqrlength_v3( translate );
@@ -43,14 +47,14 @@ namespace Mengine
                 {
                     *_used = time;
 
-                    m_transformation->translate( translate );
+                    transformation->translate( translate );
 
                     return true;
                 }
 
                 *_used = (way_sqrlength - translate_sqrlength) / translate_sqrlength;
 
-                m_transformation->setLocalPosition( m_to );
+                transformation->setLocalPosition( m_to );
 
                 return true;
             }
@@ -66,7 +70,7 @@ namespace Mengine
         protected:
             GOAP::NodeInterfacePtr m_node;
 
-            TransformationPtr m_transformation;
+            TransformablePtr m_transformable;
 
             mt::vec3f m_deltha;
             mt::vec3f m_to;
@@ -74,9 +78,9 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationTranslate::TaskTransformationTranslate( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentPtr & _doc )
+    TaskTransformationTranslate::TaskTransformationTranslate( GOAP::Allocator * _allocator, const TransformablePtr & _transformable, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
-        , m_transformation( _transformation )
+        , m_transformable( _transformable )
         , m_affectorable( _affectorable )
         , m_to( _to )
         , m_speed( _speed )
@@ -94,14 +98,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskTransformationTranslate::_onRun( GOAP::NodeInterface * _node )
     {
-        const mt::vec3f & position = m_transformation->getLocalPosition();
+        TransformationInterface * transformation = m_transformable->getTransformation();
+
+        const mt::vec3f & position = transformation->getLocalPosition();
 
         mt::vec3f dir;
         mt::dir_v3_v3( dir, position, m_to );
 
         mt::vec3f deltha = dir * m_speed;
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformation, deltha, m_to, m_speed );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformable, deltha, m_to, m_speed );
 
         const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
 
@@ -127,7 +133,9 @@ namespace Mengine
             m_id = 0;
         }
 
-        m_transformation->setLocalPosition( m_to );
+        TransformationInterface * transformation = m_transformable->getTransformation();
+
+        transformation->setLocalPosition( m_to );
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskTransformationTranslate::_onFinally()
@@ -141,6 +149,6 @@ namespace Mengine
         }
 
         m_affectorable = nullptr;
-        m_transformation = nullptr;
+        m_transformable = nullptr;
     }
 }

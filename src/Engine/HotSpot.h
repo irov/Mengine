@@ -7,18 +7,21 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BasePicker.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
     class HotSpot
         : public Node
-        , private BaseEventation
-        , private BasePicker
         , public InputHandlerInterface
+        , protected BaseEventation
+        , protected BasePicker
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();
         DECLARE_PICKERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         HotSpot();

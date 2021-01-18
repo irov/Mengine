@@ -26,7 +26,7 @@ namespace Mengine
         virtual ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool removeResource( const ResourcePtr & _resource ) = 0;
+        virtual void removeResource( const ResourcePtr & _resource ) = 0;
 
     public:
         virtual const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const = 0;

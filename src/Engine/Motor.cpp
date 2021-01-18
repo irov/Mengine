@@ -1,5 +1,7 @@
 #include "Motor.h"
 
+#include "Interface/TransformationInterface.h"
+
 #include "Kernel/Node.h"
 
 #include <algorithm>
@@ -79,7 +81,9 @@ namespace Mengine
             return _v + _desc.velocity * _context->time;
         } );
 
-        m_node->translate( velocity );
+        TransformationInterface * transformation = m_node->getTransformation();
+
+        transformation->translate( velocity );
     }
     //////////////////////////////////////////////////////////////////////////
 }

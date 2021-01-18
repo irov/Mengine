@@ -420,6 +420,12 @@ namespace Mengine
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
         }
 
+        if( m_debugResourceCompile == true )
+        {
+            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
+            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
+        }
+
         if( SERVICE_EXIST( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
@@ -1311,10 +1317,13 @@ namespace Mengine
         if( m_debugResourceCompile == true )
         {
             NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &Application::notifyDebugResourceCompile_, MENGINE_DOCUMENT_FACTORABLE );
+            
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );            
         }
         else
         {
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
+            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1367,6 +1376,14 @@ namespace Mengine
     void Application::notifyDebugResourceCompile_( Resource * _resource )
     {
         LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("compile %s type %s"
+            , _resource->getName().c_str()
+            , _resource->getType().c_str()
+            );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::notifyDebugResourceRelease_( Resource * _resource )
+    {
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("release %s type %s"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             );

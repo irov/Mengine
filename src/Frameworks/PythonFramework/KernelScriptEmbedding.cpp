@@ -245,14 +245,14 @@ namespace Mengine
                 return *bb;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_Transformation_setAngleDeg( Transformation * _transformation, float _angle )
+            void s_Transformation_setAngleDeg( TransformationInterface * _transformation, float _angle )
             {
                 float rad = _angle * mt::constant::deg2rad;
 
                 _transformation->setLocalOrientationX( rad );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_Transformation_removeRelationTransformation( Transformation * _transformation )
+            void s_Transformation_removeRelationTransformation( TransformationInterface * _transformation )
             {
                 _transformation->removeRelationTransformation();
             }
@@ -522,7 +522,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec3f s_Node_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
             {
-                const mt::vec3f & wp = _node->getWorldPosition();
+                const TransformationInterface * transformation = _node->getTransformation();
+
+                const mt::vec3f & wp = transformation->getWorldPosition();
 
                 mt::vec3f offset = _position - wp;
 
@@ -531,7 +533,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float s_Node_getLengthTo( Node * _node, const mt::vec3f & _position )
             {
-                const mt::vec3f & wp = _node->getWorldPosition();
+                const TransformationInterface * transformation = _node->getTransformation();
+
+                const mt::vec3f & wp = transformation->getWorldPosition();
 
                 float length = mt::length_v3_v3( wp, _position );
 
@@ -605,14 +609,16 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
+                TransformationInterface * transformation = _node->getTransformation();
+
                 AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear->create( ETA_POSITION
                     , easing
                     , callback
-                    , [_node]( const mt::vec3f & _v )
+                    , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setLocalPosition( _v );
+                    transformation->setLocalPosition( _v );
                 }
-                    , _node->getLocalPosition(), _dir, _speed
+                    , transformation->getLocalPosition(), _dir, _speed
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
@@ -667,9 +673,11 @@ namespace Mengine
             protected:
                 bool _affect( const UpdateContext * _context, float * const _used ) override
                 {
+                    TransformationInterface * transformation = m_node->getTransformation();
+
                     if( m_time - _context->time < 0.f )
                     {
-                        m_node->translate( m_velocity * _context->time );
+                        transformation->translate( m_velocity * _context->time );
 
                         m_time -= _context->time;
 
@@ -678,7 +686,7 @@ namespace Mengine
                         return false;
                     }
 
-                    m_node->translate( m_velocity * m_time );
+                    transformation->translate( m_velocity * m_time );
 
                     *_used = m_time;
 
@@ -803,15 +811,17 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
+                TransformationInterface * transformation = _node->getTransformation();
+
                 AffectorPtr affector =
                     m_nodeAffectorCreatorInterpolateLinear->create( ETA_POSITION
                         , easing
                         , callback
-                        , [_node]( const mt::vec3f & _v )
+                        , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setLocalPosition( _v );
+                    transformation->setLocalPosition( _v );
                 }
-                        , _node->getLocalPosition(), _point, _time
+                        , transformation->getLocalPosition(), _point, _time
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
@@ -825,7 +835,7 @@ namespace Mengine
                 }
 
                 float invTime = 1.f / _time;
-                const mt::vec3f & pos = _node->getLocalPosition();
+                const mt::vec3f & pos = transformation->getLocalPosition();
                 mt::vec3f linearSpeed = (_point - pos) * invTime;
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
@@ -859,14 +869,16 @@ namespace Mengine
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
+                TransformationInterface * transformation = _node->getTransformation();
+
                 AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic->create( ETA_POSITION
                     , easing
                     , callback
-                    , [_node]( const mt::vec3f & _v )
+                    , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setLocalPosition( _v );
+                    transformation->setLocalPosition( _v );
                 }
-                    , _node->getLocalPosition(), _point, linearSpeed, _time
+                    , transformation->getLocalPosition(), _point, linearSpeed, _time
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
@@ -906,16 +918,18 @@ namespace Mengine
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                const mt::vec3f & from = _node->getLocalPosition();
+                TransformationInterface * transformation = _node->getTransformation();
+
+                const mt::vec3f & from = transformation->getLocalPosition();
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
                 AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
                     , easing
                     , callback
-                    , [_node]( const mt::vec3f & _v )
+                    , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setLocalPosition( _v );
+                    transformation->setLocalPosition( _v );
                 }
                     , [from]()
                 {
@@ -971,16 +985,18 @@ namespace Mengine
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-                const mt::vec3f & node_pos = _node->getWorldPosition();
+                TransformationInterface * transformation = _node->getTransformation();
+
+                const mt::vec3f & node_pos = transformation->getWorldPosition();
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
                 AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
                     , easing
                     , callback
-                    , [_node]( const mt::vec3f & _v )
+                    , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setWorldPosition( _v );
+                    transformation->setWorldPosition( _v );
                 }
                     , [node_pos]()
                 {
@@ -988,11 +1004,11 @@ namespace Mengine
                 }
                     , [_follow, _offset]()
                 {
-                    return _follow->getWorldPosition() + _offset;
+                    return _follow->getTransformation()->getWorldPosition() + _offset;
                 }
                     , [node_pos, _follow, _offset]( mt::vec3f * _v )
                 {
-                    float x = _follow->getWorldPosition().x + _offset.x;
+                    float x = _follow->getTransformation()->getWorldPosition().x + _offset.x;
 
                     _v[0] = mt::vec3f( x, node_pos.y, 0.f );
                 }
@@ -1037,6 +1053,8 @@ namespace Mengine
                     return 0;
                 }
 
+                TransformationInterface * transformation = _node->getTransformation();
+
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1045,13 +1063,13 @@ namespace Mengine
                     m_nodeAffectorCreatorInterpolateCubicBezier->create( ETA_POSITION
                         , easing
                         , callback
-                        , [_node]( const mt::vec3f & _v )
+                        , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setLocalPosition( _v );
+                    transformation->setLocalPosition( _v );
                 }
-                        , [_node]()
+                        , [transformation]()
                 {
-                    return _node->getLocalPosition();
+                    return transformation->getLocalPosition();
                 }
                     , [_to]()
                 {
@@ -1103,6 +1121,8 @@ namespace Mengine
                     return 0;
                 }
 
+                TransformationInterface * transformation = _node->getTransformation();
+
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1111,13 +1131,13 @@ namespace Mengine
                     m_nodeAffectorCreatorInterpolateQuarticBezier->create( ETA_POSITION
                         , easing
                         , callback
-                        , [_node]( const mt::vec3f & _v )
+                        , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setLocalPosition( _v );
+                    transformation->setLocalPosition( _v );
                 }
-                        , [_node]()
+                        , [transformation]()
                 {
-                    return _node->getLocalPosition();
+                    return transformation->getLocalPosition();
                 }
                     , [_to]()
                 {
@@ -1169,7 +1189,9 @@ namespace Mengine
             public:
                 void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
                 {
-                    const mt::vec3f & start_position = m_node->getLocalPosition();
+                    TransformationInterface * transformation = m_node->getTransformation();
+
+                    const mt::vec3f & start_position = transformation->getLocalPosition();
 
                     m_interpolator.start( start_position, _end, _v0, _time );
 
@@ -1183,7 +1205,7 @@ namespace Mengine
                     m_currentDir = dir;
                     m_targetDir = dir;
 
-                    m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                    transformation->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
                 }
 
             protected:
@@ -1213,7 +1235,9 @@ namespace Mengine
             protected:
                 void updateDirection_( const UpdateContext * _context, const mt::vec3f & _position )
                 {
-                    const mt::vec3f & prev_position = m_node->getLocalPosition();
+                    TransformationInterface * transformation = m_node->getTransformation();
+
+                    const mt::vec3f & prev_position = transformation->getLocalPosition();
 
                     if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::constant::eps )
                     {
@@ -1233,26 +1257,28 @@ namespace Mengine
                     {
                         m_currentDir = m_targetDir;
 
-                        m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                        transformation->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
                     }
                     else
                     {
                         m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
 
-                        m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                        transformation->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
                     }
                 }
 
                 void updatePosition_( const mt::vec3f & _position )
                 {
-                    const mt::vec3f & prev_position = m_node->getLocalPosition();
+                    TransformationInterface * transformation = m_node->getTransformation();
+
+                    const mt::vec3f & prev_position = transformation->getLocalPosition();
 
                     if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::constant::eps )
                     {
                         return;
                     }
 
-                    m_node->setLocalPosition( _position );
+                    transformation->setLocalPosition( _position );
                 }
 
             protected:
@@ -1411,8 +1437,8 @@ namespace Mengine
                 {
                     *_used = _context->time;
 
-                    mt::vec3f node_position = m_node->getLocalPosition();
-                    mt::vec3f follow_position = m_target->getLocalPosition();
+                    mt::vec3f node_position = m_node->getTransformation()->getLocalPosition();
+                    mt::vec3f follow_position = m_target->getTransformation()->getLocalPosition();
 
                     mt::vec3f current_direction;
 
@@ -1426,7 +1452,7 @@ namespace Mengine
                         mt::vec3f target_orientation;
                         mt::make_euler_angles( target_orientation, mr );
 
-                        const mt::vec3f & node_orientation = m_node->getLocalOrientation();
+                        const mt::vec3f & node_orientation = m_node->getTransformation()->getLocalOrientation();
 
                         mt::vec3f correct_rotate_from;
                         mt::vec3f correct_rotate_to;
@@ -1448,9 +1474,9 @@ namespace Mengine
                         mt::vec3f new_orientation;
                         mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _context->time );
 
-                        m_node->setLocalOrientation( new_orientation );
+                        m_node->getTransformation()->setLocalOrientation( new_orientation );
 
-                        current_direction = m_node->getAxisDirection();
+                        current_direction = m_node->getTransformation()->getAxisDirection();
                     }
                     else
                     {
@@ -1478,7 +1504,7 @@ namespace Mengine
                         {
                             mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
 
-                            m_node->setLocalPosition( distance_position );
+                            m_node->getTransformation()->setLocalPosition( distance_position );
 
                             return true;
                         }
@@ -1487,7 +1513,7 @@ namespace Mengine
                     {
                         if( length - step < 0.f )
                         {
-                            m_node->setLocalPosition( follow_position );
+                            m_node->getTransformation()->setLocalPosition( follow_position );
 
                             return false;
                         }
@@ -1495,7 +1521,7 @@ namespace Mengine
 
                     mt::vec3f new_position = node_position + current_direction * step;
 
-                    m_node->setLocalPosition( new_position );
+                    m_node->getTransformation()->setLocalPosition( new_position );
 
                     return false;
                 }
@@ -1666,8 +1692,8 @@ namespace Mengine
                 {
                     *_used = _context->time;
 
-                    mt::vec3f node_position = m_node->getWorldPosition();
-                    mt::vec3f follow_position = m_target->getWorldPosition();
+                    mt::vec3f node_position = m_node->getTransformation()->getWorldPosition();
+                    mt::vec3f follow_position = m_target->getTransformation()->getWorldPosition();
 
                     mt::vec3f current_direction;
 
@@ -1694,7 +1720,7 @@ namespace Mengine
                         {
                             mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
 
-                            m_node->setWorldPosition( distance_position );
+                            m_node->getTransformation()->setWorldPosition( distance_position );
 
                             return true;
                         }
@@ -1703,7 +1729,7 @@ namespace Mengine
                     {
                         if( length - step < 0.f )
                         {
-                            m_node->setWorldPosition( follow_position );
+                            m_node->getTransformation()->setWorldPosition( follow_position );
 
                             return false;
                         }
@@ -1711,7 +1737,7 @@ namespace Mengine
 
                     mt::vec3f new_position = node_position + current_direction * step;
 
-                    m_node->setWorldPosition( new_position );
+                    m_node->getTransformation()->setWorldPosition( new_position );
 
                     return false;
                 }
@@ -1856,7 +1882,9 @@ namespace Mengine
                     return 0;
                 }
 
-                float angle = _node->getLocalOrientationX();
+                TransformationInterface * transformation = _node->getTransformation();
+
+                float angle = transformation->getLocalOrientationX();
 
                 float correct_angle_from = angle;
                 float correct_angle_to = _angle;
@@ -1868,9 +1896,9 @@ namespace Mengine
                 AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_ANGLE
                     , easing
                     , callback
-                    , [_node]( float _v )
+                    , [transformation]( float _v )
                 {
-                    _node->setLocalOrientationX( _v );
+                    transformation->setLocalOrientationX( _v );
                 }
                     , correct_angle_from, correct_angle_to, _time
                     , MENGINE_DOCUMENT_PYBIND
@@ -1913,7 +1941,9 @@ namespace Mengine
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
                 float angularSpeed = affectorHub->getAngularSpeed();
 
-                float angle = _node->getLocalOrientationX();
+                TransformationInterface * transformation = _node->getTransformation();
+
+                float angle = transformation->getLocalOrientationX();
 
                 float correct_angle_from = angle;
                 float correct_angle_to = _angle;
@@ -1927,9 +1957,9 @@ namespace Mengine
                     m_nodeAffectorCreatorInterpolateQuadraticFloat->create( ETA_ANGLE
                         , easing
                         , callback
-                        , [_node]( float _v )
+                        , [transformation]( float _v )
                 {
-                    _node->setLocalOrientationX( _v );
+                    transformation->setLocalOrientationX( _v );
                 }
                         , correct_angle_from, correct_angle_to, angularSpeed, _time
                     , MENGINE_DOCUMENT_PYBIND
@@ -1982,6 +2012,8 @@ namespace Mengine
                     return 0;
                 }
 
+                TransformationInterface * transformation = _node->getTransformation();
+
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
@@ -1989,11 +2021,11 @@ namespace Mengine
                 AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( ETA_SCALE
                     , easing
                     , callback
-                    , [_node]( const mt::vec3f & _v )
+                    , [transformation]( const mt::vec3f & _v )
                 {
-                    _node->setLocalScale( _v );
+                    transformation->setLocalScale( _v );
                 }
-                    , _node->getLocalScale(), _scale, _time
+                    , transformation->getLocalScale(), _scale, _time
                     , MENGINE_DOCUMENT_PYBIND
                     );
 
@@ -2225,66 +2257,69 @@ namespace Mengine
             .def_proxy_static( "getBoundingBox", scriptMethod, &KernelScriptMethod::s_BoundingBox_getBoundingBox )
             ;
 
-        pybind::interface_<Transformation, pybind::bases<Mixin>>( _kernel, "Transformation" )
-            .def( "setLocalPosition", &Transformation::setLocalPosition )
-            .def( "getLocalPosition", &Transformation::getLocalPosition )
-            .def( "setLocalPositionX", &Transformation::setLocalPositionX )
-            .def( "getLocalPositionX", &Transformation::getLocalPositionX )
-            .def( "setLocalPositionY", &Transformation::setLocalPositionY )
-            .def( "getLocalPositionY", &Transformation::getLocalPositionY )
-            .def( "setLocalPositionZ", &Transformation::setLocalPositionZ )
-            .def( "getLocalPositionZ", &Transformation::getLocalPositionZ )
-            .def( "setLocalOrigin", &Transformation::setLocalOrigin )
-            .def( "getLocalOrigin", &Transformation::getLocalOrigin )
-            .def( "setLocalScale", &Transformation::setLocalScale )
-            .def( "getLocalScale", &Transformation::getLocalScale )
-            .def( "setLocalSkew", &Transformation::setLocalSkew )
-            .def( "getLocalSkew", &Transformation::getLocalSkew )
-            .def( "setLocalOrientationX", &Transformation::setLocalOrientationX )
-            .def( "getLocalOrientationX", &Transformation::getLocalOrientationX )
-            .def( "setLocalOrientationY", &Transformation::setLocalOrientationY )
-            .def( "getLocalOrientationY", &Transformation::getLocalOrientationY )
-            .def( "setLocalOrientationZ", &Transformation::setLocalOrientationZ )
-            .def( "getLocalOrientationZ", &Transformation::getLocalOrientationZ )
-            .def( "setLocalOrientation", &Transformation::setLocalOrientation )
-            .def( "getLocalOrientation", &Transformation::getLocalOrientation )
+        pybind::interface_<TransformationInterface, pybind::bases<Mixin>>( _kernel, "TransformationInterface" )
+            .def( "setLocalPosition", &TransformationInterface::setLocalPosition )
+            .def( "getLocalPosition", &TransformationInterface::getLocalPosition )
+            .def( "setLocalPositionX", &TransformationInterface::setLocalPositionX )
+            .def( "getLocalPositionX", &TransformationInterface::getLocalPositionX )
+            .def( "setLocalPositionY", &TransformationInterface::setLocalPositionY )
+            .def( "getLocalPositionY", &TransformationInterface::getLocalPositionY )
+            .def( "setLocalPositionZ", &TransformationInterface::setLocalPositionZ )
+            .def( "getLocalPositionZ", &TransformationInterface::getLocalPositionZ )
+            .def( "setLocalOrigin", &TransformationInterface::setLocalOrigin )
+            .def( "getLocalOrigin", &TransformationInterface::getLocalOrigin )
+            .def( "setLocalScale", &TransformationInterface::setLocalScale )
+            .def( "getLocalScale", &TransformationInterface::getLocalScale )
+            .def( "setLocalSkew", &TransformationInterface::setLocalSkew )
+            .def( "getLocalSkew", &TransformationInterface::getLocalSkew )
+            .def( "setLocalOrientationX", &TransformationInterface::setLocalOrientationX )
+            .def( "getLocalOrientationX", &TransformationInterface::getLocalOrientationX )
+            .def( "setLocalOrientationY", &TransformationInterface::setLocalOrientationY )
+            .def( "getLocalOrientationY", &TransformationInterface::getLocalOrientationY )
+            .def( "setLocalOrientationZ", &TransformationInterface::setLocalOrientationZ )
+            .def( "getLocalOrientationZ", &TransformationInterface::getLocalOrientationZ )
+            .def( "setLocalOrientation", &TransformationInterface::setLocalOrientation )
+            .def( "getLocalOrientation", &TransformationInterface::getLocalOrientation )
 
-            .def( "setOrigin", &Transformation::setLocalOrigin )
-            .def( "getOrigin", &Transformation::getLocalOrigin )
-            .def( "setScale", &Transformation::setLocalScale )
-            .def( "getScale", &Transformation::getLocalScale )
-            .def( "setSkew", &Transformation::setLocalSkew )
-            .def( "getSkew", &Transformation::getLocalSkew )
-            .def( "setOrientationX", &Transformation::setLocalOrientationX )
-            .def( "getOrientationX", &Transformation::getLocalOrientationX )
-            .def( "setOrientationY", &Transformation::setLocalOrientationY )
-            .def( "getOrientationY", &Transformation::getLocalOrientationY )
-            .def( "setOrientationZ", &Transformation::setLocalOrientationZ )
-            .def( "getOrientationZ", &Transformation::getLocalOrientationZ )
-            .def( "setOrientation", &Transformation::setLocalOrientation )
-            .def( "getOrientation", &Transformation::getLocalOrientation )
+            .def( "setOrigin", &TransformationInterface::setLocalOrigin )
+            .def( "getOrigin", &TransformationInterface::getLocalOrigin )
+            .def( "setScale", &TransformationInterface::setLocalScale )
+            .def( "getScale", &TransformationInterface::getLocalScale )
+            .def( "setSkew", &TransformationInterface::setLocalSkew )
+            .def( "getSkew", &TransformationInterface::getLocalSkew )
+            .def( "setOrientationX", &TransformationInterface::setLocalOrientationX )
+            .def( "getOrientationX", &TransformationInterface::getLocalOrientationX )
+            .def( "setOrientationY", &TransformationInterface::setLocalOrientationY )
+            .def( "getOrientationY", &TransformationInterface::getLocalOrientationY )
+            .def( "setOrientationZ", &TransformationInterface::setLocalOrientationZ )
+            .def( "getOrientationZ", &TransformationInterface::getLocalOrientationZ )
+            .def( "setOrientation", &TransformationInterface::setLocalOrientation )
+            .def( "getOrientation", &TransformationInterface::getLocalOrientation )
 
-            .def( "setAngle", &Transformation::setLocalOrientationX )
-            .def( "getAngle", &Transformation::getLocalOrientationX )
+            .def( "getWorldPosition", &TransformationInterface::getWorldPosition )
+            .def( "setWorldPosition", &TransformationInterface::setWorldPosition )
+
+            .def( "setAngle", &TransformationInterface::setLocalOrientationX )
+            .def( "getAngle", &TransformationInterface::getLocalOrientationX )
             .def_proxy_static( "setAngleDeg", scriptMethod, &KernelScriptMethod::s_Transformation_setAngleDeg )
 
-            .def( "setDirection", &Transformation::setDirection )
-            .def( "setBillboard", &Transformation::setBillboard )
-            .def( "setAxes", &Transformation::setAxes )
+            .def( "setDirection", &TransformationInterface::setDirection )
+            .def( "setBillboard", &TransformationInterface::setBillboard )
+            .def( "setAxes", &TransformationInterface::setAxes )
 
-            .def( "billboardAt", &Transformation::billboardAt )
-            .def( "lookAt", &Transformation::lookAt )
+            .def( "billboardAt", &TransformationInterface::billboardAt )
+            .def( "lookAt", &TransformationInterface::lookAt )
 
-            .def( "getAxisDirection", &Transformation::getAxisDirection )
-            .def( "getAxisLeft", &Transformation::getAxisLeft )
-            .def( "getAxisUp", &Transformation::getAxisUp )
+            .def( "getAxisDirection", &TransformationInterface::getAxisDirection )
+            .def( "getAxisLeft", &TransformationInterface::getAxisLeft )
+            .def( "getAxisUp", &TransformationInterface::getAxisUp )
 
-            .def( "translate", &Transformation::translate )
-            .def( "rotate", &Transformation::rotate )
-            .def( "coordinate", &Transformation::coordinate )
+            .def( "translate", &TransformationInterface::translate )
+            .def( "rotate", &TransformationInterface::rotate )
+            .def( "coordinate", &TransformationInterface::coordinate )
 
-            .def( "resetTransformation", &Transformation::resetTransformation )
-            .def( "setRelationTransformation", &Transformation::setRelationTransformation )
+            .def( "resetTransformation", &TransformationInterface::resetTransformation )
+            .def( "setRelationTransformation", &TransformationInterface::setRelationTransformation )
             .def_proxy_static( "removeRelationTransformation", scriptMethod, &KernelScriptMethod::s_Transformation_removeRelationTransformation )
             ;
 
@@ -2396,6 +2431,10 @@ namespace Mengine
             .def_mutable( "getRender", &Renderable::getRender )
             ;
 
+        pybind::interface_<Transformable, pybind::bases<Mixin>>( _kernel, "Transformable" )
+            .def_mutable( "getTransformation", &Transformable::getTransformation )
+            ;
+
         pybind::interface_<PickerInterface, pybind::bases<Mixin>>( _kernel, "PickerInterface" )
             .def( "isPickerEnable", &PickerInterface::isPickerEnable )
             .def( "isPickerPicked", &PickerInterface::isPickerPicked )
@@ -2488,7 +2527,7 @@ namespace Mengine
             .def( "hasParent", &Hierarchy::hasParent )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Eventable, Animatable, Identity, Transformation, Compilable, Renderable, Pickerable, Affectorable, Hierarchy>>( _kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Eventable, Animatable, Identity, Transformable, Compilable, Renderable, Pickerable, Affectorable, Hierarchy>>( _kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -2503,8 +2542,6 @@ namespace Mengine
             .def_proxy_static( "destroyAllChild", scriptMethod, &KernelScriptMethod::s_Node_destroyAllChild )
             .def_proxy_static( "isHomeless", scriptMethod, &KernelScriptMethod::s_Node_isHomeless )
 
-            .def( "getWorldPosition", &Node::getWorldPosition )
-            .def( "setWorldPosition", &Node::setWorldPosition )
             //.def( "getWorldDirection", &Node::getWorldDirection )
             .def_proxy_static( "getWorldOffsetPosition", scriptMethod, &KernelScriptMethod::s_Node_getWorldOffsetPosition )
             .def_proxy_static( "getLengthTo", scriptMethod, &KernelScriptMethod::s_Node_getLengthTo )
@@ -2540,6 +2577,7 @@ namespace Mengine
             .def_proxy_static_args( "accAngleTo", scriptMethod, &KernelScriptMethod::s_Node_accAngleTo )
 
             .def_proxy_static( "removeEventListener", scriptMethod, &KernelScriptMethod::s_Node_removeEventListener )
+            .def_proxy_interface<TransformationInterface>( &Transformable::getTransformation )
             ;
 
         pybind::interface_<Affector, pybind::bases<Updatable>>( _kernel, "Affector", true )

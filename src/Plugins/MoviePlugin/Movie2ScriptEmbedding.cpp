@@ -53,7 +53,9 @@ namespace Mengine
         {
             const mt::box2f & bounds = _movie->getCompositionBounds();
 
-            const mt::mat4f & wm = _movie->getWorldMatrix();
+            const TransformationInterface * transformation = _movie->getTransformation();
+
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             mt::box2f boundsWM;
             mt::mul_box2_m4( boundsWM, bounds, wm );

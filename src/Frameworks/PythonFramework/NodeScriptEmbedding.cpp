@@ -272,19 +272,19 @@ namespace Mengine
                 return *bb;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_Transformation_setAngleDeg( Transformation * _transformation, float _angle )
+            void s_Transformation_setAngleDeg( TransformationInterface * _transformation, float _angle )
             {
                 float rad = _angle * mt::constant::deg2rad;
 
                 _transformation->setLocalOrientationX( rad );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_Transformation_removeRelationTransformation( Transformation * _transformation )
+            void s_Transformation_removeRelationTransformation( TransformationInterface * _transformation )
             {
                 _transformation->removeRelationTransformation();
             }
             //////////////////////////////////////////////////////////////////////////
-            void Transformation_coordinate( Transformation * _transformation, const mt::vec3f & _coordinate )
+            void Transformation_coordinate( TransformationInterface * _transformation, const mt::vec3f & _coordinate )
             {
                 const mt::vec3f & origin = _transformation->getLocalOrigin();
                 _transformation->setLocalOrigin( origin + _coordinate );
@@ -311,7 +311,9 @@ namespace Mengine
                 mt::box2f bb;
                 mt::insideout_box( bb );
 
-                const mt::mat4f & wm = _hs->getWorldMatrix();
+                const TransformationInterface * transformation = _hs->getTransformation();
+
+                const mt::mat4f & wm = transformation->getWorldMatrix();
 
                 for( const mt::vec2f & v : polygon )
                 {
@@ -356,7 +358,9 @@ namespace Mengine
             {
                 const Polygon & polygon = _hs->getPolygon();
 
-                const mt::mat4f & wm = _hs->getWorldMatrix();
+                const TransformationInterface * transformation = _hs->getTransformation();
+
+                const mt::mat4f & wm = transformation->getWorldMatrix();
 
                 Polygon pwm;
                 polygon.mul_wm( &pwm, wm );
@@ -397,7 +401,9 @@ namespace Mengine
             {
                 mt::vec2f imageCenter = s_Shape_getLocalImageCenter( _shape );
 
-                const mt::mat4f & wm = _shape->getWorldMatrix();
+                const TransformationInterface * transformation = _shape->getTransformation();
+
+                const mt::mat4f & wm = transformation->getWorldMatrix();
 
                 mt::vec2f imageCenter_wm;
                 mt::mul_v2_v2_m4( imageCenter_wm, imageCenter, wm );

@@ -9,6 +9,7 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/Vector.h"
@@ -36,13 +37,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class AstralaxEmitter
         : public Node
-        , private BaseEventation
-        , private BaseUpdation
-        , private BaseRender
-        , private BaseAnimation
         , public AstralaxPositionProviderInterface
         , public AstralaxCameraProviderInterface
         , public UnknownAstralaxEmitterInterface
+        , protected BaseEventation
+        , protected BaseUpdation
+        , protected BaseRender
+        , protected BaseAnimation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
@@ -50,6 +52,7 @@ namespace Mengine
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         AstralaxEmitter();

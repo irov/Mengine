@@ -119,7 +119,9 @@ namespace Mengine
 
         this->addChild( node );
 
-        node->resetTransformation();
+        TransformationInterface * transformation = node->getTransformation();
+
+        transformation->resetTransformation();
 
         m_internalNode = node;
 

@@ -253,8 +253,9 @@ Unique
 
 ADD_FILTER(
 Transformation
-    Transformation.cpp
-    Transformation.h
+    Transformable.h
+    BaseTransformation.cpp
+    BaseTransformation.h
 )
 
 ADD_FILTER(

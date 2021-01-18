@@ -9,8 +9,8 @@ namespace Mengine
 {
     class ResourceJSON
         : public Resource
-        , private BaseContent
         , public UnknownResourceJSONInterface
+        , protected BaseContent        
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();

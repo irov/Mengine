@@ -17,7 +17,7 @@ namespace Mengine
     class Motor
         : public Factorable
         , public Updatable
-        , private BaseUpdation
+        , protected BaseUpdation
     {
     public:
         DECLARE_UPDATABLE();

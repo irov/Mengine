@@ -112,8 +112,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_invalidateWorldMatrix() const
     {
-        Node::_invalidateWorldMatrix();
-
         if( this->isPickerEnable() == false )
         {
             return;

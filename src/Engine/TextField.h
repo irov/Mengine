@@ -8,6 +8,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/Observable.h"
 #include "Kernel/Materialable.h"
 
@@ -26,10 +27,12 @@ namespace Mengine
         : public Node
         , public Materialable
         , public Observable
-        , private BaseRender
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         TextField();

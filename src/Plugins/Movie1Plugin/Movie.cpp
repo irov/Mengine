@@ -360,7 +360,9 @@ namespace Mengine
 
         mt::vec2f skew( 0.f, 0.f );
 
-        _node->setTransformation(
+        TransformationInterface * transformation = _node->getTransformation();
+
+        transformation->setTransformationData(
             TRANSFORMATION_INVALIDATE_UNKNOWN,
             frame.position,
             frame.anchorPoint,
@@ -487,7 +489,9 @@ namespace Mengine
 
         mt::vec2f skew( 0.f, 0.f );
 
-        _node->setTransformation(
+        TransformationInterface * transformation = _node->getTransformation();
+
+        transformation->setTransformationData(
             TRANSFORMATION_INVALIDATE_UNKNOWN,
             _layer.position,
             _layer.anchorPoint,
@@ -2069,7 +2073,9 @@ namespace Mengine
                     , layer.parent
                 );
 
-                node->setRelationTransformation( node_parent.get() );
+                TransformationInterface * transformation = node->getTransformation();
+
+                transformation->setRelationTransformation( node_parent->getTransformation() );
             }
         }
 
@@ -2096,7 +2102,9 @@ namespace Mengine
 
             Node * parent = node->getParent();
 
-            node->setRelationTransformation( parent );
+            TransformationInterface * transformation = node->getTransformation();
+
+            transformation->setRelationTransformation( parent->getTransformation() );
         }
     }
     //////////////////////////////////////////////////////////////////////////

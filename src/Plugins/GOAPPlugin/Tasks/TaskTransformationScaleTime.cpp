@@ -1,5 +1,7 @@
 #include "TaskTransformationScaleTime.h"
 
+#include "Interface/TransformationInterface.h"
+
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -14,9 +16,9 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationScaleTimeAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
+            TaskTransformationScaleTimeAffector( GOAP::NodeInterface * _node, const TransformablePtr & _transformable, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
                 : m_node( _node )
-                , m_transformation( _transformation )
+                , m_transformable( _transformable )
                 , m_from( _from )
                 , m_to( _to )
                 , m_progress( 0.f )
@@ -31,6 +33,8 @@ namespace Mengine
         public:
             bool _affect( const UpdateContext * _context, float * const _used ) override
             {
+                TransformationInterface * transformation = m_transformable->getTransformation();
+
                 float time = _context->time;
 
                 if( m_progress + time < m_time )
@@ -55,14 +59,14 @@ namespace Mengine
                         mt::linerp_v3( scale, m_from, m_to, t );
                     }
 
-                    m_transformation->setLocalScale( scale );
+                    transformation->setLocalScale( scale );
 
                     return false;
                 }
 
                 *_used = m_time - m_progress;
 
-                m_transformation->setLocalScale( m_to );
+                transformation->setLocalScale( m_to );
 
                 return true;
             }
@@ -78,7 +82,7 @@ namespace Mengine
         protected:
             GOAP::NodeInterfacePtr m_node;
 
-            TransformationPtr m_transformation;
+            TransformablePtr m_transformable;
 
             mt::vec3f m_from;
             mt::vec3f m_to;
@@ -87,9 +91,9 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationScaleTime::TaskTransformationScaleTime( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentPtr & _doc )
+    TaskTransformationScaleTime::TaskTransformationScaleTime( GOAP::Allocator * _allocator, const TransformablePtr & _transformable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
-        , m_transformation( _transformation )
+        , m_transformable( _transformable )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )
@@ -109,9 +113,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskTransformationScaleTime::_onRun( GOAP::NodeInterface * _node )
     {
-        const mt::vec3f & scale = m_transformation->getLocalScale();
+        TransformationInterface * transformation = m_transformable->getTransformation();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformation, scale, m_to, m_time );
+        const mt::vec3f & scale = transformation->getLocalScale();
+
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformable, scale, m_to, m_time );
 
         affector->setEasing( m_easing );
 
@@ -141,7 +147,9 @@ namespace Mengine
 
         if( (m_flags & ETASK_FLAG_NOREWIND) == 0 )
         {
-            m_transformation->setLocalScale( m_to );
+            TransformationInterface * transformation = m_transformable->getTransformation();
+
+            transformation->setLocalScale( m_to );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -156,6 +164,6 @@ namespace Mengine
         }
 
         m_affectorable = nullptr;
-        m_transformation = nullptr;
+        m_transformable = nullptr;
     }
 }

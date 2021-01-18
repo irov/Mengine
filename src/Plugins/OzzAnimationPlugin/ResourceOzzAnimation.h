@@ -12,8 +12,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceOzzAnimation
         : public Resource
-        , private BaseContent
         , public UnknownResourceOzzAnimationInterface
+        , protected BaseContent        
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();

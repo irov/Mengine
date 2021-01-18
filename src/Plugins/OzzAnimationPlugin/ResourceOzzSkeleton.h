@@ -12,8 +12,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceOzzSkeleton
         : public Resource
-        , private BaseContent
         , public UnknownResourceOzzSkeletonInterface
+        , protected BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();

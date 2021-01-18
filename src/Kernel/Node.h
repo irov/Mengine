@@ -9,7 +9,7 @@
 #include "Kernel/Compilable.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/Renderable.h"
-#include "Kernel/Transformation.h"
+#include "Kernel/Transformable.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Animatable.h"
@@ -36,7 +36,7 @@ namespace Mengine
         , public Hierarchy
         , public Updatable
         , public Renderable
-        , public Transformation
+        , public Transformable
         , public Affectorable
         , public AffectorHubProviderInterface
         , public Visitable
@@ -106,9 +106,6 @@ namespace Mengine
 
         virtual void _deactivate();
         virtual void _afterDeactivate();
-
-    protected:
-        void _invalidateWorldMatrix() const override;
 
     protected:
         bool compile() override;

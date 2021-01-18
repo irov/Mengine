@@ -1,5 +1,7 @@
 #include "TaskTransformationRotateY.h"
 
+#include "Interface/TransformationInterface.h"
+
 #include "AffectorTransformationRotate.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -11,9 +13,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateY::TaskTransformationRotateY( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
+    TaskTransformationRotateY::TaskTransformationRotateY( GOAP::Allocator * _allocator, const TransformablePtr & _transformable, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
-        , m_transformation( _transformation )
+        , m_transformable( _transformable )
         , m_affectorable( _affectorable )
         , m_to( _to )
         , m_speed( _speed )
@@ -31,13 +33,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskTransformationRotateY::_onRun( GOAP::NodeInterface * _node )
     {
-        float orientationY = m_transformation->getLocalOrientationY();
+        TransformationInterface * transformation = m_transformable->getTransformation();
+
+        float orientationY = transformation->getLocalOrientationY();
 
         float correct_rotate_from;
         float correct_rotate_to;
         mt::angle_correct_interpolate_from_to( orientationY, m_to, correct_rotate_from, correct_rotate_to );
 
-        LambdaAffectorTransformationRotate transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationY );
+        LambdaAffectorTransformationRotate transformCb = Helper::delegate( transformation, &TransformationInterface::setLocalOrientationY );
 
         AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotate>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, transformCb, correct_rotate_from, correct_rotate_to, m_speed );
 
@@ -65,7 +69,9 @@ namespace Mengine
             m_id = 0;
         }
 
-        m_transformation->setLocalOrientationY( m_to );
+        TransformationInterface * transformation = m_transformable->getTransformation();
+
+        transformation->setLocalOrientationY( m_to );
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskTransformationRotateY::_onFinally()
@@ -79,6 +85,6 @@ namespace Mengine
         }
 
         m_affectorable = nullptr;
-        m_transformation = nullptr;
+        m_transformable = nullptr;
     }
 }

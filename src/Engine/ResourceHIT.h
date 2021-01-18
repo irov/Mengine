@@ -10,7 +10,7 @@ namespace Mengine
 {
     class ResourceHIT
         : public ResourceTestPick
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_VISITABLE( ResourceTestPick );
         DECLARE_CONTENTABLE();

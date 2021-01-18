@@ -8,8 +8,8 @@ namespace Mengine
     class Layer2D;
 
     class Layer2DRenderTarget
-        : public BaseRender
-        , public Factorable
+        : public Factorable
+        , public BaseRender        
     {
     public:
         explicit Layer2DRenderTarget( Layer2D * _layer );

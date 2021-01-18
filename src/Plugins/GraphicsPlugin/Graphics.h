@@ -1,13 +1,14 @@
 #pragma once
 
+#include "GraphicsInterface.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorRenderIndex.h"
-
-#include "GraphicsInterface.h"
 
 #include "graphics/graphics.hpp"
 #include "math/vec2.h"
@@ -18,10 +19,12 @@ namespace Mengine
     class Graphics
         : public Node
         , public GraphicsInterface
-        , private BaseRender
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
         DECLARE_UNKNOWABLE();
         DECLARE_NODE_UNKNOWABLE();
 

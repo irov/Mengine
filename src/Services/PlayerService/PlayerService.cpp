@@ -176,11 +176,13 @@ namespace Mengine
         {
             m_arrow->disable();
 
-            m_arrow->setRenderCamera( nullptr );
-            m_arrow->setRenderViewport( nullptr );
-            m_arrow->setRenderTransformation( nullptr );
-            m_arrow->setRenderScissor( nullptr );
-            m_arrow->setRenderTarget( nullptr );
+            RenderInterface * arrowRender = m_arrow->getRender();
+
+            arrowRender->setRenderCamera( nullptr );
+            arrowRender->setRenderViewport( nullptr );
+            arrowRender->setRenderTransformation( nullptr );
+            arrowRender->setRenderScissor( nullptr );
+            arrowRender->setRenderTarget( nullptr );
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );
@@ -251,11 +253,13 @@ namespace Mengine
         {
             m_arrow->disable();
 
-            m_arrow->setRenderCamera( nullptr );
-            m_arrow->setRenderViewport( nullptr );
-            m_arrow->setRenderTransformation( nullptr );
-            m_arrow->setRenderScissor( nullptr );
-            m_arrow->setRenderTarget( nullptr );
+            RenderInterface * arrowRender = m_arrow->getRender();
+
+            arrowRender->setRenderCamera( nullptr );
+            arrowRender->setRenderViewport( nullptr );
+            arrowRender->setRenderTransformation( nullptr );
+            arrowRender->setRenderScissor( nullptr );
+            arrowRender->setRenderTarget( nullptr );
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );
@@ -268,9 +272,11 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->setRenderCamera( m_defaultArrowCamera2D );
-            m_arrow->setRenderViewport( m_renderViewport );
-            m_arrow->setRenderScissor( m_renderScissor );
+            RenderInterface * arrowRender = m_arrow->getRender();
+
+            arrowRender->setRenderCamera( m_defaultArrowCamera2D );
+            arrowRender->setRenderViewport( m_renderViewport );
+            arrowRender->setRenderScissor( m_renderScissor );
 
             PICKER_SERVICE()
                 ->setArrow( m_arrow );
@@ -413,9 +419,11 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->setRenderCamera( m_defaultArrowCamera2D );
-            m_arrow->setRenderViewport( m_renderViewport );
-            m_arrow->setRenderScissor( m_renderScissor );
+            RenderInterface * arrowRender = m_arrow->getRender();
+
+            arrowRender->setRenderCamera( m_defaultArrowCamera2D );
+            arrowRender->setRenderViewport( m_renderViewport );
+            arrowRender->setRenderScissor( m_renderScissor );
         }
     }
     //////////////////////////////////////////////////////////////////////////

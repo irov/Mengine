@@ -4,7 +4,6 @@
 
 #include "TransformationRotateMode.h"
 
-#include "Kernel/Transformation.h"
 #include "Kernel/Affector.h"
 
 #include "Config/Lambda.h"

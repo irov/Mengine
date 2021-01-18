@@ -998,7 +998,6 @@ namespace Mengine
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource : includes_resource )
         {
             const ConstString & name = meta_resource->get_Name();
-            const ConstString & type = meta_resource->get_Type();
 
             ResourcePtr has_resource = nullptr;
             if( RESOURCE_SERVICE()
@@ -1006,7 +1005,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s' category '%s'\nhas resource group '%s' name '%s'"
                     , _filePath.c_str()
-                    , name.c_str()
+                    , meta_resource->get_Name().c_str()
                     , groupName.c_str()
                     , _fileGroup->getName().c_str()
                     , has_resource->getGroupName().c_str()
@@ -1024,19 +1023,8 @@ namespace Mengine
                 has_resource->release();
             }
 
-            if( RESOURCE_SERVICE()
-                ->removeResource( has_resource ) == false )
-            {
-                LOGGER_ERROR( "path '%s' invalid remove resource '%s:%s' name '%s' type '%s'"
-                    , _filePath.c_str()
-                    , _fileGroup->getName().c_str()
-                    , groupName.c_str()
-                    , name.c_str()
-                    , type.c_str()
-                );
-
-                return false;
-            }
+            RESOURCE_SERVICE()
+                ->removeResource( has_resource );
         }
 
         return true;

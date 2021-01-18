@@ -2,15 +2,18 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/DummyRender.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {    
     class Movie2Slot
         : public Node
-        , public DummyRender
+        , protected DummyRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Movie2Slot();

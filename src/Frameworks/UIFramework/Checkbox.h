@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Checkbox
         : public Node
-        , private BaseEventation
+        , protected BaseEventation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();

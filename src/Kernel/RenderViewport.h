@@ -8,14 +8,18 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 
+#include "Kernel/BaseTransformation.h"
+
 namespace Mengine
 {
     class RenderViewport
         : public Node
         , public RenderViewportInterface
         , public Observable
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_TRANSFORMABLE();
 
     public:
         RenderViewport();

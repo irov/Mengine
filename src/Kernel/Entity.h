@@ -9,6 +9,7 @@
 #include "Kernel/Componentable.h"
 #include "Kernel/DummyRender.h"
 #include "Kernel/DummyPicker.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -16,12 +17,14 @@ namespace Mengine
     class Entity
         : public Node
         , public Componentable
-        , public DummyRender
-        , public DummyPicker
+        , protected DummyRender
+        , protected DummyPicker
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_PICKERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Entity();

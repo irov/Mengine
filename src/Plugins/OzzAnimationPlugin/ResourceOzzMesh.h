@@ -16,8 +16,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceOzzMesh
         : public Resource
-        , private BaseContent
         , public UnknownResourceOzzMeshInterface
+        , protected BaseContent
+        
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();

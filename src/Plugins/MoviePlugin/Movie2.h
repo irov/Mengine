@@ -8,6 +8,7 @@
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/Surface.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
@@ -47,10 +48,11 @@ namespace Mengine
     class Movie2
         : public Node
         , public UnknownMovie2Interface
-        , private BaseUpdation
-        , private BaseRender
-        , private BaseEventation
-        , private BaseAnimation
+        , protected BaseUpdation
+        , protected BaseRender
+        , protected BaseEventation
+        , protected BaseAnimation
+        , protected BaseTransformation
     {
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Node );
@@ -58,6 +60,7 @@ namespace Mengine
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Movie2();

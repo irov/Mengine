@@ -30,7 +30,7 @@ namespace Mengine
         : public FontBase
         , public UnknownTTFFontInterface
         , public Observable
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_CONTENTABLE();
         DECLARE_UNKNOWABLE();

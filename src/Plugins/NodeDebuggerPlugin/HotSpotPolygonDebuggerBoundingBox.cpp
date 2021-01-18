@@ -22,7 +22,9 @@ namespace Mengine
             return false;
         }
 
-        const mt::mat4f & wm = _node->getWorldMatrix();
+        const TransformationInterface * transformation = _node->getTransformation();
+
+        const mt::mat4f & wm = transformation->getWorldMatrix();
 
         mt::box2f bb;
         mt::insideout_box( bb );

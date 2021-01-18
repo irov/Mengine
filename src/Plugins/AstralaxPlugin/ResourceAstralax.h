@@ -13,7 +13,7 @@ namespace Mengine
 {
     class ResourceAstralax
         : public Resource
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

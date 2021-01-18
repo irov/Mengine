@@ -4,8 +4,8 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/Observable.h"
-
 #include "Kernel/Resolution.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -15,8 +15,10 @@ namespace Mengine
         : public Node
         , public RenderScissorInterface
         , public Observable
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_TRANSFORMABLE();
 
     public:
         RenderScissor();

@@ -72,7 +72,6 @@ namespace Mengine
             ResourcePtrView resource = value.element;
 
             resource->finalize();
-            resource->setResourceBank( nullptr );
 
             bool keep = resource->isKeep();
 
@@ -111,7 +110,6 @@ namespace Mengine
                 m_resources.erase( value.key2 );
 
                 resource->finalize();
-                resource->setResourceBank( nullptr );
 
                 IntrusivePtrBase::intrusive_ptr_dec_ref( resource );
             }
@@ -137,7 +135,6 @@ namespace Mengine
                 m_resources.erase( value.key );
 
                 resource->finalize();
-                resource->setResourceBank( nullptr );
 
                 IntrusivePtrBase::intrusive_ptr_dec_ref( resource );
             }
@@ -191,7 +188,6 @@ namespace Mengine
             if( prev_resource != nullptr )
             {
                 prev_resource->finalize();
-                prev_resource->setResourceBank( nullptr );
                 prev_resource->setMapping( false );
 
                 bool prev_keep = prev_resource->isKeep();
@@ -228,7 +224,6 @@ namespace Mengine
         );
 
         _resource->finalize();
-        _resource->setResourceBank( nullptr );
 
         const ConstString & groupName = _resource->getGroupName();
         const ConstString & name = _resource->getName();

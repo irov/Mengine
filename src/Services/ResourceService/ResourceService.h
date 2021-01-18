@@ -34,7 +34,7 @@ namespace Mengine
 
     public:
         ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc ) override;
-        bool removeResource( const ResourcePtr & _resource ) override;
+        void removeResource( const ResourcePtr & _resource ) override;
 
     public:
         const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const override;

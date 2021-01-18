@@ -171,6 +171,7 @@ namespace Mengine
     protected:
         void updateDebugResourceCompile_();
         void notifyDebugResourceCompile_( Resource * _resource );
+        void notifyDebugResourceRelease_( Resource * _resource );
 
 
     protected:        

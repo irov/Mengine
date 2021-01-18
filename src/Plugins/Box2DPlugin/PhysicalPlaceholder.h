@@ -5,15 +5,18 @@
 #include "Box2DBody.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
     class PhysicalPlaceholder
         : public Node
         , public UnknownPhysicalPlaceholderInterface
+        , public BaseTransformation
     {
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Node );
+        DECLARE_TRANSFORMABLE();
 
     public:
         PhysicalPlaceholder();

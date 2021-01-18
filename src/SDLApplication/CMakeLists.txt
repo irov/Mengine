@@ -199,20 +199,25 @@ IF(MENGINE_TARGET_ANDROID)
         SET(CMAKE_BUILD_TYPE_CORRECT ${CMAKE_BUILD_TYPE})
     ENDIF()
 
-    add_library( SDL2
-            SHARED
-            IMPORTED )
+    add_library(SDL2 SHARED IMPORTED)
+            
+    SET(SDL2_IMPORTED_LOCATION_PATH ${MENGINE_REPOSITORY}/gradle/libraries/SDL2/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libSDL2.so)
              
-    set_target_properties( # Specifies the target library.
-            SDL2
-            # Specifies the parameter you want to define.
-            PROPERTIES IMPORTED_LOCATION
+    set_target_properties(SDL2 PROPERTIES IMPORTED_LOCATION ${SDL2_IMPORTED_LOCATION_PATH})
+            
+    MESSAGE("SDL2_IMPORTED_LOCATION_PATH: ${SDL2_IMPORTED_LOCATION_PATH}")
 
-            # Provides the path to the library you want to import.
-            ${MENGINE_REPOSITORY}/gradle/libraries/SDL2/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libSDL2.so
-            )
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} SDL2)
+    
+    add_library(hidapi SHARED IMPORTED)
+    
+    SET(HIDAPI_IMPORTED_LOCATION_PATH ${MENGINE_REPOSITORY}/gradle/libraries/SDL2/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libhidapi.so)
+             
+    set_target_properties(hidapi PROPERTIES IMPORTED_LOCATION ${HIDAPI_IMPORTED_LOCATION_PATH})
 
-    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} SDL2)
+    MESSAGE("HIDAPI_IMPORTED_LOCATION_PATH: ${HIDAPI_IMPORTED_LOCATION_PATH}")
+
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} hidapi)
 
     target_link_libraries(${PROJECT_NAME}
         stdc++

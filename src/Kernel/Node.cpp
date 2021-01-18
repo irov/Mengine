@@ -4,6 +4,7 @@
 
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
+#include "Interface/TransformationInterface.h"
 #include "Interface/UpdationInterface.h"
 #include "Interface/EventationInterface.h"
 
@@ -604,19 +605,16 @@ namespace Mengine
         this->deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_invalidateWorldMatrix() const
-    {
-        const RenderInterface * render = this->getRender();
-
-        if( render != nullptr )
-        {
-            render->invalidateBoundingBox();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Node::_hierarchySetParent( Node * _newParent )
     {
-        this->setRelationTransformation( _newParent );
+        TransformationInterface * transformation = this->getTransformation();
+
+        if( transformation != nullptr )
+        {
+            TransformationInterface * newParentTransformation = _newParent->getTransformation();
+
+            transformation->setRelationTransformation( newParentTransformation );
+        }
 
         this->refreshRenderRelation_( _newParent );
         this->refreshPickerRelation_( _newParent );
@@ -635,7 +633,13 @@ namespace Mengine
     {
         MENGINE_UNUSED( _oldParent );
 
-        this->removeRelationTransformation();
+        TransformationInterface * transformation = this->getTransformation();
+
+        if( transformation != nullptr )
+        {
+            transformation->removeRelationTransformation();
+        }
+
         this->removeRelationRender_();
         this->removeRelationPicker_();
     }
@@ -658,9 +662,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_hierarchyAddChild( const NodePtr & _node )
     {
-        MENGINE_UNUSED( _node );
+        TransformationInterface * transformation = _node->getTransformation();
 
-        //Empty
+        if( transformation != nullptr )
+        {
+            transformation->invalidateWorldMatrix();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_hierarchyRemoveChild( const NodePtr & _node )

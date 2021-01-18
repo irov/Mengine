@@ -36,13 +36,17 @@ namespace Mengine
             polygon.append( v2 );
             polygon.append( v3 );
 
-            const mt::mat4f & wm = _node->getWorldMatrix();
+            const TransformationInterface * transformation = _node->getTransformation();
+
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF, MENGINE_DOCUMENT_FORWARD );
         }
 
         {
-            const mt::mat4f & wm = _node->getWorldMatrix();
+            const TransformationInterface * transformation = _node->getTransformation();
+
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             ColorValue_ARGB color = Helper::makeRGBA( 0.f, 1.f, 0.f, 1.f );
 
@@ -51,7 +55,9 @@ namespace Mengine
 
         if( _node->getAutoScale() == true )
         {
-            const mt::mat4f & wm = _node->getWorldMatrix();
+            const TransformationInterface * transformation = _node->getTransformation();
+
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             const mt::vec2f & anchor = _node->getAnchorPercent();
             float maxLength = _node->getMaxLength();

@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/Materialable.h"
 
 #include "Kernel/RenderVertex2D.h"
@@ -12,10 +13,12 @@ namespace Mengine
     class Line
         : public Node
         , public Materialable
-        , private BaseRender
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Line();

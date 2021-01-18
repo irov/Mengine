@@ -104,52 +104,52 @@ namespace Mengine
             Cook::addTask<TaskPickerableMouseLeave>( _source, _pickerable, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
+        void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationRotateX>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
+        void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationRotateY>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateZ( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
+        void addTransformationRotateZ( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationRotateZ>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateXTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
+        void addTransformationRotateXTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationRotateXTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
+        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationRotateYTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationRotateZTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
+        void addTransformationRotateZTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationRotateZTime>( _source, _transformation, _affectorable, _easing, _to, _time, _mode, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentPtr & _doc )
+        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationScaleTime>( _source, _transformation, _affectorable, _easing, _to, _time, _flags, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentPtr & _doc )
+        void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationTranslate>( _source, _transformation, _affectorable, _to, _speed, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
+        void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationTranslateTime>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addTransformationTranslateTimeWithSkip( const GOAP::SourceInterfacePtr & _source, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
+        void addTransformationTranslateTimeWithSkip( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
         {
             Cook::addTask<TaskTransformationTranslateTimeWithSkip>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
         }

@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMovie2
         : public Resource
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

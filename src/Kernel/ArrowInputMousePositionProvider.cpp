@@ -1,5 +1,7 @@
 #include "ArrowInputMousePositionProvider.h"
 
+#include "Interface/TransformationInterface.h"
+
 #include "Kernel/Arrow.h"
 
 namespace Mengine
@@ -33,7 +35,9 @@ namespace Mengine
 
         mt::vec3f v3( wp.x, wp.y, 0.f );
 
-        m_arrow->setLocalPosition( v3 );
+        TransformationInterface * transformation = m_arrow->getTransformation();
+
+        transformation->setLocalPosition( v3 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

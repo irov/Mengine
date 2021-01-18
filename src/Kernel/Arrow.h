@@ -3,7 +3,6 @@
 #include "ArrowInputMousePositionProvider.h"
 
 #include "Kernel/Entity.h"
-#include "Kernel/BaseRender.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Polygon.h"
 

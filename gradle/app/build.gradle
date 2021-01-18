@@ -106,13 +106,7 @@ android {
         
         if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
             ndk {
-                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false) == true) {
-                    abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-                }
-                else
-                {
-                    abiFilters "arm64-v8a", "armeabi-v7a"
-                }
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }
         }
     }
@@ -131,11 +125,7 @@ android {
             reset()
 
             if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == false) {
-                if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false) == true) {
-                    include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-                } else {
-                    include "arm64-v8a", "armeabi-v7a"
-                }
+                include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             }
 
             universalApk false
@@ -179,7 +169,7 @@ android {
                         "-DANDROID_ALLOW_UNDEFINED_SYMBOLS:BOOLEAN=TRUE",
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
-                        "-DCMAKE_BUILD_TYPE:STRING=release"
+                        "-DCMAKE_BUILD_TYPE:STRING=Release"
                 }
                 
                 if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
@@ -215,14 +205,18 @@ android {
                 manifest.srcFile 'AndroidManifest.xml'
             }
 
-            if (project.hasProperty("ASSETS_JAVA_SRC_DIR")) {
+            if (project.hasProperty("ASSETS_JAVA_NO_SRC_DIR")) {
+                println 'ASSETS_JAVA_SRC_DIR = [No]'
+
+                java.srcDirs = ['../../dependencies/SDL2/android-project/app/src/main/java/']
+            } else if (project.hasProperty("ASSETS_JAVA_SRC_DIR")) {
                 print 'ASSETS_JAVA_SRC_DIR = '
                 println ASSETS_JAVA_SRC_DIR
 
                 java.srcDirs = [ASSETS_JAVA_SRC_DIR, '../../dependencies/SDL2/android-project/app/src/main/java/']
             }
             else {
-                java.srcDirs = ['../../dependencies/SDL2/android-project/app/src/main/java/']
+                java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
             }
             
             if (project.hasProperty("ASSETS_RES_DIR")) {
@@ -307,9 +301,9 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == tru
     dependencies {
         implementation 'com.google.android.gms:play-services-gcm:17.0.0'
         implementation 'com.google.android.gms:play-services-ads:19.6.0'
-        implementation 'com.google.firebase:firebase-core:18.0.0'
-        implementation 'com.google.firebase:firebase-analytics:18.0.0'
-        implementation 'com.google.firebase:firebase-auth:20.0.1'
+        implementation 'com.google.firebase:firebase-core:18.0.1'
+        implementation 'com.google.firebase:firebase-analytics:18.0.1'
+        implementation 'com.google.firebase:firebase-auth:20.0.2'
         implementation 'com.google.firebase:firebase-firestore:22.0.1'
         implementation 'com.google.firebase:firebase-crashlytics-ndk:17.3.0'
         implementation 'com.google.firebase:firebase-messaging:21.0.1'

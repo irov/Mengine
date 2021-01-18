@@ -1,5 +1,7 @@
 #include "TaskTransformationRotateXTime.h"
 
+#include "Interface/TransformationInterface.h"
+
 #include "AffectorTransformationRotateTime.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -11,9 +13,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateXTime::TaskTransformationRotateXTime( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
+    TaskTransformationRotateXTime::TaskTransformationRotateXTime( GOAP::Allocator * _allocator, const TransformablePtr & _transformable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
-        , m_transformation( _transformation )
+        , m_transformable( _transformable )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )
@@ -33,9 +35,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskTransformationRotateXTime::_onRun( GOAP::NodeInterface * _node )
     {
-        float orientationX = m_transformation->getLocalOrientationX();
+        TransformationInterface * transformation = m_transformable->getTransformation();
 
-        LambdaAffectorTransformationRotateTime transformCb = Helper::delegate( m_transformation, &Transformation::setLocalOrientationX );
+        float orientationX = transformation->getLocalOrientationX();
+
+        LambdaAffectorTransformationRotateTime transformCb = Helper::delegate( transformation, &TransformationInterface::setLocalOrientationX );
 
         AffectorPtr affector = Helper::makeFactorableUnique<AffectorTransformationRotateTime>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, transformCb, orientationX, m_to, m_time, m_mode );
 
@@ -65,7 +69,9 @@ namespace Mengine
             m_id = 0;
         }
 
-        m_transformation->setLocalOrientationX( m_to );
+        TransformationInterface * transformation = m_transformable->getTransformation();
+
+        transformation->setLocalOrientationX( m_to );
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskTransformationRotateXTime::_onFinally()
@@ -79,6 +85,6 @@ namespace Mengine
         }
 
         m_affectorable = nullptr;
-        m_transformation = nullptr;
+        m_transformable = nullptr;
     }
 }

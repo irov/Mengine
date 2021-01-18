@@ -155,7 +155,7 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::removeResource( const ResourcePtr & _resource )
+    void ResourceService::removeResource( const ResourcePtr & _resource )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _resource );
 
@@ -174,8 +174,6 @@ namespace Mengine
         }
 
         m_globalBank->removeResource( _resource );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const

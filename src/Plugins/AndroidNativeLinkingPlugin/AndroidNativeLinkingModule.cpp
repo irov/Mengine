@@ -29,8 +29,8 @@ extern "C"
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
-        jmethodID_openURL = mEnv->GetStaticMethodID( mActivityClass, "openURL", "(Ljava/lang/String;)Z" );
-        jmethodID_openMail = mEnv->GetStaticMethodID( mActivityClass, "openMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
+        jmethodID_openURL = mEnv->GetStaticMethodID( mActivityClass, "linkingOpenURL", "(Ljava/lang/String;)Z" );
+        jmethodID_openMail = mEnv->GetStaticMethodID( mActivityClass, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z" );
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

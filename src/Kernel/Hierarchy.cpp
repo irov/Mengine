@@ -128,8 +128,6 @@ namespace Mengine
             _child->activate();
         }
 
-        _child->invalidateWorldMatrix();
-
         this->_hierarchyAddChild( _child );
     }
     //////////////////////////////////////////////////////////////////////////

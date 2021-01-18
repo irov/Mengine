@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceImageDefault
         : public ResourceImage
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_VISITABLE( ResourceImage );
         DECLARE_CONTENTABLE();

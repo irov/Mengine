@@ -17,9 +17,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SamplerOzzAnimation
         : public SamplerOzzAnimationInterface
-        , private BaseAnimation
-        , private BaseUpdation
-        , private BaseEventation
+        , protected BaseAnimation
+        , protected BaseUpdation
+        , protected BaseEventation
     {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();

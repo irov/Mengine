@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/Materialable.h"
 
 #include "Kernel/ResourceImage.h"
@@ -38,7 +39,8 @@ namespace Mengine
     class Landscape2D
         : public Node
         , public Materialable
-        , private BaseRender
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

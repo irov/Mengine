@@ -13,8 +13,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceDazzleEffect
         : public Resource
-        , private BaseContent
         , public UnknownResourceDazzleEffectInterface
+        , protected BaseContent        
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();

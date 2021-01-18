@@ -27,8 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Movie2SubComposition
         : public Movie2SubCompositionInterface
-        , private BaseEventation
-        , private BaseAnimation
+        , protected BaseEventation
+        , protected BaseAnimation
     {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();

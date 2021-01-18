@@ -12,8 +12,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceImageData
         : public Resource
-        , private BaseContent
         , public UnknownResourceImageDataInterface
+        , protected BaseContent        
     {
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Resource );

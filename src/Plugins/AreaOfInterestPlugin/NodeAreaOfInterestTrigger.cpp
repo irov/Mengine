@@ -61,7 +61,9 @@ namespace Mengine
     {
         NodeAreaOfInterestActor * actor = _actor.getT<NodeAreaOfInterestActor *>();
 
-        const mt::vec3f & actor_pos = actor->getWorldPosition();
+        TransformationInterface * actorTransformation = actor->getTransformation();
+
+        const mt::vec3f & actor_pos = actorTransformation->getWorldPosition();
 
         const mt::vec3f & trigger_pos = this->getWorldPosition();
 

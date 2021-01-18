@@ -26,7 +26,9 @@ namespace Mengine
             debugColor = 0xFFFF0000;
         }
 
-        const mt::mat4f & wm = _node->getWorldMatrix();
+        const TransformationInterface * transformation = _node->getTransformation();
+
+        const mt::mat4f & wm = transformation->getWorldMatrix();
 
         float radius = _node->getRadius();
 

@@ -2,7 +2,7 @@
 
 #include "GOAP/TaskInterface.h"
 
-#include "Kernel/Transformation.h"
+#include "Kernel/Transformable.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Document.h"
 
@@ -12,7 +12,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationRotateX( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
+        TaskTransformationRotateX( GOAP::Allocator * _allocator, const TransformablePtr & _transformable, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
         ~TaskTransformationRotateX() override;
 
     protected:
@@ -21,7 +21,7 @@ namespace Mengine
         void _onFinally() override;
 
     protected:
-        TransformationPtr m_transformation;
+        TransformablePtr m_transformable;
         AffectorablePtr m_affectorable;
 
         float m_to;

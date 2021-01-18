@@ -10,6 +10,7 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -58,16 +59,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Movie
         : public Node
-        , private BaseEventation
-        , private BaseAnimation
-        , private BaseUpdation
-        , private BaseRender
+        , protected BaseEventation
+        , protected BaseAnimation
+        , protected BaseUpdation
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
         DECLARE_EVENTABLE();
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Movie();

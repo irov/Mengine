@@ -670,16 +670,18 @@ namespace Mengine
         m_outgoingPackets.emplace_back( _packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeTransformation( const TransformablePtr & _transformable, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Transformation" );
 
-        Detail::serializeNodeProp( _transformation->getLocalPosition(), "position", xmlNode );
-        Detail::serializeNodeProp( _transformation->getLocalOrigin(), "origin", xmlNode );
-        Detail::serializeNodeProp( _transformation->getLocalSkew(), "skew", xmlNode );
-        Detail::serializeNodeProp( _transformation->getLocalScale(), "scale", xmlNode );
-        Detail::serializeNodeProp( _transformation->getLocalOrientation(), "orientation", xmlNode );
-        Detail::serializeNodeProp( _transformation->getWorldPosition(), "worldPosition", xmlNode );
+        const TransformationInterface * transformation = _transformable->getTransformation();
+
+        Detail::serializeNodeProp( transformation->getLocalPosition(), "position", xmlNode );
+        Detail::serializeNodeProp( transformation->getLocalOrigin(), "origin", xmlNode );
+        Detail::serializeNodeProp( transformation->getLocalSkew(), "skew", xmlNode );
+        Detail::serializeNodeProp( transformation->getLocalScale(), "scale", xmlNode );
+        Detail::serializeNodeProp( transformation->getLocalOrientation(), "orientation", xmlNode );
+        Detail::serializeNodeProp( transformation->getWorldPosition(), "worldPosition", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
@@ -1515,29 +1517,31 @@ namespace Mengine
 
             pugi::xml_node transformationNode = _xmlNode.child( "Transformation" );
 
-            Detail::deserializeNodeProp<mt::vec3f>( "position", transformationNode, [node]( const mt::vec3f & _value )
+            TransformationInterface * transformation = node->getTransformation();
+
+            Detail::deserializeNodeProp<mt::vec3f>( "position", transformationNode, [transformation]( const mt::vec3f & _value )
             {
-                node->setLocalPosition( _value );
+                transformation->setLocalPosition( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec3f>( "origin", transformationNode, [node]( const mt::vec3f & _value )
+            Detail::deserializeNodeProp<mt::vec3f>( "origin", transformationNode, [transformation]( const mt::vec3f & _value )
             {
-                node->setLocalOrigin( _value );
+                transformation->setLocalOrigin( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec2f>( "skew", transformationNode, [node]( const mt::vec2f & _value )
+            Detail::deserializeNodeProp<mt::vec2f>( "skew", transformationNode, [transformation]( const mt::vec2f & _value )
             {
-                node->setLocalSkew( _value );
+                transformation->setLocalSkew( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec3f>( "scale", transformationNode, [node]( const mt::vec3f & _value )
+            Detail::deserializeNodeProp<mt::vec3f>( "scale", transformationNode, [transformation]( const mt::vec3f & _value )
             {
-                node->setLocalScale( _value );
+                transformation->setLocalScale( _value );
             } );
 
-            Detail::deserializeNodeProp<mt::vec3f>( "orientation", transformationNode, [node]( const mt::vec3f & _value )
+            Detail::deserializeNodeProp<mt::vec3f>( "orientation", transformationNode, [transformation]( const mt::vec3f & _value )
             {
-                node->setLocalOrientation( _value );
+                transformation->setLocalOrientation( _value );
             } );
 
             pugi::xml_node renderNode = _xmlNode.child( "Render" );

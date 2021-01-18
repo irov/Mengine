@@ -64,7 +64,9 @@ namespace Mengine
 
             const mt::vec3f & ap = resourceMovie->getAnchorPoint();
 
-            const mt::mat4f & wm = _movie->getWorldMatrix();
+            const TransformationInterface * transformation = _movie->getTransformation();
+
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             mt::vec3f wap;
             mt::mul_v3_v3_m4( wap, ap, wm );
@@ -672,7 +674,9 @@ namespace Mengine
 
             const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-            const mt::mat4f & wm = _movie->getWorldMatrix();
+            const TransformationInterface * transformation = _movie->getTransformation();
+
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             pybind::list py_path( _kernel, indexCount );
 
@@ -734,7 +738,9 @@ namespace Mengine
 
             const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-            const mt::mat4f & wm = _movie->getWorldMatrix();
+            const TransformationInterface * transformation = _movie->getTransformation();
+
+            const mt::mat4f & wm = transformation->getWorldMatrix();
 
             pybind::list py_path( _kernel, indexCount );
 
@@ -771,7 +777,9 @@ namespace Mengine
                 return mt::vec3f( 0.f, 0.f, 0.f );
             }
 
-            const mt::vec3f & wp = node->getWorldPosition();
+            const TransformationInterface * transformation = node->getTransformation();
+
+            const mt::vec3f & wp = transformation->getWorldPosition();
 
             return wp;
         }
@@ -798,12 +806,16 @@ namespace Mengine
 
             const mt::vec3f & ap = resourceMovie->getAnchorPoint();
 
-            const mt::mat4f & wm = _movie->getWorldMatrix();
+            const TransformationInterface * movieTransformation = _movie->getTransformation();
+
+            const mt::mat4f & wm = movieTransformation->getWorldMatrix();
 
             mt::vec3f wap;
             mt::mul_v3_v3_m4( wap, ap, wm );
 
-            const mt::vec3f & wp = node->getWorldPosition();
+            const TransformationInterface * nodeTransformation = node->getTransformation();
+
+            const mt::vec3f & wp = nodeTransformation->getWorldPosition();
 
             mt::vec3f sop = wp - wap;
 

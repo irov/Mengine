@@ -354,8 +354,8 @@ namespace Mengine
                         , _child->isActivate() ? _child->isEnable() ? "+" : "-" : "#"
                         , _child->getName().c_str()
                         , _child->getType().c_str()
-                        , _child->getWorldPosition().x
-                        , _child->getWorldPosition().y
+                        , _child->getTransformation()->getWorldPosition().x
+                        , _child->getTransformation()->getWorldPosition().y
                         , color.getA()
                     );
 
@@ -617,7 +617,9 @@ namespace Mengine
                     return bb;
                 }
 
-                const mt::mat4f & wm = _hotspotPolygon->getWorldMatrix();
+                const TransformationInterface * transformation = _hotspotPolygon->getTransformation();
+
+                const mt::mat4f & wm = transformation->getWorldMatrix();
 
                 for( const mt::vec2f & v : points )
                 {
@@ -2984,7 +2986,9 @@ namespace Mengine
                         ->getRenderCamera();
                 }
 
-                const mt::mat4f & wm = _node->getWorldMatrix();
+                const TransformationInterface * transformation = _node->getTransformation();
+
+                const mt::mat4f & wm = transformation->getWorldMatrix();
 
                 mt::vec2f screen;
                 camera->fromWorldToScreenPosition( wm, &screen );

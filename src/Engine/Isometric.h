@@ -7,7 +7,7 @@ namespace Mengine
 {
     class Isometric
         : public Node
-        , private BaseUpdation
+        , protected BaseUpdation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();

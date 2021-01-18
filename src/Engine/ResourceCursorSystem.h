@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceCursorSystem
         : public ResourceCursor
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_VISITABLE( ResourceCursor );
         DECLARE_CONTENTABLE();

@@ -10,7 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceFile
         : public Resource
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

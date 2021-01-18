@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMusic
         : public Resource
-        , private BaseContent
+        , protected BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

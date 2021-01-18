@@ -40,7 +40,7 @@ namespace Mengine
         mt::vec2f new_skew = m_skew;
         mt::vec3f new_orientation = m_orientation + mt::vec3f( angle, 0.f, 0.f );
 
-        Transformation::makeLocalMatrix( &m_localMatrix, TRANSFORMATION_INVALIDATE_ALL, new_position, new_origin, new_scale, new_skew, new_orientation );
+        BaseTransformation::makeLocalMatrix( &m_localMatrix, TRANSFORMATION_INVALIDATE_ALL, new_position, new_origin, new_scale, new_skew, new_orientation );
 
         m_transformationFlag = TRANSFORMATION_INVALIDATE_ALL;
     }

@@ -4,7 +4,7 @@
 
 #include "TransformationRotateMode.h"
 
-#include "Kernel/Transformation.h"
+#include "Kernel/Transformable.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Document.h"
 
@@ -15,7 +15,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationRotateYTime( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc );
+        TaskTransformationRotateYTime( GOAP::Allocator * _allocator, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc );
         ~TaskTransformationRotateYTime() override;
 
     protected:
@@ -24,7 +24,7 @@ namespace Mengine
         void _onFinally() override;
 
     protected:
-        TransformationPtr m_transformation;
+        TransformablePtr m_transformable;
         AffectorablePtr m_affectorable;
         EasingInterfacePtr m_easing;
 

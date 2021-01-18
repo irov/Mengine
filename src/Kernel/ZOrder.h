@@ -11,8 +11,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ZOrder
         : public Node
-        , private BaseRender
-        , private DummyPicker
+        , protected BaseRender
+        , protected DummyPicker
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

@@ -1,5 +1,7 @@
 #include "Isometric.h"
 
+#include "Interface/TransformationInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -18,8 +20,11 @@ namespace Mengine
         public:
             bool operator() ( const NodePtr & _left, const NodePtr & _right ) const
             {
-                const mt::vec3f & l = _left->getLocalPosition();
-                const mt::vec3f & r = _right->getLocalPosition();
+                TransformationInterface * leftTransformation = _left->getTransformation();
+                TransformationInterface * rigthTransformation = _right->getTransformation();
+
+                const mt::vec3f & l = leftTransformation->getLocalPosition();
+                const mt::vec3f & r = rigthTransformation->getLocalPosition();
 
                 float less_y = l.y - r.y;
                 if( less_y < 0.1f && less_y > -0.1f )

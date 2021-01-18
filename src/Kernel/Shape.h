@@ -3,6 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/Surface.h"
 
 namespace Mengine
@@ -10,12 +11,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Shape
         : public Node
-        , private BaseUpdation
-        , private BaseRender
+        , protected BaseUpdation
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Shape();

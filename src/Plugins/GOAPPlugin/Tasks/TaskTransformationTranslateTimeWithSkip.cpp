@@ -1,5 +1,7 @@
 #include "TaskTransformationTranslateTimeWithSkip.h"
 
+#include "Interface/TransformationInterface.h"
+
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
 
@@ -14,9 +16,9 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationTranslateTimeWithSkipAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
+            TaskTransformationTranslateTimeWithSkipAffector( GOAP::NodeInterface * _node, const TransformablePtr & _transformable, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
                 : m_node( _node )
-                , m_transformation( _transformation )
+                , m_transformable( _transformable )
                 , m_from( _from )
                 , m_to( _to )
                 , m_progress( 0.f )
@@ -31,6 +33,8 @@ namespace Mengine
         public:
             bool _affect( const UpdateContext * _context, float * const _used ) override
             {
+                TransformationInterface * transformation = m_transformable->getTransformation();
+
                 float time = _context->time;
 
                 if( m_progress + time < m_time )
@@ -57,14 +61,14 @@ namespace Mengine
                     mt::vec3f position;
                     mt::linerp_v3( position, m_from, m_to, t_easing );
 
-                    m_transformation->setLocalPosition( position );
+                    transformation->setLocalPosition( position );
 
                     return false;
                 }
 
                 *_used = m_time - m_progress;
 
-                m_transformation->setLocalPosition( m_to );
+                transformation->setLocalPosition( m_to );
 
                 return true;
             }
@@ -80,7 +84,7 @@ namespace Mengine
         protected:
             GOAP::NodeInterfacePtr m_node;
 
-            TransformationPtr m_transformation;
+            TransformablePtr m_transformable;
 
             mt::vec3f m_from;
             mt::vec3f m_to;
@@ -89,9 +93,9 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationTranslateTimeWithSkip::TaskTransformationTranslateTimeWithSkip( GOAP::Allocator * _allocator, const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
+    TaskTransformationTranslateTimeWithSkip::TaskTransformationTranslateTimeWithSkip( GOAP::Allocator * _allocator, const TransformablePtr & _transformable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc )
         : GOAP::TaskInterface( _allocator )
-        , m_transformation( _transformation )
+        , m_transformable( _transformable )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )
@@ -110,9 +114,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskTransformationTranslateTimeWithSkip::_onRun( GOAP::NodeInterface * _node )
     {
-        const mt::vec3f & position = m_transformation->getLocalPosition();
+        TransformationInterface * transformation = m_transformable->getTransformation();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeWithSkipAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformation, position, m_to, m_time );
+        const mt::vec3f & position = transformation->getLocalPosition();
+
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeWithSkipAffector>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), _node, m_transformable, position, m_to, m_time );
 
         affector->setEasing( m_easing );
 
@@ -152,6 +158,6 @@ namespace Mengine
         }
 
         m_affectorable = nullptr;
-        m_transformation = nullptr;
+        m_transformable = nullptr;
     }
 }

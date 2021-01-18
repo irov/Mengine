@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/FixedVertices.h"
 
 #include "ResourceWindow.h"
@@ -14,10 +15,12 @@ namespace Mengine
     class Window
         : public Node
         , public FixedVertices<ResourceWindow_Count * 4>
-        , private BaseRender
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Window();

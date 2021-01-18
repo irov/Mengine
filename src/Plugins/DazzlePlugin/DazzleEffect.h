@@ -9,6 +9,7 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "dazzle/dazzle.hpp"
 
@@ -17,11 +18,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DazzleEffect
         : public Node
-        , private BaseEventation
-        , private BaseUpdation
-        , private BaseRender
-        , private BaseAnimation
         , public UnknownDazzleEffectInterface
+        , protected BaseEventation
+        , protected BaseUpdation
+        , protected BaseRender
+        , protected BaseAnimation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
@@ -29,6 +31,7 @@ namespace Mengine
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         DazzleEffect();
@@ -77,7 +80,7 @@ namespace Mengine
         ResourcePtr m_resourceDazzleEffect;
 
         const dz_service_t * m_service;
-        
+
         dz_instance_t * m_instance;
 
         mutable RenderVertex2D * m_renderVertices;

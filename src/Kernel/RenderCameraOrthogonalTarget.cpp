@@ -44,7 +44,9 @@ namespace Mengine
             return;
         }
 
-        const mt::mat4f & camera_wm = m_camera->getWorldMatrix();
+        Mengine::TransformationInterface * cameraTransformation = m_camera->getTransformation();
+
+        const mt::mat4f & camera_wm = cameraTransformation->getWorldMatrix();
         const Viewport & camera_vp = m_camera->getOrthogonalViewport();
 
         Viewport camera_vpwm;
@@ -84,14 +86,14 @@ namespace Mengine
 
         mt::vec2f way = dir * real_way;
 
-        const mt::vec3f & camera_lp = m_camera->getLocalPosition();
+        const mt::vec3f & camera_lp = cameraTransformation->getLocalPosition();
 
         mt::vec3f new_lp;
         new_lp.x = camera_lp.x + way.x;
         new_lp.y = camera_lp.y + way.y;
         new_lp.z = camera_lp.z;
 
-        m_camera->setLocalPosition( new_lp );
+        cameraTransformation->setLocalPosition( new_lp );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonalTarget::setFixedHorizont( float _horizont )

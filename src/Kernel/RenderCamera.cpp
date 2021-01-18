@@ -46,8 +46,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderCamera::_invalidateWorldMatrix() const
     {
-        Node::_invalidateWorldMatrix();
-
         this->invalidateViewMatrix_();
         this->invalidateProjectionMatrix_();
     }

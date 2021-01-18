@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "Kernel/RenderCameraOrthogonal.h"
 
@@ -9,10 +10,12 @@ namespace Mengine
 {
     class RenderCameraOrthogonalTarget
         : public Node
-        , private BaseUpdation
+        , protected BaseUpdation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         RenderCameraOrthogonalTarget();

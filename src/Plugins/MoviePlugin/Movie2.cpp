@@ -420,8 +420,8 @@ namespace Mengine
 
                 node->setName( layer.name );
 
-                RenderInterface * render = node->getRender();
-                render->setExternalRender( true );
+                RenderInterface * nodeRender = node->getRender();
+                nodeRender->setExternalRender( true );
 
                 node->setTextId( layer.name );
                 node->setTextAliasEnvironment( m_aliasEnvironment );
@@ -438,7 +438,9 @@ namespace Mengine
                 matrixProxy->setName( layer.name );
 
                 matrixProxy->setProxyMatrix( layer.matrix );
-                matrixProxy->setLocalColor( layer.color );
+
+                RenderInterface * matrixProxyRender = matrixProxy->getRender();
+                matrixProxyRender->setLocalColor( layer.color );
 
                 matrixProxy->addChild( node );
 
@@ -455,8 +457,8 @@ namespace Mengine
 
                 node->setName( layer.name );
 
-                RenderInterface * render = node->getRender();
-                render->setExternalRender( true );
+                RenderInterface * nodeRender = node->getRender();
+                nodeRender->setExternalRender( true );
 
                 const ConstString & movieName = this->getName();
                 node->setMovieName( movieName );
@@ -471,7 +473,9 @@ namespace Mengine
                 matrixProxy->setName( layer.name );
 
                 matrixProxy->setProxyMatrix( layer.matrix );
-                matrixProxy->setLocalColor( layer.color );
+
+                RenderInterface * matrixProxyRender = matrixProxy->getRender();
+                matrixProxyRender->setLocalColor( layer.color );
 
                 matrixProxy->addChild( node );
 
@@ -502,7 +506,9 @@ namespace Mengine
                 matrixProxy->setName( layer.name );
 
                 matrixProxy->setProxyMatrix( layer.matrix );
-                matrixProxy->setLocalColor( layer.color );
+
+                RenderInterface * matrixProxyRender = matrixProxy->getRender();
+                matrixProxyRender->setLocalColor( layer.color );
 
                 matrixProxy->addChild( node );
 
@@ -536,7 +542,9 @@ namespace Mengine
                 matrixProxy->setName( layer.name );
 
                 matrixProxy->setProxyMatrix( layer.matrix );
-                matrixProxy->setLocalColor( layer.color );
+
+                RenderInterface * matrixProxyRender = matrixProxy->getRender();
+                matrixProxyRender->setLocalColor( layer.color );
 
                 matrixProxy->addChild( node );
 
@@ -596,7 +604,9 @@ namespace Mengine
                 matrixProxy->setName( layer.name );
 
                 matrixProxy->setProxyMatrix( layer.matrix );
-                matrixProxy->setLocalColor( layer.color );
+
+                RenderInterface * matrixProxyRender = matrixProxy->getRender();
+                matrixProxyRender->setLocalColor( layer.color );
 
                 matrixProxy->addChild( node );
 
@@ -1163,7 +1173,9 @@ namespace Mengine
 
             if( _immutable_color == AE_FALSE )
             {
-                matrixProxy->setLocalColorRGBA( _color.r, _color.g, _color.b, _opacity );
+                RenderInterface * render = matrixProxy->getRender();
+
+                render->setLocalColorRGBA( _color.r, _color.g, _color.b, _opacity );
             }
         }
     }
@@ -2000,17 +2012,19 @@ namespace Mengine
 
         Layer * parent_layer = Helper::findParentNodeT<Layer *>( m2 );
 
+        TransformationInterface * parent_layer_transformation = parent_layer->getTransformation();
+
         mt::vec3f anchor_point;
         anchor_point.from_f2( _callbackData->anchor_point, 0.f );
-        parent_layer->setLocalOrigin( anchor_point );
+        parent_layer_transformation->setLocalOrigin( anchor_point );
 
         mt::vec3f position;
         position.from_f2( _callbackData->position, 0.f );
-        parent_layer->setLocalPosition( position );
+        parent_layer_transformation->setLocalPosition( position );
 
         mt::vec3f scale;
         scale.from_f2( _callbackData->scale, 1.f );
-        parent_layer->setLocalScale( scale );
+        parent_layer_transformation->setLocalScale( scale );
 
         mt::quatf q;
         q.x = 0.f;
@@ -2019,7 +2033,7 @@ namespace Mengine
         q.w = _callbackData->quaternion[1];
         float angle = quatzw_to_angle( q );
 
-        parent_layer->setLocalOrientationX( angle );
+        parent_layer_transformation->setLocalOrientationX( angle );
 
         Color color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
@@ -2037,17 +2051,19 @@ namespace Mengine
 
         Layer * parent_layer = Helper::reinterpretNodeCast<Layer *>( _callbackData->scene_effect_userdata );
 
+        TransformationInterface * parent_layer_transformation = parent_layer->getTransformation();
+
         mt::vec3f anchor_point;
         anchor_point.from_f2( _callbackData->anchor_point, 0.f );
-        parent_layer->setLocalOrigin( anchor_point );
+        parent_layer_transformation->setLocalOrigin( anchor_point );
 
         mt::vec3f position;
         position.from_f2( _callbackData->position, 0.f );
-        parent_layer->setLocalPosition( position );
+        parent_layer_transformation->setLocalPosition( position );
 
         mt::vec3f scale;
         scale.from_f2( _callbackData->scale, 1.f );
-        parent_layer->setLocalScale( scale );
+        parent_layer_transformation->setLocalScale( scale );
 
         mt::quatf q;
         q.x = 0.f;
@@ -2056,7 +2072,7 @@ namespace Mengine
         q.w = _callbackData->quaternion[1];
         float angle = quatzw_to_angle( q );
 
-        parent_layer->setLocalOrientationX( angle );
+        parent_layer_transformation->setLocalOrientationX( angle );
 
         Color color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 

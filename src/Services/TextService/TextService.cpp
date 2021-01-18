@@ -100,7 +100,7 @@ namespace Mengine
     {
     public:
         TextManagerLoadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
-            : m_textManager( _textManager )
+            : m_textService( _textManager )
             , m_fileGroup( _fileGroup )
             , m_filePath( _filePath )
 #if MENGINE_DOCUMENT_ENABLE
@@ -391,9 +391,21 @@ namespace Mengine
                 );
             }
 
-            Tags tags;
+            TextFontInterfacePtr font;
 
-            if( m_textManager->addTextEntry( textKey, text_str_value, text_str_size, tags, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
+            if( fontName.empty() == false )
+            {
+                if( m_textService->existFont( fontName, &font ) == false )
+                {
+                    LOGGER_ERROR( "text '%s' not found font '%s'"
+                        , textKey.c_str()
+                        , fontName.c_str()
+                    );
+                }
+            }
+
+            Tags tags;
+            if( m_textService->addTextEntry( textKey, text_str_value, text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
                     , m_fileGroup->getName().c_str()
@@ -404,7 +416,7 @@ namespace Mengine
         }
 
     protected:
-        TextService * m_textManager;
+        TextService * m_textService;
 
         const FileGroupInterfacePtr & m_fileGroup;
         const FilePath & m_filePath;
@@ -681,7 +693,17 @@ namespace Mengine
         ConstString defaultFontName;
         if( config->hasValue( "GAME_FONTS", "Default", &defaultFontName ) == true )
         {
-            m_defaultFontName = defaultFontName;
+            TextFontInterfacePtr defaultFont;
+            if( this->existFont( defaultFontName, &defaultFont ) == false )
+            {
+                LOGGER_ERROR( "not found default font '%s'"
+                    , defaultFontName.c_str()
+                );
+
+                return false;
+            }
+
+            m_defaultFont = defaultFont;
         }
 
         return true;
@@ -738,7 +760,7 @@ namespace Mengine
         , const Char * _text
         , const size_t _size
         , const Tags & _tags
-        , const ConstString & _font
+        , const TextFontInterfacePtr & _font
         , const Color & _colorFont
         , float _lineOffset
         , float _charOffset
@@ -769,7 +791,7 @@ namespace Mengine
         , const Char * _text
         , const size_t _size
         , const Tags & _tags
-        , const ConstString & _fontName
+        , const TextFontInterfacePtr & _font
         , const Color & _colorFont
         , float _lineOffset
         , float _charOffset
@@ -798,7 +820,7 @@ namespace Mengine
                 return false;
             }
 
-            if( textEntry_has->initialize( _key, _text, _size, _tags, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+            if( textEntry_has->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
             {
                 LOGGER_ERROR( "invalid initialize '%s'"
                     , _key.c_str()
@@ -810,7 +832,7 @@ namespace Mengine
             return true;
         }
 
-        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
+        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry );
 
@@ -1018,9 +1040,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextService::getDefaultFontName() const
+    const TextFontInterfacePtr & TextService::getDefaultFont() const
     {
-        return m_defaultFontName;
+        return m_defaultFont;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::validate() const
@@ -1029,43 +1051,12 @@ namespace Mengine
 
         bool successful = true;
 
-        if( m_defaultFontName.empty() == false )
-        {
-            TextFontInterfacePtr font;
-            if( this->existFont( m_defaultFontName, &font ) == false )
-            {
-                LOGGER_ERROR( "not found default font '%s'"
-                    , m_defaultFontName.c_str()
-                );
-
-                successful = false;
-            }
-        }
-
         for( const HashtableTextEntry::value_type & value : m_texts )
         {
             const TextEntryInterfacePtr & text = value.element;
 
             const ConstString & textId = text->getKey();
-            const ConstString & fontName = text->getFontName();
-
-            if( fontName.empty() == true )
-            {
-                continue;
-            }
-
-            TextFontInterfacePtr font;
-            if( this->existFont( fontName, &font ) == false )
-            {
-                LOGGER_ERROR( "not found font '%s' for text '%s'"
-                    , fontName.c_str()
-                    , textId.c_str()
-                );
-
-                successful = false;
-
-                continue;
-            }
+            const TextFontInterfacePtr & font = text->getFont();
 
             size_t text_size;
             const Char * text_value = text->getValue( &text_size );
@@ -1074,7 +1065,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "text '%s' font name '%s' invalid"
                     , textId.c_str()
-                    , fontName.c_str()
+                    , font->getName().c_str()
                 );
 
                 successful = false;

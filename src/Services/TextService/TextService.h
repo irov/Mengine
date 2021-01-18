@@ -68,14 +68,14 @@ namespace Mengine
         bool validate() const override;
 
     public:
-        const ConstString & getDefaultFontName() const override;
+        const TextFontInterfacePtr & getDefaultFont() const override;
 
     public:
         TextEntryInterfacePtr createTextEntry( const ConstString & _textId
             , const Char * _text
             , size_t _size
             , const Tags & _tags
-            , const ConstString & _font
+            , const TextFontInterfacePtr & _font
             , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
@@ -91,7 +91,7 @@ namespace Mengine
             , const Char * _text
             , size_t _size
             , const Tags & _tags
-            , const ConstString & _fontName
+            , const TextFontInterfacePtr & _font
             , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
@@ -131,7 +131,7 @@ namespace Mengine
         typedef Vector<TextLocalePackagePtr> VectorTextLocalePackages;
         VectorTextLocalePackages m_packages;
 
-        ConstString m_defaultFontName;
+        TextFontInterfacePtr m_defaultFont;
 
         FactoryPtr m_factoryTextEntry;
         FactoryPtr m_factoryTextLocalePackage;

@@ -94,8 +94,8 @@ namespace Mengine
         bool updateTextCache_( U32String * const _cacheText ) const;
 
     public:
-        void setFontName( const ConstString & _fontName );
-        const ConstString & getFontName() const;
+        void setFont( const TextFontInterfacePtr & _font );
+        const TextFontInterfacePtr & getFont() const;
 
     public:
         float getFontHeight() const;
@@ -212,7 +212,7 @@ namespace Mengine
         void updateTextEntry_() const;
 
     public:
-        const ConstString & calcFontName() const;
+        const TextFontInterfacePtr & calcFont() const;
         float calcLineOffset() const;
         float calcCharOffset() const;
         float calcMaxLength() const;
@@ -254,7 +254,7 @@ namespace Mengine
         float m_maxLength;
         mutable float m_autoScaleFactor;
 
-        ConstString m_fontName;
+        TextFontInterfacePtr m_font;
 
         float m_lineOffset;
         float m_charOffset;

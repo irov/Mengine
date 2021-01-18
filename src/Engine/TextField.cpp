@@ -564,35 +564,31 @@ namespace Mengine
         return fontHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setFontName( const ConstString & _fontName )
+    void TextField::setFont( const TextFontInterfacePtr & _font )
     {
-#ifdef MENGINE_DEBUG
-        if( _fontName.empty() == false )
+        if( m_font == _font )
         {
-            if( TEXT_SERVICE()
-                ->existFont( _fontName, nullptr ) == false )
-            {
-                LOGGER_ERROR( "'%s' not found font '%s'"
-                    , this->getName().c_str()
-                    , _fontName.c_str()
-                );
-
-                return;
-            }
+            return;
         }
-#endif
 
-        m_fontName = _fontName;
+        m_font = _font;
 
-        m_fontParams |= EFP_FONT;
+        if( m_font != nullptr )
+        {
+            m_fontParams |= EFP_FONT;
+        }
+        else
+        {
+            m_fontParams &= ~EFP_FONT;
+        }        
 
         this->invalidateFont();
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextField::getFontName() const
+    const TextFontInterfacePtr & TextField::getFont() const
     {
-        return m_fontName;
+        return m_font;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setFontColor( const Color & _color )
@@ -1116,13 +1112,11 @@ namespace Mengine
     {
         m_invalidateFont = false;
 
-        const ConstString & fontName = this->calcFontName();
+        const TextFontInterfacePtr & font = this->calcFont();
 
         if( m_totalFont != nullptr )
         {
-            const ConstString & currentFontName = m_totalFont->getName();
-
-            if( fontName == currentFontName )
+            if( font == m_totalFont )
             {
                 return true;
             }
@@ -1133,7 +1127,7 @@ namespace Mengine
             }
         }
 
-        if( fontName.empty() == true )
+        if( font == nullptr )
         {
             LOGGER_ERROR( "font '%s' invalid set font (no default?)"
                 , this->getName().c_str()
@@ -1142,19 +1136,11 @@ namespace Mengine
             return false;
         }
 
-        const TextFontInterfacePtr & font = TEXT_SERVICE()
-            ->getFont( fontName );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( font, "font '%s' can't found font '%s'"
-            , this->getName().c_str()
-            , fontName.c_str()
-        );
-
         if( font->compileFont() == false )
         {
             LOGGER_ERROR( "font '%s' invalid compile font '%s'"
                 , this->getName().c_str()
-                , fontName.c_str()
+                , font->getName().c_str()
             );
 
             return false;
@@ -1191,7 +1177,7 @@ namespace Mengine
         m_totalTextEntry = textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextField::calcFontName() const
+    const TextFontInterfacePtr & TextField::calcFont() const
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
@@ -1201,21 +1187,21 @@ namespace Mengine
 
             if( params & EFP_FONT )
             {
-                const ConstString & fontName = textEntry->getFontName();
+                const TextFontInterfacePtr & font = textEntry->getFont();
 
-                return fontName;
+                return font;
             }
         }
 
-        if( m_fontName.empty() == true )
+        if( m_font == nullptr )
         {
-            const ConstString & fontName = TEXT_SERVICE()
-                ->getDefaultFontName();
+            const TextFontInterfacePtr & defaultFont = TEXT_SERVICE()
+                ->getDefaultFont();
 
-            return fontName;
+            return defaultFont;
         }
 
-        return m_fontName;
+        return m_font;
     }
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcLineOffset() const

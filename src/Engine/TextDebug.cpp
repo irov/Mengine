@@ -139,27 +139,19 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const ConstString & _fontName, const Color & _color, const DocumentPtr & _doc, const Char * _format, ... )
+        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, const Color & _color, const DocumentPtr & _doc, const Char * _format, ... )
         {
-            ConstString fontName = _fontName;
-
-            if( _fontName.empty() == true )
-            {
-                fontName = TEXT_SERVICE()
-                    ->getDefaultFontName();
-
-                if( fontName.empty() == true )
-                {
-                    return;
-                }
-            }
-
-            const TextFontInterfacePtr & font = TEXT_SERVICE()
-                ->getFont( fontName );
+            TextFontInterfacePtr font = _font;
 
             if( font == nullptr )
             {
-                return;
+                font = TEXT_SERVICE()
+                    ->getDefaultFont();
+
+                if( font == nullptr )
+                {
+                    return;
+                }
             }
 
             if( font->compileFont() == false )

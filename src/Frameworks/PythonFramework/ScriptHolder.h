@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "pybind/pybind.hpp"
 
@@ -31,9 +32,11 @@ namespace Mengine
     class ScriptHolder
         : public Node
         , protected BaseEventation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         ScriptHolder();
@@ -46,4 +49,7 @@ namespace Mengine
     protected:
         pybind::object m_script;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<ScriptHolder> ScriptHolderPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

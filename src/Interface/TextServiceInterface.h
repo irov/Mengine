@@ -29,7 +29,7 @@ namespace Mengine
             , const Char * _text
             , size_t _size
             , const Tags & _tags
-            , const ConstString & _font
+            , const TextFontInterfacePtr & _font
             , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
@@ -45,7 +45,7 @@ namespace Mengine
             , const Char * _text
             , size_t _size
             , const Tags & _tags
-            , const ConstString & _font
+            , const TextFontInterfacePtr & _font
             , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
@@ -84,7 +84,7 @@ namespace Mengine
         virtual void foreachFonts( const LambdaTextFont & _lambda ) = 0;
 
     public:
-        virtual const ConstString & getDefaultFontName() const = 0;
+        virtual const TextFontInterfacePtr & getDefaultFont() const = 0;
 
     public:
         virtual bool directFontCompile( const ConstString & _name ) = 0;

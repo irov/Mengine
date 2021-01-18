@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/TextFontInterface.h"
 
 #include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
@@ -39,7 +40,7 @@ namespace Mengine
         virtual const Tags & getTags() const = 0;
 
     public:
-        virtual const ConstString & getFontName() const = 0;
+        virtual const TextFontInterfacePtr & getFont() const = 0;
         virtual const Color & getColorFont() const = 0;
         virtual float getLineOffset() const = 0;
         virtual float getCharOffset() const = 0;

@@ -15,6 +15,7 @@
 #include "Interface/TextFontInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "Kernel/Reference.h"
 #include "Kernel/Eventable.h"
@@ -255,6 +256,23 @@ namespace Mengine
                 }
 
                 return ws_args;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_TextField_setFontName( TextField * _textField, const ConstString & _fontName )
+            {
+                const TextFontInterfacePtr & font = TEXT_SERVICE()
+                    ->getFont( _fontName );
+
+                _textField->setFont( font );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            const ConstString & s_TextField_getFontName( TextField * _textField )
+            {
+                const TextFontInterfacePtr & font = _textField->getFont();
+
+                const ConstString & fontName = font->getName();
+
+                return fontName;
             }
             //////////////////////////////////////////////////////////////////////////
             mt::box2f s_BoundingBox_getBoundingBox( BoundingBox * _boundingBox )
@@ -863,15 +881,36 @@ namespace Mengine
             .def( "isFixedHorizont", &RenderCameraOrthogonalTarget::isFixedHorizont )
             ;
 
-        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface>>( _kernel, "RenderScissorInterface", false )
+        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface>>( _kernel, "RenderScissor", false )
             ;
 
         {
-
-
             pybind::interface_<SoundEmitter, pybind::bases<Node>>( _kernel, "SoundEmitter", false )
                 .def( "setSurfaceSound", &SoundEmitter::setSurfaceSound )
                 .def( "getSurfaceSound", &SoundEmitter::getSurfaceSound )
+                ;
+
+            pybind::interface_<TextFontInterface, pybind::bases<ServantInterface>>( _kernel, "TextFontInterface" )
+                .def( "setName", &TextFontInterface::setName )
+                .def( "getName", &TextFontInterface::getName )
+                .def( "setType", &TextFontInterface::setType )
+                .def( "getType", &TextFontInterface::getType )
+                .def( "setHeight", &TextFontInterface::setHeight )
+                .def( "getHeight", &TextFontInterface::getHeight )
+                .def( "setFontColor", &TextFontInterface::setFontColor )
+                .def( "getFontColor", &TextFontInterface::getFontColor )
+                .def( "setLineOffset", &TextFontInterface::setLineOffset )
+                .def( "getLineOffset", &TextFontInterface::getLineOffset )
+                .def( "setCharOffset", &TextFontInterface::setCharOffset )
+                .def( "getCharOffset", &TextFontInterface::getCharOffset )
+                .def( "initialize", &TextFontInterface::initialize )
+                .def( "finalize", &TextFontInterface::finalize )
+                .def( "getFontAscent", &TextFontInterface::getFontAscent )
+                .def( "getFontDescent", &TextFontInterface::getFontDescent )
+                .def( "getFontHeight", &TextFontInterface::getFontHeight )
+                .def( "getFontBearingYA", &TextFontInterface::getFontBearingYA )
+                .def( "getFontSpacing", &TextFontInterface::getFontSpacing )
+                .def( "getFontPremultiply", &TextFontInterface::getFontPremultiply )
                 ;
 
             pybind::interface_<TextField, pybind::bases<Node>>( _kernel, "TextField", false )
@@ -890,8 +929,10 @@ namespace Mengine
                 .def_deprecated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )
                 .def_deprecated( "getAlphaHeight", &TextField::getFontHeight, "use getFontHeight" )
                 .def( "getFontHeight", &TextField::getFontHeight )
-                .def( "setFontName", &TextField::setFontName )
-                .def( "getFontName", &TextField::getFontName )
+                .def( "setFont", &TextField::setFont )
+                .def( "getFont", &TextField::getFont )
+                .def_proxy_static( "setFontName", nodeScriptMethod, &NodeScriptMethod::s_TextField_setFontName )
+                .def_proxy_static( "getFontName", nodeScriptMethod, &NodeScriptMethod::s_TextField_getFontName )
 
                 .def( "setWrap", &TextField::setWrap )
                 .def( "getWrap", &TextField::getWrap )

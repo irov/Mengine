@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseTransformation.h"
 #include "Kernel/Surface.h"
-
 #include "Kernel/Soundable.h"
 
 namespace Mengine
@@ -12,8 +12,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SoundEmitter
         : public Node
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_TRANSFORMABLE();
 
     public:
         SoundEmitter();

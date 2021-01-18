@@ -12,6 +12,7 @@
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
@@ -625,7 +626,10 @@ namespace Mengine
             mt::vec2f scale;
             content.calcScale( resolution, &scale );
 
-            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FORWARD, "%s"
+            const TextFontInterfacePtr & font = TEXT_SERVICE()
+                ->getFont( STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ) );
+
+            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, font, Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FORWARD, "%s"
                 , text.c_str()
             );
         }

@@ -16,6 +16,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
@@ -1167,7 +1168,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_directFontCompile( const ConstString & _fontName )
             {
-                bool successful = TEXT_SERVICE()
+                bool successful = FONT_SERVICE()
                     ->directFontCompile( _fontName );
 
                 return successful;
@@ -1175,7 +1176,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_directFontRelease( const ConstString & _fontName )
             {
-                bool successful = TEXT_SERVICE()
+                bool successful = FONT_SERVICE()
                     ->directFontRelease( _fontName );
 
                 return successful;
@@ -1728,7 +1729,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_visitFonts( const pybind::object & _cb )
             {
-                TEXT_SERVICE()
+                FONT_SERVICE()
                     ->foreachFonts( [_cb]( const TextFontInterfacePtr & _font )
                 {
                     const ConstString & name = _font->getName();
@@ -1741,7 +1742,7 @@ namespace Mengine
             {
                 pybind::list l( _kernel );
 
-                TEXT_SERVICE()
+                FONT_SERVICE()
                     ->foreachFonts( [&l]( const TextFontInterfacePtr & _font )
                 {
                     const ConstString & name = _font->getName();
@@ -1755,7 +1756,7 @@ namespace Mengine
             bool s_hasFont( const ConstString & _fontName )
             {
                 TextFontInterfacePtr font;
-                bool has = TEXT_SERVICE()
+                bool has = FONT_SERVICE()
                     ->existFont( _fontName, &font );
 
                 return has;
@@ -1764,7 +1765,7 @@ namespace Mengine
             bool s_validateFont( const ConstString & _fontName, const String & _text )
             {
                 TextFontInterfacePtr font;
-                if( TEXT_SERVICE()
+                if( FONT_SERVICE()
                     ->existFont( _fontName, &font ) == false )
                 {
                     return false;
@@ -3586,7 +3587,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ConstString s_getDefaultResourceFontName()
             {
-                const TextFontInterfacePtr & defaultResourceFont = TEXT_SERVICE()
+                const TextFontInterfacePtr & defaultResourceFont = FONT_SERVICE()
                     ->getDefaultFont();
 
                 const ConstString & defaultResourceFontName = defaultResourceFont->getName();

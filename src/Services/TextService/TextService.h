@@ -37,18 +37,8 @@ namespace Mengine
         bool unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
-        TextFontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc ) override;
-        bool removeFont( const ConstString & _fontName ) override;
-        bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
-        bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
-
-    public:
         bool hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * const _entry ) const override;
         const TextEntryInterfacePtr & getTextEntry( const ConstString & _textId ) const override;
-
-    public:
-        bool existFont( const ConstString & _fontName, TextFontInterfacePtr * const _font ) const override;
-        const TextFontInterfacePtr & getFont( const ConstString & _fontName ) const override;
 
     public:
         void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) override;
@@ -62,13 +52,7 @@ namespace Mengine
         bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const override;
 
     public:
-        void foreachFonts( const LambdaTextFont & _lambda ) override;
-
-    public:
         bool validate() const override;
-
-    public:
-        const TextFontInterfacePtr & getDefaultFont() const override;
 
     public:
         TextEntryInterfacePtr createTextEntry( const ConstString & _textId
@@ -106,10 +90,6 @@ namespace Mengine
         bool removeTextEntry( const ConstString & _textId ) override;
         void removeTextEntries( const Tags & _tag ) override;
 
-    public:
-        bool directFontCompile( const ConstString & _fontName ) override;
-        bool directFontRelease( const ConstString & _fontName ) override;
-
     protected:
         const VectorU32String & getLineDelims() const override;
 
@@ -117,11 +97,7 @@ namespace Mengine
         typedef Hashtable<ConstString, TextEntryPtr> HashtableTextEntry;
         HashtableTextEntry m_texts;
 
-        typedef Hashtable<ConstString, TextFontInterfacePtr> HashtableTextFont;
-        HashtableTextFont m_fonts;
-
         typedef Pair<ConstString, ConstString> PairAliasKey;
-
         typedef Map<PairAliasKey, ConstString> MapTextAliases;
         MapTextAliases m_aliases;
 

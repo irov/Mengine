@@ -1,6 +1,7 @@
 #include "TextDebug.h"
 
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 
@@ -145,7 +146,7 @@ namespace Mengine
 
             if( font == nullptr )
             {
-                font = TEXT_SERVICE()
+                font = FONT_SERVICE()
                     ->getDefaultFont();
 
                 if( font == nullptr )

@@ -13,6 +13,7 @@
 #include "Interface/SocketSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PlatformInterface.h"
@@ -1622,7 +1623,7 @@ namespace Mengine
                 {
                     TextFontInterfacePtr font;
                     
-                    if( TEXT_SERVICE()
+                    if( FONT_SERVICE()
                         ->existFont( _value, &font ) == false )
                     {
                         return;

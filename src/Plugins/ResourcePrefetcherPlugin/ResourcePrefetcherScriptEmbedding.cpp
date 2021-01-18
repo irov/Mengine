@@ -4,6 +4,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
@@ -137,7 +138,7 @@ namespace Mengine
         {
             PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
-            TEXT_SERVICE()
+            FONT_SERVICE()
                 ->foreachFonts( [&observer]( const TextFontInterfacePtr & _textFont )
             {
                 _textFont->prefetch( observer );
@@ -162,7 +163,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_unfetchFonts()
         {
-            TEXT_SERVICE()
+            FONT_SERVICE()
                 ->foreachFonts( []( const TextFontInterfacePtr & _font )
             {
                 _font->unfetch();

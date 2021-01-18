@@ -1,16 +1,22 @@
 #pragma once
 
-#include "Kernel/BaseRender.h"
 #include "Kernel/Factorable.h"
+#include "Kernel/Renderable.h"
+#include "Kernel/BaseRender.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Layer2D;
-
+    //////////////////////////////////////////////////////////////////////////
     class Layer2DRenderTarget
         : public Factorable
-        , public BaseRender        
+        , public Renderable
+        , protected BaseRender
     {
+    public:
+        DECLARE_RENDERABLE();
+
     public:
         explicit Layer2DRenderTarget( Layer2D * _layer );
         ~Layer2DRenderTarget() override;
@@ -21,4 +27,7 @@ namespace Mengine
     protected:
         Layer2D * m_layer;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Layer2DRenderTarget> Layer2DRenderTargetPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

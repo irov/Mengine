@@ -290,11 +290,11 @@ namespace Mengine
         m_verticesImageMaskWM[2].uv[1] = uv_mask.p2;
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
 
-        RenderInterfacePtr layer2DRenderTarget = Helper::makeFactorableUnique<Layer2DRenderTarget>( MENGINE_DOCUMENT_FACTORABLE, this );
+        Layer2DRenderTargetPtr layer2DRenderTarget = Helper::makeFactorableUnique<Layer2DRenderTarget>( MENGINE_DOCUMENT_FACTORABLE, this );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer2DRenderTarget, "invalid make render target" );
 
-        m_renderTarget = layer2DRenderTarget;
+        m_renderTarget = layer2DRenderTarget->getRender();
 
         m_materialImageMask = material;
 

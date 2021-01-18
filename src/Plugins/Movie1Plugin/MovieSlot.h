@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -9,9 +10,11 @@ namespace Mengine
     class MovieSlot
         : public Node
         , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         MovieSlot();

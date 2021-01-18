@@ -63,7 +63,7 @@ namespace Mengine
 
         float Limit_VideoFrameRate = CONFIG_VALUE( "Limit", "VideoFrameRate", 30.f );
 
-        if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.0 )
+        if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.f )
         {
             LOGGER_ERROR( "resource '%s' group '%s' path '%s' override frame rate %f more that %f"
                 , _resource->getName().c_str()

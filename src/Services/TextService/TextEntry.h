@@ -21,7 +21,7 @@ namespace Mengine
             , const Char * _text
             , size_t _size
             , const Tags & _tags
-            , const ConstString & _font
+            , const TextFontInterfacePtr & _font
             , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
@@ -39,7 +39,7 @@ namespace Mengine
         const Tags & getTags() const override;
 
     public:
-        const ConstString & getFontName() const override;
+        const TextFontInterfacePtr & getFont() const override;
         const Color & getColorFont() const override;
         float getLineOffset() const override;
         float getCharOffset() const override;
@@ -57,7 +57,7 @@ namespace Mengine
 
         Tags m_tags;
 
-        ConstString m_fontName;
+        TextFontInterfacePtr m_font;
 
         Color m_colorFont;
 

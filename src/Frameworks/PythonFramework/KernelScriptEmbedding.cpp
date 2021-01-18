@@ -2244,6 +2244,10 @@ namespace Mengine
             return false;
         }
 
+        pybind::interface_<ServantInterface>( _kernel, "ServantInterface", true )
+            .def_smart_pointer()
+            ;
+
         pybind::interface_<Mixin>( _kernel, "Mixin", true )
             .def_smart_pointer()
             ;

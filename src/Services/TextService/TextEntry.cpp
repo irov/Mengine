@@ -22,7 +22,7 @@ namespace Mengine
         , const Char * _text
         , size_t _size
         , const Tags & _tags
-        , const ConstString & _fontName
+        , const TextFontInterfacePtr & _font
         , const Color & _colorFont
         , float _lineOffset
         , float _charOffset
@@ -45,7 +45,7 @@ namespace Mengine
 
         m_tags = _tags;
 
-        m_fontName = _fontName;
+        m_font = _font;
 
         m_colorFont = _colorFont;
 
@@ -82,9 +82,9 @@ namespace Mengine
         return m_tags;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextEntry::getFontName() const
+    const TextFontInterfacePtr & TextEntry::getFont() const
     {
-        return m_fontName;
+        return m_font;
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & TextEntry::getColorFont() const

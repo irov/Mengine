@@ -755,7 +755,7 @@ namespace Mengine
 
             Detail::serializeNodeProp( fmt, "Text", xmlNode );
 
-            Detail::serializeNodeProp( _textField->calcFontName(), "TotalFontName", xmlNode );
+            Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
             Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
             Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
             Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
@@ -764,7 +764,7 @@ namespace Mengine
             Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
         }
 
-        Detail::serializeNodeProp( _textField->getFontName(), "FontName", xmlNode );
+        Detail::serializeNodeProp( _textField->getFont()->getName(), "FontName", xmlNode );
         Detail::serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );
         Detail::serializeNodeProp( _textField->getLineOffset(), "LineOffset", xmlNode );
         Detail::serializeNodeProp( _textField->getCharOffset(), "CharOffset", xmlNode );
@@ -1620,7 +1620,15 @@ namespace Mengine
 
                 Detail::deserializeNodeProp<ConstString>( "FontName", typeNodeTextField, [textField]( const ConstString & _value )
                 {
-                    textField->setFontName( _value );
+                    TextFontInterfacePtr font;
+                    
+                    if( TEXT_SERVICE()
+                        ->existFont( _value, &font ) == false )
+                    {
+                        return;
+                    }
+
+                    textField->setFont( font );
                 } );
 
                 Detail::deserializeNodeProp<Color>( "FontColor", typeNodeTextField, [textField]( const Color & _value )

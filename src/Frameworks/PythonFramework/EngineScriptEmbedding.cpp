@@ -3586,8 +3586,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ConstString s_getDefaultResourceFontName()
             {
-                const ConstString & defaultResourceFontName = TEXT_SERVICE()
-                    ->getDefaultFontName();
+                const TextFontInterfacePtr & defaultResourceFont = TEXT_SERVICE()
+                    ->getDefaultFont();
+
+                const ConstString & defaultResourceFontName = defaultResourceFont->getName();
 
                 return defaultResourceFontName;
             }

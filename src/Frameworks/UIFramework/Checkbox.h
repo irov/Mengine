@@ -4,6 +4,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -29,9 +30,11 @@ namespace Mengine
     class Checkbox
         : public Node
         , protected BaseEventation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Checkbox();

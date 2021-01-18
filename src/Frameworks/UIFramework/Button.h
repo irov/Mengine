@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "Plugins/GOAPPlugin/GOAPInterface.h"
 
@@ -29,9 +30,11 @@ namespace Mengine
     class Button
         : public Node
         , protected BaseEventation
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Button();

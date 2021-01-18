@@ -40,7 +40,7 @@ namespace Mengine
     {
         NodePtr generateNode( const DocumentPtr & _doc )
         {
-            NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), _doc );
+            NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), _doc );
 
             return node;
         }

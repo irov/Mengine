@@ -1,15 +1,19 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "ResourceMovie.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MovieNodeExtra
         : public Node
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_TRANSFORMABLE();
 
     public:
         MovieNodeExtra();

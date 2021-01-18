@@ -13,8 +13,8 @@ namespace Mengine
 
     class RenderScissor
         : public Node
-        , public RenderScissorInterface
         , public Observable
+        , public RenderScissorInterface        
         , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );

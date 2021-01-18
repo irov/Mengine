@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseTransformation.h"
 
 #include "AreaOfInterestInterface.h"
 
@@ -17,8 +18,10 @@ namespace Mengine
     class NodeAreaOfInterestActor
         : public Node
         , public AreaOfInterestActorProviderInterface
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_TRANSFORMABLE();
 
     public:
         NodeAreaOfInterestActor();

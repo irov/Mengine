@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class HotSpot
         : public Node
         , public InputHandlerInterface

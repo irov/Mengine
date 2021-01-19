@@ -12,6 +12,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../download_template.cmake)
 DOWNLOAD_URL_HASH(boost https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.7z SHA256 3a8b314871646e7404886736273c053278ba71b11347f72d4751411d65d6d1a5)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
 DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
+DOWNLOAD_URL(unity-ads https://github.com/Unity-Technologies/unity-ads-android/releases/download/3.6.0/UnityAds.aar.zip)
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 

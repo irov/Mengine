@@ -296,31 +296,43 @@ dependencies {
 }
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_UNITYADS", true) == true ) {
-    println 'ANDROID_APP_ENABLE_UNITYADS'
+    println 'ANDROID_APP_ENABLE_UNITYADS: TRUE'
 
     dependencies {
         implementation project(':unity-ads')
     }
 }
+else
+{
+    println 'ANDROID_APP_ENABLE_UNITYADS: FALSE'
+}
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_DEVTODEV", true) == true ) {
-    println 'ANDROID_APP_ENABLE_DEVTODEV'
+    println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
 
     dependencies {
         implementation 'com.devtodev:android:1.13'
     }
 }
+else
+{
+    println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
+}
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_FACEBOOK", true) == true ) {
-    println 'ANDROID_APP_ENABLE_FACEBOOK'
+    println 'ANDROID_APP_ENABLE_FACEBOOK: TRUE'
 
     dependencies {
         implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
     }
 }
+else
+{
+    println 'ANDROID_APP_ENABLE_FACEBOOK: FALSE'
+}
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true ) {
-    println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE'
+    println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: TRUE'
 
     dependencies {
         implementation 'com.google.android.gms:play-services-gcm:17.0.0'
@@ -329,9 +341,13 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == tru
 
     apply plugin: 'com.google.gms.google-services'
 }
+else
+{
+    println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: FALSE'
+}
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true ) {
-    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS'
+    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
 
     dependencies {
         implementation platform('com.google.firebase:firebase-bom:26.3.0')
@@ -342,9 +358,13 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) 
 
     apply plugin: 'com.google.firebase.crashlytics'
 }
+else
+{
+    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
+}
 
 if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
-    println 'ANDROID_APP_ENABLE_SENTRY'
+    println 'ANDROID_APP_ENABLE_SENTRY: TRUE'
 
     dependencies {
         implementation 'io.sentry:sentry-android:2.3.1'
@@ -358,4 +378,8 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
         uploadNativeSymbols true
         includeNativeSources true
     }
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_SENTRY: FALSE'
 }

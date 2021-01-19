@@ -768,6 +768,11 @@ namespace Mengine
             const ConstString & textId = text->getKey();
             const TextFontInterfacePtr & font = text->getFont();
 
+            if( font == nullptr )
+            {
+                continue;
+            }
+
             size_t text_size;
             const Char * text_value = text->getValue( &text_size );
 

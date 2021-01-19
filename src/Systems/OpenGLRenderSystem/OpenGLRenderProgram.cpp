@@ -58,6 +58,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::finalize()
     {
+        MENGINE_ASSERTION_FATAL( this->getCompileReference() == 0 );
+
         m_vertexShader = nullptr;
         m_fragmentShader = nullptr;
         m_vertexAttribute = nullptr;
@@ -262,7 +264,7 @@ namespace Mengine
             , m_samplerCount
         );
 
-        int location = m_samplerLocation[_textureInd];
+        GLint location = m_samplerLocation[_textureInd];
 
         GLCALL( glUniform1i, (location, _textureInd) );
 

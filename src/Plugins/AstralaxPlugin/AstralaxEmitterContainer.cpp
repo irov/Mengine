@@ -96,8 +96,7 @@ namespace Mengine
     {
         if( Magic_HasTextures( m_mf ) == true )
         {
-            LOGGER_ERROR( "astralax particle textures are stored within the file"
-            );
+            LOGGER_ERROR( "astralax particle textures are stored within the file" );
 
             return false;
         }
@@ -157,16 +156,14 @@ namespace Mengine
 
         if( mf == MAGIC_ERROR )
         {
-            LOGGER_ERROR( "invalid open file in memory (alredy open)"
-            );
+            LOGGER_ERROR( "invalid open file in memory (alredy open)" );
 
             return false;
         }
 
         if( mf == MAGIC_UNKNOWN )
         {
-            LOGGER_ERROR( "invalid open file in memory (invalid format or version)"
-            );
+            LOGGER_ERROR( "invalid open file in memory (invalid format or version)" );
 
             return false;
         }
@@ -230,8 +227,7 @@ namespace Mengine
             magicName = Magic_FindNext( m_mf, &find );
         }
 
-        LOGGER_ERROR( "not found emitter"
-        );
+        LOGGER_ERROR( "not found emitter" );
 
         return 0;
     }

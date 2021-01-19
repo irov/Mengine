@@ -143,12 +143,6 @@ namespace Mengine
                 , this->getGroupName().c_str()
             );
 
-            if( this->getName() == "bg/bg_header" )
-            {
-                int i = 0;
-                (void)i;
-            }
-
             if( Compilable::compile() == false )
             {
                 m_compileReferenceCount = 0;

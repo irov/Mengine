@@ -1369,12 +1369,16 @@ namespace Mengine
             m_containers.erase( it_found );
 
             _container->finalize();
+
+            this->updateAtlas();
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxService::onEmitterRelease_( AstralaxEmitter2 * _emitter )
     {
         _emitter->finalize();
+
+        this->updateAtlas();
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     ndkVersion '22.0.7026061'
     buildToolsVersion '30.0.3'
-    compileSdkVersion 30
+    compileSdkVersion 29
 
     ext.getBooleanProperty = { name, d ->
         def p = project.getProperties().get(name, null)
@@ -58,7 +58,7 @@ android {
         println applicationId
 
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 29
         
         print 'ANDROID_APP_BUILD_PUBLISH = '
         println getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false)

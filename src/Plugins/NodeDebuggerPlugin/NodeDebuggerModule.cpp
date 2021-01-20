@@ -97,7 +97,7 @@ namespace Mengine
         cURLRequestListenerPtr logger = Helper::makeFactorableUnique<cURLRequestListener>( MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ASSERTION_FATAL( logger != nullptr );
 
-        logger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ));
+        logger->setSceneDataProvider( SceneDataProviderInterfacePtr::from( this ) );
 
         m_networkLogger = logger;
 
@@ -721,6 +721,11 @@ namespace Mengine
 
         Detail::serializeNodeProp( _textField->getMaxLength(), "MaxLength", xmlNode );
         Detail::serializeNodeProp( _textField->getWrap(), "Wrap", xmlNode );
+
+        Detail::serializeNodeProp( _textField->getAutoScale(), "AutoScale", xmlNode );
+        Detail::serializeNodeProp( _textField->getAnchorPercent(), "AnchorPercent", xmlNode );
+        Detail::serializeNodeProp( _textField->getAnchorVerticalAlign(), "AnchorVerticalAlign", xmlNode );
+        Detail::serializeNodeProp( _textField->getAnchorHorizontalAlign(), "AnchorHorizontalAlign", xmlNode );
 
         const ConstString & textID = _textField->getTextId();
         const ConstString & textAliasEnvironment = _textField->getTextAliasEnvironment();
@@ -1609,6 +1614,26 @@ namespace Mengine
                     textField->setWrap( _value );
                 } );
 
+                Detail::deserializeNodeProp<bool>( "AutoScale", typeNodeTextField, [textField]( bool _value )
+                {
+                    textField->setAutoScale( _value );
+                } );
+
+                Detail::deserializeNodeProp<mt::vec2f>( "AnchorPercent", typeNodeTextField, [textField]( const mt::vec2f & _value )
+                {
+                    textField->setAnchorPercent( _value );
+                } );
+
+                Detail::deserializeNodeProp<bool>( "AnchorHorizontalAlign", typeNodeTextField, [textField]( bool _value )
+                {
+                    textField->setAnchorHorizontalAlign( _value );
+                } );
+
+                Detail::deserializeNodeProp<bool>( "AnchorVerticalAlign", typeNodeTextField, [textField]( bool _value )
+                {
+                    textField->setAnchorVerticalAlign( _value );
+                } );
+
                 Detail::deserializeNodeProp<ConstString>( "TextID", typeNodeTextField, [textField]( const ConstString & _value )
                 {
                     textField->setTextId( _value );
@@ -1622,7 +1647,7 @@ namespace Mengine
                 Detail::deserializeNodeProp<ConstString>( "FontName", typeNodeTextField, [textField]( const ConstString & _value )
                 {
                     TextFontInterfacePtr font;
-                    
+
                     if( FONT_SERVICE()
                         ->existFont( _value, &font ) == false )
                     {

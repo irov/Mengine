@@ -296,10 +296,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     //devtodev
-    implementation 'com.devtodev:android:1.13'
+    implementation 'com.devtodev:android:1.14.8'
 
     //facebook
-    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    implementation 'com.facebook.android:facebook-android-sdk:9.0.0'
 
     //google services
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
@@ -312,7 +312,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     //sentry
-    implementation 'io.sentry:sentry-android:2.3.1'
+    implementation 'io.sentry:sentry-android:3.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

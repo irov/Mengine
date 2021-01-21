@@ -1,5 +1,6 @@
 #include "DazzleEffect.h"
 
+#include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -278,7 +279,16 @@ namespace Mengine
             //    return;
             //}
 
-            _renderPipeline->addRenderObject( _context, nullptr, nullptr, m_renderVertices + chunk.vertex_offset, chunk.vertex_count, m_renderIndicies + chunk.index_offset, chunk.index_count, bb, false, MENGINE_DOCUMENT_FORWARD );
+            RenderMaterialInterfacePtr material;
+
+            if( m_resourceImage != nullptr )
+            {
+                material = Helper::makeImageMaterial( ResourceImagePtr::from( m_resourceImage ), ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( material );
+            }
+
+            _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + chunk.vertex_offset, chunk.vertex_count, m_renderIndicies + chunk.index_offset, chunk.index_count, bb, false, MENGINE_DOCUMENT_FORWARD );
         }
     }
     //////////////////////////////////////////////////////////////////////////

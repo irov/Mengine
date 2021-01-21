@@ -45,8 +45,8 @@ namespace Mengine
         void setResourceDazzle( const ResourcePtr & _resourceDazzleEffect ) override;
         const ResourcePtr & getResourceDazzle() const override;
 
-        virtual void setResourceImage( const ResourceImagePtr & _resource ) override;
-        virtual const ResourceImagePtr & getResourceImage() const override;
+        void setResourceImage( const ResourceImagePtr & _resource ) override;
+        const ResourceImagePtr & getResourceImage() const override;
 
     public:
         bool _play( uint32_t _enumerator, float _time ) override;

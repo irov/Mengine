@@ -30,6 +30,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::finalize()
     {
+        m_threads.clear();
+        m_threadTasks.clear();
+        m_currentThreadTasks.clear();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolTaskPacket );
 
         m_factoryPoolTaskPacket = nullptr;

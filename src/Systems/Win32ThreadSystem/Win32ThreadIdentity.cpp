@@ -3,6 +3,7 @@
 #include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <process.h>
 
@@ -102,9 +103,9 @@ namespace Mengine
         ::InitializeConditionVariable( &m_conditionVariable );
 #endif
 
-        m_thread = ::CreateThread( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
+        HANDLE thread = ::CreateThread( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 
-        if( m_thread == NULL )
+        if( thread == NULL )
         {
             DWORD error = ::GetLastError();
 
@@ -114,6 +115,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_thread = thread;
 
 #if defined(MENGINE_TOOLCHAIN_MSVC)
         DWORD threadId = ::GetThreadId( m_thread );
@@ -209,6 +212,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _task );
+
         if( m_exit == true )
         {
             return false;

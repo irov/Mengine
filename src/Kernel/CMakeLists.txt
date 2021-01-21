@@ -712,6 +712,9 @@ Core
     DebugBreak.h
     DebugBreak.cpp
     
+    DevelopmentConverter.cpp
+    DevelopmentConverter.h
+    
     ResourcePointer.h
     UnknownPointer.h
     

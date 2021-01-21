@@ -2,8 +2,6 @@ MENGINE_PROJECT(DevelopmentConverterPlugin)
 
 ADD_FILTER(
 src
-    DevelopmentConverter.cpp
-    DevelopmentConverter.h
     DevelopmentConverterPlugin.cpp
     DevelopmentConverterPlugin.def
     DevelopmentConverterPlugin.h

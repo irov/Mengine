@@ -30,6 +30,7 @@ namespace Mengine
 
     public:
         virtual void setOptions( const ConverterOptions * _options ) = 0;
+        virtual const ConverterOptions * getOptions() const = 0;
 
     public:
         virtual const ConstString & getConvertExt() const = 0;

@@ -126,7 +126,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_setLoop( bool _value )
     {
-        MENGINE_UNUSED( _value );
+        dz_instance_set_loop( m_instance, _value == true ? DZ_TRUE : DZ_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_activate()
@@ -151,12 +151,25 @@ namespace Mengine
 
         if( m_resourceDazzleEffect->compile() == false )
         {
-            LOGGER_ERROR( "name '%s' resource '%s' not compile"
+            LOGGER_ERROR( "dazzle '%s' effect resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceDazzleEffect->getName().c_str()
             );
 
             return false;
+        }
+
+        if( m_resourceImage != nullptr )
+        {
+            if( m_resourceImage->compile() == false )
+            {
+                LOGGER_ERROR( "dazzle '%s' image resource '%s' not compile"
+                    , this->getName().c_str()
+                    , m_resourceImage->getName().c_str()
+                );
+
+                return false;
+            }
         }
 
         UnknownResourceDazzleEffectInterface * unknownResourceDazzleEffect = m_resourceDazzleEffect->getUnknown();
@@ -165,7 +178,7 @@ namespace Mengine
 
         if( data->acquire() == false )
         {
-            LOGGER_ERROR( "name '%s' resource '%s' not acquire composition"
+            LOGGER_ERROR( "dazzle '%s' resource '%s' not acquire composition"
                 , this->getName().c_str()
                 , m_resourceDazzleEffect->getName().c_str()
             );
@@ -178,7 +191,7 @@ namespace Mengine
         dz_instance_t * instance;
         if( dz_instance_create( m_service, &instance, effect, 0, DZ_NULLPTR ) == DZ_FAILURE )
         {
-            LOGGER_ERROR( "name '%s' resource '%s' invalid instance create"
+            LOGGER_ERROR( "dazzle '%s' resource '%s' invalid instance create"
                 , this->getName().c_str()
                 , m_resourceDazzleEffect->getName().c_str()
             );
@@ -187,8 +200,6 @@ namespace Mengine
         }
         
         m_instance = instance;
-
-        dz_instance_set_loop( m_instance, DZ_TRUE );
 
         return true;
     }
@@ -208,7 +219,6 @@ namespace Mengine
         if( m_resourceImage != nullptr )
         {
             m_resourceImage->release();
-            m_resourceImage = nullptr;
         }
 
         if( m_renderVertices != nullptr )
@@ -240,9 +250,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
-        MENGINE_UNUSED( _renderPipeline );
-        MENGINE_UNUSED( _context );
-
         uint16_t vertexCount;
         uint16_t indexCount;
         dz_instance_compute_bounds( m_instance, &vertexCount, &indexCount );
@@ -292,6 +299,8 @@ namespace Mengine
         this->updateVertexColor_( m_renderVertices, vertexCount );
         this->updateVertexWM_( m_renderVertices, indexCount );
         
+        const RenderMaterialInterfacePtr & material = this->getMaterial();
+
         const mt::box2f * bb = this->getBoundingBox();
 
         for( uint32_t
@@ -301,16 +310,6 @@ namespace Mengine
             ++it_chunk )
         {
             const dz_instance_mesh_chunk_t & chunk = chunks[it_chunk];
-
-            //const RenderMaterialInterfacePtr & material = ASTRALAX_SERVICE()
-            //    ->getMaterial( mesh );
-
-            //if( material == nullptr )
-            //{
-            //    return;
-            //}
-
-            RenderMaterialInterfacePtr material = this->getMaterial();
 
             _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + chunk.vertex_offset, chunk.vertex_count, m_renderIndicies + chunk.index_offset, chunk.index_count, bb, false, MENGINE_DOCUMENT_FORWARD );
         }

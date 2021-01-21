@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DazzleEffectPrototypeGenerator
         : public NodePrototypeGenerator<DazzleEffect, 32>
     {
@@ -23,4 +24,7 @@ namespace Mengine
     protected:
         const dz_service_t * m_service;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DazzleEffectPrototypeGenerator> DazzleEffectPrototypeGeneratorPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

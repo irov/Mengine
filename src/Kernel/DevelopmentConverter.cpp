@@ -47,6 +47,11 @@ namespace Mengine
         m_options = *(_options);
     }
     //////////////////////////////////////////////////////////////////////////
+    const ConverterOptions * DevelopmentConverter::getOptions() const
+    {
+        return &m_options;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DevelopmentConverter::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         MENGINE_UNUSED( _stream );

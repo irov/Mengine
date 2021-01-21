@@ -29,15 +29,8 @@ namespace Mengine
     {
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    bool DazzleEffectConverterDZBToDZZ::initialize()
+    bool DazzleEffectConverterDZBToDZZ::_initialize()
     {
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
-
-        m_fileGroup = fileGroup;
-
         m_convertExt = STRINGIZE_STRING_LOCAL( ".dzz" );
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
@@ -49,11 +42,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DazzleEffectConverterDZBToDZZ::finalize()
+    void DazzleEffectConverterDZBToDZZ::_finalize()
     {
         m_archivator = nullptr;
-
-        m_fileGroup = nullptr;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool DazzleEffectConverterDZBToDZZ::convert()
@@ -92,22 +83,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & DazzleEffectConverterDZBToDZZ::getConvertExt() const
-    {
-        return m_convertExt;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DazzleEffectConverterDZBToDZZ::setOptions( const ConverterOptions * _options )
-    {
-        m_options = *(_options);
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool DazzleEffectConverterDZBToDZZ::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         if( Helper::loadStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ) ) == false )
         {
-            LOGGER_ERROR( "invalid magic header"
-            );
+            LOGGER_ERROR( "invalid magic header" );
 
             return false;
         }

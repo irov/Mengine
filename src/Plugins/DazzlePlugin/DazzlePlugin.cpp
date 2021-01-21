@@ -9,6 +9,7 @@
 #include "DataflowDZZ.h"
 #include "DazzleEffect.h"
 #include "ResourceDazzleEffect.h"
+#include "DazzleEffectConverterDZBToDZZ.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
@@ -16,6 +17,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/ConverterFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Dazzle, Mengine::DazzlePlugin );
@@ -116,6 +118,8 @@ namespace Mengine
             return false;
         }
 
+        Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( "dzb2dzz", MENGINE_DOCUMENT_FACTORABLE );
+
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {
             DataflowDZZPtr dataflowDazzle = Helper::makeFactorableUnique<DataflowDZZ>( MENGINE_DOCUMENT_FACTORABLE );
@@ -152,6 +156,8 @@ namespace Mengine
     {
         dz_service_destroy( m_service );
         m_service = nullptr;
+
+        Helper::unregisterConverter( "dzb2dzz" );
 
         MENGINE_ASSERTION_ALLOCATOR( "dazzle" );
     }

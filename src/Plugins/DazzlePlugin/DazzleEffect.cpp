@@ -39,6 +39,16 @@ namespace Mengine
         return m_resourceDazzleEffect;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DazzleEffect::setResourceImage( const ResourceImagePtr & _resource )
+    {
+        m_resourceImage = _resource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & DazzleEffect::getResourceImage() const
+    {
+        return m_resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_play( uint32_t _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
@@ -164,6 +174,12 @@ namespace Mengine
         data->release();
 
         m_resourceDazzleEffect->release();
+
+        if( m_resourceImage != nullptr )
+        {
+            m_resourceImage->release();
+            m_resourceImage = nullptr;
+        }
 
         if( m_renderVertices != nullptr )
         {

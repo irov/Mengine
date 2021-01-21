@@ -159,7 +159,7 @@ android {
         }
 
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles.add(file('proguard-rules.pro'))
             
             externalNativeBuild {
                 cmake {
@@ -245,9 +245,6 @@ android {
     
     aaptOptions {
         noCompress 'pak', 'bin'
-    }
-    
-    productFlavors {
     }
     
     packagingOptions {

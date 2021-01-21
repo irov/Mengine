@@ -10,6 +10,7 @@
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseTransformation.h"
+#include "Kernel/Materialable.h"
 
 #include "dazzle/dazzle.hpp"
 
@@ -18,6 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DazzleEffect
         : public Node
+        , public Materialable
         , public UnknownDazzleEffectInterface
         , protected BaseEventation
         , protected BaseUpdation
@@ -56,6 +58,9 @@ namespace Mengine
         bool _stop( uint32_t _enumerator ) override;
         void _end( uint32_t _enumerator ) override;
         bool _interrupt( uint32_t _enumerator ) override;
+
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
         float _getDuration() const override;

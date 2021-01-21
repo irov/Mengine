@@ -32,7 +32,7 @@ namespace Mengine
     bool DazzleEffectConverterDZBToDZZ::initialize()
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "Data_Particles" ) );
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
 

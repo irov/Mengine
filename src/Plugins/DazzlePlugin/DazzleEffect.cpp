@@ -3,6 +3,8 @@
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -97,9 +99,29 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr DazzleEffect::_updateMaterial() const
+    {
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' resource '%s' m_material is nullptr"
+            , this->getName().c_str()
+            , m_resourceImage->getName().c_str()
+        );
+
+        return material;
+    }
+    //////////////////////////////////////////////////////////////////////////
     float DazzleEffect::_getDuration() const
     {
-        return 0.f;
+        UnknownResourceDazzleEffectInterface * unknownResourceDazzleEffect = m_resourceDazzleEffect->getUnknown();
+
+        DazzleDataInterfacePtr data = unknownResourceDazzleEffect->getData();
+
+        const dz_effect_t * effect = data->getDazzleEffect();
+
+        float duration = dz_effect_get_life( effect ) * 1000.f;
+
+        return duration;
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_setLoop( bool _value )
@@ -111,7 +133,7 @@ namespace Mengine
     {
         //ToDo
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_deactivate()
@@ -154,14 +176,21 @@ namespace Mengine
         const dz_effect_t * effect = data->getDazzleEffect();
 
         dz_instance_t * instance;
-        if( dz_instance_create( m_service, &instance, effect, 0, DZ_NULLPTR ) == false )
+        if( dz_instance_create( m_service, &instance, effect, 0, DZ_NULLPTR ) == DZ_FAILURE )
         {
+            LOGGER_ERROR( "name '%s' resource '%s' invalid instance create"
+                , this->getName().c_str()
+                , m_resourceDazzleEffect->getName().c_str()
+            );
+
             return false;
         }
         
         m_instance = instance;
 
-        return false;
+        dz_instance_set_loop( m_instance, DZ_TRUE );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_release()
@@ -204,7 +233,7 @@ namespace Mengine
             return;
         }
 
-        float totalTime = this->calcTotalTime( _context );
+        float totalTime = this->calcTotalTime( _context ) * 0.001f;
 
         dz_instance_update( m_service, m_instance, totalTime );
     }
@@ -223,6 +252,8 @@ namespace Mengine
             m_renderVertexCount = vertexCount;
 
             m_renderVertices = Helper::reallocateArrayT<RenderVertex2D>( m_renderVertices, m_renderVertexCount );
+
+            MENGINE_MEMSET( m_renderVertices, 0x00, m_renderVertexCount * sizeof( RenderVertex2D ) );
         }
 
         if( m_renderIndexCount < indexCount )
@@ -279,14 +310,7 @@ namespace Mengine
             //    return;
             //}
 
-            RenderMaterialInterfacePtr material;
-
-            if( m_resourceImage != nullptr )
-            {
-                material = Helper::makeImageMaterial( ResourceImagePtr::from( m_resourceImage ), ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( material );
-            }
+            RenderMaterialInterfacePtr material = this->getMaterial();
 
             _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + chunk.vertex_offset, chunk.vertex_count, m_renderIndicies + chunk.index_offset, chunk.index_count, bb, false, MENGINE_DOCUMENT_FORWARD );
         }

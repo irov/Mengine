@@ -4,7 +4,6 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
-#include "Kernel/Materialable.h"
 #include "Kernel/Surface.h"
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"

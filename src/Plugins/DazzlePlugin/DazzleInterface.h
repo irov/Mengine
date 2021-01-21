@@ -5,6 +5,7 @@
 
 #include "Kernel/Magic.h"
 #include "Kernel/Resource.h"
+#include "Kernel/ResourceImage.h"
 
 //////////////////////////////////////////////////////////////////////////
 struct dz_effect_t;
@@ -12,7 +13,7 @@ struct dz_effect_t;
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DECLARE_MAGIC_NUMBER( MAGIC_AEZ, 'D', 'Z', 'Z', '1', 1 );
+    DECLARE_MAGIC_NUMBER( MAGIC_DZZ, 'D', 'Z', 'Z', '1', 1 );
     //////////////////////////////////////////////////////////////////////////
     class UnknownDazzleEffectInterface
         : public UnknownInterface
@@ -20,6 +21,9 @@ namespace Mengine
     public:
         virtual void setResourceDazzle( const ResourcePtr & _resource ) = 0;
         virtual const ResourcePtr & getResourceDazzle() const = 0;
+
+        virtual void setResourceImage( const ResourceImagePtr & _resource ) = 0;
+        virtual const ResourceImagePtr & getResourceImage() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceDazzleEffectInterface

@@ -555,9 +555,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Node::compile()
     {
-        bool result = Compilable::compile();
+        if( Compilable::compile() == false )
+        {
+            LOGGER_ERROR( "node '%s' type '%s' not compiled"
+                , this->getName().c_str()
+                , this->getType().c_str()
+            );
 
-        return result;
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::release()

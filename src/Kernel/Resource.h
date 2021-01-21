@@ -67,6 +67,9 @@ namespace Mengine
         void setPrecompile( bool _precompile );
         MENGINE_INLINE bool isPrecompile() const;
 
+        void setIgnored( bool _ignored );
+        MENGINE_INLINE bool isIgnored() const;
+
     public:
         void setTags( const Tags & _tags );
         const Tags & getTags() const;
@@ -123,6 +126,7 @@ namespace Mengine
         bool m_keep;
         bool m_mapping;
         bool m_precompile;
+        bool m_ignored;
 
         MENGINE_THREAD_GUARD_INIT( ResourceCompile );
         MENGINE_THREAD_GUARD_INIT( ResourcePrefetch );
@@ -178,6 +182,11 @@ namespace Mengine
     MENGINE_INLINE bool Resource::isCache() const
     {
         return m_cache;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool Resource::isIgnored() const
+    {
+        return m_ignored;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

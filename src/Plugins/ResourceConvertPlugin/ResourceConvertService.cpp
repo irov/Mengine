@@ -28,19 +28,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceConvertService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, &ResourceConvertService::convertResource_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_INITIALIZE, &ResourceConvertService::convertResource_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceConvertService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_INITIALIZE );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Converter" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceConvertService::convertResource_( const ResourcePtr & _resource )
+    void ResourceConvertService::convertResource_( Resource * _resource )
     {
         ContentInterface * content = _resource->getContent();
 
@@ -92,4 +92,5 @@ namespace Mengine
 
         content->setDataflow( dataflow );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

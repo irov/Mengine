@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     ndkVersion '22.0.7026061'
     buildToolsVersion '30.0.3'
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     ext.getBooleanProperty = { name, d ->
         def p = project.getProperties().get(name, null)

@@ -42,6 +42,9 @@ namespace Mengine
         void stopThread() override;
 
     protected:
+        bool checkOverrideCorruption( void * _pointer ) const override;
+
+    protected:
         uint32_t get_report_count() const override;
         size_t get_report_info( uint32_t _index, const char ** _doc ) const override;
         size_t get_report_total() const override;

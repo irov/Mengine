@@ -87,6 +87,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( data );
 
+        data->setDazzleService( m_service );
+
         return data;
     }
     //////////////////////////////////////////////////////////////////////////

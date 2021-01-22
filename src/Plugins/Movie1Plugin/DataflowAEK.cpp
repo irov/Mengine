@@ -214,7 +214,7 @@ namespace Mengine
 
                     timeremap.times = Helper::allocateMemoryNT<float>( times_size, "MovieFramePack" );
 
-                    float * times_buff = &timeremap.times[0];
+                    float * times_buff = timeremap.times;
                     ar.readPODs( times_buff, times_size );
                 }
             }

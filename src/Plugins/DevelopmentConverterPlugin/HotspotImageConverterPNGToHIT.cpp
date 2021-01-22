@@ -13,6 +13,7 @@
 #include "Kernel/FileStreamHelper.h"
 
 #include "math/config.h"
+#include "math/constant.h"
 
 #include <algorithm>
 
@@ -174,8 +175,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t * const _level )
     {
-        uint32_t mipmap_pow_width = (uint32_t)(MT_logf( (float)_width ) / MT_logf( 2.f ));
-        uint32_t mipmap_pow_height = (uint32_t)(MT_logf( (float)_height ) / MT_logf( 2.f ));
+        uint32_t mipmap_pow_width = (uint32_t)(MT_logf( (float)_width ) * mt::constant::inv_log2);
+        uint32_t mipmap_pow_height = (uint32_t)(MT_logf( (float)_height ) * mt::constant::inv_log2);
 
         uint32_t mipmap_level = MENGINE_MIN( mipmap_pow_width, mipmap_pow_height ) + 1;
 
@@ -193,11 +194,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotspotImageConverterPNGToHIT::makeMipMapLevel_( uint8_t * const _buffer, uint32_t _width, uint32_t _height, uint32_t _level )
     {
+        MENGINE_ASSERTION_FATAL( _level < 32 );
+
         uint8_t * mipmap[32];
 
         mipmap[0] = _buffer;
 
         uint32_t bufferOffset = _width * _height;
+
         for( uint32_t i = 1; i != _level; ++i )
         {
             mipmap[i] = _buffer + bufferOffset;
@@ -284,4 +288,5 @@ namespace Mengine
             }
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

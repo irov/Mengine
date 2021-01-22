@@ -20,8 +20,6 @@ src
     ShaderConverterTextToPSO.h
     ShaderConverterTextToVSO.cpp
     ShaderConverterTextToVSO.h
-    ParticleConverterPTCToPTZ.cpp
-    ParticleConverterPTCToPTZ.h    
     MovieKeyConverterXMLToAEK.cpp
     MovieKeyConverterXMLToAEK.h
     ImageConverterPVRToHTF.cpp

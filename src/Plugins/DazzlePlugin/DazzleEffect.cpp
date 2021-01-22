@@ -65,6 +65,13 @@ namespace Mengine
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );
 
+        if( this->isCompile() == false )
+        {
+            return true;
+        }
+
+        dz_instance_set_time( m_instance, _time * 0.001f );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,6 +85,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );
+
     }
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_stop( uint32_t _enumerator )
@@ -126,6 +134,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_setLoop( bool _value )
     {
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
         dz_instance_set_loop( m_instance, _value == true ? DZ_TRUE : DZ_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -201,6 +214,14 @@ namespace Mengine
         
         m_instance = instance;
 
+        bool loop = this->isLoop();
+
+        dz_instance_set_loop( m_instance, loop == true ? DZ_TRUE : DZ_FALSE );
+
+        float time = this->getTime();
+
+        dz_instance_set_time( m_instance, time * 0.001f );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -239,6 +260,11 @@ namespace Mengine
     void DazzleEffect::update( const UpdateContext * _context )
     {
         if( m_instance == nullptr )
+        {
+            return;
+        }
+
+        if( this->isPlay() == false )
         {
             return;
         }

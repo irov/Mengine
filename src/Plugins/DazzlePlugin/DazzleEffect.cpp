@@ -257,6 +257,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void DazzleEffect::_dispose()
+    {
+        Node::_dispose();
+
+        m_resourceDazzleEffect = nullptr;
+        m_resourceImage = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::update( const UpdateContext * _context )
     {
         if( m_instance == nullptr )

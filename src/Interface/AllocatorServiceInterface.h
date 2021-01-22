@@ -23,6 +23,9 @@ namespace Mengine
         virtual void stopThread() = 0;
 
     public:
+        virtual bool checkOverrideCorruption( void * _pointer ) const = 0;
+
+    public:
         virtual uint32_t get_report_count() const = 0;
         virtual size_t get_report_info( uint32_t _index, const char ** _name ) const = 0;
         virtual size_t get_report_total() const = 0;

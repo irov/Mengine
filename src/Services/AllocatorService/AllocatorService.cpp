@@ -35,7 +35,7 @@ namespace Mengine
 #if MENGINE_ALLOCATOR_DEBUG
     //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
-#define MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 32
+#define MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 128
 #endif
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
@@ -272,6 +272,17 @@ namespace Mengine
         rpmalloc_thread_finalize();
 #   endif
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AllocatorService::checkOverrideCorruption( void * _pointer ) const
+    {
+        MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
+
+        size_t size = _msize( _pointer );
+
+        bool result = Detail::checkMemoryOverrideCorruptionTrap( _pointer, size );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::waitThread_()

@@ -323,8 +323,8 @@ namespace Mengine
         dz_instance_compute_mesh( m_instance, &mesh, chunks, 16, &chunk_count );
 
         this->updateVertexColor_( m_renderVertices, vertexCount );
-        this->updateVertexWM_( m_renderVertices, indexCount );
-        
+        this->updateVertexWM_( m_renderVertices, vertexCount );
+
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
         const mt::box2f * bb = this->getBoundingBox();

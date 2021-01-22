@@ -3,6 +3,10 @@ MENGINE_PROJECT(AstralaxPlugin)
 ADD_FILTER(
 src
     AstralaxInterface.h
+    
+    AstralaxPlugin.cpp
+    AstralaxPlugin.h
+    AstralaxPlugin.def
 
     AstralaxModule.cpp
     AstralaxModule.h
@@ -21,10 +25,9 @@ src
     
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h
-
-    AstralaxPlugin.cpp
-    AstralaxPlugin.h
-    AstralaxPlugin.def
+    
+    ParticleConverterPTCToPTZ.cpp
+    ParticleConverterPTCToPTZ.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

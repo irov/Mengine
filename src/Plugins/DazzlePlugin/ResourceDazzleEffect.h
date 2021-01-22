@@ -25,7 +25,7 @@ namespace Mengine
         ~ResourceDazzleEffect() override;
 
     public:
-        DataInterfacePtr getData() const override;
+        const DataInterfacePtr & getData() const override;
 
     protected:
         bool _compile() override;

@@ -551,7 +551,7 @@ namespace Mengine
                 // Optimal path used when the right number of colors is provided.
                 if( part.colors.empty() == false )
                 {
-                    const uint8_t * part_colors_buffer = reinterpret_cast<const uint8_t *>(&part.colors[0]);
+                    const uint8_t * part_colors_buffer = reinterpret_cast<const uint8_t *>(part.colors.data());
                     for( uint8_t
                         * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
                         *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
@@ -581,7 +581,7 @@ namespace Mengine
                     }
                 }
 
-                const uint8_t * part_uvs_buffer = reinterpret_cast<const uint8_t *>(&part.uvs[0]);
+                const uint8_t * part_uvs_buffer = reinterpret_cast<const uint8_t *>(part.uvs.data());
                 for( uint8_t
                     * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_uvs_offset,
                     *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_uvs_offset;

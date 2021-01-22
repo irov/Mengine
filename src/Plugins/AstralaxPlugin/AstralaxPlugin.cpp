@@ -4,9 +4,12 @@
 
 #include "AstralaxModule.h"
 
+#include "ParticleConverterPTCToPTZ.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ConverterFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AstralaxService );
@@ -33,11 +36,15 @@ namespace Mengine
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralax" )
             , Helper::makeModuleFactory<AstralaxModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
+        Helper::registerConverter<ParticleConverterPTCToPTZ>( "ptc2ptz", MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxPlugin::_finalizePlugin()
     {
+        Helper::unregisterConverter( "ptc2ptz" );
+
         SERVICE_FINALIZE( AstralaxService );
     }
     //////////////////////////////////////////////////////////////////////////

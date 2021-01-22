@@ -30,7 +30,7 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        virtual DataInterfacePtr getData() const = 0;
+        virtual const DataInterfacePtr & getData() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceDazzleEffectCustomInterface
@@ -38,6 +38,7 @@ namespace Mengine
     {
     public:
         virtual void setDazzleEffect( const dz_effect_t * _effect ) = 0;
+        virtual const dz_effect_t * getDazzleEffect() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

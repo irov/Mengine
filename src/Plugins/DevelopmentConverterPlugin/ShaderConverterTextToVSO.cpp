@@ -47,8 +47,7 @@ namespace Mengine
             Char WindowsKitsInstallationFolder[256] = {'\0'};
             if( win32Platform->getLocalMachineRegValue( "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", "KitsRoot10", WindowsKitsInstallationFolder, 255 ) == false )
             {
-                LOGGER_ERROR( "not found REGISTER Windows Kits installed roots"
-                );
+                LOGGER_ERROR( "not found REGISTER Windows Kits installed roots" );
 
                 return false;
             }
@@ -105,4 +104,5 @@ namespace Mengine
 
         return true;
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -45,7 +45,7 @@
             android:launchMode="singleTop"
             android:keepScreenOn="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:screenOrientation="@string/screenOrientation">
+            android:screenOrientation="${app_screen_orientation}">
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

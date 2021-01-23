@@ -56,7 +56,7 @@ android {
             applicationId System.getenv('ANDROID_ANDROID_APP_ID')
             print 'ANDROID_ANDROID_APP_ID = '
         } else {
-            applicationId "org.Wonderland.EvilMonkey"
+            applicationId "org.Mengine.ANDROID_APP_ID"
             print 'HARDCODE ANDROID_APP_ID = '
         }
         
@@ -89,9 +89,9 @@ android {
         }
         
         if (project.hasProperty("ANDROID_APP_NAME")) {
-            manifestPlaceholders = [app_name_gradle:ANDROID_APP_NAME]
+            manifestPlaceholders = [app_name_gradle:ANDROID_APP_NAME, app_screen_orientation:"fullSensor"]
         } else {
-            manifestPlaceholders = [app_name_gradle:"org.Wonderland.EvilMonkey"]
+            manifestPlaceholders = [app_name_gradle:"org.Wonderland.EvilMonkey", app_screen_orientation:"fullSensor"]
         }
         
         print 'manifestPlaceholders = '

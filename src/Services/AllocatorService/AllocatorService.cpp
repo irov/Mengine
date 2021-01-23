@@ -276,6 +276,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AllocatorService::checkOverrideCorruption( void * _pointer ) const
     {
+#if MENGINE_ALLOCATOR_DEBUG
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
 
         size_t size = _msize( _pointer );
@@ -283,6 +284,9 @@ namespace Mengine
         bool result = Detail::checkMemoryOverrideCorruptionTrap( _pointer, size );
 
         return result;
+#else
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void AllocatorService::waitThread_()

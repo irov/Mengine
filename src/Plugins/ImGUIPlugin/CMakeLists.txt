@@ -18,16 +18,16 @@ if(MENGINE_PLATFORM_WIN32)
     
     ADD_FILTER(
     imgui_platform_ext
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_win32.h
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_win32.cpp
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_win32.h
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_win32.cpp
     )
 endif()
 
 if(MENGINE_PLATFORM_SDL)
     ADD_FILTER(
     imgui_platform_ext
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_sdl.h
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_sdl.cpp
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl.h
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl.cpp
     )
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
@@ -36,21 +36,21 @@ endif()
 if(MENGINE_RENDER_DIRECTX)
     ADD_FILTER(
     imgui_render_ext
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_dx9.h
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_dx9.cpp
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_dx9.h
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_dx9.cpp
     )
 endif()
 
 if(MENGINE_RENDER_OPENGL)
     ADD_FILTER(
     imgui_render_ext
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_opengl2.h
-        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_opengl2.cpp
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_opengl2.h
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_opengl2.cpp
     )
 endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui/examples)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui/backends)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IMGUI)
 

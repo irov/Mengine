@@ -699,27 +699,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setCullMode( ECullMode _mode )
     {
-        bool enable = true;
-        GLenum face = GL_BACK;
-
-        if( _mode == CM_CULL_CW )
+        switch( _mode )
         {
-            face = GL_FRONT;
-        }
-        else if( _mode == CM_CULL_NONE )
-        {
-            enable = false;
-        }
-
-        GLCALL( glCullFace, (face) );
-
-        if( enable == true )
-        {
-            GLCALL( glEnable, (GL_CULL_FACE) );
-        }
-        else
-        {
-            GLCALL( glDisable, (GL_CULL_FACE) );
+        case CM_CULL_CW:
+            {
+                GLCALL(glCullFace, (GL_FRONT));
+                GLCALL(glEnable, (GL_CULL_FACE));
+            }break;
+        case CM_CULL_CCW:
+            {
+                GLCALL(glCullFace, (GL_BACK));
+                GLCALL(glEnable, (GL_CULL_FACE));
+            }break;
+        case CM_CULL_NONE:
+            {
+                GLCALL(glDisable, (GL_CULL_FACE));
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////

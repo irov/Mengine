@@ -225,7 +225,7 @@ namespace Mengine
         bool isDown1 = m_mouseBuffer[1];
         bool isDown2 = m_mouseBuffer[2];
 
-        return isDown0 || isDown1 || isDown2;
+        return isDown0 == true || isDown1 == true || isDown2 == true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isMouseButtonDown( EMouseCode _button ) const
@@ -381,6 +381,7 @@ namespace Mengine
     void InputService::keyEvent_( const InputKeyEvent & _event )
     {
         bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
+
         bool isAlt = this->isAltDown();
         bool isShift = this->isShiftDown();
         bool isControl = this->isControlDown();

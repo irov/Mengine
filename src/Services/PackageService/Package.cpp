@@ -880,6 +880,8 @@ namespace Mengine
                 continue;
             }
 
+            resource->setIgnored( _ignored );
+
             if( resource->initialize() == false )
             {
                 LOGGER_ERROR( "file '%s' category '%s' group '%s' resource '%s' type '%s' invalid initialize"
@@ -910,21 +912,6 @@ namespace Mengine
                     continue;
                 }
             }
-
-#ifndef MENGINE_MASTER_RELEASE
-            if( _ignored == false )
-            {
-                if( NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, resource ) == false )
-                {
-                    LOGGER_ERROR( "resource '%s' type [%s] invalid convert"
-                        , name.c_str()
-                        , type.c_str()
-                    );
-
-                    return false;
-                }
-            }
-#endif
         }
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();

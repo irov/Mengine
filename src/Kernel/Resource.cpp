@@ -22,6 +22,7 @@ namespace Mengine
         , m_keep( false )
         , m_mapping( false )
         , m_precompile( false )
+        , m_ignored( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -64,6 +65,11 @@ namespace Mengine
         m_mapping = _mapping;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Resource::setIgnored( bool _ignored )
+    {
+        m_ignored = _ignored;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Resource::setPrecompile( bool _precompile )
     {
         m_precompile = _precompile;
@@ -87,6 +93,21 @@ namespace Mengine
         {
             return false;
         }
+
+#ifndef MENGINE_MASTER_RELEASE
+        if( m_ignored == false )
+        {
+            if( NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_INITIALIZE, this ) == false )
+            {
+                LOGGER_ERROR( "resource '%s' type [%s] invalid convert"
+                    , this->getName().c_str()
+                    , this->getType().c_str()
+                );
+
+                return false;
+            }
+        }
+#endif
 
         m_initialize = true;
 
@@ -133,7 +154,10 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::compile" );
 
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' compile not initialize"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
 
         if( ++m_compileReferenceCount == 1 )
         {
@@ -162,7 +186,10 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::release" );
 
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' release not initialize"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
 
         MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "'%s:%s' group '%s' release compile refcount == 0"
             , this->getType().c_str()

@@ -14,7 +14,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr ResourceDazzleEffect::getData() const
+    const DataInterfacePtr & ResourceDazzleEffect::getData() const
     {
         return m_data;
     }

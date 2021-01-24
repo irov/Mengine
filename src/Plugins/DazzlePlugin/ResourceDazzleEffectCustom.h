@@ -23,10 +23,10 @@ namespace Mengine
 
     public:
         void setDazzleEffect( const dz_effect_t * _effect ) override;
-        //const dz_effect_t * getDazzleEffect() const override;
+        const dz_effect_t * getDazzleEffect() const override;
 
     protected:
-        DataInterfacePtr getData() const override;
+        const DataInterfacePtr & getData() const override;
 
     protected:
         bool _compile() override;

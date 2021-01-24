@@ -959,7 +959,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_atanf( float _x )
             {
-                return ::atanf( _x );
+                return MT_atan( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             float mt_logf( float _x )
@@ -969,12 +969,12 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float mt_log10f( float _x )
             {
-                return ::log10f( _x );
+                return MT_log10f( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             double mt_log10( double _x )
             {
-                return ::log10( _x );
+                return MT_log10( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t mt_fibo( uint32_t _n )
@@ -997,10 +997,10 @@ namespace Mengine
             {
                 const double nf = (double)_n;
                 const double fplus = (1.0 + 2.2360679774997896964091736687313) * 0.5;
-                const double fplusn = pow( fplus, nf );
+                const double fplusn = MT_pow( fplus, nf );
 
                 const double fminus = (1.0 - 2.2360679774997896964091736687313) * 0.5;
-                const double fminusn = pow( fminus, nf );
+                const double fminusn = MT_pow( fminus, nf );
 
                 double fbine = (fplusn - fminusn) * 0.44721359549995793928183473374626;
 
@@ -1097,11 +1097,11 @@ namespace Mengine
                 }
 
                 mt::vec2f dir_norm;
-                float dir_length = norm_v2_f( dir_norm, dir );
+                float dir_length = mt::norm_v2_f( dir_norm, dir );
 
                 mt::vec2f dir_point = _point - _v0;
 
-                float dist = dot_v2_v2( dir_point, dir_norm );
+                float dist = mt::dot_v2_v2( dir_point, dir_norm );
 
                 if( dist < 0.f )
                 {
@@ -2531,8 +2531,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2548,8 +2547,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2567,8 +2565,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2584,8 +2581,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2601,8 +2597,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2618,8 +2613,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2635,8 +2629,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2652,8 +2645,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none"
-                    );
+                    LOGGER_ERROR( "account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2779,8 +2771,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasCurrentAccount() == false )
                 {
-                    LOGGER_ERROR( "currentAccount is none"
-                    );
+                    LOGGER_ERROR( "currentAccount is none" );
 
                     return ConstString::none();
                 }
@@ -3118,7 +3109,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _kernel );
 
-                const char * value_str = reinterpret_cast<const char *>(&_value[0]);
+                const char * value_str = reinterpret_cast<const char *>(_value.data());
                 value_type::size_type value_size = _value.size();
 
                 PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );

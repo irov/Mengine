@@ -2,8 +2,6 @@ MENGINE_PROJECT(DevelopmentConverterPlugin)
 
 ADD_FILTER(
 src
-    DevelopmentConverter.cpp
-    DevelopmentConverter.h
     DevelopmentConverterPlugin.cpp
     DevelopmentConverterPlugin.def
     DevelopmentConverterPlugin.h
@@ -22,8 +20,6 @@ src
     ShaderConverterTextToPSO.h
     ShaderConverterTextToVSO.cpp
     ShaderConverterTextToVSO.h
-    ParticleConverterPTCToPTZ.cpp
-    ParticleConverterPTCToPTZ.h    
     MovieKeyConverterXMLToAEK.cpp
     MovieKeyConverterXMLToAEK.h
     ImageConverterPVRToHTF.cpp

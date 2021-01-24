@@ -122,8 +122,8 @@ namespace Mengine
         const VectorRenderVertex2D & vertices = this->getVerticesWM();
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
-        const RenderVertex2D * vertices_buff = &vertices[0];
-        const RenderIndex * indices_buff = &m_indices[0];
+        const RenderVertex2D * vertices_buff = vertices.data();
+        const RenderIndex * indices_buff = m_indices.data();
 
         const mt::box2f * bb = this->getBoundingBox();
 

@@ -1660,16 +1660,21 @@ namespace Mengine
         size_t textSize;
         const Char * textValue = textEntry->getValue( &textSize );
 
-        TEXT_SERVICE()
-            ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_textFormatArgs );
+        VectorString textFormatArgs;
 
-        if( Helper::getStringFormat( _text, textValue, textSize, m_textFormatArgs ) == false )
+        if( TEXT_SERVICE()
+            ->getTextAliasArguments( m_aliasEnvironment, m_textId, &textFormatArgs ) == false )
+        {
+            textFormatArgs = m_textFormatArgs;
+        }
+
+        if( Helper::getStringFormat( _text, textValue, textSize, textFormatArgs ) == false )
         {
             LOGGER_ERROR( "invalid formating string '%s:%s' format '%s' with args %" PRIuPTR ""
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , textValue
-                , m_textFormatArgs.size()
+                , textFormatArgs.size()
             );
 
             return false;
@@ -1815,6 +1820,8 @@ namespace Mengine
         size_t textSize;
         const Char * textValue;
 
+        VectorString textFormatArgs;
+
         if( textEntry == nullptr )
         {
             textSize = m_text.size();
@@ -1824,19 +1831,22 @@ namespace Mengine
         {
             textValue = textEntry->getValue( &textSize );
 
-            TEXT_SERVICE()
-                ->getTextAliasArguments( m_aliasEnvironment, m_textId, &m_textFormatArgs );
+            if( TEXT_SERVICE()
+                ->getTextAliasArguments( m_aliasEnvironment, m_textId, &textFormatArgs ) == false )
+            {
+                textFormatArgs = m_textFormatArgs;
+            }
         }
 
         String fmt;
-        if( Helper::getStringFormat( &fmt, textValue, textSize, m_textFormatArgs ) == false )
+        if( Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs ) == false )
         {
             LOGGER_ERROR( "text field '%s' textId '%s' (base '%s') invalid formating string text '%s' format with args %" PRIuPTR " [alias env: %s]"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_textId.c_str()
                 , textValue
-                , m_textFormatArgs.size()
+                , textFormatArgs.size()
                 , m_aliasEnvironment.c_str()
             );
 
@@ -2098,15 +2108,15 @@ namespace Mengine
 
         if( m_anchorPercent.x != 0.f || m_anchorPercent.y != 0.f )
         {
-            mt::box2f box;
-            mt::insideout_box( box );
+            //mt::box2f box;
+            //mt::insideout_box( box );
 
-            for( const RenderVertex2D & vertex : m_vertexDataText )
-            {
-                mt::add_internal_point( box, vertex.position.x, vertex.position.y );
-            }
+            //for( const RenderVertex2D & vertex : m_vertexDataText )
+            //{
+            //    mt::add_internal_point( box, vertex.position.x, vertex.position.y );
+            //}
 
-            mt::vec2f anchor = (box.maximum - box.minimum) * m_anchorPercent;
+            mt::vec2f anchor = m_textSize * m_autoScaleFactor * m_anchorPercent;
 
             for( RenderVertex2D & vertex : m_vertexDataText )
             {

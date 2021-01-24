@@ -10,6 +10,7 @@
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseTransformation.h"
+#include "Kernel/Materialable.h"
 
 #include "dazzle/dazzle.hpp"
 
@@ -18,6 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DazzleEffect
         : public Node
+        , public Materialable
         , public UnknownDazzleEffectInterface
         , protected BaseEventation
         , protected BaseUpdation
@@ -45,6 +47,9 @@ namespace Mengine
         void setResourceDazzle( const ResourcePtr & _resourceDazzleEffect ) override;
         const ResourcePtr & getResourceDazzle() const override;
 
+        void setResourceImage( const ResourceImagePtr & _resource ) override;
+        const ResourceImagePtr & getResourceImage() const override;
+
     public:
         bool _play( uint32_t _enumerator, float _time ) override;
         bool _restart( uint32_t _enumerator, float _time ) override;
@@ -53,6 +58,9 @@ namespace Mengine
         bool _stop( uint32_t _enumerator ) override;
         void _end( uint32_t _enumerator ) override;
         bool _interrupt( uint32_t _enumerator ) override;
+
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
         float _getDuration() const override;
@@ -67,6 +75,10 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
+    protected:
+        void _dispose() override;
+
+    protected:
         void update( const UpdateContext * _context ) override;
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
@@ -78,6 +90,7 @@ namespace Mengine
 
     protected:
         ResourcePtr m_resourceDazzleEffect;
+        ResourceImagePtr m_resourceImage;
 
         const dz_service_t * m_service;
 

@@ -203,6 +203,10 @@ namespace Mengine
         float MaxLength;
 
         bool Wrap;
+        bool AutoScale;
+        mt::vec2f AnchorPercent;
+        bool AnchorVerticalAlign;
+        bool AnchorHorizontalAlign;
 
         String TextID;
         String TextAliasEnvironment;
@@ -235,6 +239,10 @@ namespace Mengine
         {
             SERIALIZE_PROP( MaxLength );
             SERIALIZE_PROP( Wrap );
+            SERIALIZE_PROP( AutoScale );
+            SERIALIZE_PROP( AnchorPercent );
+            SERIALIZE_PROP( AnchorHorizontalAlign );
+            SERIALIZE_PROP( AnchorVerticalAlign );
 
             SERIALIZE_PROP( TextID );
             SERIALIZE_PROP( TextAliasEnvironment );
@@ -255,6 +263,10 @@ namespace Mengine
         {
             DESERIALIZE_PROP( MaxLength );
             DESERIALIZE_PROP( Wrap );
+            DESERIALIZE_PROP( AutoScale );
+            DESERIALIZE_PROP( AnchorPercent );
+            DESERIALIZE_PROP( AnchorHorizontalAlign );
+            DESERIALIZE_PROP( AnchorVerticalAlign );
 
             DESERIALIZE_PROP( TextID );
             DESERIALIZE_PROP( TextAliasEnvironment );
@@ -444,7 +456,7 @@ namespace Mengine
         Vector<uint32_t> CollectNodePath( const DebuggerNode * _node );
         String PathToString( const Vector<uint32_t> & _path );
         Vector<uint32_t> StringToPath( String & _pathStr );
-        DebuggerNode * PathToNode( const Vector<uint32_t> & _path );
+        DebuggerNode * PathToNode( DebuggerNode * _base, const Vector<uint32_t> & _path );
         void DestroyNode( DebuggerNode * _node );
 
         // UI

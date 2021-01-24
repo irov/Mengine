@@ -3,7 +3,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/MaterialEnumInterface.h"
 
-#include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"

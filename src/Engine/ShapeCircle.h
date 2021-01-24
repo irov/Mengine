@@ -2,7 +2,6 @@
 
 #include "Kernel/Shape.h"
 #include "Kernel/BaseRender.h"
-#include "Kernel/Materialable.h"
 #include "Kernel/VectorRenderIndex.h"
 #include "Kernel/VectorRenderVertex2D.h"
 

@@ -23,6 +23,9 @@ src
     
     DazzleData.cpp
     DazzleData.h
+
+    DazzleEffectConverterDZBToDZZ.cpp
+    DazzleEffectConverterDZBToDZZ.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/dazzle/include)

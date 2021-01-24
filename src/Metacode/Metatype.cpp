@@ -70,7 +70,7 @@ namespace Metabuf
 
         _value.resize( size );
 
-        ar.readPODs( &_value[0], size );
+        ar.readPODs( _value.data(), size );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::ConstString & _value, void * _userData )
@@ -223,7 +223,7 @@ namespace Metabuf
 
         _value.resize( count );
 
-        ar.readPODs( &_value[0], count );
+        ar.readPODs( _value.data(), count );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Int8s & _value, void * _userData )
@@ -242,7 +242,7 @@ namespace Metabuf
 
         _value.resize( count );
 
-        ar.readPODs( &_value[0], count );
+        ar.readPODs( _value.data(), count );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Int16s & _value, void * _userData )
@@ -261,7 +261,7 @@ namespace Metabuf
 
         _value.resize( count );
 
-        ar.readPODs( &_value[0], count );
+        ar.readPODs( _value.data(), count );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Int32s & _value, void * _userData )
@@ -280,7 +280,7 @@ namespace Metabuf
 
         _value.resize( count );
 
-        ar.readPODs( &_value[0], count );
+        ar.readPODs( _value.data(), count );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::UInt8s & _value, void * _userData )
@@ -299,7 +299,7 @@ namespace Metabuf
 
         _value.resize( count );
 
-        ar.readPODs( &_value[0], count );
+        ar.readPODs( _value.data(), count );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::UInt16s & _value, void * _userData )
@@ -318,7 +318,7 @@ namespace Metabuf
 
         _value.resize( count );
 
-        ar.readPODs( &_value[0], count );
+        ar.readPODs( _value.data(), count );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::UInt32s & _value, void * _userData )
@@ -337,7 +337,7 @@ namespace Metabuf
 
         _value.resize( count );
 
-        ar.readPODs( &_value[0], count );
+        ar.readPODs( _value.data(), count );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::vec2f & _value, void * _userData )

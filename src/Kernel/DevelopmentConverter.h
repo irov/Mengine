@@ -23,10 +23,11 @@ namespace Mengine
         virtual void _finalize() = 0;
 
     public:
-        const ConstString & getConvertExt() const override;
+        void setOptions( const ConverterOptions * _options ) override;
+        const ConverterOptions * getOptions() const override;
 
     public:
-        void setOptions( const ConverterOptions * _options ) override;
+        const ConstString & getConvertExt() const override;
 
     public:
         bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;

@@ -666,7 +666,7 @@ namespace Mengine
                             p2t::Point * p1 = tr->GetPoint( 1 );
                             p2t::Point * p2 = tr->GetPoint( 2 );
 
-                            p2t::Point * pb = &p2t_points[0];
+                            p2t::Point * pb = p2t_points.data();
 
                             uint32_t i0 = (uint32_t)std::distance( pb, p0 );
                             uint32_t i1 = (uint32_t)std::distance( pb, p1 );
@@ -791,7 +791,7 @@ namespace Mengine
             , m_options.outputFilePath.c_str()
         );
 
-        const void * buffer_memory = &_buffer[0];
+        const void * buffer_memory = _buffer.data();
         size_t buffer_size = _buffer.size();
 
         if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
@@ -806,4 +806,5 @@ namespace Mengine
 
         return true;
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 }

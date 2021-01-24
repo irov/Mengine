@@ -37,7 +37,7 @@ namespace Mengine
         uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
 
         _metabuf->writeSize( utf8_size );
-        _metabuf->writeCount( &_value[0], utf8_size );
+        _metabuf->writeCount( _value, utf8_size );
 
         return true;
     }
@@ -49,7 +49,7 @@ namespace Mengine
         uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
 
         _metabuf->writeSize( utf8_size );
-        _metabuf->writeCount( &_value[0], utf8_size );
+        _metabuf->writeCount( _value, utf8_size );
 
         return true;
     }

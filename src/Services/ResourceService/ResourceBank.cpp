@@ -231,7 +231,7 @@ namespace Mengine
 
         if( _resource->isMapping() == true )
         {
-            if( groupName == ConstString::none() )
+            if( groupName != ConstString::none() )
             {
                 m_resourcesGroup.erase( groupName, name );
             }

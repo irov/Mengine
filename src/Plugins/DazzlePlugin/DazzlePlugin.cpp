@@ -3,12 +3,15 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "DazzleInterface.h"
 
 #include "DataflowDZZ.h"
 #include "DazzleEffect.h"
 #include "ResourceDazzleEffect.h"
+#include "DazzleEffectConverterDZBToDZZ.h"
+#include "DazzleEffectPrototypeGenerator.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
@@ -16,6 +19,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/ConverterFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Dazzle, Mengine::DazzlePlugin );
@@ -104,8 +108,12 @@ namespace Mengine
 
         m_service = service;
 
+        DazzleEffectPrototypeGeneratorPtr prototypeGenerator = Helper::makeFactorableUnique<DazzleEffectPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
+
+        prototypeGenerator->setDazzleService( m_service );
+
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "DazzleEffect" ), Helper::makeFactorableUnique<NodePrototypeGenerator<DazzleEffect, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "DazzleEffect" ), prototypeGenerator ) == false )
         {
             return false;
         }
@@ -116,9 +124,20 @@ namespace Mengine
             return false;
         }
 
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
+
+        Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( "dzb2dzz", MENGINE_DOCUMENT_FACTORABLE );
+
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {
             DataflowDZZPtr dataflowDazzle = Helper::makeFactorableUnique<DataflowDZZ>( MENGINE_DOCUMENT_FACTORABLE );
+
+            ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+
+            dataflowDazzle->setArchivator( archivator );
+            dataflowDazzle->setDazzleService( m_service );
 
             if( dataflowDazzle->initialize() == false )
             {
@@ -141,6 +160,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzlePlugin::_finalizePlugin()
     {
+        Helper::unregisterConverter( "dzb2dzz" );
+
+        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "dzz" ) );
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "DazzleEffect" ) );
 

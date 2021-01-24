@@ -20,6 +20,6 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        void convertResource_( const ResourcePtr & _resource );
+        void convertResource_( Resource * _resource );
     };
 }

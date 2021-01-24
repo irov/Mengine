@@ -521,7 +521,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( path );
+            m_selectedNode = this->PathToNode( m_arrow, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -541,7 +541,9 @@ namespace Mengine
 
             this->DeserializeNode( xmlNode, m_scene );
 
-            m_selectedNode = this->PathToNode( this->StringToPath( m_lastSelectedNodePath ) );
+            Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
+
+            m_selectedNode = this->PathToNode( m_scene, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -561,7 +563,9 @@ namespace Mengine
 
             this->DeserializeNode( xmlNode, m_scenePickerable );
 
-            m_selectedNode = this->PathToNode( this->StringToPath( m_lastSelectedNodePath ) );
+            Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
+
+            m_selectedNode = this->PathToNode( m_scenePickerable, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -581,7 +585,9 @@ namespace Mengine
 
             DeserializeNode( xmlNode, m_sceneRenderable );
 
-            m_selectedNode = PathToNode( StringToPath( m_lastSelectedNodePath ) );
+            Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
+
+            m_selectedNode = this->PathToNode( m_sceneRenderable, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -892,40 +898,40 @@ namespace Mengine
         return path;
     }
     //////////////////////////////////////////////////////////////////////////
-    DebuggerNode * NodeDebuggerApp::PathToNode( const Vector<uint32_t> & _path )
+    DebuggerNode * NodeDebuggerApp::PathToNode( DebuggerNode * _base, const Vector<uint32_t> & _path )
     {
-        DebuggerNode * result = nullptr;
-
-        if( !_path.empty() )
+        if( _path.empty() == true )
         {
-            DebuggerNode * node = m_scene;
+            return nullptr;
+        }
 
-            Vector<uint32_t>::const_iterator it = _path.begin(), end = _path.end();
-            for( ; it != end; ++it )
+        DebuggerNode * node = _base;
+
+        Vector<uint32_t>::const_iterator it = _path.begin(), end = _path.end();
+        for( ; it != end; ++it )
+        {
+            const uint32_t nextUid = *it;
+            Vector<DebuggerNode *>::const_iterator found = std::find_if( node->children.begin(), node->children.end(), [nextUid]( const DebuggerNode * _n )->bool
             {
-                const uint32_t nextUid = *it;
-                Vector<DebuggerNode *>::const_iterator found = std::find_if( node->children.begin(), node->children.end(), [nextUid]( const DebuggerNode * _n )->bool
-                {
-                    return _n->uid == nextUid;
-                } );
+                return _n->uid == nextUid;
+            } );
 
-                if( found != node->children.end() )
-                {
-                    node = *found;
-                }
-                else
-                {
-                    break;
-                }
+            if( found != node->children.end() )
+            {
+                node = *found;
             }
-
-            if( it == end ) // seems like we've found it!
+            else
             {
-                result = node;
+                break;
             }
         }
 
-        return result;
+        if( it == end ) // seems like we've found it!
+        {
+            return node;
+        }
+
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DestroyNode( DebuggerNode * _node )
@@ -2279,6 +2285,10 @@ namespace Mengine
         {
             uiEditorVec1f( "Max Length", _node->textField.MaxLength );
             uiEditorBool( "Wrap", _node->textField.Wrap );
+            uiEditorBool( "AutoScale", _node->textField.AutoScale );
+            uiEditorVec2f( "AnchorPercent", _node->textField.AnchorPercent );
+            uiEditorBool( "AnchorVerticalAlign", _node->textField.AnchorVerticalAlign );
+            uiEditorBool( "AnchorHorizontalAlign", _node->textField.AnchorHorizontalAlign );
             uiEditorString( "TextID", _node->textField.TextID );
             uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
 

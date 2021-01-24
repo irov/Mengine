@@ -1,7 +1,8 @@
 #include "DevelopmentConverterPlugin.h"
 
+#include "Interface/ConverterServiceInterface.h"
+
 #include "HotspotImageConverterPNGToHIT.h"
-#include "ParticleConverterPTCToPTZ.h"
 #include "ImageConverterPVRToHTF.h"
 #include "ImageConverterDDSToHTF.h"
 #include "ImageConverterPNGToACF.h"
@@ -38,8 +39,7 @@ namespace Mengine
         Helper::registerConverter<VideoConverterFFMPEGToWEBM>( "ffmpegToWebM", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<VideoConverterFFMPEGToOGV>( "ffmpegToOGV", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<VideoConverterFFMPEGToOGVA>( "ffmpegToOGVA", MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerConverter<MovieKeyConverterXMLToAEK>( "xmlToAekMovie", MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerConverter<ParticleConverterPTCToPTZ>( "ptc2ptz", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<MovieKeyConverterXMLToAEK>( "xmlToAekMovie", MENGINE_DOCUMENT_FACTORABLE );        
         Helper::registerConverter<ImageConverterPVRToHTF>( "pvr2htf", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterDDSToHTF>( "dds2htf", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterPNGToACF>( "png2acf", MENGINE_DOCUMENT_FACTORABLE );
@@ -56,8 +56,7 @@ namespace Mengine
         Helper::unregisterConverter( "ffmpegToWebM" );
         Helper::unregisterConverter( "ffmpegToOGV" );
         Helper::unregisterConverter( "ffmpegToOGVA" );
-        Helper::unregisterConverter( "xmlToAekMovie" );
-        Helper::unregisterConverter( "ptc2ptz" );
+        Helper::unregisterConverter( "xmlToAekMovie" );        
         Helper::unregisterConverter( "pvr2htf" );
         Helper::unregisterConverter( "dds2htf" );
         Helper::unregisterConverter( "png2acf" );

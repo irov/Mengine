@@ -65,7 +65,7 @@ namespace Mengine
 
         m_tasks.clear();
 
-        for( const ThreadQueueInterfacePtr & queue : m_threadQueues )
+        for( const ThreadQueuePtr & queue : m_threadQueues )
         {
             queue->finalize();
         }
@@ -368,14 +368,16 @@ namespace Mengine
             it_task != it_task_end;
             /*++it*/ )
         {
-            ThreadQueuePtr pool = m_threadQueues[it_task];
+            ThreadQueuePtr queue = m_threadQueues[it_task];
 
-            if( pool->update() == false )
+            if( queue->update() == false )
             {
                 ++it_task;
             }
             else
             {
+                queue->finalize();
+
                 m_threadQueues[it_task] = m_threadQueues.back();
                 m_threadQueues.pop_back();
                 --it_task_end;

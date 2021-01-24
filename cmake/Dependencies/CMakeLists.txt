@@ -548,6 +548,8 @@ if(MENGINE_DEPENDENCE_SDL2)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/CMakeLists.txt ${THIRDPARTY_DIR}/SDL2/CMakeLists.txt COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDL_error.c ${THIRDPARTY_DIR}/SDL2/src/SDL_error.c COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDL_error.h ${THIRDPARTY_DIR}/SDL2/include/SDL_error.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDL_dynapi_procs.h ${THIRDPARTY_DIR}/SDL2/src/dynapi/SDL_dynapi_procs.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDL_dynapi_overrides.h ${THIRDPARTY_DIR}/SDL2/src/dynapi/SDL_dynapi_overrides.h COPYONLY)
     
     if(MENGINE_PLATFORM_SDL AND (MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX OR MENGINE_TARGET_IOS OR MENGINE_TARGET_MACOS))
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDL_rwops.c ${THIRDPARTY_DIR}/SDL2/src/file/SDL_rwops.c COPYONLY)

@@ -735,7 +735,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool createCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
             {
-                PythonSceneChangeCallbackPtr py_cb = nullptr;
+                PythonSceneChangeCallbackPtr py_cb;
 
                 if( _cb.is_none() == false )
                 {
@@ -832,6 +832,36 @@ namespace Mengine
                     {
                         return false;
                     }
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool restartCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )
+            {
+                PythonSceneChangeCallbackPtr py_cb = nullptr;
+
+                if( _cb.is_none() == false )
+                {
+                    if( _cb.is_callable() == false )
+                    {
+                        LOGGER_ERROR( "restart scene cb '%s' not callable"
+                            , _cb.repr().c_str()
+                        );
+
+                        return false;
+                    }
+
+                    LOGGER_INFO( "scene", "restart current scene" );
+
+                    py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                    py_cb->initialize( _cb, _args );
+                }
+
+                if( SCENE_SERVICE()
+                    ->restartCurrentScene( _immediately, py_cb ) == false )
+                {
+                    return false;
                 }
 
                 return true;
@@ -3822,8 +3852,8 @@ namespace Mengine
 
         pybind::def_functor_args( _kernel, "createCurrentScene", nodeScriptMethod, &EngineScriptMethod::createCurrentScene );
         pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
+        pybind::def_functor_args( _kernel, "restartCurrentScene", nodeScriptMethod, &EngineScriptMethod::restartCurrentScene );
         pybind::def_functor( _kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
-
 
         pybind::def_functor( _kernel, "createGlobalScene", nodeScriptMethod, &EngineScriptMethod::createGlobalScene );
         pybind::def_functor( _kernel, "removeGlobalScene", nodeScriptMethod, &EngineScriptMethod::removeGlobalScene );

@@ -154,7 +154,10 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::compile" );
 
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' compile not initialize"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
 
         if( ++m_compileReferenceCount == 1 )
         {
@@ -183,7 +186,10 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceCompile, this, "Resource::release" );
 
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' release not initialize"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
 
         MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "'%s:%s' group '%s' release compile refcount == 0"
             , this->getType().c_str()

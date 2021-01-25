@@ -31,7 +31,7 @@ android {
     
     splits {
         abi {
-            if (findProperty("ANDROID_APP_SPLIT_ENABLE")) {
+            if (getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false) == true) {
                 enable true
             } else {
                 enable false

@@ -10,8 +10,11 @@
 #include "DataflowDZZ.h"
 #include "DazzleEffect.h"
 #include "ResourceDazzleEffect.h"
-#include "DazzleEffectConverterDZBToDZZ.h"
 #include "DazzleEffectPrototypeGenerator.h"
+
+#ifndef MENGINE_MASTER_RELEASE
+#   include "DazzleEffectConverterDZBToDZZ.h"
+#endif
 
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
@@ -126,7 +129,9 @@ namespace Mengine
 
         CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
 
+#ifndef MENGINE_MASTER_RELEASE
         Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( "dzb2dzz", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {

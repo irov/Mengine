@@ -12,6 +12,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "dazzle/dazzle_read.hpp"
+
 #include "stdex/memorycopy.h"
 
 namespace Mengine

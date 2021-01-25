@@ -24,7 +24,7 @@ namespace Mengine
         const void * data;
     };
     //////////////////////////////////////////////////////////////////////////
-    static dz_result_t s_dz_stream_read( void * _data, dz_size_t _size, dz_userdata_t _ud )
+    static dz_result_t s_dz_stream_read( void * const _data, dz_size_t _size, dz_userdata_t _ud )
     {
         dz_stream_t * stream = reinterpret_cast<dz_stream_t *>(_ud);
 

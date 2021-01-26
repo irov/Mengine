@@ -43,6 +43,7 @@ android {
                 include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             } else {
                 include "arm64-v8a", "armeabi-v7a"
+                exclude "x86", "x86_64"
             }
             
             universalApk false

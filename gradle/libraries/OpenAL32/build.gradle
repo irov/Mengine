@@ -27,6 +27,16 @@ android {
         
         versionCode 1
         versionName "1.0"
+        
+        ndk {
+            if (getBooleanProperty("ANDROID_APP_EMULATOR_ENABLE", false) == true) {
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+                abiFilters.clear()
+            } else {
+                abiFilters "arm64-v8a", "armeabi-v7a"
+                abiFilters.clear()
+            }
+        }
     }
     
     splits {

@@ -58,14 +58,14 @@ build_script:
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
 - mkdir cmake_dependencies
 - cd cmake_dependencies
-- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_DEPENDENCIES_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
+- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_DEPENDENCIES_DIR%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION="10.0.18362"
 - cmake --build . --clean-first -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
 - mkdir cmake_solution
 - cd cmake_solution
-- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_SOLUTION_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
+- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_SOLUTION_DIR%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION="10.0.18362"
 - cmake --build . --clean-first -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 

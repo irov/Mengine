@@ -770,7 +770,10 @@ namespace Mengine
             Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
         }
 
-        Detail::serializeNodeProp( _textField->getFont()->getName(), "FontName", xmlNode );
+        const TextFontInterfacePtr & defaultFont = FONT_SERVICE()
+            ->getDefaultFont();
+
+        Detail::serializeNodeProp( _textField->getFont() != nullptr ? _textField->getFont()->getName() : defaultFont->getName(), "FontName", xmlNode );
         Detail::serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );
         Detail::serializeNodeProp( _textField->getLineOffset(), "LineOffset", xmlNode );
         Detail::serializeNodeProp( _textField->getCharOffset(), "CharOffset", xmlNode );

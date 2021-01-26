@@ -1,10 +1,5 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
-
-apply plugin: 'io.sentry.android.gradle'
-
 android {
     ndkVersion '22.0.7026061'
     buildToolsVersion '30.0.3'
@@ -146,12 +141,6 @@ android {
                         "-DCMAKE_BUILD_TYPE:STRING=Debug"
                         
                 }
-                
-                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
-                    firebaseCrashlytics {
-                        mappingFileUploadEnabled true
-                    }
-                }
             }
         }
 
@@ -169,12 +158,6 @@ android {
                         "-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (getBooleanProperty("ANDROID_APP_BUILD_PUBLISH", false) ? "ON" : "OFF"),
                         "-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF",
                         "-DCMAKE_BUILD_TYPE:STRING=Release"
-                }
-                
-                if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
-                    firebaseCrashlytics {
-                        nativeSymbolUploadEnabled true
-                    }
                 }
             }
         }
@@ -259,13 +242,6 @@ android {
     }
 }
 
-sentry {
-    autoProguardConfig true
-    autoUpload true
-    uploadNativeSymbols true
-    includeNativeSources true
-}
-
 ext.abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 
 import com.android.build.OutputFile
@@ -289,26 +265,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.preference:preference:1.1.1'
 
-    //devtodev
-    implementation 'com.devtodev:android:1.14.8'
-
-    //facebook
-    implementation 'com.facebook.android:facebook-android-sdk:9.0.0'
-
-    //google services
-    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.android.gms:play-services-ads:19.7.0'
-    implementation 'com.google.android.gms:play-services-basement:17.5.0'
-
-    //firebase
-    implementation platform('com.google.firebase:firebase-bom:26.3.0')
-
-    implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-analytics'
-
-    //sentry
-    implementation 'io.sentry:sentry-android:3.2.1'
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -316,5 +272,117 @@ dependencies {
 
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
-    implementation project(':unity-ads')
+}
+
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_UNITYADS", true) == true ) {
+    println 'ANDROID_APP_ENABLE_UNITYADS: TRUE'
+
+    dependencies {
+        implementation project(':unity-ads')
+    }
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_UNITYADS: FALSE'
+}
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_DEVTODEV", true) == true ) {
+    println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
+
+    dependencies {
+        implementation 'com.devtodev:android:1.14.8'
+    }
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_DEVTODEV: TRUE'
+}
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_FACEBOOK", true) == true ) {
+    println 'ANDROID_APP_ENABLE_FACEBOOK: TRUE'
+
+    dependencies {
+        implementation 'com.facebook.android:facebook-android-sdk:9.0.0'
+    }
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_FACEBOOK: FALSE'
+}
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == true ) {
+    println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: TRUE'
+
+    apply plugin: 'com.google.gms.google-services'
+
+    dependencies {
+        implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+        implementation 'com.google.android.gms:play-services-ads:19.7.0'
+        implementation 'com.google.android.gms:play-services-basement:17.5.0'
+    }
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_GOOGLE_SERVICE: FALSE'
+}
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS", true) == true ) {
+    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: TRUE'
+    
+    apply plugin: 'com.google.firebase.crashlytics'
+
+    android {
+        if (getBooleanProperty("ANDROID_APP_UPLOAD_CRASHLYTICS", false) == true) {
+            buildTypes {
+                debug {
+                    externalNativeBuild {
+                        firebaseCrashlytics {
+                            mappingFileUploadEnabled true
+                        }
+                    }
+                }
+
+                release {
+                    externalNativeBuild {
+                        firebaseCrashlytics {
+                            nativeSymbolUploadEnabled true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    dependencies {
+        implementation platform('com.google.firebase:firebase-bom:26.3.0')
+
+        implementation 'com.google.firebase:firebase-crashlytics'
+        implementation 'com.google.firebase:firebase-analytics'
+    }    
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS: FALSE'
+}
+
+if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
+    println 'ANDROID_APP_ENABLE_SENTRY: TRUE'
+
+    apply plugin: 'io.sentry.android.gradle'
+
+    dependencies {
+        implementation 'io.sentry:sentry-android:3.2.1'
+    }
+
+    sentry {
+        autoProguardConfig true
+        autoUpload true
+        uploadNativeSymbols true
+        includeNativeSources true
+    }
+}
+else
+{
+    println 'ANDROID_APP_ENABLE_SENTRY: FALSE'
 }

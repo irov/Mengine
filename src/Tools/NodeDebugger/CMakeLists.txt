@@ -7,10 +7,19 @@ src
     NodeDebuggerApp.h
     NodeDebuggerApp.cpp
 
-    imgui_impl_glfw_gl3_glad.h
-    imgui_impl_glfw_gl3_glad.cpp
-
     main.cpp
+)
+
+ADD_FILTER(
+imgui_opengl3
+    ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_opengl3.h
+    ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_opengl3.cpp
+)
+
+ADD_FILTER(
+imgui_glfw
+    ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_glfw.h
+    ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_glfw.cpp
 )
 
 add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
@@ -21,6 +30,7 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/glfw3/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pugixml/src)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/zed_net)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui/backends)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stb_image)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/lz4/lib)
 

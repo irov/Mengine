@@ -6,6 +6,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -16,10 +17,12 @@ namespace Mengine
         , public ImGUIRenderProviderInterface
         , public UnknownImGUIRenderInterface
         , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         ImGUIRender();

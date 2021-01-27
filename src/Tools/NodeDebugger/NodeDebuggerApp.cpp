@@ -1,6 +1,7 @@
 #include "NodeDebuggerApp.h"
 
-#include "imgui_impl_glfw_gl3_glad.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
 
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
@@ -147,11 +148,21 @@ namespace Mengine
         glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
+        // Setup Dear ImGui binding
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGui::GetIO().IniFilename = nullptr; // disable "imgui.ini"
+        //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange; // tell ImGui to not interfere with our cursors
+
+        ImGui_ImplOpenGL3_Init();
+
+        ImGui_ImplGlfw_InitForOpenGL( m_window, true );
+
         glfwSetMouseButtonCallback( m_window, ImGui_ImplGlfw_MouseButtonCallback );
         glfwSetScrollCallback( m_window, ImGui_ImplGlfw_ScrollCallback );
         glfwSetKeyCallback( m_window, ImGui_ImplGlfw_KeyCallback );
         glfwSetCharCallback( m_window, ImGui_ImplGlfw_CharCallback );
-        
+
         glfwSetWindowSizeCallback( m_window, []( GLFWwindow * _wnd, int _width, int _height )
         {
             NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
@@ -161,12 +172,6 @@ namespace Mengine
             }
         } );
 
-        // Setup Dear ImGui binding
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGui::GetIO().IniFilename = nullptr; // disable "imgui.ini"
-        //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange; // tell ImGui to not interfere with our cursors
-        ImGui_ImplGlfwGL3_Init( m_window, true );
         ImGui::StyleColorsClassic();
         //ImGuiExt::SetBrightStyle();
 
@@ -224,7 +229,8 @@ namespace Mengine
             this->OnConnectButton();
         }
 
-        ImGui_ImplGlfwGL3_CreateDeviceObjects();
+        ImGui_ImplOpenGL3_CreateFontsTexture();
+        ImGui_ImplOpenGL3_CreateDeviceObjects();
 
         return true;
     }
@@ -242,7 +248,11 @@ namespace Mengine
             this->Update( dt );
 
             glfwPollEvents();
-            ImGui_ImplGlfwGL3_NewFrame();
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+
+            ImGui::NewFrame();
 
             glClearColor( 0.412f, 0.796f, 1.0f, 1.0f );
             glClear( GL_COLOR_BUFFER_BIT );
@@ -250,7 +260,8 @@ namespace Mengine
             this->DoUI();
 
             ImGui::Render();
-            ImGui_ImplGlfwGL3_RenderDrawData( ImGui::GetDrawData() );
+
+            ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 
             glfwSwapBuffers( m_window );
         }
@@ -260,8 +271,9 @@ namespace Mengine
     {
         m_shutdown = true;
 
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
 
-        ImGui_ImplGlfwGL3_Shutdown();
         ImGui::DestroyContext();
 
         glfwTerminate();
@@ -605,9 +617,9 @@ namespace Mengine
         for( const pugi::xml_node & child : xml_allocators )
         {
             const pugi::char_t * name = child.attribute( "Name" ).value();
-            uint32_t count = child.attribute( "Count" ).as_uint();
+            uint32_t size = child.attribute( "Count" ).as_uint();
 
-            m_memory[name] = count;
+            m_memory[name] = size;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1318,27 +1330,45 @@ namespace Mengine
         struct MemoryDesc
         {
             String name;
-            uint32_t count;
+            uint32_t size;
         };
 
         Vector<MemoryDesc> vmemory;
 
-        for( auto && [name, count] : m_memory )
+        for( auto && [name, size] : m_memory )
         {
-            vmemory.emplace_back( MemoryDesc{name, count} );
+            vmemory.emplace_back( MemoryDesc{name, size} );
         }
 
         std::stable_sort( vmemory.begin(), vmemory.end(), []( const MemoryDesc & l, const MemoryDesc & r )
         {
-            return l.count > r.count;
+            return l.size > r.size;
         } );
 
         for( const MemoryDesc & desc : vmemory )
         {
-            ImGui::TextColored( ImVec4( 0.f, 1.f, 1.f, 1.f ), "Allocator: %s [total %u]"
-                , desc.name.c_str()
-                , desc.count
-            );
+            if( desc.size > 1024 * 1024 )
+            {
+                ImGui::TextColored( ImVec4( 1.f, 0.25f, 0.5f, 1.f ), "Allocator: %s [total %umb %ukb]"
+                    , desc.name.c_str()
+                    , desc.size / (1024 * 1024)
+                    , desc.size / 1024 % 1024
+                );
+            }
+            else if( desc.size > 1024 )
+            {
+                ImGui::TextColored( ImVec4( 0.5f, 1.f, 0.25f, 1.f ), "Allocator: %s [total %ukb]"
+                    , desc.name.c_str()
+                    , desc.size / 1024
+                );
+            }
+            else
+            {
+                ImGui::TextColored( ImVec4( 0.f, 1.f, 1.f, 1.f ), "Allocator: %s [total %u byte]"
+                    , desc.name.c_str()
+                    , desc.size
+                );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

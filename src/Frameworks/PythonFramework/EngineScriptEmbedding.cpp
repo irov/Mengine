@@ -2061,8 +2061,11 @@ namespace Mengine
 
                 MENGINE_STRCAT( projectName, "/" );
 
+                const void * memoryBuffer = memory->getBuffer();
+                size_t memorySize = memory->getSize();
+
                 if( PLATFORM_SERVICE()
-                    ->createDirectoryUserPicture( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )
+                    ->createDirectoryUserPicture( projectName, _filePath.c_str(), memoryBuffer, memorySize ) == false )
                 {
                     return false;
                 }
@@ -2088,8 +2091,11 @@ namespace Mengine
 
                 MENGINE_STRCAT( projectName, "/" );
 
+                const void * memoryBuffer = memory->getBuffer();
+                size_t memorySize = memory->getSize();
+
                 if( PLATFORM_SERVICE()
-                    ->createDirectoryUserMusic( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )
+                    ->createDirectoryUserMusic( projectName, _filePath.c_str(), memoryBuffer, memorySize ) == false )
                 {
                     return false;
                 }

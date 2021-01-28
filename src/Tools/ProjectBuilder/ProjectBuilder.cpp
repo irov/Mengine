@@ -63,6 +63,11 @@ PLUGIN_EXPORT( Movie1 );
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
+PLUGIN_EXPORT( JPEG );
+PLUGIN_EXPORT( PNG );
+PLUGIN_EXPORT( WebP );
+PLUGIN_EXPORT( Theora );
+PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( MetabufLoader );
 PLUGIN_EXPORT( DevelopmentConverter );
 //////////////////////////////////////////////////////////////////////////
@@ -202,6 +207,11 @@ namespace Mengine
         PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( JPEG, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( PNG, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( WebP, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Theora, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( OggVorbis, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Movie1, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Movie, MENGINE_DOCUMENT_FUNCTION );
@@ -211,25 +221,11 @@ namespace Mengine
 
         PLUGIN_CREATE( DevelopmentConverter, MENGINE_DOCUMENT_FUNCTION );
 
-        //PLUGIN_SERVICE()
-        //    ->loadPlugin( "DevelopmentConverterPlugin.dll" );
+        PLUGIN_SERVICE()
+            ->loadPlugin( "AstralaxPlugin.dll", MENGINE_DOCUMENT_FUNCTION );
 
         PLUGIN_SERVICE()
             ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION );
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return false;
-        }
-
-        ConstString dev = STRINGIZE_STRING_LOCAL( "dev" );
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return false;
-        }
 
         return true;
     }
@@ -250,7 +246,7 @@ namespace Mengine
         ConverterOptions options;
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getGlobalFileGroup();
 
         options.fileGroup = fileGroup;
         options.inputFilePath = Helper::stringizeFilePath( utf8_fromPath );
@@ -317,7 +313,7 @@ namespace Mengine
         FilePath c_path = Helper::stringizeFilePath( utf8_path );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getGlobalFileGroup();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -504,7 +500,7 @@ namespace Mengine
         FilePath c_path = Helper::stringizeFilePath( utf8_path );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getGlobalFileGroup();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -1108,7 +1104,7 @@ bool run()
         return false;
     }
 
-    Mengine::Helper::deleteT( allocator );
+    Mengine::Helper::deleteT( static_cast<Detail::MyAllocator *>(allocator) );
 
     return result;
 }

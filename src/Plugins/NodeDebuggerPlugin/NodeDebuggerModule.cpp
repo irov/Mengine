@@ -687,12 +687,64 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
-        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Render" );
+        pugi::xml_node xmlRender = _xmlParentNode.append_child( "Render" );
 
-        Detail::serializeNodeProp( _render->isRenderEnable(), "enable", xmlNode );
-        Detail::serializeNodeProp( _render->isHide(), "hide", xmlNode );
-        Detail::serializeNodeProp( _render->getLocalColor(), "local_color", xmlNode );
-        Detail::serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlNode );
+        Detail::serializeNodeProp( _render->isRenderEnable(), "enable", xmlRender );
+        Detail::serializeNodeProp( _render->isHide(), "hide", xmlRender );
+        Detail::serializeNodeProp( _render->getLocalColor(), "local_color", xmlRender );
+        Detail::serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlRender );
+
+        const RenderViewportInterfacePtr & viewport = _render->getRenderViewport();
+
+        if( viewport != nullptr )
+        {
+            pugi::xml_node xmlViewport = xmlRender.append_child( "Viewport" );
+
+            const Viewport & v = viewport->getViewport();
+
+            Detail::serializeNodeProp( v.begin, "begin", xmlViewport );
+            Detail::serializeNodeProp( v.end, "end", xmlViewport );
+        }
+
+        const RenderCameraInterfacePtr & camera = _render->getRenderCamera();
+
+        if( camera != nullptr )
+        {
+            pugi::xml_node xmlCamera = xmlRender.append_child( "Camera" );
+
+            MENGINE_UNUSED( xmlCamera );
+        }
+
+        const RenderTransformationInterfacePtr & transformation = _render->getRenderTransformation();
+
+        if( transformation != nullptr )
+        {
+            pugi::xml_node xmlTransformation = xmlRender.append_child( "Transformation" );
+
+            MENGINE_UNUSED( xmlTransformation );
+        }
+
+        const RenderScissorInterfacePtr & scissor = _render->getRenderScissor();
+
+        if( scissor != nullptr )
+        {
+            pugi::xml_node xmlScissor = xmlRender.append_child( "Scissor" );
+
+            const Viewport & v = scissor->getScissorViewport();
+
+            Detail::serializeNodeProp( v.begin, "begin", xmlScissor );
+            Detail::serializeNodeProp( v.end, "end", xmlScissor );
+        }
+
+        const RenderTargetInterfacePtr & target = _render->getRenderTarget();
+
+        if( target != nullptr )
+        {
+            pugi::xml_node xmlTarget = xmlRender.append_child( "Target" );
+
+            Detail::serializeNodeProp( target->getHWWidth(), "width", xmlTarget );
+            Detail::serializeNodeProp( target->getHWHeight(), "height", xmlTarget );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeAnimation( const Compilable * _compilable, const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )

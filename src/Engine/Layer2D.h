@@ -78,6 +78,9 @@ namespace Mengine
     protected:
         const RenderViewportInterfacePtr & getPickerViewport() const override;
         const RenderCameraInterfacePtr & getPickerCamera() const override;
+        const RenderScissorInterfacePtr & getPickerScissor() const override;
+        const RenderTransformationInterfacePtr & getPickerTransformation() const override;
+        const RenderTargetInterfacePtr & getPickerTarget() const override;
 
     protected:
         mt::vec2f m_size;
@@ -126,4 +129,5 @@ namespace Mengine
     {
         return m_materialImageMask;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

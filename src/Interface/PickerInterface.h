@@ -63,9 +63,12 @@ namespace Mengine
     public:
         virtual const RenderViewportInterfacePtr & getPickerViewport() const = 0;
         virtual const RenderCameraInterfacePtr & getPickerCamera() const = 0;
+        virtual const RenderScissorInterfacePtr & getPickerScissor() const = 0;
+        virtual const RenderTransformationInterfacePtr & getPickerTransformation() const = 0;
+        virtual const RenderTargetInterfacePtr & getPickerTarget() const = 0;
 
     public:
-        virtual bool pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const = 0;
+        virtual bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickerInterface> PickerInterfacePtr;

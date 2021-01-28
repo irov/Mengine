@@ -1542,10 +1542,25 @@ namespace Mengine
 
                 const RenderInterface * render = arrow->getRender();
 
-                const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
-                const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
+                const RenderCameraInterfacePtr & camera = render->getRenderCamera();
+                const RenderViewportInterfacePtr & viewport = render->getRenderViewport();
 
-                arrow->calcMouseScreenPosition( renderCamera, renderViewport, _pos, _screen );
+                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get arrow '%s' render camera inheritance"
+                    , arrow->getName().c_str()
+                );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( viewport, "invalid get arrow '%s' render viewport inheritance"
+                    , arrow->getName().c_str()
+                );
+
+                RenderContext context;
+                context.camera = camera.get();
+                context.viewport = viewport.get();
+                context.transformation = nullptr;
+                context.scissor = nullptr;
+                context.target = nullptr;
+
+                arrow->calcMouseScreenPosition( &context, _pos, _screen );
 
                 return true;
             }
@@ -2130,8 +2145,15 @@ namespace Mengine
                 {
                     MENGINE_UNUSED( _pressure );
 
+                    RenderContext context;
+                    context.camera = m_renderCamera.get();
+                    context.viewport = m_renderViewport.get();
+                    context.transformation = nullptr;
+                    context.scissor = nullptr;
+                    context.target = nullptr;
+
                     mt::vec2f wp;
-                    m_arrow->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _position, &wp );
+                    m_arrow->calcMouseWorldPosition( &context, _position, &wp );
 
                     mt::vec3f v3( wp.x, wp.y, 0.f );
 
@@ -2223,8 +2245,15 @@ namespace Mengine
                         ->getRenderViewport();
                 }
 
+                RenderContext context;
+                context.camera = camera.get();
+                context.viewport = viewport.get();
+                context.transformation = nullptr;
+                context.scissor = nullptr;
+                context.target = nullptr;
+
                 mt::vec2f wp;
-                arrow->calcMouseWorldPosition( camera, viewport, _screenPoint, &wp );
+                arrow->calcMouseWorldPosition( &context, _screenPoint, &wp );
 
                 return wp;
             }
@@ -2258,8 +2287,15 @@ namespace Mengine
                         ->getRenderViewport();
                 }
 
+                RenderContext context;
+                context.camera = camera.get();
+                context.viewport = viewport.get();
+                context.transformation = nullptr;
+                context.scissor = nullptr;
+                context.target = nullptr;
+
                 mt::vec2f wp;
-                arrow->calcPointClick( camera, viewport, _screenPoint, &wp );
+                arrow->calcPointClick( &context, _screenPoint, &wp );
 
                 return wp;
             }

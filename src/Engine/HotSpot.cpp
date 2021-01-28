@@ -265,7 +265,7 @@ namespace Mengine
         Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const
+    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const
     {
         EArrowType arrowType = _arrow->getArrowType();
 
@@ -273,7 +273,7 @@ namespace Mengine
         {
         case EAT_POINT:
             {
-                bool result = this->testPoint( _camera, _viewport, _contentResolution, _point );
+                bool result = this->testPoint( _context, _contentResolution, _point );
 
                 return result;
             }break;
@@ -282,9 +282,9 @@ namespace Mengine
                 float radius = _arrow->getRadius();
 
                 mt::vec2f rxy;
-                Helper::worldToScreenDelta( _camera, _viewport, _contentResolution, mt::vec2f( radius, radius ), &rxy );
+                Helper::worldToScreenDelta( _context, _contentResolution, mt::vec2f( radius, radius ), &rxy );
 
-                bool result = this->testRadius( _camera, _viewport, _contentResolution, _point, rxy.x, rxy.y );
+                bool result = this->testRadius( _context, _contentResolution, _point, rxy.x, rxy.y );
 
                 return result;
             }break;
@@ -292,7 +292,7 @@ namespace Mengine
             {
                 const Polygon & polygon = _arrow->getPolygon();
 
-                bool result = this->testPolygon( _camera, _viewport, _contentResolution, _point, polygon );
+                bool result = this->testPolygon( _context, _contentResolution, _point, polygon );
 
                 return result;
             }break;

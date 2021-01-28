@@ -28,8 +28,10 @@ namespace Mengine
 
     public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
+        virtual void setRenderTransformation( const RenderTransformationInterfacePtr & _transformation ) = 0;
         virtual void setRenderCamera( const RenderCameraInterfacePtr & _camera ) = 0;
         virtual void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) = 0;
+        virtual void setRenderTarget( const RenderTargetInterfacePtr & _target ) = 0;
 
     public:
         virtual void update() = 0;

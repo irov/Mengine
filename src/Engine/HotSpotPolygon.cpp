@@ -36,7 +36,7 @@ namespace Mengine
         m_polygon.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotPolygon::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
+    bool HotSpotPolygon::testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const
     {
         if( m_global == true )
         {
@@ -49,7 +49,7 @@ namespace Mengine
         }
 
         mt::box2f bb;
-        this->getScreenPolygon( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
+        this->getScreenPolygon( _context, _contentResolution, &bb, &m_polygonScreen );
 
         if( mt::is_intersect( bb, _point ) == false )
         {
@@ -64,7 +64,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotPolygon::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    bool HotSpotPolygon::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
     {
         if( m_global == true )
         {
@@ -77,7 +77,7 @@ namespace Mengine
         }
 
         mt::box2f bb;
-        this->getScreenPolygon( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
+        this->getScreenPolygon( _context, _contentResolution, &bb, &m_polygonScreen );
 
         if( mt::is_intersect( bb, _point, _radiusx, _radiusy ) == false )
         {
@@ -92,7 +92,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotPolygon::testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
+    bool HotSpotPolygon::testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
     {
         if( m_global == true )
         {
@@ -115,7 +115,7 @@ namespace Mengine
         m_polygonTemp.to_box2f( &bb_polygon );
 
         mt::box2f bb_screen;
-        this->getScreenPolygon( _camera, _viewport, _contentResolution, &bb_screen, &m_polygonScreen );
+        this->getScreenPolygon( _context, _contentResolution, &bb_screen, &m_polygonScreen );
 
         if( mt::is_intersect( bb_screen, bb_polygon ) == false )
         {
@@ -130,10 +130,10 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotPolygon::getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * const _bb, Polygon * const _screen ) const
+    void HotSpotPolygon::getScreenPolygon( const RenderContext * _context, const Resolution & _contentResolution, mt::box2f * const _bb, Polygon * const _screen ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _camera, "invalid camera nullptr" );
-        MENGINE_ASSERTION_MEMORY_PANIC( _viewport, "invalid viewport nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport nullptr" );
 
         if( _bb != nullptr )
         {
@@ -147,12 +147,12 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+        const mt::mat4f & vpm = _context->camera->getCameraViewProjectionMatrix();
 
         mt::mat4f wvpm;
         mt::mul_m4_m4( wvpm, wm, vpm );
 
-        const Viewport & vp = _viewport->getViewport();
+        const Viewport & vp = _context->viewport->getViewport();
 
         mt::vec2f vp_size;
         vp.calcSize( vp_size );

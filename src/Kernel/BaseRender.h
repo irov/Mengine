@@ -82,6 +82,9 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
+        void makeRenderContext( RenderContext * const _constext ) const override;
+
+    public:
         void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
 
     public:

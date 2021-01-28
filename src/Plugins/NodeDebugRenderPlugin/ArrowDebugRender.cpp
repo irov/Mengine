@@ -13,8 +13,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Arrow * _node )
+    void ArrowDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Arrow * _node, bool _hide )
     {
+        MENGINE_UNUSED( _hide );
+
         const TransformationInterface * transformation = _node->getTransformation();
 
         const mt::mat4f & wm = transformation->getWorldMatrix();

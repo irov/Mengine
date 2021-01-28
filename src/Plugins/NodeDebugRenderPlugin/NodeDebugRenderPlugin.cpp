@@ -7,6 +7,7 @@
 #include "HotSpotCircleDebugRender.h"
 #include "HotSpotImageDebugRender.h"
 #include "HotSpotPolygonDebugRender.h"
+#include "HotSpotSurfaceDebugRender.h"
 #include "TextFieldDebugRender.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -51,6 +52,9 @@ namespace Mengine
             ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotSurface" ), Helper::makeFactorableUnique<HotSpotSurfaceDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );        
+
+        NODEDEBUGRENDER_SERVICE()
             ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
@@ -77,6 +81,9 @@ namespace Mengine
 
         NODEDEBUGRENDER_SERVICE()
             ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+
+        NODEDEBUGRENDER_SERVICE()
+            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotSurface" ) );
 
         NODEDEBUGRENDER_SERVICE()
             ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ) );

@@ -27,11 +27,11 @@ namespace Mengine
 
         RenderInterface * render = m_arrow->getRender();
 
-        const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
-        const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
+        RenderContext context;
+        render->makeRenderContext( &context );
 
         mt::vec2f wp;
-        m_arrow->calcMouseWorldPosition( renderCamera, renderViewport, _position, &wp );
+        m_arrow->calcMouseWorldPosition( &context, _position, &wp );
 
         mt::vec3f v3( wp.x, wp.y, 0.f );
 

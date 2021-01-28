@@ -25,6 +25,8 @@ src
     HotSpotImageDebugRender.h
     HotSpotPolygonDebugRender.cpp
     HotSpotPolygonDebugRender.h
+    HotSpotSurfaceDebugRender.cpp
+    HotSpotSurfaceDebugRender.h
     HotSpotCircleDebugRender.cpp
     HotSpotCircleDebugRender.h
 )

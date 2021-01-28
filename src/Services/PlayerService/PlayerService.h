@@ -70,8 +70,16 @@ namespace Mengine
         const RenderViewportInterfacePtr & getRenderViewport() const override;
 
     public:
+        void setRenderTransformation( const RenderTransformationInterfacePtr & _transformation ) override;
+        const RenderTransformationInterfacePtr & getRenderTransformation() const override;
+
+    public:
         void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
         const RenderScissorInterfacePtr & getRenderScissor() const override;
+
+    public:
+        void setRenderTarget( const RenderTargetInterfacePtr & _target ) override;
+        const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
         void initializeRenderResources() override;
@@ -128,6 +136,8 @@ namespace Mengine
         RenderTransformationInterfacePtr m_renderTransformation;
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
+
+        RenderContext m_renderContext;
 
         GlobalInputHandlerInterfacePtr m_globalInputHandler;
 

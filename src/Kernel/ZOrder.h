@@ -34,6 +34,7 @@ namespace Mengine
     protected:
         const RenderViewportInterfacePtr & getPickerViewport() const override;
         const RenderCameraInterfacePtr & getPickerCamera() const override;
+        const RenderScissorInterfacePtr & getPickerScissor() const override;
 
     protected:
         typedef Vector<ZOrderRenderPtr> VectorZOrderRenders;

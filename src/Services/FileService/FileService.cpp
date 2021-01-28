@@ -68,6 +68,7 @@ namespace Mengine
         m_fileModifies.clear();
 
         m_defaultFileGroup = nullptr;
+        m_globalFileGroup = nullptr;
 
         for( HashtableFileGroups::const_reverse_iterator
             it = m_fileGroups.rbegin(),
@@ -153,6 +154,10 @@ namespace Mengine
         {
             m_defaultFileGroup = fileGroup;
         }
+        else if( _name == STRINGIZE_STRING_LOCAL( "dev" ) )
+        {
+            m_globalFileGroup = fileGroup;
+        }
 
         if( _outFileGroup != nullptr )
         {
@@ -208,9 +213,24 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
+    void FileService::setDefaultFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    {
+        m_defaultFileGroup = _fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & FileService::getDefaultFileGroup() const
     {
         return m_defaultFileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileService::setGlobalFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    {
+        m_globalFileGroup = _fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & FileService::getGlobalFileGroup() const
+    {
+        return m_globalFileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileService::setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda )

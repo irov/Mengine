@@ -74,6 +74,9 @@ namespace Mengine
         virtual const RenderTargetInterfacePtr & getRenderTarget() const = 0;
 
     public:
+        virtual void makeRenderContext( RenderContext * const _context ) const = 0;
+
+    public:
         virtual void setExternalRender( bool _externalRender ) = 0;
         virtual bool isExternalRender() const = 0;
 

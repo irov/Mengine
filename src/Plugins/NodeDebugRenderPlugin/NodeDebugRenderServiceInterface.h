@@ -17,7 +17,7 @@ namespace Mengine
         SERVICE_DECLARE( "NodeDebugRenderService" );
 
     public:
-        virtual void renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) = 0;
+        virtual void renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide ) = 0;
 
     public:
         virtual void addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _renderVisitor ) = 0;

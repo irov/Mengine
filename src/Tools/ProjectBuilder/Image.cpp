@@ -44,7 +44,7 @@ namespace Mengine
     bool Image::load( const FilePath & _path )
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getGlobalFileGroup();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _path, false, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -114,7 +114,7 @@ namespace Mengine
     bool Image::save( const FilePath & _path )
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getGlobalFileGroup();
 
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, _path, MENGINE_DOCUMENT_FUNCTION );
 

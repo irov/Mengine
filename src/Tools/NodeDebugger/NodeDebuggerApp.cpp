@@ -675,7 +675,6 @@ namespace Mengine
     {
         m_network.clear();
 
-        pugi::xml_node xml_network = _xmlContainer.child( "Network" );
         pugi::xml_node xml_network_objects = _xmlContainer.child( "Objects" );
 
         for( const pugi::xml_node & obj : xml_network_objects )
@@ -1180,7 +1179,7 @@ namespace Mengine
 
         if( ImGui::CollapsingHeader( "Game controls:" ) )
         {
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, m_updateSceneOnChange );
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, m_updateSceneOnChange );
             int hz = m_sceneUpdateFreq;
             if( ImGui::InputInt( "Update freq (hz):", &hz ) )
             {
@@ -2045,7 +2044,7 @@ namespace Mengine
         {
             bool testValue = _prop;
 
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::Checkbox( _caption, &testValue );
             ImGui::PopStyleColor();
@@ -2091,7 +2090,7 @@ namespace Mengine
         auto uiReadOnlyVec1f = [_node]( const char * _caption, const float & _prop )
         {
             float testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::DragFloat( _caption, &testValue );
             ImGui::PopStyleColor();
@@ -2113,7 +2112,7 @@ namespace Mengine
         auto uiReadOnlyVec2f = [_node]( const char * _caption, const mt::vec2f & _prop )
         {
             mt::vec2f testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::DragFloat2( _caption, testValue.buff() );
             ImGui::PopStyleColor();
@@ -2135,7 +2134,7 @@ namespace Mengine
         auto uiReadOnlyVec3f = [_node]( const char * _caption, const mt::vec3f & _prop )
         {
             mt::vec3f testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::DragFloat3( _caption, testValue.buff() );
             ImGui::PopStyleColor();
@@ -2157,7 +2156,7 @@ namespace Mengine
         auto uiReadOnlyColor = [_node]( const Char * _caption, const Color & _prop )
         {
             Color testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::ColorEdit4( _caption, testValue.buff() );
             ImGui::PopStyleColor();
@@ -2207,7 +2206,7 @@ namespace Mengine
         auto uiReadOnlyListBox = [_node]( const char * _caption, uint32_t _prop, const std::initializer_list<String> & _items, uint32_t _count )
         {
             int32_t testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::ListBox( _caption, &testValue, []( void * data, int idx, const char ** out_text )
             {
@@ -2220,15 +2219,32 @@ namespace Mengine
 
         if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            ImGui::Text( "Name: '%s'", _node->name.c_str() );
+            ImGui::Text( "Name:" ); 
+            ImGui::SameLine(); 
+            ImGui::PushItemWidth( 25.f + 8.f * _node->name.size() );
+            ImGui::InputText( "##node_name", _node->name.data(), _node->name.size(), ImGuiInputTextFlags_ReadOnly );
+            ImGui::PopItemWidth();
             ImGui::SameLine();
             ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
+
             ImGui::SameLine();
-            ImGui::Text( "Type: '%s'", _node->type.c_str() );
+            ImGui::Text( "Type:" ); 
+            ImGui::SameLine(); 
+            ImGui::PushItemWidth( 25.f + 8.f * _node->type.size() );
+            ImGui::InputText( "##node_type", _node->type.data(), _node->type.size(), ImGuiInputTextFlags_ReadOnly );
+            ImGui::PopItemWidth();
             ImGui::SameLine();
-            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
+            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );            
+
+            Char uid_text[64];
+            MENGINE_SPRINTF( uid_text, "%u", _node->uid );
+
             ImGui::SameLine();
-            ImGui::Text( "UID: %u", _node->uid );
+            ImGui::Text( "UID:" ); 
+            ImGui::SameLine(); 
+            ImGui::PushItemWidth( 25.f + 8.f * MENGINE_STRLEN( uid_text ) );
+            ImGui::InputText( "##node_uid", uid_text, MENGINE_STRLEN( uid_text ), ImGuiInputTextFlags_ReadOnly );
+            ImGui::PopItemWidth();
             ImGui::Spacing();
 
             uiEditorBool( "Enable##node_enable", _node->enable );
@@ -2264,6 +2280,30 @@ namespace Mengine
             ImGui::Spacing();
             uiEditorColor( "Local Color", _node->render.local_color );
             uiEditorColor( "Personal Color", _node->render.personal_color );
+
+            if( _node->render.camera.exist == true && ImGui::CollapsingHeader( "Render Camera:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+            }
+
+            if( _node->render.viewport.exist == true && ImGui::CollapsingHeader( "Render Viewport:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                uiReadOnlyVec2f( "begin", _node->render.viewport.begin );
+                uiReadOnlyVec2f( "end", _node->render.viewport.end );
+            }
+
+            if( _node->render.transformation.exist == true && ImGui::CollapsingHeader( "Render Transformation:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+            }
+
+            if( _node->render.scissor.exist == true && ImGui::CollapsingHeader( "Render Scissor:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                uiReadOnlyVec2f( "begin", _node->render.scissor.begin );
+                uiReadOnlyVec2f( "end", _node->render.scissor.end );
+            }
+
+            if( _node->render.target.exist == true && ImGui::CollapsingHeader( "Render Target:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+            }
         }
 
         if( _node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )

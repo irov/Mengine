@@ -366,4 +366,25 @@ namespace Mengine
         return camera;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderScissorInterfacePtr & Layer2D::getPickerScissor() const
+    {
+        const RenderScissorInterfacePtr & scissor = this->getRenderScissor();
+
+        return scissor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTransformationInterfacePtr & Layer2D::getPickerTransformation() const
+    {
+        const RenderTransformationInterfacePtr & transformation = this->getRenderTransformation();
+
+        return transformation;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTargetInterfacePtr & Layer2D::getPickerTarget() const
+    {
+        const RenderTargetInterfacePtr & target = this->getRenderTarget();
+
+        return target;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

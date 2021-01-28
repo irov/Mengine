@@ -22,7 +22,12 @@ namespace Mengine
         virtual const FileGroupInterfacePtr & getFileGroup( const ConstString & _name ) const = 0;
 
     public:
+        virtual void setDefaultFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
         virtual const FileGroupInterfacePtr & getDefaultFileGroup() const = 0;
+
+    public:
+        virtual void setGlobalFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
+        virtual const FileGroupInterfacePtr & getGlobalFileGroup() const = 0;
 
     public:
         typedef Lambda<void()> LambdaFileModifyHook;

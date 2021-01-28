@@ -17,8 +17,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotPolygonDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotPolygon * _node )
+    void HotSpotPolygonDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotPolygon * _node, bool _hide )
     {
+        MENGINE_UNUSED( _hide );
+
         const Polygon & polygon = _node->getPolygon();
 
         uint32_t numpoints = polygon.size();

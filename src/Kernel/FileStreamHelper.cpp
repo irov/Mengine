@@ -22,7 +22,7 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
-            if( realFileGroup->openInputFile( _filePath, file, 0, 0, _streaming, _share ) == false )
+            if( realFileGroup->openInputFile( _filePath, file, 0, ~0U, _streaming, _share ) == false )
             {
                 LOGGER_ERROR( "can't open input file '%s:%s'"
                     , _fileGroup->getName().c_str()

@@ -36,8 +36,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
-        MENGINE_UNUSED( _streaming );
-
         MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::open" );
 
 #ifdef MENGINE_DEBUG
@@ -72,21 +70,29 @@ namespace Mengine
 
         size_t size = (size_t)lpFileSize.QuadPart;
 
-        if( _offset + _size > size )
+        if( _size != ~0U )
         {
-            LOGGER_ERROR( "invalid file '%ls' range %zu:%zu size %zu"
-                , fullPath
-                , _offset
-                , _size
-                , size
-            );
+            if( _offset + _size > size )
+            {
+                LOGGER_ERROR( "invalid file '%ls' range %zu:%zu size %zu"
+                    , fullPath
+                    , _offset
+                    , _size
+                    , size
+                );
 
-            this->close();
+                this->close();
 
-            return false;
+                return false;
+            }
+
+            m_size = _size;
+        }
+        else
+        {
+            m_size = size;
         }
 
-        m_size = _size == 0 ? (size_t)size : _size;
         m_offset = _offset;
 
         m_carriage = 0;

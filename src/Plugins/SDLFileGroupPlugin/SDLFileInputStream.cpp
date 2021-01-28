@@ -84,8 +84,9 @@ namespace Mengine
 
         if( 0 > size )
         {
-            LOGGER_ERROR( "invalid file size '%s'"
+            LOGGER_ERROR( "invalid file size '%s' [error: %s]"
                 , fullPath
+                , SDL_GetError()
             );
 
             this->close();
@@ -93,19 +94,27 @@ namespace Mengine
             return false;
         }
 
-        if( _offset + _size > (size_t)size )
+        if( _size != ~0U )
         {
-            LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
-                , fullPath
-                , _offset
-                , _size
-                , (size_t)size
-            );
+            if( _offset + _size > (size_t)size )
+            {
+                LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
+                    , fullPath
+                    , _offset
+                    , _size
+                    , (size_t)size
+                );
 
-            return false;
+                return false;
+            }
+
+            m_size = _size;
+        }
+        else
+        {
+            m_size = (size_t)size;
         }
 
-        m_size = _size == 0 ? (size_t)size : _size;
         m_offset = _offset;
 
         m_carriage = 0;
@@ -118,7 +127,7 @@ namespace Mengine
 
             if( 0 > result )
             {
-                LOGGER_ERROR( "seek offset %zu size %zu get error: %s"
+                LOGGER_ERROR( "seek offset %zu size %zu get [error: %s]"
                     , m_offset
                     , m_size
                     , SDL_GetError()
@@ -309,7 +318,7 @@ namespace Mengine
 
             if( 0 > result )
             {
-                LOGGER_ERROR( "seek %zu:%zu get error: %s"
+                LOGGER_ERROR( "seek %zu:%zu get [error: %s]"
                     , _pos
                     , m_size
                     , SDL_GetError()

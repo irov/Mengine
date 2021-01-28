@@ -61,6 +61,12 @@ namespace Mengine
         }
 
         m_fonts.clear();
+
+        if( m_defaultFont != nullptr )
+        {
+            m_defaultFont->finalize();
+            m_defaultFont = nullptr;
+        }
     }    
     //////////////////////////////////////////////////////////////////////////
     TextFontInterfacePtr FontService::createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc )

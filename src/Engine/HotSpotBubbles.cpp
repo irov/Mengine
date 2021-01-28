@@ -35,17 +35,17 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotBubbles::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
+    bool HotSpotBubbles::testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const
     {
         MENGINE_UNUSED( _contentResolution );
-        MENGINE_UNUSED( _viewport );
+        MENGINE_UNUSED( _context );
 
         if( m_global == true )
         {
             return !m_outward;
         }
 
-        const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+        const mt::mat4f & vm_inv = _context->camera->getCameraViewMatrixInv();
 
         mt::vec2f pointIn1;
         mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
@@ -69,17 +69,16 @@ namespace Mengine
         return m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotBubbles::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    bool HotSpotBubbles::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
     {
         MENGINE_UNUSED( _contentResolution );
-        MENGINE_UNUSED( _viewport );
 
         if( m_global == true )
         {
             return !m_outward;
         }
 
-        const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+        const mt::mat4f & vm_inv = _context->camera->getCameraViewMatrixInv();
 
         mt::vec2f pointIn1;
         mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
@@ -103,7 +102,7 @@ namespace Mengine
         return m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotBubbles::testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
+    bool HotSpotBubbles::testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
     {
         if( m_global == true )
         {
@@ -113,7 +112,7 @@ namespace Mengine
         //TODO:
         MENGINE_UNUSED( _polygon );
 
-        bool test = this->testPoint( _camera, _viewport, _contentResolution, _point );
+        bool test = this->testPoint( _context, _contentResolution, _point );
 
         return test;
     }

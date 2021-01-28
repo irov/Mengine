@@ -114,7 +114,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external )
+    void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide )
     {
         if( _node->isActivate() == false )
         {
@@ -125,24 +125,26 @@ namespace Mengine
 
         if( selfRender != nullptr )
         {
+            bool selfHide = _hide;
+
             if( selfRender->isRenderEnable() == false )
             {
-                return;
+                selfHide = true;
             }
 
             if( selfRender->isHide() == true )
             {
-                return;
+                selfHide = true;
             }
 
             if( selfRender->isLocalTransparent() == true )
             {
-                return;
+                selfHide = true;
             }
 
             if( selfRender->isExternalRender() == true && _external == false )
             {
-                return;
+                selfHide = true;
             }
 
             RenderContext self_context;
@@ -161,7 +163,10 @@ namespace Mengine
 
             if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
             {
-                selfRender->render( _renderPipeline, &self_context );
+                if( selfHide == false )
+                {
+                    selfRender->render( _renderPipeline, &self_context );
+                }
 
                 const ConstString & type = _node->getType();
 
@@ -169,14 +174,14 @@ namespace Mengine
 
                 if( nodeDebugRender != nullptr )
                 {
-                    nodeDebugRender->render( _renderPipeline, &self_context, _node.get() );
+                    nodeDebugRender->render( _renderPipeline, &self_context, _node.get(), selfHide );
                 }
             }
 
             const RenderContext * children_context = &self_context;
-            _node->foreachChildrenUnslug( [this, &_renderPipeline, children_context]( const NodePtr & _child )
+            _node->foreachChildrenUnslug( [this, &_renderPipeline, children_context, selfHide]( const NodePtr & _child )
             {
-                this->renderDebugNode( _child, _renderPipeline, children_context, false );
+                this->renderDebugNode( _child, _renderPipeline, children_context, false, selfHide );
             } );
 
             if( self_context.target != nullptr )
@@ -197,12 +202,12 @@ namespace Mengine
 
             if( nodeDebugRender != nullptr )
             {
-                nodeDebugRender->render( _renderPipeline, _context, _node.get() );
+                nodeDebugRender->render( _renderPipeline, _context, _node.get(), _hide );
             }
 
-            _node->foreachChildrenUnslug( [this, &_renderPipeline, _context]( const NodePtr & _child )
+            _node->foreachChildrenUnslug( [this, &_renderPipeline, _context, _hide]( const NodePtr & _child )
             {
-                this->renderDebugNode( _child, _renderPipeline, _context, false );
+                this->renderDebugNode( _child, _renderPipeline, _context, false, _hide );
             } );
         }
     }

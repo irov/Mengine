@@ -27,6 +27,9 @@ namespace Mengine
     protected:
         void _dispose() override;
 
+    public:
+        void getWorldBoundingBox( mt::box2f * _bb ) const;
+
     protected:
         SurfacePtr m_surface;
     };

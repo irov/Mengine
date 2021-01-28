@@ -13,8 +13,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node )
+    void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node, bool _hide )
     {
+        if( _hide == true )
+        {
+            return;
+        }
+
         {
             Viewport viewport;
             if( _node->calcTextViewport( &viewport ) == false )

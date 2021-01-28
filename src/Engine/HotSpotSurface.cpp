@@ -84,6 +84,32 @@ namespace Mengine
         m_surface = nullptr;
 
         HotSpotPolygon::_dispose();
-    }    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpotSurface::getWorldBoundingBox( mt::box2f * _bb ) const
+    {
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        const mt::vec2f & maxSize = m_surface->getMaxSize();
+        const mt::vec2f & size = m_surface->getSize();
+        const mt::vec2f & offset = m_surface->getOffset();
+        const mt::vec2f & anchor = m_surface->getAnchor();
+
+        mt::vec2f total_offset = offset - anchor * maxSize;
+      
+        mt::vec2f minimal( total_offset.x, total_offset.y );
+        mt::vec2f maximal( total_offset.x + size.x, total_offset.y + size.y );
+
+        mt::vec2f minimal_wm;
+        mt::mul_v2_v2_m4( minimal_wm, minimal, wm );
+
+        mt::vec2f maximal_wm;
+        mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
+
+        mt::box2f bb;
+        mt::set_box_from_two_point( bb, minimal_wm, maximal_wm );
+
+        *_bb = bb;
+    }
     //////////////////////////////////////////////////////////////////////////
 }

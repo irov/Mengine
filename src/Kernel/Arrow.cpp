@@ -53,13 +53,13 @@ namespace Mengine
         const mt::vec2f & cursor_pos = INPUT_SERVICE()
             ->getCursorPosition( 0 );
 
-        const RenderCameraInterfacePtr & renderCamera = this->getRenderCamera();
-        const RenderViewportInterfacePtr & renderViewport = this->getRenderViewport();
+        RenderContext context;
+        this->makeRenderContext( &context );
 
-        if( renderCamera != nullptr && renderViewport != nullptr )
+        if( context.camera != nullptr && context.viewport != nullptr )
         {
             mt::vec2f wp;
-            this->calcMouseWorldPosition( renderCamera, renderViewport, cursor_pos, &wp );
+            this->calcMouseWorldPosition( &context, cursor_pos, &wp );
 
             mt::vec3f pos;
             pos.x = wp.x;
@@ -135,12 +135,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
+    void Arrow::calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
     {
         mt::vec2f adaptScreenPoint;
         this->adaptScreenPosition_( _screenPoint, &adaptScreenPoint );
 
-        const Viewport & viewport = _viewport->getViewport();
+        const RenderViewportInterface * renderViewport = _context->viewport;
+
+        const Viewport & viewport = renderViewport->getViewport();
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
@@ -157,7 +159,9 @@ namespace Mengine
 
         mt::vec2f sp = (adaptScreenPoint - vp_begin) / vp_size;
 
-        const mt::mat4f & pm_inv = _camera->getCameraProjectionMatrixInv();
+        const RenderCameraInterface * renderCamera = _context->camera;
+
+        const mt::mat4f & pm_inv = renderCamera->getCameraProjectionMatrixInv();
 
         mt::vec2f p1 = sp * 2.f - mt::vec2f( 1.f, 1.f );
         p1.y = -p1.y;
@@ -165,7 +169,7 @@ namespace Mengine
         mt::vec2f p_pm;
         mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
 
-        const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+        const mt::mat4f & vm_inv = renderCamera->getCameraViewMatrixInv();
 
         mt::vec2f p = p_pm;
 
@@ -175,13 +179,12 @@ namespace Mengine
         *_worldPoint = p_vm;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcPointClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
+    void Arrow::calcPointClick( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const
     {
-        MENGINE_UNUSED( _viewport );
-        MENGINE_UNUSED( _camera );
+        MENGINE_UNUSED( _context );
 
         mt::vec2f p1;
-        this->calcMouseWorldPosition( _camera, _viewport, _screenPoint, &p1 );
+        this->calcMouseWorldPosition( _context, _screenPoint, &p1 );
 
         EArrowType arrowType = this->getArrowType();
 
@@ -216,24 +219,28 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcPointDeltha( const RenderCameraInterfacePtr & _camera, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) const
+    void Arrow::calcPointDeltha( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) const
     {
-        Helper::screenToWorldDelta( _camera, _screenDeltha, _worldDeltha );
+        Helper::screenToWorldDelta( _context, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcMouseScreenPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const
+    void Arrow::calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const
     {
-        const mt::mat4f & vm = _camera->getCameraViewMatrix();
+        const RenderCameraInterface * renderCamera = _context->camera;
+
+        const mt::mat4f & vm = renderCamera->getCameraViewMatrix();
 
         mt::vec2f p = _worldPoint;
 
         mt::vec2f p_vm;
         mt::mul_v2_v2_m4( p_vm, p, vm );
 
-        const Viewport & viewport = _viewport->getViewport();
+        const RenderViewportInterface * renderViewport = _context->viewport;
+
+        const Viewport & viewport = renderViewport->getViewport();
         p_vm += viewport.begin;
 
-        const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
+        const mt::mat4f & pm = renderCamera->getCameraProjectionMatrix();
 
         mt::vec2f p_vm_pm;
         mt::mul_v2_v2_m4( p_vm_pm, p_vm, pm );

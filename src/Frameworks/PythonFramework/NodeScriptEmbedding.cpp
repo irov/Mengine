@@ -364,8 +364,15 @@ namespace Mengine
                     , _hs->getName().c_str()
                 );
 
+                RenderContext context;
+                context.camera = camera.get();
+                context.viewport = viewport.get();
+                context.transformation = nullptr;
+                context.scissor = nullptr;
+                context.target = nullptr;
+
                 mt::box2f b1;
-                _hs->getScreenPolygon( camera, viewport, contentResolution, &b1, nullptr );
+                _hs->getScreenPolygon( &context, contentResolution, &b1, nullptr );
 
                 mt::vec2f c;
                 mt::get_center_box( b1, c );

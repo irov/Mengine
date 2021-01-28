@@ -5,15 +5,16 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Vector.h"
+#include "Kernel/RenderContext.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     struct PickerStateDesc
     {
         PickerInterface * picker;
 
-        const RenderViewportInterface * viewport;
-        const RenderCameraInterface * camera;
+        RenderContext context;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<PickerStateDesc> VectorPickerStates;
@@ -40,7 +41,9 @@ namespace Mengine
     public:
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
         void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
+        void setRenderTransformation( const RenderTransformationInterfacePtr & _transformation ) override;
         void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
+        void setRenderTarget( const RenderTargetInterfacePtr & _target ) override;
 
     public:
         void update() override;
@@ -82,7 +85,9 @@ namespace Mengine
 
         RenderViewportInterfacePtr m_viewport;
         RenderCameraInterfacePtr m_camera;
+        RenderTransformationInterfacePtr m_transformation;
         RenderScissorInterfacePtr m_scissor;
+        RenderTargetInterfacePtr m_target;
 
         VectorPickerStates m_states;
 

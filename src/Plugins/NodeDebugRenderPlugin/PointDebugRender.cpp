@@ -13,8 +13,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PointDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Point * _node )
+    void PointDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Point * _node, bool _hide )
     {
+        if( _hide == true )
+        {
+            return;
+        }
+
         const TransformationInterface * transformation = _node->getTransformation();
 
         const mt::mat4f & wm = transformation->getWorldMatrix();

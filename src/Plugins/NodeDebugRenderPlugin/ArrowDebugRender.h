@@ -14,6 +14,6 @@ namespace Mengine
         ~ArrowDebugRender() override;
 
     protected:
-        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Arrow * _node ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Arrow * _node, bool _hide ) override;
     };
 }

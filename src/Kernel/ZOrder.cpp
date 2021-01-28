@@ -66,4 +66,11 @@ namespace Mengine
         return camera;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderScissorInterfacePtr & ZOrder::getPickerScissor() const
+    {
+        const RenderScissorInterfacePtr & scissor = this->getRenderScissor();
+
+        return scissor;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

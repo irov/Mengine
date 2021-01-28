@@ -59,7 +59,7 @@ namespace Mengine
         ConverterOptions options;
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getGlobalFileGroup();
 
         options.fileGroup = fileGroup;
         options.inputFilePath = path_xml;

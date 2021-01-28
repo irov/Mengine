@@ -48,9 +48,9 @@ namespace Mengine
         bool isMousePickerOver() const;
 
     public:
-        virtual bool testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;
-        virtual bool testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const = 0;
-        virtual bool testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
+        virtual bool testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;
+        virtual bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const = 0;
+        virtual bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
 
     protected:
         bool _activate() override;
@@ -61,7 +61,7 @@ namespace Mengine
         void _freeze( bool _value ) override;
 
     protected:
-        bool pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
+        bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
 
     public:
         Scriptable * getPickerScriptable() override;

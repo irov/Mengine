@@ -14,6 +14,6 @@ namespace Mengine
         ~HotSpotPolygonDebugRender() override;
 
     protected:
-        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotPolygon * _node ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotPolygon * _node, bool _hide ) override;
     };
 }

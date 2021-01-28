@@ -1,4 +1,4 @@
-#include "HotSpotImageDebugRender.h"
+#include "HotSpotSurfaceDebugRender.h"
 
 #include "NodeDebugRenderHelper.h"
 
@@ -9,15 +9,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    HotSpotImageDebugRender::HotSpotImageDebugRender()
+    HotSpotSurfaceDebugRender::HotSpotSurfaceDebugRender()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    HotSpotImageDebugRender::~HotSpotImageDebugRender()
+    HotSpotSurfaceDebugRender::~HotSpotSurfaceDebugRender()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotImageDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotImage * _node, bool _hide )
+    void HotSpotSurfaceDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotSurface * _node, bool _hide )
     {
         MENGINE_UNUSED( _hide );
 
@@ -30,7 +30,7 @@ namespace Mengine
 
         if( picker->isPickerPicked() == true )
         {
-            debugColor = 0xFFFF0000;
+            debugColor = 0xFF22FF00;
         }
 
         mt::box2f box;
@@ -66,4 +66,5 @@ namespace Mengine
 
         Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, MENGINE_DOCUMENT_FORWARD );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

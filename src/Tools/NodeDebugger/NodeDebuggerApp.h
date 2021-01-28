@@ -72,6 +72,86 @@ namespace Mengine
         }
     };
 
+    struct NodeRenderCamera
+    {
+        bool exist;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {            
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+        }
+    };
+
+    struct NodeRenderViewport
+    {
+        bool exist;
+
+        mt::vec2f begin;
+        mt::vec2f end;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( begin );
+            DESERIALIZE_PROP( end );
+        }
+    };
+
+    struct NodeRenderTransformation
+    {
+        bool exist;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+        }
+    };
+
+    struct NodeRenderScissor
+    {
+        bool exist;
+
+        mt::vec2f begin;
+        mt::vec2f end;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( begin );
+            DESERIALIZE_PROP( end );
+        }
+    };
+
+    struct NodeRenderTarget
+    {
+        bool exist;
+
+        uint32_t width;
+        uint32_t height;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( width );
+            DESERIALIZE_PROP( height );
+        }
+    };
+
     struct NodeRender
     {
         bool    enable;
@@ -80,6 +160,12 @@ namespace Mengine
         int32_t z_order;
         Color   local_color;
         Color   personal_color;
+
+        NodeRenderCamera camera;
+        NodeRenderViewport viewport;
+        NodeRenderTransformation transformation;
+        NodeRenderScissor scissor;
+        NodeRenderTarget target;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
@@ -98,6 +184,66 @@ namespace Mengine
             DESERIALIZE_PROP( z_order );
             DESERIALIZE_PROP( local_color );
             DESERIALIZE_PROP( personal_color );
+
+            pugi::xml_node cameraNode = _xmlNode.child( "Camera" );
+
+            if( cameraNode )
+            {
+                camera.exist = true;
+                camera.deserialize( cameraNode );
+            }
+            else
+            {
+                camera.exist = false;
+            }
+
+            pugi::xml_node viewportNode = _xmlNode.child( "Viewport" );
+
+            if( viewportNode )
+            {
+                viewport.exist = true;
+                viewport.deserialize( viewportNode );
+            }
+            else
+            {
+                viewport.exist = false;
+            }
+
+            pugi::xml_node transformationNode = _xmlNode.child( "Transformation" );
+
+            if( transformationNode )
+            {
+                transformation.exist = true;
+                transformation.deserialize( transformationNode );
+            }
+            else
+            {
+                transformation.exist = false;
+            }
+
+            pugi::xml_node scissorNode = _xmlNode.child( "Scissor" );
+
+            if( scissorNode )
+            {
+                scissor.exist = true;
+                scissor.deserialize( scissorNode );
+            }
+            else
+            {
+                scissor.exist = false;
+            }
+
+            pugi::xml_node targetNode = _xmlNode.child( "Target" );
+
+            if( targetNode )
+            {
+                target.exist = true;
+                target.deserialize( targetNode );
+            }
+            else
+            {
+                target.exist = false;
+            }
         }
     };
 

@@ -63,4 +63,5 @@ namespace Mengine
         Helper::unregisterConverter( "text2vso" );
         Helper::unregisterConverter( "text2pso" );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

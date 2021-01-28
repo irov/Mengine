@@ -66,8 +66,16 @@ namespace Mengine
         virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 
     public:
+        virtual void setRenderTransformation( const RenderTransformationInterfacePtr & _transformation ) = 0;
+        virtual const RenderTransformationInterfacePtr & getRenderTransformation() const = 0;
+
+    public:
         virtual void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) = 0;
         virtual const RenderScissorInterfacePtr & getRenderScissor() const = 0;
+
+    public:
+        virtual void setRenderTarget( const RenderTargetInterfacePtr & _target ) = 0;
+        virtual const RenderTargetInterfacePtr & getRenderTarget() const = 0;
 
     public:
         virtual const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const = 0;

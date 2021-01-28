@@ -115,6 +115,12 @@ namespace Mengine
         m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE ); 
         m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
 
+        m_renderContext.viewport = nullptr;
+        m_renderContext.camera = nullptr;
+        m_renderContext.transformation = nullptr;
+        m_renderContext.scissor = nullptr;
+        m_renderContext.target = nullptr;
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, &PlayerService::notifyChangeScenePrepareDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &PlayerService::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, &PlayerService::notifyChangeScenePrepareInitialize, MENGINE_DOCUMENT_FACTORABLE );
@@ -196,6 +202,12 @@ namespace Mengine
         m_renderTransformation = nullptr;
         m_renderScissor = nullptr;
         m_renderTarget = nullptr;
+
+        m_renderContext.viewport = nullptr;
+        m_renderContext.camera = nullptr;
+        m_renderContext.transformation = nullptr;
+        m_renderContext.scissor = nullptr;
+        m_renderContext.target = nullptr;
 
         if( m_globalInputHandler != nullptr )
         {
@@ -294,12 +306,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint )
     {
-        Helper::screenToWorldPosition( m_renderCamera, _screenPoint, _worldPoint );
+        Helper::screenToWorldPosition( &m_renderContext, _screenPoint, _worldPoint );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha )
     {
-        Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
+        Helper::screenToWorldDelta( &m_renderContext, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
     SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name, const DocumentPtr & _doc )
@@ -610,6 +622,8 @@ namespace Mengine
     {
         m_renderCamera = _camera;
 
+        m_renderContext.camera = m_renderCamera.get();
+
         PICKER_SERVICE()
             ->setRenderCamera( m_renderCamera );
     }
@@ -623,6 +637,8 @@ namespace Mengine
     {
         m_renderViewport = _viewport;
 
+        m_renderContext.viewport = m_renderViewport.get();
+
         PICKER_SERVICE()
             ->setRenderViewport( m_renderViewport );
     }
@@ -630,6 +646,21 @@ namespace Mengine
     const RenderViewportInterfacePtr & PlayerService::getRenderViewport() const
     {
         return m_renderViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::setRenderTransformation( const RenderTransformationInterfacePtr & _transformation )
+    {
+        m_renderTransformation = _transformation;
+
+        m_renderContext.transformation = m_renderTransformation.get();
+
+        PICKER_SERVICE()
+            ->setRenderTransformation( m_renderTransformation );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTransformationInterfacePtr & PlayerService::getRenderTransformation() const
+    {
+        return m_renderTransformation;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
@@ -645,17 +676,24 @@ namespace Mengine
         return m_renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PlayerService::setRenderTarget( const RenderTargetInterfacePtr & _target )
+    {
+        m_renderTarget = _target;
+
+        m_renderContext.target = m_renderTarget.get();
+
+        PICKER_SERVICE()
+            ->setRenderTarget( m_renderTarget );
+    }
+    const RenderTargetInterfacePtr & PlayerService::getRenderTarget() const
+    {
+        return m_renderTarget;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
-
-        RenderContext context;
-        context.viewport = m_renderViewport.get();
-        context.camera = m_renderCamera.get();
-        context.transformation = m_renderTransformation.get();
-        context.scissor = m_renderScissor.get();
-        context.target = m_renderTarget.get();
 
         const ScenePtr & scene = SCENE_SERVICE()
             ->getCurrentScene();
@@ -664,20 +702,20 @@ namespace Mengine
         {
             if( debugMask == 0 )
             {
-                Helper::nodeRenderChildren( scene.get(), _renderPipeline, &context, false );
+                Helper::nodeRenderChildren( scene.get(), _renderPipeline, &m_renderContext, false );
             }
             else
             {
                 if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( scene, _renderPipeline, &context, false );
+                        ->renderDebugNode( scene, _renderPipeline, &m_renderContext, false, false );
                 }
             }
         }
 
         MODULE_SERVICE()
-            ->render( _renderPipeline, &context );
+            ->render( _renderPipeline, &m_renderContext );
 
         _renderPipeline->endDebugLimitRenderObjects();
 
@@ -685,14 +723,14 @@ namespace Mengine
         {
             if( debugMask == 0 )
             {
-                Helper::nodeRenderChildren( m_arrow.get(), _renderPipeline, &context, false );
+                Helper::nodeRenderChildren( m_arrow.get(), _renderPipeline, &m_renderContext, false );
             }
             else
             {
                 if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( m_arrow, _renderPipeline, &context, false );
+                        ->renderDebugNode( m_arrow, _renderPipeline, &m_renderContext, false, false );
                 }
             }
         }
@@ -700,7 +738,7 @@ namespace Mengine
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
             NODEDEBUGRENDER_SERVICE()
-                ->renderDebugInfo( _renderPipeline, &context );
+                ->renderDebugInfo( _renderPipeline, &m_renderContext );
         }
     }
     //////////////////////////////////////////////////////////////////////////

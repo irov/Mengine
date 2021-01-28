@@ -33,4 +33,25 @@ namespace Mengine
         return camera;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderScissorInterfacePtr & Interender::getPickerScissor() const
+    {
+        const RenderScissorInterfacePtr & scissor = this->getRenderScissor();
+
+        return scissor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTransformationInterfacePtr & Interender::getPickerTransformation() const
+    {
+        const RenderTransformationInterfacePtr & transformation = this->getRenderTransformation();
+
+        return transformation;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTargetInterfacePtr & Interender::getPickerTarget() const
+    {
+        const RenderTargetInterfacePtr & target = this->getRenderTarget();
+
+        return target;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

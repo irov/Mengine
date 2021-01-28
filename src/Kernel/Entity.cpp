@@ -88,6 +88,13 @@ namespace Mengine
         return camera;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderScissorInterfacePtr & Entity::getPickerScissor() const
+    {
+        const RenderScissorInterfacePtr & scissor = this->getRenderScissor();
+
+        return scissor;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
         if( Node::_activate() == false )

@@ -1036,16 +1036,30 @@ namespace Mengine
             const RenderCameraInterfacePtr & shape1_camera = Helper::getNodeRenderCameraInheritance( shape1.get() );
             const RenderViewportInterfacePtr & shape1_viewport = Helper::getNodeRenderViewportInheritance( shape1.get() );
 
+            RenderContext shape1_context;
+            shape1_context.camera = shape1_camera.get();
+            shape1_context.viewport = shape1_viewport.get();
+            shape1_context.transformation = nullptr;
+            shape1_context.scissor = nullptr;
+            shape1_context.target = nullptr;
+
             mt::box2f b1;
             Polygon p1;
-            shape1->getScreenPolygon( shape1_camera, shape1_viewport, contentResolution, &b1, &p1 );
+            shape1->getScreenPolygon( &shape1_context, contentResolution, &b1, &p1 );
 
             const RenderCameraInterfacePtr & shape2_camera = Helper::getNodeRenderCameraInheritance( shape2.get() );
             const RenderViewportInterfacePtr & shape2_viewport = Helper::getNodeRenderViewportInheritance( shape2.get() );
 
+            RenderContext shape2_context;
+            shape2_context.camera = shape2_camera.get();
+            shape2_context.viewport = shape2_viewport.get();
+            shape2_context.transformation = nullptr;
+            shape2_context.scissor = nullptr;
+            shape2_context.target = nullptr;
+
             mt::box2f b2;
             Polygon p2;
-            shape2->getScreenPolygon( shape2_camera, shape2_viewport, contentResolution, &b2, &p2 );
+            shape2->getScreenPolygon( &shape2_context, contentResolution, &b2, &p2 );
 
             if( mt::is_intersect( b1, b2 ) == false )
             {
@@ -1100,8 +1114,15 @@ namespace Mengine
             const RenderCameraInterfacePtr & shape_camera = Helper::getNodeRenderCameraInheritance( shape.get() );
             const RenderViewportInterfacePtr & shape_viewport = Helper::getNodeRenderViewportInheritance( shape.get() );
 
+            RenderContext shape_context;
+            shape_context.camera = shape_camera.get();
+            shape_context.viewport = shape_viewport.get();
+            shape_context.transformation = nullptr;
+            shape_context.scissor = nullptr;
+            shape_context.target = nullptr;
+
             Polygon p1;
-            shape->getScreenPolygon( shape_camera, shape_viewport, contentResolution, nullptr, &p1 );
+            shape->getScreenPolygon( &shape_context, contentResolution, nullptr, &p1 );
 
             bool intersect = Helper::intersects( p1, _polygon );
 

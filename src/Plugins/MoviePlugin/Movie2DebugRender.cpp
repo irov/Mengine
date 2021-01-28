@@ -17,12 +17,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2DebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Movie2 * _node )
+    void Movie2DebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Movie2 * _node, bool _hide )
     {
-        _node->foreachRenderSlots( _renderPipeline, _context, []( Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
+        _node->foreachRenderSlots( _renderPipeline, _context, [_hide]( Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
         {
             NODEDEBUGRENDER_SERVICE()
-                ->renderDebugNode( NodePtr::from( _node ), _renderPipeline, _context, true );
+                ->renderDebugNode( NodePtr::from( _node ), _renderPipeline, _context, true, _hide );
         } );
     }
 }

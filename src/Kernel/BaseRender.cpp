@@ -269,6 +269,15 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::makeRenderContext( RenderContext * const _context ) const
+    {
+        _context->viewport = m_renderViewport.get();
+        _context->camera = m_renderCamera.get();
+        _context->transformation = m_renderTransformation.get();
+        _context->scissor = m_renderScissor.get();
+        _context->target = m_renderTarget.get();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const
     {
         if( this->isRendering() == false )

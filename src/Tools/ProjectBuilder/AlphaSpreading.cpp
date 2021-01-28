@@ -38,7 +38,7 @@ namespace Mengine
         FilePath outputFileName = Helper::stringizeFilePath( utf8_outputFileName );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+            ->getGlobalFileGroup();
 
         InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( fileGroup, inputFileName, false, false, MENGINE_DOCUMENT_FUNCTION );
 

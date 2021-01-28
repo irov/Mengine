@@ -142,6 +142,21 @@ namespace Mengine
         return RenderCameraInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderScissorInterfacePtr & BasePicker::getPickerScissor() const
+    {
+        return RenderScissorInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTransformationInterfacePtr & BasePicker::getPickerTransformation() const
+    {
+        return RenderTransformationInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTargetInterfacePtr & BasePicker::getPickerTarget() const
+    {
+        return RenderTargetInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BasePicker::addRelationPickerChildrenBack_( BasePicker * _childPicker )
     {
         m_pickerChildren.push_back( _childPicker );

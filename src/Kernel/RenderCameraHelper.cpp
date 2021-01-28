@@ -1,13 +1,20 @@
 #include "RenderCameraHelper.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+
 namespace Mengine
 {
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void screenToWorldPosition( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint )
+        void screenToWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint )
         {
-            const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
+            MENGINE_ASSERTION_MEMORY_PANIC( _context );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
+
+            const RenderCameraInterface * renderCamera = _context->camera;
+
+            const mt::mat4f & pm_inv = renderCamera->getCameraProjectionMatrixInv();
 
             mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f( 1.f, 1.f );
             p1.y = -p1.y;
@@ -15,7 +22,7 @@ namespace Mengine
             mt::vec2f p_pm;
             mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
 
-            const mt::mat4f & vm = _renderCamera->getCameraViewMatrix();
+            const mt::mat4f & vm = renderCamera->getCameraViewMatrix();
 
             mt::mat4f vm_inv;
             mt::inv_m4_m4( vm_inv, vm );
@@ -28,9 +35,14 @@ namespace Mengine
             *_worldPoint = p_vm;
         }
         //////////////////////////////////////////////////////////////////////////
-        void screenToWorldDelta( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha )
+        void screenToWorldDelta( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha )
         {
-            const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
+            MENGINE_ASSERTION_MEMORY_PANIC( _context );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
+
+            const RenderCameraInterface * renderCamera = _context->camera;
+
+            const mt::mat4f & pm_inv = renderCamera->getCameraProjectionMatrixInv();
 
             mt::vec2f p3 = (_screenDeltha) * 2.f - mt::vec2f( 1.f, 1.f );
             p3.y = -p3.y;
@@ -41,16 +53,24 @@ namespace Mengine
             *_worldDeltha = p_pm_deltha;
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenPosition( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f * const _screenPosition )
+        void worldToScreenPosition( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f * const _screenPosition )
         {
-            const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
-            const Viewport & vp = _renderViewport->getViewport();
+            MENGINE_ASSERTION_MEMORY_PANIC( _context );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport );
+
+            const RenderCameraInterface * renderCamera = _context->camera;
+            const RenderViewportInterface * renderViewport = _context->viewport;
+
+            const Viewport & vp = renderViewport->getViewport();
 
             mt::vec2f vp_size;
             vp.calcSize( vp_size );
 
             mt::vec2f contentResolutionInvSize;
             _contentResolution.calcInvSize( &contentResolutionInvSize );
+
+            const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::vec2f v_screen;
             mt::mul_v2_v2_m4_homogenize( v_screen, _worldPosition, vpm );
@@ -58,16 +78,24 @@ namespace Mengine
             *_screenPosition = (vp.begin + v_screen * vp_size) * contentResolutionInvSize;
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenDelta( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldDelta, mt::vec2f * const _screenDelta )
+        void worldToScreenDelta( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _worldDelta, mt::vec2f * const _screenDelta )
         {
-            const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
-            const Viewport & vp = _renderViewport->getViewport();
+            MENGINE_ASSERTION_MEMORY_PANIC( _context );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport );
+
+            const RenderCameraInterface * renderCamera = _context->camera;
+            const RenderViewportInterface * renderViewport = _context->viewport;
+
+            const Viewport & vp = renderViewport->getViewport();
 
             mt::vec2f vp_size;
             vp.calcSize( vp_size );
 
             mt::vec2f contentResolutionInvSize;
             _contentResolution.calcInvSize( &contentResolutionInvSize );
+
+            const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::vec2f v_screen0;
             mt::mul_v2_v2z_m4_homogenize( v_screen0, vpm );
@@ -88,16 +116,24 @@ namespace Mengine
             *_screenDelta = (v_screen - v_screen0) * vp_size * contentResolutionInvSize;
         }
         //////////////////////////////////////////////////////////////////////////
-        void worldToScreenBox( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f * const _screenBox )
+        void worldToScreenBox( const RenderContext * _context, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f * const _screenBox )
         {
-            const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
-            const Viewport & vp = _renderViewport->getViewport();
+            MENGINE_ASSERTION_MEMORY_PANIC( _context );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport );
+
+            const RenderCameraInterface * renderCamera = _context->camera;
+            const RenderViewportInterface * renderViewport = _context->viewport;
+
+            const Viewport & vp = renderViewport->getViewport();
 
             mt::vec2f vp_size;
             vp.calcSize( vp_size );
 
             mt::vec2f contentResolutionInvSize;
             _contentResolution.calcInvSize( &contentResolutionInvSize );
+
+            const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::box2f bb_screen;
             mt::set_box_homogenize( bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
@@ -108,5 +144,6 @@ namespace Mengine
 
             *_screenBox = bb_screen;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

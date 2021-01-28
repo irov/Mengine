@@ -15,8 +15,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotCircleDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotCircle * _node )
+    void HotSpotCircleDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotCircle * _node, bool _hide )
     {
+        MENGINE_UNUSED( _hide );
+
         uint32_t debugColor = Detail::COLOR_IDENTITY_VALUE;
 
         PickerInterface * picker = _node->getPicker();

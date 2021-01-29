@@ -1252,6 +1252,13 @@ namespace Mengine
         SDL_WarpMouseInWindow( m_window, wndPosX, wndPosY );
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::setCursorIcon( const ConstString & _icon )
+    {
+        MENGINE_UNUSED( _icon );
+
+        // empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::showKeyboard()
     {
         SDL_StartTextInput();

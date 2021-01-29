@@ -82,6 +82,7 @@ namespace Mengine
         void minimizeWindow() override;
 
         void setCursorPosition( const mt::vec2f & _pos ) override;
+        void setCursorIcon( const ConstString & _icon ) override;
 
         void showKeyboard() override;
         void hideKeyboard() override;

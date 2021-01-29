@@ -89,6 +89,7 @@ namespace Mengine
         virtual void minimizeWindow() = 0;
 
         virtual void setCursorPosition( const mt::vec2f & _pos ) = 0;
+        virtual void setCursorIcon( const ConstString & _icon ) = 0;
 
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;

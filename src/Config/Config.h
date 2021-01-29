@@ -242,6 +242,11 @@
 #   endif
 #endif
 
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_LOGGER_MAX_MESSAGE
+#define MENGINE_LOGGER_MAX_MESSAGE 4096
+#endif
+
 #ifndef MENGINE_PATH_DELIM
 #define MENGINE_PATH_DELIM '/'
 #endif

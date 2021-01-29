@@ -1744,6 +1744,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out, uint32_t _spaceCounter )
     {
+        MENGINE_UNUSED( _spaceCounter );
+
         switch( _jppType )
         {
         case jpp::e_type::JPP_INTEGER:

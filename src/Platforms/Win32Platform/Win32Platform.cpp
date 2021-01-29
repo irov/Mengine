@@ -3538,7 +3538,9 @@ namespace Mengine
                 MENGINE_MEMSET( &contex, 0, sizeof( CONTEXT ) );
                 contex.ContextFlags = CONTEXT_FULL;
 
-                if( hThread == ::GetCurrentThread() )
+                HANDLE hCurrentThread = ::GetCurrentThread();
+
+                if( hThread == hCurrentThread )
                 {
                     (*pRtlCaptureContext)(&contex);
                 }
@@ -3735,12 +3737,16 @@ namespace Mengine
             return false;
         }
 
+        HANDLE hThread;
+
         if( _threadId == ~0U )
         {
-            _threadId = (uint64_t)::GetCurrentThreadId();
+            hThread = ::GetCurrentThread();
         }
-
-        HANDLE hThread = ::OpenThread( THREAD_GET_CONTEXT | THREAD_SUSPEND_RESUME | THREAD_QUERY_INFORMATION, FALSE, (DWORD)_threadId );
+        else
+        {
+            hThread = ::OpenThread( THREAD_GET_CONTEXT | THREAD_SUSPEND_RESUME | THREAD_QUERY_INFORMATION, FALSE, (DWORD)_threadId );
+        }
 
         if( hThread == NULL )
         {
@@ -3768,7 +3774,10 @@ namespace Mengine
 
         (*pSymCleanup)(hProcess);
 
-        ::CloseHandle( hThread );
+        if( _threadId != ~0U )
+        {
+            ::CloseHandle( hThread );
+        }
 
         ::FreeLibrary( hDbhHelp );
         ::FreeLibrary( hKernel32 );

@@ -80,7 +80,7 @@ namespace Mengine
     {
         MENGINE_RELEASE_UNUSED( _safe );
 
-        MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count doc '%s'"
+        MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count (doc: %s)"
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -88,7 +88,7 @@ namespace Mengine
 
         if( service == nullptr )
         {
-            MENGINE_ASSERTION_EXCEPTION( _safe == true, "invalid generate service doc '%s'"
+            MENGINE_ASSERTION_EXCEPTION( _safe == true, "invalid generate service (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
@@ -103,7 +103,24 @@ namespace Mengine
         m_initializeServiceName = name;
 #endif
 
-        bool successful = service->initializeService();
+        bool successful = false;
+
+        try
+        {
+            successful = service->initializeService();
+        }
+        catch( const std::exception & ex )
+        {
+#ifdef MENGINE_DEBUG
+            m_initializeServiceName = nullptr;
+#endif
+
+            MENGINE_ASSERTION_EXCEPTION( _safe == true, "exception initialize service '%s' (doc: %s)\n%s"
+                , service->getServiceID()
+                , MENGINE_DOCUMENT_STR( _doc )
+                , ex.what()
+            );
+        }
 
 #ifdef MENGINE_DEBUG
         m_initializeServiceName = nullptr;
@@ -111,17 +128,17 @@ namespace Mengine
 
         if( successful == false )
         {
-            MENGINE_ASSERTION_EXCEPTION( _safe == true, "invalid initialize service '%s' doc '%s'"
-                , name
+            MENGINE_ASSERTION_EXCEPTION( _safe == true, "invalid initialize service '%s' (doc: %s)"
+                , service->getServiceID()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return false;
         }
 
-        MENGINE_ASSERTION( MENGINE_STRLEN( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
-            , name
-            , MENGINE_STRLEN( name )
+        MENGINE_ASSERTION( MENGINE_STRLEN( service->getServiceID() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+            , service->getServiceID()
+            , MENGINE_STRLEN( service->getServiceID() )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -156,8 +173,8 @@ namespace Mengine
 
             if( this->checkWaits_( name ) == false )
             {
-                MENGINE_THROW_EXCEPTION("invalid initialize service '%s' doc '%s' (waits)"
-                    , name
+                MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
+                    , service->getServiceID()
                     , MENGINE_DOCUMENT_STR( _doc )
                     );
 
@@ -169,8 +186,8 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_THROW_EXCEPTION("invalid allocate service name '%s' max count '%d' (doc %s)"
-            , name
+        MENGINE_THROW_EXCEPTION("invalid allocate service name '%s' max count '%d' (doc: %s)"
+            , service->getServiceID()
             , MENGINE_SERVICE_PROVIDER_COUNT
             , MENGINE_DOCUMENT_STR( _doc )
             );

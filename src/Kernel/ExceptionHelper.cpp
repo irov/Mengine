@@ -58,8 +58,8 @@ namespace Mengine
             Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
                 ->getPlatformExtention();
 
-            Char stack_msg[8096] = {'\0'};
-            extension->getCallstack( ~0U, stack_msg, 8095, nullptr );
+            Char stack_msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            extension->getCallstack( ~0U, stack_msg, MENGINE_LOGGER_MAX_MESSAGE, nullptr );
 
             MENGINE_STRCAT( exception_msg, "stack:\n" );
             MENGINE_STRCAT( exception_msg, stack_msg );

@@ -639,6 +639,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+#define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
+        {if( PLUGIN_CREATE(Name, Doc) == false ){\
+        LOGGER_ERROR( "Invalid %s", Info ); return false;}else{\
+        LOGGER_MESSAGE_RELEASE( "Successful %s", Info );}}
+    //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
@@ -723,8 +728,13 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
-        PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FACTORABLE );
-        PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FACTORABLE );
+#ifdef MENGINE_PLUGIN_ZIP_STATIC
+        MENGINE_ADD_PLUGIN( Zip, "initialize Plugin Zip...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_LZ4_STATIC
+        MENGINE_ADD_PLUGIN( LZ4, "initialize Plugin LZ4...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         BOOTSTRAPPER_SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
@@ -793,11 +803,6 @@ namespace Mengine
     bool Bootstrapper::createStaticPlugins_()
     {
         LOGGER_MESSAGE( "initialize Plugins..." );
-
-#define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
-        {if( PLUGIN_CREATE(Name, Doc) == false ){\
-        LOGGER_ERROR( "Invalid %s", Info ); return false;}else{\
-        LOGGER_MESSAGE_RELEASE( "Successful %s", Info );}}
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
         MENGINE_ADD_PLUGIN( Sentry, "initialize Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
@@ -992,10 +997,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#undef MENGINE_ADD_PLUGIN
-
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+#undef MENGINE_ADD_PLUGIN
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createDynamicPlugins_()
     {

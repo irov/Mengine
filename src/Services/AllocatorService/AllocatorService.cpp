@@ -276,6 +276,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AllocatorService::checkOverrideCorruption( void * _pointer ) const
     {
+        MENGINE_UNUSED( _pointer );
+
 #if MENGINE_ALLOCATOR_DEBUG
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
 

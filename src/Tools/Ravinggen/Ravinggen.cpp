@@ -161,7 +161,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         {
             message_error( "invalid initialize" );
 
-            return 0;
+            return EXIT_FAILURE;
         }
     }
     catch( const std::exception & se )
@@ -170,7 +170,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             , se.what()
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
@@ -179,26 +179,23 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in.empty() == true )
     {
-        message_error( "not found 'in' param"
-        );
+        message_error( "not found 'in' param" );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     if( out.empty() == true )
     {
-        message_error( "not found 'out' param"
-        );
+        message_error( "not found 'out' param" );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     if( secure.empty() == true )
     {
-        message_error( "not found 'secure' param"
-        );
+        message_error( "not found 'secure' param" );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
@@ -224,6 +221,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     outputStream->write( "RGCD", 4 );
     outputStream->write( memoryBuffer, memorySize );
+
+    message_error( "successful ravinggen" );
         
-    return 0;
+    return EXIT_SUCCESS;
 }

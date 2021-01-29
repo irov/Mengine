@@ -111,6 +111,8 @@ namespace Mengine
         }
         catch( const std::exception & ex )
         {
+             MENGINE_UNUSED( ex );
+
 #ifdef MENGINE_DEBUG
             m_initializeServiceName = nullptr;
 #endif

@@ -37,7 +37,6 @@
 #include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
@@ -59,6 +58,7 @@ SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( PluginService );
+SERVICE_EXTERN( Platform );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -98,26 +98,11 @@ namespace Mengine
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FUNCTION );
 
+        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
-
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return false;
-        }
-
-        ConstString dev = STRINGIZE_STRING_LOCAL( "dev" );
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return false;
-        }
 
         return true;
     }

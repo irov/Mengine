@@ -4315,6 +4315,17 @@ namespace Mengine
         ::SetCursorPos( cPos.x, cPos.y );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::setCursorIcon( const ConstString & _icon )
+    {
+        MapCursors::iterator it_found = m_cursors.find( _icon );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_cursors.end() );
+        
+        m_cursor = it_found->second;
+
+        ::SetCursor( m_cursor );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::showKeyboard()
     {
         //Empty - for iPad

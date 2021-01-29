@@ -88,7 +88,19 @@ namespace Mengine
 
         m_unimportantPlugin = this->_unimportantPlugin();
 
-        bool successful = this->_initializePlugin();
+        bool successful = false;
+
+        try
+        {
+            successful = this->_initializePlugin();
+        }
+        catch( const std::exception & ex )
+        {
+            LOGGER_ERROR( "plugin '%s' initialize exception:\n%s"
+                , this->getPluginName()
+                , ex.what()
+            );
+        }
 
         if( successful == false )
         {

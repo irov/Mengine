@@ -119,8 +119,14 @@ namespace Mengine
         plugin->setDocument( _doc );
 #endif
 
-        if( this->addPlugin( _dynamicLibrary, PluginInterfacePtr::from( plugin ) ) == false )
+        PluginInterfacePtr plugin_ptr = PluginInterfacePtr::from( plugin );
+
+        if( this->addPlugin( _dynamicLibrary, plugin_ptr ) == false )
         {
+            LOGGER_ERROR( "invalid create plugin '%s'"
+                , plugin->getPluginName()
+            );
+
             return false;
         }
 
@@ -185,7 +191,7 @@ namespace Mengine
         if( this->hasPlugin( name ) == true )
         {
             LOGGER_ERROR( "alredy exist plugin '%s'"
-                , name
+                , _plugin->getPluginName()
             );
 
             return false;
@@ -194,7 +200,7 @@ namespace Mengine
         if( _plugin->initializePlugin() == false )
         {
             LOGGER_ERROR( "invalid initialize plugin '%s'"
-                , name
+                , _plugin->getPluginName()
             );
 
             return false;

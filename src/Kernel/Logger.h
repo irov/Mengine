@@ -9,10 +9,6 @@
 #include "Config/StdArg.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_LOGGER_MAX_MESSAGE
-#define MENGINE_LOGGER_MAX_MESSAGE 16384
-#endif
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_DEBUG
 #   ifdef MENGINE_DEBUG
 #       define MENGINE_LOGGER_DEBUG 1

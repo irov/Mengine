@@ -46,6 +46,8 @@
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/AllocatorHelper.h"
 
+#include "Config/StdIO.h"
+
 #include "ToolUtils/ToolLogger.h"
 
 #include "pybind/pybind.hpp"
@@ -204,7 +206,6 @@ namespace Mengine
         SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( JPEG, MENGINE_DOCUMENT_FUNCTION );
@@ -221,11 +222,17 @@ namespace Mengine
 
         PLUGIN_CREATE( DevelopmentConverter, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_SERVICE()
-            ->loadPlugin( "AstralaxPlugin.dll", MENGINE_DOCUMENT_FUNCTION );
+        if( PLUGIN_SERVICE()
+            ->loadPlugin( "AstralaxPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            return false;
+        }
 
-        PLUGIN_SERVICE()
-            ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION );
+        if( PLUGIN_SERVICE()
+            ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -841,16 +848,16 @@ bool run()
     {
         if( Mengine::initialize() == false )
         {
-            printf( "PyInit_ToolsBuilderPlugin initialize failed\n"
-            );
+            printf( "PyInit_ToolsBuilderPlugin initialize failed\n" );
 
             return false;
         }
     }
     catch( const std::exception & se )
     {
-        char MSG[2048];
-        sprintf( MSG, "PyInit_ToolsBuilderPlugin exception %s"
+        char MSG[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+
+        MENGINE_SNPRINTF( MSG, MENGINE_LOGGER_MAX_MESSAGE, "PyInit_ToolsBuilderPlugin exception: %s"
             , se.what()
         );
 
@@ -889,8 +896,8 @@ bool run()
     {
         PythonDesc desc;
 
-        WCHAR szRegPath[512];
-        wsprintf( szRegPath, L"SOFTWARE\\Python\\PythonCore\\%ls\\PythonPath"
+        WCHAR szRegPath[512] = {L'\0'};
+        MENGINE_WNSPRINTF( szRegPath, 512, L"SOFTWARE\\Python\\PythonCore\\%ls\\PythonPath"
             , version.c_str()
         );        
 
@@ -899,18 +906,18 @@ bool run()
             continue;
         }
 
-        WCHAR szRegSysVersion[512];
-        wsprintf( szRegSysVersion, L"SOFTWARE\\Python\\PythonCore\\%ls"
+        WCHAR szRegSysVersion[512] = {L'\0'};
+        MENGINE_WNSPRINTF( szRegSysVersion, 512, L"SOFTWARE\\Python\\PythonCore\\%ls"
             , version.c_str()
         );
 
-        WCHAR szSysVersion[512];
+        WCHAR szSysVersion[512] = {L'\0'};
         if( getCurrentUserRegValue( szRegSysVersion, L"SysVersion", szSysVersion, 512 ) == false )
         {
             continue;
         }
 
-        ::swscanf( szSysVersion, L"%u.%u"
+        MENGINE_SWSCANF( szSysVersion, L"%u.%u"
             , &desc.major_version
             , &desc.minor_version
         );

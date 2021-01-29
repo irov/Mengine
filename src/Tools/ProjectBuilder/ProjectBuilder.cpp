@@ -59,7 +59,6 @@
 #include <io.h>
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( Movie1 );
 PLUGIN_EXPORT( Movie );

@@ -34,7 +34,6 @@
 #include "ToolUtils/ToolLogger.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
@@ -96,26 +95,13 @@ namespace Mengine
         SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FUNCTION );
+
         SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
-
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return false;
-        }
-
-        if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return false;
-        }
 
         return true;
     }

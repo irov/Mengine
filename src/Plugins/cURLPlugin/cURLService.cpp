@@ -411,6 +411,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t cURLService::addRequestListener( const cURLRequestListenerInterfacePtr & _listener, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         UniqueId id = GENERATE_UNIQUE_IDENTITY();
 
         RequestListenerDesk desc;

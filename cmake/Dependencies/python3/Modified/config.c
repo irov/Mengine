@@ -29,7 +29,8 @@ extern PyObject* PyInit__blake2(void);
 extern PyObject* PyInit_select(void);
 extern PyObject* PyInit_time(void);
 extern PyObject* PyInit__thread(void);
-extern PyObject * PyInit__ssl( void );
+extern PyObject* PyInit__multiprocessing(void);
+extern PyObject* PyInit__ssl(void);
 #ifdef WIN32
 extern PyObject* PyInit_msvcrt(void);
 extern PyObject* PyInit__locale(void);
@@ -111,6 +112,7 @@ struct _inittab _PyImport_Inittab[] = {
     {"_blake2", PyInit__blake2},
     {"time", PyInit_time},
     {"_thread", PyInit__thread},
+    {"_multiprocessing", PyInit__multiprocessing},
     {"_statistics", PyInit__statistics},
     {"_ssl", PyInit__ssl },
 #ifdef WIN32

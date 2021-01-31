@@ -15,6 +15,7 @@ DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip
 DOWNLOAD_URL(unity-ads https://github.com/Unity-Technologies/unity-ads-android/releases/download/3.6.0/UnityAds.aar.zip)
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
+DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h stb_image_write.h)
 
 GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-4")
 GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "3.1.2")

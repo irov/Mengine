@@ -4,8 +4,6 @@ ADD_FILTER(
 src
     ProjectBuilder.cpp
     
-    AlphaSpreading.cpp
-    AlphaSpreading.h
     Image.cpp
     Image.h
     XmlToBinDecoder.cpp

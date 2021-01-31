@@ -3,7 +3,6 @@
 #include "Interface/ServiceInterface.h"
 
 #include "XmlToBinDecoder.h"
-#include "AlphaSpreading.h"
 #include "XmlToAekConverter.h"
 
 #include "Interface/StringizeServiceInterface.h"
@@ -986,7 +985,6 @@ bool run()
     kernel->setStdOutHandle( py_logger );
     kernel->setStdErrorHandle( py_logger );
 
-    pybind::def_function_kernel( kernel, "spreadingPngAlpha", &Mengine::spreadingPngAlpha, py_tools_module );
     pybind::def_function_kernel( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
     pybind::def_function_kernel( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
 

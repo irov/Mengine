@@ -245,6 +245,10 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_contextvarsmodule.c
                 ${SOURCE_DIR}/Modules/_ssl.c
                 ${SOURCE_DIR}/Modules/_abc.c
+                
+                ${SOURCE_DIR}/Modules/_multiprocessing/multiprocessing.c
+                ${SOURCE_DIR}/Modules/_multiprocessing/posixshmem.c
+                ${SOURCE_DIR}/Modules/_multiprocessing/semaphore.c
 
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c

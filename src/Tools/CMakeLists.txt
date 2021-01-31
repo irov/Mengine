@@ -9,6 +9,7 @@ ADD_SUBDIRECTORY(Ravinggen)
 
 ADD_SUBDIRECTORY(MovieResource)
 ADD_SUBDIRECTORY(MovieCompiler)
+ADD_SUBDIRECTORY(AlphaSpreading)
 ADD_SUBDIRECTORY(AstralaxCompiler)
 ADD_SUBDIRECTORY(ImagePolygonize)
 ADD_SUBDIRECTORY(ImageTrimmer)

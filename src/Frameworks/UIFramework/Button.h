@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Plugins/GOAPPlugin/GOAPInterface.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseTransformation.h"
-
-#include "Plugins/GOAPPlugin/GOAPInterface.h"
+#include "Config/Lambda.h"
 
 namespace Mengine
 {
@@ -26,6 +27,8 @@ namespace Mengine
         EBS_BLOCK_END,
         __EBS_MAX__,
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Lambda<void()> LambdaButtonVoidCb;
     //////////////////////////////////////////////////////////////////////////
     class Button
         : public Node
@@ -52,12 +55,24 @@ namespace Mengine
         void setStateNode( EButtonState _state, const NodePtr & _node, bool _attach );
         const NodePtr & getStateNode( EButtonState _state ) const;
 
+    public:
+        void setCursorEnterCb( const LambdaButtonVoidCb & _cb );
+        const LambdaButtonVoidCb & getCursorEnterCb() const;
+
+        void setCursorLeaveCb( const LambdaButtonVoidCb & _cb );
+        const LambdaButtonVoidCb & getCursorLeaveCb() const;
+
     protected:
         void _dispose() override;
 
     protected:
         bool _activate() override;
         void _deactivate() override;
+
+    protected:
+        void _onCursorEnter() const;
+        void _onCursorLeave() const;
+        void _updateCursorLeave() const;
 
     protected:
         void __setState( EButtonState _state );
@@ -85,6 +100,9 @@ namespace Mengine
 
         GOAP::ChainInterfacePtr m_chain;
         GOAP::SemaphoreInterfacePtr m_semaphoreBlock;
+
+        LambdaButtonVoidCb m_cursorEnterCb;
+        LambdaButtonVoidCb m_cursorLeaveCb;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Button> ButtonPtr;

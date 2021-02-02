@@ -22,6 +22,8 @@ namespace Mengine
     void Button::setBlock( bool _block )
     {
         m_semaphoreBlock->setValue( _block == true ? 1 : 0 );
+
+        this->_updateCursorLeave();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Button::isBlock() const
@@ -63,9 +65,31 @@ namespace Mengine
         return m_nodes[_state];
     }
     //////////////////////////////////////////////////////////////////////////
+    void Button::setCursorEnterCb( const LambdaButtonVoidCb & _cb )
+    {
+        m_cursorEnterCb = _cb;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const LambdaButtonVoidCb & Button::getCursorEnterCb() const
+    {
+        return m_cursorEnterCb;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Button::setCursorLeaveCb( const LambdaButtonVoidCb & _cb )
+    {
+        m_cursorLeaveCb = _cb;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const LambdaButtonVoidCb & Button::getCursorLeaveCb() const
+    {
+        return m_cursorLeaveCb;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Button::_dispose()
     {
         MENGINE_ASSERTION_FATAL( m_chain == nullptr );
+
+        this->_updateCursorLeave();
 
         m_pickerable = nullptr;
 
@@ -160,6 +184,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Button::_deactivate()
     {
+        this->_updateCursorLeave();
+
         if( m_chain != nullptr )
         {
             m_chain->cancel();
@@ -167,6 +193,41 @@ namespace Mengine
         }
 
         Node::_deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Button::_onCursorEnter() const
+    {
+        if( m_cursorEnterCb == nullptr )
+        {
+            return;
+        }
+
+        m_cursorEnterCb();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Button::_onCursorLeave() const
+    {
+        if( m_cursorLeaveCb == nullptr )
+        {
+            return;
+        }
+
+        m_cursorLeaveCb();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Button::_updateCursorLeave() const
+    {
+        bool isBlock = this->isBlock();
+
+        if( isBlock == true && (m_state == EBS_OVER
+            || m_state == EBS_ENTER
+            || m_state == EBS_CLICK
+            || m_state == EBS_PUSH
+            || m_state == EBS_PRESSED
+            ) )
+        {
+            this->_onCursorLeave();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Button::__setState( EButtonState _state )
@@ -250,6 +311,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Button::__stateEnter( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeEnter )
     {
+        Cook::addFunction( _source, this, &Button::_onCursorEnter );
+
         if( _nodeEnter == nullptr )
         {
             Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
@@ -278,6 +341,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Button::__stateLeave( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeLeave )
     {
+        Cook::addFunction( _source, this, &Button::_onCursorLeave );
+
         if( _nodeLeave == nullptr )
         {
             Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );

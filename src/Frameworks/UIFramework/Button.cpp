@@ -91,6 +91,9 @@ namespace Mengine
 
         this->_updateCursorLeave();
 
+        m_cursorEnterCb = nullptr;
+        m_cursorLeaveCb = nullptr;
+
         m_pickerable = nullptr;
 
         for( uint32_t index = 0; index != __EBS_MAX__; ++index )

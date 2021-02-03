@@ -10,6 +10,7 @@
 
 #include "Config/Lambda.h"
 #include "Config/Char.h"
+#include "Config/StdString.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -192,8 +193,8 @@ namespace Mengine
                 return false;
             }
 
-            String type = typeAttrib.value();
-            if( type != _propType )
+            const Char * type = typeAttrib.value();
+            if( MENGINE_STRCMP( type, _propType ) != 0 )
             {
                 return false;
             }
@@ -204,7 +205,9 @@ namespace Mengine
                 return false;
             }
 
-            _lambda( getXmlValue<T>( valueAttrib ) );
+            T t = getXmlValue<T>( valueAttrib );
+
+            _lambda( t );
 
             return true;
         }

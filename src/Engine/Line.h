@@ -31,8 +31,8 @@ namespace Mengine
         void setTo( const mt::vec3f & _value );
         const mt::vec3f & getTo() const;
 
-        void setWidth( float _width );
-        float getWidth() const;
+        void setWeight( float _width );
+        float getWeight() const;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
@@ -44,7 +44,7 @@ namespace Mengine
         mt::vec3f m_from;
         mt::vec3f m_to;
 
-        float m_width;
+        float m_weight;
 
         mutable RenderVertex2D m_vertices[4];
     };

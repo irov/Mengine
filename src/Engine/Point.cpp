@@ -121,7 +121,7 @@ namespace Mengine
         Color color;
         this->calcTotalColor( &color );
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         for( uint32_t i = 0; i != 4; ++i )
         {

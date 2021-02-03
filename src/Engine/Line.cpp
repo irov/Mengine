@@ -8,7 +8,7 @@ namespace Mengine
     Line::Line()
         : m_from( 0.f, 0.f, 0.f )
         , m_to( 0.f, 0.f, 0.f )
-        , m_width( 0.f )
+        , m_weight( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -36,14 +36,14 @@ namespace Mengine
         return m_to;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Line::setWidth( float _width )
+    void Line::setWeight( float _width )
     {
-        m_width = _width;
+        m_weight = _width;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Line::getWidth() const
+    float Line::getWeight() const
     {
-        return m_width;
+        return m_weight;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Line::_updateMaterial() const
@@ -72,26 +72,26 @@ namespace Mengine
         mt::vec2f perp;
         mt::perp_v2( perp, mt::vec2f( dir_norm.x, dir_norm.y ) );
 
-        m_vertices[0].position.x = fromWM.x + perp.x * m_width;
-        m_vertices[0].position.y = fromWM.y + perp.y * m_width;
+        m_vertices[0].position.x = fromWM.x + perp.x * m_weight;
+        m_vertices[0].position.y = fromWM.y + perp.y * m_weight;
         m_vertices[0].position.z = fromWM.z;
 
-        m_vertices[1].position.x = toWM.x + perp.x * m_width;
-        m_vertices[1].position.y = toWM.y + perp.y * m_width;
+        m_vertices[1].position.x = toWM.x + perp.x * m_weight;
+        m_vertices[1].position.y = toWM.y + perp.y * m_weight;
         m_vertices[1].position.z = toWM.z;
 
-        m_vertices[2].position.x = toWM.x - perp.x * m_width;
-        m_vertices[2].position.y = toWM.y - perp.y * m_width;
+        m_vertices[2].position.x = toWM.x - perp.x * m_weight;
+        m_vertices[2].position.y = toWM.y - perp.y * m_weight;
         m_vertices[2].position.z = toWM.z;
 
-        m_vertices[3].position.x = fromWM.x - perp.x * m_width;
-        m_vertices[3].position.y = fromWM.y - perp.y * m_width;
+        m_vertices[3].position.x = fromWM.x - perp.x * m_weight;
+        m_vertices[3].position.y = fromWM.y - perp.y * m_weight;
         m_vertices[3].position.z = fromWM.z;
 
         Color color;
         this->calcTotalColor( &color );
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         for( uint32_t i = 0; i != 4; ++i )
         {

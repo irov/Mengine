@@ -682,19 +682,40 @@ namespace Mengine
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
+    void OpenGLRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
     {
         const GLenum srcBlendFactor = Helper::toGLBlendFactor( _src );
         const GLenum dstBlendFactor = Helper::toGLBlendFactor( _dst );
         const GLenum blendOp = Helper::toGLBlendOp( _op );
 
-        GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
+        if( _separate == false )
+        {
+            GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 
 #ifdef MENGINE_RENDER_OPENGL_ES
-        GLCALL( glBlendEquation, (blendOp) );
+            GLCALL( glBlendEquation, (blendOp) );
 #else
-        GLCALL( glBlendEquation_, (blendOp) );
+            GLCALL( glBlendEquation_, (blendOp) );
 #endif
+        }
+        else
+        {
+            const GLenum srcSeparateBlendFactor = Helper::toGLBlendFactor( _separateSrc );
+            const GLenum dstSeparateBlendFactor = Helper::toGLBlendFactor( _separateDst );
+            const GLenum separateBlendOp = Helper::toGLBlendOp( _separateOp );
+
+#ifdef MENGINE_RENDER_OPENGL_ES
+            GLCALL( glBlendFuncSeparate, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
+#else
+            GLCALL( glBlendFuncSeparate_, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
+#endif
+
+#ifdef MENGINE_RENDER_OPENGL_ES
+            GLCALL( glBlendEquationSeparate, (blendOp, separateBlendOp) );
+#else
+            GLCALL( glBlendEquationSeparate_, (blendOp, separateBlendOp) );
+#endif
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setCullMode( ECullMode _mode )

@@ -25,14 +25,19 @@ namespace Mengine
     {
         uint32_t id = 0;
 
-        RenderTextureStage textureStage[MENGINE_MAX_TEXTURE_STAGES];
-
         RenderProgramInterfacePtr program;
+
+        RenderTextureStage textureStage[MENGINE_MAX_TEXTURE_STAGES];
 
         EBlendFactor blendSrc = BF_ONE;
         EBlendFactor blendDst = BF_ZERO;
         EBlendOp blendOp = BOP_ADD;
 
+        EBlendFactor separateAlphaBlendSrc = BF_ONE;
+        EBlendFactor separateAlphaBlendDst = BF_ZERO;
+        EBlendOp separateAlphaBlendOp = BOP_ADD;
+
+        bool separateAlphaBlendEnable = false;
         bool alphaBlendEnable = false;
         bool depthBufferTestEnable = false;
         bool depthBufferWriteEnable = false;

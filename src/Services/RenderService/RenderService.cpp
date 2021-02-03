@@ -43,11 +43,15 @@ namespace Mengine
         , m_currentMaterialId( 0 )
         , m_currentRenderMaterialStage( nullptr )
         , m_currentBlendSrc( BF_ONE )
-        , m_currentBlendDst( BF_ONE )
+        , m_currentBlendDst( BF_ZERO )
         , m_currentBlendOp( BOP_ADD )
-        , m_depthBufferTestEnable( false )
-        , m_depthBufferWriteEnable( false )
-        , m_alphaBlendEnable( false )
+        , m_currentSeparateAlphaBlendSrc( BF_ONE )
+        , m_currentSeparateAlphaBlendDst( BF_ZERO )
+        , m_currentSeparateAlphaBlendOp( BOP_ADD )
+        , m_currentSeparateAlphaBlendEnable( false )
+        , m_currentAlphaBlendEnable( false )
+        , m_currentDepthBufferTestEnable( false )
+        , m_currentDepthBufferWriteEnable( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -532,36 +536,46 @@ namespace Mengine
             }
         }
 
-        if( m_alphaBlendEnable != m_currentRenderMaterialStage->alphaBlendEnable )
+        if( m_currentAlphaBlendEnable != m_currentRenderMaterialStage->alphaBlendEnable )
         {
-            m_alphaBlendEnable = m_currentRenderMaterialStage->alphaBlendEnable;
+            m_currentAlphaBlendEnable = m_currentRenderMaterialStage->alphaBlendEnable;
 
-            m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );
+            m_renderSystem->setAlphaBlendEnable( m_currentAlphaBlendEnable );
         }
 
-        if( m_depthBufferTestEnable != m_currentRenderMaterialStage->depthBufferTestEnable )
+        if( m_currentDepthBufferTestEnable != m_currentRenderMaterialStage->depthBufferTestEnable )
         {
-            m_depthBufferTestEnable = m_currentRenderMaterialStage->depthBufferTestEnable;
+            m_currentDepthBufferTestEnable = m_currentRenderMaterialStage->depthBufferTestEnable;
 
-            m_renderSystem->setDepthBufferTestEnable( m_depthBufferTestEnable );
+            m_renderSystem->setDepthBufferTestEnable( m_currentDepthBufferTestEnable );
         }
 
-        if( m_depthBufferWriteEnable != m_currentRenderMaterialStage->depthBufferWriteEnable )
+        if( m_currentDepthBufferWriteEnable != m_currentRenderMaterialStage->depthBufferWriteEnable )
         {
-            m_depthBufferWriteEnable = m_currentRenderMaterialStage->depthBufferWriteEnable;
+            m_currentDepthBufferWriteEnable = m_currentRenderMaterialStage->depthBufferWriteEnable;
 
-            m_renderSystem->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+            m_renderSystem->setDepthBufferWriteEnable( m_currentDepthBufferWriteEnable );
         }
 
         if( m_currentBlendSrc != m_currentRenderMaterialStage->blendSrc ||
             m_currentBlendDst != m_currentRenderMaterialStage->blendDst ||
-            m_currentBlendOp != m_currentRenderMaterialStage->blendOp )
+            m_currentBlendOp != m_currentRenderMaterialStage->blendOp ||
+            m_currentSeparateAlphaBlendEnable != m_currentRenderMaterialStage->separateAlphaBlendEnable ||
+            m_currentSeparateAlphaBlendSrc != m_currentRenderMaterialStage->separateAlphaBlendSrc ||
+            m_currentSeparateAlphaBlendDst != m_currentRenderMaterialStage->separateAlphaBlendDst ||
+            m_currentSeparateAlphaBlendOp != m_currentRenderMaterialStage->separateAlphaBlendOp )
         {
             m_currentBlendSrc = m_currentRenderMaterialStage->blendSrc;
             m_currentBlendDst = m_currentRenderMaterialStage->blendDst;
             m_currentBlendOp = m_currentRenderMaterialStage->blendOp;
 
-            m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
+            m_currentSeparateAlphaBlendEnable = m_currentRenderMaterialStage->separateAlphaBlendEnable;
+
+            m_currentSeparateAlphaBlendSrc = m_currentRenderMaterialStage->separateAlphaBlendSrc;
+            m_currentSeparateAlphaBlendDst = m_currentRenderMaterialStage->separateAlphaBlendDst;
+            m_currentSeparateAlphaBlendOp = m_currentRenderMaterialStage->separateAlphaBlendOp;
+
+            m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp, m_currentSeparateAlphaBlendSrc, m_currentSeparateAlphaBlendDst, m_currentSeparateAlphaBlendOp, m_currentSeparateAlphaBlendEnable );
         }
 
         if( m_currentRenderProgram != m_currentRenderMaterialStage->program )
@@ -758,9 +772,14 @@ namespace Mengine
         m_currentBlendDst = BF_ZERO;
         m_currentBlendOp = BOP_ADD;
 
-        m_depthBufferTestEnable = false;
-        m_depthBufferWriteEnable = false;
-        m_alphaBlendEnable = false;
+        m_currentSeparateAlphaBlendSrc = BF_ONE;
+        m_currentSeparateAlphaBlendDst = BF_ZERO;
+        m_currentSeparateAlphaBlendOp = BOP_ADD;
+
+        m_currentSeparateAlphaBlendEnable = false;
+        m_currentAlphaBlendEnable = false;
+        m_currentDepthBufferTestEnable = false;
+        m_currentDepthBufferWriteEnable = false;
 
         for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
@@ -780,11 +799,11 @@ namespace Mengine
         m_renderSystem->setCullMode( CM_CULL_NONE );
         //m_renderSystem->setFillMode( FM_SOLID );
         //m_renderSystem->setFillMode( FM_WIREFRAME );
-        m_renderSystem->setDepthBufferTestEnable( m_depthBufferTestEnable );
-        m_renderSystem->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+        m_renderSystem->setDepthBufferTestEnable( m_currentDepthBufferTestEnable );
+        m_renderSystem->setDepthBufferWriteEnable( m_currentDepthBufferWriteEnable );
         m_renderSystem->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
-        m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );
-        m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
+        m_renderSystem->setAlphaBlendEnable( m_currentAlphaBlendEnable );
+        m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp, m_currentSeparateAlphaBlendSrc, m_currentSeparateAlphaBlendDst, m_currentSeparateAlphaBlendOp, m_currentSeparateAlphaBlendEnable );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport * const _renderViewport ) const

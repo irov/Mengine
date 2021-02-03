@@ -49,11 +49,29 @@ namespace Mengine
             , this->getFilePath().c_str()
         );
 
+        uint32_t decoder_options = DF_NONE;
+
+#ifndef MENGINE_MASTER_RELEASE
+        bool Engine_ForcePremultiplyAlpha = CONFIG_VALUE( "Engine", "ForcePremultiplyAlpha", false );
+
+        if( Engine_ForcePremultiplyAlpha == true )
+        {
+            bool premultiply = this->isPremultiply();
+
+            if( premultiply == false )
+            {
+                decoder_options = DF_PREMULTIPLY_ALPHA;
+
+                this->setPremultiply( true );
+            }
+        }
+#endif
+
         const FilePath & filePath = this->getFilePath();
         const ConstString & codecType = this->getCodecType();
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, codecType, DF_NONE, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( fileGroup, filePath, codecType, decoder_options, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "name '%s' category '%s' group '%s' can't load image file '%s'"
             , this->getName().c_str()

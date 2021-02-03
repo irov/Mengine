@@ -196,7 +196,7 @@ namespace Mengine
             Color v_color( c.x, c.y, c.z, c.w );
             v_color *= color;
 
-            uint32_t argb = v_color.getAsARGB();
+            ColorValue_ARGB argb = v_color.getAsARGB();
 
             m_verticesWM[i].color = argb;
         }

@@ -106,7 +106,7 @@ namespace Mengine
 
         void restoreRenderSystemStates_();
         void restoreRenderFrameStates_();
-        
+
         void renderPrimitive_( const RenderPrimitive * _renderObject );
 
     protected:
@@ -169,6 +169,10 @@ namespace Mengine
         EBlendFactor m_currentBlendDst;
         EBlendOp m_currentBlendOp;
 
+        EBlendFactor m_currentSeparateAlphaBlendSrc;
+        EBlendFactor m_currentSeparateAlphaBlendDst;
+        EBlendOp m_currentSeparateAlphaBlendOp;
+
         RenderViewportInterfacePtr m_currentRenderViewport;
         RenderCameraInterfacePtr m_currentRenderCamera;
         RenderTransformationInterfacePtr m_currentRenderTransformation;
@@ -183,10 +187,11 @@ namespace Mengine
         ListDebugVertices m_debugRenderVertices;
 
         typedef List<VectorRenderIndex> ListDebugIndices;
-        ListDebugIndices m_debugRenderIndices;        
+        ListDebugIndices m_debugRenderIndices;
 
-        bool m_depthBufferTestEnable;
-        bool m_depthBufferWriteEnable;
-        bool m_alphaBlendEnable;
+        bool m_currentSeparateAlphaBlendEnable;
+        bool m_currentAlphaBlendEnable;
+        bool m_currentDepthBufferTestEnable;
+        bool m_currentDepthBufferWriteEnable;
     };
 }

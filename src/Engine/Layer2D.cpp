@@ -334,7 +334,7 @@ namespace Mengine
         Color color;
         this->calcTotalColor( &color );
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         m_verticesImageMaskWM[0].color = argb;
         m_verticesImageMaskWM[1].color = argb;

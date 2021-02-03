@@ -561,11 +561,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
+    void MockupRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
     {
         MENGINE_UNUSED( _src );
         MENGINE_UNUSED( _dst );
         MENGINE_UNUSED( _op );
+        MENGINE_UNUSED( _separateSrc );
+        MENGINE_UNUSED( _separateDst );
+        MENGINE_UNUSED( _separateOp );
+        MENGINE_UNUSED( _separate );
 
         //Empty
     }

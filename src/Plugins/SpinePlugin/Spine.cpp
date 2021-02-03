@@ -285,28 +285,7 @@ namespace Mengine
 
         int slotCount = m_skeleton->slotsCount;
 
-        for( int index = 0; index != slotCount; ++index )
-        {
-            spSlot * slot = m_skeleton->drawOrder[index];
-
-            uint32_t slotIndex = (uint32_t)slot->data->index;
-
-            VectorAttachmentMesh::const_iterator it_found = std::find_if( m_attachmentMeshes.begin(), m_attachmentMeshes.end(), [slotIndex]( const AttachmentMeshDesc & _desc )
-            {
-                return _desc.index == slotIndex;
-            } );
-
-            if( it_found != m_attachmentMeshes.end() )
-            {
-                continue;
-            }
-
-            AttachmentMeshDesc desc;
-            desc.index = slotIndex;
-            desc.image = nullptr;
-
-            m_attachmentMeshes.emplace_back( desc );
-        }
+        m_attachmentMeshes.resize( slotCount );
 
         return true;
     }
@@ -425,16 +404,16 @@ namespace Mengine
                 continue;
             }
 
+            if( slot->color.a < MENGINE_COLOR_MINIMAL_ALPHA )
+            {
+                continue;
+            }
+
             uint32_t slotIndex = (uint32_t)slot->data->index;
 
-            VectorAttachmentMesh::iterator it_found = std::find_if( m_attachmentMeshes.begin(), m_attachmentMeshes.end(), [slotIndex]( const AttachmentMeshDesc & _desc )
-            {
-                return _desc.index == slotIndex;
-            } );
+            MENGINE_ASSERTION_FATAL( slotIndex < m_attachmentMeshes.size() );
 
-            MENGINE_ASSERTION_FATAL( it_found != m_attachmentMeshes.end() );
-
-            AttachmentMeshDesc & mesh = *it_found;
+            AttachmentMeshDesc & mesh = m_attachmentMeshes[slotIndex];
 
             const float * uvs = nullptr;
             int verticesCount;
@@ -495,6 +474,11 @@ namespace Mengine
             default:
                 continue;
                 break;
+            }
+
+            if( aa < MENGINE_COLOR_MINIMAL_ALPHA )
+            {
+                continue;
             }
 
             if( mesh.image != resourceImage )
@@ -589,4 +573,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

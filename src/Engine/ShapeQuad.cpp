@@ -52,7 +52,7 @@ namespace Mengine
 
         color *= surfaceColor;
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         m_verticesWM[0].color = argb;
         m_verticesWM[1].color = argb;

@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class JSONStorage
         : public JSONStorageInterface
         , public Factorable

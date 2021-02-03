@@ -187,9 +187,9 @@ namespace Mengine
                         if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                         {
                             LOGGER_ERROR( "'%s' invalid get str '%s'"
-                                    , _textField->getName().c_str()
+                                , _textField->getName().c_str()
                                 , _kernel->object_repr( py_string ).c_str()
-                                );
+                            );
 
                             return _kernel->ret_false();
                         }
@@ -202,9 +202,9 @@ namespace Mengine
                         if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                         {
                             LOGGER_ERROR( "'%s' invalid get unicode '%s'"
-                            , _textField->getName().c_str()
+                                , _textField->getName().c_str()
                                 , _kernel->object_repr( py_string ).c_str()
-                                );
+                            );
 
                             return _kernel->ret_false();
                         }
@@ -223,7 +223,7 @@ namespace Mengine
                             LOGGER_ERROR( "'%s' not suport arg '%s'"
                                 , _textField->getName().c_str()
                                 , _kernel->object_repr( py_string ).c_str()
-                                );
+                            );
 
                             return _kernel->ret_false();
                         }
@@ -357,7 +357,7 @@ namespace Mengine
                 const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _hs );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' render camera inheritance"
-                    , _hs->getName().c_str() 
+                    , _hs->getName().c_str()
                 );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( viewport, "invalid get node '%s' render viewport inheritance"
@@ -400,7 +400,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface, "shape '%s' not setup surface"
                     , _shape->getName().c_str()
-                    );
+                );
 
                 const mt::vec2f & size = surface->getSize();
 
@@ -413,7 +413,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface, "shape '%s' not setup surface"
                     , _shape->getName().c_str()
-                    );
+                );
 
                 const mt::vec2f & offset = surface->getOffset();
                 const mt::vec2f & size = surface->getSize();
@@ -1017,8 +1017,10 @@ namespace Mengine
                 .def( "getFrom", &Line::getFrom )
                 .def( "setTo", &Line::setTo )
                 .def( "getTo", &Line::getTo )
-                .def( "setWidth", &Line::setWidth )
-                .def( "getWidth", &Line::getWidth )
+                .def( "setWeight", &Line::setWeight )
+                .def( "getWeight", &Line::getWeight )
+                .def_deprecated( "setWidth", &Line::setWeight, "use setWeight" )
+                .def_deprecated( "getWidth", &Line::getWeight, "use getWeight" )
                 ;
 
             pybind::interface_<Layer, pybind::bases<Node>>( _kernel, "Layer", false )
@@ -1049,7 +1051,7 @@ namespace Mengine
                 .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                 .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
                 .def( "isMousePickerOver", &HotSpot::isMousePickerOver )
-                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )                
+                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
                 ;
 
             pybind::interface_<HotSpotGlobal, pybind::bases<HotSpot>>( _kernel, "HotSpotGlobal", false )

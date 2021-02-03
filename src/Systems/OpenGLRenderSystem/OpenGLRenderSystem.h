@@ -63,7 +63,7 @@ namespace Mengine
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
         void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
         void setTextureFactor( uint32_t _color ) override;
-        void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) override;
+        void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) override;
         void setCullMode( ECullMode _mode ) override;
         void setDepthBufferTestEnable( bool _depthTest ) override;
         void setDepthBufferWriteEnable( bool _depthWrite ) override;

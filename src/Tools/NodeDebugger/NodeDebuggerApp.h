@@ -77,11 +77,13 @@ namespace Mengine
         bool exist;
 
         void serialize( pugi::xml_node & _xmlNode ) const
-        {            
+        {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
+            MENGINE_UNUSED( _xmlNode );
         }
     };
 
@@ -94,6 +96,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
@@ -109,10 +112,12 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
+            MENGINE_UNUSED( _xmlNode );
         }
     };
 
@@ -125,6 +130,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
@@ -143,6 +149,7 @@ namespace Mengine
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
+            MENGINE_UNUSED( _xmlNode );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
@@ -354,7 +361,8 @@ namespace Mengine
         bool AnchorVerticalAlign;
         bool AnchorHorizontalAlign;
 
-        String TextID;
+        String TextId;
+        String TextAliasId;
         String TextAliasEnvironment;
 
         bool HasText;
@@ -362,10 +370,16 @@ namespace Mengine
         String Text;
 
         String FontName;
+
+        bool HasFontColor;
         Color FontColor;
+        bool HasLineOffset;
         float LineOffset;
+        bool HasCharOffset;
         float CharOffset;
+        bool HasCharScale;
         float CharScale;
+
         uint32_t HorizontAlign;
         uint32_t VerticalAlign;
 
@@ -390,14 +404,20 @@ namespace Mengine
             SERIALIZE_PROP( AnchorHorizontalAlign );
             SERIALIZE_PROP( AnchorVerticalAlign );
 
-            SERIALIZE_PROP( TextID );
+            SERIALIZE_PROP( TextId );
             SERIALIZE_PROP( TextAliasEnvironment );
 
             SERIALIZE_PROP( FontName );
+
+            SERIALIZE_PROP( HasFontColor );
             SERIALIZE_PROP( FontColor );
+            SERIALIZE_PROP( HasLineOffset );
             SERIALIZE_PROP( LineOffset );
+            SERIALIZE_PROP( HasCharOffset );
             SERIALIZE_PROP( CharOffset );
+            SERIALIZE_PROP( HasCharScale );
             SERIALIZE_PROP( CharScale );
+
             SERIALIZE_PROP( HorizontAlign );
             SERIALIZE_PROP( VerticalAlign );
 
@@ -414,7 +434,8 @@ namespace Mengine
             DESERIALIZE_PROP( AnchorHorizontalAlign );
             DESERIALIZE_PROP( AnchorVerticalAlign );
 
-            DESERIALIZE_PROP( TextID );
+            DESERIALIZE_PROP( TextId );
+            DESERIALIZE_PROP( TextAliasId );
             DESERIALIZE_PROP( TextAliasEnvironment );
 
             DESERIALIZE_PROP( HasText );
@@ -422,10 +443,16 @@ namespace Mengine
             DESERIALIZE_PROP( Text );
 
             DESERIALIZE_PROP( FontName );
+
+            DESERIALIZE_PROP( HasFontColor );
             DESERIALIZE_PROP( FontColor );
+            DESERIALIZE_PROP( HasLineOffset );
             DESERIALIZE_PROP( LineOffset );
+            DESERIALIZE_PROP( HasCharOffset );
             DESERIALIZE_PROP( CharOffset );
+            DESERIALIZE_PROP( HasCharScale );
             DESERIALIZE_PROP( CharScale );
+
             DESERIALIZE_PROP( HorizontAlign );
             DESERIALIZE_PROP( VerticalAlign );
 
@@ -501,11 +528,11 @@ namespace Mengine
     {
         enum class Icon : size_t
         {
-            Icon_Unknown    = 0,
-            Icon_Movie2     = 1,
-            Icon_Scene      = 2,
-            Icon_Layer2D    = 3,
-            Icon_Entity     = 4,
+            Icon_Unknown = 0,
+            Icon_Movie2 = 1,
+            Icon_Scene = 2,
+            Icon_Layer2D = 3,
+            Icon_Entity = 4,
         };
 
         uint32_t                uid;
@@ -534,11 +561,11 @@ namespace Mengine
         bool                    isTypeSpine;
         NodeSpine               spine;
 
-        Vector<DebuggerNode*>   children;
-        DebuggerNode*           parent;
+        Vector<DebuggerNode *>   children;
+        DebuggerNode * parent;
 
         bool                    dirty;
-        const NodeIcon*         icon;
+        const NodeIcon * icon;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {

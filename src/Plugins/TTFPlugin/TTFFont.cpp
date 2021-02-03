@@ -28,8 +28,18 @@
 
 #include <algorithm>
 
+//////////////////////////////////////////////////////////////////////////
+#define MENGINE_FT_FLOOR(X) (((X) & -64) / 64)
+#define MENGINE_FT_CEIL(X)  MENGINE_FT_FLOOR((X) + 63)
+#define MENGINE_FT_CEILF(X)  ((float)MENGINE_FT_CEIL((X)))
+//////////////////////////////////////////////////////////////////////////
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////
+    const float inv_64f = 1.f / 64.f;
     //////////////////////////////////////////////////////////////////////////
     TTFFont::TTFFont()
         : m_ftlibrary( nullptr )
@@ -187,15 +197,23 @@ namespace Mengine
         }
 
         FT_Size face_size = face->size;
+
         const FT_Size_Metrics & face_size_metrics = face_size->metrics;
+        
+        if( FT_IS_SCALABLE( face ) == true )
+        {
+            FT_Fixed scale = face_size_metrics.y_scale;
 
-        FT_Pos ascender = face_size_metrics.ascender >> 6;
-        FT_Pos descender = face_size_metrics.descender >> 6;
-        FT_Pos height = face_size_metrics.height >> 6;
-
-        m_ttfAscender = static_cast<float>(ascender);
-        m_ttfDescender = -static_cast<float>(descender);
-        m_ttfHeight = static_cast<float>(height);
+            m_ttfAscender = MENGINE_FT_CEILF( FT_MulFix( face->ascender, scale ) );
+            m_ttfDescender = MENGINE_FT_CEILF( FT_MulFix( face->descender, scale ) );
+            m_ttfHeight = MENGINE_FT_CEILF( FT_MulFix( face->height, scale ) );
+        }
+        else
+        {
+            m_ttfAscender = MENGINE_FT_CEILF( face_size_metrics.ascender );
+            m_ttfDescender = MENGINE_FT_CEILF( face_size_metrics.descender );
+            m_ttfHeight = MENGINE_FT_CEILF( face_size_metrics.height );
+        }
 
         float sampleInv = this->getSampleInv();
 
@@ -203,15 +221,15 @@ namespace Mengine
         m_ttfDescender *= sampleInv;
         m_ttfHeight *= sampleInv;
 
-        m_ttfSpacing = m_ttfHeight - (m_ttfAscender + m_ttfDescender);
+        m_ttfSpacing = m_ttfHeight - (m_ttfAscender - m_ttfDescender);
 
         FT_GlyphSlot face_glyphA = face->glyph;
 
         const FT_Glyph_Metrics & face_glyphA_metrics = face_glyphA->metrics;
 
-        FT_Pos glyphA_bearingY = (face_glyphA_metrics.horiBearingY >> 6);
+        float glyphA_bearingY = (float)face_glyphA_metrics.horiBearingY * inv_64f;
 
-        m_ttfBearingYA = static_cast<float>(glyphA_bearingY) * sampleInv;
+        m_ttfBearingYA = glyphA_bearingY * sampleInv;
 
         return true;
     }
@@ -309,12 +327,12 @@ namespace Mengine
 
         const FT_Glyph_Metrics & metrics = glyph->metrics;
 
-        FT_Pos glyph_dx = (metrics.horiBearingX >> 6);
-        FT_Pos glyph_dy = (metrics.horiBearingY >> 6);
-        FT_Pos glyph_w = (metrics.width >> 6);
-        FT_Pos glyph_h = (metrics.height >> 6);
+        float glyph_dx = (float)metrics.horiBearingX * inv_64f;
+        float glyph_dy = (float)metrics.horiBearingY * inv_64f;
+        float glyph_w = (float)metrics.width * inv_64f;
+        float glyph_h = (float)metrics.height * inv_64f;
 
-        float glyph_advance = static_cast<float>(metrics.horiAdvance >> 6);
+        float glyph_advance = (float)metrics.horiAdvance * inv_64f;
 
         const FT_Bitmap & glyph_bitmap = glyph->bitmap;
 
@@ -414,10 +432,10 @@ namespace Mengine
 
             TTFGlyphQuad & quad = ttf_glyph.quads[0];
 
-            quad.offset.x = (float)glyph_dx * sampleInv;
-            quad.offset.y = (float)-glyph_dy * sampleInv;
-            quad.size.x = (float)glyph_w * sampleInv;
-            quad.size.y = (float)glyph_h * sampleInv;
+            quad.offset.x = glyph_dx * sampleInv;
+            quad.offset.y = -glyph_dy * sampleInv;
+            quad.size.x = glyph_w * sampleInv;
+            quad.size.y = glyph_h * sampleInv;
             quad.uv = uv;
             quad.texture = texture;
         }
@@ -632,7 +650,7 @@ namespace Mengine
             return true;
         }
 
-        float kerning = (float)(ttf_kerning.x >> 6);
+        float kerning = (float)ttf_kerning.x * inv_64f;
 
         _glyph->advance += kerning;
 

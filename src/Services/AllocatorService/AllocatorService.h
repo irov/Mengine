@@ -13,6 +13,12 @@
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG
+#   ifndef MENGINE_ALLOCATOR_REPORT_COUNT
+#   define MENGINE_ALLOCATOR_REPORT_COUNT 2048
+#   endif
+#endif
+
+#if MENGINE_ALLOCATOR_DEBUG
 #   include "Interface/ThreadMutexInterface.h"
 
 #   include "Config/Atomic.h"
@@ -70,7 +76,7 @@ namespace Mengine
             AtomicUInt32 total_alloc = 0;
         };
 
-        ReportDesc m_reports[2048];
+        ReportDesc m_reports[MENGINE_ALLOCATOR_REPORT_COUNT];
 
         AtomicUInt32 m_reportTotal;
 #endif

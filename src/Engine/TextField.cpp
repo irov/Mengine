@@ -395,20 +395,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateContext_() const
     {
-        bool invalidate = false;
+        bool context_invalidate = false;
         uint32_t enumerate = 0;
         for( const LambdaFormatArgsContext & context : m_textFormatArgContexts )
         {
             if( context != nullptr )
             {
                 String & arg = m_textFormatArgs[enumerate];
-                invalidate |= context( &arg );
+                context_invalidate |= context( &arg );
             }
 
             ++enumerate;
         }
 
-        if( invalidate == true )
+        if( context_invalidate == true )
         {
             this->invalidateTextLines();
         }
@@ -481,6 +481,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setMaxLength( float _maxLength )
     {
+        if( m_maxLength == _maxLength )
+        {
+            return;
+        }
+
         m_maxLength = _maxLength;
 
         this->invalidateTextLines();
@@ -493,6 +498,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setAutoScale( bool _autoScale )
     {
+        if( m_autoScale == _autoScale )
+        {
+            return;
+        }
+
         m_autoScale = _autoScale;
 
         this->invalidateTextLines();
@@ -505,6 +515,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setAnchorHorizontalAlign( bool _anchorHorizontalAlign )
     {
+        if( m_anchorHorizontalAlign == _anchorHorizontalAlign )
+        {
+            return;
+        }
+
         m_anchorHorizontalAlign = _anchorHorizontalAlign;
 
         this->invalidateTextLines();
@@ -517,6 +532,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setAnchorVerticalAlign( bool _anchorVerticalAlign )
     {
+        if( m_anchorVerticalAlign == _anchorVerticalAlign )
+        {
+            return;
+        }
+
         m_anchorVerticalAlign = _anchorVerticalAlign;
 
         this->invalidateTextLines();
@@ -529,6 +549,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setAnchorPercent( const mt::vec2f & _anchorPercent )
     {
+        if( m_anchorPercent == _anchorPercent )
+        {
+            return;
+        }
+
         m_anchorPercent = _anchorPercent;
 
         this->invalidateTextLines();
@@ -541,6 +566,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setWrap( bool _wrap )
     {
+        if( m_wrap == _wrap )
+        {
+            return;
+        }
+
         m_wrap = _wrap;
 
         this->invalidateTextLines();
@@ -594,6 +624,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setFontColor( const Color & _color )
     {
+        if( m_colorFont == _color )
+        {
+            return;
+        }
+
         m_colorFont = _color;
 
         m_textParams |= EFP_COLOR_FONT;
@@ -625,6 +660,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setLineOffset( float _offset )
     {
+        if( m_lineOffset == _offset )
+        {
+            return;
+        }
+
         m_lineOffset = _offset;
 
         m_textParams |= EFP_LINE_OFFSET;
@@ -656,6 +696,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setCharOffset( float _offset )
     {
+        if( m_charOffset == _offset )
+        {
+            return;
+        }
+
         m_charOffset = _offset;
 
         m_textParams |= EFP_CHAR_OFFSET;
@@ -687,6 +732,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setCharScale( float _value )
     {
+        if( m_charScale == _value )
+        {
+            return;
+        }
+
         m_charScale = _value;
 
         m_textParams |= EFP_CHAR_SCALE;
@@ -1637,7 +1687,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_dispose()
     {
+        m_textFormatArgs.clear();
         m_textFormatArgContexts.clear();
+
+        m_font = nullptr;
+
+        m_layouts.clear();
+        m_chunks.clear();
+        m_cacheFonts.clear();
 
         Node::_dispose();
     }
@@ -1649,6 +1706,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setMaxCharCount( uint32_t _maxCharCount )
     {
+        if( m_maxCharCount == _maxCharCount )
+        {
+            return;
+        }
+
         m_maxCharCount = _maxCharCount;
 
         this->invalidateTextLines();
@@ -1656,16 +1718,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setTextId( const ConstString & _textId )
     {
+        if( m_textId == _textId )
+        {
+            return;
+        }
+
         m_textId = _textId;
 
         m_text.clear();
         m_textFormatArgs.clear();
-
-        if( m_textId == STRINGIZE_STRING_LOCAL( "$LobbyBalance" ) )
-        {
-            int i = 0;
-            (void)i;
-        }
 
         this->invalidateTextEntry();
     }
@@ -1681,12 +1742,6 @@ namespace Mengine
 
         m_totalTextEntry = nullptr;
         m_textFormatArgs.clear();
-
-        if( m_textId == STRINGIZE_STRING_LOCAL( "$LobbyBalance" ) )
-        {
-            int i = 0;
-            (void)i;
-        }
 
         this->invalidateTextEntry();
     }
@@ -1707,16 +1762,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setText( const String & _text )
     {
+        if( m_text == _text )
+        {
+            return;
+        }
+
         m_text = _text;
 
         m_textId = ConstString::none();
         m_textFormatArgs.clear();
-
-        if( m_textId == STRINGIZE_STRING_LOCAL( "$LobbyBalance" ) )
-        {
-            int i = 0;
-            (void)i;
-        }
 
         this->invalidateTextEntry();
     }
@@ -1783,6 +1837,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setTextAliasEnvironment( const ConstString & _aliasEnvironment )
     {
+        if( m_aliasEnvironment == _aliasEnvironment )
+        {
+            return;
+        }
+
         m_aliasEnvironment = _aliasEnvironment;
 
         this->invalidateTextEntry();
@@ -1802,12 +1861,6 @@ namespace Mengine
 
         m_textFormatArgs = _args;
 
-        if( m_textId == STRINGIZE_STRING_LOCAL( "$LobbyBalance" ) )
-        {
-            int i = 0;
-            (void)i;
-        }
-
         VectorString::size_type textFormatArgsSize = m_textFormatArgs.size();
 
         m_textFormatArgContexts.resize( textFormatArgsSize );
@@ -1818,12 +1871,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::removeTextFormatArgs()
     {
-        if( m_textId == STRINGIZE_STRING_LOCAL( "$LobbyBalance" ) )
-        {
-            int i = 0;
-            (void)i;
-        }
-
         m_textFormatArgs.clear();
 
         this->invalidateFont();
@@ -1838,6 +1885,15 @@ namespace Mengine
     void TextField::setTextFormatArgsContext( uint32_t _index, const LambdaFormatArgsContext & _context )
     {
         m_textFormatArgContexts[_index] = _context;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeTextFormatArgsContexts()
+    {
+        m_textFormatArgContexts.clear();
+
+        VectorString::size_type textFormatArgsSize = m_textFormatArgs.size();
+
+        m_textFormatArgContexts.resize( textFormatArgsSize );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextExpectedArgument() const

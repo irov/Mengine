@@ -95,7 +95,7 @@ android {
         def app_screen_orientation = "fullSensor"
         
         if (project.hasProperty("ANDROID_APP_SCREEN_ORIENTATION")) {
-            app_name_gradle = ANDROID_APP_SCREEN_ORIENTATION
+            app_screen_orientation = ANDROID_APP_SCREEN_ORIENTATION
         }
         
         print 'app_screen_orientation = '

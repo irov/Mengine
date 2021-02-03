@@ -63,6 +63,8 @@ Desktop
 
 [1001 Nights: The Adventures of Sindbad](https://www.bigfishgames.com/games/5394/1001-nights-the-adventures-of-sindbad) Help the lovely Princess Chalida locate the seven gems of her royal crown and break the curse that has trapped her in a body of wood!
 
+[Marie Antoinette and the Disciples of Loki](https://www.bigfishgames.com/games/6978/marie-antoinette-and-the-disciples-of-loki) The year is 1787 and the French monarchy is living its last years of peace. In Vienna, Mozart is just about to finish his latest opera. Far to the north, in Iceland, a tremendous volcano eruption has already changed the face of Europe forever. What is the link between those events?
+
 Code Style
 -------
 see [CODESTYLE](https://github.com/irov/Mengine/wiki/Codestyle) for more information.

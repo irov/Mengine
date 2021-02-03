@@ -86,6 +86,7 @@ namespace Mengine
 
         typedef Lambda<bool( String * )> LambdaFormatArgsContext;
         void setTextFormatArgsContext( uint32_t _index, const LambdaFormatArgsContext & _context );
+        void removeTextFormatArgsContexts();
 
     public:
         uint32_t getTextExpectedArgument() const;

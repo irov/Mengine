@@ -65,7 +65,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     fclose( f_in );
 
     int32_t width, height, bpp;
-    stbi_uc * data_in = stbi_load_from_memory( memory_in, f_in_size, &width, &height, &bpp, STBI_rgb_alpha );
+    stbi_uc * data_in = stbi_load_from_memory( memory_in, f_in_size, &width, &height, &bpp, STBI_default );
 
     free( memory_in );
 

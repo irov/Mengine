@@ -2077,10 +2077,21 @@ namespace Mengine
             }
         };
 
-        auto uiEditorVec1f = [_node]( const char * _caption, float & _prop )
+        auto uiEditorVec1f = [_node]( const char * _caption, float & _prop, bool _enable = true )
         {
             float testValue = _prop;
+
+            if( _enable == false )
+            {
+                ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            }
+
             bool input = ImGui::DragFloat( _caption, &testValue, 0.01f );
+
+            if( _enable == false )
+            {
+                ImGui::PopItemFlag();
+            }
 
             if( input && testValue != _prop )
             {
@@ -2143,10 +2154,21 @@ namespace Mengine
             ImGui::PopItemFlag();
         };
 
-        auto uiEditorColor = [_node]( const Char * _caption, Color & _prop )
+        auto uiEditorColor = [_node]( const Char * _caption, Color & _prop, bool _enable = true )
         {
             Color testValue = _prop;
+
+            if( _enable == false )
+            {
+                ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            }
+
             bool input = ImGui::ColorEdit4( _caption, testValue.buff() );
+
+            if( _enable == false )
+            {
+                ImGui::PopItemFlag();
+            }
 
             if( input && testValue != _prop )
             {
@@ -2361,25 +2383,31 @@ namespace Mengine
             uiEditorVec2f( "AnchorPercent", _node->textField.AnchorPercent );
             uiEditorBool( "AnchorVerticalAlign", _node->textField.AnchorVerticalAlign );
             uiEditorBool( "AnchorHorizontalAlign", _node->textField.AnchorHorizontalAlign );
-            uiEditorString( "TextID", _node->textField.TextID );
+            uiEditorString( "TextId", _node->textField.TextId );
+            uiReadOnlyString( "AliasTextId", _node->textField.TextAliasId );
             uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
 
             if( _node->textField.HasText == true )
             {
-                uiReadOnlyString( "Format", _node->textField.Text );
+                uiReadOnlyString( "Format", _node->textField.Format );
                 uiReadOnlyString( "Text", _node->textField.Text );
             }
 
             uiEditorString( "FontName", _node->textField.FontName );
-            uiReadOnlyString( "Total FontName", _node->textField.TotalFontName );
-            uiEditorColor( "FontColor", _node->textField.FontColor );
+            uiReadOnlyString( "TotalFontName", _node->textField.TotalFontName );
+
+            uiEditorBool( "##HasFontColor", _node->textField.HasFontColor ); ImGui::SameLine(); uiEditorColor( "FontColor", _node->textField.FontColor, _node->textField.HasFontColor );
             uiReadOnlyColor( "TotalFontColor", _node->textField.TotalFontColor );
-            uiEditorVec1f( "LineOffset", _node->textField.LineOffset );
+
+            uiEditorBool( "##HasLineOffset", _node->textField.HasLineOffset ); ImGui::SameLine(); uiEditorVec1f( "LineOffset", _node->textField.LineOffset, _node->textField.HasLineOffset );
             uiReadOnlyVec1f( "TotalLineOffset", _node->textField.TotalLineOffset );
-            uiEditorVec1f( "CharOffset", _node->textField.CharOffset );
+
+            uiEditorBool( "##CharOffset", _node->textField.HasCharOffset ); ImGui::SameLine(); uiEditorVec1f( "CharOffset", _node->textField.CharOffset, _node->textField.HasCharOffset );
             uiReadOnlyVec1f( "TotalCharOffset", _node->textField.TotalCharOffset );
-            uiEditorVec1f( "CharScale", _node->textField.CharScale );
+
+            uiEditorBool( "##HasCharScale", _node->textField.HasCharScale ); ImGui::SameLine(); uiEditorVec1f( "CharScale", _node->textField.CharScale, _node->textField.HasCharScale );
             uiReadOnlyVec1f( "TotalCharScale", _node->textField.TotalCharScale );
+
             uiEditorListBox( "HorizontAlign", _node->textField.HorizontAlign, {"Left", "Center", "Right", "None"}, 4 );
             uiReadOnlyListBox( "TotalHorizontAlign", _node->textField.TotalHorizontAlign, {"Left", "Center", "Right", "None"}, 4 );
             uiEditorListBox( "VerticalAlign", _node->textField.VerticalAlign, {"Bottom", "Center", "Top", "None"}, 4 );

@@ -262,9 +262,11 @@ namespace Mengine
                         {
                             for( uint32_t i = 0; i != m_dataInfo.width; ++i )
                             {
-                                carriage[i * 4 + 0] = carriage[i * 4 + 0] * carriage[i * 4 + 3] / 255;
-                                carriage[i * 4 + 1] = carriage[i * 4 + 1] * carriage[i * 4 + 3] / 255;
-                                carriage[i * 4 + 2] = carriage[i * 4 + 2] * carriage[i * 4 + 3] / 255;
+                                png_byte alpha = carriage[i * 4 + 3];
+
+                                carriage[i * 4 + 0] = (png_byte)((png_uint_32)carriage[i * 4 + 0] * alpha / 255);
+                                carriage[i * 4 + 1] = (png_byte)((png_uint_32)carriage[i * 4 + 1] * alpha / 255);
+                                carriage[i * 4 + 2] = (png_byte)((png_uint_32)carriage[i * 4 + 2] * alpha / 255);
                             }
 
                             carriage += m_options.pitch;

@@ -11,10 +11,12 @@ PFNGLCOMPRESSEDTEXIMAGE2DPROC       glCompressedTexImage2D_ = nullptr;
 
 // blending
 PFNGLBLENDEQUATIONPROC              glBlendEquation_ = nullptr;
+PFNGLBLENDFUNCSEPARATEPROC          glBlendFuncSeparate_ = nullptr;
+PFNGLBLENDEQUATIONSEPARATEPROC      glBlendEquationSeparate_ = nullptr;
 
-PFNGLGENVERTEXARRAYSPROC             glGenVertexArrays = nullptr;
-PFNGLBINDVERTEXARRAYPROC             glBindVertexArray = nullptr;
-PFNGLDELETEVERTEXARRAYSPROC          glDeleteVertexArrays = nullptr;
+PFNGLGENVERTEXARRAYSPROC            glGenVertexArrays = nullptr;
+PFNGLBINDVERTEXARRAYPROC            glBindVertexArray = nullptr;
+PFNGLDELETEVERTEXARRAYSPROC         glDeleteVertexArrays = nullptr;
 
 // vbo
 PFNGLGENBUFFERSPROC                 glGenBuffers = nullptr;
@@ -26,12 +28,12 @@ PFNGLDELETEBUFFERSPROC              glDeleteBuffers = nullptr;
 PFNGLBUFFERSUBDATAPROC              glBufferSubData = nullptr;
 
 // framebuffer
-PFNGLGENFRAMEBUFFERSPROC             glGenFramebuffers = nullptr;
-PFNGLBINDFRAMEBUFFERPROC             glBindFramebuffer = nullptr;
-PFNGLFRAMEBUFFERTEXTUREPROC          glFramebufferTexture = nullptr;
-PFNGLDRAWBUFFERSPROC                 glDrawBuffers = nullptr;
-PFNGLCHECKFRAMEBUFFERSTATUSPROC      glCheckFramebufferStatus = nullptr;
-PFNGLDELETEFRAMEBUFFERSPROC          glDeleteFramebuffers = nullptr;
+PFNGLGENFRAMEBUFFERSPROC            glGenFramebuffers = nullptr;
+PFNGLBINDFRAMEBUFFERPROC            glBindFramebuffer = nullptr;
+PFNGLFRAMEBUFFERTEXTUREPROC         glFramebufferTexture = nullptr;
+PFNGLDRAWBUFFERSPROC                glDrawBuffers = nullptr;
+PFNGLCHECKFRAMEBUFFERSTATUSPROC     glCheckFramebufferStatus = nullptr;
+PFNGLDELETEFRAMEBUFFERSPROC         glDeleteFramebuffers = nullptr;
 
 // shaders
 PFNGLDELETEPROGRAMPROC              glDeleteProgram = nullptr;
@@ -136,11 +138,12 @@ namespace Mengine
 
             // blending
             GETGLPROC_( PFNGLBLENDEQUATIONPROC, glBlendEquation );
+            GETGLPROC_( PFNGLBLENDFUNCSEPARATEPROC, glBlendFuncSeparate );
+            GETGLPROC_( PFNGLBLENDEQUATIONSEPARATEPROC, glBlendEquationSeparate );
 
             GETGLPROC( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
             GETGLPROC( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
             GETGLPROC( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
-
 
             // vbo
             GETGLPROC( PFNGLGENBUFFERSPROC, glGenBuffers );

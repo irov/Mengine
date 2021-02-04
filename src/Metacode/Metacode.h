@@ -226,13 +226,17 @@ namespace Metacode
                 {
                     EMETA_Debug = (1 <<1),
                     EMETA_RenderPlatform = (1 <<0),
-                    EMETA_AlphaBlend_Enable = (1 <<5),
+                    EMETA_AlphaBlend_Enable = (1 <<9),
                     EMETA_BlendFactor_Dest = (1 <<3),
                     EMETA_BlendFactor_Op = (1 <<4),
                     EMETA_BlendFactor_Source = (1 <<2),
-                    EMETA_DepthBufferTest_Enable = (1 <<6),
-                    EMETA_DepthBufferWrite_Enable = (1 <<7),
-                    EMETA_Program_Name = (1 <<8),
+                    EMETA_DepthBufferTest_Enable = (1 <<10),
+                    EMETA_DepthBufferWrite_Enable = (1 <<11),
+                    EMETA_Program_Name = (1 <<12),
+                    EMETA_SeparateAlphaBlend_Enable = (1 <<8),
+                    EMETA_SeparateAlphaBlendFactor_Dest = (1 <<6),
+                    EMETA_SeparateAlphaBlendFactor_Op = (1 <<7),
+                    EMETA_SeparateAlphaBlendFactor_Source = (1 <<5),
                 };
                 
                 uint32_t m_flagNoRequiredAttribute;
@@ -549,6 +553,124 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_SeparateAlphaBlend_Enable() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlend_Enable) != 0;
+                }
+                
+                template<class C, class M>
+                void getm_SeparateAlphaBlend_Enable( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlend_Enable) == 0 )
+                    {
+                        (_self->*_method)( false );
+                    }
+                    else
+                    {
+                        (_self->*_method)( this->m_SeparateAlphaBlend_Enable );
+                    }
+                }
+                
+                bool get_SeparateAlphaBlend_Enable() const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlend_Enable) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    return this->m_SeparateAlphaBlend_Enable;
+                }
+                
+                bool has_SeparateAlphaBlendFactor_Dest() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Dest) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_SeparateAlphaBlendFactor_Dest( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Dest) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_SeparateAlphaBlendFactor_Dest );
+                
+                    return true;
+                }
+                
+                bool get_SeparateAlphaBlendFactor_Dest( Mengine::EBlendFactor * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Dest) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_SeparateAlphaBlendFactor_Dest;
+                
+                    return true;
+                }
+                
+                bool has_SeparateAlphaBlendFactor_Op() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Op) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_SeparateAlphaBlendFactor_Op( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Op) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_SeparateAlphaBlendFactor_Op );
+                
+                    return true;
+                }
+                
+                bool get_SeparateAlphaBlendFactor_Op( Mengine::EBlendOp * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Op) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_SeparateAlphaBlendFactor_Op;
+                
+                    return true;
+                }
+                
+                bool has_SeparateAlphaBlendFactor_Source() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Source) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_SeparateAlphaBlendFactor_Source( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Source) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_SeparateAlphaBlendFactor_Source );
+                
+                    return true;
+                }
+                
+                bool get_SeparateAlphaBlendFactor_Source( Mengine::EBlendFactor * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Source) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_SeparateAlphaBlendFactor_Source;
+                
+                    return true;
+                }
+                
             public:
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
@@ -705,6 +827,10 @@ namespace Metacode
                 bool m_DepthBufferTest_Enable;
                 bool m_DepthBufferWrite_Enable;
                 Mengine::ConstString m_Program_Name;
+                bool m_SeparateAlphaBlend_Enable;
+                Mengine::EBlendFactor m_SeparateAlphaBlendFactor_Dest;
+                Mengine::EBlendOp m_SeparateAlphaBlendFactor_Op;
+                Mengine::EBlendFactor m_SeparateAlphaBlendFactor_Source;
             public:
                 typedef Metabuf::Vector<Meta_TextureStages> VectorMeta_TextureStages;
             

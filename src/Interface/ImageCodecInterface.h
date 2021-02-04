@@ -53,7 +53,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    enum EImageDecoderOptions
+    enum EImageDecoderFlags
     {
         DF_NONE = 0x00000000,
         DF_COUNT_ALPHA = 0x00000001,

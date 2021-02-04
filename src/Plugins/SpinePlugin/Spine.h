@@ -85,9 +85,7 @@ namespace Mengine
 
         struct AttachmentMeshDesc
         {
-            uint32_t index;
-
-            const ResourceImage * image;
+            const ResourceImage * image = nullptr;
             RenderMaterialInterfacePtr material;
 
             VectorRenderVertex2D vertices;

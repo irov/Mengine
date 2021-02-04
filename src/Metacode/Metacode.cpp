@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 141;
+        return 143;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 1954752678; 
+        return 1457868360; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -814,6 +814,26 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_Program_Name) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_Program_Name );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlend_Enable) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_SeparateAlphaBlend_Enable );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Dest) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_SeparateAlphaBlendFactor_Dest );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Op) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_SeparateAlphaBlendFactor_Op );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Source) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_SeparateAlphaBlendFactor_Source );
             }
         
         }

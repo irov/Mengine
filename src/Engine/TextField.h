@@ -86,6 +86,7 @@ namespace Mengine
 
         typedef Lambda<bool( String * )> LambdaFormatArgsContext;
         void setTextFormatArgsContext( uint32_t _index, const LambdaFormatArgsContext & _context );
+        void removeTextFormatArgsContexts();
 
     public:
         uint32_t getTextExpectedArgument() const;
@@ -94,24 +95,32 @@ namespace Mengine
         bool updateTextCache_( U32String * const _cacheText ) const;
 
     public:
+        float getFontHeight() const;
+
+    public:
         void setFont( const TextFontInterfacePtr & _font );
         const TextFontInterfacePtr & getFont() const;
 
     public:
-        float getFontHeight() const;
-
-    public:
         void setFontColor( const Color & _color );
         const Color & getFontColor() const;
+        bool hasFontColor() const;
+        void removeFontColor();
 
         void setLineOffset( float _offset );
         float getLineOffset() const;
+        bool hasLineOffset() const;
+        void removeLineOffset();
 
         void setCharOffset( float _offset );
         float getCharOffset() const;
+        bool hasCharOffset() const;
+        void removeCharOffset();
 
         void setCharScale( float _value );
         float getCharScale() const;
+        bool hasCharScale() const;
+        void removeCharScale();
 
     public:
         void setHorizontAlign( ETextHorizontAlign _horizontAlign );
@@ -200,7 +209,7 @@ namespace Mengine
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
-        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _size, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
+        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
 
     public:
         MENGINE_INLINE const TextEntryInterfacePtr & getTotalTextEntry() const;
@@ -210,6 +219,9 @@ namespace Mengine
         MENGINE_INLINE void invalidateFont() const;
         bool updateFont_() const;
         void updateTextEntry_() const;
+
+    public:
+        uint32_t getTextFieldParams() const;
 
     public:
         const TextFontInterfacePtr & calcFont() const;
@@ -263,7 +275,7 @@ namespace Mengine
 
         Color m_colorFont;
 
-        uint32_t m_fontParams;
+        uint32_t m_textParams;
 
         uint32_t m_maxCharCount;
 

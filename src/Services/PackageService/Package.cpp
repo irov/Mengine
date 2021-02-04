@@ -1231,6 +1231,7 @@ namespace Mengine
             meta_Material.get_Debug( &is_debug );
 
             RenderMaterialStage stage;
+            stage.separateAlphaBlendEnable = meta_Material.get_SeparateAlphaBlend_Enable();
             stage.alphaBlendEnable = meta_Material.get_AlphaBlend_Enable();
             stage.depthBufferTestEnable = meta_Material.get_DepthBufferTest_Enable();
             stage.depthBufferWriteEnable = meta_Material.get_DepthBufferWrite_Enable();
@@ -1238,6 +1239,10 @@ namespace Mengine
             meta_Material.get_BlendFactor_Source( &stage.blendSrc );
             meta_Material.get_BlendFactor_Dest( &stage.blendDst );
             meta_Material.get_BlendFactor_Op( &stage.blendOp );
+
+            meta_Material.get_SeparateAlphaBlendFactor_Source( &stage.separateAlphaBlendSrc );
+            meta_Material.get_SeparateAlphaBlendFactor_Dest( &stage.separateAlphaBlendDst );
+            meta_Material.get_SeparateAlphaBlendFactor_Op( &stage.separateAlphaBlendOp );
 
             ConstString programName;
             if( meta_Material.get_Program_Name( &programName ) == true )

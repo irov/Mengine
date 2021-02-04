@@ -60,6 +60,7 @@ namespace Mengine
         , m_deviceType( D3DDEVTYPE_HAL )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
+        , m_vertexAttributeEnable( false )
         , m_vertexShaderEnable( false )
         , m_fragmentShaderEnable( false )
         , m_frames( 0 )
@@ -1547,17 +1548,34 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
+    void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DWORD src_factor = Helper::toD3DBlendFactor( _src );
-        DWORD dst_factor = Helper::toD3DBlendFactor( _dst );
-        DWORD blend_op = Helper::toD3DBlendOp( _op );
+        DWORD srcBlendFactor = Helper::toD3DBlendFactor( _src );
+        DWORD dstBlendFactor = Helper::toD3DBlendFactor( _dst );
+        DWORD blendOp = Helper::toD3DBlendOp( _op );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, src_factor) );
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dst_factor) );
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blend_op) );
+        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, srcBlendFactor) );
+        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dstBlendFactor) );
+        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blendOp) );
+
+        if( _separate == false )
+        {
+            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, FALSE) );
+        }
+        else
+        {
+            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, TRUE) );
+
+            DWORD srcSeparateBlendFactor = Helper::toD3DBlendFactor( _separateSrc );
+            DWORD dstSeparateBlendFactor = Helper::toD3DBlendFactor( _separateDst );
+            DWORD blendSeparateOp = Helper::toD3DBlendOp( _separateOp );
+
+            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLENDALPHA, srcSeparateBlendFactor) );
+            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLENDALPHA, dstSeparateBlendFactor) );
+            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOPALPHA, blendSeparateOp) );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )

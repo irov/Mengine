@@ -1,4 +1,4 @@
-<Protocol Version = "141">
+<Protocol Version = "143">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -17,7 +17,7 @@
   <Type Name="Color255" Type="Mengine::Color" Evict="float4inv255"/>
   <Type Name="Color" Type="Mengine::Color" Evict="float4"/>
   <Type Name="Mengine::Polygon" Evict="floats"/>
-  <Type Name="Mengine::Viewport" Evict="float4"/>  
+  <Type Name="Mengine::Viewport" Evict="float4"/>
   <Type Name="Mengine::Floats" Evict="floats"/>
   <Type Name="Mengine::Int8s" Evict="int8s"/>
   <Type Name="Mengine::Int16s" Evict="int16s"/>
@@ -140,9 +140,14 @@
           <Member Node="BlendFactor" Name="Dest" Type="Mengine::EBlendFactor"/>
           <Member Node="BlendFactor" Name="Op" Type="Mengine::EBlendOp"/>
 
-          <Member Node="AlphaBlend" Name="Enable" Type="bool" Default = "false"/>
-          <Member Node="DepthBufferTest" Name="Enable" Type="bool" Default = "false"/>
-          <Member Node="DepthBufferWrite" Name="Enable" Type="bool" Default = "false"/>
+          <Member Node="SeparateAlphaBlendFactor" Name="Source" Type="Mengine::EBlendFactor"/>
+          <Member Node="SeparateAlphaBlendFactor" Name="Dest" Type="Mengine::EBlendFactor"/>
+          <Member Node="SeparateAlphaBlendFactor" Name="Op" Type="Mengine::EBlendOp"/>
+
+          <Member Node="SeparateAlphaBlend" Name="Enable" Type="bool" Default="false"/>
+          <Member Node="AlphaBlend" Name="Enable" Type="bool" Default="false"/>
+          <Member Node="DepthBufferTest" Name="Enable" Type="bool" Default="false"/>
+          <Member Node="DepthBufferWrite" Name="Enable" Type="bool" Default="false"/>
 
           <Node Name="TextureStages">
             <Attribute Name="Stage" Type="uint32_t" Required="1"/>
@@ -162,7 +167,7 @@
           <Attribute Name="Precompile" Type="bool"/> 
         </Node>
 
-        <Node Name="ResourceImageData" Inheritance = "Resource">
+        <Node Name="ResourceImageData" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Alpha" Type="bool"/>
@@ -174,7 +179,7 @@
           <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
-        <Node Name="ResourceImageDefault" Inheritance = "Resource">
+        <Node Name="ResourceImageDefault" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
@@ -188,7 +193,7 @@
           <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
-        <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance = "Resource">
+        <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance="Resource">
           <Member Node="Image" Name="NameRGB" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UVRGB" Type="mt::uv4f" Required="1"/>
           <Member Node="Image" Name="UVRGBRotate" Type="bool"/>          
@@ -204,7 +209,7 @@
           <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
         </Node>
 
-        <Node Name="ResourceImageSubstract" Inheritance = "Resource">
+        <Node Name="ResourceImageSubstract" Inheritance="Resource">
           <Member Node="Image" Name="Name" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UV" Type="mt::uv4f" Required="1"/>
           <Member Node="Image" Name="UVRotate" Type="bool"/>
@@ -216,7 +221,7 @@
           <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
         </Node>
 
-        <Node Name="ResourceParticle" Inheritance = "Resource">
+        <Node Name="ResourceParticle" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
 
@@ -228,7 +233,7 @@
           </Node>
         </Node>
 
-        <Node Name="ResourceAstralax" Inheritance = "Resource">
+        <Node Name="ResourceAstralax" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
 
@@ -240,29 +245,29 @@
           </Node>
         </Node>
 
-        <Node Name="ResourceJSON" Inheritance = "Resource">
+        <Node Name="ResourceJSON" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
         </Node>
 
-        <Node Name="ResourceTexturepacker" Inheritance = "Resource">
+        <Node Name="ResourceTexturepacker" Inheritance="Resource">
           <Member Node="JSON" Name="Name" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="Name" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
-        <Node Name="ResourceCursorSystem" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>          
+        <Node Name="ResourceCursorSystem" Inheritance="Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
 
-        <Node Name="ResourceCursorICO" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>          
+        <Node Name="ResourceCursorICO" Inheritance="Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
         
-        <Node Name="ResourceFile" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>                    
+        <Node Name="ResourceFile" Inheritance="Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
         
-        <Node Name="ResourceSound" Inheritance = "Resource">
+        <Node Name="ResourceSound" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
@@ -270,15 +275,15 @@
           <Member Node="IsStreamable" Name="Value" Type="bool"/>
         </Node>
 
-        <Node Name="ResourceMusic" Inheritance = "Resource">
+        <Node Name="ResourceMusic" Inheritance="Resource">
             <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
-            <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>      
+            <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
             <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
             <Member Node="File" Name="External" Type="bool"/>
             <Member Node="DefaultVolume" Name="Value" Type="float"/>
         </Node>
 
-        <Node Name="ResourceWindow" Inheritance = "Resource">
+        <Node Name="ResourceWindow" Inheritance="Resource">
           <Member Node="WindowBackground" Name="ResourceImageName" Type="Mengine::ConstString"/>
 
           <Member Node="WindowLeftTop" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
@@ -300,7 +305,7 @@
           <Member Node="WindowLeft" Name="Offset" Type="mt::vec2f" Required="1"/>
         </Node>
 
-        <Node Name="ResourceMovie2" Inheritance = "Resource">
+        <Node Name="ResourceMovie2" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Dataflow" Type="Mengine::ConstString"/>
           
@@ -328,7 +333,7 @@
           </Node>
         </Node>
 
-        <Node Name="ResourceMovie" Inheritance = "Resource">
+        <Node Name="ResourceMovie" Inheritance="Resource">
           <Member Node="FrameDuration" Name="Value" Type="float" Required="1"/>
           <Member Node="Duration" Name="Value" Type="float" Required="1"/>
           <Member Node="Width" Name="Value" Type="float" Required="1"/>
@@ -400,7 +405,7 @@
           </Node>
         </Node>
 
-        <Node Name="ResourceVideo" Inheritance = "Resource">
+        <Node Name="ResourceVideo" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Alpha" Type="bool"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
@@ -410,53 +415,53 @@
           <Member Node="File" Name="Duration" Type="float"/>
         </Node>
 
-        <Node Name="ResourceImageSequence" Inheritance = "Resource">
+        <Node Name="ResourceImageSequence" Inheritance="Resource">
           <Node Name="Sequence">
             <Attribute Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Delay" Type="float" Required="1"/>
           </Node>
         </Node>
 
-        <Node Name="ResourceHIT" Inheritance = "Resource">
+        <Node Name="ResourceHIT" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
         </Node>
 
-        <Node Name="ResourceModel3D" Inheritance = "Resource">
+        <Node Name="ResourceModel3D" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Dataflow" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="Image" Name="Resource" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
-        <Node Name="ResourceImageSolid" Inheritance = "Resource">
+        <Node Name="ResourceImageSolid" Inheritance="Resource">
           <Member Node="Size" Name="Value" Type="mt::vec2f" Required="1"/>
           <Member Node="Color" Name="Value" Type="Color255" Required="1"/>
         </Node>
 
-        <Node Name="ResourceInternalObject" Inheritance = "Resource">
+        <Node Name="ResourceInternalObject" Inheritance="Resource">
           <Member Node="Internal" Name="Name" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Internal" Name="Group" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
-        <Node Name="ResourceShape" Inheritance = "Resource">
+        <Node Name="ResourceShape" Inheritance="Resource">
           <Member Node="Polygon" Name="Value" Type="Mengine::Polygon" Required="1"/>
         </Node>
 
-        <Node Name="ResourceCal3dSkeleton" Inheritance = "Resource">
+        <Node Name="ResourceCal3dSkeleton" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
 
-        <Node Name="ResourceCal3dAnimation" Inheritance = "Resource">
+        <Node Name="ResourceCal3dAnimation" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
 
-        <Node Name="ResourceCal3dMesh" Inheritance = "Resource">
+        <Node Name="ResourceCal3dMesh" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
           
-        <Node Name="ResourceSpineAtlas" Inheritance = "Resource">
+        <Node Name="ResourceSpineAtlas" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
 
@@ -466,18 +471,18 @@
           </Node>
         </Node>
 
-        <Node Name="ResourceSpineAtlasTexturepacker" Inheritance = "Resource">
+        <Node Name="ResourceSpineAtlasTexturepacker" Inheritance="Resource">
           <Member Node="Texturepacker" Name="Name" Type="Mengine::ConstString"/>
         </Node>
 
-        <Node Name="ResourceSpineSkeleton" Inheritance = "Resource">
+        <Node Name="ResourceSpineSkeleton" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
 
           <Member Node="Atlas" Name="Name" Type="Mengine::ConstString"/>
         </Node>
 
-        <Node Name="ResourceExternal" Inheritance = "Resource" NoWrite = "1"/>
+        <Node Name="ResourceExternal" Inheritance="Resource" NoWrite="1"/>
       </Node>
 
 

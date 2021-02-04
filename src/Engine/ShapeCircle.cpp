@@ -102,7 +102,7 @@ namespace Mengine
 
         color *= surfaceColor;
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         uint32_t vertexCount = (uint32_t)m_verticesWM.size();
 

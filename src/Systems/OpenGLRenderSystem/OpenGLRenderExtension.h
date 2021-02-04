@@ -16,6 +16,8 @@ extern PFNGLCOMPRESSEDTEXIMAGE2DPROC        glCompressedTexImage2D_;
 typedef void (APIENTRYP PFNGLBLENDEQUATIONPROC) (GLenum mode);
 
 extern PFNGLBLENDEQUATIONPROC               glBlendEquation_;
+extern PFNGLBLENDFUNCSEPARATEPROC           glBlendFuncSeparate_;
+extern PFNGLBLENDEQUATIONSEPARATEPROC       glBlendEquationSeparate_;
 
 // tt
 extern PFNGLGENVERTEXARRAYSPROC             glGenVertexArrays;

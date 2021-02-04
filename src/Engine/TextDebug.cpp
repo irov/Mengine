@@ -164,7 +164,7 @@ namespace Mengine
 
             if( fontLayoutCount == 1 )
             {
-                uint32_t argb = _color.getAsARGB();
+                ColorValue_ARGB argb = _color.getAsARGB();
 
                 MENGINE_VA_LIST_TYPE args;
                 MENGINE_VA_LIST_START( args, _format );

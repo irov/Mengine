@@ -122,7 +122,7 @@ namespace Mengine
 
             if( this->makeBin_( _fileGroup, FilePath( c_cache_path_xml ), _filePath ) == false )
             {
-                LOGGER_ERROR( "invlid rebild bin '%s' from xml '%s'"
+                LOGGER_ERROR( "invalid rebuild bin '%s' from xml '%s'"
                     , _filePath.c_str()
                     , c_cache_path_xml.c_str()
                 );
@@ -279,7 +279,7 @@ namespace Mengine
                 stringBuffer = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
             }
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stringBuffer, "invlid read string (error)" );
+            MENGINE_ASSERTION_MEMORY_PANIC( stringBuffer, "invalid read string (error)" );
 
             STRINGIZE_SERVICE()
                 ->stringize( stringBuffer, stringSize, stringHash, &cstr );
@@ -291,8 +291,7 @@ namespace Mengine
         {
             if( _metadata->parse( binary_memory, bin_size, read_size, (void *)& m_metacache ) == false )
             {
-                LOGGER_ERROR( "invlid parse (error)"
-                );
+                LOGGER_ERROR( "invalid parse (error)" );
 
                 return false;
             }
@@ -302,8 +301,7 @@ namespace Mengine
 
         if( read_size != bin_size )
         {
-            LOGGER_ERROR( "invlid parse (read != archive)"
-            );
+            LOGGER_ERROR( "invalid parse (read != archive)" );
 
             return false;
         }
@@ -366,7 +364,7 @@ namespace Mengine
 
         if( time_xml > time_bin )
         {
-            //Rebild bin file from xml
+            //Rebuild bin file from xml
             file_bin = nullptr;
 
             if( this->makeBin_( _fileGroup, c_cache_path_xml, _filePath ) == false )

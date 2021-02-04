@@ -247,62 +247,73 @@ namespace Mengine
 
         jpeg_start_decompress( &m_jpegObject );
 
-        if( m_options.flags == 0 )
+        switch( m_options.flags & 0x0000ffff )
         {
-            if( m_options.channels == m_dataInfo.channels )
+        case DF_NONE:
             {
-                JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
-
-                for( uint32_t j = 0; j != m_dataInfo.height; ++j )
+                if( m_options.channels == m_dataInfo.channels )
                 {
-                    jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
+                    JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
 
-                    // Assume put_scanline_someplace wants a pointer and sample count.
-                    rgb_buffer += m_options.pitch;
-                }
-
-#if RGB_PIXELSIZE == 4
-                if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0 )
-                {
-                    JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
                     for( uint32_t j = 0; j != m_dataInfo.height; ++j )
                     {
-                        for( uint32_t i = 0; i != m_dataInfo.width; ++i )
-                        {
-                            alpha_buffer[i * 4 + 3] = 255; // alpha
-                        }
+                        jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
 
-                        alpha_buffer += m_options.pitch;
+                        // Assume put_scanline_someplace wants a pointer and sample count.
+                        rgb_buffer += m_options.pitch;
                     }
-                }
+
+#if RGB_PIXELSIZE == 4
+                    if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0 )
+                    {
+                        JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
+                        for( uint32_t j = 0; j != m_dataInfo.height; ++j )
+                        {
+                            for( uint32_t i = 0; i != m_dataInfo.width; ++i )
+                            {
+                                alpha_buffer[i * 4 + 3] = 255; // alpha
+                            }
+
+                            alpha_buffer += m_options.pitch;
+                        }
+                    }
 #endif
-            }
-            else
+                }
+                else
+                {
+                    LOGGER_ERROR( "DEFAULT options channels %u != %u"
+                        , m_options.channels
+                        , m_dataInfo.channels
+                    );
+
+                    return 0;
+                }
+            }break;
+        case DF_READ_ALPHA_ONLY:
             {
-                LOGGER_ERROR( "DEFAULT options channels %d != %d"
-                    , m_options.channels
-                    , m_dataInfo.channels
+                if( m_options.channels == 1 )
+                {
+                    MENGINE_MEMSET( _buffer, 255, _bufferSize );
+
+                    return _bufferSize;
+                }
+                else
+                {
+                    LOGGER_ERROR( "DF_READ_ALPHA_ONLY options channels %u != 4"
+                        , m_options.channels
+                    );
+
+                    return 0;
+                }
+            }break;
+        default:
+            {
+                LOGGER_ERROR( "unsupport options flag %u"
+                    , m_options.flags
                 );
 
                 return 0;
-            }
-        }
-        else if( m_options.flags & DF_READ_ALPHA_ONLY )
-        {
-            if( m_options.channels == 1 )
-            {
-                MENGINE_MEMSET( _buffer, 255, _bufferSize );
-
-                return _bufferSize;
-            }
-            else
-            {
-                LOGGER_ERROR( "DF_READ_ALPHA_ONLY options channels %d != 4"
-                    , m_options.channels
-                );
-
-                return 0;
-            }
+            }break;
         }
 
         m_jpegObject.output_scanline = m_jpegObject.output_height;

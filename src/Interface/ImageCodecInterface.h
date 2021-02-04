@@ -61,6 +61,7 @@ namespace Mengine
         DF_QUALITY = 0x00000004,
         DF_WRITE_ALPHA_ONLY = 0x00000008,
         DF_NOT_ADD_ALPHA = 0x00000010,
+
         DF_PREMULTIPLY_ALPHA = 0x00010000,
     };
     //////////////////////////////////////////////////////////////////////////

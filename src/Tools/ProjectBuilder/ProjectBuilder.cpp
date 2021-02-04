@@ -69,7 +69,6 @@ PLUGIN_EXPORT( WebP );
 PLUGIN_EXPORT( Theora );
 PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( MetabufLoader );
-PLUGIN_EXPORT( DevelopmentConverter );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -218,7 +217,11 @@ namespace Mengine
         SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( MetabufLoader, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( DevelopmentConverter, MENGINE_DOCUMENT_FUNCTION );
+        if( PLUGIN_SERVICE()
+            ->loadPlugin( "DevelopmentConverterPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            return false;
+        }
 
         if( PLUGIN_SERVICE()
             ->loadPlugin( "AstralaxPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )

@@ -2173,7 +2173,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setHorizontalCenterAlign()
     {
-        if( m_verticalAlign == ETFHA_CENTER )
+        if( m_horizontAlign == ETFHA_CENTER )
         {
             return;
         }

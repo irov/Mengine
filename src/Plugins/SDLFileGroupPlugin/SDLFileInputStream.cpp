@@ -140,7 +140,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _fullPath )
+    bool SDLFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _fullPath )
     {
         if( Helper::concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
@@ -370,7 +370,7 @@ namespace Mengine
         return (m_reading - m_capacity + m_carriage) == m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::time( uint64_t * _time ) const
+    bool SDLFileInputStream::time( uint64_t * const _time ) const
     {
 #ifdef MENGINE_DEBUG
         Char filePath[MENGINE_MAX_PATH] = {'\0'};
@@ -397,7 +397,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::memory( void ** const _memory, size_t * _size )
+    bool SDLFileInputStream::memory( void ** const _memory, size_t * const _size )
     {
         MENGINE_UNUSED( _memory );
         MENGINE_UNUSED( _size );

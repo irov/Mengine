@@ -1037,11 +1037,11 @@ namespace Mengine
 
             if( _event.isAlt == true )
             {
-                float timeFactor = 0.f;
+                float timeFactor = -1.f;
 
                 switch( _event.code )
                 {
-                case KC_0: timeFactor = 0.5f; break;
+                case KC_0: timeFactor = 0.f; break;
                 case KC_1: timeFactor = 1.f; break;
                 case KC_2: timeFactor = 2.f; break;
                 case KC_3: timeFactor = 3.f; break;
@@ -1054,7 +1054,7 @@ namespace Mengine
                 default: break;
                 }
 
-                if( timeFactor > 0.f )
+                if( timeFactor >= 0.f )
                 {
                     TIMELINE_SERVICE()
                         ->setTimeFactor( timeFactor );

@@ -34,13 +34,13 @@ namespace Mengine
         bool eof() const override;
 
     public:
-        bool time( uint64_t * _time ) const override;
+        bool time( uint64_t *  const _time ) const override;
 
     public:
-        bool memory( void ** const _memory, size_t * _size ) override;
+        bool memory( void ** const _memory, size_t * const _size ) override;
 
     protected:
-        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _fullPath );
+        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char *  const _fullPath );
         bool read_( void * const _buf, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 

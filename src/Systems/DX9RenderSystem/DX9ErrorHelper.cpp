@@ -11,6 +11,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         const Char * getDX9ErrorMessage( HRESULT _hr )
         {
             switch( _hr )

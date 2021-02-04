@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderTargetOffscreen
         : public DX9RenderTargetTexture
     {

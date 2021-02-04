@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ImageDecoderArchive
         : public ImageDecoder
     {

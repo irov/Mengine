@@ -286,7 +286,7 @@ namespace Mengine
 
             Detail::Mesh::VectorTriangleIndices::size_type indices_count = triangle_indices.size();
 
-            indexBuffer->resize( indices_count );
+            indexBuffer->resize( (uint32_t)indices_count );
 
             RenderMeshDesc desc;
             desc.vertexMemory = vertexMemory;
@@ -624,7 +624,7 @@ namespace Mengine
             const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
             const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
-            uint32_t indices_count = triangle_indices.size();
+            uint32_t indices_count = (uint32_t)triangle_indices.size();
 
             desc.indexBuffer->draw( triangle_indices_buffer_data, 0, indices_count );
 

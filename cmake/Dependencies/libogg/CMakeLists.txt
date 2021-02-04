@@ -78,7 +78,6 @@ set(OGG_HEADERS
 )
 
 set(OGG_SOURCES
-    src/os_types.c
     src/bitwise.c
     src/framing.c
     src/crctable.h

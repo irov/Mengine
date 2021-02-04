@@ -29,4 +29,5 @@ namespace Mengine
         void substr( VectorTextLineChunks * const _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size );
         void split( VectorTextLineChunks2 * const _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims );
     }
+    //////////////////////////////////////////////////////////////////////////
 };

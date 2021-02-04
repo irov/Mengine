@@ -4,8 +4,7 @@
 #include "Kernel/ValueAccumulateLinear.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     template<class T>
     class LambdaAffectorAccumulateLinear
         : public LambdaAffectorInterpolate<T, ValueAccumulateLinear<T>>

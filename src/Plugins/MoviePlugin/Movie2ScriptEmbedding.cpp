@@ -231,5 +231,6 @@ namespace Mengine
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

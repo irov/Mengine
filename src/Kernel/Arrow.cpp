@@ -3,6 +3,8 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
+#include "ArrowInputMousePositionProvider.h"
+
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"

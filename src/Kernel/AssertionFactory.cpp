@@ -7,7 +7,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         void assertionFactoryEmpty( const FactoryPtr & _factory, const Char * _file, uint32_t _line )

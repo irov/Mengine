@@ -23,29 +23,6 @@ namespace Mengine
         , m_initializeServiceName( nullptr )
 #endif
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
-        {
-            ServiceDesc & desc = m_services[index];
-
-            desc.name[0] = '\0';
-            desc.service = nullptr;
-        }
-
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT; ++index )
-        {
-            DependencyDesc & desc = m_dependencies[index];
-
-            desc.name[0] = '\0';
-            desc.dependency[0] = '\0';
-        }
-
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_MAX_WAIT; ++index )
-        {
-            WaitDesc & desc = m_waits[index];
-
-            desc.name[0] = '\0';
-            desc.lambda = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProvider::~ServiceProvider()

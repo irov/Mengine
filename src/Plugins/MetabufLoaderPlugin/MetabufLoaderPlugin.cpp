@@ -19,9 +19,22 @@
 #include "LoaderResourceSound.h"
 #include "LoaderResourceWindow.h"
 
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 
+//////////////////////////////////////////////////////////////////////////
+void * _metabuf_malloc( size_t _size )
+{
+    void * p = Mengine::Helper::allocateMemory( _size, "metabuf" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void _metabuf_free( void * _ptr )
+{
+    Mengine::Helper::deallocateMemory( _ptr, "metabuf" );
+}
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MetabufLoader, Mengine::MetabufLoaderPlugin );
 //////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        //////////////////////////////////////////////////////////////////////////
         void ravingcode( uint32_t _parrot, const void * _in, size_t _size, void * const _out )
         {
             const uint8_t * u8_in = (const uint8_t *)_in;
@@ -24,6 +23,5 @@ namespace Mengine
                 *(u8_out++) = *(u8_in++) ^ xor_seed;
             }
         }
-        //////////////////////////////////////////////////////////////////////////
     }
 }

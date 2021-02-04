@@ -69,7 +69,7 @@ if(MENGINE_TOOLCHAIN_MINGW)
     endif()
     
     if(MENGINE_ARCHITECTURE_X64)
-        TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${MENGINE_CMAKE_DEPENDENCIES_DIR}/astralax/libmagic3d.a)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${MENGINE_CMAKE_DEPENDENCIES_DIR}/astralax_mingw64/libmagic3d.a)
     endif()
 endif()
 

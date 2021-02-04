@@ -10,8 +10,7 @@
 #include "Kernel/DocumentHelper.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class BaseAffector
         : public Affector
     {

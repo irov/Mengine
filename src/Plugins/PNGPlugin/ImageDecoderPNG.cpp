@@ -83,8 +83,7 @@ namespace Mengine
 
         if( info_ptr == nullptr )
         {
-            LOGGER_ERROR( "Can't create info structure"
-            );
+            LOGGER_ERROR( "Can't create info structure" );
 
             png_destroy_write_struct( &m_png_ptr, nullptr );
 
@@ -108,8 +107,7 @@ namespace Mengine
 
         if( png_sig_cmp( png_check, (png_size_t)0, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != 0 )
         {
-            LOGGER_ERROR( "Bad or not PNG file"
-            );
+            LOGGER_ERROR( "Bad or not PNG file" );
 
             return false;
         }
@@ -126,8 +124,7 @@ namespace Mengine
 #endif 
         if( setjmp( png_jmpbuf( m_png_ptr ) ) )
         {
-            LOGGER_ERROR( "jmp"
-            );
+            LOGGER_ERROR( "jmp" );
 
             return false;
         }
@@ -159,8 +156,7 @@ namespace Mengine
 #else
         if( bit_depth == 16 )
         {
-            LOGGER_ERROR( "not support scale 16 to 8 bit"
-            );
+            LOGGER_ERROR( "not support scale 16 to 8 bit" );
 
             return false;
         }
@@ -443,8 +439,7 @@ namespace Mengine
 
         if( m_info_ptr == nullptr )
         {
-            LOGGER_ERROR( "Can't create info structure"
-            );
+            LOGGER_ERROR( "Can't create info structure" );
 
             png_destroy_write_struct( &m_png_ptr, nullptr );
 
@@ -463,4 +458,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

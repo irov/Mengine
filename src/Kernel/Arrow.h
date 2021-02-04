@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ArrowInputMousePositionProvider.h"
-
 #include "Kernel/Entity.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Polygon.h"

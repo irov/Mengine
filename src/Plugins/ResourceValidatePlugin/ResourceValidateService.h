@@ -5,8 +5,7 @@
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class ResourceValidateService
         : public ServiceBase<ResourceValidateServiceInterface>
     {

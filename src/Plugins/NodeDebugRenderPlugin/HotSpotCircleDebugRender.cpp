@@ -36,4 +36,5 @@ namespace Mengine
 
         Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, debugColor, MENGINE_DOCUMENT_FORWARD );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

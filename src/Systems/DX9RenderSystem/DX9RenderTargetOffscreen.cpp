@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetOffscreen::DX9RenderTargetOffscreen()
         : m_pD3DSurfacePlain( nullptr )
     {

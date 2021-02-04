@@ -36,4 +36,5 @@ namespace Mengine
             m_resourceUselessCompileChecker = nullptr;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

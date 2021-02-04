@@ -2,7 +2,6 @@
 
 #include "Config/Config.h"
 
-//////////////////////////////////////////////////////////////////////////
 #if MENGINE_ASSERTION_DEBUG
 #   include "Kernel/Assertion.h"
 #   include "Kernel/Node.h"
@@ -11,4 +10,3 @@
 #else
 #   define MENGINE_ASSERTION_NODE(Node, Type, ...)
 #endif
-//////////////////////////////////////////////////////////////////////////

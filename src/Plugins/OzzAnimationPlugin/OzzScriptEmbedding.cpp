@@ -125,4 +125,5 @@ namespace Mengine
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ) );
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

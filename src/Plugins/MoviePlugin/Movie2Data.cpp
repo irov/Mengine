@@ -46,7 +46,7 @@ namespace Mengine
 
         Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
 
-        const ResourceImagePtr & resourceImage = image_desc->resourceImage;
+        ResourceImage * resourceImage = image_desc->resourceImage;
 
         if( resourceImage->compile() == false )
         {
@@ -55,10 +55,10 @@ namespace Mengine
 
         if( ++image_desc->refcount == 1 )
         {
-            image_desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
-            image_desc->materials[EMB_ADD] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
-            image_desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
-            image_desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( resourceImage, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
+            image_desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( ResourceImagePtr::from( resourceImage ), ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
+            image_desc->materials[EMB_ADD] = Helper::makeImageMaterial( ResourceImagePtr::from( resourceImage ), ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
+            image_desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( ResourceImagePtr::from( resourceImage ), ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
+            image_desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( ResourceImagePtr::from( resourceImage ), ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FORWARD_PTR( _data ) );
         }
 
         return AE_TRUE;
@@ -148,7 +148,7 @@ namespace Mengine
 
         Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
 
-        const ResourceImagePtr & resourceImage = image_desc->resourceImage;
+        ResourceImage * resourceImage = image_desc->resourceImage;
 
         resourceImage->release();
 
@@ -248,9 +248,9 @@ namespace Mengine
 
                     Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
 
-                    const ResourceImagePtr & resourceImage = image_desc->resourceImage;
+                    ResourceImage * resourceImage = image_desc->resourceImage;
 
-                    (*lambda)(resourceImage);
+                    (*lambda)(ResourcePtr::from( resourceImage ));
                 }
 
                 return AE_TRUE;
@@ -265,9 +265,9 @@ namespace Mengine
 
                 Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
 
-                const ResourceImagePtr & resourceImage = image_desc->resourceImage;
+                ResourceImage * resourceImage = image_desc->resourceImage;
 
-                (*lambda)(resourceImage);
+                (*lambda)(ResourcePtr::from( resourceImage ));
 
                 return AE_TRUE;
             }break;
@@ -332,12 +332,12 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2Data::ImageDesc * Movie2Data::makeImageDesc( const ResourceImagePtr & _resource )
+    Movie2Data::ImageDesc * Movie2Data::makeImageDesc( const ResourcePtr & _resource )
     {
         ImageDesc * desc = m_poolImageDesc.createT();
 
         desc->refcount = 0;
-        desc->resourceImage = _resource;
+        desc->resourceImage = Helper::staticResourceCast<ResourceImage *>( _resource.get() );
 
         return desc;
     }

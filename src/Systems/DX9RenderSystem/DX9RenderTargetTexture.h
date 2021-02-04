@@ -10,6 +10,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderTargetTexture
         : public RenderTargetInterface
         , public Factorable

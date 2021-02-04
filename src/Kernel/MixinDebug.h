@@ -6,8 +6,7 @@
 #endif
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
 #if defined(MENGINE_DEBUG)
 #   define MENGINE_MIXIN_DEBUG_NAME(Mixin) (dynamic_cast<const Identity *>(Mixin) != nullptr ? dynamic_cast<const Identity *>(Mixin)->getName().c_str() : "UNKNOWN")
 #   define MENGINE_MIXIN_DEBUG_TYPE(Mixin) (dynamic_cast<const Identity *>(Mixin) != nullptr ? dynamic_cast<const Identity *>(Mixin)->getType().c_str() : "UNKNOWN")
@@ -17,5 +16,4 @@ namespace Mengine
 #   define MENGINE_MIXIN_DEBUG_TYPE(Mixin) ("UNKNOWN")
 #   define MENGINE_MIXIN_DEBUG_UID(Mixin) (0)
 #endif
-    //////////////////////////////////////////////////////////////////////////
 }

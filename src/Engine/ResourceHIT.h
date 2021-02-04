@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceHIT
         : public ResourceTestPick
         , protected BaseContent

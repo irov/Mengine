@@ -183,22 +183,6 @@ namespace Mengine
 
             return (val1 + val2) / 2;
         }
-        //////////////////////////////////////////////////////////////////////////
-        static void * my_jpeg_malloc( size_t _size, void * _ud )
-        {
-            MENGINE_UNUSED( _ud );
-
-            void * p = Helper::allocateMemory( _size, "jpeg" );
-
-            return p;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void my_jpeg_free( void * _ptr, void * _ud )
-        {
-            MENGINE_UNUSED( _ud );
-
-            Helper::deallocateMemory( _ptr, "jpeg" );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderJPEG::ImageDecoderJPEG()
@@ -211,8 +195,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_initialize()
     {
-        set_jpeg_allocator( &Detail::my_jpeg_malloc, &Detail::my_jpeg_free, nullptr );
-
         // step 1: allocate and initialize JPEG decompression object
         m_jpegObject.err = jpeg_std_error( &m_errorMgr );
         m_jpegObject.client_data = this;

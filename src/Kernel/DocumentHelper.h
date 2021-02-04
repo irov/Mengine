@@ -2,7 +2,6 @@
 
 #include "Config/Config.h"
 
-//////////////////////////////////////////////////////////////////////////
 #if MENGINE_DOCUMENT_ENABLE
 #   include "Interface/DocumentServiceInterface.h"
 
@@ -56,4 +55,3 @@ namespace Mengine
 #   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) nullptr
 #   define MENGINE_DOCUMENT_FACTORABLE_MEMBER(Ptr) nullptr
 #endif
-//////////////////////////////////////////////////////////////////////////

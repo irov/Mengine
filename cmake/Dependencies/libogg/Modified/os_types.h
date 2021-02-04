@@ -20,25 +20,12 @@
 #include <stdint.h>
 
 //////////////////////////////////////////////////////////////////////////
-typedef struct
-{
-    void * ud;
-    void * (*malloc)(size_t _size, void * _ud);
-    void * (*calloc)(size_t _num, size_t _size, void * _ud);
-    void * (*realloc)(void * _ptr, size_t _size, void * _ud);
-    void (*free)(void * _ptr, void * _ud);
-} OGGAllocatorEx;
-//////////////////////////////////////////////////////////////////////////
-extern void setOGGAllocatorEx( OGGAllocatorEx * _allocator );
-extern OGGAllocatorEx * getOGGAllocatorEx();
-//////////////////////////////////////////////////////////////////////////
 /* make it easy on the folks that want to compile the libs with a
    different malloc than stdlib */
-#define _ogg_malloc(n)     (getOGGAllocatorEx()->malloc(n, getOGGAllocatorEx()->ud))
-#define _ogg_calloc(c,n)   (getOGGAllocatorEx()->calloc(c, n, getOGGAllocatorEx()->ud))
-#define _ogg_realloc(p, n) (getOGGAllocatorEx()->realloc(p, n, getOGGAllocatorEx()->ud))
-#define _ogg_free(p)       (getOGGAllocatorEx()->free(p, getOGGAllocatorEx()->ud))
-
+void * _ogg_malloc(size_t _size);
+void * _ogg_calloc(size_t _num, size_t _size);
+void * _ogg_realloc(void * _ptr, size_t _size);
+void _ogg_free(void * _ptr);
 
 #if defined(_WIN32)
 

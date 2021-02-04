@@ -3,8 +3,7 @@
 #include "ResourceValidatorInterface.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     template<class T>
     class ResourceValidatorT
         : public ResourceValidatorInterface

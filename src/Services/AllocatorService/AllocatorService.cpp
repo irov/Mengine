@@ -379,10 +379,14 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexReport );
 
-        MENGINE_ASSERTION_FATAL( m_reportTotal + _add >= _minus );
+        uint32_t report_add = (uint32_t)_add;
+        uint32_t report_minus = (uint32_t)_minus;
 
-        m_reportTotal += _add;
-        m_reportTotal -= _minus;
+
+        MENGINE_ASSERTION_FATAL( m_reportTotal + report_add >= report_minus );
+
+        m_reportTotal += report_add;
+        m_reportTotal -= report_minus;
 
         for( uint32_t index = 0; index != 2048; ++index )
         {
@@ -393,12 +397,12 @@ namespace Mengine
                 continue;
             }
 
-            MENGINE_ASSERTION_FATAL( r.count + _add >= _minus );
+            MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus );
 
-            r.count += _add;
-            r.count -= _minus;
+            r.count += report_add;
+            r.count -= report_minus;
 
-            r.total_alloc += _add;
+            r.total_alloc += report_add;
 
             return;
         }
@@ -412,14 +416,14 @@ namespace Mengine
                 continue;
             }
 
-            MENGINE_ASSERTION_FATAL( r.count + _add >= _minus );
+            MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus );
 
             MENGINE_STRCPY( r.doc, _doc );
 
-            r.count += _add;
-            r.count -= _minus;
+            r.count += report_add;
+            r.count -= report_minus;
 
-            r.total_alloc += _add;
+            r.total_alloc += report_add;
 
             break;
         }

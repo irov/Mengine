@@ -24,7 +24,6 @@
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 #endif
 
-#include "metabuf/Memory.hpp"
 #include "metabuf/Metadata.hpp"
 #include "Metacode/Metacode.h"
 
@@ -33,22 +32,6 @@ SERVICE_FACTORY( LoaderService, Mengine::LoaderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void * metabuf_malloc( size_t _size, void * _ud )
-    {
-        MENGINE_UNUSED( _ud );
-
-        void * p = Helper::allocateMemory( _size, "metabuf" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void metabuf_free( void * _ptr, void * _ud )
-    {
-        MENGINE_UNUSED( _ud );
-
-        Helper::deallocateMemory( _ptr, "metabuf" );
-    }
     //////////////////////////////////////////////////////////////////////////
     LoaderService::LoaderService()
     {
@@ -67,8 +50,6 @@ namespace Mengine
         m_archivator = archivator;
 
         m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
-
-        Metabuf::set_Metabuf_allocator( &metabuf_malloc, &metabuf_free, nullptr );
 
         return true;
     }
@@ -122,7 +103,6 @@ namespace Mengine
 
             return false;
         }
-
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 

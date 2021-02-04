@@ -10,44 +10,36 @@
 #include "Kernel/AssertionAllocator.h"
 
 //////////////////////////////////////////////////////////////////////////
+void * _ogg_malloc( size_t _size )
+{
+    void * p = Mengine::Helper::allocateMemory( _size, "ogg" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void * _ogg_calloc( size_t _num, size_t _size )
+{
+    void * p = Mengine::Helper::callocateMemory( _num, _size, "ogg" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void * _ogg_realloc( void * _ptr, size_t _size )
+{
+    void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "ogg" );
+
+    return p;
+}
+//////////////////////////////////////////////////////////////////////////
+void _ogg_free( void * _ptr )
+{
+    Mengine::Helper::deallocateMemory( _ptr, "ogg" );
+}
+//////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( OggVorbis, Mengine::OggVorbisPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void * ogg_malloc( size_t _size, void * _ud )
-    {
-        MENGINE_UNUSED( _ud );
-
-        void * p = Helper::allocateMemory( _size, "ogg" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * ogg_calloc( size_t _num, size_t _size, void * _ud )
-    {
-        MENGINE_UNUSED( _ud );
-
-        void * p = Helper::callocateMemory( _num, _size, "ogg" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * ogg_realloc( void * _ptr, size_t _size, void * _ud )
-    {
-        MENGINE_UNUSED( _ud );
-
-        void * p = Helper::reallocateMemory( _ptr, _size, "ogg" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void ogg_free( void * _ptr, void * _ud )
-    {
-        MENGINE_UNUSED( _ud );
-
-        Helper::deallocateMemory( _ptr, "ogg" );
-    }
     //////////////////////////////////////////////////////////////////////////
     OggVorbisPlugin::OggVorbisPlugin()
     {
@@ -59,15 +51,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OggVorbisPlugin::_initializePlugin()
     {
-        OGGAllocatorEx allocator;
-        allocator.ud = nullptr;
-        allocator.malloc = &ogg_malloc;
-        allocator.calloc = &ogg_calloc;
-        allocator.realloc = &ogg_realloc;
-        allocator.free = &ogg_free;
-
-        setOGGAllocatorEx( &allocator );
-
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "oggSound" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "ogvSound" ), MENGINE_DOCUMENT_FACTORABLE );
 

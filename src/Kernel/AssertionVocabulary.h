@@ -2,7 +2,6 @@
 
 #include "Config/Config.h"
 
-//////////////////////////////////////////////////////////////////////////
 #if MENGINE_ASSERTION_DEBUG
 #include "Kernel/ConstString.h"
 
@@ -21,5 +20,3 @@ namespace Mengine
 #else
 #   define MENGINE_ASSERTION_VOCABULARY_EMPTY(Category)
 #endif
-//////////////////////////////////////////////////////////////////////////
-

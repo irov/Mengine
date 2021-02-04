@@ -25,4 +25,5 @@ namespace Mengine
                 ->renderDebugNode( NodePtr::from( _node ), _renderPipeline, _context, true, _hide );
         } );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

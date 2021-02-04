@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderVertexShader
         : public RenderVertexShaderInterface
         , public Factorable

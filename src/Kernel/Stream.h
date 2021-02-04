@@ -28,5 +28,6 @@ namespace Mengine
         MemoryInterfacePtr loadStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const DocumentPtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

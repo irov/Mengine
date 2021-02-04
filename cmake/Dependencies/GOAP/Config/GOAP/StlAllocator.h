@@ -7,6 +7,7 @@
 
 namespace GOAP
 {
+    //////////////////////////////////////////////////////////////////////////
     template <typename T>
     class StlAllocator
         : public std::allocator<T>
@@ -64,16 +65,17 @@ namespace GOAP
     public:
         Allocator * m_allocator;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     template <class T>
     bool operator == ( const StlAllocator<T> &, const StlAllocator<T> & )
     {
         return true;
     }
-
+    //////////////////////////////////////////////////////////////////////////
     template <class T>
     bool operator != ( const StlAllocator<T> &, const StlAllocator<T> & )
     {
         return false;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

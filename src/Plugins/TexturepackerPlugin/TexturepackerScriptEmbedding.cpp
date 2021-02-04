@@ -63,4 +63,5 @@ namespace Mengine
 
         Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -198,5 +198,6 @@ namespace Mengine
         _kernel->remove_from_module( "prefetchScripts", nullptr );
         _kernel->remove_from_module( "unfetchFonts", nullptr );
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

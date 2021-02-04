@@ -63,4 +63,5 @@ namespace Mengine
     {
         SERVICE_DESTROY( ResourceValidateService );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

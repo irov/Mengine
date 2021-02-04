@@ -21,5 +21,4 @@ namespace Mengine
     protected:
         virtual bool _getBoundingBox( const T & _node, mt::box2f * const _bb ) const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
 }

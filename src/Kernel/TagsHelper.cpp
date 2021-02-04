@@ -4,7 +4,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        //////////////////////////////////////////////////////////////////////////
         String tagsToString( const Tags & _tags )
         {
             String str;
@@ -24,6 +23,5 @@ namespace Mengine
 
             return str;
         }
-        //////////////////////////////////////////////////////////////////////////
     }
 }

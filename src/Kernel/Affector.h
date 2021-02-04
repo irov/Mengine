@@ -68,6 +68,7 @@ namespace Mengine
     protected:
         void complete( bool _isEnd );
 
+    protected:
         virtual void _complete( bool _isEnd );
 
     protected:

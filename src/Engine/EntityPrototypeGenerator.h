@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class EntityPrototypeGenerator
         : public BasePrototypeGenerator
     {

@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ConverterFactory
         : public ConverterFactoryInterface
@@ -55,6 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type, const DocumentPtr & _doc )
         {
@@ -76,5 +78,6 @@ namespace Mengine
 
             converter->finalize();
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

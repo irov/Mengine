@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MockupRenderFragmentShader
         : public RenderFragmentShaderInterface
         , public Factorable

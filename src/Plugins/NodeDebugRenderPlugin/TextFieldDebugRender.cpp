@@ -78,4 +78,5 @@ namespace Mengine
             Helper::nodeDebugRenderLineByToPoints( _renderPipeline, _context, wm, mt::vec2f( finish_x, -halfLength ), mt::vec2f( finish_x, halfLength ), color, MENGINE_DOCUMENT_FORWARD );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

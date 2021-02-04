@@ -67,9 +67,9 @@ namespace Mengine
         {
             Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE] = {'\0'};
             ServiceInterfacePtr service;
-            bool exist;
-            bool available;
-            bool initialize;
+            bool exist = false;
+            bool available = false;
+            bool initialize = false;
         };
 
         ServiceDesc m_services[MENGINE_SERVICE_PROVIDER_COUNT] = {0};

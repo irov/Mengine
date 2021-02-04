@@ -27,19 +27,8 @@ extern void free JPP((void *ptr));
 #endif
 
 
-
-//////////////////////////////////////////////////////////////////////////    
-static jpeg_malloc_t s_jpeg_malloc;
-static jpeg_free_t s_jpeg_free;
-static void * s_jpeg_ud;
-//////////////////////////////////////////////////////////////////////////
-void set_jpeg_allocator( jpeg_malloc_t _malloc, jpeg_free_t _free, void * _ud )
-{
-    s_jpeg_malloc = _malloc;
-    s_jpeg_free = _free;
-    s_jpeg_ud = _ud;
-}
-//////////////////////////////////////////////////////////////////////////
+extern void * _jpeg_malloc( size_t _size );
+extern void _jpeg_free( void * _ptr );
 
 /*
  * Memory allocation and freeing are controlled by the regular library
@@ -49,13 +38,13 @@ void set_jpeg_allocator( jpeg_malloc_t _malloc, jpeg_free_t _free, void * _ud )
 GLOBAL(void *)
 jpeg_get_small (j_common_ptr cinfo, size_t sizeofobject)
 {
-  return (void *) (*s_jpeg_malloc)(sizeofobject, s_jpeg_ud);
+  return (void *) _jpeg_malloc(sizeofobject);
 }
 
 GLOBAL(void)
 jpeg_free_small (j_common_ptr cinfo, void * object, size_t sizeofobject)
 {
-    (*s_jpeg_free)(object, s_jpeg_ud);
+    _jpeg_free(object);
 }
 
 
@@ -69,13 +58,13 @@ jpeg_free_small (j_common_ptr cinfo, void * object, size_t sizeofobject)
 GLOBAL(void FAR *)
 jpeg_get_large (j_common_ptr cinfo, size_t sizeofobject)
 {
-  return (void FAR *) (*s_jpeg_malloc)(sizeofobject, s_jpeg_ud);
+  return (void FAR *) _jpeg_malloc(sizeofobject);
 }
 
 GLOBAL(void)
 jpeg_free_large (j_common_ptr cinfo, void FAR * object, size_t sizeofobject)
 {
-    (*s_jpeg_free)(object, s_jpeg_ud);
+    _jpeg_free(object);
 }
 
 

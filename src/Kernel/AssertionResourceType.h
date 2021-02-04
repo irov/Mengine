@@ -2,7 +2,6 @@
 
 #include "Config/Config.h"
 
-//////////////////////////////////////////////////////////////////////////
 #if MENGINE_ASSERTION_DEBUG
 //////////////////////////////////////////////////////////////////////////
 #   include "Interface/ResourceServiceInterface.h"
@@ -35,4 +34,3 @@
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( ResourceName, ResourceType, Ret, ... )
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME_VOID( ResourceName, ResourceType, Ret, ... )
 #endif
-//////////////////////////////////////////////////////////////////////////

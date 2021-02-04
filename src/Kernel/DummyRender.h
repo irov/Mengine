@@ -4,7 +4,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class DummyRender
         : public BaseRender
     {
@@ -18,5 +17,4 @@ namespace Mengine
     public:
         void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
     };
-    //////////////////////////////////////////////////////////////////////////
 }

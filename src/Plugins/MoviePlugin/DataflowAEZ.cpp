@@ -162,7 +162,7 @@ namespace Mengine
 
                     const Movie2Data::ImageDesc * image_desc = reinterpret_cast<const Movie2Data::ImageDesc *>(movie_resource->userdata);
 
-                    const ResourceImagePtr & resourceImage = image_desc->resourceImage;
+                    ResourceImage * resourceImage = image_desc->resourceImage;
 
                     ae_uint32_t vertex_count = _callbackData->vertex_count;
 
@@ -204,6 +204,7 @@ namespace Mengine
 
             Helper::freeArrayT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_userdata) );
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     DataflowAEZ::DataflowAEZ()
@@ -322,4 +323,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

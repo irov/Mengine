@@ -45,12 +45,12 @@ namespace Mengine
         {
             uint32_t refcount;
 
-            ResourceImagePtr resourceImage;
+            ResourceImage * resourceImage;
             RenderMaterialInterfacePtr materials[4];
         };
 
     public:
-        ImageDesc * makeImageDesc( const ResourceImagePtr & _resource );
+        ImageDesc * makeImageDesc( const ResourcePtr & _resource );
         void removeImageDesc( ImageDesc * _desc );
 
     protected:

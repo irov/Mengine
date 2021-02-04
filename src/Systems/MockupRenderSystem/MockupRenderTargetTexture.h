@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MockupRenderTargetTexture
         : public RenderTargetInterface
         , public Factorable

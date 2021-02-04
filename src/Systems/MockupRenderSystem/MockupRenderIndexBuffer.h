@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MockupRenderIndexBuffer
         : public RenderIndexBufferInterface
         , public Factorable

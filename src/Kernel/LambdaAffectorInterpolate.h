@@ -4,7 +4,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     template<class T, class Interpolator>
     class LambdaAffectorInterpolate
         : public LambdaAffector<T>

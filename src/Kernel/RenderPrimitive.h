@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Interface/RenderMaterialInterface.h"
+
+#include "Config/Typedef.h"
+
 namespace Mengine
 {
     struct RenderPrimitive

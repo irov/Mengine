@@ -1373,14 +1373,14 @@ namespace Mengine
                     surfaceTrackMatte->setName( c_name );
 
                     Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ));
-                    const ResourceImagePtr & resourceImage = imageDesc->resourceImage;
+                    ResourceImage * resourceImage = imageDesc->resourceImage;
 
-                    surfaceTrackMatte->setResourceImage( resourceImage );
+                    surfaceTrackMatte->setResourceImage( ResourceImagePtr::from( resourceImage ) );
 
                     Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
-                    const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
+                    ResourceImage * resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
-                    surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
+                    surfaceTrackMatte->setResourceTrackMatteImage( ResourceImagePtr::from( resourceTrackMatteImage ) );
 
                     ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer_data );
 
@@ -1427,9 +1427,9 @@ namespace Mengine
                     surfaceTrackMatte->setName( c_name );
 
                     Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
-                    const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
+                    ResourceImage * resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
-                    surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
+                    surfaceTrackMatte->setResourceTrackMatteImage( ResourceImagePtr::from( resourceTrackMatteImage ) );
 
                     ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer_data );
 
@@ -2738,7 +2738,7 @@ namespace Mengine
 
                         Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_userdata);
 
-                        const ResourceImagePtr & resourceImage = image_desc->resourceImage;
+                        ResourceImage * resourceImage = image_desc->resourceImage;
 
                         const Color & imageColor = resourceImage->getColor();
 
@@ -2887,7 +2887,7 @@ namespace Mengine
                                 }
                             }
 
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resourceImage, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FORWARD );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( ResourceImagePtr::from( resourceImage ), materialName, blend_mode, false, false, MENGINE_DOCUMENT_FORWARD );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
@@ -3069,11 +3069,13 @@ namespace Mengine
                         vertex_iterator += mesh.vertexCount;
 
                         Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( mesh.resource ));
-                        surfaceTrackMatte->setResourceImage( imageDesc->resourceImage );
+
+                        ResourceImage * resourceImage = imageDesc->resourceImage;
+
+                        surfaceTrackMatte->setResourceImage( ResourceImagePtr::from( resourceImage ) );
 
                         surfaceTrackMatte->compile();
 
-                        const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
                         const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
 
                         const TrackMatteDesc * track_matte_desc = reinterpret_cast<const TrackMatteDesc *>(mesh.track_matte_userdata);

@@ -2,6 +2,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     MockupRenderTargetOffscreen::MockupRenderTargetOffscreen()
     {
     }

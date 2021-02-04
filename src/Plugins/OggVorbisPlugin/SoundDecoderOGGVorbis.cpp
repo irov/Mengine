@@ -108,10 +108,10 @@ namespace Mengine
     bool SoundDecoderOGGVorbis::_prepareData()
     {
         ov_callbacks vorbisCallbacks;
-        vorbisCallbacks.read_func = s_readOgg;
-        vorbisCallbacks.seek_func = s_seekOgg;
-        vorbisCallbacks.tell_func = s_tellOgg;
-        vorbisCallbacks.close_func = s_closeOgg;
+        vorbisCallbacks.read_func = &s_readOgg;
+        vorbisCallbacks.seek_func = &s_seekOgg;
+        vorbisCallbacks.tell_func = &s_tellOgg;
+        vorbisCallbacks.close_func = &s_closeOgg;
 
         int32_t opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
 

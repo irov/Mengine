@@ -200,7 +200,7 @@ namespace Mengine
         const Color & textureColor = m_resourceImage->getColor();
         color *= textureColor;
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         for( RenderVertex2D
             * it = m_verticesWM,

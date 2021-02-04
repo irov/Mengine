@@ -456,7 +456,7 @@ namespace Mengine
 
         color *= surfaceColor;
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         for( uint32_t index = 0; index != 8; ++index )
         {

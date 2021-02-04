@@ -129,7 +129,9 @@ namespace Mengine
 
         void * p = ::malloc( _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( p );
+        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu'"
+            , _size 
+        );
 
         Detail::setMemoryOverrideCorruptionTrap( p, _size );
 
@@ -189,7 +191,9 @@ namespace Mengine
 
         void * p = ::malloc( total + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( p );
+        MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid alloc memory '%zu'"
+            , _size
+        );
 
         MENGINE_MEMSET( p, 0x00, total );
 
@@ -218,9 +222,11 @@ namespace Mengine
 
         if( _mem == nullptr )
         {
-            p = ::realloc( _mem, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+            p = ::realloc( nullptr, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( p );
+            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from nullptr"
+                , _size
+            );
 
             Detail::setMemoryOverrideCorruptionTrap( p, _size );
 
@@ -239,7 +245,10 @@ namespace Mengine
 
             p = ::realloc( _mem, _size + MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( p );
+            MENGINE_ASSERTION_MEMORY_PANIC( p, "invalid realloc memory '%zu' from '%p'"
+                , _size
+                , _mem
+            );
 
             Detail::setMemoryOverrideCorruptionTrap( p, _size );
 
@@ -309,7 +318,7 @@ namespace Mengine
     uint32_t AllocatorService::get_report_count() const
     {
 #if MENGINE_ALLOCATOR_DEBUG
-        return 2048;
+        return MENGINE_ALLOCATOR_REPORT_COUNT;
 #else
         return 0;
 #endif
@@ -351,7 +360,7 @@ namespace Mengine
             return 0;
         }
 
-        for( uint32_t index = 0; index != 2048; ++index )
+        for( uint32_t index = 0; index != MENGINE_ALLOCATOR_REPORT_COUNT; ++index )
         {
             const ReportDesc & r = m_reports[index];
 
@@ -388,7 +397,7 @@ namespace Mengine
         m_reportTotal += report_add;
         m_reportTotal -= report_minus;
 
-        for( uint32_t index = 0; index != 2048; ++index )
+        for( uint32_t index = 0; index != MENGINE_ALLOCATOR_REPORT_COUNT; ++index )
         {
             ReportDesc & r = m_reports[index];
 
@@ -407,7 +416,7 @@ namespace Mengine
             return;
         }
 
-        for( uint32_t index = 0; index != 2048; ++index )
+        for( uint32_t index = 0; index != MENGINE_ALLOCATOR_REPORT_COUNT; ++index )
         {
             ReportDesc & r = m_reports[index];
 

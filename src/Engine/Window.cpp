@@ -423,7 +423,7 @@ namespace Mengine
         Color color;
         this->calcTotalColor( &color );
 
-        uint32_t argb = color.getAsARGB();
+        ColorValue_ARGB argb = color.getAsARGB();
 
         for( RenderVertex2D
             * it = _vertices,

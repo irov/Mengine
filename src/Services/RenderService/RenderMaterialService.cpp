@@ -321,6 +321,31 @@ namespace Mengine
             return false;
         }
 
+        if( _src.blendOp != _dst.blendOp )
+        {
+            return false;
+        }
+
+        if( _src.separateAlphaBlendEnable != _dst.separateAlphaBlendEnable )
+        {
+            return false;
+        }
+
+        if( _src.separateAlphaBlendSrc != _dst.separateAlphaBlendSrc )
+        {
+            return false;
+        }
+
+        if( _src.separateAlphaBlendDst != _dst.separateAlphaBlendDst )
+        {
+            return false;
+        }
+
+        if( _src.separateAlphaBlendOp != _dst.separateAlphaBlendOp )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -351,13 +376,13 @@ namespace Mengine
         return stage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::cacheMaterialStage( const RenderMaterialStage & _other )
+    const RenderMaterialStage * RenderMaterialService::cacheMaterialStage( const RenderMaterialStage & _stage )
     {
         for( uint32_t it = 0; it != m_stageCount; ++it )
         {
             const RenderMaterialStage & self = m_stages[it];
 
-            if( s_equalRenderStage( self, _other ) == false )
+            if( s_equalRenderStage( self, _stage ) == false )
             {
                 continue;
             }
@@ -370,7 +395,7 @@ namespace Mengine
             return nullptr;
         }
 
-        m_stages[m_stageCount] = _other;
+        m_stages[m_stageCount] = _stage;
 
         RenderMaterialStage & cache_other = m_stages[m_stageCount];
 

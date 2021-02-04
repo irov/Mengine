@@ -83,11 +83,25 @@ android {
             versionName versionCode as String
         }
         
+        def app_name_gradle = "org.Wonderland.EvilMonkey"
+        
         if (project.hasProperty("ANDROID_APP_NAME")) {
-            manifestPlaceholders = [app_name_gradle:ANDROID_APP_NAME, app_screen_orientation:"fullSensor"]
-        } else {
-            manifestPlaceholders = [app_name_gradle:"org.Wonderland.EvilMonkey", app_screen_orientation:"fullSensor"]
+            app_name_gradle = ANDROID_APP_NAME
         }
+        
+        print 'app_name_gradle = '
+        println app_name_gradle
+        
+        def app_screen_orientation = "fullSensor"
+        
+        if (project.hasProperty("ANDROID_APP_SCREEN_ORIENTATION")) {
+            app_screen_orientation = ANDROID_APP_SCREEN_ORIENTATION
+        }
+        
+        print 'app_screen_orientation = '
+        println app_screen_orientation
+        
+        manifestPlaceholders = [app_name_gradle:app_name_gradle, app_screen_orientation:app_screen_orientation]
         
         print 'manifestPlaceholders = '
         println manifestPlaceholders
@@ -319,7 +333,7 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_GOOGLE_SERVICE", true) == tru
     dependencies {
         implementation 'com.google.android.gms:play-services-gcm:17.0.0'
         implementation 'com.google.android.gms:play-services-ads:19.7.0'
-        implementation 'com.google.android.gms:play-services-basement:17.5.0'
+        implementation 'com.google.android.gms:play-services-basement:17.6.0'
     }
 }
 else
@@ -372,7 +386,8 @@ if( android.getBooleanProperty("ANDROID_APP_ENABLE_SENTRY", true) == true ) {
     apply plugin: 'io.sentry.android.gradle'
 
     dependencies {
-        implementation 'io.sentry:sentry-android:3.2.1'
+        implementation 'io.sentry:sentry-android:4.1.0'
+
     }
 
     sentry {

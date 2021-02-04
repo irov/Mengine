@@ -156,7 +156,7 @@ namespace Mengine
     {
         if( m_localTransparent == false )
         {
-            if( m_localColor.getA() < 0.00390625f )
+            if( m_localColor.getA() < MENGINE_COLOR_MINIMAL_ALPHA )
             {
                 m_localTransparent = true;
 
@@ -165,7 +165,7 @@ namespace Mengine
         }
         else
         {
-            if( m_localColor.getA() > 0.00390625f )
+            if( m_localColor.getA() > MENGINE_COLOR_MINIMAL_ALPHA )
             {
                 m_localTransparent = false;
 

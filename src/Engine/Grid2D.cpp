@@ -289,7 +289,7 @@ namespace Mengine
             Color vertex_color( color );
             vertex_color *= Color( vertex.color );
 
-            uint32_t argb = vertex_color.getAsARGB();
+            ColorValue_ARGB argb = vertex_color.getAsARGB();
 
             vertex_w.color = argb;
             vertex_w.uv[0] = vertex.uv[0];

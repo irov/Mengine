@@ -779,18 +779,19 @@ namespace Mengine
         Detail::serializeNodeProp( _textField->getAnchorVerticalAlign(), "AnchorVerticalAlign", xmlNode );
         Detail::serializeNodeProp( _textField->getAnchorHorizontalAlign(), "AnchorHorizontalAlign", xmlNode );
 
-        const ConstString & textID = _textField->getTextId();
+        const ConstString & textId = _textField->getTextId();
         const ConstString & textAliasEnvironment = _textField->getTextAliasEnvironment();
 
-        const ConstString & aliasTestId = TEXT_SERVICE()
-            ->getTextAlias( textAliasEnvironment, textID );
+        const ConstString & textAliasId = TEXT_SERVICE()
+            ->getTextAlias( textAliasEnvironment, textId );
 
-        Detail::serializeNodeProp( aliasTestId, "TextID", xmlNode );
+        Detail::serializeNodeProp( textId, "TextId", xmlNode );
+        Detail::serializeNodeProp( textAliasId, "TextAliasId", xmlNode );
         Detail::serializeNodeProp( textAliasEnvironment, "TextAliasEnvironment", xmlNode );
 
         TextEntryInterfacePtr textEntry;
         if( TEXT_SERVICE()
-            ->hasTextEntry( aliasTestId, &textEntry ) == false )
+            ->hasTextEntry( textAliasId, &textEntry ) == false )
         {
             Detail::serializeNodeProp( false, "HasText", xmlNode );
         }
@@ -806,7 +807,7 @@ namespace Mengine
             VectorString textFormatArgs = _textField->getTextFormatArgs();
 
             TEXT_SERVICE()
-                ->getTextAliasArguments( textAliasEnvironment, textID, &textFormatArgs );
+                ->getTextAliasArguments( textAliasEnvironment, textId, &textFormatArgs );
 
             String fmt;
             Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs );
@@ -826,9 +827,13 @@ namespace Mengine
             ->getDefaultFont();
 
         Detail::serializeNodeProp( _textField->getFont() != nullptr ? _textField->getFont()->getName() : defaultFont->getName(), "FontName", xmlNode );
+        Detail::serializeNodeProp( _textField->hasFontColor(), "HasFontColor", xmlNode );
         Detail::serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );
+        Detail::serializeNodeProp( _textField->hasLineOffset(), "HasLineOffset", xmlNode );
         Detail::serializeNodeProp( _textField->getLineOffset(), "LineOffset", xmlNode );
+        Detail::serializeNodeProp( _textField->hasCharOffset(), "HasCharOffset", xmlNode );
         Detail::serializeNodeProp( _textField->getCharOffset(), "CharOffset", xmlNode );
+        Detail::serializeNodeProp( _textField->hasCharScale(), "HasCharScale", xmlNode );
         Detail::serializeNodeProp( _textField->getCharScale(), "CharScale", xmlNode );
         Detail::serializeNodeProp( (uint32_t)_textField->getHorizontAlign(), "HorizontAlign", xmlNode );
         Detail::serializeNodeProp( (uint32_t)_textField->getVerticalAlign(), "VerticalAlign", xmlNode );
@@ -1712,25 +1717,77 @@ namespace Mengine
                     textField->setFont( font );
                 } );
 
-                Detail::deserializeNodeProp<Color>( "FontColor", typeNodeTextField, [textField]( const Color & _value )
+                bool HasFontColor = false;
+                Detail::deserializeNodeProp<bool>( "HasFontColor", typeNodeTextField, [&HasFontColor]( bool _value )
                 {
-                    textField->setFontColor( _value );
+                    HasFontColor = _value;
                 } );
 
-                Detail::deserializeNodeProp<float>( "LineOffset", typeNodeTextField, [textField]( float _value )
+                if( HasFontColor == true )
                 {
-                    textField->setLineOffset( _value );
+                    Detail::deserializeNodeProp<Color>( "FontColor", typeNodeTextField, [textField]( const Color & _value )
+                    {
+                        textField->setFontColor( _value );
+                    } );
+                }
+                else
+                {
+                    textField->removeFontColor();
+                }
+
+                bool HasLineOffset = false;
+                Detail::deserializeNodeProp<bool>( "HasLineOffset", typeNodeTextField, [&HasLineOffset]( bool _value )
+                {
+                    HasLineOffset = _value;
                 } );
 
-                Detail::deserializeNodeProp<float>( "CharOffset", typeNodeTextField, [textField]( float _value )
+                if( HasLineOffset == true )
                 {
-                    textField->setCharOffset( _value );
+                    Detail::deserializeNodeProp<float>( "LineOffset", typeNodeTextField, [textField]( float _value )
+                    {
+                        textField->setLineOffset( _value );
+                    } );
+                }
+                else
+                {
+                    textField->removeLineOffset();
+                }
+
+                bool HasCharOffset = false;
+                Detail::deserializeNodeProp<bool>( "HasCharOffset", typeNodeTextField, [&HasCharOffset]( bool _value )
+                {
+                    HasCharOffset = _value;
                 } );
 
-                Detail::deserializeNodeProp<float>( "CharScale", typeNodeTextField, [textField]( float _value )
+                if( HasCharOffset == true )
                 {
-                    textField->setCharScale( _value );
+                    Detail::deserializeNodeProp<float>( "CharOffset", typeNodeTextField, [textField]( float _value )
+                    {
+                        textField->setCharOffset( _value );
+                    } );
+                }
+                else
+                {
+                    textField->removeCharOffset();
+                }
+
+                bool HasCharScale = false;
+                Detail::deserializeNodeProp<bool>( "HasCharScale", typeNodeTextField, [&HasCharScale]( bool _value )
+                {
+                    HasCharScale = _value;
                 } );
+
+                if( HasCharScale == true )
+                {
+                    Detail::deserializeNodeProp<float>( "CharScale", typeNodeTextField, [textField]( float _value )
+                    {
+                        textField->setCharScale( _value );
+                    } );
+                }
+                else
+                {
+                    textField->removeCharScale();
+                }
 
                 Detail::deserializeNodeProp<uint32_t>( "HorizontAlign", typeNodeTextField, [textField]( uint32_t _value )
                 {

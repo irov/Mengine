@@ -24,15 +24,15 @@
 #include <algorithm>
 
 #ifndef MENGINE_TEXT_FIELD_MAX_TEXT
-#define MENGINE_TEXT_FIELD_MAX_TEXT 1024
+#define MENGINE_TEXT_FIELD_MAX_TEXT 2048
 #endif
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TextField::TextField()
-        : m_horizontAlign( ETFHA_LEFT )
-        , m_verticalAlign( ETFVA_BOTTOM )
+        : m_horizontAlign( ETFHA_NONE )
+        , m_verticalAlign( ETFVA_NONE )
         , m_invalidateFont( true )
         , m_charScale( 1.f )
         , m_maxLength( 2048.f )
@@ -1490,7 +1490,7 @@ namespace Mengine
             return m_horizontAlign;
         }
 
-        return ETFHA_LEFT;
+        return ETFHA_NONE;
     }
     //////////////////////////////////////////////////////////////////////////
     ETextVerticalAlign TextField::calcVerticalAlign() const
@@ -1514,7 +1514,7 @@ namespace Mengine
             return m_verticalAlign;
         }
 
-        return ETFVA_BOTTOM;
+        return ETFVA_NONE;
     }
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcCharScale() const
@@ -1574,7 +1574,6 @@ namespace Mengine
         else
         {
             float layoutCountf = float( m_layoutCount );
-            float layoutCount1f = float( m_layoutCount - 1 );
 
             switch( verticalAlign )
             {
@@ -1584,7 +1583,7 @@ namespace Mengine
                 }break;
             case ETFVA_CENTER:
                 {
-                    offset = fontHeight - (fontHeight - fontAscent) - fontHeight * layoutCountf * 0.5f - layoutCount1f * (fontHeight + _lineOffset) * 0.5f;
+                    offset = fontAscent - (fontHeight + _lineOffset) * layoutCountf * 0.5f;
                     
                     if( m_anchorVerticalAlign == false )
                     {
@@ -1594,7 +1593,7 @@ namespace Mengine
             case ETFVA_NONE:
             case ETFVA_TOP:
                 {
-                    offset = fontHeight - fontHeight * layoutCountf + layoutCount1f * (fontHeight + _lineOffset);
+                    offset = -(fontHeight + _lineOffset) * layoutCountf;
 
                     if( m_anchorVerticalAlign == false )
                     {

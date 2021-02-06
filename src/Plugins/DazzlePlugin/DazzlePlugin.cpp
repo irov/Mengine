@@ -165,7 +165,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzlePlugin::_finalizePlugin()
     {
+#ifndef MENGINE_MASTER_RELEASE
         Helper::unregisterConverter( "dzb2dzz" );
+#endif
 
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "dzz" ) );
 

@@ -52,7 +52,7 @@ build_script:
 - mkdir -p cmake_downloads
 - pushd cmake_downloads
 - cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\Downloads" -DCMAKE_BUILD_TYPE=%configuration% -DMENGINE_DOWNLOADS_SILENT=ON
-- cmake --build . --clean-first -j 8 -- /verbosity:minimal
+- cmake --build . --clean-first -j 8 --config %configuration% -- /verbosity:minimal
 - popd
 
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"

@@ -427,6 +427,8 @@ endif()
 if(MENGINE_DEPENDENCE_CURL)
     message("================curl================")
     
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/CMakeLists.txt ${THIRDPARTY_DIR}/curl/CMakeLists.txt COPYONLY)
+    
     set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
     if(MENGINE_TOOLCHAIN_MSVC)
         set(CURL_STATIC_CRT ON CACHE BOOL "Set to ON to build libcurl with static CRT on Windows (/MT)." FORCE)

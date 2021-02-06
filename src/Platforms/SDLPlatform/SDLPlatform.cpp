@@ -841,13 +841,14 @@ namespace Mengine
             }
             else
             {
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
                 if( APPLICATION_SERVICE()
                     ->getVSync() == false )
                 {
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
+
                     SDL_Delay( 1 );
-#endif
                 }
+#endif
             }
 
         }

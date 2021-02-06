@@ -1,6 +1,6 @@
 #include "SDLApplication.h"
 
-#include "SDL.h"
+#include "Environment/SDL2/SDL2Includer.h"
 
 //////////////////////////////////////////////////////////////////////////
 //                          Entry point                                 //

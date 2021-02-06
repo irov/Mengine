@@ -40,6 +40,11 @@ jobs:
           command: |
             yes | sdkmanager "cmake;3.10.2.4988404"
           shell: /bin/bash -e
+          
+      - run:
+          name: setup permission
+          command: |
+            chown -R $USER:$USER /home/circleci/
 
       - run:
           name: download dependencies

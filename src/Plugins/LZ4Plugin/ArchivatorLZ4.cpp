@@ -1,6 +1,7 @@
 #include "ArchivatorLZ4.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 
 #include "lz4.h"
 #include "lz4hc.h"
@@ -67,24 +68,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ArchivatorLZ4::decompress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _decompressSize )
     {
-        MENGINE_UNUSED( _sourceSize );
-
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
 
         int32_t readBytes = ::LZ4_decompress_safe( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferSize );
 
-        if( readBytes < 0 )
-        {
-            LOGGER_ERROR( "invalid uncompress code [%d]"
-                , readBytes
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( readBytes >= 0, "invalid uncompress code [%d]"
+            , readBytes
+        );
 
         *_decompressSize = _bufferSize;
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

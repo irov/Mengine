@@ -46,6 +46,7 @@ jobs:
           command: |
             chown -R $USER:$USER /home/circleci/
             chown -R $USER:$USER /home/circleci/project/
+            sudo mkdir -p /home/circleci/project/lib/Mengine_Android_SDL
 
       - run:
           name: download dependencies

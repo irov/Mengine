@@ -22,7 +22,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentPtr & _doc ) override;
+        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, const TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentPtr & _doc ) override;
 
     protected:
         void clearAtlasess_();

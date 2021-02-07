@@ -47,7 +47,7 @@ namespace Mengine
         case EAC_BEST:
             {
                 compress_method = LZ4HC_CLEVEL_MAX;
-            }
+            }break;
         };
 
         int32_t compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferSize, compress_method );

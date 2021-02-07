@@ -15,7 +15,7 @@ namespace Mengine
         ~TTFFontTextureGlyphProvider() override;
 
     public:
-        bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) override;
+        bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) const override;
 
     protected:
         uint32_t m_width;

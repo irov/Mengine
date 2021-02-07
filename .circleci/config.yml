@@ -44,9 +44,7 @@ jobs:
       - run:
           name: setup permission
           command: |
-            chown -R $USER:$USER /home/circleci/
-            chown -R $USER:$USER /home/circleci/project/
-            sudo mkdir -p /home/circleci/project/lib/Mengine_Android_SDL
+            sudo chown -R circleci:circleci /home/circleci/project/
 
       - run:
           name: download dependencies

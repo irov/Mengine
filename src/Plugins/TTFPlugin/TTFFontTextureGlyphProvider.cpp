@@ -18,7 +18,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFontTextureGlyphProvider::onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel )
+    bool TTFFontTextureGlyphProvider::onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) const
     {
         const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(m_ttfbuffer);
 

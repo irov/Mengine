@@ -23,7 +23,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) = 0;
+        virtual bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class TTFAtlasServiceInterface
@@ -32,7 +32,7 @@ namespace Mengine
         SERVICE_DECLARE( "TTFAtlasService" )
 
     public:
-        virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TTFTextureGlyphProviderInterface * _provider, mt::uv4f * _uv, const DocumentPtr & _doc ) = 0;
+        virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, const TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentPtr & _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

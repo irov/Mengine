@@ -45,8 +45,6 @@ namespace Mengine
 
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "png" ) );
         CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "PNG" ) );
-
-        CODEC_UNREGISTER_EXT( STRINGIZE_STRING_LOCAL( "hit" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void PNGPlugin::_destroyPlugin()

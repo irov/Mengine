@@ -19,6 +19,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     std::wstring in_path = parse_kwds( lpCmdLine, L"--in", std::wstring() );
     std::wstring out_path = parse_kwds( lpCmdLine, L"--out", std::wstring() );
 
+    bool premultiply = has_args( lpCmdLine, L"--premultiply" );
+
     if( in_path.empty() == true )
     {
         message_error( "not found 'in' param\n" );
@@ -71,72 +73,94 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( bpp == 4 )
     {
-        for( int32_t i = 0; i != height; ++i )
+        if( premultiply == false )
         {
-            for( int32_t j = 0; j != width; ++j )
+            for( int32_t i = 0; i != height; ++i )
             {
-                int32_t index = j + i * width;
-                uint8_t alpha = data_in[index * 4 + 3];
-
-                if( alpha != 0 )
+                for( int32_t j = 0; j != width; ++j )
                 {
-                    continue;
+                    int32_t index = j + i * width;
+                    uint8_t alpha = data_in[index * 4 + 3];
+
+                    if( alpha != 0 )
+                    {
+                        continue;
+                    }
+
+                    float count = 0.f;
+
+                    float r = 0.f;
+                    float g = 0.f;
+                    float b = 0.f;
+
+                    int32_t di[] = {-1, 0, 1, 1, 1, 0, -1, -1};
+                    int32_t dj[] = {1, 1, 1, 0, -1, -1, -1, 0};
+
+                    for( uint32_t d = 0; d != 8; ++d )
+                    {
+                        int32_t ni = i + di[d];
+                        int32_t nj = j + dj[d];
+
+                        if( ni < 0 )
+                        {
+                            continue;
+                        }
+
+                        if( ni >= height )
+                        {
+                            continue;
+                        }
+
+                        if( nj < 0 )
+                        {
+                            continue;
+                        }
+
+                        if( nj >= width )
+                        {
+                            continue;
+                        }
+
+                        uint32_t index_kl = nj + ni * width;
+                        uint8_t alpha_kl = data_in[index_kl * 4 + 3];
+
+                        if( alpha_kl != 0 )
+                        {
+                            r += data_in[index_kl * 4 + 0];
+                            g += data_in[index_kl * 4 + 1];
+                            b += data_in[index_kl * 4 + 2];
+
+                            count += 1.f;
+                        }
+                    }
+
+                    if( count != 0.f )
+                    {
+                        float inv_count = 1.f / count;
+
+                        data_in[index * 4 + 0] = (stbi_uc)(r * inv_count);
+                        data_in[index * 4 + 1] = (stbi_uc)(g * inv_count);
+                        data_in[index * 4 + 2] = (stbi_uc)(b * inv_count);
+                    }
                 }
-
-                float count = 0.f;
-
-                float r = 0.f;
-                float g = 0.f;
-                float b = 0.f;
-
-                int32_t di[] = {-1, 0, 1, 1, 1, 0, -1, -1};
-                int32_t dj[] = {1, 1, 1, 0, -1, -1, -1, 0};
-
-                for( uint32_t d = 0; d != 8; ++d )
+            }
+        }
+        else
+        {
+            for( int32_t i = 0; i != height; ++i )
+            {
+                for( int32_t j = 0; j != width; ++j )
                 {
-                    int32_t ni = i + di[d];
-                    int32_t nj = j + dj[d];
+                    int32_t index = j + i * width;
 
-                    if( ni < 0 )
-                    {
-                        continue;
-                    }
+                    uint8_t r = data_in[index * 4 + 0];
+                    uint8_t g = data_in[index * 4 + 1];
+                    uint8_t b = data_in[index * 4 + 2];
+                    uint8_t a = data_in[index * 4 + 3];
 
-                    if( ni >= height )
-                    {
-                        continue;
-                    }
-
-                    if( nj < 0 )
-                    {
-                        continue;
-                    }
-
-                    if( nj >= width )
-                    {
-                        continue;
-                    }
-
-                    uint32_t index_kl = nj + ni * width;
-                    uint8_t alpha_kl = data_in[index_kl * 4 + 3];
-
-                    if( alpha_kl != 0 )
-                    {
-                        r += data_in[index_kl * 4 + 0];
-                        g += data_in[index_kl * 4 + 1];
-                        b += data_in[index_kl * 4 + 2];
-
-                        count += 1.f;
-                    }
-                }
-
-                if( count != 0.f )
-                {
-                    float inv_count = 1.f / count;
-
-                    data_in[index * 4 + 0] = (stbi_uc)(r * inv_count);
-                    data_in[index * 4 + 1] = (stbi_uc)(g * inv_count);
-                    data_in[index * 4 + 2] = (stbi_uc)(b * inv_count);
+                    data_in[index * 4 + 0] = (stbi_uc)((uint32_t)r * a / 255);
+                    data_in[index * 4 + 1] = (stbi_uc)((uint32_t)g * a / 255);
+                    data_in[index * 4 + 2] = (stbi_uc)((uint32_t)b * a / 255);
                 }
             }
         }

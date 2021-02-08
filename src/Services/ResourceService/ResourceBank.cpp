@@ -10,6 +10,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionMainThreadGuard.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadGuardScope.h"
 
 #include <algorithm>
 
@@ -143,6 +144,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentPtr & _doc )
     {
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
+
         LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s'"
             , _name.c_str()
             , _groupName.c_str()
@@ -216,6 +219,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::destroyResource( Resource * _resource )
     {
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
+
         MENGINE_ASSERTION_FATAL( _resource->getCompileReferenceCount() == 0 );
 
         MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
@@ -267,6 +272,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceBank::hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
 
         if( group_resource != nullptr )
@@ -301,6 +308,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::foreachResources( const LambdaResourceView & _lambda ) const
     {
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
+
         for( const HashtableResources::value_type & value : m_resources )
         {
             const ResourcePtrView & resource = value.element;

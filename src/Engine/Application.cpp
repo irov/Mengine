@@ -783,8 +783,7 @@ namespace Mengine
 
         if( m_createRenderWindow == false )
         {
-            LOGGER_ERROR( "failed to create render window"
-            );
+            LOGGER_ERROR( "failed to create render window" );
 
             return false;
         }
@@ -867,8 +866,7 @@ namespace Mengine
             if( TEXT_SERVICE()
                 ->validate() == false )
             {
-                LOGGER_ERROR( "invalid validate!"
-                );
+                LOGGER_ERROR( "invalid validate!" );
             }
         }
 #endif

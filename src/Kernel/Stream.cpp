@@ -58,16 +58,14 @@ namespace Mengine
         {
             if( _stream->write( &_magic, sizeof( _magic ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'magic header'"
-                );
+                LOGGER_ERROR( "invalid write 'magic header'" );
 
                 return false;
             }
 
             if( _stream->write( &_version, sizeof( _version ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'magic version'"
-                );
+                LOGGER_ERROR( "invalid write 'magic version'" );
 
                 return false;
             }
@@ -237,8 +235,7 @@ namespace Mengine
             size_t uncompressSize = 0;
             if( _archivator->decompress( _data, _size, compress_memory, compress_size, &uncompressSize ) == false )
             {
-                LOGGER_ERROR( "invalid decompress"
-                );
+                LOGGER_ERROR( "invalid decompress" );
 
                 return false;
             }
@@ -263,8 +260,7 @@ namespace Mengine
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
             {
-                LOGGER_ERROR( "invalid read crc32"
-                );
+                LOGGER_ERROR( "invalid read crc32" );
 
                 return false;
             }
@@ -272,8 +268,7 @@ namespace Mengine
             uint32_t load_binary_size;
             if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
             {
-                LOGGER_ERROR( "invalid read binary size"
-                );
+                LOGGER_ERROR( "invalid read binary size" );
 
 
                 return false;
@@ -281,8 +276,7 @@ namespace Mengine
 
             if( _stream->seek( pos ) == false )
             {
-                LOGGER_ERROR( "invalid rewind"
-                );
+                LOGGER_ERROR( "invalid rewind" );
 
                 return false;
             }
@@ -311,8 +305,7 @@ namespace Mengine
 
             if( _stream->write( &value_crc32, sizeof( value_crc32 ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'crc32'"
-                );
+                LOGGER_ERROR( "invalid write 'crc32'" );
 
                 return false;
             }
@@ -320,8 +313,7 @@ namespace Mengine
             uint32_t write_uncompressSize = (uint32_t)_size;
             if( _stream->write( &write_uncompressSize, sizeof( write_uncompressSize ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'uncompress size'"
-                );
+                LOGGER_ERROR( "invalid write 'uncompress size'" );
 
                 return false;
             }
@@ -329,8 +321,7 @@ namespace Mengine
             uint32_t write_compressSize = (uint32_t)compressSize;
             if( _stream->write( &write_compressSize, sizeof( write_compressSize ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'compress size'"
-                );
+                LOGGER_ERROR( "invalid write 'compress size'" );
 
                 return false;
             }
@@ -450,8 +441,7 @@ namespace Mengine
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, &uncompressSize ) == false )
             {
-                LOGGER_ERROR( "invalid decompress"
-                );
+                LOGGER_ERROR( "invalid decompress" );
 
                 return nullptr;
             }
@@ -557,8 +547,7 @@ namespace Mengine
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, &uncompressSize ) == false )
             {
-                LOGGER_ERROR( "invalid decompress"
-                );
+                LOGGER_ERROR( "invalid decompress" );
 
                 return nullptr;
             }

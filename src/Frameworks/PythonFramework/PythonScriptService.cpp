@@ -353,8 +353,7 @@ namespace Mengine
 
         if( m_moduleFinder->initialize() == false )
         {
-            LOGGER_ERROR( "invalid initialize module finder"
-            );
+            LOGGER_ERROR( "invalid initialize module finder" );
 
             return false;
         }

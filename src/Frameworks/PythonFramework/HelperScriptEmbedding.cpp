@@ -1838,8 +1838,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1855,8 +1854,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1872,8 +1870,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1889,8 +1886,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1906,8 +1902,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1923,8 +1918,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1940,8 +1934,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1957,8 +1950,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -1974,8 +1966,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account not found"
-                    );
+                    LOGGER_ERROR( "global account not found" );
 
                     return false;
                 }
@@ -2531,7 +2522,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "global account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2547,7 +2538,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "global account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2565,7 +2556,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "global account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2581,7 +2572,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "global account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2597,7 +2588,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "global account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2613,7 +2604,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "global account is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2629,7 +2620,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "vaccount is none" );
 
                     return _kernel->ret_none();
                 }
@@ -2645,7 +2636,7 @@ namespace Mengine
                 if( ACCOUNT_SERVICE()
                     ->hasGlobalAccount() == false )
                 {
-                    LOGGER_ERROR( "account is none" );
+                    LOGGER_ERROR( "global account is none" );
 
                     return _kernel->ret_none();
                 }

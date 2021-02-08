@@ -127,8 +127,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( m_kernel->code_check( py_code ) == false )
         {
-            LOGGER_ERROR( "module marshal get object not code"
-            );
+            LOGGER_ERROR( "module marshal get object not code" );
 
             return false;
         }

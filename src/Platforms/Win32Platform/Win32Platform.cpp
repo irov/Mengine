@@ -3067,7 +3067,7 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( "%ls:%ls invalid writeFile %ls"
+            LOGGER_ERROR( "'%ls:%ls' invalid writeFile '%ls'"
                 , pathCorrect
                 , fileCorrect
                 , szPath

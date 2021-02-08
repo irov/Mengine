@@ -1035,13 +1035,14 @@ namespace Mengine
                 m_debugPause = true;
             }
 
-            if( _event.isAlt == true )
+            if( _event.isAlt == true && _event.isDown == true )
             {
                 float timeFactor = -1.f;
 
                 switch( _event.code )
                 {
-                case KC_0: timeFactor = 0.f; break;
+                case KC_P: timeFactor = 0.f; break;
+                case KC_0: timeFactor = 0.5f; break;
                 case KC_1: timeFactor = 1.f; break;
                 case KC_2: timeFactor = 2.f; break;
                 case KC_3: timeFactor = 3.f; break;

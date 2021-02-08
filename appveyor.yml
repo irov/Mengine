@@ -49,21 +49,21 @@ build_script:
 - cmake --version
 
 - echo "Downloads Dependencies"
-- mkdir -p cmake_downloads
+- mkdir cmake_downloads
 - cd cmake_downloads
 - cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\Downloads" -DMENGINE_DOWNLOADS_SILENT=ON
 - cmake --build . -j 8 -- /verbosity:minimal
 - cd ..
 
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
-- mkdir -p cmake_dependencies
+- mkdir cmake_dependencies
 - cd cmake_dependencies
 - cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_DEPENDENCIES_DIR%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_SYSTEM_VERSION="10.0.18362"
 - cmake --build . -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
-- mkdir -p cmake_solution
+- mkdir cmake_solution
 - cd cmake_solution
 - cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_SOLUTION_DIR%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_SYSTEM_VERSION="10.0.18362"
 - cmake --build . -j 8 --config %configuration% -- /verbosity:minimal

@@ -30,7 +30,12 @@ namespace Mengine
         void correctUVTexture();
 
     protected:
-        void prepareImageFrame_();        
+        void prepareImageFrame_();
+
+#ifndef MENGINE_MASTER_RELEASE
+    protected:
+        bool m_forcePremultiply;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceImageDefault> ResourceImageDefaultPtr;

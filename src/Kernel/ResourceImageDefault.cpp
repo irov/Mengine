@@ -16,6 +16,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefault::ResourceImageDefault()
+#ifndef MENGINE_MASTER_RELEASE
+        : m_forcePremultiply( false )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -63,6 +66,8 @@ namespace Mengine
                 decoder_options = DF_PREMULTIPLY_ALPHA;
 
                 this->setPremultiply( true );
+                
+                m_forcePremultiply = true;
             }
         }
 #endif
@@ -90,6 +95,15 @@ namespace Mengine
     void ResourceImageDefault::_release()
     {
         ResourceImage::_release();
+
+#ifndef MENGINE_MASTER_RELEASE
+        if( m_forcePremultiply == true )
+        {
+            this->setPremultiply( false );
+
+            m_forcePremultiply = false;
+        }
+#endif
 
         //Empty
     }

@@ -70,6 +70,26 @@ void parse_arg( const std::wstring & _str, std::wstring & _value )
     _value = _str;
 }
 //////////////////////////////////////////////////////////////////////////
+bool has_args( PWSTR lpCmdLine, const wchar_t * _key )
+{
+    int cmd_num;
+    LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
+
+    for( int i = 0; i != cmd_num; ++i )
+    {
+        wchar_t * arg = cmd_args[i + 0];
+
+        if( wcscmp( arg, _key ) != 0 )
+        {
+            continue;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+//////////////////////////////////////////////////////////////////////////
 void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 {
     if( _path.empty() == true )

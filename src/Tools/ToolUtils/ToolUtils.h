@@ -35,6 +35,8 @@ void parse_arg( const std::wstring & _str, float & _value );
 void parse_arg( const std::wstring & _str, double & _value );
 void parse_arg( const std::wstring & _str, std::wstring & _value );
 //////////////////////////////////////////////////////////////////////////
+bool has_args( PWSTR lpCmdLine, const wchar_t * _key );
+//////////////////////////////////////////////////////////////////////////
 template<class T>
 static T parse_args( PWSTR lpCmdLine, uint32_t _index )
 {

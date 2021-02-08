@@ -59,7 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Factorable::incref()
     {
-        MENGINE_THREAD_GUARD_SCOPE( Factorable, this, "factorable" );
+        MENGINE_THREAD_GUARD_SCOPE( Factorable, this, "Factorable::incref" );
 
         ++m_reference;
 
@@ -69,7 +69,7 @@ namespace Mengine
     void Factorable::decref()
     {
         {
-            MENGINE_THREAD_GUARD_SCOPE( Factorable, this, "factorable" );
+            MENGINE_THREAD_GUARD_SCOPE( Factorable, this, "Factorable::decref" );
 
             --m_reference;
         }

@@ -4,6 +4,7 @@
 
 #include "Kernel/Hashtable.h"
 #include "Kernel/Hashtable2.h"
+#include "Kernel/ThreadGuard.h"
 
 namespace Mengine
 {
@@ -52,6 +53,9 @@ namespace Mengine
 
     protected:
         const HashtableResources & getResources() const;
+
+    protected:
+        MENGINE_THREAD_GUARD_INIT( ResourceBank );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceBank, ResourceBankInterface> ResourceBankPtr;

@@ -77,7 +77,9 @@ namespace Mengine
             , readBytes
         );
 
-        *_decompressSize = _bufferSize;
+        MENGINE_ASSERTION_FATAL( _bufferSize == (size_t)readBytes );
+
+        *_decompressSize = (size_t)readBytes;
 
         return true;
     }

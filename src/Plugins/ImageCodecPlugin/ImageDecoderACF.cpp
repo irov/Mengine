@@ -38,8 +38,7 @@ namespace Mengine
     {
         if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
         {
-            LOGGER_ERROR( "invalid load magic header"
-            );
+            LOGGER_ERROR( "invalid load magic header" );
 
             return false;
         }
@@ -67,8 +66,7 @@ namespace Mengine
         size_t dataSize;
         if( Helper::loadStreamArchiveBufferSize( m_stream, &dataSize ) == false )
         {
-            LOGGER_ERROR( "invalid load data size"
-            );
+            LOGGER_ERROR( "invalid load data size" );
 
             return 0;
         }
@@ -87,8 +85,7 @@ namespace Mengine
         {
             if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "invalid load"
-                );
+                LOGGER_ERROR( "invalid load" );
 
                 return 0;
             }
@@ -103,8 +100,7 @@ namespace Mengine
 
             if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "invalid load"
-                );
+                LOGGER_ERROR( "invalid load" );
 
                 return 0;
             }

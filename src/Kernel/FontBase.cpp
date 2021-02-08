@@ -219,7 +219,7 @@ namespace Mengine
 
         if( this->_validateGlyphes( ttf_codes ) == false )
         {
-            LOGGER_ERROR( "Text '%s' fontName '%s' invalid"
+            LOGGER_ERROR( "text '%s' fontName '%s' invalid"
                 , _key.c_str()
                 , this->getName().c_str()
             );

@@ -83,8 +83,7 @@ namespace Mengine
         if( SCRIPT_SERVICE()
             ->bootstrapModules() == false )
         {
-            LOGGER_ERROR( "invalid bootstrap modules"
-            );
+            LOGGER_ERROR( "invalid bootstrap modules" );
 
             return false;
         }
@@ -109,4 +108,5 @@ namespace Mengine
 
         //Empty
     }
+    //////////////////////////////////////////////////////////////////////////
 }

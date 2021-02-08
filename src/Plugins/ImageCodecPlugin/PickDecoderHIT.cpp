@@ -36,8 +36,7 @@ namespace Mengine
     {
         if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HIT ), GET_MAGIC_VERSION( MAGIC_HIT ) ) == false )
         {
-            LOGGER_ERROR( "invalid load magic header"
-            );
+            LOGGER_ERROR( "invalid load magic header" );
 
             return 0;
         }
@@ -54,8 +53,7 @@ namespace Mengine
     {
         if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "invalid load magic header"
-            );
+            LOGGER_ERROR( "invalid load magic header" );
 
             return 0;
         }

@@ -58,8 +58,7 @@ namespace Mengine
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
         {
-            LOGGER_ERROR( "invalid write magic header"
-            );
+            LOGGER_ERROR( "invalid write magic header" );
 
             return 0;
         }
@@ -89,8 +88,7 @@ namespace Mengine
 
             if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
             {
-                LOGGER_ERROR( "invalid write buffer"
-                );
+                LOGGER_ERROR( "invalid write buffer" );
 
                 return 0;
             }

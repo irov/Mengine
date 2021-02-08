@@ -249,8 +249,7 @@ namespace Mengine
             {
                 if( source->resume() == false )
                 {
-                    LOGGER_ERROR( "invalid resume (play)"
-                    );
+                    LOGGER_ERROR( "invalid resume (play)" );
 
                     continue;
                 }
@@ -261,8 +260,7 @@ namespace Mengine
             {
                 if( source->play() == false )
                 {
-                    LOGGER_ERROR( "invalid resume (stop)"
-                    );
+                    LOGGER_ERROR( "invalid resume (stop)" );
 
                     continue;
                 }
@@ -505,8 +503,7 @@ namespace Mengine
 
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stoped"
-            );
+            LOGGER_ERROR( "service is stoped" );
 
             return nullptr;
         }
@@ -832,7 +829,7 @@ namespace Mengine
 
                 if( source == nullptr )
                 {
-                    LOGGER_ERROR( "invalid play %d source is nullptr"
+                    LOGGER_ERROR( "invalid play %u source is nullptr"
                         , identity->getId()
                     );
 
@@ -850,7 +847,7 @@ namespace Mengine
                 {
                     if( source->play() == false )
                     {
-                        LOGGER_ERROR( "invalid play %d"
+                        LOGGER_ERROR( "invalid play %u"
                             , identity->getId()
                         );
 
@@ -882,7 +879,7 @@ namespace Mengine
                 {
                     if( source->resume() == false )
                     {
-                        LOGGER_ERROR( "invalid play %d"
+                        LOGGER_ERROR( "invalid play %u"
                             , identity->getId()
                         );
 
@@ -1010,7 +1007,7 @@ namespace Mengine
                 {
                     if( source->resume() == false )
                     {
-                        LOGGER_ERROR( "invalid play %d"
+                        LOGGER_ERROR( "invalid play %u"
                             , identity->getId()
                         );
 
@@ -1296,7 +1293,7 @@ namespace Mengine
 
         if( source == nullptr )
         {
-            LOGGER_ERROR( "source is nullptr id '%d'"
+            LOGGER_ERROR( "source is nullptr id %u"
                 , _identity->getId()
             );
 
@@ -1320,7 +1317,7 @@ namespace Mengine
 
         if( source == nullptr )
         {
-            LOGGER_ERROR( "not setup source %d"
+            LOGGER_ERROR( "not setup source %u"
                 , identity->getId()
             );
 
@@ -1331,7 +1328,7 @@ namespace Mengine
 
         if( _pos > duration )
         {
-            LOGGER_ERROR( "emitter %d pos %f length %f"
+            LOGGER_ERROR( "emitter %u pos %f length %f"
                 , identity->getId()
                 , _pos
                 , duration
@@ -1378,8 +1375,7 @@ namespace Mengine
         {
             if( source->resume() == false )
             {
-                LOGGER_ERROR( "invalid play"
-                );
+                LOGGER_ERROR( "invalid play" );
 
                 return false;
             }
@@ -1425,8 +1421,7 @@ namespace Mengine
 
         if( _identity->worker != nullptr )
         {
-            LOGGER_ERROR( "identity worker is not null"
-            );
+            LOGGER_ERROR( "identity worker is not null" );
 
             return false;
         }
@@ -1447,8 +1442,7 @@ namespace Mengine
 
             if( bufferId == 0 )
             {
-                LOGGER_ERROR( "identity worker invalid add worker"
-                );
+                LOGGER_ERROR( "identity worker invalid add worker" );
 
                 return false;
             }

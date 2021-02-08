@@ -9,6 +9,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Win32MessageBoxLogger.h"
 
@@ -229,10 +230,10 @@ namespace Mengine
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 
+        ConstString APPLICATION_TITLE = CONFIG_VALUE( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
+
         const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;
-
-        ConstString APPLICATION_TITLE = STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" );
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()

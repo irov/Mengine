@@ -127,7 +127,7 @@ namespace Mengine
         return sizeof( deploy_mac_data ) - 1;
 #elif defined(MENGINE_PLATFORM_OSX)
         const char * basePath = SDL_GetBasePath();
-        
+
         MENGINE_STRCPY( _currentPath, basePath );
 
         return MENGINE_STRLEN( _currentPath );
@@ -970,14 +970,14 @@ namespace Mengine
             LOGGER_ERROR( "invalid create GL context error: %s"
                 , SDL_GetError()
             );
-            
+
             SDL_DestroyWindow( m_window );
             m_window = nullptr;
 
             return false;
         }
 
-        int attribute_GL_CONTEXT_PROFILE_MASK;
+        int attribute_GL_CONTEXT_PROFILE_MASK = 0;
         if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
             LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
@@ -985,7 +985,7 @@ namespace Mengine
             );
         }
 
-        int attribute_GL_CONTEXT_MAJOR_VERSION;
+        int attribute_GL_CONTEXT_MAJOR_VERSION = 0;
         if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
             LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
@@ -993,10 +993,58 @@ namespace Mengine
             );
         }
 
-        int attribute_GL_CONTEXT_MINOR_VERSION;
+        int attribute_GL_CONTEXT_MINOR_VERSION = 0;
         if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
             LOGGER_ERROR( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_SDL_GL_RED_SIZE = 0;
+        if( SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &attribute_SDL_GL_RED_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_RED_SIZE error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_SDL_GL_GREEN_SIZE = 0;
+        if( SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &attribute_SDL_GL_GREEN_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_GREEN_SIZE error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_SDL_GL_BLUE_SIZE = 0;
+        if( SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &attribute_SDL_GL_BLUE_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_BLUE_SIZE error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_SDL_GL_ALPHA_SIZE = 0;
+        if( SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &attribute_SDL_GL_ALPHA_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_ALPHA_SIZE error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_SDL_GL_DEPTH_SIZE = 0;
+        if( SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &attribute_SDL_GL_DEPTH_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE error: %s"
+                , SDL_GetError()
+            );
+        }
+
+        int attribute_SDL_GL_DOUBLEBUFFER = 0;
+        if( SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &attribute_SDL_GL_DOUBLEBUFFER ) != 0 )
+        {
+            LOGGER_ERROR( "get attribute SDL_GL_DOUBLEBUFFER error: %s"
                 , SDL_GetError()
             );
         }
@@ -1011,6 +1059,30 @@ namespace Mengine
 
         LOGGER_MESSAGE_RELEASE( "SDL_GL_CONTEXT_MINOR_VERSION: %d"
             , attribute_GL_CONTEXT_MINOR_VERSION
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_RED_SIZE: %d"
+            , attribute_SDL_GL_RED_SIZE
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_GREEN_SIZE: %d"
+            , attribute_SDL_GL_GREEN_SIZE
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_BLUE_SIZE: %d"
+            , attribute_SDL_GL_BLUE_SIZE
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_ALPHA_SIZE: %d"
+            , attribute_SDL_GL_ALPHA_SIZE
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_DEPTH_SIZE: %d"
+            , attribute_SDL_GL_DEPTH_SIZE
+        );
+
+        LOGGER_MESSAGE_RELEASE( "SDL_GL_DOUBLEBUFFER: %d"
+            , attribute_SDL_GL_DOUBLEBUFFER
         );
 
         m_glContext = glContext;
@@ -1909,7 +1981,7 @@ namespace Mengine
 
         ::CloseHandle( handle );
 
-        time_t time = s_FileTimeToUnixTime( &write );        
+        time_t time = s_FileTimeToUnixTime( &write );
 
         return time;
 #else
@@ -1973,7 +2045,7 @@ namespace Mengine
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
-                
+
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, args );
 
         MENGINE_VA_LIST_END( args );
@@ -2094,6 +2166,66 @@ namespace Mengine
         MENGINE_UNUSED( _resolution );
         MENGINE_UNUSED( _fullscreen );
 
+        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to [%u] error: %s"
+                , Engine_SDL_GL_RED_SIZE
+                , SDL_GetError()
+            );
+        }
+
+        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_GREEN_SIZE", 8 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to [%u] error: %s"
+                , Engine_SDL_GL_GREEN_SIZE
+                , SDL_GetError()
+            );
+        }
+
+        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_BLUE_SIZE", 8 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to [%u] error: %s"
+                , Engine_SDL_GL_BLUE_SIZE
+                , SDL_GetError()
+            );
+        }
+
+        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_ALPHA_SIZE", 8 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to [%u] error: %s"
+                , Engine_SDL_GL_ALPHA_SIZE
+                , SDL_GetError()
+            );
+        }
+
+        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_DEPTH_SIZE", 24 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to [%u] error: %s"
+                , Engine_SDL_GL_DEPTH_SIZE
+                , SDL_GetError()
+            );
+        }
+
+        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE( "SDL", "SDL_GL_DOUBLEBUFFER", 1 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) != 0 )
+        {
+            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to [%u] error: %s"
+                , Engine_SDL_GL_DOUBLEBUFFER
+                , SDL_GetError()
+            );
+        }
+
         Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
 #if defined(MENGINE_PLATFORM_IOS)
@@ -2102,90 +2234,117 @@ namespace Mengine
         windowFlags |= SDL_WINDOW_BORDERLESS;
         windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
 
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_ES error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_PROFILE_MASK
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to 2 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to 0 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
         }
 
-        const Char * Engine_SDLRenderScaleQuality = CONFIG_VALUE( "Engine", "SDLRenderScaleQuality", "linear" );
+        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDLRenderScaleQuality ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to '%s' error: %s"
-                , Engine_SDLRenderScaleQuality
+            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
+                , Engine_SDL_HINT_RENDER_SCALE_QUALITY
                 , SDL_GetError()
             );
         }
 
-        const Char * Engine_SDLOrientations = CONFIG_VALUE( "Engine", "SDLOrientations", "Portrait" );
+        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
 
-        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDLOrientations ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to '%s' error: %s"
-                , Engine_SDLOrientations
+            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
+                , Engine_SDL_HINT_ORIENTATIONS
                 , SDL_GetError()
             );
         }
 
+        const Char * Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
+
+        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR ) != SDL_TRUE )
+        {
+            LOGGER_ERROR( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to [%s] error: %s"
+                , Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR
+                , SDL_GetError()
+            );
+        }
 #elif defined(MENGINE_PLATFORM_ANDROID)
         windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
 
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to SDL_GL_CONTEXT_PROFILE_ES error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_PROFILE_MASK
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to 2 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
                 , SDL_GetError()
             );
         }
 
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 ) != 0 )
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0 );
+
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to 0 error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
         }
 
-        const Char * Engine_SDLRenderScaleQuality = CONFIG_VALUE( "Engine", "SDLRenderScaleQuality", "linear" );
+        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
 
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDLRenderScaleQuality ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to '%s' error: %s"
-                , Engine_SDLRenderScaleQuality
+            LOGGER_ERROR( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
+                , Engine_SDL_HINT_RENDER_SCALE_QUALITY
                 , SDL_GetError()
             );
         }
 
-        const Char * Engine_SDLOrientations = CONFIG_VALUE( "Engine", "SDLOrientations", "Portrait" );
+        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
 
-        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDLOrientations ) != SDL_TRUE )
+        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
         {
-            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to '%s' error: %s"
-                , Engine_SDLOrientations
+            LOGGER_ERROR( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
+                , Engine_SDL_HINT_ORIENTATIONS
                 , SDL_GetError()
             );
         }
@@ -2199,92 +2358,32 @@ namespace Mengine
 
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengl" );
 
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MAJOR_VERSION", 3 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to %u error: %s"
-                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_MINOR_VERSION", 2 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to %u error: %s"
-                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "Engine", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_CORE );
+        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_CORE );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to %u error: %s"
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
                 , Engine_SDL_GL_CONTEXT_PROFILE_MASK
                 , SDL_GetError()
             );
         }
 
-        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_RED_SIZE", 8 );
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 3 );
 
-        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_RED_SIZE to %u error: %s"
-                , Engine_SDL_GL_RED_SIZE
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
                 , SDL_GetError()
             );
         }
 
-        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_GREEN_SIZE", 8 );
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MINOR_VERSION", 2 );
 
-        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) != 0 )
+        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
-            LOGGER_ERROR( "set attribute SDL_GL_GREEN_SIZE to %u error: %s"
-                , Engine_SDL_GL_GREEN_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_BLUE_SIZE", 8 );
-        
-        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_BLUE_SIZE to %u error: %s"
-                , Engine_SDL_GL_BLUE_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_ALPHA_SIZE", 8 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_ALPHA_SIZE to %u error: %s"
-                , Engine_SDL_GL_ALPHA_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE( "Engine", "SDL_GL_DEPTH_SIZE", 24 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_DEPTH_SIZE to %u error: %s"
-                , Engine_SDL_GL_DEPTH_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE( "Engine", "SDL_GL_DOUBLEBUFFER", 1 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) != 0 )
-        {
-            LOGGER_ERROR( "set attribute SDL_GL_DOUBLEBUFFER to %u error: %s"
-                , Engine_SDL_GL_DOUBLEBUFFER
+            LOGGER_ERROR( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
+                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
         }
@@ -2295,16 +2394,6 @@ namespace Mengine
         );
 
 #if defined(MENGINE_PLATFORM_IOS)
-        const Char * Engine_SDLIOSHideHomeIndicator = CONFIG_VALUE( "Engine", "SDLIOSHideHomeIndicator", "1" );
-
-        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDLIOSHideHomeIndicator ) != SDL_TRUE )
-        {
-            LOGGER_ERROR( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to '%s' error: %s"
-                , Engine_SDLIOSHideHomeIndicator
-                , SDL_GetError()
-            );
-        }
-
         SDL_Window * window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED

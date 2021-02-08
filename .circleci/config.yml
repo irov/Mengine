@@ -57,7 +57,7 @@ jobs:
             
       - run:
           name: assemble
-          no_output_timeout: 30m
+          no_output_timeout: 60m
           command: |
             pushd gradle
             sudo chmod +x gradlew

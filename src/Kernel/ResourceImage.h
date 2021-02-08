@@ -54,7 +54,7 @@ namespace Mengine
         MENGINE_INLINE void setAlpha( bool _alpha );
         MENGINE_INLINE bool hasAlpha() const;
 
-        MENGINE_INLINE void setPremultiply( bool _alpha );
+        MENGINE_INLINE void setPremultiply( bool _premultiply );
         MENGINE_INLINE bool isPremultiply() const;
 
         MENGINE_INLINE void setPow2( bool _pow2 );

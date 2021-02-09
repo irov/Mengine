@@ -750,6 +750,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::updatePlatform()
     {
+        this->setActive_( true );
+
         m_prevTime = TIME_SYSTEM()
             ->getTimeMilliseconds();
 
@@ -842,8 +844,10 @@ namespace Mengine
             else
             {
 #if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_OSX)
+                bool maxfps = HAS_OPTION( "maxfps" );
+
                 if( APPLICATION_SERVICE()
-                    ->getVSync() == false )
+                    ->getVSync() == false && maxfps == false )
                 {
 
                     SDL_Delay( 1 );
@@ -2530,11 +2534,13 @@ namespace Mengine
 
                     switch( windowEventId )
                     {
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
                     case SDL_WINDOWEVENT_MAXIMIZED:
                     case SDL_WINDOWEVENT_RESTORED:
                         {
                             this->setActive_( true );
                         }break;
+                    case SDL_WINDOWEVENT_FOCUS_LOST:
                     case SDL_WINDOWEVENT_MINIMIZED:
                         {
                             this->setActive_( false );

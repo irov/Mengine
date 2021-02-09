@@ -9,12 +9,6 @@ jobs:
       name: android/android
       sdk-version: '29'
       
-    parallelism: 2
-      
-    environment:
-      _JAVA_OPTIONS: "-Xms2g -Xmx5g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
-      
     steps:
       - checkout
       
@@ -68,5 +62,5 @@ jobs:
             pushd gradle
             sudo chmod +x gradlew
             sudo chown -R circleci:circleci /home/circleci/project/
-            ./gradlew assembleDebug -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PASSETS_JAVA_NO_SRC_DIR -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" --stacktrace
+            ./gradlew assembleDebug -PANDROID_APP_ENABLE_UNITYADS=0 -PANDROID_APP_ENABLE_DEVTODEV=0 -PANDROID_APP_ENABLE_FACEBOOK=0 -PANDROID_APP_ENABLE_FIREBASE_CRASHLYTICS=0 -PANDROID_APP_ENABLE_GOOGLE_SERVICE=0 -PANDROID_APP_ENABLE_SENTRY=0 -PANDROID_APP_UPLOAD_CRASHLYTICS=0 -PASSETS_JAVA_NO_SRC_DIR -PMANIFEST_SRC_FILE="AndroidManifestCI.xml" --stacktrace
             popd

@@ -25,6 +25,7 @@ MESSAGE("MENGINE_BUILD_TIMESTAMP: ${MENGINE_BUILD_TIMESTAMP}")
 ADD_FILTER(
 src
     Char.h
+    Utf8.h
     Typedef.h
     Typeinfo.h
     Atomic.h

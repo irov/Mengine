@@ -2040,7 +2040,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _ms );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        SDL_Delay( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::messageBox( const Char * _caption, const Char * _format, ... ) const

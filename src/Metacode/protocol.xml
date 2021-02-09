@@ -1,4 +1,4 @@
-<Protocol Version = "143">
+<Protocol Version = "144">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -408,6 +408,7 @@
         <Node Name="ResourceVideo" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Alpha" Type="bool"/>
+          <Member Node="File" Name="Premultiply" Type="bool"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="File" Name="NoSeek" Type="bool"/>

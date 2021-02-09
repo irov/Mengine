@@ -611,6 +611,38 @@ namespace Mengine
                 ySrc2 += yOff;
                 vSrc += _yuvBuffer.uv_stride;
             }
+
+            if( m_options.premultiply == true )
+            {
+                dstBitmap = _buffer;
+                dstBitmapOffset = _buffer + m_pitch;
+
+                for( int32_t y = 0; y != y_rgb_count; ++y )
+                {
+                    for( int32_t x = 0; x != y_width; ++x )
+                    {
+                        dstBitmap[THEORA_COLOR_R] = dstBitmap[THEORA_COLOR_R] * dstBitmap[THEORA_COLOR_A] / 255;
+                        dstBitmap[THEORA_COLOR_G] = dstBitmap[THEORA_COLOR_G] * dstBitmap[THEORA_COLOR_A] / 255;
+                        dstBitmap[THEORA_COLOR_B] = dstBitmap[THEORA_COLOR_B] * dstBitmap[THEORA_COLOR_A] / 255;
+                        dstBitmap[4 + THEORA_COLOR_R] = dstBitmap[4 + THEORA_COLOR_R] * dstBitmap[4 + THEORA_COLOR_A] / 255;
+                        dstBitmap[4 + THEORA_COLOR_G] = dstBitmap[4 + THEORA_COLOR_G] * dstBitmap[4 + THEORA_COLOR_A] / 255;
+                        dstBitmap[4 + THEORA_COLOR_B] = dstBitmap[4 + THEORA_COLOR_B] * dstBitmap[4 + THEORA_COLOR_A] / 255;
+
+                        dstBitmapOffset[THEORA_COLOR_R] = dstBitmapOffset[THEORA_COLOR_R] * dstBitmapOffset[THEORA_COLOR_A] / 255;
+                        dstBitmapOffset[THEORA_COLOR_G] = dstBitmapOffset[THEORA_COLOR_G] * dstBitmapOffset[THEORA_COLOR_A] / 255;
+                        dstBitmapOffset[THEORA_COLOR_B] = dstBitmapOffset[THEORA_COLOR_B] * dstBitmapOffset[THEORA_COLOR_A] / 255;
+                        dstBitmapOffset[4 + THEORA_COLOR_R] = dstBitmapOffset[4 + THEORA_COLOR_R] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255;
+                        dstBitmapOffset[4 + THEORA_COLOR_G] = dstBitmapOffset[4 + THEORA_COLOR_G] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255;
+                        dstBitmapOffset[4 + THEORA_COLOR_B] = dstBitmapOffset[4 + THEORA_COLOR_B] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255;
+
+                        dstBitmap += 4 << 1;
+                        dstBitmapOffset += 4 << 1;
+                    }
+
+                    dstBitmap += dstOff;
+                    dstBitmapOffset += dstOff;
+                }
+            }
         }
         else
         {

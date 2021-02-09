@@ -1488,7 +1488,7 @@ namespace Mengine
 
                     UnknownVideoSurfaceInterface * unknownVideoSurface = surfaceVideo->getUnknown();
 
-                    unknownVideoSurface->setResourceVideo( ResourcePtr( resourceVideo ) );
+                    unknownVideoSurface->setResourceVideo( ResourcePtr::from( resourceVideo ) );
 
                     EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer_data );
 
@@ -1497,7 +1497,6 @@ namespace Mengine
                     surfaceVideoAnimation->setLoop( _callbackData->incessantly );
 
                     surfaceVideo->setBlendMode( blend_mode );
-                    surfaceVideo->setPremultiplyAlpha( true );
 
                     movie2->addSurface_( surfaceVideo, true );
 

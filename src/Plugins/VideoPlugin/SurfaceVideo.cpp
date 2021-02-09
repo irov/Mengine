@@ -575,7 +575,9 @@ namespace Mengine
     {
         this->updateVideoBuffer_();
 
-        RenderMaterialInterfacePtr material = this->makeTextureMaterial( 1, m_textures, false, MENGINE_DOCUMENT_FACTORABLE );
+        bool premultiply = m_resourceVideo->isPremultiply();
+
+        RenderMaterialInterfacePtr material = this->makeTextureMaterial( 1, m_textures, premultiply, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, "surface '%s' invalid make material"
             , this->getName().c_str()

@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 143;
+        return 144;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 1457868360; 
+        return 2825539051; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -3879,6 +3879,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_NoSeek) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoSeek );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Premultiply );
             }
         
         }

@@ -59,9 +59,10 @@ namespace Mengine
 
         if( Engine_ForcePremultiplyAlpha == true )
         {
+            bool alpha = this->hasAlpha();
             bool premultiply = this->isPremultiply();
 
-            if( premultiply == false )
+            if( premultiply == false && alpha == true )
             {
                 decoder_options = DF_PREMULTIPLY_ALPHA;
 

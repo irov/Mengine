@@ -1573,8 +1573,6 @@ namespace Mengine
         surface_animation->setStretch( _layer.stretch );
         surface_animation->setLoop( _layer.loop );
 
-        surface->setPremultiplyAlpha( true );
-
         if( this->setupBlendingMode_( _layer, surface ) == false )
         {
             return false;

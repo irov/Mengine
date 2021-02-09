@@ -36,10 +36,6 @@ namespace Mengine
         bool getDisableTextureColor() const;
 
     public:
-        void setPremultiplyAlpha( bool _premultiplyAlpha );
-        bool getPremultiplyAlpha() const;
-
-    public:
         void setBlendMode( EMaterialBlendMode _blendMode );
         EMaterialBlendMode getBlendMode() const;
 
@@ -55,7 +51,7 @@ namespace Mengine
     protected:
         RenderMaterialInterfacePtr makeSolidMaterial( bool _solid, const DocumentPtr & _doc ) const;
         RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid, const DocumentPtr & _doc ) const;
-        RenderMaterialInterfacePtr makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _solid, const DocumentPtr & _doc ) const;
+        RenderMaterialInterfacePtr makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _premultiply, bool _solid, const DocumentPtr & _doc ) const;
 
     public:
         MENGINE_INLINE const RenderMaterialInterfacePtr & getMaterial() const;
@@ -80,7 +76,6 @@ namespace Mengine
 
         EMaterialBlendMode m_blendMode;
 
-        bool m_premultiplyAlpha;
         bool m_disableTextureColor;
 
         mutable RenderMaterialInterfacePtr m_material;

@@ -58,6 +58,7 @@ namespace Mengine
             , duration( 0.f )
             , fps( 0.f )
             , alpha( false )
+            , premultiply( false )
             , mock( false )
             , noSeek( false )
         {
@@ -68,6 +69,7 @@ namespace Mengine
         float duration;
         float fps;
         bool alpha;
+        bool premultiply;
 
         bool mock;
         bool noSeek;
@@ -88,6 +90,26 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<VideoDecoderInterface> VideoDecoderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownVideoResourceInterface
+        : public UnknownInterface
+    {
+    public:
+        virtual void setFrameRate( float _frameRate ) = 0;
+        virtual float getFrameRate() const = 0;
+
+        virtual void setDuration( float _duration ) = 0;
+        virtual float getDuration() const = 0;
+
+        virtual void setAlpha( bool _alpha ) = 0;
+        virtual bool isAlpha() const = 0;
+
+        virtual void setPremultiply( bool _premultiply ) = 0;
+        virtual bool isPremultiply() const = 0;
+
+        virtual void setNoSeek( bool _noSeek ) = 0;
+        virtual bool isNoSeek() const = 0;
+    };
     //////////////////////////////////////////////////////////////////////////
     class UnknownVideoSurfaceInterface
         : public UnknownInterface

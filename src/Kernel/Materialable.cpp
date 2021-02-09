@@ -488,7 +488,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Materialable::Materialable()
         : m_blendMode( EMB_NORMAL )
-        , m_premultiplyAlpha( false )
         , m_disableTextureColor( false )
         , m_invalidateMaterial( true )
     {
@@ -520,16 +519,6 @@ namespace Mengine
     bool Materialable::getDisableTextureColor() const
     {
         return m_disableTextureColor;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Materialable::setPremultiplyAlpha( bool _premultiplyAlpha )
-    {
-        m_premultiplyAlpha = _premultiplyAlpha;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Materialable::getPremultiplyAlpha() const
-    {
-        return m_premultiplyAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
     void Materialable::setBlendMode( EMaterialBlendMode _blendMode )
@@ -572,9 +561,9 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr Materialable::makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _solid, const DocumentPtr & _doc ) const
+    RenderMaterialInterfacePtr Materialable::makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _premultiply, bool _solid, const DocumentPtr & _doc ) const
     {
-        RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( m_materialName, _textureCount, _textures, m_blendMode, m_premultiplyAlpha, m_disableTextureColor, _solid, _doc );
+        RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( m_materialName, _textureCount, _textures, m_blendMode, _premultiply, m_disableTextureColor, _solid, _doc );
 
         return material;
     }

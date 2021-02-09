@@ -13,37 +13,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceVideo
         : public Resource
-        , protected BaseContent
+        , public UnknownVideoResourceInterface
+        , protected BaseContent        
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();
+        DECLARE_UNKNOWABLE();
 
     public:
         ResourceVideo();
         ~ResourceVideo() override;
 
     public:
-        void setFrameRate( float _frameRate );
-        float getFrameRate() const;
+        void setFrameRate( float _frameRate ) override;
+        float getFrameRate() const override;
 
     public:
-        void setDuration( float _duration );
-        float getDuration() const;
+        void setDuration( float _duration ) override;
+        float getDuration() const override;
 
     public:
-        VideoDecoderInterfacePtr createVideoDecoder( const DocumentPtr & _doc ) const;
-        void destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder ) const;
+        void setAlpha( bool _alpha ) override;
+        bool isAlpha() const override;
+
+    public:
+        void setPremultiply( bool _premultiply ) override;
+        bool isPremultiply() const override;
+
+    public:
+        void setNoSeek( bool _noSeek ) override;
+        bool isNoSeek() const override;
+
+    public:
+        VideoDecoderInterfacePtr createVideoDecoder( const DocumentPtr & _doc );
+        void destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder );
 
     protected:
         void _cache() override;
         void _uncache() override;
-
-    public:
-        void setAlpha( bool _alpha );
-        bool isAlpha() const;
-
-        void setNoSeek( bool _noSeek );
-        bool isNoSeek() const;
 
     protected:
         bool _compile() override;
@@ -54,10 +61,16 @@ namespace Mengine
         float m_duration;
 
         typedef ResourceCacher<VideoDecoderInterfacePtr> ResourceCacherVideoDecoder;
-        mutable ResourceCacherVideoDecoder m_videoDecoderCacher;
+        ResourceCacherVideoDecoder m_videoDecoderCacher;
 
         bool m_alpha;
+        bool m_premultiply;
         bool m_noSeek;
+
+#ifndef MENGINE_MASTER_RELEASE
+    protected:
+        bool m_forcePremultiply;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceVideo> ResourceVideoPtr;

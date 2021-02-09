@@ -32,6 +32,7 @@ namespace Mengine
         metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
 
         metadata->getm_File_Alpha( resource, &ResourceVideo::setAlpha );
+        metadata->getm_File_Premultiply( resource, &ResourceVideo::setPremultiply );
         metadata->getm_File_NoSeek( resource, &ResourceVideo::setNoSeek );
         metadata->getm_File_FrameRate( resource, &ResourceVideo::setFrameRate );
         metadata->getm_File_Duration( resource, &ResourceVideo::setDuration );

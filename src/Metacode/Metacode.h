@@ -6602,11 +6602,12 @@ namespace Metacode
                 enum NoRequiredAttribute
                 {
                     EMETA_File_Alpha = (1 <<2),
-                    EMETA_File_Codec = (1 <<3),
-                    EMETA_File_Converter = (1 <<4),
-                    EMETA_File_Duration = (1 <<7),
-                    EMETA_File_FrameRate = (1 <<6),
-                    EMETA_File_NoSeek = (1 <<5),
+                    EMETA_File_Codec = (1 <<4),
+                    EMETA_File_Converter = (1 <<5),
+                    EMETA_File_Duration = (1 <<8),
+                    EMETA_File_FrameRate = (1 <<7),
+                    EMETA_File_NoSeek = (1 <<6),
+                    EMETA_File_Premultiply = (1 <<3),
                 };
                 
             public:
@@ -6801,6 +6802,36 @@ namespace Metacode
                     return this->m_File_Path;
                 }
                 
+                bool has_File_Premultiply() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_Premultiply) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Premultiply( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Premultiply );
+                
+                    return true;
+                }
+                
+                bool get_File_Premultiply( bool * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Premultiply;
+                
+                    return true;
+                }
+                
             public:
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
@@ -6819,6 +6850,7 @@ namespace Metacode
                 float m_File_FrameRate;
                 bool m_File_NoSeek;
                 Mengine::FilePath m_File_Path;
+                bool m_File_Premultiply;
             };
             
             class Meta_ResourceWindow

@@ -9,6 +9,12 @@ jobs:
       name: android/android
       sdk-version: '29'
       
+    parallelism: 2
+      
+    environment:
+      _JAVA_OPTIONS: "-Xms2g -Xmx5g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      
     steps:
       - checkout
       

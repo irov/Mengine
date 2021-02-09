@@ -116,8 +116,7 @@ namespace Mengine
 
         if( m_decoder->decode( textureBuffer, mipmap_size ) == 0 )
         {
-            LOGGER_ERROR( "invalid decode for"
-            );
+            LOGGER_ERROR( "invalid decode for" );
 
             _image->unlock( 0, false );
 

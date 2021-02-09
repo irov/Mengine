@@ -74,7 +74,7 @@ namespace Mengine
         }
         else
         {
-            mt::multiply_tetragon_uv4_v2( *_out, m_uvTextureImage, _in );
+            mt::uv4_quad_point_rotate( *_out, m_uvTextureImage, _in );            
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ namespace Mengine
         }
         else
         {
-            mt::multiply_tetragon_uv4_v2( *_out, m_uvTextureAlpha, _in );
+            mt::uv4_quad_point_rotate( *_out, m_uvTextureImage, _in );
         }
     }
     //////////////////////////////////////////////////////////////////////////

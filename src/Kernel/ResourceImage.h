@@ -78,7 +78,7 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    protected:
+    private:
         RenderTextureInterfacePtr m_texture;
         RenderTextureInterfacePtr m_textureAlpha;
 

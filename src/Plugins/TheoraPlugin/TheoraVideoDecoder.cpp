@@ -218,7 +218,7 @@ namespace Mengine
 
         if( m_theoraInfo.pixelformat != OC_PF_420 )
         {
-            const Char * pixelformat[] = { "OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444" };
+            const Char * pixelformat[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
 
             LOGGER_ERROR( "invalid support pixel format '%s' pls use OC_PF_420"
                 , pixelformat[m_theoraInfo.pixelformat]
@@ -621,19 +621,19 @@ namespace Mengine
                 {
                     for( int32_t x = 0; x != y_width; ++x )
                     {
-                        dstBitmap[THEORA_COLOR_R] = dstBitmap[THEORA_COLOR_R] * dstBitmap[THEORA_COLOR_A] / 255;
-                        dstBitmap[THEORA_COLOR_G] = dstBitmap[THEORA_COLOR_G] * dstBitmap[THEORA_COLOR_A] / 255;
-                        dstBitmap[THEORA_COLOR_B] = dstBitmap[THEORA_COLOR_B] * dstBitmap[THEORA_COLOR_A] / 255;
-                        dstBitmap[4 + THEORA_COLOR_R] = dstBitmap[4 + THEORA_COLOR_R] * dstBitmap[4 + THEORA_COLOR_A] / 255;
-                        dstBitmap[4 + THEORA_COLOR_G] = dstBitmap[4 + THEORA_COLOR_G] * dstBitmap[4 + THEORA_COLOR_A] / 255;
-                        dstBitmap[4 + THEORA_COLOR_B] = dstBitmap[4 + THEORA_COLOR_B] * dstBitmap[4 + THEORA_COLOR_A] / 255;
+                        dstBitmap[THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmap[THEORA_COLOR_R] * dstBitmap[THEORA_COLOR_A] / 255);
+                        dstBitmap[THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmap[THEORA_COLOR_G] * dstBitmap[THEORA_COLOR_A] / 255);
+                        dstBitmap[THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmap[THEORA_COLOR_B] * dstBitmap[THEORA_COLOR_A] / 255);
+                        dstBitmap[4 + THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmap[4 + THEORA_COLOR_R] * dstBitmap[4 + THEORA_COLOR_A] / 255);
+                        dstBitmap[4 + THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmap[4 + THEORA_COLOR_G] * dstBitmap[4 + THEORA_COLOR_A] / 255);
+                        dstBitmap[4 + THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmap[4 + THEORA_COLOR_B] * dstBitmap[4 + THEORA_COLOR_A] / 255);
 
-                        dstBitmapOffset[THEORA_COLOR_R] = dstBitmapOffset[THEORA_COLOR_R] * dstBitmapOffset[THEORA_COLOR_A] / 255;
-                        dstBitmapOffset[THEORA_COLOR_G] = dstBitmapOffset[THEORA_COLOR_G] * dstBitmapOffset[THEORA_COLOR_A] / 255;
-                        dstBitmapOffset[THEORA_COLOR_B] = dstBitmapOffset[THEORA_COLOR_B] * dstBitmapOffset[THEORA_COLOR_A] / 255;
-                        dstBitmapOffset[4 + THEORA_COLOR_R] = dstBitmapOffset[4 + THEORA_COLOR_R] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255;
-                        dstBitmapOffset[4 + THEORA_COLOR_G] = dstBitmapOffset[4 + THEORA_COLOR_G] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255;
-                        dstBitmapOffset[4 + THEORA_COLOR_B] = dstBitmapOffset[4 + THEORA_COLOR_B] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255;
+                        dstBitmapOffset[THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmapOffset[THEORA_COLOR_R] * dstBitmapOffset[THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmapOffset[THEORA_COLOR_G] * dstBitmapOffset[THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmapOffset[THEORA_COLOR_B] * dstBitmapOffset[THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[4 + THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmapOffset[4 + THEORA_COLOR_R] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[4 + THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmapOffset[4 + THEORA_COLOR_G] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[4 + THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmapOffset[4 + THEORA_COLOR_B] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255);
 
                         dstBitmap += 4 << 1;
                         dstBitmapOffset += 4 << 1;

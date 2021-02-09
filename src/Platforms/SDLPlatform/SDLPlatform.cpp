@@ -43,6 +43,8 @@
 #   include "TargetConditionals.h"
 #endif
 
+#include <sysdir.h>
+
 #include <cstdio>
 #include <clocale>
 
@@ -2014,26 +2016,82 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-        MENGINE_UNUSED( _directoryPath );
-        MENGINE_UNUSED( _filePath );
-        MENGINE_UNUSED( _data );
-        MENGINE_UNUSED( _size );
+        sysdir_search_path_enumeration_state state = sysdir_start_search_path_enumeration( SYSDIR_DIRECTORY_PICTURES, SYSDIR_DOMAIN_MASK_USER );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        if( sysdir_get_next_search_path_enumeration(state, path_pictures) == 0 )
+        {
+            return false;
+        }
+        
+        char path_directory[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s%s", path_pictures, _directoryPath );
+        
+        if( this->createDirectory(path_directory) == false )
+        {
+            return false;
+        };
+        
+        char path_file[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s", path_directory, _filePath );
+        
+        SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
+        
+        if( rwops == nullptr )
+        {
+            return false;
+        }
+        
+        size_t written = SDL_RWwrite( rwops, _data, 1, _size );
 
-        return false;
+        if( written != _size )
+        {
+            return false;
+        }
+
+        SDL_RWclose( rwops );
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-        MENGINE_UNUSED( _directoryPath );
-        MENGINE_UNUSED( _filePath );
-        MENGINE_UNUSED( _data );
-        MENGINE_UNUSED( _size );
+        sysdir_search_path_enumeration_state state = sysdir_start_search_path_enumeration( SYSDIR_DIRECTORY_PICTURES, SYSDIR_DOMAIN_MASK_USER );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        if( sysdir_get_next_search_path_enumeration(state, path_pictures) == 0 )
+        {
+            return false;
+        }
+        
+        char path_directory[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s%s", path_pictures, _directoryPath );
+        
+        if( this->createDirectory(path_directory) == false )
+        {
+            return false;
+        };
+        
+        char path_file[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s", path_directory, _filePath );
+        
+        SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
+        
+        if( rwops == nullptr )
+        {
+            return false;
+        }
+        
+        size_t written = SDL_RWwrite( rwops, _data, 1, _size );
 
-        return false;
+        if( written != _size )
+        {
+            return false;
+        }
+
+        SDL_RWclose( rwops );
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::sleep( uint32_t _ms )

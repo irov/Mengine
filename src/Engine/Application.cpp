@@ -1144,6 +1144,10 @@ namespace Mengine
 
                 APPLICATION_SERVICE()
                     ->setParticleEnable( s_particle_enable );
+
+                LOGGER_MESSAGE_RELEASE( "Particle [%s]"
+                    , s_particle_enable == true ? "enable" : "disable"
+                );
             }
 
             if( _event.code == KC_T && _event.isDown == true && controlDown == true )
@@ -1154,6 +1158,10 @@ namespace Mengine
 
                 APPLICATION_SERVICE()
                     ->setTextEnable( s_text_enable );
+
+                LOGGER_MESSAGE_RELEASE( "Text [%s]"
+                    , s_text_enable == true ? "enable" : "disable"
+                );
             }
 
             if( _event.code == KC_V && _event.isDown == true && controlDown == true )
@@ -1164,6 +1172,10 @@ namespace Mengine
 
                 APPLICATION_SERVICE()
                     ->setVideoEnable( s_video_enable );
+
+                LOGGER_MESSAGE_RELEASE( "Video [%s]"
+                    , s_video_enable == true ? "enable" : "disable"
+                );
             }
 
             if( _event.code == KC_R && _event.isDown == true && controlDown == true )

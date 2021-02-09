@@ -24,8 +24,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefault::~ResourceImageDefault()
     {
-        MENGINE_ASSERTION_FATAL( m_texture == nullptr );
-        MENGINE_ASSERTION_FATAL( m_textureAlpha == nullptr );
+        MENGINE_ASSERTION_FATAL( this->getTexture() == nullptr );
+        MENGINE_ASSERTION_FATAL( this->getTextureAlpha() == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
@@ -59,15 +59,16 @@ namespace Mengine
 
         if( Engine_ForcePremultiplyAlpha == true )
         {
-            bool alpha = this->hasAlpha();
+            //ToDo: fix required setup alpha
+            //bool alpha = this->hasAlpha();
             bool premultiply = this->isPremultiply();
 
-            if( premultiply == false && alpha == true )
+            if( premultiply == false /*&& alpha == true*/ )
             {
-                decoder_options = DF_PREMULTIPLY_ALPHA;
+                decoder_options |= DF_PREMULTIPLY_ALPHA;
 
                 this->setPremultiply( true );
-                
+
                 m_forcePremultiply = true;
             }
         }
@@ -86,7 +87,7 @@ namespace Mengine
             , this->getFilePath().c_str()
         );
 
-        m_texture = texture;
+        this->setTexture( texture );
 
         this->prepareImageFrame_();
 
@@ -123,47 +124,59 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::prepareImageFrame_()
     {
-        const RenderImageInterfacePtr & image = m_texture->getImage();
+        const RenderTextureInterfacePtr & texture = this->getTexture();
 
+        const RenderImageInterfacePtr & image = texture->getImage();
+
+        //ToDo: fix required setup alpha
         uint32_t hwChannels = image->getHWChannels();
 
         if( hwChannels == 3 )
         {
-            m_hasAlpha = false;
+            this->setAlpha( false );
         }
         else
         {
-            m_hasAlpha = true;
+            this->setAlpha( true );
         }
 
-        bool pow2 = m_texture->isPow2();
+        //ToDo: fix required setup pow2
+        bool pow2 = texture->isPow2();
 
         this->setPow2( pow2 );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::correctUVTexture()
     {
-        uint32_t width = (uint32_t)(m_size.x + 0.5f);
-        uint32_t height = (uint32_t)(m_size.y + 0.5f);
+        const mt::vec2f & size = this->getSize();
+
+        uint32_t width = (uint32_t)(size.x + 0.5f);
+        uint32_t height = (uint32_t)(size.y + 0.5f);
+
+        mt::uv4f uvTextureImage;
+        mt::uv4f uvTextureAlpha;
+
+        const mt::uv4f & uvImage = this->getUVImage();
+        const mt::uv4f & uvAlpha = this->getUVAlpha();
 
         if( Helper::isTexturePOW2( width ) == false )
         {
             uint32_t width_pow2 = Helper::getTexturePOW2( width );
 
-            float scale = m_size.x / float( width_pow2 );
+            float scale = size.x / float( width_pow2 );
 
             for( uint32_t i = 0; i != 4; ++i )
             {
-                m_uvTextureImage[i].x = m_uvImage[i].x * scale;
-                m_uvTextureAlpha[i].x = m_uvAlpha[i].x * scale;
+                uvTextureImage[i].x = uvImage[i].x * scale;
+                uvTextureAlpha[i].x = uvAlpha[i].x * scale;
             }
         }
         else
         {
             for( uint32_t i = 0; i != 4; ++i )
             {
-                m_uvTextureImage[i].x = m_uvImage[i].x;
-                m_uvTextureAlpha[i].x = m_uvAlpha[i].x;
+                uvTextureImage[i].x = uvImage[i].x;
+                uvTextureAlpha[i].x = uvAlpha[i].x;
             }
         }
 
@@ -171,22 +184,25 @@ namespace Mengine
         {
             uint32_t height_pow2 = Helper::getTexturePOW2( height );
 
-            float scale = m_size.y / float( height_pow2 );
+            float scale = size.y / float( height_pow2 );
 
             for( uint32_t i = 0; i != 4; ++i )
             {
-                m_uvTextureImage[i].y = m_uvImage[i].y * scale;
-                m_uvTextureAlpha[i].y = m_uvAlpha[i].y * scale;
+                uvTextureImage[i].y = uvImage[i].y * scale;
+                uvTextureAlpha[i].y = uvAlpha[i].y * scale;
             }
         }
         else
         {
             for( uint32_t i = 0; i != 4; ++i )
             {
-                m_uvTextureImage[i].y = m_uvImage[i].y;
-                m_uvTextureAlpha[i].y = m_uvAlpha[i].y;
+                uvTextureImage[i].y = uvImage[i].y;
+                uvTextureAlpha[i].y = uvAlpha[i].y;
             }
         }
+
+        this->setUVTextureImage( uvTextureImage );
+        this->setUVTextureAlpha( uvTextureAlpha );
     }
     //////////////////////////////////////////////////////////////////////////
 }

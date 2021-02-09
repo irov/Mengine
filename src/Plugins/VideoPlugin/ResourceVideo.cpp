@@ -144,7 +144,7 @@ namespace Mengine
         videoCodecOptions.duration = m_duration;
         videoCodecOptions.fps = m_frameRate;
         videoCodecOptions.alpha = m_alpha;
-        videoCodecOptions.premultiply = false;
+        videoCodecOptions.premultiply = m_premultiply;
 
         videoCodecOptions.mock = HAS_OPTION( "novideo" );
         videoCodecOptions.noSeek = m_noSeek;

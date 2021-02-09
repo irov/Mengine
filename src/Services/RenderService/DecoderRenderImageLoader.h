@@ -10,6 +10,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DecoderRenderImageLoader
         : public RenderImageLoaderInterface
         , public Factorable

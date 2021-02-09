@@ -56,12 +56,14 @@ namespace Mengine
             , m_codecType.c_str()
         );
 
-        m_imageDecoder = CODEC_SERVICE()
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_imageDecoder, "invalid create codec '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "invalid create codec '%s'"
             , m_codecType.c_str()
         );
+
+        m_imageDecoder = imageDecoder;
 
         return true;
     }

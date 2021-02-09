@@ -260,6 +260,7 @@ namespace Mengine
             _lambda( RenderTextureInterfacePtr( texture ) );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
     RenderImageLoaderInterfacePtr RenderTextureService::createDecoderRenderImageLoader( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentPtr & _doc )
     {
         DecoderRenderImageLoaderPtr loader = Helper::makeFactorableUnique<DecoderRenderImageLoader>( _doc );

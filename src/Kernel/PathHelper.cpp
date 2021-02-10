@@ -189,6 +189,8 @@ namespace Mengine
             {
                 if( pch == _filePath )
                 {
+                    *pch = L'\0';
+
                     return false;
                 }
 
@@ -248,6 +250,8 @@ namespace Mengine
             {
                 if( pch == _filePath )
                 {
+                    *pch = '\0';
+
                     return false;
                 }
 

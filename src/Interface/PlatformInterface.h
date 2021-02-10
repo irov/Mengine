@@ -115,8 +115,8 @@ namespace Mengine
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
 
     public:
-        virtual bool existDirectory( const Char * _directoryPath ) const = 0;
-        virtual bool createDirectory( const Char * _directoryPath ) = 0;
+        virtual bool existDirectory( const Char * _directoryPath, const Char * _directory ) const = 0;
+        virtual bool createDirectory( const Char * _directoryPath, const Char * _directory ) = 0;
 
     public:
         virtual bool existFile( const Char * _filePath ) = 0;

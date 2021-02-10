@@ -125,8 +125,8 @@ namespace Mengine
         bool openUrlInDefaultBrowser( const Char * _url ) override;
 
     public:
-        bool existDirectory( const Char * _path ) const override;
-        bool createDirectory( const Char * _path ) override;
+        bool existDirectory( const Char * _path, const Char * _directory ) const override;
+        bool createDirectory( const Char * _path, const Char * _directory ) override;
 
     public:
         bool existFile( const Char * _filePath ) override;

@@ -110,7 +110,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderPath, bool _recursive ) const
+    bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderName, bool _recursive ) const
     {
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
@@ -118,15 +118,13 @@ namespace Mengine
         PathString accountString;
         accountString.append( relationPath );
         accountString.append( folderPath );
-        accountString.append( _folderPath );
-        accountString.append( MENGINE_PATH_DELIM );
 
         bool result = PLATFORM_SERVICE()
-            ->existDirectory( accountString.c_str() );
+            ->existDirectory( relationPath.c_str(), accountString.c_str() );
 
         if( _recursive == true && result == false && m_parentFileGroup != nullptr )
         {
-            result = m_parentFileGroup->existDirectory( _folderPath, true );
+            result = m_parentFileGroup->existDirectory( _folderName, true );
         }
 
         return result;
@@ -138,18 +136,17 @@ namespace Mengine
         const FilePath & folderPath = this->getFolderPath();
 
         PathString accountString;
-        accountString.append( relationPath );
         accountString.append( folderPath );
         accountString.append( _folderName );
 
         if( PLATFORM_SERVICE()
-            ->existDirectory( accountString.c_str() ) == true )
+            ->existDirectory( relationPath.c_str(), accountString.c_str() ) == true )
         {
             return true;
         }
 
         if( PLATFORM_SERVICE()
-            ->createDirectory( accountString.c_str() ) == false )
+            ->createDirectory( relationPath.c_str(), accountString.c_str() ) == false )
         {
             return false;
         }

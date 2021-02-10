@@ -2508,34 +2508,51 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::existDirectory( const Char * _directoryPath ) const
+    bool Win32Platform::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) > 0 && (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::pathCorrectBackslashToW( fullPath, unicode_path );
+        WChar unicode_directory[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH - 1 ) == false )
+        {
+            return false;
+        }
 
-        Helper::pathRemoveFileSpecW( fullPath );
+        WChar pathDirectory[MENGINE_MAX_PATH] = {L'\0'};
+        Helper::pathCorrectBackslashToW( pathDirectory, unicode_directory );
 
-        size_t len = MENGINE_WCSLEN( fullPath );
+        Helper::pathRemoveFileSpecW( pathDirectory );
+
+        size_t len = MENGINE_WCSLEN( pathDirectory );
 
         if( len == 0 )
         {
             return true;
         }
 
-        if( fullPath[len - 1] == L':' )
+        WChar pathFull[MENGINE_MAX_PATH] = {'\0'};
+
+        if( MENGINE_STRLEN( _path ) == 0 )
+        {
+            MENGINE_WCSCPY( pathFull, pathDirectory );
+        }
+        else
+        {
+            MENGINE_WNSPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls/%ls", _path, pathDirectory );
+        }
+
+        if( pathFull[len - 1] == L':' )
         {
             return true;
         }
 
-        DWORD attributes = ::GetFileAttributes( fullPath );
+        DWORD attributes = ::GetFileAttributes( pathFull );
 
         if( attributes == INVALID_FILE_ATTRIBUTES )
         {
@@ -2545,60 +2562,81 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectory( const Char * _directoryPath )
+    bool Win32Platform::createDirectory( const Char * _path, const Char * _directory )
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, MENGINE_PATH_DELIM ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) > 0 && (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        bool result = this->createDirectory_( unicode_path );
+        WChar unicode_directory[MENGINE_MAX_PATH] = {L'\0'};
+        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH - 1 ) == false )
+        {
+            return false;
+        }
+
+        bool result = this->createDirectory_( unicode_path, unicode_directory );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectory_( const WChar * _directoryPath )
+    bool Win32Platform::createDirectory_( const WChar * _path, const WChar * _directory )
     {
-        size_t unicode_pathSize = MENGINE_WCSLEN( _directoryPath );
+        size_t unicode_directorySize = MENGINE_WCSLEN( _directory );
 
-        WChar fullPath[MENGINE_MAX_PATH] = {L'\0'};
-
-        if( unicode_pathSize != 0 )
+        if( unicode_directorySize == 0 )
         {
-            Helper::pathCorrectBackslashToW( fullPath, _directoryPath );
+            return true;
+        }
 
-            Helper::pathRemoveFileSpecW( fullPath );
+        WChar pathDirectory[MENGINE_MAX_PATH] = {L'\0'};
+        Helper::pathCorrectBackslashToW( pathDirectory, _directory );
 
-            Helper::pathRemoveBackslashW( fullPath );
+        Helper::pathRemoveFileSpecW( pathDirectory );
 
-            if( ::PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
-            {
-                return true;
-            }
+        WChar pathTestDirectory[MENGINE_MAX_PATH] = {L'\0'};
+        if( MENGINE_WCSLEN( _path ) == 0 )
+        {
+            MENGINE_WCSCPY( pathTestDirectory, pathDirectory );
         }
         else
         {
-            fullPath[0] = L'.';
-            fullPath[1] = L'\0';
+            MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s/%s", _path, pathDirectory );
         }
+
+        if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
+        {
+            return true;
+        }
+
+        Helper::pathRemoveBackslashW( pathDirectory );
 
         VectorWString paths;
 
         for( ;; )
         {
-            paths.emplace_back( fullPath );
+            paths.emplace_back( pathDirectory );
 
-            if( Helper::pathRemoveFileSpecW( fullPath ) == false )
+            if( Helper::pathRemoveFileSpecW( pathDirectory ) == false )
             {
                 break;
             }
 
-            Helper::pathRemoveBackslashW( fullPath );
+            Helper::pathRemoveBackslashW( pathDirectory );
 
-            if( ::PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
+            if( MENGINE_WCSLEN( _path ) == 0 )
+            {
+                MENGINE_WCSCPY( pathTestDirectory, pathDirectory );
+            }
+            else
+            {
+                MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s/%s", _path, pathDirectory );
+            }
+
+            if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
             {
                 break;
             }
@@ -2612,7 +2650,19 @@ namespace Mengine
         {
             const WString & path = *it;
 
-            BOOL successful = ::CreateDirectory( path.c_str(), NULL );
+            const WChar * path_str = path.c_str();
+
+            WChar pathCreateDirectory[MENGINE_MAX_PATH] = {L'\0'};
+            if( MENGINE_WCSLEN( _path ) == 0 )
+            {
+                MENGINE_WCSCPY( pathCreateDirectory, path_str );
+            }
+            else
+            {
+                MENGINE_WNSPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, L"%s/%s", _path, path_str );
+            }
+
+            BOOL successful = ::CreateDirectory( pathCreateDirectory, NULL );
 
             if( successful == FALSE )
             {
@@ -2627,7 +2677,7 @@ namespace Mengine
                 case ERROR_PATH_NOT_FOUND:
                     {
                         LOGGER_ERROR( "directory '%ls' not found"
-                            , path.c_str()
+                            , pathCreateDirectory
                         );
 
                         return false;
@@ -2635,7 +2685,7 @@ namespace Mengine
                 default:
                     {
                         LOGGER_ERROR( "directory '%ls' unknown [error: %lu]"
-                            , path.c_str()
+                            , pathCreateDirectory
                             , error
                         );
 
@@ -3015,13 +3065,13 @@ namespace Mengine
         return dateTimeProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )
+    bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _file, const void * _data, size_t _size )
     {
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
         ::PathAppend( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::pathCorrectBackslashToW( pathCorrect, _path );
+        Helper::pathCorrectBackslashToW( pathCorrect, _directoryPath );
 
         WChar fileCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( fileCorrect, _file );
@@ -3030,7 +3080,7 @@ namespace Mengine
 
         if( this->existFile_( szPath ) == false )
         {
-            if( this->createDirectory_( szPath ) == false )
+            if( this->createDirectory_( _userPath, _directoryPath ) == false )
             {
                 LOGGER_ERROR( "directory '%ls:%ls' invalid createDirectory '%ls'"
                     , pathCorrect

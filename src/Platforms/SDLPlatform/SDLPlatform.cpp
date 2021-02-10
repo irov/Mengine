@@ -1495,11 +1495,7 @@ namespace Mengine
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
-                        LOGGER_WARNING( "'%s' alredy exists"
-                            , _fullpath
-                        );
-
-                        return false;
+                        return true;
                     }break;
                 case ERROR_PATH_NOT_FOUND:
                     {
@@ -1544,58 +1540,101 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::existDirectory( const Char * _path ) const
+    bool SDLPlatform::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-        Helper::pathCorrectBackslashToA( fullPath, _path );
+        Char pathDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
-        Helper::pathRemoveFileSpecA( fullPath );
+        Helper::pathRemoveFileSpecA( pathDirectory );
 
-        size_t len = MENGINE_STRLEN( fullPath );
+        size_t len = MENGINE_STRLEN( pathDirectory );
 
         if( len == 0 )	// current dir
         {
             return true;
         }
 
-        if( fullPath[len - 1] == ':' )	// root dir
+        Char pathFull[MENGINE_MAX_PATH] = {'\0'};
+
+        if( MENGINE_STRLEN( _path ) == 0 )
+        {
+            MENGINE_STRCPY( pathFull, pathDirectory );
+        }
+        else
+        {
+            MENGINE_SNPRINTF( pathFull, MENGINE_MAX_PATH, "%s/%s", _path, pathDirectory );
+        }
+
+        if( pathFull[len - 1] == ':' )	// root dir
         {
             return true;	// let it be
         }
+#if defined(MENGINE_PLATFORM_OSX)
+        else if( pathFull[len - 1] == '~' )	// root dir
+        {
+            return true;	// let it be
+        }
+#endif
 
-        bool exist = Detail::s_isDirectoryFullpath( fullPath );
+        bool exist = Detail::s_isDirectoryFullpath( pathFull );
 
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createDirectory( const Char * _path )
+    bool SDLPlatform::createDirectory( const Char * _path, const Char * _directory )
     {
-        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-        Helper::pathCorrectBackslashToA( fullPath, _path );
+        size_t directorySize = MENGINE_STRLEN( _directory );
 
-        Helper::pathRemoveFileSpecA( fullPath );
-
-        if( Detail::s_isDirectoryFullpath( fullPath ) == true )
+        if( directorySize == 0 )
         {
             return true;
         }
 
-        Helper::pathRemoveBackslashA( fullPath );
+        Char pathDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Helper::pathCorrectBackslashToA( pathDirectory, _directory );
+
+        Helper::pathRemoveFileSpecA( pathDirectory );
+
+        Char pathTestDirectory[MENGINE_MAX_PATH] = {'\0'};
+        if( MENGINE_STRLEN( _path ) == 0 )
+        {
+            MENGINE_STRCPY( pathTestDirectory, pathDirectory );
+        }
+        else
+        {
+            MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s/%s", _path, pathDirectory );
+        }
+
+        if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
+        {
+            return true;
+        }
+
+        Helper::pathRemoveBackslashA( pathDirectory );
 
         VectorString paths;
 
         for( ;; )
         {
-            paths.push_back( fullPath );
+            paths.push_back( pathDirectory );
 
-            if( Helper::pathRemoveFileSpecA( fullPath ) == false )
+            if( Helper::pathRemoveFileSpecA( pathDirectory ) == false )
             {
                 break;
             }
 
-            Helper::pathRemoveBackslashA( fullPath );
+            Helper::pathRemoveBackslashA( pathDirectory );
 
-            if( Detail::s_isDirectoryFullpath( fullPath ) == true )
+            if( MENGINE_STRLEN( _path ) == 0 )
+            {
+                MENGINE_STRCPY( pathTestDirectory, pathDirectory );
+            }
+            else
+            {
+                MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s/%s", _path, pathDirectory );
+            }
+
+            if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
             {
                 break;
             }
@@ -1609,7 +1648,19 @@ namespace Mengine
         {
             const String & path = *it;
 
-            if( Detail::s_createDurectoryFullpath( path.c_str() ) == false )
+            const Char * path_str = path.c_str();
+
+            Char pathCreateDirectory[MENGINE_MAX_PATH] = {'\0'};
+            if( MENGINE_STRLEN( _path ) == 0 )
+            {
+                MENGINE_STRCPY( pathCreateDirectory, path_str );
+            }
+            else
+            {
+                MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s/%s", _path, path_str );
+            }
+
+            if( Detail::s_createDurectoryFullpath( pathCreateDirectory ) == false )
             {
                 return false;
             }
@@ -2022,30 +2073,28 @@ namespace Mengine
         sysdir_search_path_enumeration_state state = sysdir_start_search_path_enumeration( SYSDIR_DIRECTORY_PICTURES, SYSDIR_DOMAIN_MASK_USER );
 
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        if( sysdir_get_next_search_path_enumeration(state, path_pictures) == 0 )
+        if( sysdir_get_next_search_path_enumeration( state, path_pictures ) == 0 )
         {
             LOGGER_ERROR( "invalid get state for SYSDIR_DOMAIN_MASK_USER:SYSDIR_DIRECTORY_PICTURES" );
 
             return false;
         }
-        
-        Char path_directory[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s%s", path_pictures, _directoryPath );
-        
-        if( this->createDirectory(path_directory) == false )
+
+        if( this->createDirectory( path_pictures, _directoryPath ) == false )
         {
-            LOGGER_ERROR( "invalid create directory '%s'"
-                , path_directory 
+            LOGGER_ERROR( "invalid create directory '%s/%s'"
+                , path_pictures
+                , _directoryPath
             );
 
             return false;
         };
-        
+
         Char path_file[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s", path_directory, _filePath );
-        
+        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s/%s", path_pictures, _directoryPath, _filePath );
+
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
-        
+
         if( rwops == nullptr )
         {
             LOGGER_ERROR( "invalid create file '%s'"
@@ -2054,7 +2103,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         size_t written = SDL_RWwrite( rwops, _data, 1, _size );
 
         if( written != _size )
@@ -2069,7 +2118,7 @@ namespace Mengine
         }
 
         SDL_RWclose( rwops );
-        
+
         return true;
 #else
         MENGINE_UNUSED( _directoryPath );
@@ -2089,30 +2138,28 @@ namespace Mengine
         sysdir_search_path_enumeration_state state = sysdir_start_search_path_enumeration( SYSDIR_DIRECTORY_MUSIC, SYSDIR_DOMAIN_MASK_USER );
 
         Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        if( sysdir_get_next_search_path_enumeration(state, path_music) == 0 )
+        if( sysdir_get_next_search_path_enumeration( state, path_music ) == 0 )
         {
             LOGGER_ERROR( "invalid get state for SYSDIR_DOMAIN_MASK_USER:SYSDIR_DIRECTORY_MUSIC" );
 
             return false;
         }
-        
-        Char path_directory[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s%s", path_music, _directoryPath );
-        
-        if( this->createDirectory(path_directory) == false )
+
+        if( this->createDirectory( path_music, _directoryPath ) == false )
         {
-            LOGGER_ERROR( "invalid create directory '%s'"
-                , path_directory
+            LOGGER_ERROR( "invalid create directory '%s/%s'"
+                , path_music
+                , _directoryPath
             );
 
             return false;
         };
-        
+
         Char path_file[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s", path_directory, _filePath );
-        
+        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s/%s", path_music, _directoryPath, _filePath );
+
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
-        
+
         if( rwops == nullptr )
         {
             LOGGER_ERROR( "invalid create file '%s'"
@@ -2121,7 +2168,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         size_t written = SDL_RWwrite( rwops, _data, 1, _size );
 
         if( written != _size )
@@ -2136,7 +2183,7 @@ namespace Mengine
         }
 
         SDL_RWclose( rwops );
-        
+
         return true;
 #else
         MENGINE_UNUSED( _directoryPath );

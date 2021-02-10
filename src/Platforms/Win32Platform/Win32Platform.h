@@ -109,8 +109,8 @@ namespace Mengine
         bool openUrlInDefaultBrowser( const Char * _url ) override;
 
     public:
-        bool existDirectory( const Char * _directoryPath ) const override;
-        bool createDirectory( const Char * _directoryPath ) override;
+        bool existDirectory( const Char * _path, const Char * _directory ) const override;
+        bool createDirectory( const Char * _path, const Char * _directory ) override;
 
     public:
         bool existFile( const Char * _utf8Path ) override;
@@ -124,8 +124,8 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     protected:
-        bool existFile_( const WChar * _filePath );
-        bool createDirectory_( const WChar * _filePath );
+        bool existFile_( const WChar * _filePath );        
+        bool createDirectory_( const WChar * _path, const WChar * _directory );
 
     public:
         DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;

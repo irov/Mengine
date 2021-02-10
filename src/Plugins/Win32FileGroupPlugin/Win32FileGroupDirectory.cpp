@@ -112,13 +112,11 @@ namespace Mengine
         const FilePath & folderPath = this->getFolderPath();
 
         PathString account_folderPath;
-        account_folderPath.append( relationPath );
         account_folderPath.append( folderPath );
         account_folderPath.append( _folderPath );
-        account_folderPath.append( MENGINE_PATH_DELIM );
 
         bool result = PLATFORM_SERVICE()
-            ->existDirectory( account_folderPath.c_str() );
+            ->existDirectory( relationPath.c_str(), account_folderPath.c_str() );
 
         if( _recursive == true && result == false && m_parentFileGroup != nullptr )
         {
@@ -134,18 +132,17 @@ namespace Mengine
         const FilePath & folderPath = this->getFolderPath();
 
         PathString account_folderPath;
-        account_folderPath.append( relationPath );
         account_folderPath.append( folderPath );
         account_folderPath.append( _folderName );
 
         if( PLATFORM_SERVICE()
-            ->existDirectory( account_folderPath.c_str() ) == true )
+            ->existDirectory( relationPath.c_str(), account_folderPath.c_str() ) == true )
         {
             return true;
         }
 
         if( PLATFORM_SERVICE()
-            ->createDirectory( account_folderPath.c_str() ) == false )
+            ->createDirectory( relationPath.c_str(), account_folderPath.c_str() ) == false )
         {
             return false;
         }

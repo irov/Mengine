@@ -4209,9 +4209,9 @@ namespace Mengine
                 return 0;
             }
 
-            ::PathRemoveBackslash( currentPath );
-
             Helper::pathCorrectBackslashW( currentPath );
+
+            ::PathRemoveBackslash( currentPath );
 
             MENGINE_WCSCAT( currentPath, L"/" );
             MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
@@ -4261,6 +4261,13 @@ namespace Mengine
 
         const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
+        if( MENGINE_STRLEN( companyName ) == 0 )
+        {
+            LOGGER_ERROR( "invalid get company name" );
+
+            return 0;
+        }
+
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME] = {L'\0'};
         if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME - 1 ) == false )
         {
@@ -4276,6 +4283,13 @@ namespace Mengine
 
         const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
+        if( MENGINE_STRLEN( projectName ) == 0 )
+        {
+            LOGGER_ERROR( "invalid get project name" );
+
+            return 0;
+        }
+
         WChar projectNameW[MENGINE_APPLICATION_PROJECT_MAXNAME] = {L'\0'};
         if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME - 1 ) == false )
         {
@@ -4287,10 +4301,6 @@ namespace Mengine
         }
 
         ::PathCombine( roamingPath, roamingPath, projectNameW );
-
-        ::PathRemoveBackslash( roamingPath );
-
-        Helper::pathCorrectBackslashW( roamingPath );
 
         MENGINE_WCSCAT( roamingPath, L"/" );
 

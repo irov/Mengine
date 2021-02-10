@@ -700,6 +700,8 @@ namespace Mengine
 
         if( this->loadApplicationIni_() == false )
         {
+            LOGGER_ERROR( "invalid load application ini" );
+
             return false;
         }
 
@@ -711,6 +713,8 @@ namespace Mengine
 
         if( this->mountUserFileGroup_() == false )
         {
+            LOGGER_ERROR( "invalid mount user file group" );
+
             return false;
         }
 
@@ -718,6 +722,8 @@ namespace Mengine
 
         if( this->initializeFileLogger_() == false )
         {
+            LOGGER_ERROR( "invalid initalize file logger" );
+
             return false;
         }
 

@@ -28,7 +28,7 @@ namespace Mengine
                 }
 
                 WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-                if( ::GetModuleFileName( hm, unicode_path, MENGINE_MAX_PATH - 1 ) == 0 )
+                if( ::GetModuleFileName( hm, unicode_path, MENGINE_MAX_PATH ) == 0 )
                 {
                     return false;
                 }
@@ -47,7 +47,7 @@ namespace Mengine
                     , unicode_path
                     , (int32_t)unicode_path_len
                     , _path
-                    , MENGINE_MAX_PATH - 1
+                    , MENGINE_MAX_PATH
                     , NULL
                     , NULL
                 );

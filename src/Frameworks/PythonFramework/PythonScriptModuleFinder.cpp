@@ -207,12 +207,12 @@ namespace Mengine
         Char modulePathCache[MENGINE_MAX_PATH] = {'\0'};
 
         size_t modulePathCacheLen;
-        if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH - 1, _module, &modulePathCacheLen ) == false )
+        if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH, _module, &modulePathCacheLen ) == false )
         {
             return false;
         }
 
-        if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MENGINE_MAX_PATH - 1, _ext, _extN ) == false )
+        if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MENGINE_MAX_PATH, _ext, _extN ) == false )
         {
             return false;
         }
@@ -220,7 +220,7 @@ namespace Mengine
         if( this->findModule_( modulePathCache, modulePathCacheLen + _extN, _loader ) == false )
         {
             modulePathCache[modulePathCacheLen] = MENGINE_PATH_DELIM;
-            if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH - 1, _init, _extI ) == false )
+            if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH, _init, _extI ) == false )
             {
                 return false;
             }

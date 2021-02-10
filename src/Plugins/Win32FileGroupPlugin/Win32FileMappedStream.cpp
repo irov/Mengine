@@ -28,7 +28,7 @@ namespace Mengine
     bool Win32FileMappedStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
     {
         WChar concatenatePath[MENGINE_MAX_PATH] = {L'\0'};
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH - 1 );
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH );
 
         MENGINE_UNUSED( fullPathLen );
 

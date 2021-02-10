@@ -55,7 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
-        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH - 1 );
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
 
         MENGINE_UNUSED( fullPathLen );
 
@@ -111,12 +111,12 @@ namespace Mengine
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
 
-        PathString account_folderPath;
-        account_folderPath.append( folderPath );
-        account_folderPath.append( _folderPath );
+        PathString basePath;
+        basePath.append( relationPath );
+        basePath.append( folderPath );
 
         bool result = PLATFORM_SERVICE()
-            ->existDirectory( relationPath.c_str(), account_folderPath.c_str() );
+            ->existDirectory( basePath.c_str(), _folderPath.c_str() );
 
         if( _recursive == true && result == false && m_parentFileGroup != nullptr )
         {
@@ -131,18 +131,18 @@ namespace Mengine
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
 
-        PathString account_folderPath;
-        account_folderPath.append( folderPath );
-        account_folderPath.append( _folderName );
+        PathString basePath;
+        basePath.append( relationPath );
+        basePath.append( folderPath );
 
         if( PLATFORM_SERVICE()
-            ->existDirectory( relationPath.c_str(), account_folderPath.c_str() ) == true )
+            ->existDirectory( basePath.c_str(), _folderName.c_str() ) == true )
         {
             return true;
         }
 
         if( PLATFORM_SERVICE()
-            ->createDirectory( relationPath.c_str(), account_folderPath.c_str() ) == false )
+            ->createDirectory( basePath.c_str(), _folderName.c_str() ) == false )
         {
             return false;
         }

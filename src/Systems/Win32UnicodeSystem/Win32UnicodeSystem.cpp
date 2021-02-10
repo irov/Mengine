@@ -6,6 +6,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "Config/StdString.h"
+
 #include "Environment/Windows/WindowsIncluder.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -26,6 +28,19 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _unicode );
 
+        if( _unicodeSize == MENGINE_UNKNOWN_SIZE )
+        {
+            _unicodeSize = MENGINE_WCSLEN( _unicode );
+        }
+
+        if( _utf8 != nullptr )
+        {
+            if( _utf8Capacity <= _unicodeSize )
+            {
+                return false;
+            }
+        }
+
 #   if (WINVER >= 0x0600)
         DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
 #   else
@@ -34,11 +49,6 @@ namespace Mengine
 
         int32_t int_unicodeSize = static_cast<int32_t>(_unicodeSize);
         int32_t int_utf8Capacity = static_cast<int32_t>(_utf8Capacity);
-
-        if( int_unicodeSize == MENGINE_UNKNOWN_SIZE && int_utf8Capacity != 0 )
-        {
-            ++int_utf8Capacity;
-        }
 
         int32_t utf8_size = ::WideCharToMultiByte(
             CP_UTF8
@@ -53,16 +63,29 @@ namespace Mengine
 
         if( utf8_size == 0 && _unicodeSize != 0 )
         {
-            LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte 0"
+            DWORD error = ::GetLastError();
+
+            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+                ->getPlatformExtention();
+
+            Char str_le[1024] = {'\0'};
+            win32Platform->getErrorMessage( error, str_le, 1024 );
+
+            LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte 0 [error: %s (%lu)]"
                 , _unicode
+                , str_le
+                , error
             );
 
             return false;
         }
 
-        if( int_unicodeSize == MENGINE_UNKNOWN_SIZE )
+        if( _utf8 != nullptr )
         {
-            --utf8_size;
+            if( _utf8Capacity <= (size_t)utf8_size )
+            {
+                return false;
+            }
         }
 
         if( _utf8 != nullptr )
@@ -83,13 +106,21 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _utf8 );
 
+        if( _utf8Size == MENGINE_UNKNOWN_SIZE )
+        {
+            _utf8Size = MENGINE_STRLEN( _utf8 );
+        }
+
+        if( _unicode != nullptr )
+        {
+            if( _unicodeCapacity <= _utf8Size )
+            {
+                return false;
+            }
+        }
+
         int32_t int_utf8Size = static_cast<int32_t>(_utf8Size);
         int32_t int_unicodeCapacity = static_cast<int32_t>(_unicodeCapacity);
-
-        if( int_utf8Size == MENGINE_UNKNOWN_SIZE && int_unicodeCapacity != 0 )
-        {
-            ++int_unicodeCapacity;
-        }
 
         int32_t wc_size = ::MultiByteToWideChar(
             CP_UTF8
@@ -107,10 +138,10 @@ namespace Mengine
             Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
                 ->getPlatformExtention();
 
-            Char str_le[1024];
-            win32Platform->getErrorMessage( error, str_le, 1023 );
+            Char str_le[1024] = {'\0'};
+            win32Platform->getErrorMessage( error, str_le, 1024 );
 
-            LOGGER_ERROR( "invalid convert utf8 '%s' to unicode error: %s [%lu]"
+            LOGGER_ERROR( "invalid convert utf8 '%s' to unicode [error: %s (%lu)]"
                 , _utf8
                 , str_le
                 , error
@@ -119,9 +150,12 @@ namespace Mengine
             return false;
         }
 
-        if( int_utf8Size == MENGINE_UNKNOWN_SIZE )
+        if( _unicode != nullptr )
         {
-            --wc_size;
+            if( _unicodeCapacity <= (size_t)wc_size )
+            {
+                return false;
+            }
         }
 
         if( _unicode != nullptr )

@@ -252,7 +252,7 @@ namespace Mengine
 
         const Char * windowClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
-        Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH - 1 );
+        Helper::utf8ToUnicode( windowClassName, m_windowClassName, MENGINE_MAX_PATH );
 
         SERVICE_WAIT( FileServiceInterface, [this]()
         {
@@ -804,7 +804,7 @@ namespace Mengine
     size_t Win32Platform::getShortPathName( const Char * _path, Char * const _shortpath ) const
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invalid convert path to unicode" );
 
@@ -814,7 +814,7 @@ namespace Mengine
         WChar unicode_shortpath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, MENGINE_MAX_PATH );
 
-        if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invalid convert shortpath to utf8" );
 
@@ -827,7 +827,7 @@ namespace Mengine
     size_t Win32Platform::getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const
     {
         WChar unicode_fontName[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _fontName, unicode_fontName, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _fontName, unicode_fontName, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invalid convert fontName '%s' to unicode"
                 , _fontName
@@ -901,7 +901,7 @@ namespace Mengine
         }
 
         WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
-        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH - 1 );
+        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
 
         WChar fullDir[MENGINE_MAX_PATH] = {L'\0'};
         MENGINE_WSPRINTF( fullDir, L"%s\\Fonts\\%s"
@@ -910,7 +910,7 @@ namespace Mengine
         );
 
         size_t utf8_size;
-        if( Helper::unicodeToUtf8( fullDir, _fontPath, MENGINE_MAX_PATH - 1, &utf8_size ) == false )
+        if( Helper::unicodeToUtf8( fullDir, _fontPath, MENGINE_MAX_PATH, &utf8_size ) == false )
         {
             _fontPath[0] = '\0';
 
@@ -1628,7 +1628,7 @@ namespace Mengine
                     , lParam
                     , ::IsWindowVisible( hWnd )
                 );
-                
+
                 int32_t zDelta = GET_WHEEL_DELTA_WPARAM( wParam );
 
                 POINT p;
@@ -1963,7 +1963,7 @@ namespace Mengine
         }
 
         WChar text_code[2] = {L'\0'};
-        if( Helper::utf8ToUnicode( utf8, text_code, 1 ) == false )
+        if( Helper::utf8ToUnicode( utf8, text_code, 2 ) == false )
         {
             return false;
         }
@@ -2510,16 +2510,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) > 0 && (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/') );
+
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_directory[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2537,15 +2539,10 @@ namespace Mengine
         }
 
         WChar pathFull[MENGINE_MAX_PATH] = {'\0'};
-
-        if( MENGINE_STRLEN( _path ) == 0 )
-        {
-            MENGINE_WCSCPY( pathFull, pathDirectory );
-        }
-        else
-        {
-            MENGINE_WNSPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls/%ls", _path, pathDirectory );
-        }
+        MENGINE_WNSPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls%ls"
+            , _path
+            , pathDirectory
+        );
 
         if( pathFull[len - 1] == L':' )
         {
@@ -2564,16 +2561,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _path, const Char * _directory )
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) > 0 && (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/') );
+
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/') );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_directory[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2603,14 +2602,7 @@ namespace Mengine
         }
 
         WChar pathTestDirectory[MENGINE_MAX_PATH] = {L'\0'};
-        if( MENGINE_WCSLEN( _path ) == 0 )
-        {
-            MENGINE_WCSCPY( pathTestDirectory, pathDirectory );
-        }
-        else
-        {
-            MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s/%s", _path, pathDirectory );
-        }
+        MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s%s", _path, pathDirectory );
 
         if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
         {
@@ -2632,14 +2624,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslashW( pathDirectory );
 
-            if( MENGINE_WCSLEN( _path ) == 0 )
-            {
-                MENGINE_WCSCPY( pathTestDirectory, pathDirectory );
-            }
-            else
-            {
-                MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s/%s", _path, pathDirectory );
-            }
+            MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%s%s", _path, pathDirectory );
 
             if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
             {
@@ -2658,14 +2643,7 @@ namespace Mengine
             const WChar * path_str = path.c_str();
 
             WChar pathCreateDirectory[MENGINE_MAX_PATH] = {L'\0'};
-            if( MENGINE_WCSLEN( _path ) == 0 )
-            {
-                MENGINE_WCSCPY( pathCreateDirectory, path_str );
-            }
-            else
-            {
-                MENGINE_WNSPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, L"%s/%s", _path, path_str );
-            }
+            MENGINE_WNSPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, L"%s%s", _path, path_str );
 
             BOOL successful = ::CreateDirectory( pathCreateDirectory, NULL );
 
@@ -2677,7 +2655,7 @@ namespace Mengine
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
-                         continue;
+                        continue;
                     }break;
                 case ERROR_PATH_NOT_FOUND:
                     {
@@ -2706,7 +2684,7 @@ namespace Mengine
     bool Win32Platform::existFile( const Char * _filePath )
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2751,7 +2729,7 @@ namespace Mengine
     bool Win32Platform::removeFile( const Char * _filePath )
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2779,7 +2757,7 @@ namespace Mengine
     bool Win32Platform::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
         WChar unicode_oldFilePath[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _oldFilePath, unicode_oldFilePath, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _oldFilePath, unicode_oldFilePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2788,7 +2766,7 @@ namespace Mengine
         Helper::pathCorrectBackslashToW( oldFilePathCorrect, unicode_oldFilePath );
 
         WChar unicode_newFilePath[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _newFilePath, unicode_newFilePath, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _newFilePath, unicode_newFilePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2912,7 +2890,7 @@ namespace Mengine
                         }
 
                         Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
-                        if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH - 1 ) == false )
+                        if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
                         {
                             ::FindClose( hFind );
 
@@ -3005,25 +2983,25 @@ namespace Mengine
     bool Win32Platform::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
         WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_mask[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_fullbase[MENGINE_MAX_PATH] = {L'\0'};
-        ::GetFullPathName( unicode_base, MENGINE_MAX_PATH - 1, unicode_fullbase, NULL );
+        ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         bool stop;
         if( Detail::listDirectoryContents( unicode_fullbase, unicode_mask, unicode_path, _lambda, &stop ) == false )
@@ -3039,7 +3017,7 @@ namespace Mengine
     uint64_t Win32Platform::getFileTime( const Char * _filePath ) const
     {
         WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 );
+        Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
         HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
@@ -3137,13 +3115,13 @@ namespace Mengine
     bool Win32Platform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
         WChar unicode_directoryPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _directoryPath, unicode_directoryPath, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_directoryPath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -3189,13 +3167,13 @@ namespace Mengine
     bool Win32Platform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_file[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -3232,13 +3210,13 @@ namespace Mengine
     bool Win32Platform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_file[MENGINE_MAX_PATH] = {L'\0'};
-        if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -3866,7 +3844,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::isNeedWindowRender() const
-    { 
+    {
         if( ::IsIconic( m_hWnd ) == TRUE )
         {
             return false;
@@ -3899,10 +3877,10 @@ namespace Mengine
     bool Win32Platform::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size )
     {
         WChar unicode_path[MENGINE_MAX_PATH] = {'\0'};
-        Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 );
+        Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH );
 
         WChar unicode_key[MENGINE_MAX_PATH] = {'\0'};
-        Helper::utf8ToUnicode( _key, unicode_key, MENGINE_MAX_PATH - 1 );
+        Helper::utf8ToUnicode( _key, unicode_key, MENGINE_MAX_PATH );
 
         HKEY hKey;
         LSTATUS lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
@@ -3963,11 +3941,11 @@ namespace Mengine
         );
 
         WChar unicode_process[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH - 1 );
+        Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH );
 
         WChar unicode_command[4096] = {L'\0'};
         unicode_command[0] = ' ';
-        Helper::utf8ToUnicode( _command, unicode_command + 1, 4095 );
+        Helper::utf8ToUnicode( _command, unicode_command + 1, 4096 );
 
         if( _wait == true )
         {
@@ -3977,7 +3955,7 @@ namespace Mengine
             sa.bInheritHandle = TRUE;
 
             WChar tempPathBuffer[MENGINE_MAX_PATH] = {L'\0'};
-            ::GetTempPath( MENGINE_MAX_PATH - 1, tempPathBuffer );
+            ::GetTempPath( MENGINE_MAX_PATH, tempPathBuffer );
 
             WChar tempFileNameBuffer[MENGINE_MAX_PATH] = {L'\0'};
             ::GetTempFileName( tempPathBuffer,
@@ -4166,7 +4144,7 @@ namespace Mengine
     size_t Win32Platform::getCurrentPath( Char * const _currentPath ) const
     {
         WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH - 1, currentPath );
+        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {
@@ -4181,7 +4159,7 @@ namespace Mengine
         currentPath[len + 1] = L'\0';
 
         size_t path_len;
-        if( Helper::unicodeToUtf8( currentPath, _currentPath, MENGINE_MAX_PATH - 1, &path_len ) == false )
+        if( Helper::unicodeToUtf8( currentPath, _currentPath, MENGINE_MAX_PATH, &path_len ) == false )
         {
             _currentPath[0] = '\0';
 
@@ -4200,7 +4178,7 @@ namespace Mengine
         if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
             WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-            DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH - 1, currentPath );
+            DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
             if( len == 0 )
             {
@@ -4218,7 +4196,7 @@ namespace Mengine
             MENGINE_WCSCAT( currentPath, L"/" );
 
             size_t currentPathLen;
-            if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH - 1, &currentPathLen ) == false )
+            if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
             {
                 LOGGER_ERROR( "invalid convert path from unicode to utf8 '%ls'"
                     , currentPath
@@ -4269,7 +4247,7 @@ namespace Mengine
         }
 
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME] = {L'\0'};
-        if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME - 1 ) == false )
+        if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
         {
             LOGGER_ERROR( "invalid convert company name from utf8 to unicode '%s'"
                 , companyName
@@ -4291,7 +4269,7 @@ namespace Mengine
         }
 
         WChar projectNameW[MENGINE_APPLICATION_PROJECT_MAXNAME] = {L'\0'};
-        if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME - 1 ) == false )
+        if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )
         {
             LOGGER_ERROR( "invalid convert project name from utf8 to unicode '%s'"
                 , projectName
@@ -4305,7 +4283,7 @@ namespace Mengine
         MENGINE_WCSCAT( roamingPath, L"/" );
 
         size_t currentPathLen;
-        if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH - 1, &currentPathLen ) == false )
+        if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
         {
             LOGGER_ERROR( "invalid convert user path from unicode to utf8 '%ls'"
                 , roamingPath
@@ -4385,7 +4363,7 @@ namespace Mengine
         MapCursors::iterator it_found = m_cursors.find( _icon );
 
         MENGINE_ASSERTION_FATAL( it_found != m_cursors.end() );
-        
+
         m_cursor = it_found->second;
 
         ::SetCursor( m_cursor );
@@ -4421,7 +4399,7 @@ namespace Mengine
     bool Win32Platform::openUrlInDefaultBrowser( const Char * _url )
     {
         WChar unicode_url[4096] = {L'\0'};
-        if( Helper::utf8ToUnicode( _url, unicode_url, 4095 ) == false )
+        if( Helper::utf8ToUnicode( _url, unicode_url, 4096 ) == false )
         {
             return false;
         }

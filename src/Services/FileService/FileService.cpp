@@ -16,6 +16,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/PathString.h"
 
 #include "Config/StdString.h"
 
@@ -139,11 +140,19 @@ namespace Mengine
 
         if( _create == true )
         {
-            if( fileGroup->createDirectory( FilePath::none() ) == false )
+            const FilePath & relationPath = fileGroup->getRelationPath();
+            const FilePath & folderPath = fileGroup->getFolderPath();
+
+            PathString basePath;
+            basePath.append( relationPath );
+            basePath.append( folderPath );
+
+            if( PLATFORM_SERVICE()
+                ->createDirectory( "", basePath.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid create fileGroup '%s' directory '%s'"
                     , _name.c_str()
-                    , _filePath.c_str()
+                    , basePath.c_str()
                 );
 
                 return false;

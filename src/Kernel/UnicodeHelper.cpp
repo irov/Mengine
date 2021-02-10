@@ -30,7 +30,7 @@ namespace Mengine
 
             Char * utf8_data = _utf8->data();
 
-            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, utf8_data, utf8Size, nullptr ) == false )
+            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, utf8_data, utf8Size + 1, nullptr ) == false )
             {
                 _utf8->clear();
 
@@ -42,7 +42,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool unicodeToUtf8( const WString & _unicode, String * const _utf8 )
         {
-            bool result = unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), _utf8 );
+            bool result = Helper::unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), _utf8 );
 
             return result;
         }
@@ -120,7 +120,7 @@ namespace Mengine
 
             WChar * unicode_data = _unicode->data();
 
-            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, unicode_data, unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, unicode_data, unicodeSize + 1, nullptr ) == false )
             {
                 _unicode->clear();
 
@@ -160,7 +160,7 @@ namespace Mengine
 
             WChar * unicode_data = _unicode->data();
 
-            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, unicode_data, unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, unicode_data, unicodeSize + 1, nullptr ) == false )
             {
                 _unicode->clear();
 
@@ -172,56 +172,56 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const String & _utf8, WString * const _unicode )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const String & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const ConstString & _utf8, WString * const _unicode )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const ConstString & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const PathString & _utf8, WString * const _unicode )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const PathString & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const FilePath & _utf8, WString * const _unicode )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const FilePath & _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
-            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
+            bool result = Helper::utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity, _unicodeSize );
 
             return result;
         }

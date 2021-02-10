@@ -1555,15 +1555,7 @@ namespace Mengine
         }
 
         Char pathFull[MENGINE_MAX_PATH] = {'\0'};
-
-        if( MENGINE_STRLEN( _path ) == 0 )
-        {
-            MENGINE_STRCPY( pathFull, pathDirectory );
-        }
-        else
-        {
-            MENGINE_SNPRINTF( pathFull, MENGINE_MAX_PATH, "%s/%s", _path, pathDirectory );
-        }
+        MENGINE_SNPRINTF( pathFull, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
         if( pathFull[len - 1] == ':' )	// root dir
         {
@@ -1601,14 +1593,7 @@ namespace Mengine
         }
 
         Char pathTestDirectory[MENGINE_MAX_PATH] = {'\0'};
-        if( MENGINE_STRLEN( _path ) == 0 )
-        {
-            MENGINE_STRCPY( pathTestDirectory, pathDirectory );
-        }
-        else
-        {
-            MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s/%s", _path, pathDirectory );
-        }
+        MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
         if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
         {
@@ -1635,14 +1620,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslashA( pathDirectory );
 
-            if( MENGINE_STRLEN( _path ) == 0 )
-            {
-                MENGINE_STRCPY( pathTestDirectory, pathDirectory );
-            }
-            else
-            {
-                MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s/%s", _path, pathDirectory );
-            }
+            MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
             if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
             {
@@ -1661,14 +1639,7 @@ namespace Mengine
             const Char * path_str = path.c_str();
 
             Char pathCreateDirectory[MENGINE_MAX_PATH] = {'\0'};
-            if( MENGINE_STRLEN( _path ) == 0 )
-            {
-                MENGINE_STRCPY( pathCreateDirectory, path_str );
-            }
-            else
-            {
-                MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s/%s", _path, path_str );
-            }
+            MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s%s", _path, path_str );
 
             if( Detail::s_createDurectoryFullpath( pathCreateDirectory ) == false )
             {

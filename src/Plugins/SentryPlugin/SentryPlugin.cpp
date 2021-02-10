@@ -159,7 +159,7 @@ namespace Mengine
 
 #ifdef MENGINE_PLATFORM_WINDOWS
         WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH - 1, nullptr );
+        Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH, nullptr );
 
         sentry_options_set_database_pathw( options, unicode_sentryDatabasePath );
 #else
@@ -182,7 +182,7 @@ namespace Mengine
         
 #ifdef MENGINE_PLATFORM_WINDOWS
         WChar unicode_sentryHandlerPath[MENGINE_MAX_PATH] = {L'\0'};
-        Helper::utf8ToUnicode( sentryHandlerPath, unicode_sentryHandlerPath, MENGINE_MAX_PATH - 1, nullptr );
+        Helper::utf8ToUnicode( sentryHandlerPath, unicode_sentryHandlerPath, MENGINE_MAX_PATH, nullptr );
 
         sentry_options_set_handler_pathw( options, unicode_sentryHandlerPath );
 #else

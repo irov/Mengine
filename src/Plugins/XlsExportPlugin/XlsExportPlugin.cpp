@@ -91,7 +91,7 @@ namespace Mengine
         //Py_NoSiteFlag = 1;
 
         WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH - 1, currentPath );
+        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {

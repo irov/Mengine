@@ -2430,7 +2430,7 @@ namespace Mengine
                 }
 
                 WChar setting_valueW[MENGINE_ACCOUNT_SETTING_MAXVALUE] = {L'\0'};
-                Helper::utf8ToUnicode( setting_value, setting_valueW, MENGINE_ACCOUNT_SETTING_MAXVALUE - 1 );
+                Helper::utf8ToUnicode( setting_value, setting_valueW, MENGINE_ACCOUNT_SETTING_MAXVALUE );
 
                 VectorWString strings;
                 Helper::wsplit( &strings, setting_valueW, true, L" ,,, " );

@@ -44,6 +44,8 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
+add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/spine/spine-c/spine-c/include)
 

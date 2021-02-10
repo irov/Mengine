@@ -2030,7 +2030,7 @@ namespace Mengine
         }
         
         Char path_directory[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s%s", path_pictures, _directoryPath );
+        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s/%s", path_pictures, _directoryPath );
         
         if( this->createDirectory(path_directory) == false )
         {
@@ -2097,7 +2097,7 @@ namespace Mengine
         }
         
         Char path_directory[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s%s", path_music, _directoryPath );
+        MENGINE_SNPRINTF( path_directory, MENGINE_MAX_PATH, "%s/%s", path_music, _directoryPath );
         
         if( this->createDirectory(path_directory) == false )
         {

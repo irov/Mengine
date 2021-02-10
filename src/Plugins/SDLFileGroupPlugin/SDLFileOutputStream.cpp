@@ -105,9 +105,9 @@ namespace Mengine
 
         if( written != _size )
         {
-            LOGGER_ERROR( "invalid write %zu [written %zu] error '%s'"
+            LOGGER_ERROR( "invalid write file '%s' size %zu [error: %s]"
+                , m_filePath.c_str()
                 , _size
-                , written
                 , SDL_GetError()
             );
 

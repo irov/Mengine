@@ -1594,6 +1594,11 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory );
+        
+        if( MENGINE_STRLEN( pathDirectory ) == 0 )
+        {
+            return true;
+        }
 
         Char pathTestDirectory[MENGINE_MAX_PATH] = {'\0'};
         if( MENGINE_STRLEN( _path ) == 0 )
@@ -1625,7 +1630,7 @@ namespace Mengine
             
             if( MENGINE_STRLEN( _path ) == 0 )
             {
-                break;                
+                break;
             }
 
             Helper::pathRemoveBackslashA( pathDirectory );
@@ -2067,7 +2072,7 @@ namespace Mengine
         MENGINE_UNUSED( _directoryPath );
         MENGINE_UNUSED( _filePath );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        //MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }
@@ -2075,19 +2080,21 @@ namespace Mengine
     bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        sysdir_search_path_enumeration_state state = sysdir_start_search_path_enumeration( SYSDIR_DIRECTORY_PICTURES, SYSDIR_DOMAIN_MASK_USER );
-
-        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        if( sysdir_get_next_search_path_enumeration( state, path_pictures ) == 0 )
+        char * homeBuffer = getenv("HOME");
+            
+        if( homeBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid get state for SYSDIR_DOMAIN_MASK_USER:SYSDIR_DIRECTORY_PICTURES" );
-
+            LOGGER_ERROR( "invalid get env 'HOME'" );
+            
             return false;
         }
+        
+        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF(path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer);
 
         if( this->createDirectory( path_pictures, _directoryPath ) == false )
         {
-            LOGGER_ERROR( "invalid create directory '%s/%s'"
+            LOGGER_ERROR( "invalid create directory '%s%s'"
                 , path_pictures
                 , _directoryPath
             );
@@ -2096,7 +2103,7 @@ namespace Mengine
         };
 
         Char path_file[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s/%s", path_pictures, _directoryPath, _filePath );
+        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
 
@@ -2140,19 +2147,21 @@ namespace Mengine
     bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        sysdir_search_path_enumeration_state state = sysdir_start_search_path_enumeration( SYSDIR_DIRECTORY_MUSIC, SYSDIR_DOMAIN_MASK_USER );
-
-        Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        if( sysdir_get_next_search_path_enumeration( state, path_music ) == 0 )
+        char * homeBuffer = getenv("HOME");
+            
+        if( homeBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid get state for SYSDIR_DOMAIN_MASK_USER:SYSDIR_DIRECTORY_MUSIC" );
-
+            LOGGER_ERROR( "invalid get env 'HOME'" );
+            
             return false;
         }
-
+        
+        Char path_music[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF(path_music, MENGINE_MAX_PATH, "%s/Music/", homeBuffer);
+        
         if( this->createDirectory( path_music, _directoryPath ) == false )
         {
-            LOGGER_ERROR( "invalid create directory '%s/%s'"
+            LOGGER_ERROR( "invalid create directory '%s%s'"
                 , path_music
                 , _directoryPath
             );
@@ -2161,7 +2170,7 @@ namespace Mengine
         };
 
         Char path_file[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s/%s/%s", path_music, _directoryPath, _filePath );
+        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_music, _directoryPath, _filePath );
 
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
 

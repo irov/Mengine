@@ -2597,6 +2597,11 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecW( pathDirectory );
 
+        if( MENGINE_WCSLEN( pathDirectory ) == 0 )
+        {
+            return true;
+        }
+
         WChar pathTestDirectory[MENGINE_MAX_PATH] = {L'\0'};
         if( MENGINE_WCSLEN( _path ) == 0 )
         {

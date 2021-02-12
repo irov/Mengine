@@ -1797,6 +1797,21 @@ namespace Mengine
         this->setText( String( str, size_vsnprintf ) );
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::removeText()
+    {
+        if( m_text.empty() == true )
+        {
+            return;
+        }
+
+        m_text.clear();
+
+        m_textId = ConstString::none();
+        m_textFormatArgs.clear();
+
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TextField::calcText( String * const _text ) const
     {
         const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();

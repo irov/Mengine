@@ -169,7 +169,7 @@ namespace Mengine
                         } \
                         else \
                         { \
-                            frame.Member2 = (Type *)Helper::allocateMemory( sizeof(Type) * frames_size, "MovieFramePack" ); \
+                            frame.Member2 = (Type *)Helper::allocateMemory( sizeof(Type) * frames_size, "movie1" ); \
                             ar.readPODs( frame.Member2, frames_size ); \
                         } \
                     }
@@ -212,7 +212,7 @@ namespace Mengine
                         continue;
                     }
 
-                    timeremap.times = Helper::allocateMemoryNT<float>( times_size, "MovieFramePack" );
+                    timeremap.times = Helper::allocateMemoryNT<float>( times_size, "movie1" );
 
                     float * times_buff = timeremap.times;
                     ar.readPODs( times_buff, times_size );
@@ -244,7 +244,7 @@ namespace Mengine
                     }
 
                     shapes.shapes_size = shapes_size;
-                    shapes.shapes = Helper::callocateMemoryNT<MovieFrameShape>( shapes_size, "MovieFramePack" );
+                    shapes.shapes = Helper::callocateMemoryNT<MovieFrameShape>( shapes_size, "movie1" );
 
                     for( uint32_t j = 0; j != shapes_size; ++j )
                     {
@@ -254,15 +254,15 @@ namespace Mengine
 
                         if( shape.vertexCount > 0 )
                         {
-                            shape.pos = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "MovieFramePack" );
-                            shape.uv = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "MovieFramePack" );
+                            shape.pos = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "movie1" );
+                            shape.uv = Helper::allocateMemoryNT<mt::vec2f>( shape.vertexCount, "movie1" );
 
                             ar.readPODs( shape.pos, shape.vertexCount );
                             ar.readPODs( shape.uv, shape.vertexCount );
 
                             ar << shape.indexCount;
 
-                            shape.indices = Helper::allocateMemoryNT<RenderIndex>( shape.indexCount, "MovieFramePack" );
+                            shape.indices = Helper::allocateMemoryNT<RenderIndex>( shape.indexCount, "movie1" );
 
                             ar.readPODs( shape.indices, shape.indexCount );
                         }
@@ -298,7 +298,7 @@ namespace Mengine
                     ar << vertexCount;
 
                     polygon.vertexCount = vertexCount;
-                    polygon.polygon = Helper::allocateMemoryNT<mt::vec2f>( vertexCount, "MovieFramePack" );
+                    polygon.polygon = Helper::allocateMemoryNT<mt::vec2f>( vertexCount, "movie1" );
 
                     for( uint32_t j = 0; j != vertexCount; ++j )
                     {

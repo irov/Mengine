@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MemoryInput
         : public MemoryInputInterface
         , public Factorable

@@ -72,6 +72,7 @@ namespace Mengine
     public:
         void setText( const String & _text );
         void setTextFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
+        void removeText();
 
     public:
         bool calcText( String * const _text ) const;

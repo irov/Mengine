@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MemoryProxyInput
         : public MemoryProxyInputInterface
         , public Factorable
@@ -55,5 +56,3 @@ namespace Mengine
     typedef IntrusivePtr<MemoryProxyInput> MemoryProxyInputPtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-

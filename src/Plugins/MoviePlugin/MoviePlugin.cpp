@@ -27,6 +27,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
 
 #include "Movie2.h"
@@ -295,12 +296,7 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
 
-#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
-        uint32_t report_count = stdex_get_allocator_report_count( "movie" );
-        MENGINE_ASSERTION( report_count == 0, "Movie memleak [%d]"
-            , report_count
-        );
-#endif
+        MENGINE_ASSERTION_ALLOCATOR( "movie" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

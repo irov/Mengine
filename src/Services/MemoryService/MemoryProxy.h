@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MemoryProxy
         : public MemoryProxyInterface
         , public Factorable

@@ -102,8 +102,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::findFrame( const ConstString & _name, ResourceImagePtr * const _resourceImage ) const
     {
-        MENGINE_ASSERTION_FATAL( this->isCompile() == true );
-
         const ResourceImagePtr & image = m_hashtableFrames.find( _name );
 
         if( image == nullptr )
@@ -121,8 +119,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::visitFrames( const LambdaFrames & _lambdaFrames ) const
     {
-        MENGINE_ASSERTION_FATAL( this->isCompile() == true );
-
         for( const FrameDesc & desc : m_frames )
         {
             const ResourceImagePtr & resourceImage = desc.resourceImage;

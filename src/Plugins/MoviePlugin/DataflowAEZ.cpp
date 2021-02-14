@@ -166,7 +166,7 @@ namespace Mengine
 
                     ae_uint32_t vertex_count = _callbackData->vertex_count;
 
-                    mt::vec2f * uvs = Helper::allocateArrayT<mt::vec2f>( vertex_count );
+                    mt::vec2f * uvs = Helper::allocateMemoryNT<mt::vec2f>( vertex_count, "movie" );
 
                     mt::vec2f * uvs_iterator = uvs;
 
@@ -202,7 +202,7 @@ namespace Mengine
                 return;
             }
 
-            Helper::freeArrayT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_userdata) );
+            Helper::deallocateMemory( _callbackData->uv_cache_userdata, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
     }

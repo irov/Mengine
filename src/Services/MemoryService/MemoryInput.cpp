@@ -59,6 +59,7 @@ namespace Mengine
         MENGINE_THREAD_GUARD_SCOPE( MemoryInput, this, "MemoryInput::read" );
 
         size_t cnt = _count;
+
         // Read over end of memory?
         if( m_pos + cnt > m_end )
         {

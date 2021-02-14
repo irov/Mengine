@@ -21,10 +21,10 @@ namespace Mengine
             const Char * doc = nullptr;
 #endif
 
-            size_t memory_size = sizeof( T );
-            void * memory_buffer = Helper::allocateMemory( memory_size, doc );
+            size_t element_size = sizeof( T );
+            void * memory_buffer = Helper::allocateMemory( element_size, doc );
             
-            return reinterpret_cast<T *>(memory_buffer);
+            return static_cast<T *>(memory_buffer);
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -48,10 +48,11 @@ namespace Mengine
             const Char * doc = nullptr;
 #endif
 
-            size_t memory_size = sizeof( T ) * _count;
+            const size_t element_size = sizeof( T );
+            const size_t memory_size = element_size * _count;
             void * memory_buffer = Helper::allocateMemory( memory_size, doc );
 
-            return reinterpret_cast<T *>(memory_buffer);
+            return static_cast<T *>(memory_buffer);
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -63,13 +64,14 @@ namespace Mengine
             const Char * doc = nullptr;
 #endif
 
-            void * memory_buffer = Helper::callocateMemory( _count, sizeof( T ), doc );
+            const size_t element_size = sizeof( T );
+            void * memory_buffer = Helper::callocateMemory( _count, element_size, doc );
 
-            return reinterpret_cast<T *>(memory_buffer);
+            return static_cast<T *>(memory_buffer);
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        T * reallocateArrayT( T * _array, size_t _count )
+        T * reallocateArrayT( T * _ptr, size_t _count )
         {
 #ifdef MENGINE_WINDOWS_DEBUG
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
@@ -77,14 +79,15 @@ namespace Mengine
             const Char * doc = nullptr;
 #endif
 
-            size_t memory_size = sizeof( T ) * _count;
-            void * memory_buffer = Helper::reallocateMemory( _array, memory_size, doc );
+            const size_t element_size = sizeof( T );
+            const size_t memory_size = element_size * _count;
+            void * memory_buffer = Helper::reallocateMemory( _ptr, memory_size, doc );
 
-            return reinterpret_cast<T *>(memory_buffer);
+            return static_cast<T *>(memory_buffer);
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        void freeArrayT( T * _array )
+        void freeArrayT( T * _ptr )
         {
 #ifdef MENGINE_WINDOWS_DEBUG
             const Char * doc = MENGINE_TYPEINFO_NAME( T );
@@ -92,7 +95,7 @@ namespace Mengine
             const Char * doc = nullptr;
 #endif
 
-            Helper::deallocateMemory( _array, doc );
+            Helper::deallocateMemory( _ptr, doc );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class ... Args>
@@ -106,11 +109,11 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        void deleteT( T * _t )
+        void deleteT( T * _ptr )
         {
-            _t->~T();
+            _ptr->~T();
 
-            Helper::freeT( _t );
+            Helper::freeT( _ptr );
         }
         //////////////////////////////////////////////////////////////////////////
     }

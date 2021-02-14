@@ -15,12 +15,12 @@ namespace Mengine
     {
         const value_type * value = this->data();
 
-        Helper::freeArrayT( const_cast<value_type *>(value) );
+        Helper::deallocateMemory( const_cast<value_type *>(value), "const_string" );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderMemory::setValue( const ConstStringHolder::value_type * _value, ConstStringHolder::size_type _size, hash_type _hash )
     {
-        ConstStringHolder::value_type * buff = Helper::allocateArrayT<ConstStringHolder::value_type>( _size + 1 );
+        ConstStringHolder::value_type * buff = Helper::allocateMemoryNT<ConstStringHolder::value_type>( _size + 1, "const_string" );
         stdex::memorycopy( buff, 0, _value, _size );
         buff[_size] = '\0';
 

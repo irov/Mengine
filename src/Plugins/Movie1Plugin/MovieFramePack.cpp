@@ -26,21 +26,21 @@ namespace Mengine
         {
             const MovieLayerFrame & layer = m_layers[index];
 
-            Helper::deallocateMemory( layer.anchorPoint, "MovieFramePack" );
-            Helper::deallocateMemory( layer.position, "MovieFramePack" );
-            Helper::deallocateMemory( layer.rotation_x, "MovieFramePack" );
-            Helper::deallocateMemory( layer.rotation_y, "MovieFramePack" );
-            Helper::deallocateMemory( layer.rotation_z, "MovieFramePack" );
-            Helper::deallocateMemory( layer.scale, "MovieFramePack" );
-            Helper::deallocateMemory( layer.opacity, "MovieFramePack" );
-            Helper::deallocateMemory( layer.volume, "MovieFramePack" );
+            Helper::deallocateMemory( layer.anchorPoint, "movie1" );
+            Helper::deallocateMemory( layer.position, "movie1" );
+            Helper::deallocateMemory( layer.rotation_x, "movie1" );
+            Helper::deallocateMemory( layer.rotation_y, "movie1" );
+            Helper::deallocateMemory( layer.rotation_z, "movie1" );
+            Helper::deallocateMemory( layer.scale, "movie1" );
+            Helper::deallocateMemory( layer.opacity, "movie1" );
+            Helper::deallocateMemory( layer.volume, "movie1" );
         }
 
         for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
         {
             const MovieLayerTimeRemap & layer = m_timeremap[index];
 
-            Helper::deallocateMemory( layer.times, "MovieFramePack" );
+            Helper::deallocateMemory( layer.times, "movie1" );
         }
 
         for( uint32_t index = 0; index != m_sizeShapes; ++index )
@@ -51,25 +51,25 @@ namespace Mengine
             {
                 const MovieFrameShape & frame_shape = layer_shape.shapes[j];
 
-                Helper::deallocateMemory( frame_shape.pos, "MovieFramePack" );
-                Helper::deallocateMemory( frame_shape.uv, "MovieFramePack" );
-                Helper::deallocateMemory( frame_shape.indices, "MovieFramePack" );
+                Helper::deallocateMemory( frame_shape.pos, "movie1" );
+                Helper::deallocateMemory( frame_shape.uv, "movie1" );
+                Helper::deallocateMemory( frame_shape.indices, "movie1" );
             }
 
-            Helper::deallocateMemory( layer_shape.shapes, "MovieFramePack" );
+            Helper::deallocateMemory( layer_shape.shapes, "movie1" );
         }
 
         for( uint32_t index = 0; index != m_sizePolygons; ++index )
         {
             const MovieLayerPolygon & polygon = m_polygons[index];
 
-            Helper::deallocateMemory( polygon.polygon, "MovieFramePack" );
+            Helper::deallocateMemory( polygon.polygon, "movie1" );
         }
 
-        Helper::freeArrayT( m_layers );
-        Helper::freeArrayT( m_timeremap );
-        Helper::freeArrayT( m_shapes );
-        Helper::freeArrayT( m_polygons );
+        Helper::deallocateMemory( m_layers, "movie1" );
+        Helper::deallocateMemory( m_timeremap, "movie1" );
+        Helper::deallocateMemory( m_shapes, "movie1" );
+        Helper::deallocateMemory( m_polygons, "movie1" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MovieFramePack::acquire()
@@ -88,28 +88,28 @@ namespace Mengine
     {
         m_sizeLayers = _size;
 
-        m_layers = Helper::callocateArrayT<MovieLayerFrame>( _size );
+        m_layers = Helper::callocateMemoryNT<MovieLayerFrame>( _size, "movie1" );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initializeTimeremap( uint32_t _size )
     {
         m_sizeTimeremap = _size;
 
-        m_timeremap = Helper::callocateArrayT<MovieLayerTimeRemap>( _size );
+        m_timeremap = Helper::callocateMemoryNT<MovieLayerTimeRemap>( _size, "movie1" );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initializeShapes( uint32_t _size )
     {
         m_sizeShapes = _size;
 
-        m_shapes = Helper::callocateArrayT<MovieLayerShapes>( _size );
+        m_shapes = Helper::callocateMemoryNT<MovieLayerShapes>( _size, "movie1" );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initializePolygons( uint32_t _size )
     {
         m_sizePolygons = _size;
 
-        m_polygons = Helper::callocateArrayT<MovieLayerPolygon>( _size );
+        m_polygons = Helper::callocateMemoryNT<MovieLayerPolygon>( _size, "movie1" );
     }
     //////////////////////////////////////////////////////////////////////////
     MovieLayerFrame & MovieFramePack::setupLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable )

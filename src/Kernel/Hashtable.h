@@ -42,7 +42,7 @@ namespace Mengine
         {
             this->clear();
 
-            Helper::freeArrayT( m_buffer );
+            Helper::deallocateMemory( m_buffer, "hashtable" );
         }
 
     private:
@@ -403,7 +403,7 @@ namespace Mengine
     protected:
         static value_type * newbuffer_( size_type _capacity )
         {
-            value_type * new_buffer = Helper::allocateArrayT<value_type>( _capacity );
+            value_type * new_buffer = Helper::allocateMemoryNT<value_type>( _capacity, "hashtable" );
 
             for( size_type index = 0; index != _capacity; ++index )
             {
@@ -443,7 +443,7 @@ namespace Mengine
                 record->element = nullptr;
             }
 
-            Helper::freeArrayT( old_buffer );
+            Helper::deallocateMemory( old_buffer, "hashtable" );
         }
 
         const element_type_ptr & push_( hash_type _hash, const key_type & _key, const element_type_ptr & _element )
@@ -658,7 +658,7 @@ namespace Mengine
         {
             this->clear();
 
-            Helper::freeArrayT( m_buffer );
+            Helper::deallocateMemory( m_buffer, "hashtable" );
         }
 
     private:
@@ -1011,7 +1011,7 @@ namespace Mengine
     protected:
         static value_type * newbuffer_( size_type _capacity )
         {
-            value_type * new_buffer = Helper::allocateArrayT<value_type>( _capacity );
+            value_type * new_buffer = Helper::allocateMemoryNT<value_type>( _capacity, "hashtable" );
 
             for( size_type index = 0; index != _capacity; ++index )
             {
@@ -1051,7 +1051,7 @@ namespace Mengine
                 record->element = nullptr;
             }
 
-            Helper::freeArrayT( old_buffer );
+            Helper::deallocateMemory( old_buffer, "hashtable" );
         }
 
         void push_( hash_type _hash, const key_type & _key, element_type_ptr _element )

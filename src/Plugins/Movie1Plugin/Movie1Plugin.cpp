@@ -29,7 +29,7 @@
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/ConstStringHelper.h"
-
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
 
 #include "Movie.h"
@@ -222,6 +222,11 @@ namespace Mengine
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie1Plugin::_destroyPlugin()
+    {
+        MENGINE_ASSERTION_ALLOCATOR( "movie1" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

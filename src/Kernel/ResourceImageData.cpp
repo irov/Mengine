@@ -76,7 +76,7 @@ namespace Mengine
 
         uint32_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
 
-        m_buffer = Helper::allocateArrayT<uint8_t>( memorySize );
+        m_buffer = Helper::allocateMemoryNT<uint8_t>( memorySize, "image_data" );
 
         ImageCodecOptions options;
         options.pitch = width * channels;
@@ -109,7 +109,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageData::_release()
     {
-        Helper::freeArrayT( m_buffer );
+        Helper::deallocateMemory( m_buffer, "image_data" );
         m_buffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -9,9 +9,9 @@
 #include "Plugins/SpinePlugin/SpineInterface.h"
 
 #include "Engine/TextField.h"
-#include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceImageSequence.h"
 
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceImageSequence.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
 #include "Kernel/Deque.h"

@@ -1,7 +1,6 @@
 #include "SoundEmitter.h"
 
-#include "SurfaceSound.h"
-
+#include "Kernel/SurfaceSound.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

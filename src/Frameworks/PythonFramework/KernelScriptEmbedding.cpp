@@ -17,29 +17,16 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/AnimationInterface.h"
 #include "Interface/RenderSystemInterface.h"
-
-#include "Engine/ResourceFile.h"
-#include "Engine/ResourceMusic.h"
-#include "Engine/ResourceSound.h"
-#include "Engine/ResourceTestPick.h"
-#include "Engine/ResourceHIT.h"
-#include "Engine/ResourceShape.h"
-#include "Engine/ResourceCursorICO.h"
-#include "Engine/ResourceCursorSystem.h"
-
-#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
-#include "Kernel/ResourceImageSubstract.h"
-
-#include "Plugins/MoviePlugin/ResourceMovie2.h"
-
 #include "Interface/ApplicationInterface.h"
 
-#include "ScriptHolder.h"
+#include "Plugins/MoviePlugin/ResourceMovie2.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 #include "Environment/Python/PythonScriptWrapper.h"
+
+#include "ScriptHolder.h"
 
 #include "ScriptableAffectorCallback.h"
 #include "PythonEntityBehavior.h"
@@ -49,7 +36,18 @@
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
 
+#include "Engine/ResourceFile.h"
+#include "Engine/ResourceMusic.h"
+#include "Engine/ResourceTestPick.h"
+#include "Engine/ResourceHIT.h"
+#include "Engine/ResourceShape.h"
+#include "Engine/ResourceCursorICO.h"
+#include "Engine/ResourceCursorSystem.h"
+
+#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/Polygon.h"
+#include "Kernel/ResourceSound.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
 #include "Kernel/Rect.h"

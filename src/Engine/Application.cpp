@@ -98,16 +98,16 @@
 #include "Window.h"
 #include "Landscape2D.h"
 
-#include "ShapeCircle.h"
-#include "ShapePacMan.h"
-#include "ShapeQuadFixed.h"
-#include "ShapeQuadFlex.h"
+#include "Kernel/ShapeCircle.h"
+#include "Kernel/ShapePacMan.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 
-#include "SurfaceSound.h"
-#include "SurfaceImage.h"
-#include "SurfaceImageSequence.h"
-#include "SurfaceTrackMatte.h"
-#include "SurfaceSolidColor.h"
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceImageSequence.h"
+#include "Kernel/SurfaceTrackMatte.h"
+#include "Kernel/SurfaceSolidColor.h"
 
 // All Resource type
 #include "Kernel/ResourceImageSequence.h"
@@ -116,10 +116,10 @@
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceSound.h"
 
 #include "ResourceMusic.h"
 #include "ResourceFile.h"
-#include "ResourceSound.h"
 #include "ResourceWindow.h"
 #include "ResourceHIT.h"
 #include "ResourceShape.h"

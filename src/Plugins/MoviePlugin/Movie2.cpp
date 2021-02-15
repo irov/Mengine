@@ -10,9 +10,9 @@
 
 #include "Movie2Data.h"
 
-#include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceSound.h"
-#include "Engine/SurfaceTrackMatte.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceTrackMatte.h"
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Layer.h"

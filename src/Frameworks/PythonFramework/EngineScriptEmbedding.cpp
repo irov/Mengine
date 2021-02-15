@@ -25,36 +25,17 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-
-#include "Kernel/ThreadTask.h"
-#include "Kernel/Scene.h"
-#include "Kernel/Arrow.h"
-#include "Kernel/MT19937Randomizer.h"
-#include "Kernel/InputServiceHelper.h"
-#include "Kernel/FileStreamHelper.h"
-#include "Kernel/UnicodeHelper.h"
-#include "Kernel/Assertion.h"
-#include "Kernel/AssertionResourceType.h"
-#include "Kernel/ConstStringHelper.h"
-
-#include "Engine/ResourceFile.h"
-#include "Engine/ResourceSound.h"
-#include "Engine/ResourceTestPick.h"
-#include "Engine/ResourceHIT.h"
-#include "Engine/ResourceShape.h"
-
-#include "Kernel/ResourceImageDefault.h"
-#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
-#include "Kernel/ResourceImageSubstract.h"
-#include "Kernel/ResourceImageSequence.h"
-#include "Kernel/ResourceImageSolid.h"
-#include "Kernel/ResourceImageData.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/PickerServiceInterface.h"
+#include "Interface/RenderServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
-#include "Interface/ApplicationInterface.h"
-#include "Interface/PickerServiceInterface.h"
+#include "Engine/ResourceFile.h"
+#include "Engine/ResourceTestPick.h"
+#include "Engine/ResourceHIT.h"
+#include "Engine/ResourceShape.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -66,23 +47,35 @@
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
 
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/ShapeQuadFlex.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/Point.h"
 #include "Engine/Line.h"
-#include "Kernel/RenderCameraProjection.h"
 
-#include "ScriptHolder.h"
+#include "Kernel/ThreadTask.h"
+#include "Kernel/Scene.h"
+#include "Kernel/Arrow.h"
+#include "Kernel/MT19937Randomizer.h"
+#include "Kernel/InputServiceHelper.h"
+#include "Kernel/FileStreamHelper.h"
+#include "Kernel/UnicodeHelper.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/AssertionResourceType.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/PolygonHelper.h"
+#include "Kernel/ResourceSound.h"
 
-#include "Engine/SurfaceSound.h"
-#include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceImageSequence.h"
-#include "Engine/SurfaceSolidColor.h"
-
+#include "Kernel/ResourceImageDefault.h"
+#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceImageSubstract.h"
+#include "Kernel/ResourceImageSequence.h"
+#include "Kernel/ResourceImageSolid.h"
+#include "Kernel/ResourceImageData.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -90,13 +83,16 @@
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 
-#include "Kernel/ResourceImage.h"
-#include "Kernel/PolygonHelper.h"
+#include "ScriptHolder.h"
+
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceImageSequence.h"
+#include "Kernel/SurfaceSolidColor.h"
 
 #include "Engine/Meshget.h"
 #include "Engine/Isometric.h"
 #include "Engine/Window.h"
-
 
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
@@ -104,8 +100,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
-#include "Interface/RenderServiceInterface.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"

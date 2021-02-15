@@ -40,61 +40,9 @@ Motor
 )
 
 ADD_FILTER(
-Surface\\\\SurfaceSound
-    SurfaceSound.cpp
-    SurfaceSound.h
-)
-
-ADD_FILTER(
-Surface\\\\SurfaceSolidColor
-    SurfaceSolidColor.cpp
-    SurfaceSolidColor.h
-)
-
-ADD_FILTER(
-Surface\\\\SurfaceImage
-    SurfaceImage.cpp
-    SurfaceImage.h
-)
-
-ADD_FILTER(
-Surface\\\\SurfaceImageSequence
-    SurfaceImageSequence.cpp
-    SurfaceImageSequence.h
-)
-
-ADD_FILTER(
-Surface\\\\SurfaceTrackMatte
-    SurfaceTrackMatte.cpp
-    SurfaceTrackMatte.h
-)
-
-ADD_FILTER(
 Object\\\\Isometric
     Isometric.cpp
     Isometric.h
-)
-
-ADD_FILTER(
-Object\\\\Shape\\\\ShapeCircle
-    ShapeCircle.cpp
-    ShapeCircle.h
-)
-
-ADD_FILTER(
-Object\\\\Shape\\\\ShapePacMan
-    ShapePacMan.cpp
-    ShapePacMan.h
-)
-
-ADD_FILTER(
-Object\\\\Shape\\\\ShapeQuad
-    ShapeQuad.cpp
-    ShapeQuad.h
-    ShapeQuadFixed.cpp
-    ShapeQuadFixed.h
-    ShapeQuadFlex.cpp
-    ShapeQuadFlex.h
 )
 
 ADD_FILTER(
@@ -199,12 +147,6 @@ Resource\\\\Cursor
     ResourceCursorICO.h
     ResourceCursorSystem.cpp
     ResourceCursorSystem.h
-)
-
-ADD_FILTER(
-Resource\\\\Sound
-    ResourceSound.cpp
-    ResourceSound.h
 )
 
 ADD_FILTER(

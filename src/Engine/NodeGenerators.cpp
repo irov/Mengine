@@ -28,10 +28,11 @@
 #include "SoundEmitter.h"
 #include "TextField.h"
 #include "Window.h"
-#include "ShapeCircle.h"
-#include "ShapePacMan.h"
-#include "ShapeQuadFixed.h"
-#include "ShapeQuadFlex.h"
+
+#include "Kernel/ShapeCircle.h"
+#include "Kernel/ShapePacMan.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

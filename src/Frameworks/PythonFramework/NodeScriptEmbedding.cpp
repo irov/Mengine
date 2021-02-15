@@ -17,6 +17,21 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
+
+#include "Plugins/MoviePlugin/ResourceMovie2.h"
+
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonEventReceiver.h"
+#include "Environment/Python/PythonDocumentTraceback.h"
+
+#include "Engine/ResourceFile.h"
+#include "Engine/ResourceMusic.h"
+#include "Engine/ResourceTestPick.h"
+#include "Engine/ResourceHIT.h"
+#include "Engine/ResourceShape.h"
+#include "Engine/ResourceCursorICO.h"
+#include "Engine/ResourceCursorSystem.h"
 
 #include "Kernel/Reference.h"
 #include "Kernel/Eventable.h"
@@ -28,19 +43,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/UnicodeHelper.h"
-
-#include "Engine/ResourceFile.h"
-#include "Engine/ResourceMusic.h"
-#include "Engine/ResourceSound.h"
-#include "Engine/ResourceTestPick.h"
-#include "Engine/ResourceHIT.h"
-#include "Engine/ResourceShape.h"
-#include "Engine/ResourceCursorICO.h"
-#include "Engine/ResourceCursorSystem.h"
-
-#include "Plugins/MoviePlugin/ResourceMovie2.h"
-
-#include "Interface/ApplicationInterface.h"
+#include "Kernel/ResourceSound.h"
+#include "Kernel/RenderCameraProjection.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -53,29 +57,24 @@
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
 
-#include "Engine/ShapeCircle.h"
-#include "Engine/ShapePacMan.h"
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/ShapeQuadFlex.h"
+#include "Kernel/ShapeCircle.h"
+#include "Kernel/ShapePacMan.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/Point.h"
 #include "Engine/Line.h"
-#include "Kernel/RenderCameraProjection.h"
 
 #include "ScriptHolder.h"
 
-#include "Environment/Python/PythonAnimatableEventReceiver.h"
-#include "Environment/Python/PythonEventReceiver.h"
-#include "Environment/Python/PythonDocumentTraceback.h"
-
-#include "Engine/SurfaceSound.h"
-#include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceImageSequence.h"
-#include "Engine/SurfaceTrackMatte.h"
-#include "Engine/SurfaceSolidColor.h"
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceImageSequence.h"
+#include "Kernel/SurfaceTrackMatte.h"
+#include "Kernel/SurfaceSolidColor.h"
 
 #include "Kernel/Interender.h"
 #include "Kernel/RenderViewport.h"

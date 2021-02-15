@@ -1,6 +1,6 @@
 #include "LoaderResourceSound.h"
 
-#include "Engine/ResourceSound.h"
+#include "Kernel/ResourceSound.h"
 
 #include "Metacode/Metacode.h"
 

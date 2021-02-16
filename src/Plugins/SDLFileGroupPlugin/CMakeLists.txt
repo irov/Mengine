@@ -14,8 +14,8 @@ src
     SDLFileInputStream.cpp
     SDLFileOutputStream.cpp
     SDLFileOutputStream.h
-    SDLFileMappedStream.h
-    SDLFileMappedStream.cpp
+    SDLFileMapped.h
+    SDLFileMapped.cpp
 	SDLFileHelper.h
 	SDLFileHelper.cpp
 )

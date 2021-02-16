@@ -43,6 +43,7 @@ src
     FontServiceInterface.h
     InputStreamInterface.h
     OutputStreamInterface.h
+    MappedInterface.h
     LoggerInterface.h
     LoggerServiceInterface.h
     ApplicationInterface.h
@@ -142,8 +143,8 @@ ADD_FILTER(
 File
     FileServiceInterface.h
     FileInputStreamInterface.h
-    FileMappedStreamInterface.h
     FileOutputStreamInterface.h
+    FileMappedInterface.h
     FileGroupInterface.h
 )   
 

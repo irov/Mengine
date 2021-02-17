@@ -5,7 +5,7 @@
 
 #include "SDLFileInputStream.h"
 #include "SDLFileOutputStream.h"
-#include "SDLFileMappedStream.h"
+#include "SDLFileMapped.h"
 #include "SDLFileHelper.h"
 
 #include "Kernel/FactoryPool.h"
@@ -295,6 +295,37 @@ namespace Mengine
         );
 
         return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MappedInterfacePtr SDLFileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _fileGroup );
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _stream );
+        MENGINE_UNUSED( _shared );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
+    {
+        MENGINE_UNUSED( _stream );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

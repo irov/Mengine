@@ -632,4 +632,35 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    MappedInterfacePtr FileGroupZip::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _fileGroup );
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _stream );
+        MENGINE_UNUSED( _shared );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::closeMappedFile( const MappedInterfacePtr & _stream )
+    {
+        MENGINE_UNUSED( _stream );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

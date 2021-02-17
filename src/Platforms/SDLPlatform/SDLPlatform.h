@@ -100,6 +100,7 @@ namespace Mengine
 
         void setCursorPosition( const mt::vec2f & _pos ) override;
         void setCursorIcon( const ConstString & _icon ) override;
+        bool hasCursorIcon( const ConstString & _icon ) const override;
 
         void showKeyboard() override;
         void hideKeyboard() override;

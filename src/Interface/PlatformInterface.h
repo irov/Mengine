@@ -90,6 +90,7 @@ namespace Mengine
 
         virtual void setCursorPosition( const mt::vec2f & _pos ) = 0;
         virtual void setCursorIcon( const ConstString & _icon ) = 0;
+        virtual bool hasCursorIcon( const ConstString & _icon ) const = 0;
 
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;

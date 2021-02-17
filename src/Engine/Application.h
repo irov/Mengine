@@ -153,7 +153,7 @@ namespace Mengine
         void updateNotification();
         void setVSync( bool _vsync ) override;
         bool getVSync() const override;
-        void setCursorMode( bool _mode ) override;
+        void setCursorMode( bool _cursorMode ) override;
         bool getCursorMode() const override;
         void setCursorIcon( const ConstString & _resourceName ) override;
 
@@ -213,6 +213,7 @@ namespace Mengine
 
         float m_maxFrameTime;
 
+        ConstString m_cursorResourceName;
         ResourceCursorPtr m_cursorResource;
 
         Char m_companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};

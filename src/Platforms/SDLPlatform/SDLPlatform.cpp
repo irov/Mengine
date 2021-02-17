@@ -1337,7 +1337,16 @@ namespace Mengine
     {
         MENGINE_UNUSED( _icon );
 
-        // empty
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::hasCursorIcon( const ConstString & _icon ) const
+    {
+        MENGINE_UNUSED( _icon );
+
+        //ToDo
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::showKeyboard()

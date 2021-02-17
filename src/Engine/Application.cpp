@@ -2245,7 +2245,7 @@ namespace Mengine
         {
             bool vsync = this->getVSync();
 
-            if( RENDER_SERVICE() != nullptr )
+            if( SERVICE_EXIST( RenderServiceInterface ) == true )
             {
                 RENDER_SERVICE()
                     ->setVSync( vsync );
@@ -2266,9 +2266,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::setCursorMode( bool _mode )
+    void Application::setCursorMode( bool _cursorMode )
     {
-        m_cursorMode = _mode;
+        if( m_cursorMode == _cursorMode )
+        {
+            return;
+        }
+
+        m_cursorMode = _cursorMode;
 
         if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
@@ -2296,6 +2301,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::setCursorIcon( const ConstString & _resourceName )
     {
+        if( m_cursorResource != nullptr && _resourceName == m_cursorResource->getName() )
+        {
+            return;
+        }
+
         ResourceCursorPtr cursorResource = RESOURCE_SERVICE()
             ->getResourceReference( ConstString::none(), _resourceName );
 

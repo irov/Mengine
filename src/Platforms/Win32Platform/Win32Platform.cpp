@@ -2218,12 +2218,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _content );
+
         const FilePath & filePath = _content->getFilePath();
 
         MapCursors::iterator it_found = m_cursors.find( filePath );
 
         if( it_found == m_cursors.end() )
         {
+            MENGINE_ASSERTION_MEMORY_PANIC( _buffer );
+
             if( _buffer->empty() == true )
             {
                 LOGGER_ERROR( "'%s' buffer empty"
@@ -4360,13 +4364,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setCursorIcon( const ConstString & _icon )
     {
-        MapCursors::iterator it_found = m_cursors.find( _icon );
+        MapCursors::const_iterator it_found = m_cursors.find( _icon );
 
         MENGINE_ASSERTION_FATAL( it_found != m_cursors.end() );
 
         m_cursor = it_found->second;
 
         ::SetCursor( m_cursor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::hasCursorIcon( const ConstString & _icon ) const
+    {
+        MapCursors::const_iterator it_found = m_cursors.find( _icon );
+
+        if( it_found == m_cursors.end() )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::showKeyboard()

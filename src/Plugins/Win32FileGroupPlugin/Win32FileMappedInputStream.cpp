@@ -9,8 +9,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32FileMappedInputStream::Win32FileMappedInputStream()
-        : m_memory( NULL )
+        : m_memoryGranularity( NULL )
         , m_size( 0 )
+        , m_base( nullptr )
         , m_pos( nullptr )
         , m_end( nullptr )
     {
@@ -21,13 +22,16 @@ namespace Mengine
         this->unmap();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileMappedInputStream::map( HANDLE _hMapping, size_t _offset, size_t _size )
+    bool Win32FileMappedInputStream::mapViewOfFile( HANDLE _hMapping, DWORD _dwAllocationGranularity, size_t _offset, size_t _size )
     {
         DWORD64 offset = (DWORD64)_offset;
         DWORD offsetHigh = (offset >> 32) & 0xFFFFFFFFlu;
         DWORD offsetLow = (offset >> 0) & 0xFFFFFFFFlu;
 
-        LPVOID memory = ::MapViewOfFile( _hMapping, FILE_MAP_READ, offsetHigh, offsetLow, (DWORD)_size );
+        DWORD offsetLowGranularity = offsetLow / _dwAllocationGranularity * _dwAllocationGranularity;
+        DWORD offsetLowResidue = offsetLow - offsetLowGranularity;
+
+        LPVOID memory = ::MapViewOfFile( _hMapping, FILE_MAP_READ, offsetHigh, offsetLowGranularity, (DWORD)_size + offsetLowResidue );
 
         if( memory == NULL )
         {
@@ -40,30 +44,34 @@ namespace Mengine
             return false;
         }
 
-        m_memory = memory;
+        m_memoryGranularity = memory;
+
+        m_base = MENGINE_PVOID_OFFSET( m_memoryGranularity, offsetLowResidue );
         m_size = _size;
 
-        m_pos = (uint8_t *)m_memory;
-        m_end = (uint8_t *)m_memory + m_size;
+        m_pos = m_base;
+        m_end = m_base + m_size;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FileMappedInputStream::unmap()
     {
-        if( ::UnmapViewOfFile( m_memory ) == FALSE )
+        if( ::UnmapViewOfFile( m_memoryGranularity ) == FALSE )
         {
             DWORD error = ::GetLastError();
 
             LOGGER_ERROR( "invalid UnmapViewOfFile %p [error: %lu]"
-                , m_memory
+                , m_base
                 , error
             );
         }
 
-        m_memory = NULL;
+        m_memoryGranularity = NULL;
+        
         m_size = 0;
 
+        m_base = nullptr;
         m_pos = nullptr;
         m_end = nullptr;
     }
@@ -74,7 +82,6 @@ namespace Mengine
 
         size_t cnt = _count;
 
-        // Read over end of memory?
         if( m_pos + cnt > m_end )
         {
             cnt = m_end - m_pos;
@@ -101,7 +108,7 @@ namespace Mengine
             _pos = m_size;
         }
 
-        m_pos = (uint8_t *)m_memory + _pos;
+        m_pos = m_base + _pos;
 
         return true;
     }
@@ -115,7 +122,7 @@ namespace Mengine
             _pos = m_size;
         }
 
-        m_pos = (uint8_t *)m_memory + m_size - _pos;
+        m_pos = m_base + m_size - _pos;
 
         return true;
     }
@@ -152,7 +159,7 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::tell" );
 
-        size_t distance = m_pos - (uint8_t *)m_memory;
+        size_t distance = m_pos - m_base;
 
         return distance;
     }
@@ -166,7 +173,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedInputStream::memory( void ** const _memory, size_t * const _size )
     {
-        *_memory = (uint8_t *)m_memory;
+        *_memory = m_base;
         *_size = m_size;
 
         return true;

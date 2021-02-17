@@ -4748,6 +4748,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::finalizeFileService_()
     {
+        FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ) );
+
 #ifndef MENGINE_MASTER_RELEASE
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );

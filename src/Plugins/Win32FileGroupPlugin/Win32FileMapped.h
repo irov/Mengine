@@ -32,6 +32,8 @@ namespace Mengine
 
         LARGE_INTEGER m_liSize;
 
+        DWORD m_dwAllocationGranularity;
+
         FactoryPtr m_factoryFileMappedInputStream;
     };
     //////////////////////////////////////////////////////////////////////////

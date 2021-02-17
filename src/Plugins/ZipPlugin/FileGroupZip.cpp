@@ -23,6 +23,10 @@
 #include "zlib.h"
 
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_ZIP_MAPPED_THRESHOLD
+#define MENGINE_ZIP_MAPPED_THRESHOLD (1048576)
+#endif
+//////////////////////////////////////////////////////////////////////////
 #define ZIP_LOCAL_HEADER_SIGNATURE (0x04034b50)
 #define ZIP_CENTRAL_HEADER_SIGNATURE (0x02014b50)
 #define ZIP_END_HEADER_SIGNATURE (0x06054b50)
@@ -94,6 +98,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::_initialize()
     {
+        FileGroupInterface * mappedFileGroup;
+        FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( m_folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( mappedFileGroup->openMappedFile( m_folderPath, mappedFile, false ) == false )
+        {
+            return false;
+        }
+
+        m_mappedFile = mappedFile;
+
         if( this->loadHeader_() == false )
         {
             LOGGER_ERROR( "can't load header '%s'"
@@ -123,6 +137,7 @@ namespace Mengine
         m_indexes.clear();
 
         m_zipFile = nullptr;
+        m_mappedFile = nullptr;
 
         m_mutex = nullptr;
     }
@@ -474,17 +489,30 @@ namespace Mengine
             return stream;
         }
 
-        MemoryInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryInput( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
-
         if( _fileGroup != nullptr )
         {
             *_fileGroup = this;
         }
 
-        return memory;
+        MapFileInfo::const_iterator it_found = m_files.find( _filePath );
+
+        const FileInfo & fi = it_found->second;
+
+        if( fi.file_size < MENGINE_ZIP_MAPPED_THRESHOLD || fi.compr_method != Z_NO_COMPRESSION )
+        {
+            MemoryInputInterfacePtr memory = MEMORY_SERVICE()
+                ->createMemoryInput( _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+
+            return memory;
+        }
+         
+        InputStreamInterfacePtr stream = m_mappedFile->createInputStream( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+        return stream;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
@@ -537,25 +565,37 @@ namespace Mengine
             return true;
         }
 
-        MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
-
         if( fi.compr_method == Z_NO_COMPRESSION )
         {
-            void * buffer = memory->newBuffer( fi.file_size );
+            if( fi.file_size < MENGINE_ZIP_MAPPED_THRESHOLD )
+            {
+                MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
-                , m_folderPath.c_str()
-                , _filePath.c_str()
-                , fi.unz_size
-            );
+                void * buffer = memory->newBuffer( fi.file_size );
 
-            m_mutex->lock();
-            m_zipFile->seek( file_offset );
-            m_zipFile->read( buffer, fi.file_size );
-            m_mutex->unlock();
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
+                    , m_folderPath.c_str()
+                    , _filePath.c_str()
+                    , fi.unz_size
+                );
+
+                m_mutex->lock();
+                m_zipFile->seek( file_offset );
+                m_zipFile->read( buffer, fi.file_size );
+                m_mutex->unlock();
+            }
+            else
+            {
+                if( m_mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
+                {
+                    return false;
+                }
+            }
         }
         else
         {
+            MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
+
             void * buffer = memory->newBuffer( fi.unz_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"

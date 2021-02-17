@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/InputStreamInterface.h"
+#include "Interface/FileMappedInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
@@ -59,6 +60,7 @@ namespace Mengine
 
     protected:
         InputStreamInterfacePtr m_zipFile;
+        FileMappedInterfacePtr m_mappedFile;
 
         ThreadMutexInterfacePtr m_mutex;
 

@@ -15,7 +15,7 @@ namespace Mengine
         virtual bool close() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FileMappedInterface> FileMappedStreamInterfacePtr;
+    typedef IntrusivePtr<FileMappedInterface> FileMappedInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

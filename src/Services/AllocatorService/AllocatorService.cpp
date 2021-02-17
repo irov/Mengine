@@ -43,14 +43,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void setMemoryOverrideCorruptionTrap( void * _p, size_t _size )
         {
-            uint8_t * b = (uint8_t *)_p + _size;
+            uint8_t * b = MENGINE_PVOID_OFFSET( _p, _size );
 
             MENGINE_MEMSET( b, 0xEF, MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
         }
         //////////////////////////////////////////////////////////////////////////
         bool checkMemoryOverrideCorruptionTrap( const void * _p, size_t _size )
         {
-            const uint8_t * b = (const uint8_t *)_p + _size - MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
+            const uint8_t * b = MENGINE_CPVOID_OFFSET( _p, _size - MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
 
             for( size_t index = 0; index != MENGINE_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE; ++index )
             {

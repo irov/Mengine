@@ -13,7 +13,7 @@ namespace Mengine
     {
     public:
         virtual InputStreamInterfacePtr createInputStream( const DocumentPtr & _doc ) = 0;
-        virtual bool openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** const _memory ) = 0;
+        virtual bool openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MappedInterface> MappedInterfacePtr;

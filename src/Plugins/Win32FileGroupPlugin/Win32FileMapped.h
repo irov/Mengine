@@ -3,6 +3,7 @@
 #include "Interface/FileMappedInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Factory.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -23,14 +24,15 @@ namespace Mengine
 
     public:
         InputStreamInterfacePtr createInputStream( const DocumentPtr & _doc ) override;
-        bool openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** const _memory ) override;
+        bool openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) override;
 
     private:
         HANDLE m_hFile;
         HANDLE m_hMapping;
-        LPVOID m_memory;
 
         LARGE_INTEGER m_liSize;
+
+        FactoryPtr m_factoryFileMappedInputStream;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32FileMapped> Win32FileMappedPtr;

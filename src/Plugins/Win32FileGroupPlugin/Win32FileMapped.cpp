@@ -4,11 +4,14 @@
 #include "Interface/UnicodeSystemInterface.h"
 
 #include "Win32FileHelper.h"
+#include "Win32FileMappedInputStream.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FactoryPool.h"
 
 namespace Mengine
 {
@@ -16,7 +19,6 @@ namespace Mengine
     Win32FileMapped::Win32FileMapped()
         : m_hFile( INVALID_HANDLE_VALUE )
         , m_hMapping( INVALID_HANDLE_VALUE )
-        , m_memory( NULL )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -77,8 +79,6 @@ namespace Mengine
             return false;
         }
 
-        //size_t size = (size_t)lpFileSize.QuadPart;
-
         HANDLE hMapping = ::CreateFileMapping( m_hFile, NULL, PAGE_READONLY, 0, 0, NULL );
 
         if( hMapping == NULL )
@@ -98,48 +98,13 @@ namespace Mengine
 
         m_hMapping = hMapping;
 
-        LPVOID memory = ::MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
-
-        if( memory == NULL )
-        {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid map view of file '%ls' [error: %lu]"
-                , fullPath
-                , error
-            );
-
-            ::CloseHandle( m_hMapping );
-            m_hMapping = INVALID_HANDLE_VALUE;
-
-            ::CloseHandle( m_hFile );
-            m_hFile = INVALID_HANDLE_VALUE;
-
-            return false;
-        }
-
-        m_memory = memory;
+        m_factoryFileMappedInputStream = Helper::makeFactoryPool<Win32FileMappedInputStream, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMapped::close()
     {
-        if( m_memory != NULL )
-        {
-            if( ::UnmapViewOfFile( m_memory ) == FALSE )
-            {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "invalid UnmapViewOfFile %p [error: %lu]"
-                    , m_memory
-                    , error
-                );
-            }
-
-            m_memory = NULL;
-        }
-
         if( m_hMapping != INVALID_HANDLE_VALUE )
         {
             ::CloseHandle( m_hMapping );
@@ -152,33 +117,31 @@ namespace Mengine
             m_hFile = INVALID_HANDLE_VALUE;
         }
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFileMappedInputStream );
+
+        m_factoryFileMappedInputStream = nullptr;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr Win32FileMapped::createInputStream( const DocumentPtr & _doc )
     {
-        MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryProxyInput( _doc );
+        Win32FileMappedInputStreamPtr stream = m_factoryFileMappedInputStream->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
-        return memory;
+        return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileMapped::openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** const _memory )
+    bool Win32FileMapped::openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
     {
-        MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface *>( _stream );
+        Win32FileMappedInputStream * stream = stdex::intrusive_get<Win32FileMappedInputStream *>( _stream );
 
         size_t size = _size == ~0U ? (size_t)m_liSize.QuadPart : _size;
 
-        void * memory_buffer = memory->setBuffer( m_memory, _offset, size );
+        bool result = stream->map( m_hMapping, _offset, size );
 
-        if( _memory != nullptr )
-        {
-            *_memory = memory_buffer;
-        }
-
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
 }

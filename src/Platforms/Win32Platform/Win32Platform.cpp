@@ -40,6 +40,7 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
+#include "Config/Utf8.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -824,7 +825,7 @@ namespace Mengine
         return (size_t)len;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const
+    size_t Win32Platform::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         WChar unicode_fontName[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _fontName, unicode_fontName, MENGINE_MAX_PATH ) == false )
@@ -900,12 +901,8 @@ namespace Mengine
             return MENGINE_PATH_INVALID_LENGTH;
         }
 
-        WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
-        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
-
         WChar fullDir[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WSPRINTF( fullDir, L"%s\\Fonts\\%s"
-            , winDir
+        MENGINE_WSPRINTF( fullDir, L"Fonts\\%s"
             , unicode_fontPath
         );
 
@@ -916,6 +913,8 @@ namespace Mengine
 
             return MENGINE_PATH_INVALID_LENGTH;
         }
+
+        *_groupName = STRINGIZE_STRING_LOCAL( "windows" );
 
         return utf8_size;
     }
@@ -4721,6 +4720,28 @@ namespace Mengine
             return false;
         }
 #endif
+
+        WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
+        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
+
+        Helper::pathCorrectBackslashW( winDir );
+        ::PathRemoveBackslash( winDir );
+        MENGINE_WCSCAT( winDir, L"/" );
+
+        Utf8 utf8_winDir[MENGINE_MAX_PATH] = {'\0'};
+        Helper::unicodeToUtf8( winDir, utf8_winDir, MENGINE_MAX_PATH );
+
+        FilePath winDirPath = Helper::stringizeFilePath( utf8_winDir );
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ), nullptr, nullptr, winDirPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            LOGGER_ERROR( "failed to mount dev directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
 
         return true;
     }

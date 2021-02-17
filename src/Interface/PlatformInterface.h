@@ -107,7 +107,7 @@ namespace Mengine
         virtual float getJoystickAxis( uint32_t _index ) const = 0;
 
     public:
-        virtual size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const = 0;
+        virtual size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const = 0;
 
     public:
         virtual bool getMaxClientResolution( Resolution * const _resolution ) const = 0;

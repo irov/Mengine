@@ -78,9 +78,10 @@ namespace Mengine
                 return false;
             }
 
+            ConstString groupName;
             Char utf8_ttfPath[MENGINE_MAX_PATH] = {'\0'};
             if( PLATFORM_SERVICE()
-                ->getSystemFontPath( ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
+                ->getSystemFontPath( &groupName, ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {
                 LOGGER_ERROR( "invalid font '%s' don't found '%s' path"
                     , name.c_str()
@@ -93,7 +94,7 @@ namespace Mengine
             FilePath ttfPath = Helper::stringizeFilePath( utf8_ttfPath );
 
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+                ->getFileGroup( groupName );
 
             ContentInterface * content = _font->getContent();
 

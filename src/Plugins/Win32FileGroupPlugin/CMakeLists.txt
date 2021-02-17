@@ -14,6 +14,8 @@ src
     Win32FileOutputStream.h
     Win32FileMapped.h
     Win32FileMapped.cpp
+    Win32FileMappedInputStream.h
+    Win32FileMappedInputStream.cpp
     Win32FileHelper.h
     Win32FileHelper.cpp
 )

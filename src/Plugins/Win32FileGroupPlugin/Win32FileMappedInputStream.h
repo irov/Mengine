@@ -19,7 +19,7 @@ namespace Mengine
         ~Win32FileMappedInputStream() override;
 
     public:
-        bool map( HANDLE _hMapping, size_t _offset, size_t _size );
+        bool mapViewOfFile( HANDLE _hMapping, DWORD _dwAllocationGranularity, size_t _offset, size_t _size );
         void unmap();
 
     public:
@@ -38,9 +38,11 @@ namespace Mengine
         bool memory( void ** const _memory, size_t * const _size ) override;
 
     protected:
-        LPVOID m_memory;
+        LPVOID m_memoryGranularity;
+        
         size_t m_size;
 
+        uint8_t * m_base;
         uint8_t * m_pos;
         uint8_t * m_end;
 

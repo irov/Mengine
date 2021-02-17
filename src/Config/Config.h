@@ -4,6 +4,14 @@
 #define MENGINE_OFFSETOF(T, V) offsetof(T, V)
 #endif
 
+#ifndef MENGINE_PVOID_OFFSET
+#define MENGINE_PVOID_OFFSET(P, O) ((unsigned char *)(P) + (O))
+#endif
+
+#ifndef MENGINE_CPVOID_OFFSET
+#define MENGINE_CPVOID_OFFSET(P, O) ((const unsigned char *)(P) + (O))
+#endif
+
 #ifndef MENGINE_MAX
 #define MENGINE_MAX(A, B) ((A) > (B) ? (A) : (B))
 #endif

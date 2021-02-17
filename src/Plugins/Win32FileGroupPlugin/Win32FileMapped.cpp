@@ -19,6 +19,7 @@ namespace Mengine
     Win32FileMapped::Win32FileMapped()
         : m_hFile( INVALID_HANDLE_VALUE )
         , m_hMapping( INVALID_HANDLE_VALUE )
+        , m_dwAllocationGranularity( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -98,6 +99,11 @@ namespace Mengine
 
         m_hMapping = hMapping;
 
+        SYSTEM_INFO si;
+        ::GetSystemInfo( &si );
+
+        m_dwAllocationGranularity = si.dwAllocationGranularity;
+
         m_factoryFileMappedInputStream = Helper::makeFactoryPool<Win32FileMappedInputStream, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -139,7 +145,7 @@ namespace Mengine
 
         size_t size = _size == ~0U ? (size_t)m_liSize.QuadPart : _size;
 
-        bool result = stream->map( m_hMapping, _offset, size );
+        bool result = stream->mapViewOfFile( m_hMapping, m_dwAllocationGranularity, _offset, size );
 
         return result;
     }

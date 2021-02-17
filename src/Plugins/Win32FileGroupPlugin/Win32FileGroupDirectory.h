@@ -2,7 +2,7 @@
 
 #include "Win32FileInputStream.h"
 #include "Win32FileOutputStream.h"
-#include "Win32FileMappedStream.h"
+#include "Win32FileMapped.h"
 
 #include "Kernel/BaseFileGroup.h"
 #include "Kernel/Factory.h"
@@ -48,9 +48,14 @@ namespace Mengine
         bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) override;
         bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
 
+    public:
+        MappedInterfacePtr createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) override;
+        bool openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared ) override;
+        bool closeMappedFile( const MappedInterfacePtr & _stream ) override;
+
     protected:
         FactoryPtr m_factoryInputStream;
         FactoryPtr m_factoryOutputStream;
-        FactoryPtr m_factoryWin32MappedFile;
+        FactoryPtr m_factoryMappedFile;
     };
 }

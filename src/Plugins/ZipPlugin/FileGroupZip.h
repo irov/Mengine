@@ -62,6 +62,8 @@ namespace Mengine
         InputStreamInterfacePtr m_zipFile;
         FileMappedInterfacePtr m_mappedFile;
 
+        uint32_t m_mappedThreshold;
+
         ThreadMutexInterfacePtr m_mutex;
 
         struct FileInfo

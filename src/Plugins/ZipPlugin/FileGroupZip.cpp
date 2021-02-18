@@ -23,10 +23,6 @@
 #include "zlib.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_ZIP_MAPPED_THRESHOLD
-#define MENGINE_ZIP_MAPPED_THRESHOLD (1048576)
-#endif
-//////////////////////////////////////////////////////////////////////////
 #define ZIP_LOCAL_HEADER_SIGNATURE (0x04034b50)
 #define ZIP_CENTRAL_HEADER_SIGNATURE (0x02014b50)
 #define ZIP_END_HEADER_SIGNATURE (0x06054b50)
@@ -89,6 +85,7 @@ namespace Mengine
 #pragma pack( pop )
     //////////////////////////////////////////////////////////////////////////
     FileGroupZip::FileGroupZip()
+        : m_mappedThreshold( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -98,6 +95,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::_initialize()
     {
+        m_mappedThreshold = CONFIG_VALUE( "Engine", "ZipMappedThreshold", 262144U );
+
         FileGroupInterface * mappedFileGroup;
         FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( m_folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -498,7 +497,7 @@ namespace Mengine
 
         const FileInfo & fi = it_found->second;
 
-        if( fi.file_size < MENGINE_ZIP_MAPPED_THRESHOLD || fi.compr_method != Z_NO_COMPRESSION )
+        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION )
         {
             MemoryInputInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryInput( _doc );
@@ -567,7 +566,7 @@ namespace Mengine
 
         if( fi.compr_method == Z_NO_COMPRESSION )
         {
-            if( fi.file_size < MENGINE_ZIP_MAPPED_THRESHOLD )
+            if( fi.file_size < m_mappedThreshold )
             {
                 MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
 

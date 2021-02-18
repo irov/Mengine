@@ -285,6 +285,11 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::isAvailableMappedFile() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     MappedInterfacePtr Win32FileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _filePath );

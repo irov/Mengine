@@ -3791,7 +3791,7 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_le, 1023 );
 
-            LOGGER_ERROR( "invalid open thread [%u] ShowWindow [error: %s (%lu)]"
+            LOGGER_ERROR( "invalid open thread [%llu] ShowWindow [error: %s (%lu)]"
                 , _threadId
                 , str_le
                 , error

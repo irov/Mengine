@@ -297,6 +297,11 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::isAvailableMappedFile() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     MappedInterfacePtr SDLFileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _filePath );

@@ -72,6 +72,15 @@ namespace Mengine
         m_defaultFileGroup = nullptr;
         m_globalFileGroup = nullptr;
 
+#ifdef MENGINE_DEBUG
+        for( const HashtableFileGroups::value_type & value : m_fileGroups )
+        {
+            LOGGER_ERROR( "was forgotten unmount '%s'"
+                , value.key.c_str()
+            );
+        }
+#endif
+
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_fileGroups );
 
         m_fileGroups.clear();

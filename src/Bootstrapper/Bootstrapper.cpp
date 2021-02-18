@@ -1488,6 +1488,9 @@ namespace Mengine
             m_loggerFile = nullptr;
         }
 
+        FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );

@@ -95,17 +95,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::_initialize()
     {
-        m_mappedThreshold = CONFIG_VALUE( "Engine", "ZipMappedThreshold", 262144U );
-
-        FileGroupInterface * mappedFileGroup;
-        FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( m_folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );
-
-        if( mappedFileGroup->openMappedFile( m_folderPath, mappedFile, false ) == false )
+        if( m_baseFileGroup->isAvailableMappedFile() == true )
         {
-            return false;
-        }
+            m_mappedThreshold = CONFIG_VALUE( "Engine", "ZipMappedThreshold", 262144U );
 
-        m_mappedFile = mappedFile;
+            FileGroupInterface * mappedFileGroup;
+            FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( m_folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+
+            if( mappedFileGroup->openMappedFile( m_folderPath, mappedFile, false ) == false )
+            {
+                return false;
+            }
+
+            m_mappedFile = mappedFile;
+        }
 
         if( this->loadHeader_() == false )
         {
@@ -497,7 +500,7 @@ namespace Mengine
 
         const FileInfo & fi = it_found->second;
 
-        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION )
+        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION || m_mappedFile == nullptr )
         {
             MemoryInputInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryInput( _doc );
@@ -522,7 +525,7 @@ namespace Mengine
         );
 
         MapFileInfo::const_iterator it_found = m_files.find( _filePath );
-
+ 
         MENGINE_ASSERTION_FATAL( it_found != m_files.end(), "zip '%s' file '%s' not found"
             , m_folderPath.c_str()
             , _filePath.c_str()
@@ -566,7 +569,7 @@ namespace Mengine
 
         if( fi.compr_method == Z_NO_COMPRESSION )
         {
-            if( fi.file_size < m_mappedThreshold )
+            if( fi.file_size < m_mappedThreshold || m_mappedFile == nullptr )
             {
                 MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
 
@@ -669,6 +672,11 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::isAvailableMappedFile() const
+    {
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     MappedInterfacePtr FileGroupZip::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )

@@ -220,10 +220,11 @@ namespace Mengine
         return axis;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const
+    size_t SDLPlatform::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );
         MENGINE_UNUSED( _fontPath );
+        MENGINE_UNUSED( _groupName );
 
         _fontPath[0] = '\0';
 

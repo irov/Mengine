@@ -1,6 +1,6 @@
 #include "ToolUtils/ToolUtils.h"
 
-#include "Plugins/MoviePlugin/Movie2Interface.h"
+#include "Plugins/DazzlePlugin/DazzleInterface.h"
 
 #include "Kernel/Blobject.h"
 
@@ -58,7 +58,7 @@ static bool loadFile( const std::wstring & _filepath, Blobject & _buffer )
     if( f_size == 0 )
     {
         ::fclose( f );
-
+        
         message_error( "invalid size %ls\n"
             , _filepath.c_str()
         );
@@ -161,8 +161,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return EXIT_FAILURE;
     }
 
-    Mengine::magic_number_type numberz = GET_MAGIC_NUMBER( Mengine::MAGIC_AEZ );
-    Mengine::magic_version_type versionz = GET_MAGIC_VERSION( Mengine::MAGIC_AEZ );
+    Mengine::magic_number_type numberz = GET_MAGIC_NUMBER( Mengine::MAGIC_DZZ );
+    Mengine::magic_version_type versionz = GET_MAGIC_VERSION( Mengine::MAGIC_DZZ );
 
     if( writeCompress( out_path, buffer, numberz, versionz ) == false )
     {

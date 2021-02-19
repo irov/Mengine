@@ -623,15 +623,21 @@ namespace Mengine
 
         FT_Face face = m_dataTTF->getFTFace();
 
-        FT_UInt rindex = FT_Get_Char_Index( face, _next );
+        if( FT_HAS_KERNING( face ) == false )
+        {
+            return true;
+        }
 
-        if( rindex == 0 )
+        FT_UInt code_index = FT_Get_Char_Index( face, _code );
+        FT_UInt next_index = FT_Get_Char_Index( face, _next );
+
+        if( next_index == 0 )
         {
             return true;
         }
 
         FT_Vector ttf_kerning;
-        FT_Error err_code = FT_Get_Kerning( face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
+        FT_Error err_code = FT_Get_Kerning( face, code_index, next_index, FT_KERNING_DEFAULT, &ttf_kerning );
 
         if( err_code != FT_Err_Ok )
         {
@@ -643,6 +649,8 @@ namespace Mengine
                 , _next
                 , err_message
             );
+
+            return true;
         }
 
         if( ttf_kerning.x == 0 )

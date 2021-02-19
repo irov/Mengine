@@ -2,7 +2,6 @@
 
 #include "Interface/Interface.h"
 
-#include "Interface/FileGroupInterface.h"
 #include "Interface/DataflowInterface.h"
 
 #include "Kernel/ConstString.h"

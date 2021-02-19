@@ -778,6 +778,9 @@ Core
     
     BuildMode.h
     BuildMode.cpp
+    
+    FileContent.h
+    FileContent.cpp
 )
 
 ADD_FILTER(

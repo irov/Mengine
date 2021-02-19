@@ -15,12 +15,6 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
-        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
-
-        virtual void setFilePath( const FilePath & _filePath ) = 0;
-        virtual const FilePath & getFilePath() const = 0;
-
         virtual void setCodecType( const ConstString & _codecType ) = 0;
         virtual const ConstString & getCodecType() const = 0;
 

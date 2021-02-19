@@ -23,6 +23,6 @@ namespace Mengine
         FilePath m_filePath;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef InterfacePtr<FileContent, ContentInterface> FileContentPtr;
+    typedef IntrusivePtr<FileContent, ContentInterface> FileContentPtr;
     //////////////////////////////////////////////////////////////////////////
 }

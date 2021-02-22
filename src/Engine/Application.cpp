@@ -45,6 +45,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/Interender.h"
 #include "Kernel/MatrixProxy.h"
+#include "Kernel/FileContent.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -100,6 +101,7 @@
 
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/ShapePacMan.h"
+#include "Kernel/ShapeQuadSize.h"
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeQuadFlex.h"
 
@@ -456,6 +458,12 @@ namespace Mengine
         LOGGER_MESSAGE( "Register Base Generator..." );
 
         if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<FileContent, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
@@ -485,6 +493,9 @@ namespace Mengine
     void Application::unregisterBaseTypes_()
     {
         LOGGER_MESSAGE( "Unregister Base Generator..." );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none() );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none() );
@@ -540,6 +551,7 @@ namespace Mengine
         NODE_FACTORY( Window );
         NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );
+        NODE_FACTORY( ShapeQuadSize );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
 
@@ -601,6 +613,7 @@ namespace Mengine
         NODE_FACTORY( Window );
         NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );
+        NODE_FACTORY( ShapeQuadSize );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
 
@@ -2284,7 +2297,7 @@ namespace Mengine
         if( m_cursorMode == true && m_cursorResource != nullptr )
         {
             const ConstString & name = m_cursorResource->getName();
-            const ContentInterface * content = m_cursorResource->getContent();
+            const ContentInterfacePtr & content = m_cursorResource->getContent();
             const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
             PLATFORM_SERVICE()
@@ -2337,7 +2350,7 @@ namespace Mengine
         }
 
         const ConstString & name = m_cursorResource->getName();
-        const ContentInterface * content = m_cursorResource->getContent();
+        const ContentInterfacePtr & content = m_cursorResource->getContent();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
         PLATFORM_SERVICE()

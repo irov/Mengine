@@ -12,15 +12,8 @@ namespace Mengine
         : public BaseContent
     {
     public:
-        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
-        const FileGroupInterfacePtr & getFileGroup() const;
-
-        void setFilePath( const FilePath & _filePath );
-        const FilePath & getFilePath() const;
-
-    protected:
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
+        FileContent();
+        ~FileContent() override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FileContent, ContentInterface> FileContentPtr;

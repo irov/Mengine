@@ -2366,17 +2366,15 @@ namespace Mengine
             .def( "isValidNoExist", &ContentInterface::isValidNoExist )
             ;
 
-        pybind::interface_<Contentable, pybind::bases<Mixin>>( _kernel, "Contentable" )
-            .def_mutable( "getContent", &Contentable::getContent )
-            ;
-
-        pybind::interface_<Resource, pybind::bases<Contentable, Scriptable, Compilable, Identity>>( _kernel, "Resource", false )
+        pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity>>( _kernel, "Resource", false )
+            .def( "setContent", &Resource::setContent )
+            .def( "getContent", &Resource::getContent )
+            .def( "setGroupName", &Resource::setGroupName )
+            .def( "getGroupName", &Resource::getGroupName )
             .def( "initialize", &Resource::initialize )
             .def( "finalize", &Resource::finalize )
             .def( "setLocale", &Resource::setLocale )
             .def( "getLocale", &Resource::getLocale )
-            .def( "setGroupName", &Resource::setGroupName )
-            .def( "getGroupName", &Resource::getGroupName )
             .def( "cache", &Resource::cache )
             .def( "uncache", &Resource::uncache )
             ;

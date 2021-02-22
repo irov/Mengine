@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceCursorICO::_compile()
     {
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();

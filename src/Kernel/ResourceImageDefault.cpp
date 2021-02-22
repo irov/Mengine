@@ -41,15 +41,17 @@ namespace Mengine
 
         LOGGER_INFO( "image", "name '%s' load texture '%s'"
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "name '%s' group '%s' file path '%s' invalid setup category"
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         uint32_t decoder_options = DF_NONE;
@@ -74,17 +76,17 @@ namespace Mengine
         }
 #endif
 
-        const FilePath & filePath = this->getFilePath();
-        const ConstString & codecType = this->getCodecType();
+        const FilePath & filePath = m_content->getFilePath();
+        const ConstString & codecType = m_content->getCodecType();
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->loadTexture( fileGroup, filePath, codecType, decoder_options, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "name '%s' category '%s' group '%s' can't load image file '%s'"
             , this->getName().c_str()
-            , this->getFileGroup()->getName().c_str()
+            , this->getContent()->getFileGroup()->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         this->setTexture( texture );

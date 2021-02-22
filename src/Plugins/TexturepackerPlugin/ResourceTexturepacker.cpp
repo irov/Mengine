@@ -238,11 +238,11 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
-            const ContentInterface * json_content = m_resourceJSON->getContent();
+            const ContentInterfacePtr & json_content = m_resourceJSON->getContent();
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
 
-            ContentInterface * resource_content = resourceImage->getContent();
+            const ContentInterfacePtr & resource_content = resourceImage->getContent();
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
 

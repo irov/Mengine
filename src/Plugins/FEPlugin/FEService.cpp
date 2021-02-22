@@ -41,7 +41,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( textFontEffet );
 
-        ContentInterface * content = textFontEffet->getContent();
+        const ContentInterfacePtr & content = textFontEffet->getContent();
 
         content->setFileGroup( _fileGroup );
         content->setFilePath( _filePath );

@@ -880,9 +880,9 @@ namespace Mengine
         Detail::serializeNodeProp( resourceSpineSkeleton->getName(), "ResourceName", xmlNode );
         Detail::serializeNodeProp( resourceSpineSkeleton->getType(), "ResourceType", xmlNode );
 
-        const ContentInterface * content = resourceSpineSkeleton->getContent();
+        const ContentInterfacePtr & content = resourceSpineSkeleton->getContent();
 
-        if( content != nullptr )
+        if( content != nullptr && content->getFilePath() != ConstString::none() )
         {
             this->serializeContent( content, xmlNode );
         }
@@ -955,9 +955,9 @@ namespace Mengine
         Detail::serializeNodeProp( resourceImage->getName(), "ResourceName", xmlNode );
         Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
 
-        const ContentInterface * content = resourceImage->getContent();
+        const ContentInterfacePtr & content = resourceImage->getContent();
 
-        if( content != nullptr )
+        if( content != nullptr && content->getFilePath() != ConstString::none() )
         {
             this->serializeContent( content, xmlNode );
         }
@@ -985,7 +985,7 @@ namespace Mengine
 
         Detail::serializeNodeProp( _surfaceImageSequence->getCurrentFrame(), "CurrentFrame", xmlNode );
 
-        const ContentInterface * content = resourceImageSequence->getContent();
+        const ContentInterfacePtr & content = resourceImageSequence->getContent();
 
         if( content != nullptr )
         {
@@ -993,7 +993,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeContent( const ContentInterface * _content, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeContent( const ContentInterfacePtr & _content, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Content" );
 

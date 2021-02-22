@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Interface/DataflowInterface.h"
 
+#include "Kernel/FilePath.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 
@@ -11,8 +13,15 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ContentInterface
-        : public Interface
+        : public ServantInterface
     {
+    public:
+        virtual void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
+        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
+
+        virtual void setFilePath( const FilePath & _filePath ) = 0;
+        virtual const FilePath & getFilePath() const = 0;
+
     public:
         virtual void setCodecType( const ConstString & _codecType ) = 0;
         virtual const ConstString & getCodecType() const = 0;

@@ -108,7 +108,7 @@ namespace Mengine
         bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
         void notifyVsyncChanged( bool _vsync ) override;
         void notifyCursorModeChanged( bool _mode ) override;
-        bool notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer ) override;
+        bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer ) override;
 
     public:
         void onEvent( const ConstString & _event, const MapWParams & _params ) override;

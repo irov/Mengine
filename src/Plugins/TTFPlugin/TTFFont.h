@@ -10,7 +10,6 @@
 #include "Kernel/String.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FontBase.h"
-#include "Kernel/BaseContent.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
@@ -30,9 +29,7 @@ namespace Mengine
         : public FontBase
         , public UnknownTTFFontInterface
         , public Observable
-        , protected BaseContent
     {
-        DECLARE_CONTENTABLE();
         DECLARE_UNKNOWABLE();
 
     public:

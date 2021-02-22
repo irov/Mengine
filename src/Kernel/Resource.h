@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Interface/LoadableInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Compilable.h"
 #include "Kernel/Identity.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Unknowable.h"
-#include "Kernel/Contentable.h"
 #include "Kernel/Magicable.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
@@ -30,7 +29,6 @@ namespace Mengine
     class Resource
         : public Factorable
         , public Compilable
-        , public Contentable
         , public Magicable
         , public Identity
         , public Scriptable
@@ -47,6 +45,10 @@ namespace Mengine
     public:
         void setResourceBank( ResourceBankInterface * _bank );
         MENGINE_INLINE ResourceBankInterface * getResourceBank() const;
+
+    public:
+        void setContent( const ContentInterfacePtr & _content );
+        MENGINE_INLINE const ContentInterfacePtr & getContent() const;
 
     public:
         void setLocale( const ConstString & _locale );
@@ -113,6 +115,8 @@ namespace Mengine
     protected:
         ResourceBankInterface * m_resourceBank;
 
+        ContentInterfacePtr m_content;
+
         uint32_t m_compileReferenceCount;
         uint32_t m_prefetchReferenceCount;
 
@@ -137,6 +141,11 @@ namespace Mengine
     MENGINE_INLINE ResourceBankInterface * Resource::getResourceBank() const
     {
         return m_resourceBank;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const ContentInterfacePtr & Resource::getContent() const
+    {
+        return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const ConstString & Resource::getLocale() const
@@ -328,8 +337,9 @@ namespace Mengine
 
             T t = stdex::intrusive_dynamic_cast<T>(_resource);
 
-            return std::move( t );
+            return t;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>

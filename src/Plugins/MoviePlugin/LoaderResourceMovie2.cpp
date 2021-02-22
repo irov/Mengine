@@ -27,9 +27,9 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
 
-        ContentInterface * content = resource->getContent();
+        const ContentInterfacePtr & content = resource->getContent();
 
-        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
 
         ConstString dataflowType;
         if( metadata->get_File_Dataflow( &dataflowType ) == false )

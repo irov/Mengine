@@ -22,11 +22,11 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound *>(_meta);
 
-        ContentInterface * content = resource->getContent();
+        const ContentInterfacePtr & content = resource->getContent();
 
-        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
-        metadata->getm_File_Codec( content, &ContentInterface::setCodecType );
-        metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
+        metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
+        metadata->getm_File_Codec( content.get(), &ContentInterface::setCodecType );
+        metadata->getm_File_Converter( content.get(), &ContentInterface::setConverterType );
 
         metadata->getm_DefaultVolume_Value( resource, &ResourceSound::setDefaultVolume );
         metadata->getm_IsStreamable_Value( resource, &ResourceSound::setStreamable );

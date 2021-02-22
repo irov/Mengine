@@ -24,9 +24,9 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
 
-        ContentInterface * content = resource->getContent();
+        const ContentInterfacePtr & content = resource->getContent();
 
-        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
 
         ConstString codecType;
         if( metadata->get_File_Codec( &codecType ) == false )
@@ -39,8 +39,8 @@ namespace Mengine
 
         content->setCodecType( codecType );
 
-        metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
-        metadata->getm_File_NoExist( content, &ContentInterface::setValidNoExist );
+        metadata->getm_File_Converter( content.get(), &ContentInterface::setConverterType );
+        metadata->getm_File_NoExist( content.get(), &ContentInterface::setValidNoExist );
 
         metadata->getm_File_Alpha( resource, &ResourceImageDefault::setAlpha );
         metadata->getm_File_Premultiply( resource, &ResourceImageDefault::setPremultiply );

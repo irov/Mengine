@@ -108,7 +108,7 @@ namespace Mengine
             return false;
         }
 
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -176,7 +176,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( dataflowTTF );
 
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -258,7 +258,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
 
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -285,7 +285,7 @@ namespace Mengine
             }
         }
 
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -447,7 +447,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         MemoryInterfacePtr memory = Helper::createMemoryContent( content, false, false, MENGINE_DOCUMENT_FACTORABLE );
 

@@ -530,7 +530,7 @@ namespace Mengine
                         element_type_ptr prev = std::move( record->element );
                         record->element = _element;
 
-                        return std::move( prev );
+                        return prev;
                     }
                 }
 
@@ -573,7 +573,7 @@ namespace Mengine
                     --m_size;
                     ++m_dummy;
 
-                    return std::move( pop_element );
+                    return pop_element;
                 }
 
                 mask = (mask << 2) + mask + perturb + 1;

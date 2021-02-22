@@ -73,11 +73,11 @@ namespace Mengine
         metadata->getm_Anchor_Point( resource, &ResourceMovie::setAnchorPoint );
         metadata->getm_Offset_Point( resource, &ResourceMovie::setOffsetPoint );
 
-        ContentInterface * content = resource->getContent();
+        const ContentInterfacePtr & content = resource->getContent();
 
-        metadata->getm_KeyFramesPackPath_Path( content, &ContentInterface::setFilePath );
-        metadata->getm_KeyFramesPackPath_Codec( content, &ContentInterface::setCodecType );
-        metadata->getm_KeyFramesPackPath_Converter( content, &ContentInterface::setConverterType );
+        metadata->getm_KeyFramesPackPath_Path( content.get(), &ContentInterface::setFilePath );
+        metadata->getm_KeyFramesPackPath_Codec( content.get(), &ContentInterface::setCodecType );
+        metadata->getm_KeyFramesPackPath_Converter( content.get(), &ContentInterface::setConverterType );
 
         const ConstString & codecType = content->getCodecType();
 

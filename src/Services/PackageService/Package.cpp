@@ -13,6 +13,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 
@@ -850,13 +851,12 @@ namespace Mengine
 
             resource->setTags( _tags );
 
-            ContentInterface * content = resource->getContent();
+            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
-            if( content != nullptr )
-            {
-                content->setFileGroup( _fileGroup );
-            }
+            content->setFileGroup( _fileGroup );
 
+            resource->setContent( content );
+            
             LoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
 
             MENGINE_ASSERTION_MEMORY_PANIC( loader, "file '%s' category '%s' group '%s' resource '%s' type '%s' invalid create loader"

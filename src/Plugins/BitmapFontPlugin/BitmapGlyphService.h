@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class BitmapGlyphService
         : public ServiceBase<BitmapGlyphServiceInterface>
     {

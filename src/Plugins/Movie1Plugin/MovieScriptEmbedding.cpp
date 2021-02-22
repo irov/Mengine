@@ -1165,7 +1165,7 @@ namespace Mengine
                 py_list.append( pybind::make_tuple_t( _kernel, layer.name, layer.position ) );
             }
 
-            return std::move(py_list);
+            return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_getMovieSlotPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )

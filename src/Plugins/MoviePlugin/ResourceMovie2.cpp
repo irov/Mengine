@@ -138,7 +138,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource '%s' file '%s' not found composition data '%s'"
                 , this->getName().c_str()
-                , this->getFilePath().c_str()
+                , this->getContent()->getFilePath().c_str()
                 , _compositionName.c_str()
             );
 
@@ -180,7 +180,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_compile()
     {
-        ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FilePath & filePath = content->getFilePath();
 

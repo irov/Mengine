@@ -73,36 +73,41 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "Assets" ) );
 
-        for( uint32_t i = 0; i != 10; ++i )
+        uint32_t width = 20;
+        uint32_t height = 15;
+
+        float size = 50.f;
+
+        for( uint32_t i = 0; i != width; ++i )
         {
-            for( uint32_t j = 0; j != 7; ++j )
+            for( uint32_t j = 0; j != height; ++j )
             {
-                ShapeQuadFixedPtr grass = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "sprite/grass.png" ), mt::vec2f( 100.f, 100.f ), MENGINE_DOCUMENT_FUNCTION );
+                ShapeQuadSizePtr grass = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "sprite/grass.png" ), mt::vec2f( 100.f, 100.f ), mt::vec2f( size, size ), MENGINE_DOCUMENT_FACTORABLE );
 
                 TransformationInterface * transformation = grass->getTransformation();
 
-                transformation->setLocalPosition( mt::vec3f( i * 100.f, j * 100.f, 0.f ) );
+                transformation->setLocalPosition( mt::vec3f( i * size, j * size, 0.f ) );
 
                 node->addChild( grass );
             }
         }
 
-        for( uint32_t i = 0; i != 10; ++i )
+        for( uint32_t i = 0; i != width; ++i )
         {
-            for( uint32_t j = 0; j != 7; ++j )
+            for( uint32_t j = 0; j != height; ++j )
             {
-                uint32_t r = Helper::getSimpleRandomizerRandom( 3 );
+                uint32_t r = Helper::getSimpleRandomizerRandom( 4 );
 
                 if( r != 0 )
                 {
                     continue;
                 }
 
-                ShapeQuadFixedPtr stone = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "sprite/stone.png" ), mt::vec2f( 100.f, 100.f ), MENGINE_DOCUMENT_FUNCTION );
+                ShapeQuadSizePtr stone = Helper::createSimpleSprite( fileGroup, STRINGIZE_FILEPATH_LOCAL( "sprite/stone.png" ), mt::vec2f( 100.f, 100.f ), mt::vec2f( size, size ), MENGINE_DOCUMENT_FACTORABLE );
 
                 TransformationInterface * transformation = stone->getTransformation();
 
-                transformation->setLocalPosition( mt::vec3f( i * 100.f, j * 100.f, 0.f ) );
+                transformation->setLocalPosition( mt::vec3f( i * size, j * size, 0.f ) );
 
                 node->addChild( stone );
             }

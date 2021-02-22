@@ -1458,7 +1458,7 @@ namespace Mengine
 
                 resource->setName( _resourceName );
 
-                ContentInterface * content = resource->getContent();
+                ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 content->setFileGroup( fileGroup );
                 content->setFilePath( _filePath );
@@ -1472,6 +1472,8 @@ namespace Mengine
                 }
 
                 content->setCodecType( newCodecType );
+
+                resource->setContent( content );
 
                 resource->setMaxSize( maxSize );
                 resource->setSize( maxSize );
@@ -2005,7 +2007,7 @@ namespace Mengine
                     return false;
                 }
 
-                const ContentInterface * content = resource->getContent();
+                const ContentInterfacePtr & content = resource->getContent();
 
                 const FilePath & filePath = content->getFilePath();
                 const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
@@ -3754,7 +3756,7 @@ namespace Mengine
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
                             , _resource->getType().c_str()
-                            , _resource->getContent() ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                            , _resource->getContent() != nullptr ? _resource->getContent()->getFilePath().c_str() : "[no content]"
                         );
                     }
                 } );
@@ -3779,7 +3781,7 @@ namespace Mengine
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
                             , _resource->getType().c_str()
-                            , _resource->getContent() ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                            , _resource->getContent() != nullptr ? _resource->getContent()->getFilePath().c_str() : "[no content]"
                         );
                     }
                 } );

@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ArchiveResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
             , _resource->getType().c_str()
@@ -51,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     bool ArchiveResourcePrefetcher::_unfetch( const ResourcePtr & _resource ) const
     {
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
             , _resource->getType().c_str()

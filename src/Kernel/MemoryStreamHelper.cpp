@@ -81,7 +81,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryContent( const ContentInterface * _content, bool _stream, bool _share, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryContent( const ContentInterfacePtr & _content, bool _stream, bool _share, const DocumentPtr & _doc )
         {
             const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
             const FilePath & filePath = _content->getFilePath();

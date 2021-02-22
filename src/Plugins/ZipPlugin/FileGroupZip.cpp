@@ -483,21 +483,29 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        if( _streaming == true )
-        {
-            InputStreamInterfacePtr stream = m_baseFileGroup->createInputFile( _filePath, true, nullptr, _doc );
-
-            if( _fileGroup != nullptr )
-            {
-                *_fileGroup = this;
-            }
-
-            return stream;
-        }
-
         if( _fileGroup != nullptr )
         {
             *_fileGroup = this;
+        }
+
+        if( _streaming == true )
+        {
+            if( m_mappedFile != nullptr )
+            {
+                InputStreamInterfacePtr stream = m_mappedFile->createInputStream( _doc );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+                return stream;
+            }
+            else
+            {
+                InputStreamInterfacePtr stream = m_baseFileGroup->createInputFile( _filePath, true, nullptr, _doc );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+                return stream;
+            }
         }
 
         MapFileInfo::const_iterator it_found = m_files.find( _filePath );
@@ -556,16 +564,26 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
-            if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true, _share ) == false )
+            if( m_mappedFile != nullptr )
             {
-                LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
-                    , m_folderPath.c_str()
-                    , _filePath.c_str()
-                    , fi.seek_pos
-                    , fi.file_size
-                );
+                if( m_mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true, _share ) == false )
+                {
+                    LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
+                        , m_folderPath.c_str()
+                        , _filePath.c_str()
+                        , fi.seek_pos
+                        , fi.file_size
+                    );
 
-                return false;
+                    return false;
+                }
             }
 
             return true;

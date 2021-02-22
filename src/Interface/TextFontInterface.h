@@ -7,7 +7,6 @@
 #include "Interface/TextFontEffectInterface.h"
 
 #include "Kernel/Unknowable.h"
-#include "Kernel/Contentable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
@@ -46,9 +45,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TextFontInterface
         : public ServantInterface
-        , public Contentable
         , public Unknowable
     {
+    public:
+        virtual void setContent( const ContentInterfacePtr & _content ) = 0;
+        virtual const ContentInterfacePtr & getContent() const = 0;
+
     public:
         virtual void setEffect( const TextFontEffectInterfacePtr & _effect ) = 0;
         virtual const TextFontEffectInterfacePtr & getEffect() const = 0;

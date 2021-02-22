@@ -16,6 +16,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void FETextFontEffectBase::setContent( const ContentInterfacePtr & _content )
+    {
+        m_content = _content;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & FETextFontEffectBase::getContent() const
+    {
+        return m_content;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void FETextFontEffectBase::setEffectName( const ConstString & _effectName )
     {
         m_effectName = _effectName;

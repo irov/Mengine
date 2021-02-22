@@ -98,7 +98,7 @@ namespace Mengine
             }
         }
 
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
 
@@ -121,7 +121,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "release '%s' group '%s' invalid open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , content->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
             );
 
             return false;
@@ -139,7 +139,7 @@ namespace Mengine
                 LOGGER_MESSAGE_RELEASE_ERROR( "release '%s' group '%s' you must determine codec for file '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , content->getFilePath().c_str()
+                    , _resource->getContent()->getFilePath().c_str()
                 );
 
                 return false;

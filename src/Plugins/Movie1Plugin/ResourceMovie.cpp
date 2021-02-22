@@ -207,7 +207,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_compile()
     {
-        const FilePath & filePath = this->getFilePath();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FilePath & filePath = content->getFilePath();
 
         if( filePath.empty() == true )
         {
@@ -218,8 +220,6 @@ namespace Mengine
 
             return false;
         }
-
-        ContentInterface * content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const DataflowInterfacePtr & dataflow = content->getDataflow();
@@ -232,7 +232,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( data, "resource movie '%s' group '%s' can` t get frame pack '%s'"
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         m_keyFramePack = data;

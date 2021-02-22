@@ -2,18 +2,14 @@
 
 #include "FETextFontEffectBase.h"
 
-#include "Kernel/BaseContent.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class FETextFontEffectFile
         : public FETextFontEffectBase
         , public UnknownFEFileInterface
-        , protected BaseContent
     {
         DECLARE_UNKNOWABLE();
-        DECLARE_CONTENTABLE();
 
     public:
         FETextFontEffectFile();

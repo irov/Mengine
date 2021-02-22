@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #if defined(MENGINE_DEBUG)
 #   include "Kernel/Identity.h"
 #   include "Kernel/Unique.h"

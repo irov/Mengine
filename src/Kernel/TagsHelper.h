@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/String.h"
-
 #include "Kernel/Tags.h"
 
 namespace Mengine

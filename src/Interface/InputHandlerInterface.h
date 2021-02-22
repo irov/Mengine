@@ -22,24 +22,28 @@ namespace Mengine
         IET_MOUSE_LEAVE
     };
     //////////////////////////////////////////////////////////////////////////
-    struct InputKeyEvent
+    struct InputSpecialData
     {
-        EInputEventType type;
-
-        float x;
-        float y;
-        EKeyCode code;
-        bool isDown;
-        bool isRepeat;
         bool isAlt;
         bool isShift;
         bool isControl;
         bool isSpecial;
     };
     //////////////////////////////////////////////////////////////////////////
+    struct InputKeyEvent
+    {
+        InputSpecialData special;
+
+        float x;
+        float y;
+        EKeyCode code;
+        bool isDown;
+        bool isRepeat;
+    };
+    //////////////////////////////////////////////////////////////////////////
     struct InputTextEvent
     {
-        EInputEventType type;
+        InputSpecialData special;
 
         float x;
         float y;
@@ -48,7 +52,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseButtonEvent
     {
-        EInputEventType type;
+        InputSpecialData special;
 
         uint32_t touchId;
         float x;
@@ -61,7 +65,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseWheelEvent
     {
-        EInputEventType type;
+        InputSpecialData special;
 
         float x;
         float y;
@@ -71,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseMoveEvent
     {
-        EInputEventType type;
+        InputSpecialData special;
 
         uint32_t touchId;
         float x;
@@ -83,7 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseEnterEvent
     {
-        EInputEventType type;
+        InputSpecialData special;
 
         uint32_t touchId;
         float x;
@@ -93,7 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseLeaveEvent
     {
-        EInputEventType type;
+        InputSpecialData special;
 
         uint32_t touchId;
         float x;
@@ -103,7 +107,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMousePositionEvent
     {
-        EInputEventType type;
+        InputSpecialData special;
 
         uint32_t touchId;
         float x;

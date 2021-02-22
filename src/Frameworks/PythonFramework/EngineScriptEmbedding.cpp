@@ -2915,9 +2915,13 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             pybind::list s_pickHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
             {
+                InputSpecialData special;
+                INPUT_SERVICE()
+                    ->getSpecial( &special );
+
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->pickTraps( _point, 0, 0.f, &pickers );
+                    ->pickTraps( _point, 0, 0.f, special, &pickers );
 
                 pybind::list pyret( _kernel );
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Config/Config.h"
 #include "Config/Typedef.h"
 
 namespace Mengine

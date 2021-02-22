@@ -18,14 +18,18 @@ namespace Mengine
             }
 
             InputUnionEvent ev;
-            ev.move.type = IET_MOUSE_MOVE;
 
-            ev.move.touchId = _touchId;
-            ev.move.x = vx;
-            ev.move.y = vy;
-            ev.move.dx = _dx;
-            ev.move.dy = _dy;
-            ev.move.pressure = _pressure;
+            ev.type = IET_MOUSE_MOVE;
+
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.move.touchId = _touchId;
+            ev.data.move.x = vx;
+            ev.data.move.y = vy;
+            ev.data.move.dx = _dx;
+            ev.data.move.dy = _dy;
+            ev.data.move.pressure = _pressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -39,15 +43,19 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.button.type = IET_MOUSE_BUTTON;
 
-            ev.button.touchId = _touchId;
-            ev.button.x = vx;
-            ev.button.y = vy;
-            ev.button.code = _code;
-            ev.button.pressure = _pressure;
-            ev.button.isDown = _isDown;
-            ev.button.isPressed = true;
+            ev.type = IET_MOUSE_BUTTON;
+
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.button.touchId = _touchId;
+            ev.data.button.x = vx;
+            ev.data.button.y = vy;
+            ev.data.button.code = _code;
+            ev.data.button.pressure = _pressure;
+            ev.data.button.isDown = _isDown;
+            ev.data.button.isPressed = true;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -61,17 +69,17 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.key.type = IET_KEY;
 
-            ev.key.x = vx;
-            ev.key.y = vy;
-            ev.key.code = _code;
-            ev.key.isDown = _isDown;
-            ev.key.isRepeat = _repeating;
-            ev.key.isAlt = false;
-            ev.key.isShift = false;
-            ev.key.isControl = false;
-            ev.key.isSpecial = false;
+            ev.type = IET_KEY;
+
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.key.x = vx;
+            ev.data.key.y = vy;
+            ev.data.key.code = _code;
+            ev.data.key.isDown = _isDown;
+            ev.data.key.isRepeat = _repeating;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -85,11 +93,15 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.text.type = IET_TEXT;
 
-            ev.text.x = vx;
-            ev.text.y = vy;
-            ev.text.key = _key;
+            ev.type = IET_TEXT;
+
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.text.x = vx;
+            ev.data.text.y = vy;
+            ev.data.text.key = _key;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -103,12 +115,16 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.leave.type = IET_MOUSE_LEAVE;
+            
+            ev.type = IET_MOUSE_LEAVE;
 
-            ev.leave.touchId = _touchId;
-            ev.leave.x = vx;
-            ev.leave.y = vy;
-            ev.leave.pressure = _pressure;
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.leave.touchId = _touchId;
+            ev.data.leave.x = vx;
+            ev.data.leave.y = vy;
+            ev.data.leave.pressure = _pressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -122,12 +138,16 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.enter.type = IET_MOUSE_ENTER;
 
-            ev.enter.touchId = _touchId;
-            ev.enter.x = vx;
-            ev.enter.y = vy;
-            ev.enter.pressure = _pressure;
+            ev.type = IET_MOUSE_ENTER;
+
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.enter.touchId = _touchId;
+            ev.data.enter.x = vx;
+            ev.data.enter.y = vy;
+            ev.data.enter.pressure = _pressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -141,12 +161,16 @@ namespace Mengine
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.wheel.type = IET_MOUSE_WHELL;
 
-            ev.wheel.x = vx;
-            ev.wheel.y = vy;
-            ev.wheel.code = _code;
-            ev.wheel.wheel = _whell;
+            ev.type = IET_MOUSE_WHELL;
+
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.wheel.x = vx;
+            ev.data.wheel.y = vy;
+            ev.data.wheel.code = _code;
+            ev.data.wheel.wheel = _whell;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -163,12 +187,15 @@ namespace Mengine
             }
 
             InputUnionEvent ev;
-            ev.position.type = IET_MOUSE_POSITION;
+            ev.type = IET_MOUSE_POSITION;
 
-            ev.position.touchId = _touchId;
-            ev.position.x = vx;
-            ev.position.y = vy;
-            ev.position.pressure = _pressure;
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.position.touchId = _touchId;
+            ev.data.position.x = vx;
+            ev.data.position.y = vy;
+            ev.data.position.pressure = _pressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

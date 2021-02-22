@@ -58,6 +58,9 @@ namespace Mengine
         void pushEvent( const InputUnionEvent & _event ) override;
 
     protected:
+        void getSpecial( InputSpecialData * const _special ) const override;
+
+    protected:
         void keyEvent_( const InputKeyEvent & _params );
         void textEvent_( const InputTextEvent & _params );
         void mouseButtonEvent_( const InputMouseButtonEvent & _params );

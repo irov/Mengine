@@ -64,35 +64,35 @@ namespace Mengine
             {
             case IET_KEY:
                 {
-                    this->keyEvent_( ev.key );
+                    this->keyEvent_( ev.data.key );
                 }break;
             case IET_TEXT:
                 {
-                    this->textEvent_( ev.text );
+                    this->textEvent_( ev.data.text );
                 }break;
             case IET_MOUSE_BUTTON:
                 {
-                    this->mouseButtonEvent_( ev.button );
+                    this->mouseButtonEvent_( ev.data.button );
                 }break;
             case IET_MOUSE_WHELL:
                 {
-                    this->mouseWheelEvent_( ev.wheel );
+                    this->mouseWheelEvent_( ev.data.wheel );
                 }break;
             case IET_MOUSE_MOVE:
                 {
-                    this->mouseMoveEvent_( ev.move );
+                    this->mouseMoveEvent_( ev.data.move );
                 }break;
             case IET_MOUSE_POSITION:
                 {
-                    this->mousePositionEvent_( ev.position );
+                    this->mousePositionEvent_( ev.data.position );
                 }break;
             case IET_MOUSE_ENTER:
                 {
-                    this->mouseEnterEvent_( ev.enter );
+                    this->mouseEnterEvent_( ev.data.enter );
                 }break;
             case IET_MOUSE_LEAVE:
                 {
-                    this->mouseLeaveEvent_( ev.leave );
+                    this->mouseLeaveEvent_( ev.data.leave );
                 }break;
             default:
                 {
@@ -378,28 +378,29 @@ namespace Mengine
         m_eventsAux.emplace_back( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::keyEvent_( const InputKeyEvent & _event )
+    void InputService::getSpecial( InputSpecialData * const _special ) const
     {
-        bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
-
         bool isAlt = this->isAltDown();
         bool isShift = this->isShiftDown();
         bool isControl = this->isControlDown();
         bool isSpecial = this->isSpecialDown();
 
+        _special->isAlt = isAlt;
+        _special->isShift = isShift;
+        _special->isControl = isControl;
+        _special->isSpecial = isSpecial;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::keyEvent_( const InputKeyEvent & _event )
+    {
+        bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
+
         m_keyBuffer[_event.code] = _event.isDown;
 
-        InputKeyEvent event;
-        event.type = _event.type;
-        event.x = _event.x;
-        event.y = _event.y;
-        event.code = _event.code;
-        event.isDown = _event.isDown;
+        InputKeyEvent event = _event;
+        
+        //ToDo
         event.isRepeat = isRepeat;
-        event.isAlt = isAlt;
-        event.isShift = isShift;
-        event.isControl = isControl;
-        event.isSpecial = isSpecial;
 
         APPLICATION_SERVICE()
             ->keyEvent( event );
@@ -417,9 +418,7 @@ namespace Mengine
 
         m_mouseBuffer[_event.code] = _event.isDown;
 
-        bool isDown = this->isSpecialDown();
-
-        m_mouseBufferSpecial[_event.code] = isDown;
+        m_mouseBufferSpecial[_event.code] = _event.special.isSpecial;
 
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 

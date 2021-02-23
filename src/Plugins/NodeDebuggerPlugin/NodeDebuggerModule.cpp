@@ -16,6 +16,8 @@
 #include "Interface/FontServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
@@ -61,6 +63,7 @@ namespace Mengine
         , m_shouldUpdateScene( false )
         , m_workerId( 0 )
         , m_globalKeyHandlerF2( 0 )
+        , m_globalKeyHandlerForSendingSelectedNode( 0 )
         , m_requestListenerId( 0 )
     {
     }
@@ -109,6 +112,36 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
         }
 
+        const ScenePtr & currentScene = SCENE_SERVICE()
+            ->getCurrentScene();
+
+        uint32_t idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this, currentScene]( const InputMouseButtonEvent & _event )
+        {
+            MENGINE_UNUSED( _event );
+
+            if( INPUT_SERVICE()->isAltDown() == true )
+            {
+                currentScene->foreachChildren( [this]( const NodePtr & _child )
+                {
+                    RenderInterface * childRender = _child->getRender();
+                    const mt::box2f * boundingBox = childRender->getBoundingBox();
+                    
+                    const mt::vec2f & cursorPosition = INPUT_SERVICE()
+                        ->getCursorPosition( 0 );
+
+                    if( mt::is_intersect( *boundingBox, cursorPosition ) == true )
+                    {
+                        m_selectedNode = _child;
+
+                        this->sendSelectedNode();
+                    }
+                } );
+            }
+            
+        }, MENGINE_DOCUMENT_FACTORABLE );
+        
+        m_globalKeyHandlerForSendingSelectedNode = idForSelectedNodeSender;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -154,6 +187,12 @@ namespace Mengine
         {
             Helper::removeGlobalHandler( m_globalKeyHandlerF2 );
             m_globalKeyHandlerF2 = 0;
+        }
+
+        if( m_globalKeyHandlerForSendingSelectedNode != 0 )
+        {
+            Helper::removeGlobalHandler( m_globalKeyHandlerForSendingSelectedNode );
+            m_globalKeyHandlerForSendingSelectedNode = 0;
         }
 
         if( SERVICE_EXIST( cURLServiceInterface ) == true )
@@ -471,7 +510,7 @@ namespace Mengine
         }
 
         NodePtr node = Helper::findUniqueNode( m_scene, m_selectedNodePath );
-
+        
         if( node == nullptr )
         {
             return;
@@ -1460,6 +1499,35 @@ namespace Mengine
             xml_object.append_attribute( "Id" ).set_value( request.id );
             xml_object.append_attribute( "Url" ).set_value( request.url.c_str() );
         }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef MENGINE_DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendSelectedNode()
+    {
+        pugi::xml_document xml_doc;
+        pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "SelectedNode" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        pugi::xml_node xmlNode = payloadNode.append_child( "Node" );
+
+        this->serializeNodeSingle( m_selectedNode, xmlNode );
+
+        VectorNodePath pathToRoot;
+        Helper::findPathToRootFromParent( m_scene, m_selectedNode, &pathToRoot );
 
         NodeDebuggerPacket packet;
 

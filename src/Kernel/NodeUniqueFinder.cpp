@@ -24,5 +24,29 @@ namespace Mengine
             return finder;
         }
         //////////////////////////////////////////////////////////////////////////
+        void findPathToRootFromParent( const NodePtr & _root, const NodePtr & _currentNode, VectorNodePath * _nodePath )
+        {
+            UniqueId currentNodeId = _currentNode->getUniqueIdentity();
+            UniqueId rootNodeId = _root->getUniqueIdentity();
+
+            _nodePath->emplace_back( currentNodeId );
+
+            if( currentNodeId == rootNodeId )
+            {
+                return;
+            }
+
+            Node * parentNode = nullptr;
+
+            while( currentNodeId != rootNodeId )
+            {
+                parentNode = _currentNode->getParent();
+
+                currentNodeId = parentNode->getUniqueIdentity();
+
+                _nodePath->emplace_back( currentNodeId );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

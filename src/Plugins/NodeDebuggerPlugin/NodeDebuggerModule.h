@@ -97,6 +97,7 @@ namespace Mengine
         void sendMemory();
         void sendObjectsLeak();
         void sendNetwork();
+        void sendSelectedNode();
 
     protected:
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
@@ -132,9 +133,12 @@ namespace Mengine
 
     protected:
         uint32_t m_globalKeyHandlerF2;
+        uint32_t m_globalKeyHandlerForSendingSelectedNode;
 
         ArrowPtr m_arrow;
         ScenePtr m_scene;
+        NodePtr m_selectedNode;
+
         SocketInterfacePtr m_socket;
         AtomicBool m_shouldRecreateServer;
         AtomicBool m_shouldUpdateScene;

@@ -513,6 +513,10 @@ namespace Mengine
         {
             this->ReceiveNetwork( payloadNode );
         }
+        else if( typeStr == "SelectedNode" )
+        {
+            this->ReceiveSelectedNode( payloadNode );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveArrow( const pugi::xml_node & _xmlContainer )
@@ -733,6 +737,10 @@ namespace Mengine
 
             m_settings.emplace_back( desc );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveSelectedNode( const pugi::xml_node & _xmlContainer )
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node )

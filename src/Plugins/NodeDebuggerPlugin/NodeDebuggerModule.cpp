@@ -112,20 +112,44 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
         }
 
-        const ScenePtr & currentScene = SCENE_SERVICE()
-            ->getCurrentScene();
-
-        uint32_t idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this, currentScene]( const InputMouseButtonEvent & _event )
+        uint32_t idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
         {
             MENGINE_UNUSED( _event );
 
-            if( INPUT_SERVICE()->isAltDown() == true )
+
+            // TODO
+            // Need recursive foreach for childs
+
+            /*for( const BaseRender * child : m_renderChildren )
+            {
+                child->renderWithChildren( _renderPipeline, &context, false );
+            }*/
+
+            const ScenePtr & currentScene = SCENE_SERVICE()
+                ->getCurrentScene();
+
+            
+
+            if( INPUT_SERVICE()->isAltDown() == false )
+            {
+                return;
+            }
+            else
             {
                 currentScene->foreachChildren( [this]( const NodePtr & _child )
                 {
                     RenderInterface * childRender = _child->getRender();
+                    if( childRender == nullptr )
+                    {
+                        return;
+                    }
+
                     const mt::box2f * boundingBox = childRender->getBoundingBox();
-                    
+                    if( boundingBox == nullptr )
+                    {
+                        return;
+                    }
+
                     const mt::vec2f & cursorPosition = INPUT_SERVICE()
                         ->getCursorPosition( 0 );
 

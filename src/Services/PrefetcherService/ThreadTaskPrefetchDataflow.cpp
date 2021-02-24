@@ -59,18 +59,22 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create input file '%s'"
             , this->getFileGroup()->getName().c_str()
         );
 
-        m_data = m_dataflow->create( MENGINE_DOCUMENT_FACTORABLE );
+        m_stream = stream;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_data, "dataflow '%s':'%s' invalid create data"
+        DataInterfacePtr data = m_dataflow->create( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "dataflow '%s':'%s' invalid create data"
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );
+
+        m_data = data;
 
         return true;
     }

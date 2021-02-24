@@ -95,27 +95,33 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void threadMainWorker( ThreadJobWorkerDesc & desc )
         {
-            if( desc.status != ETS_WORK )
+            if( desc.status != ETS_WORK || desc.pause == true )
             {
                 return;
             }
 
+            ThreadWorkerInterface * worker = nullptr;
+            uint32_t id = 0;
+
+            desc.mutex_progress->lock();
+
+            desc.mutex->lock();
             if( desc.status == ETS_WORK && desc.pause == false )
             {
-                desc.mutex->lock();
-                ThreadWorkerInterface * worker = desc.worker.get();
-                uint32_t id = desc.id;
-                desc.mutex->unlock();
+                worker = desc.worker.get();
+                id = desc.id;
+            }
+            desc.mutex->unlock();
 
-                desc.mutex_progress->lock();
-                bool result = worker->onThreadWorkerWork( id );
-                desc.mutex_progress->unlock();
-
-                if( result == false )
+            if( worker != nullptr )
+            {
+                if( worker->onThreadWorkerWork( id ) == false )
                 {
                     desc.status = ETS_DONE;
                 }
             }
+
+            desc.mutex_progress->unlock();
         }
         //////////////////////////////////////////////////////////////////////////
         static void threadUpdateWorker( ThreadJobWorkerDesc & desc )

@@ -5,7 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::SoundIdentity()
         : m_id( 0 )
-        , bufferId( 0 )
+        , workerId( 0 )
         , time_left( 0.f )
         , state( ESS_STOP )
         , category( ES_SOURCE_CATEGORY_SOUND )
@@ -18,6 +18,8 @@ namespace Mengine
     SoundIdentity::~SoundIdentity()
     {
         MENGINE_ASSERTION_FATAL( source == nullptr );
+        MENGINE_ASSERTION_FATAL( listener == nullptr );
+        MENGINE_ASSERTION_FATAL( worker == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundIdentity::initialize()
@@ -34,8 +36,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::finalize()
     {
+        MENGINE_ASSERTION_FATAL( worker == nullptr );
+
         if( source != nullptr )
         {
+            source->stop();
+
             const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
             soundBuffer->releaseSoundBuffer();
             source = nullptr;
@@ -75,6 +81,11 @@ namespace Mengine
     const SoundListenerInterfacePtr & SoundIdentity::getSoundListener() const
     {
         return listener;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SoundListenerInterfacePtr SoundIdentity::popSoundListener() const
+    {
+        return std::move( listener );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundIdentity::isStreamable() const

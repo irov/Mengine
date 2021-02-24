@@ -749,5 +749,15 @@ namespace Mengine
 
         typedef Vector<NetworkDesk> VectorNetwork;
         VectorNetwork m_network;
+
+        struct SelectedNodeData
+        {
+            uint32_t selectedNodeId;
+            
+            typedef Vector<uint32_t> VectorNodePath;
+            VectorNodePath pathToRoot;
+        };
+
+        SelectedNodeData m_selectedNodeData;
     };
 }

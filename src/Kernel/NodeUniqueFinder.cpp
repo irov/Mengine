@@ -36,15 +36,15 @@ namespace Mengine
                 return;
             }
 
-            Node * parentNode = nullptr;
+            Node * parentNode = _currentNode->getParent();
 
             while( currentNodeId != rootNodeId )
             {
-                parentNode = _currentNode->getParent();
-
                 currentNodeId = parentNode->getUniqueIdentity();
 
                 _nodePath->emplace_back( currentNodeId );
+
+                parentNode = parentNode->getParent();
             }
         }
         //////////////////////////////////////////////////////////////////////////

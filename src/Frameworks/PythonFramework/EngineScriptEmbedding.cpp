@@ -1559,7 +1559,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_pushMouseMove( uint32_t _touchId, const mt::vec2f & _pos )
+            void s_pushMouseMove( ETouchCode _touchId, const mt::vec2f & _pos )
             {
                 const mt::vec2f & cp = INPUT_SERVICE()
                     ->getCursorPosition( _touchId );
@@ -1575,7 +1575,7 @@ namespace Mengine
                 Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
+            void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
             {
                 mt::vec2f pos_screen;
                 if( this->s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
@@ -2857,19 +2857,19 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getCursorPosition()
             {
-                mt::vec2f wp = this->s_getTouchPosition( 0 );
+                mt::vec2f wp = this->s_getTouchPosition( TC_TOUCH0 );
 
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getMousePosition()
             {
-                mt::vec2f wp = this->s_getTouchPosition( 0 );
+                mt::vec2f wp = this->s_getTouchPosition( TC_TOUCH0 );
 
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_getTouchPosition( uint32_t _touchId )
+            mt::vec2f s_getTouchPosition( ETouchCode _touchId )
             {
                 const mt::vec2f & pos = INPUT_SERVICE()
                     ->getCursorPosition( _touchId );
@@ -2921,7 +2921,7 @@ namespace Mengine
 
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->pickTraps( _point, 0, 0.f, special, &pickers );
+                    ->pickTraps( _point, TC_TOUCH0, 0.f, special, &pickers );
 
                 pybind::list pyret( _kernel );
 

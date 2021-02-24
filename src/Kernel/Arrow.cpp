@@ -53,7 +53,7 @@ namespace Mengine
             ->addMousePositionProvider( Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this ), MENGINE_DOCUMENT_FACTORABLE );
 
         const mt::vec2f & cursor_pos = INPUT_SERVICE()
-            ->getCursorPosition( 0 );
+            ->getCursorPosition( TC_TOUCH0 );
 
         RenderContext context;
         this->makeRenderContext( &context );

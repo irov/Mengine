@@ -2743,18 +2743,18 @@ namespace Mengine
         mt::vec2f point;
         m_sdlInput->getCursorPosition( &point );
         
-        Helper::pushMousePositionEvent( 0, point.x, point.y, 0.f );
+        Helper::pushMousePositionEvent( TC_TOUCH0, point.x, point.y, 0.f );
 
         if( m_active == false )
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( nopause == false )

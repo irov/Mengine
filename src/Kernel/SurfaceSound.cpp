@@ -51,7 +51,7 @@ namespace Mengine
 
         bool streamable = m_resourceSound->isStreamable();
 
-        SoundIdentityInterfacePtr  soundIdentity = SOUND_SERVICE()
+        SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
             ->createSoundIdentity( m_isHeadMode, soundBuffer, m_sourceCategory, streamable
                 , MENGINE_DOCUMENT_MESSAGE( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 

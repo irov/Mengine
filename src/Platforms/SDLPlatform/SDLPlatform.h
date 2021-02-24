@@ -183,6 +183,9 @@ namespace Mengine
         void setActive_( bool _active );
 
     protected:
+        bool isNeedWindowRender() const;
+
+    protected:
         bool initializeFileService_();
         void finalizeFileService_();
 
@@ -241,9 +244,9 @@ namespace Mengine
 
         float m_pauseUpdatingTime;
 
+        bool m_active;
         bool m_shouldQuit;
         bool m_running;
-        bool m_pause;
 
         bool m_desktop;
         bool m_touchpad;

@@ -35,11 +35,14 @@ namespace Mengine
         bool isKeyDown( EKeyCode _code ) const;
         bool isAnyKeyDown() const;
 
+    public:
+        void getCursorPosition( mt::vec2f * const _point ) const;
+
     protected:
         void fillKeys_();
 
     protected:
-        void calcCursorPosition_( int _mx, int _my, mt::vec2f * _point ) const;
+        void calcCursorPosition_( int _mx, int _my, mt::vec2f * const _point ) const;
 
     protected:
         uint32_t acquireFingerIndex_( SDL_FingerID _fingerId );

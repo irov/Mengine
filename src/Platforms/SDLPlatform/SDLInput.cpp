@@ -37,7 +37,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLInput::calcCursorPosition_( int _mx, int _my, mt::vec2f * _point ) const
+    void SDLInput::calcCursorPosition_( int _mx, int _my, mt::vec2f * const _point ) const
     {
         float x = static_cast<float>(_mx);
         float y = static_cast<float>(_my);
@@ -249,6 +249,17 @@ namespace Mengine
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLInput::getCursorPosition( mt::vec2f * const _point ) const
+    {
+        int x;
+        int y;
+        Uint32 state = SDL_GetMouseState( &x, &y );
+
+        MENGINE_UNUSED( state );
+
+        this->calcCursorPosition_( x, y, _point );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLInput::fillKeys_()

@@ -35,6 +35,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/InputServiceHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -85,9 +86,9 @@ namespace Mengine
         , m_icon( 0 )
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
+        , m_active( false )
         , m_shouldQuit( false )
         , m_running( false )
-        , m_pause( false )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -710,6 +711,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalizeService()
     {
+        m_active = false;
+
         this->destroyWindow_();
 
         SDL_Quit();
@@ -788,13 +791,6 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            if( m_pause == true )
-            {
-                SDL_Delay( 100 );
-
-                continue;
-            }
-
             bool quitRequest = this->processEvents();
 
             if( quitRequest == true )
@@ -817,11 +813,12 @@ namespace Mengine
                     ->tick( frameTime );
             }
 
-            if( APPLICATION_SERVICE()
-                ->isFocus() == true )
+            if( this->isNeedWindowRender() == true )
             {
-                if( APPLICATION_SERVICE()
-                    ->render() == true )
+                bool sucessful = APPLICATION_SERVICE()
+                    ->render();
+
+                if( sucessful == true )
                 {
                     APPLICATION_SERVICE()
                         ->flush();
@@ -2733,14 +2730,76 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setActive_( bool _active )
     {
-        APPLICATION_SERVICE()
-            ->setFocus( _active );
+        if( m_active == _active )
+        {
+            return;
+        }
 
-        INPUT_SERVICE()
-            ->onFocus( _active );
+        m_active = _active;
 
-        APPLICATION_SERVICE()
-            ->turnSound( _active );
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
+
+        mt::vec2f point;
+        m_sdlInput->getCursorPosition( &point );
+        
+        Helper::pushMousePositionEvent( 0, point.x, point.y, 0.f );
+
+        if( m_active == false )
+        {
+            if( nopause == false )
+            {
+                Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+            }
+        }
+        else
+        {
+            Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+        }
+
+        if( nopause == false )
+        {
+            APPLICATION_SERVICE()
+                ->setFocus( m_active );
+
+            INPUT_SERVICE()
+                ->onFocus( m_active );
+
+            APPLICATION_SERVICE()
+                ->turnSound( m_active );
+        }
+        else
+        {
+            APPLICATION_SERVICE()
+                ->setFocus( true );
+
+            INPUT_SERVICE()
+                ->onFocus( true );
+
+            APPLICATION_SERVICE()
+                ->turnSound( true );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::isNeedWindowRender() const
+    {
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
+
+        if( nopause == true )
+        {
+            return true;
+        }
+
+        bool focus = APPLICATION_SERVICE()
+            ->isFocus();
+
+        if( focus == true && m_active == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::initializeFileService_()

@@ -461,6 +461,7 @@ namespace Mengine
         {
             return _handle.dead;
         } );
+
         m_handlers.erase( it_erase, m_handlers.end() );
     }
     //////////////////////////////////////////////////////////////////////////

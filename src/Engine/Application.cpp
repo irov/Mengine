@@ -1603,9 +1603,12 @@ namespace Mengine
                 ->update( m_focus );
         }
 
-        if( m_update == false && (m_focus == false || m_freeze == true) && m_nopause == true )
+        if( m_nopause == false )
         {
-            return false;
+            if( m_update == false && (m_focus == false || m_freeze == true) )
+            {
+                return false;
+            }
         }
 
         GAME_SERVICE()

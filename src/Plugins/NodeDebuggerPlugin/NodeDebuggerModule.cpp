@@ -49,10 +49,12 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Blobject.h"
+#include "Kernel/StringHelper.h"
 
 #include "Config/StdString.h"
 
 #include <iomanip>
+#include <iterator>
 
 namespace Mengine
 {
@@ -116,50 +118,18 @@ namespace Mengine
         {
             MENGINE_UNUSED( _event );
 
-
-            // TODO
-            // Need recursive foreach for childs
-
-            /*for( const BaseRender * child : m_renderChildren )
-            {
-                child->renderWithChildren( _renderPipeline, &context, false );
-            }*/
-
-            const ScenePtr & currentScene = SCENE_SERVICE()
-                ->getCurrentScene();
-
-            
-
             if( INPUT_SERVICE()->isAltDown() == false )
             {
                 return;
             }
             else
             {
-                currentScene->foreachChildren( [this]( const NodePtr & _child )
-                {
-                    RenderInterface * childRender = _child->getRender();
-                    if( childRender == nullptr )
-                    {
-                        return;
-                    }
+                const ScenePtr & currentScene = SCENE_SERVICE()
+                    ->getCurrentScene();
 
-                    const mt::box2f * boundingBox = childRender->getBoundingBox();
-                    if( boundingBox == nullptr )
-                    {
-                        return;
-                    }
+                this->findChildRecursive( currentScene );
 
-                    const mt::vec2f & cursorPosition = INPUT_SERVICE()
-                        ->getCursorPosition( 0 );
-
-                    if( mt::is_intersect( *boundingBox, cursorPosition ) == true )
-                    {
-                        m_selectedNode = _child;
-
-                        this->sendSelectedNode();
-                    }
-                } );
+                this->sendSelectedNode();
             }
             
         }, MENGINE_DOCUMENT_FACTORABLE );
@@ -1548,10 +1518,16 @@ namespace Mengine
 
         pugi::xml_node xmlNode = payloadNode.append_child( "Node" );
 
-        this->serializeNodeSingle( m_selectedNode, xmlNode );
+        UniqueId selectedNodeId = m_selectedNode->getUniqueIdentity();
+        xmlNode.append_attribute( "SelectedNodeId" ).set_value( selectedNodeId );
 
         VectorNodePath pathToRoot;
         Helper::findPathToRootFromParent( m_scene, m_selectedNode, &pathToRoot );
+
+        String pathStr;
+        this->pathToString( pathToRoot, &pathStr );
+
+        xmlNode.append_attribute( "PathToRoot" ).set_value( pathStr.c_str() );
 
         NodeDebuggerPacket packet;
 
@@ -1979,6 +1955,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::pathToString( const VectorNodePath & _path, String * const _outStr ) const
+    {
+        Stringstream stream;
+        std::copy( _path.begin(), _path.end(), std::ostream_iterator<UniqueId>( stream, "/" ) );
+
+        *_outStr = stream.str();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::notifyChangeArrow( const ArrowPtr & _arrow )
     {
         this->setArrow( _arrow );
@@ -2011,6 +1995,34 @@ namespace Mengine
     void NodeDebuggerModule::setUpdateSceneFlag( bool _flag )
     {
         m_shouldUpdateScene = _flag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::findChildRecursive( const NodePtr & _currentNode )
+    {
+        _currentNode->foreachChildren( [this]( const NodePtr & _child )
+        {
+            this->findChildRecursive( _child );
+
+            RenderInterface * childRender = _child->getRender();
+            if( childRender == nullptr )
+            {
+                return;
+            }
+
+            const mt::box2f * boundingBox = childRender->getBoundingBox();
+            if( boundingBox == nullptr )
+            {
+                return;
+            }
+
+            const mt::vec2f & cursorPosition = INPUT_SERVICE()
+                ->getCursorPosition( 0 );
+
+            if( mt::is_intersect( *boundingBox, cursorPosition ) == true )
+            {
+                m_selectedNode = _child;
+            }
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
 }

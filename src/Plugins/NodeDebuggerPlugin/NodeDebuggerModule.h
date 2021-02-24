@@ -120,6 +120,7 @@ namespace Mengine
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
         void receiveGameControlCommand( const String & _command );
         void stringToPath( const String & _str, VectorNodePath * const _path ) const;
+        void pathToString( const VectorNodePath & _path, String * const _outStr ) const;
 
     protected:
         void notifyChangeArrow( const ArrowPtr & _arrow );
@@ -130,6 +131,9 @@ namespace Mengine
 
     public:
         void setUpdateSceneFlag( bool _flag ) override;
+
+    protected:
+        void findChildRecursive( const NodePtr & _currentNode );
 
     protected:
         uint32_t m_globalKeyHandlerF2;

@@ -2009,6 +2009,17 @@ namespace Mengine
                 return;
             }
 
+            ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
+
+            if( shape != nullptr )
+            {
+                const SurfacePtr & surface = shape->getSurface();
+                if( surface == nullptr )
+                {
+                    return;
+                }
+            }
+
             const mt::box2f * boundingBox = childRender->getBoundingBox();
             if( boundingBox == nullptr )
             {

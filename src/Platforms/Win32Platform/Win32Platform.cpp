@@ -1483,7 +1483,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+                    Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
@@ -1537,7 +1537,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
                     }
                 }
 
@@ -1547,7 +1547,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
                     }
                 }
 
@@ -1557,7 +1557,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_MBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
                     }
                 }
 
@@ -1570,7 +1570,7 @@ namespace Mengine
                     ::InvalidateRect( hWnd, NULL, FALSE );
                     ::UpdateWindow( hWnd );
 
-                    Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+                    Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
                 }
 
                 if( m_lastMouse == false )
@@ -1614,7 +1614,7 @@ namespace Mengine
                 fdx /= width;
                 fdy /= height;
 
-                Helper::pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
+                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f );
 
                 handle = true;
                 *_result = 0;
@@ -1708,7 +1708,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -1735,7 +1735,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[0] = false;
@@ -1762,7 +1762,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = FALSE;
@@ -1788,7 +1788,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[1] = false;
@@ -1815,7 +1815,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -1841,7 +1841,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[2] = false;
@@ -4439,19 +4439,19 @@ namespace Mengine
         mt::vec2f point;
         if( this->calcCursorPosition_( &point ) == true )
         {
-            Helper::pushMousePositionEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMousePositionEvent( TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( m_active == false )
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( nopause == false )

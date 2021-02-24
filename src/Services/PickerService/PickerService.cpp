@@ -250,7 +250,7 @@ namespace Mengine
         this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickTraps( const mt::vec2f & _point, uint32_t _touchId, float _pressure, const InputSpecialData & _special, VectorPickers * const _pickers ) const
+    bool PickerService::pickTraps( const mt::vec2f & _point, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickers * const _pickers ) const
     {
         VectorPickerStates statesAux;
         if( this->pickStates_( _point.x, _point.y, _touchId, _pressure, _special, &statesAux ) == false )
@@ -313,7 +313,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::updateTraps_()
     {
-        uint32_t touchId = 0;
+        ETouchCode touchId = TC_TOUCH0;
 
         const mt::vec2f & position = INPUT_SERVICE()
             ->getCursorPosition( touchId );
@@ -338,7 +338,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, 0, 0.f, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.x, _event.y, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -375,7 +375,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, 0, 0.f, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.x, _event.y, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -633,7 +633,7 @@ namespace Mengine
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.x, _event.y, 0, 0.f, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.x, _event.y, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -749,7 +749,7 @@ namespace Mengine
         visitor.visit( picker, context );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickStates_( float _x, float _y, uint32_t _touchId, float _pressure, const InputSpecialData & _special, VectorPickerStates * const _states ) const
+    bool PickerService::pickStates_( float _x, float _y, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickerStates * const _states ) const
     {
         MENGINE_ASSERTION_FATAL( _states->empty() );
 

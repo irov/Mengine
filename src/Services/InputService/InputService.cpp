@@ -278,7 +278,7 @@ namespace Mengine
         return inside;
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::applyCursorPosition_( uint32_t _touchId, float _x, float _y, float _pressure )
+    void InputService::applyCursorPosition_( ETouchCode _touchId, float _x, float _y, float _pressure )
     {
         if( _touchId >= MENGINE_INPUT_MAX_TOUCH )
         {
@@ -312,17 +312,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::setCursorPosition( uint32_t _touchId, const mt::vec2f & _point, float _pressure )
+    void InputService::setCursorPosition( ETouchCode _touchId, const mt::vec2f & _point, float _pressure )
     {
         this->applyCursorPosition_( _touchId, _point.x, _point.y, _pressure );
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & InputService::getCursorPosition( uint32_t _touchId ) const
+    const mt::vec2f & InputService::getCursorPosition( ETouchCode _touchId ) const
     {
         return m_cursorPosition[_touchId];
     }
     //////////////////////////////////////////////////////////////////////////
-    float InputService::getCursorPressure( uint32_t _touchId ) const
+    float InputService::getCursorPressure( ETouchCode _touchId ) const
     {
         return m_cursorPressure[_touchId];
     }

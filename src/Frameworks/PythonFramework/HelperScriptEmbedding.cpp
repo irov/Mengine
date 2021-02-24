@@ -3482,6 +3482,25 @@ namespace Mengine
             .def( "MC_MBUTTON", MC_MBUTTON )
             ;
 
+        pybind::enum_<ETouchCode>( _kernel, "TouchCode" )
+            .def( "TC_TOUCH0", TC_TOUCH0 )
+            .def( "TC_TOUCH1", TC_TOUCH1 )
+            .def( "TC_TOUCH2", TC_TOUCH2 )
+            .def( "TC_TOUCH3", TC_TOUCH3 )
+            .def( "TC_TOUCH4", TC_TOUCH4 )
+            .def( "TC_TOUCH5", TC_TOUCH5 )
+            .def( "TC_TOUCH6", TC_TOUCH6 )
+            .def( "TC_TOUCH7", TC_TOUCH7 )
+            .def( "TC_TOUCH8", TC_TOUCH8 )
+            .def( "TC_TOUCH9", TC_TOUCH9 )
+            .def( "TC_TOUCH10", TC_TOUCH10 )
+            .def( "TC_TOUCH11", TC_TOUCH11 )
+            .def( "TC_TOUCH12", TC_TOUCH12 )
+            .def( "TC_TOUCH13", TC_TOUCH13 )
+            .def( "TC_TOUCH14", TC_TOUCH14 )
+            .def( "TC_TOUCH15", TC_TOUCH15 )
+            ;
+
         pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
 

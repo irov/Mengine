@@ -4,6 +4,7 @@
 
 #include "Kernel/KeyCode.h"
 #include "Kernel/MouseCode.h"
+#include "Kernel/TouchCode.h"
 
 #include "Config/Char.h"
 
@@ -54,7 +55,7 @@ namespace Mengine
     {
         InputSpecialData special;
 
-        uint32_t touchId;
+        ETouchCode touchId;
         float x;
         float y;
         EMouseCode code;
@@ -77,7 +78,7 @@ namespace Mengine
     {
         InputSpecialData special;
 
-        uint32_t touchId;
+        ETouchCode touchId;
         float x;
         float y;
         float dx;
@@ -89,7 +90,7 @@ namespace Mengine
     {
         InputSpecialData special;
 
-        uint32_t touchId;
+        ETouchCode touchId;
         float x;
         float y;
         float pressure;
@@ -99,7 +100,7 @@ namespace Mengine
     {
         InputSpecialData special;
 
-        uint32_t touchId;
+        ETouchCode touchId;
         float x;
         float y;
         float pressure;
@@ -109,7 +110,7 @@ namespace Mengine
     {
         InputSpecialData special;
 
-        uint32_t touchId;
+        ETouchCode touchId;
         float x;
         float y;
         float pressure;

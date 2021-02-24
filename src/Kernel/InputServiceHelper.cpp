@@ -7,7 +7,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseMoveEvent( uint32_t _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
+        void pushMouseMoveEvent( ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
         {
             float vx;
             float vy;
@@ -35,7 +35,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, EMouseCode _code, float _pressure, bool _isDown )
+        void pushMouseButtonEvent( ETouchCode _touchId, float _x, float _y, EMouseCode _code, float _pressure, bool _isDown )
         {
             float vx;
             float vy;
@@ -107,7 +107,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseLeaveEvent( uint32_t _touchId, float _x, float _y, float _pressure )
+        void pushMouseLeaveEvent( ETouchCode _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;
@@ -130,7 +130,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseEnterEvent( uint32_t _touchId, float _x, float _y, float _pressure )
+        void pushMouseEnterEvent( ETouchCode _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;
@@ -176,7 +176,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMousePositionEvent( uint32_t _touchId, float _x, float _y, float _pressure )
+        void pushMousePositionEvent( ETouchCode _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;

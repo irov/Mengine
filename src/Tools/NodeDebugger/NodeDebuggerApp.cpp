@@ -741,6 +741,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveSelectedNode( const pugi::xml_node & _xmlContainer )
     {
+        pugi::xml_node node = _xmlContainer.child( "Node" );
+
+        uint32_t id = node.attribute( "SelectedNodeId" ).as_uint();
+        m_selectedNodeData.selectedNodeId = id;
+
+        String pathToRoot = node.attribute( "PathToRoot" ).value();
+
+        Vector<uint32_t> path = this->StringToPath( pathToRoot );
+        m_selectedNodeData.pathToRoot = path;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node )

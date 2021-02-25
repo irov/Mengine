@@ -30,7 +30,7 @@ namespace Mengine
     {
         auto lambda = [this, _node]( const InputKeyEvent & _event )
         {
-            if( _event.isSpecial == true )
+            if( _event.special.isSpecial == true )
             {
                 return false;
             }

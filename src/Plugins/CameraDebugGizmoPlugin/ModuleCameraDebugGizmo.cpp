@@ -47,7 +47,7 @@ namespace Mengine
             const mt::vec2f & camera_scale = camera->getCameraScale();
 
             const mt::vec2f & pos = INPUT_SERVICE()
-                ->getCursorPosition( MC_LBUTTON );
+                ->getCursorPosition( TC_TOUCH0 );
 
             mt::vec2f new_camera_offset = camera_offset;
             new_camera_offset.x -= (1.f - pos.x * 2.f) * camera_scale.x;

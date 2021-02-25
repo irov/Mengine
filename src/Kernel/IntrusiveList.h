@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #include "stdex/intrusive_list.h"
 
 namespace Mengine

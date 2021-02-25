@@ -160,5 +160,7 @@ namespace Mengine
 
         cURLRequestListenerPtr m_networkLogger;
         UniqueId m_requestListenerId;
+
+        mt::vec2f m_cursorWorldPosition;
     };
 }

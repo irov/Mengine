@@ -78,7 +78,10 @@ namespace Mengine
         , m_shutdown( false )
         , m_width( 1280 )
         , m_height( 720 )
-        , m_selectedNode( nullptr )
+        , m_selectedArrowNode( nullptr )
+        , m_selectedSceneNode( nullptr )
+        , m_selectedPickerableNode( nullptr )
+        , m_selectedRenderableNode( nullptr )
         , m_defaultIcon( nullptr )
         , m_currentTab( 0 )
         , m_serverAddress()
@@ -369,10 +372,10 @@ namespace Mengine
 
             if( m_selectedTab == "scene" )
             {
-                if( m_selectedNode && m_selectedNode->dirty )
+                if( m_selectedSceneNode && m_selectedSceneNode->dirty )
                 {
-                    this->SendChangedNode( *m_selectedNode );
-                    m_selectedNode->dirty = false;
+                    this->SendChangedNode( *m_selectedSceneNode );
+                    m_selectedSceneNode->dirty = false;
                 }
 
                 if( m_selectedNodePath.empty() == false )
@@ -533,7 +536,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_arrow, path );
+            m_selectedArrowNode = this->PathToNode( m_arrow, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -555,7 +558,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_scene, path );
+            m_selectedSceneNode = this->PathToNode( m_scene, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -577,7 +580,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_scenePickerable, path );
+            m_selectedPickerableNode = this->PathToNode( m_scenePickerable, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -599,7 +602,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_sceneRenderable, path );
+            m_selectedRenderableNode = this->PathToNode( m_sceneRenderable, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -947,9 +950,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DestroyNode( DebuggerNode * _node )
     {
-        if( m_selectedNode == _node )
+        if( m_selectedSceneNode == _node )
         {
-            m_selectedNode = nullptr;
+            m_selectedSceneNode = nullptr;
+        }
+
+        if( m_selectedArrowNode == _node )
+        {
+            m_selectedArrowNode = nullptr;
+        }
+
+        if( m_selectedPickerableNode == _node )
+        {
+            m_selectedPickerableNode = nullptr;
+        }
+
+        if( m_selectedRenderableNode == _node )
+        {
+            m_selectedRenderableNode = nullptr;
         }
 
         for( DebuggerNode * n : _node->children )
@@ -1213,6 +1231,8 @@ namespace Mengine
             ImGui::RadioButton( "Render", &SceneTagId, 3 );
         }
 
+        DebuggerNode * selectedNode = nullptr;
+
         switch( SceneTagId )
         {
         case 0:
@@ -1223,7 +1243,9 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "ArrowTree", ImVec2( 0, 200.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_arrow, "ArrowFull" );
+                            this->DoNodeElement( m_arrow, &m_selectedArrowNode, "ArrowFull" );
+
+                            selectedNode = m_selectedArrowNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1237,7 +1259,9 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scene, "SceneFull" );
+                            this->DoNodeElement( m_scene, &m_selectedSceneNode, "SceneFull" );
+
+                            selectedNode = m_selectedSceneNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1251,7 +1275,9 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scenePickerable, "ScenePickerable" );
+                            this->DoNodeElement( m_scenePickerable, &m_selectedPickerableNode, "ScenePickerable" );
+
+                            selectedNode = m_selectedPickerableNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1265,7 +1291,9 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_sceneRenderable, "SceneRenderable" );
+                            this->DoNodeElement( m_sceneRenderable, &m_selectedRenderableNode, "SceneRenderable" );
+
+                            selectedNode = m_selectedRenderableNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1277,9 +1305,9 @@ namespace Mengine
 
         if( ImGui::BeginChild( "Panel" ) )
         {
-            if( m_selectedNode )
+            if( selectedNode != nullptr )
             {
-                this->DoNodeProperties( m_selectedNode );
+                this->DoNodeProperties( selectedNode );
             }
         }
         ImGui::EndChild();
@@ -1983,9 +2011,9 @@ namespace Mengine
         return ss.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, const String & _tag )
+    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, DebuggerNode ** _selectedNode, const String & _tag )
     {
-        const ImGuiTreeNodeFlags seletedFlag = (m_selectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
+        const ImGuiTreeNodeFlags seletedFlag = (*_selectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
         const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
@@ -2014,14 +2042,14 @@ namespace Mengine
 
         if( result.second )
         {
-            this->OnSelectNode( _node );
+            this->OnSelectNode( _node, _selectedNode );
         }
 
         if( result.first )
         {
             for( DebuggerNode * child : _node->children )
             {
-                this->DoNodeElement( child, _tag );
+                this->DoNodeElement( child, _selectedNode, _tag );
             }
 
             ImGui::TreePop();
@@ -2450,15 +2478,15 @@ namespace Mengine
         m_connectionStatus = ConnectionStatus::DisconnectionRequested;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::OnSelectNode( DebuggerNode * _node )
+    void NodeDebuggerApp::OnSelectNode( DebuggerNode * _node, DebuggerNode ** _selectedNode )
     {
-        if( m_selectedNode != _node )
+        if( *_selectedNode != _node )
         {
-            m_selectedNode = _node;
+            *_selectedNode = _node;
 
-            if( m_selectedNode != nullptr )
+            if( *_selectedNode != nullptr )
             {
-                Vector<uint32_t> path = this->CollectNodePath( m_selectedNode );
+                Vector<uint32_t> path = this->CollectNodePath( *_selectedNode );
 
                 m_selectedNodePath = this->PathToString( path );
             }

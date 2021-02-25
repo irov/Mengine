@@ -85,7 +85,7 @@ namespace Mengine
             , uint32_t _textureCount, const DocumentPtr & _doc ) override;
 
     public:
-        const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const override;
+        const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const override;
 
     public:
         void setDebugLineMaterial( const RenderMaterialInterfacePtr & _debugLineMaterial ) override;
@@ -122,7 +122,7 @@ namespace Mengine
         typedef IntrusiveList<RenderMaterial> IntrusiveListRenderMaterial;
         IntrusiveListRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
-        RenderMaterialInterfacePtr m_solidRenderMaterial[4];
+        RenderMaterialInterfacePtr m_solidRenderMaterial[4][2];
 
         FactoryPtr m_factoryMaterial;
 

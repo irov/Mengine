@@ -134,6 +134,7 @@ namespace Mengine
 
     protected:
         void findChildRecursive( const NodePtr & _currentNode );
+        bool checkOnInfinityAndIntersectForSelectedNode( const mt::box2f & _boundingBox, const NodePtr & _child );
 
     protected:
         uint32_t m_globalKeyHandlerF2;

@@ -127,6 +127,22 @@ namespace Mengine
                 const ScenePtr & currentScene = SCENE_SERVICE()
                     ->getCurrentScene();
 
+                const mt::vec2f & cursorPosition = INPUT_SERVICE()
+                    ->getCursorPosition( ETouchCode::TC_TOUCH0 );
+
+                const ArrowPtr & arrow = PLAYER_SERVICE()
+                    ->getArrow();
+
+                RenderInterface * render = arrow->getRender();
+
+                RenderContext context;
+                render->makeRenderContext( &context );
+
+                mt::vec2f cursorWorldPosition;
+                arrow->calcMouseWorldPosition( &context, cursorPosition, &cursorWorldPosition );
+
+                m_cursorWorldPosition = cursorWorldPosition;
+
                 this->findChildRecursive( currentScene );
 
                 this->sendSelectedNode();
@@ -1999,40 +2015,60 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::findChildRecursive( const NodePtr & _currentNode )
     {
-        _currentNode->foreachChildren( [this]( const NodePtr & _child )
+        _currentNode->foreachChildrenReverse( [this]( const NodePtr & _child )
         {
-            this->findChildRecursive( _child );
-
-            RenderInterface * childRender = _child->getRender();
-            if( childRender == nullptr )
+            if( _child->isEnable() == false )
             {
                 return;
             }
 
-            ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
+            this->findChildRecursive( _child );
 
-            if( shape != nullptr )
+            const ConstString & type = _child->getType();
+
+            DebuggerBoundingBoxInterfacePtr boundingBoxInterfacePtr = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), type );
+
+            if( boundingBoxInterfacePtr != nullptr )
             {
-                const SurfacePtr & surface = shape->getSurface();
-                if( surface == nullptr )
+                mt::box2f bbox;
+                if( boundingBoxInterfacePtr->getBoundingBox( _child, &bbox ) == true )
+                {
+                    if( mt::is_intersect( bbox, m_cursorWorldPosition ) == true )
+                    {
+                        m_selectedNode = _child;
+                    }
+                }
+            }
+            else
+            {
+                RenderInterface * childRender = _child->getRender();
+                if( childRender == nullptr )
                 {
                     return;
                 }
-            }
 
-            const mt::box2f * boundingBox = childRender->getBoundingBox();
-            if( boundingBox == nullptr )
-            {
-                return;
-            }
+                ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
 
-            const mt::vec2f & cursorPosition = INPUT_SERVICE()
-                ->getCursorPosition( 0 );
+                if( shape != nullptr )
+                {
+                    const SurfacePtr & surface = shape->getSurface();
+                    if( surface == nullptr )
+                    {
+                        return;
+                    }
+                }
 
-            if( mt::is_intersect( *boundingBox, cursorPosition ) == true )
-            {
-                m_selectedNode = _child;
-            }
+                const mt::box2f * boundingBox = childRender->getBoundingBox();
+                if( boundingBox == nullptr )
+                {
+                    return;
+                }
+
+                if( mt::is_intersect( *boundingBox, m_cursorWorldPosition ) == true )
+                {
+                    m_selectedNode = _child;
+                }
+            } 
         } );
     }
     //////////////////////////////////////////////////////////////////////////

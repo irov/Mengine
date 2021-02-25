@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
-
 #include "Kernel/Viewport.h"
 
 namespace Mengine

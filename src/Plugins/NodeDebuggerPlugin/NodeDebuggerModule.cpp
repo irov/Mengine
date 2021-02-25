@@ -2033,7 +2033,7 @@ namespace Mengine
                 mt::box2f bbox;
                 if( boundingBoxInterfacePtr->getBoundingBox( _child, &bbox ) == true )
                 {
-                    if( mt::is_intersect( bbox, m_cursorWorldPosition ) == true )
+                    if( this->checkOnInfinityAndIntersectForSelectedNode( bbox, _child ) == true )
                     {
                         m_selectedNode = _child;
                     }
@@ -2064,12 +2064,22 @@ namespace Mengine
                     return;
                 }
 
-                if( mt::is_intersect( *boundingBox, m_cursorWorldPosition ) == true )
+                if( this->checkOnInfinityAndIntersectForSelectedNode( *boundingBox, _child ) == true )
                 {
                     m_selectedNode = _child;
                 }
             } 
         } );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NodeDebuggerModule::checkOnInfinityAndIntersectForSelectedNode( const mt::box2f & _boundingBox, const NodePtr & _child )
+    {
+        if( mt::is_intersect( _boundingBox, m_cursorWorldPosition ) == true && mt::is_infinity_box( _boundingBox ) == false )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

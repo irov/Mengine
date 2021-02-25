@@ -48,6 +48,56 @@ namespace Mengine
         *_screenPosition = vp.begin + vpSize * v_wvpn;
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderCameraOrthogonal::fromScreenToWorldPosition( const mt::vec2f & _screenPoint, float _deep, mt::vec3f * const _worldPosition ) const
+    {
+        const mt::mat4f & pm_inv = this->getCameraProjectionMatrixInv();
+
+        mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f( 1.f, 1.f );
+        p1.y = -p1.y;
+
+        mt::vec2f p_pm;
+        mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
+
+        const mt::mat4f & vm = this->getCameraViewMatrix();
+
+        mt::mat4f vm_inv;
+        mt::inv_m4_m4( vm_inv, vm );
+
+        mt::vec2f p = p_pm;
+
+        mt::vec3f p_vm;
+        mt::mul_v3_v2_m4( p_vm, p, vm_inv );
+
+        Viewport vp;
+        this->makeViewport_( &vp );
+
+        p_vm.x -= vp.begin.x;
+        p_vm.y -= vp.begin.y;
+        p_vm.z += _deep;
+
+        *_worldPosition = p_vm;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderCameraOrthogonal::fromScreenToWorldDelta( const mt::vec2f & _screenDeltha, float _deep, mt::vec3f * const _worldDelta ) const
+    {
+        const mt::mat4f & pm_inv = this->getCameraViewProjectionMatrixInv();
+
+        mt::vec2f p3 = _screenDeltha * 2.f - mt::vec2f( 1.f, 1.f );
+        p3.y = -p3.y;
+
+        mt::vec3f p_pm_deltha;
+        mt::mul_v3_v2_m4( p_pm_deltha, p3, pm_inv );
+
+        Viewport vp;
+        this->makeViewport_( &vp );
+
+        p_pm_deltha.x -= vp.begin.x;
+        p_pm_deltha.y -= vp.begin.y;
+        p_pm_deltha.z += _deep;
+
+        *_worldDelta = p_pm_deltha;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonal::setCameraPosition( const mt::vec3f & _pos )
     {
         m_cameraPosition = _pos;

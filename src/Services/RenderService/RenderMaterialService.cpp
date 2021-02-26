@@ -124,6 +124,7 @@ namespace Mengine
 
         m_defaultStageNames[EM_COLOR_SOLID] = STRINGIZE_STRING_LOCAL( "Color_Solid" );
         m_defaultStageNames[EM_COLOR_BLEND] = STRINGIZE_STRING_LOCAL( "Color_Blend" );
+        m_defaultStageNames[EM_COLOR_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Color_Blend_Premultiply" );
         m_defaultStageNames[EM_COLOR_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Color_Intensive" );
         m_defaultStageNames[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Color_Multiply" );
         m_defaultStageNames[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( "Color_Screen" );

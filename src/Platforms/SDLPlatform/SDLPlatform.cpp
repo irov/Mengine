@@ -35,6 +35,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/AssertionAllocator.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -130,9 +131,11 @@ namespace Mengine
 
         return sizeof( deploy_mac_data ) - 1;
 #elif defined(MENGINE_PLATFORM_OSX)
-        const char * basePath = SDL_GetBasePath();
+        char * basePath = SDL_GetBasePath();
 
         MENGINE_STRCPY( _currentPath, basePath );
+
+        SDL_free( basePath );
 
         return MENGINE_STRLEN( _currentPath );
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -744,6 +747,8 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+
+        MENGINE_ASSERTION_ALLOCATOR( "SDL" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()

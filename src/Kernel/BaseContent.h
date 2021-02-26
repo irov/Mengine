@@ -13,11 +13,11 @@ namespace Mengine
         ~BaseContent() override;
 
     public:
-        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
-        const FileGroupInterfacePtr & getFileGroup() const;
+        void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
+        const FileGroupInterfacePtr & getFileGroup() const override;
 
-        void setFilePath( const FilePath & _filePath );
-        const FilePath & getFilePath() const;
+        void setFilePath( const FilePath & _filePath ) override;
+        const FilePath & getFilePath() const override;
 
     public:
         void setCodecType( const ConstString & _codecType ) override;

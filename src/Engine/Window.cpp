@@ -99,7 +99,6 @@ namespace Mengine
             const RenderTextureInterfacePtr & texture = image->getTexture();
             const RenderTextureInterfacePtr & textureAlpha = image->getTextureAlpha();
 
-
             uint32_t textureCount = 0;
 
             mt::uv4f uvs[2];

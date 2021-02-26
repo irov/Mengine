@@ -726,6 +726,7 @@ Core
     LoggerLevel.h
     KeyCode.h
     MouseCode.h
+    TouchCode.h
     
     Document.h
     Document.cpp    

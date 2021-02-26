@@ -70,7 +70,7 @@ namespace Mengine
             , uint32_t _textureCount, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const = 0;
+        virtual const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const = 0;
 
     public:
         virtual void setDebugLineMaterial( const RenderMaterialInterfacePtr & _debugLineMaterial ) = 0;

@@ -600,10 +600,10 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & Materialable::getSolidMaterial( EMaterialBlendMode _blendMode ) const
+    const RenderMaterialInterfacePtr & Materialable::getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const
     {
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-            ->getSolidMaterial( _blendMode );
+            ->getSolidMaterial( _blendMode, _premultiply );
 
         return material;
     }

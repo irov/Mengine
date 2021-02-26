@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 

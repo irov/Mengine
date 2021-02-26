@@ -643,11 +643,11 @@ namespace Mengine
         void DoUINetwork();
         void DoUISettingsTab();
         String DoIPInput( const String & _title, const String & _inIP );
-        void DoNodeElement( DebuggerNode * _node, const String & _tag );
+        void DoNodeElement( DebuggerNode * _node, DebuggerNode ** _selectedNode, const String & _tag );
         void DoNodeProperties( DebuggerNode * _node );
         void OnConnectButton();
         void OnDisconnectButton();
-        void OnSelectNode( DebuggerNode * _node );
+        void OnSelectNode( DebuggerNode * _node, DebuggerNode ** _selectedNode );
         void OnPauseButton();
 
         // network
@@ -677,7 +677,10 @@ namespace Mengine
         int m_height;
 
         // UI
-        DebuggerNode * m_selectedNode;
+        DebuggerNode * m_selectedArrowNode;
+        DebuggerNode * m_selectedSceneNode;
+        DebuggerNode * m_selectedPickerableNode;
+        DebuggerNode * m_selectedRenderableNode;
         const NodeIcon * m_defaultIcon;
         Vector<NodeIcon> m_icons;
         Vector<CachedImage> m_imagesCache;

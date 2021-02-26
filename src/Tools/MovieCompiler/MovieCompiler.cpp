@@ -141,16 +141,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in_path.empty() == true )
     {
-        message_error( "not found 'in' param\n"
-        );
+        message_error( "not found 'in' param\n" );
 
         return EXIT_FAILURE;
     }
 
     if( out_path.empty() == true )
     {
-        message_error( "not found 'out' param\n"
-        );
+        message_error( "not found 'out' param\n" );
 
         return EXIT_FAILURE;
     }

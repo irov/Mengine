@@ -112,6 +112,9 @@ namespace Mengine
         void updateVolume() override;
 
     protected:
+        void notifyEnginePrepareFinalize();
+
+    protected:
         void updateSoundVolumeProvider_( const SoundVolumeProviderInterfacePtr & _provider );
         void updateSourceVolume_( const SoundIdentityPtr & _source );
 
@@ -140,11 +143,9 @@ namespace Mengine
 
         FactoryPtr m_factorySoundIdentity;
 
-        typedef Vector<SoundIdentityPtr> VectorSoundSource;
-        VectorSoundSource m_soundIdentities;
-
-        typedef Vector<SoundIdentityInterfacePtr> VectorSoundListeners;
-        VectorSoundListeners m_soundStopListeners;
+        typedef Vector<SoundIdentityPtr> VectorSoundIdentity;
+        VectorSoundIdentity m_soundIdentities;
+        VectorSoundIdentity m_soundIdentitiesAux;
 
         ThreadJobPtr m_threadJobSoundBufferUpdate;
 

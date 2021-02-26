@@ -14,43 +14,23 @@ namespace Mengine
 
             const RenderCameraInterface * renderCamera = _context->camera;
 
-            const mt::mat4f & pm_inv = renderCamera->getCameraProjectionMatrixInv();
+            mt::vec3f worldPosition;
+            renderCamera->fromScreenToWorldPosition( _screenPoint, 0.f, &worldPosition );
 
-            mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f( 1.f, 1.f );
-            p1.y = -p1.y;
-
-            mt::vec2f p_pm;
-            mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
-
-            const mt::mat4f & vm = renderCamera->getCameraViewMatrix();
-
-            mt::mat4f vm_inv;
-            mt::inv_m4_m4( vm_inv, vm );
-
-            mt::vec2f p = p_pm;
-
-            mt::vec2f p_vm;
-            mt::mul_v2_v2_m4( p_vm, p, vm_inv );
-
-            *_worldPoint = p_vm;
+            *_worldPoint = worldPosition.to_vec2f();
         }
         //////////////////////////////////////////////////////////////////////////
-        void screenToWorldDelta( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha )
+        void screenToWorldDelta( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDelta )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _context );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
 
             const RenderCameraInterface * renderCamera = _context->camera;
 
-            const mt::mat4f & pm_inv = renderCamera->getCameraProjectionMatrixInv();
+            mt::vec3f worldDelta;
+            renderCamera->fromScreenToWorldDelta( _screenDeltha, 0.f, &worldDelta );
 
-            mt::vec2f p3 = (_screenDeltha) * 2.f - mt::vec2f( 1.f, 1.f );
-            p3.y = -p3.y;
-
-            mt::vec2f p_pm_deltha;
-            mt::mul_v2_v2_m4( p_pm_deltha, p3, pm_inv );
-
-            *_worldDeltha = p_pm_deltha;
+            *_worldDelta = worldDelta.to_vec2f();
         }
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenPosition( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f * const _screenPosition )

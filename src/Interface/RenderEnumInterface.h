@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #ifndef MENGINE_MAX_TEXTURE_STAGES
 #define MENGINE_MAX_TEXTURE_STAGES 4
 #endif

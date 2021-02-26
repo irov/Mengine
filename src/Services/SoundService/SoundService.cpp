@@ -8,6 +8,8 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificatorInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -84,34 +86,25 @@ namespace Mengine
 
         m_timepipeId = timepipe;
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &SoundService::notifyEnginePrepareFinalize, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
+
         this->stopSounds_();
 
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity == nullptr )
-            {
-                continue;
-            }
-
             this->stopSoundBufferUpdate_( identity );
 
-            const SoundSourceInterfacePtr & source = identity->getSoundSource();
-
-            if( source != nullptr )
-            {
-                source->stop();
-
-                identity->setSoundSource( nullptr );
-            }
+            identity->finalize();
         }
 
         m_soundIdentities.clear();
-        m_soundStopListeners.clear();
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
@@ -174,11 +167,6 @@ namespace Mengine
     {
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity == nullptr )
-            {
-                continue;
-            }
-
             identity->turn = true;
 
             if( identity->state != ESS_PLAY )
@@ -205,11 +193,6 @@ namespace Mengine
     {
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity == nullptr )
-            {
-                continue;
-            }
-
             identity->turn = false;
 
             if( identity->state != ESS_PLAY )
@@ -229,11 +212,6 @@ namespace Mengine
     {
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity == nullptr )
-            {
-                continue;
-            }
-
             identity->turn = true;
 
             if( identity->state != ESS_PLAY )
@@ -274,11 +252,6 @@ namespace Mengine
     {
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity == nullptr )
-            {
-                continue;
-            }
-
             identity->turn = false;
 
             if( identity->state != ESS_PLAY )
@@ -360,7 +333,7 @@ namespace Mengine
         identity->setSoundSource( source );
         identity->listener = nullptr;
         identity->worker = nullptr;
-        identity->bufferId = 0;
+        identity->workerId = 0;
 
         identity->time_left = 0.f;
 
@@ -553,11 +526,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::releaseSoundSource( const SoundIdentityInterfacePtr & _identity )
     {
+        this->stopSoundBufferUpdate_( _identity );
+
         _identity->finalize();
 
         uint32_t id = _identity->getId();
 
-        VectorSoundSource::iterator it_found = std::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityPtr & _identity )
+        VectorSoundIdentity::iterator it_found = std::find_if( m_soundIdentities.begin(), m_soundIdentities.end(), [id]( const SoundIdentityPtr & _identity )
         {
             return _identity->getId() == id;
         } );
@@ -685,11 +660,6 @@ namespace Mengine
 
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity == nullptr )
-            {
-                continue;
-            }
-
             if( identity->state != ESS_PLAY )
             {
                 continue;
@@ -740,7 +710,7 @@ namespace Mengine
 
                     if( identity->listener != nullptr )
                     {
-                        m_soundStopListeners.emplace_back( identity );
+                        m_soundIdentitiesAux.emplace_back( identity );
                     }
                 }
                 else
@@ -765,7 +735,7 @@ namespace Mengine
 
                     if( identity->listener != nullptr )
                     {
-                        m_soundStopListeners.emplace_back( identity );
+                        m_soundIdentitiesAux.emplace_back( identity );
                     }
                 }
                 else
@@ -780,13 +750,14 @@ namespace Mengine
             this->updateVolume();
         }
 
-        for( const SoundIdentityInterfacePtr & identity : m_soundStopListeners )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentitiesAux )
         {
-            SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
+            SoundListenerInterfacePtr keep_listener = identity->popSoundListener();
+
             keep_listener->onSoundEnd( identity );
         }
 
-        m_soundStopListeners.clear();
+        m_soundIdentitiesAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::mute( bool _mute )
@@ -1196,17 +1167,22 @@ namespace Mengine
     {
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity == nullptr )
-            {
-                continue;
-            }
-
             this->updateSourceVolume_( identity );
         }
 
         for( const SoundVolumeProviderInterfacePtr & provider : m_soundVolumeProviders )
         {
             this->updateSoundVolumeProvider_( provider );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundService::notifyEnginePrepareFinalize()
+    {
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        {
+            this->stopSoundBufferUpdate_( identity );
+
+            identity->finalize();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1403,11 +1379,11 @@ namespace Mengine
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            m_threadJobSoundBufferUpdate->removeWorker( _identity->bufferId );
+            m_threadJobSoundBufferUpdate->removeWorker( _identity->workerId );
         }
 
         _identity->worker = nullptr;
-        _identity->bufferId = 0;
+        _identity->workerId = 0;
 
         return true;
     }
@@ -1438,21 +1414,21 @@ namespace Mengine
 
             _identity->worker = worker;
 
-            uint32_t bufferId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker, MENGINE_DOCUMENT_FACTORABLE );
+            uint32_t workerId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker, MENGINE_DOCUMENT_FACTORABLE );
 
-            if( bufferId == 0 )
+            if( workerId == 0 )
             {
                 LOGGER_ERROR( "identity worker invalid add worker" );
 
                 return false;
             }
 
-            _identity->bufferId = bufferId;
+            _identity->workerId = workerId;
         }
         else
         {
             _identity->worker = nullptr;
-            _identity->bufferId = 0;
+            _identity->workerId = 0;
         }
 
         return true;
@@ -1472,7 +1448,7 @@ namespace Mengine
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            m_threadJobSoundBufferUpdate->pauseWorker( _identity->bufferId );
+            m_threadJobSoundBufferUpdate->pauseWorker( _identity->workerId );
         }
 
         return true;
@@ -1492,7 +1468,7 @@ namespace Mengine
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            m_threadJobSoundBufferUpdate->resumeWorker( _identity->bufferId );
+            m_threadJobSoundBufferUpdate->resumeWorker( _identity->workerId );
         }
 
         return true;
@@ -1566,25 +1542,11 @@ namespace Mengine
     {
         this->stopSounds_();
 
-        VectorSoundSource remove_soundIdentities = m_soundIdentities;
-
-        for( const SoundIdentityPtr & identity : remove_soundIdentities )
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
             this->stopSoundBufferUpdate_( identity );
 
-            if( identity->source != nullptr )
-            {
-                identity->source->stop();
-                identity->source = nullptr;
-            }
-
-            if( identity->listener != nullptr )
-            {
-                SoundListenerInterfacePtr keep_identity = identity->listener;
-                keep_identity->onSoundStop( identity );
-
-                identity->listener = nullptr;
-            }
+            identity->finalize();
         }
     }
     //////////////////////////////////////////////////////////////////////////

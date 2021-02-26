@@ -1046,7 +1046,7 @@ namespace Mengine
                 m_debugPause = true;
             }
 
-            if( _event.isAlt == true && _event.isDown == true )
+            if( _event.special.isAlt == true && _event.isDown == true )
             {
                 float timeFactor = -1.f;
 
@@ -1084,7 +1084,7 @@ namespace Mengine
 
                 float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
 
-                if( _event.isAlt == true )
+                if( _event.special.isAlt == true )
                 {
                     Debug_TimeFactorStep = 1.f;
                 }
@@ -1106,7 +1106,7 @@ namespace Mengine
 
                 float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
 
-                if( _event.isAlt == true )
+                if( _event.special.isAlt == true )
                 {
                     Debug_TimeFactorStep = 1.f;
                 }
@@ -1307,7 +1307,8 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-            ne.type = IET_MOUSE_ENTER;
+
+            ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;
             ne.y = vy;
@@ -1435,7 +1436,8 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-            ne.type = IET_MOUSE_ENTER;
+            
+            ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;
             ne.y = vy;
@@ -1443,9 +1445,6 @@ namespace Mengine
 
             this->mouseEnter( ne );
         }
-
-        //GAME_SERVICE()
-        //    ->mousePosition( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::mouseEnter( const InputMouseEnterEvent & _event )
@@ -1617,9 +1616,12 @@ namespace Mengine
                 ->update( m_focus );
         }
 
-        if( m_update == false && (m_focus == false || m_freeze == true) && m_nopause == true )
+        if( m_nopause == false )
         {
-            return false;
+            if( m_update == false && (m_focus == false || m_freeze == true) )
+            {
+                return false;
+            }
         }
 
         GAME_SERVICE()

@@ -2055,13 +2055,10 @@ namespace Mengine
 
                 ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
 
-                if( shape != nullptr )
+                const SurfacePtr & surface = shape->getSurface();
+                if( surface == nullptr )
                 {
-                    const SurfacePtr & surface = shape->getSurface();
-                    if( surface == nullptr )
-                    {
-                        return;
-                    }
+                    return;
                 }
 
                 const mt::box2f * boundingBox = childRender->getBoundingBox();
@@ -2075,9 +2072,12 @@ namespace Mengine
                     return;
                 }
 
-                if( this->cheHitWithAlpha() == false )
+                if( shape != nullptr )
                 {
-                    return;
+                    if( this->cheHitWithAlpha( shape ) == false )
+                    {
+                        return;
+                    }
                 }
 
                 m_selectedNode = _child;
@@ -2095,7 +2095,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::cheHitWithAlpha( const NodePtr & _currentNode )
+    bool NodeDebuggerModule::cheHitWithAlpha( const ShapePtr & _currentNode )
     {
         const RenderCameraInterfacePtr & renderCamera = PLAYER_SERVICE()
             ->getRenderCamera();
@@ -2143,7 +2143,52 @@ namespace Mengine
         mt::vec2f pointIn2;
         mt::mul_v2_v2_m4( pointIn2, pointIn1, invWorldMatrix );
 
-        return false;
+        if( pointIn2.x < 0.f || pointIn2.y < 0.f )
+        {
+            return false;
+
+        }
+        const SurfacePtr & surface = _currentNode->getSurface();
+        const RenderMaterialInterfacePtr & renderMaterial = surface->getMaterial();
+
+        uint32_t textureCount = renderMaterial->getTextureCount();
+        if( textureCount == 0 )
+        {
+            return true;
+        }
+
+        const RenderTextureInterfacePtr & renderTextureInterface = renderMaterial->getTexture( textureCount );
+
+        uint32_t width = renderTextureInterface->getWidth();
+        uint32_t height = renderTextureInterface->getHeight();
+
+        if( m_cursorWorldPosition.x >= width || m_cursorWorldPosition.y >= height )
+        {
+            return false;
+        }
+
+        const RenderImageInterfacePtr & renderImage = renderTextureInterface->getImage();
+
+        const RenderImageProviderInterfacePtr & renderImageProviderInterface = renderImage->getRenderImageProvider();
+
+        RenderImageLoaderInterfacePtr renderImageLoader = renderImageProviderInterface->getLoader( MENGINE_DOCUMENT_FACTORABLE );
+
+        MemoryInterfacePtr memory = renderImageLoader->getMemory( 0, MENGINE_DOCUMENT_FACTORABLE );
+
+        uint8_t * alphaBuffer = memory->getBuffer();
+
+        uint32_t alphaIndex = m_cursorWorldPosition.y * width + m_cursorWorldPosition.x;
+
+        uint8_t alpha = alphaBuffer[alphaIndex];
+
+        uint8_t minAlpha = (uint8_t)(0.f * 255.f);
+
+        if( alpha <= minAlpha )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

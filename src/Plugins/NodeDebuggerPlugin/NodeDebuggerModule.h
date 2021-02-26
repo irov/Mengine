@@ -135,7 +135,7 @@ namespace Mengine
     protected:
         void findChildRecursive( const NodePtr & _currentNode );
         bool checkOnInfinityAndIntersectForSelectedNode( const mt::box2f & _boundingBox );
-        bool cheHitWithAlpha( const NodePtr & _currentNode );
+        bool cheHitWithAlpha( const ShapePtr & _currentNode );
 
     protected:
         uint32_t m_globalKeyHandlerF2;

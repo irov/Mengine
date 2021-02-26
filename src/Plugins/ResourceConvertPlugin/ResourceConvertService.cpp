@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceConvertService::convertResource_( Resource * _resource )
     {
-        ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         if( content == nullptr )
         {

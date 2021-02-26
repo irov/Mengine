@@ -4,7 +4,6 @@
 #include "DazzleDataInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 
 #include "dazzle/dazzle.hpp"
 
@@ -14,11 +13,9 @@ namespace Mengine
     class ResourceDazzleEffect
         : public Resource
         , public UnknownResourceDazzleEffectInterface
-        , protected BaseContent        
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceDazzleEffect();

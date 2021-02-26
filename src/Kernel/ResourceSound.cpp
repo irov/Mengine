@@ -78,16 +78,19 @@ namespace Mengine
             return m_soundBufferNoStreamableCache;
         }
 
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-        const FilePath & filePath = this->getFilePath();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+        const ConstString & codecType = content->getCodecType();
 
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
-            ->createSoundBufferFromFile( fileGroup, filePath, m_codecType, m_isStreamable, _doc );
+            ->createSoundBufferFromFile( fileGroup, filePath, codecType, m_isStreamable, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, "sound '%s' group '%s' can't load sound '%s'"
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         return soundBuffer;

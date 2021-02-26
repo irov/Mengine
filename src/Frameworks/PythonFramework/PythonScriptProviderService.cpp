@@ -4,6 +4,7 @@
 #include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
 
@@ -11,6 +12,32 @@
 #   include <crtdbg.h>
 #endif
 
+extern "C"
+{
+    //////////////////////////////////////////////////////////////////////////
+    void * _python_malloc( size_t _size )
+    {
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "python" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void * _python_realloc( void * _ptr, size_t _size )
+    {
+        void * p = ALLOCATOR_SERVICE()
+            ->realloc( _ptr, _size, "python" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void _python_free( void * _ptr )
+    {
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "python" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptProviderService, Mengine::PythonScriptProviderService );
 //////////////////////////////////////////////////////////////////////////
@@ -34,7 +61,7 @@ namespace Mengine
             void * malloc( size_t _size ) override
             {
                 void * p = ALLOCATOR_SERVICE()
-                    ->malloc( _size, "python" );
+                    ->malloc( _size, "pybind" );
 
                 return p;
             }
@@ -42,7 +69,7 @@ namespace Mengine
             void * calloc( size_t _num, size_t _size ) override
             {
                 void * p = ALLOCATOR_SERVICE()
-                    ->calloc( _num, _size, "python" );
+                    ->calloc( _num, _size, "pybind" );
 
                 return p;
             }
@@ -50,7 +77,7 @@ namespace Mengine
             void * realloc( void * _ptr, size_t _size ) override
             {
                 void * p = ALLOCATOR_SERVICE()
-                    ->realloc( _ptr, _size, "python" );
+                    ->realloc( _ptr, _size, "pybind" );
 
                 return p;
             }
@@ -58,7 +85,7 @@ namespace Mengine
             void free( void * _ptr ) override
             {
                 ALLOCATOR_SERVICE()
-                    ->free( _ptr, "python" );
+                    ->free( _ptr, "pybind" );
             }
         };
     }
@@ -105,6 +132,9 @@ namespace Mengine
         m_kernel = nullptr;
 
         Helper::deleteT( static_cast<Detail::MyPythonAllocator *>(allocator) );
+
+        MENGINE_ASSERTION_ALLOCATOR( "pybind" );
+        MENGINE_ASSERTION_ALLOCATOR( "python" );
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * PythonScriptProviderService::getKernel() const

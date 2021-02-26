@@ -30,8 +30,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceJSON::_compile()
     {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-        const FilePath & filePath = this->getFilePath();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -43,7 +45,7 @@ namespace Mengine
         if( storage == nullptr )
         {
             LOGGER_ERROR( "invalid load json '%s'"
-                , filePath.c_str()
+                , this->getContent()->getFilePath().c_str()
             );
 
             return false;

@@ -53,7 +53,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::isValid() const
     {
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         if( content->existContent() == false )
         {
@@ -74,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::_compile()
     {
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();

@@ -3,18 +3,15 @@
 #include "Kernel/Compilable.h"
 #include "Kernel/Reference.h"
 #include "Kernel/FontBase.h"
-#include "Kernel/BaseContent.h"
 
 #include "BitmapGlyph.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class BitmapFont
         : public FontBase
-        , protected BaseContent
     {
-        DECLARE_CONTENTABLE();
-
     public:
         BitmapFont();
         ~BitmapFont() override;

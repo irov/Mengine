@@ -23,7 +23,7 @@ namespace Mengine
     {
         DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -63,7 +63,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
 
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -82,7 +82,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FETextFontEffectFile::_unfetch()
     {
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -100,7 +100,7 @@ namespace Mengine
     {
         DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();

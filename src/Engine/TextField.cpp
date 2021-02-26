@@ -1693,6 +1693,14 @@ namespace Mengine
 
         m_layouts.clear();
         m_chunks.clear();
+
+        for( const CacheFont & cache : m_cacheFonts )
+        {
+            const TextFontInterfacePtr & font = cache.font;
+
+            font->releaseFont();
+        }
+
         m_cacheFonts.clear();
 
         Node::_dispose();

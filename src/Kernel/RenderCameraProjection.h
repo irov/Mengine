@@ -27,6 +27,10 @@ namespace Mengine
         void fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f * const _screenPosition ) const override;
 
     protected:
+        void fromScreenToWorldPosition( const mt::vec2f & _screenPoint, float _deep, mt::vec3f * const _worldPosition ) const override;
+        void fromScreenToWorldDelta( const mt::vec2f & _screenDeltha, float _deep, mt::vec3f * const _worldDelta ) const override;
+
+    protected:
         void _updateViewMatrix() const override;
         void _updateProjectionMatrix() const override;
 

@@ -3863,7 +3863,7 @@ socket_ntohl(PyObject *self, PyObject *arg)
         {
             unsigned long y;
             /* only want the trailing 32 bits */
-            y = x & 0xffffffffffffffffUL;
+            y = x & PY_SIZE_MAX;
             if (y ^ x)
                 return PyErr_Format(PyExc_OverflowError,
                             "long int larger than 32 bits");
@@ -3932,7 +3932,7 @@ socket_htonl(PyObject *self, PyObject *arg)
         {
             unsigned long y;
             /* only want the trailing 32 bits */
-            y = x & 0xffffffffffffffffUL;
+            y = x & PY_SIZE_MAX;
             if (y ^ x)
                 return PyErr_Format(PyExc_OverflowError,
                             "long int larger than 32 bits");

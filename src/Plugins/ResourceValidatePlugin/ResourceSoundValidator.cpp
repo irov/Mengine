@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSoundValidator::_validate( const ResourceSoundPtr & _resource )
     {
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();

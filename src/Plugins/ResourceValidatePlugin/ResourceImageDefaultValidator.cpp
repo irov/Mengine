@@ -97,7 +97,7 @@ namespace Mengine
     {
         const ResourceImageDefaultPtr & resource = stdex::intrusive_static_cast<ResourceImageDefaultPtr>(_resource);
 
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();

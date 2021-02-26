@@ -19,6 +19,10 @@ namespace Mengine
         ~FETextFontEffectBase() override;
 
     public:
+        void setContent( const ContentInterfacePtr & _content ) override;
+        const ContentInterfacePtr & getContent() const override;
+
+    public:
         void setEffectName( const ConstString & _effectName ) override;
         const ConstString & getEffectName() const override;
 
@@ -45,6 +49,8 @@ namespace Mengine
         virtual bool _unfetch();
 
     protected:
+        ContentInterfacePtr m_content;
+
         ConstString m_effectName;
         uint32_t m_effectSample;
         float m_effectSampleInv;

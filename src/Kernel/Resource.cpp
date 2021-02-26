@@ -40,6 +40,11 @@ namespace Mengine
         m_resourceBank = _bank;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Resource::setContent( const ContentInterfacePtr & _content )
+    {
+        m_content = _content;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Resource::setLocale( const ConstString & _locale )
     {
         m_locale = _locale;
@@ -134,13 +139,7 @@ namespace Mengine
 
         m_initialize = false;
 
-        ContentInterface * content = this->getContent();
-
-        if( content != nullptr )
-        {
-            content->setFileGroup( nullptr );
-            content->setDataflow( nullptr );
-        }
+        m_content = nullptr;
 
         m_resourceBank = nullptr;
     }

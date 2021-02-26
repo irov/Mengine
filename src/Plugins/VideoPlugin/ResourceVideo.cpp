@@ -100,18 +100,20 @@ namespace Mengine
             return cacheVideoDecoder;
         }
 
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-        const FilePath & filePath = this->getFilePath();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
         InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( videoStream, "group '%s' name '%s' can't open video file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
-        const ConstString & codecType = this->getCodecType();
+        const ConstString & codecType = content->getCodecType();
 
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
             ->createDecoderT<VideoDecoderInterfacePtr>( codecType, _doc );
@@ -119,7 +121,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, "group '%s' name '%s' can't create video decoder for file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         VideoCodecOptions videoCodecOptions;
@@ -154,7 +156,7 @@ namespace Mengine
             LOGGER_ERROR( "group '%s' name '%s' can't setup options for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
-                , this->getFilePath().c_str()
+                , this->getContent()->getFilePath().c_str()
             );
 
             return nullptr;
@@ -165,7 +167,7 @@ namespace Mengine
             LOGGER_ERROR( "group '%s' name '%s' can't initialize video decoder for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
-                , this->getFilePath().c_str()
+                , this->getContent()->getFilePath().c_str()
             );
 
             return nullptr;

@@ -95,7 +95,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pymem.h ${SOURCE_DIR}/Includ
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/stringobject.h ${SOURCE_DIR}/Include/stringobject.h COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/unicodeobject.h ${SOURCE_DIR}/Include/unicodeobject.h COPYONLY)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/object.c ${SOURCE_DIR}/Objects/object.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/random.c ${SOURCE_DIR}/Python/random.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/dtoa.c ${SOURCE_DIR}/Python/dtoa.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
@@ -107,12 +106,15 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_io_bytesio.c ${SOURCE_DIR}/
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_io_stringio.c ${SOURCE_DIR}/Modules/_io/stringio.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_randommodule.c ${SOURCE_DIR}/Modules/_randommodule.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_struct.c ${SOURCE_DIR}/Modules/_struct.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/binascii.c ${SOURCE_DIR}/Modules/binascii.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/cPickle.c ${SOURCE_DIR}/Modules/cPickle.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/sha256module.c ${SOURCE_DIR}/Modules/sha256module.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/socketmodule.c ${SOURCE_DIR}/Modules/socketmodule.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/floatobject.c ${SOURCE_DIR}/Objects/floatobject.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/longobject.c ${SOURCE_DIR}/Objects/longobject.c)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/obmalloc.c ${SOURCE_DIR}/Objects/obmalloc.c)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/bytesio.c ${SOURCE_DIR}/Modules/_io/bytesio.c)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/stringio.c ${SOURCE_DIR}/Modules/_io/stringio.c)
+
 
 if(APPLE)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedMac/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
@@ -121,7 +123,7 @@ elseif(UNIX)
 elseif(ANDROID)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedAndroid/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 else()
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ModifiedWindows/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 endif()
 
 
@@ -248,7 +250,7 @@ else()
 endif()
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
-set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"\\\" -DEXEC_PREFIX=\\\"\\\" -DVERSION=\\\"2.7.14\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\"\\\" " )
+set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"\\\" -DEXEC_PREFIX=\\\"\\\" -DVERSION=\\\"2.7.18\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\"\\\" " )
 
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)

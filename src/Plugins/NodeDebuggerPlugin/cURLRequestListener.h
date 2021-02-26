@@ -25,13 +25,14 @@ namespace Mengine
         ~cURLRequestListener() override;
 
     public:
-        void request( HttpRequestID  _id, const String & _url ) override;
-        void response( HttpRequestID  _id, const String & _url ) override;
-
         void setSceneDataProvider( const SceneDataProviderInterfacePtr & _sceneDataProvider );
 
     public:
         void getPreparedData( VectorRequestData * _outData );
+
+    protected:
+        void request( HttpRequestID _id, const String & _url ) override;
+        void response( HttpRequestID _id, const String & _url ) override;
 
     protected:
         VectorRequestData m_data;

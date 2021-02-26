@@ -65,14 +65,18 @@ endif()
 
 if(MENGINE_PLUGIN_WEBP)
     ADD_SUBDIRECTORY(WebPPlugin)
-endif()    
+endif()
 
 if(MENGINE_PLUGIN_VIDEO)
-	ADD_SUBDIRECTORY(VideoPlugin)
+    ADD_SUBDIRECTORY(VideoPlugin)
+endif()
+
+if(MENGINE_PLUGIN_AV1)
+    #ADD_SUBDIRECTORY(AV1Plugin)
 endif()
 
 if(MENGINE_PLUGIN_THEORA)
-	ADD_SUBDIRECTORY(TheoraPlugin)
+    ADD_SUBDIRECTORY(TheoraPlugin)
 endif()
 
 if(MENGINE_PLUGIN_OZZ_ANIMATION)
@@ -81,7 +85,7 @@ endif()
 
 if(MENGINE_PLUGIN_ANDROID_NATIVE_KERNEL)
     ADD_SUBDIRECTORY(AndroidNativeKernelPlugin)
-endif()    
+endif()
 
 if(MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK)
     ADD_SUBDIRECTORY(AndroidNativeFacebookPlugin)
@@ -162,7 +166,6 @@ endif()
 if(MENGINE_PLUGIN_WIN32_CRITICALERRORSMONITOR)
     ADD_SUBDIRECTORY(Win32CriticalErrorsMonitorPlugin)
 endif()
-    
 
 if(MENGINE_PLUGIN_SDL_FILEGROUP)
     ADD_SUBDIRECTORY(SDLFileGroupPlugin)
@@ -171,7 +174,7 @@ endif()
 if(MENGINE_PLUGIN_WIN32_CONSOLELOGGER)
     ADD_SUBDIRECTORY(Win32ConsoleLoggerPlugin)
 endif()
-    
+
 if(MENGINE_PLUGIN_DEVELOPMENTCONVERTER)
     ADD_SUBDIRECTORY(DevelopmentConverterPlugin)
 endif()

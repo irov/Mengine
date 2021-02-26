@@ -113,7 +113,7 @@ namespace Mengine
         void serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode );
         void serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode );
         void serializeSurfaceImageSequence( const SurfaceImageSequencePtr & _surfaceImageSequence, pugi::xml_node & _xmlParentNode );
-        void serializeContent( const ContentInterface * _content, pugi::xml_node & _xmlParentNode );
+        void serializeContent( const ContentInterfacePtr & _content, pugi::xml_node & _xmlParentNode );
 
     protected:
         void processPacket( NodeDebuggerPacket & _packet );

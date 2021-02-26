@@ -4462,10 +4462,8 @@ namespace Mengine
             INPUT_SERVICE()
                 ->onFocus( m_active );
 
-            bool turnSound = m_active;
-
             APPLICATION_SERVICE()
-                ->turnSound( turnSound );
+                ->turnSound( m_active );
         }
         else
         {

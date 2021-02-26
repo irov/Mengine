@@ -1,0 +1,3 @@
+LIBRARY "AV1Plugin"
+EXPORTS
+    dllCreatePlugin @1

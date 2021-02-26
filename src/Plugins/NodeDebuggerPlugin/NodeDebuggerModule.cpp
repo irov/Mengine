@@ -156,6 +156,12 @@ namespace Mengine
             m_globalKeyHandlerF2 = 0;
         }
 
+        if( m_networkLogger != nullptr )
+        {
+            m_networkLogger->setSceneDataProvider( nullptr );
+            m_networkLogger = nullptr;
+        }
+
         if( SERVICE_EXIST( cURLServiceInterface ) == true )
         {
             CURL_SERVICE()

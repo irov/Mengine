@@ -262,7 +262,14 @@ namespace Mengine
 
                             if( color.isSolid() == false || _solid == false )
                             {
-                                materialId = EM_COLOR_BLEND;
+                                if( premultiply == false )
+                                {
+                                    materialId = EM_COLOR_BLEND;
+                                }
+                                else
+                                {
+                                    materialId = EM_COLOR_BLEND_PREMULTIPLY;
+                                }
                             }
                             else
                             {
@@ -273,7 +280,14 @@ namespace Mengine
                         {
                             if( _solid == false )
                             {
-                                materialId = EM_COLOR_BLEND;
+                                if( premultiply == false )
+                                {
+                                    materialId = EM_COLOR_BLEND;
+                                }
+                                else
+                                {
+                                    materialId = EM_COLOR_BLEND_PREMULTIPLY;
+                                }
                             }
                             else
                             {

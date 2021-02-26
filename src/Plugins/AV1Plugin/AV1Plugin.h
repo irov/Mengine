@@ -1,18 +1,20 @@
 #pragma once
 
+#include "Interface/DecoderFactoryInterface.h"
+
 #include "Kernel/PluginBase.h"
 
 namespace Mengine
 {
-    class TheoraPlugin
+    class AV1Plugin
         : public PluginBase
     {
     public:
-        PLUGIN_DECLARE( "Theora" )
+        PLUGIN_DECLARE( "AV1" )
 
     public:
-        TheoraPlugin();
-        ~TheoraPlugin() override;
+        AV1Plugin();
+        ~AV1Plugin() override;
 
     protected:
         bool _initializePlugin() override;

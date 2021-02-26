@@ -290,7 +290,7 @@ BCinfo {
     int e0, nd, nd0, scale;
 };
 
-#define FFFFFFFF 0xffffffffffffffffUL
+#define FFFFFFFF PY_SIZE_MAX
 
 #define Kmax 7
 

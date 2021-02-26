@@ -2215,7 +2215,7 @@ namespace Mengine
         ::SetCursor( m_cursor );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
+    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _content );
 
@@ -4462,10 +4462,8 @@ namespace Mengine
             INPUT_SERVICE()
                 ->onFocus( m_active );
 
-            bool turnSound = m_active;
-
             APPLICATION_SERVICE()
-                ->turnSound( turnSound );
+                ->turnSound( m_active );
         }
         else
         {
@@ -4682,7 +4680,7 @@ namespace Mengine
     {
         LOGGER_INFO( "system", "Initialize Win32 file group..." );
 
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
@@ -4700,7 +4698,7 @@ namespace Mengine
         );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory: '%s'"
                 , currentPath
@@ -4711,7 +4709,7 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory: '%s'"
                 , currentPath
@@ -4734,7 +4732,7 @@ namespace Mengine
         FilePath winDirPath = Helper::stringizeFilePath( utf8_winDir );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ), nullptr, nullptr, winDirPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ), nullptr, nullptr, winDirPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory: '%s'"
                 , currentPath

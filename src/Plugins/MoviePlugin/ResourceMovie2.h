@@ -6,7 +6,6 @@
 #include "Movie2DataInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Color.h"
 #include "Kernel/Map.h"
@@ -20,10 +19,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMovie2
         : public Resource
-        , protected BaseContent
     {
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
         DECLARE_MAGICABLE( MAGIC_AEZ );
 
     public:

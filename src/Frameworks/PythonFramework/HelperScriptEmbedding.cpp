@@ -121,8 +121,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_setLocale( const ConstString & _locale )
             {
+                const Tags & platformTags = PLATFORM_SERVICE()
+                    ->getPlatformTags();
+
                 if( PACKAGE_SERVICE()
-                    ->existLocalePackage( _locale, {} ) == false )
+                    ->existLocalePackage( _locale, platformTags ) == false )
                 {
                     LOGGER_ERROR( "not found game localization for language '%s'"
                         , _locale.c_str()
@@ -143,6 +146,20 @@ namespace Mengine
                     ->getLocale();
 
                 return locale;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasLocale( const ConstString & _locale )
+            {
+                const Tags & platformTags = PLATFORM_SERVICE()
+                    ->getPlatformTags();
+
+                if( PACKAGE_SERVICE()
+                    ->existLocalePackage( _locale, platformTags ) == false )
+                {
+                    return false;
+                }
+
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
             float s_isometric_length_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
@@ -3757,6 +3774,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "setLocale", helperScriptMethod, &HelperScriptMethod::s_setLocale );
         pybind::def_functor( _kernel, "getLocale", helperScriptMethod, &HelperScriptMethod::s_getLocale );
+        pybind::def_functor( _kernel, "hasLocale", helperScriptMethod, &HelperScriptMethod::s_hasLocale );
 
         pybind::def_functor( _kernel, "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
         pybind::def_functor( _kernel, "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );

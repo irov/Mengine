@@ -3,7 +3,6 @@
 #include "AstralaxInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/VectorResourceImages.h"
 #include "Kernel/Polygon.h"
@@ -13,10 +12,8 @@ namespace Mengine
 {
     class ResourceAstralax
         : public Resource
-        , protected BaseContent
     {
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
         DECLARE_MAGICABLE( MAGIC_PTZ );
 
     public:

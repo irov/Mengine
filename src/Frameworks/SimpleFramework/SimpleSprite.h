@@ -2,7 +2,7 @@
 
 #include "Interface/FileGroupInterface.h"
 
-#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadSize.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Document.h"
 
@@ -12,6 +12,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        ShapeQuadFixedPtr createSimpleSprite( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const mt::vec2f & _maxSize, const DocumentPtr & _doc );
+        ShapeQuadSizePtr createSimpleSprite( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const mt::vec2f & _textureSize, const mt::vec2f & _size, const DocumentPtr & _doc );
     }
 }

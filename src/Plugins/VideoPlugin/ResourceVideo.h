@@ -3,7 +3,6 @@
 #include "VideoInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 #include "Kernel/ResourceCacher.h"
 
 #include "math/vec2.h"
@@ -14,10 +13,8 @@ namespace Mengine
     class ResourceVideo
         : public Resource
         , public UnknownVideoResourceInterface
-        , protected BaseContent        
     {
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
         DECLARE_UNKNOWABLE();
 
     public:

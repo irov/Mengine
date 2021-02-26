@@ -111,7 +111,7 @@ namespace Mengine
             , _resourceName.c_str()
         );
 
-        const ContentInterface * content = resourceMusic->getContent();
+        const ContentInterfacePtr & content = resourceMusic->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();

@@ -63,6 +63,7 @@ namespace Mengine
 
         EM_COLOR_SOLID,
         EM_COLOR_BLEND,
+        EM_COLOR_BLEND_PREMULTIPLY,
         EM_COLOR_INTENSIVE,
         EM_COLOR_MULTIPLY,
         EM_COLOR_SCREEN,

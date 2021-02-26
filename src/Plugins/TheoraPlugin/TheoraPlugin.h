@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/DecoderFactoryInterface.h"
-
 #include "Kernel/PluginBase.h"
 
 namespace Mengine
@@ -19,10 +17,6 @@ namespace Mengine
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
-
-    protected:
-        typedef Vector<DecoderFactoryInterfacePtr> VectorDecoderFactories;
-        VectorDecoderFactories m_decoderFactories;
     };
 }
 

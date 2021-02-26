@@ -59,4 +59,5 @@ GIT_CLONE(cmake-modules https://github.com/rpavlik/cmake-modules.git "228f41efa5
 GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.4.7")
 GIT_CLONE(openssl https://github.com/janbar/openssl-cmake.git "1.1.1g-20200510")
 GIT_CLONE(rpmalloc https://github.com/mjansson/rpmalloc.git "1.4.1")
+GIT_CLONE(aom https://aomedia.googlesource.com/aom "v2.0.2")
 

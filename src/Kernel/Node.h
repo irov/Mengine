@@ -297,7 +297,7 @@ namespace Mengine
 
             T t = stdex::intrusive_static_cast<T>(_node);
 
-            return std::move( t );
+            return t;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -333,7 +333,7 @@ namespace Mengine
 
             T t = stdex::intrusive_dynamic_cast<T>(_node);
 
-            return std::move( t );
+            return t;
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -386,6 +386,8 @@ ADD_FILTER(
 Shape\\\\ShapeQuad
     ShapeQuad.cpp
     ShapeQuad.h
+    ShapeQuadSize.cpp
+    ShapeQuadSize.h
     ShapeQuadFixed.cpp
     ShapeQuadFixed.h
     ShapeQuadFlex.cpp
@@ -779,6 +781,9 @@ Core
     
     BuildMode.h
     BuildMode.cpp
+    
+    FileContent.h
+    FileContent.cpp
 )
 
 ADD_FILTER(

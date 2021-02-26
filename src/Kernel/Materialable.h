@@ -69,7 +69,7 @@ namespace Mengine
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) const;
 
-        const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const;
+        const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const;
 
     protected:
         ConstString m_materialName;

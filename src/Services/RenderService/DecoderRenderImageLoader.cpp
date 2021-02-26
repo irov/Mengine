@@ -2,6 +2,7 @@
 
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -71,7 +72,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////    
     bool DecoderRenderImageLoader::load( const RenderImageInterfacePtr & _image ) const
     {
-        //uint32_t image_mipmaps = dataInfo->mipmaps;
         uint32_t image_width = _image->getHWWidth();
         uint32_t image_height = _image->getHWHeight();
         uint32_t image_channels = _image->getHWChannels();
@@ -150,6 +150,38 @@ namespace Mengine
         _image->unlock( 0, true );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MemoryInterfacePtr DecoderRenderImageLoader::getMemory( uint32_t _codecFlags, const DocumentPtr & _doc ) const
+    {
+        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryBuffer( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+
+        const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
+
+        size_t pitch = dataInfo->width * dataInfo->channels;
+        size_t dataSize = pitch * dataInfo->height;
+
+        void * buffer = memory->newBuffer( dataSize );
+
+        ImageCodecOptions options;
+        options.pitch = pitch;
+        options.channels = dataInfo->channels;
+        options.mipmap = 0;
+        options.flags = _codecFlags;
+
+        m_decoder->setOptions( &options );
+
+        if( m_decoder->decode( buffer, dataSize ) == 0 )
+        {
+            LOGGER_ERROR( "invalid decode for" );
+
+            return nullptr;
+        }
+
+        return memory;
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType ) const

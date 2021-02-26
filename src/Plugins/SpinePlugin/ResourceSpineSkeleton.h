@@ -5,7 +5,6 @@
 #include "ResourceSpineAtlas.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 
 #include "spine/spine.h"
 
@@ -13,12 +12,10 @@ namespace Mengine
 {
     class ResourceSpineSkeleton
         : public Resource
-        , private BaseContent
         , public UnknownResourceSpineSkeletonInterface
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceSpineSkeleton();

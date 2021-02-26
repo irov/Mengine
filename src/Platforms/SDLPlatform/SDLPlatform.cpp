@@ -35,6 +35,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/AssertionAllocator.h"
 #include "Kernel/InputServiceHelper.h"
 
 #include "Config/StdString.h"
@@ -131,9 +132,11 @@ namespace Mengine
 
         return sizeof( deploy_mac_data ) - 1;
 #elif defined(MENGINE_PLATFORM_OSX)
-        const char * basePath = SDL_GetBasePath();
+        char * basePath = SDL_GetBasePath();
 
         MENGINE_STRCPY( _currentPath, basePath );
+
+        SDL_free( basePath );
 
         return MENGINE_STRLEN( _currentPath );
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -747,6 +750,8 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+
+        MENGINE_ASSERTION_ALLOCATOR( "SDL" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()
@@ -1420,7 +1425,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
+    bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
     {
         MENGINE_UNUSED( _name );
         MENGINE_UNUSED( _content );

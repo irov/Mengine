@@ -124,6 +124,7 @@ namespace Mengine
 
         m_defaultStageNames[EM_COLOR_SOLID] = STRINGIZE_STRING_LOCAL( "Color_Solid" );
         m_defaultStageNames[EM_COLOR_BLEND] = STRINGIZE_STRING_LOCAL( "Color_Blend" );
+        m_defaultStageNames[EM_COLOR_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Color_Blend_Premultiply" );
         m_defaultStageNames[EM_COLOR_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Color_Intensive" );
         m_defaultStageNames[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Color_Multiply" );
         m_defaultStageNames[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( "Color_Screen" );
@@ -201,10 +202,16 @@ namespace Mengine
         m_debugLineMaterial = nullptr;
         m_debugTriangleMaterial = nullptr;
 
-        m_solidRenderMaterial[0] = nullptr;
-        m_solidRenderMaterial[1] = nullptr;
-        m_solidRenderMaterial[2] = nullptr;
-        m_solidRenderMaterial[3] = nullptr;
+        m_solidRenderMaterial[0][0] = nullptr;
+        m_solidRenderMaterial[1][0] = nullptr;
+        m_solidRenderMaterial[2][0] = nullptr;
+        m_solidRenderMaterial[3][0] = nullptr;
+
+        m_solidRenderMaterial[0][1] = nullptr;
+        m_solidRenderMaterial[1][1] = nullptr;
+        m_solidRenderMaterial[2][1] = nullptr;
+        m_solidRenderMaterial[3][1] = nullptr;
+
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMaterial );
 
@@ -425,10 +432,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialService::updateSolidRenderMaterial()
     {
-        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
-        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
-        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
-        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_NORMAL][0] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD][0] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN][0] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY][0] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+
+        m_solidRenderMaterial[EMB_NORMAL][1] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD][1] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN][1] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY][1] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial( const ConstString & _materialName
@@ -560,9 +572,9 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & RenderMaterialService::getSolidMaterial( EMaterialBlendMode _blendMode ) const
+    const RenderMaterialInterfacePtr & RenderMaterialService::getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const
     {
-        const RenderMaterialInterfacePtr & material = m_solidRenderMaterial[_blendMode];
+        const RenderMaterialInterfacePtr & material = m_solidRenderMaterial[_blendMode][_premultiply == true ? 1 : 0];
 
         return material;
     }

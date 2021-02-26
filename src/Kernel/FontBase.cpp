@@ -19,6 +19,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void FontBase::setContent( const ContentInterfacePtr & _content )
+    {
+        m_content = _content;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & FontBase::getContent() const
+    {
+        return m_content;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void FontBase::setName( const ConstString & _name )
     {
         m_name = _name;

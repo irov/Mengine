@@ -2678,7 +2678,7 @@ namespace Mengine
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-                            ->getSolidMaterial( blend_mode );
+                            ->getSolidMaterial( blend_mode, false );
 
                         _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
@@ -2719,7 +2719,7 @@ namespace Mengine
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-                            ->getSolidMaterial( blend_mode );
+                            ->getSolidMaterial( blend_mode, false );
 
                         _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;

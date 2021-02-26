@@ -305,7 +305,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource )
     {
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
 

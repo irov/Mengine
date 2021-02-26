@@ -4,8 +4,10 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #include "SDL_loadso.h"
+#include "SDL_filesystem.h"
 
 namespace Mengine
 {
@@ -36,8 +38,9 @@ namespace Mengine
 
         if( instance == nullptr )
         {
-            LOGGER_ERROR( "'%s' failed"
+            LOGGER_ERROR( "'%s' failed load object: %s"
                 , m_name
+                , SDL_GetError()
             );
 
             return false;
@@ -62,6 +65,17 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_instance );
 
         void * proc = ::SDL_LoadFunction( m_instance, _name );
+
+        if( proc == nullptr )
+        {
+            LOGGER_ERROR( "'%s' failed get symbol '%s': %s"
+                , m_name
+                , _name
+                , SDL_GetError()
+            );
+
+            return nullptr;
+        }
 
         TDynamicLibraryFunction dlfunc = reinterpret_cast<TDynamicLibraryFunction>(proc);
 

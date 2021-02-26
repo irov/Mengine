@@ -38,15 +38,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceAstralax::_compile()
     {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-        const FilePath & filePath = this->getFilePath();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' can't create container file '%s'"
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         uint32_t iterator = 0U;
@@ -56,7 +58,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "resource '%s' file '%s' can't invalid compile resource image '%s'"
                     , this->getName().c_str()
-                    , this->getFilePath().c_str()
+                    , this->getContent()->getFilePath().c_str()
                     , resourceImage->getName().c_str()
                 );
 
@@ -67,7 +69,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "resource '%s' file '%s' invalid set atlas resource image '%s'"
                     , this->getName().c_str()
-                    , this->getFilePath().c_str()
+                    , this->getContent()->getFilePath().c_str()
                     , resourceImage->getName().c_str()
                 );
 

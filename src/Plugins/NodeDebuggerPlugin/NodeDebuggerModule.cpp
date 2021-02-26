@@ -2033,7 +2033,7 @@ namespace Mengine
                 mt::box2f bbox;
                 if( boundingBoxInterfacePtr->getBoundingBox( _child, &bbox ) == true )
                 {
-                    if( this->checkOnInfinityAndIntersectForSelectedNode( bbox, _child ) == true )
+                    if( this->checkOnInfinityAndIntersectForSelectedNode( bbox ) == true )
                     {
                         m_selectedNode = _child;
                     }
@@ -2064,20 +2064,78 @@ namespace Mengine
                     return;
                 }
 
-                if( this->checkOnInfinityAndIntersectForSelectedNode( *boundingBox, _child ) == true )
+                if( this->checkOnInfinityAndIntersectForSelectedNode( *boundingBox ) == false  )
                 {
-                    m_selectedNode = _child;
+                    return;
                 }
+
+                if( this->cheHitWithAlpha() == false )
+                {
+                    return;
+                }
+
+                m_selectedNode = _child;
             } 
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::checkOnInfinityAndIntersectForSelectedNode( const mt::box2f & _boundingBox, const NodePtr & _child )
+    bool NodeDebuggerModule::checkOnInfinityAndIntersectForSelectedNode( const mt::box2f & _boundingBox )
     {
         if( mt::is_intersect( _boundingBox, m_cursorWorldPosition ) == true && mt::is_infinity_box( _boundingBox ) == false )
         {
             return true;
         }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NodeDebuggerModule::cheHitWithAlpha( const NodePtr & _currentNode )
+    {
+        const RenderCameraInterfacePtr & renderCamera = PLAYER_SERVICE()
+            ->getRenderCamera();
+
+        const RenderViewportInterfacePtr & renderViewport = PLAYER_SERVICE()
+            ->getRenderViewport();
+
+        const Viewport & viewport = renderViewport->getViewport();
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        mt::vec2f contentResolutionSize;
+        contentResolution.calcSize( &contentResolutionSize );
+
+        mt::vec2f point_vp;
+        point_vp = m_cursorWorldPosition * contentResolutionSize;
+
+        point_vp -= viewport.begin;
+
+        mt::vec2f size = viewport.size();
+
+        if( size.x < mt::constant::eps || size.y < mt::constant::eps )
+        {
+            return false;
+        }
+
+        point_vp /= size;
+
+        mt::vec2f point_norm;
+        point_norm.x = point_vp.x * 2.f - 1.f;
+        point_norm.y = 1.f - point_vp.y * 2.f;
+
+        const mt::mat4f & cameraViewProjectionMatrixInv = renderCamera->getCameraViewProjectionMatrixInv();
+
+        mt::vec2f pointIn1;
+        mt::mul_v2_v2_m4( pointIn1, point_norm, cameraViewProjectionMatrixInv );
+
+        TransformationInterface * currentNodeTransformation = _currentNode->getTransformation();
+        const mt::mat4f & worldMatrix = currentNodeTransformation->getWorldMatrix();
+
+        mt::mat4f invWorldMatrix;
+        mt::inv_m4_m4( invWorldMatrix, worldMatrix );
+
+        mt::vec2f pointIn2;
+        mt::mul_v2_v2_m4( pointIn2, pointIn1, invWorldMatrix );
 
         return false;
     }

@@ -48,8 +48,10 @@ namespace Mengine
             return false;
         }
 
-        const FilePath & filePath = this->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FilePath & filePath = content->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory );

@@ -410,7 +410,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::updateRendering_() const
     {
-        m_invalidateRendering = true;
+        m_invalidateRendering = false;
 
         m_rendering = false;
 

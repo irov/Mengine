@@ -18,6 +18,8 @@ namespace Mengine
         : public ServiceBase<PlatformInterface>
         , public Win32PlatformExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         Win32Platform();
         ~Win32Platform() override;

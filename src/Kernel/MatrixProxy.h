@@ -27,7 +27,7 @@ namespace Mengine
         void updateLocalMatrix() const override;
 
     protected:
-        void calcWorldMatrix( mt::mat4f * _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const override;
+        void calcWorldMatrix( mt::mat4f * const _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<MatrixProxy> MatrixProxyPtr;

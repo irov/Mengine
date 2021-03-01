@@ -9,9 +9,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class Updatable;
+    //////////////////////////////////////////////////////////////////////////
     class UpdationInterface
         : public Interface
     {
+    public:
+        virtual Updatable * getUpdatable() = 0;
+
     public:
         virtual bool activate( EUpdateMode _mode, uint32_t _deep ) = 0;
         virtual void deactivate() = 0;

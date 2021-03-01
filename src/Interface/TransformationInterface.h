@@ -39,11 +39,16 @@ namespace Mengine
         | TRANSFORMATION_INVALIDATE_ORIENTATION_Y
         | TRANSFORMATION_INVALIDATE_ORIENTATION_Z;
     //////////////////////////////////////////////////////////////////////////
+    class Transformable;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class TransformationInterface> TransformationInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TransformationInterface
         : public Interface
     {
+    public:
+        virtual Transformable * getTransformable() = 0;
+
     public:
         virtual void setRelationTransformation( TransformationInterface * _relationTransformation ) = 0;
         virtual TransformationInterface * getRelationTransformation() const = 0;

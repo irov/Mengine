@@ -2615,14 +2615,6 @@ namespace Mengine
 
                         Helper::nodeRenderChildren( node, _renderPipeline, &context, true );
                     }break;
-                case AE_MOVIE_LAYER_TYPE_SOCKET:
-                    {
-                        //HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
-
-                        //RenderInterfacePtr render = node->getRender();
-
-                        //render->render( &state );
-                    }break;
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = Helper::reinterpretNodeCast<ShapeQuadFixed *>( mesh.element_userdata );

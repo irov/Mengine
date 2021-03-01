@@ -30,5 +30,6 @@ namespace Mengine
 public:\
     Mengine::EventationInterface * getEventation() override{ return this; }\
     const Mengine::EventationInterface * getEventation() const override{ return this; }\
+    Mengine::Eventable * getEventable() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

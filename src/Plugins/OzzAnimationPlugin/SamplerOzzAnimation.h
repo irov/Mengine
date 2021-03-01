@@ -22,6 +22,7 @@ namespace Mengine
         , protected BaseEventation
     {
         DECLARE_ANIMATABLE();
+        DECLARE_UPDATABLE();
         DECLARE_EVENTABLE();
 
     public:

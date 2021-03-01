@@ -28,6 +28,11 @@ namespace Mengine
         {
             return nullptr;
         }
+
+        virtual Unknowable * getUnknowable()
+        {
+            return nullptr;
+        }
     };
 }
 //////////////////////////////////////////////////////////////////////////

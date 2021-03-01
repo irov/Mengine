@@ -20,11 +20,6 @@ namespace Mengine
         {
             return nullptr;
         }
-
-        virtual Updatable * getUpdatable()
-        {
-            return nullptr;
-        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Updatable> UpdatablePtr;

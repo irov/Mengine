@@ -22,6 +22,7 @@ namespace Mengine
     {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
+        DECLARE_UPDATABLE();
 
     public:
         SamplerSpineAnimation();

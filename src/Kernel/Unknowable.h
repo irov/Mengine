@@ -37,5 +37,6 @@ public:\
     Mengine::UnknownConstPointer getUnknown() const override{ return this; }\
     Mengine::UnknownDynamicPointer getDynamicUnknown() override{ return this; }\
     Mengine::UnknownDynamicConstPointer getDynamicUnknown() const override{ return this; }\
+    Mengine::Unknowable * getUnknowable() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

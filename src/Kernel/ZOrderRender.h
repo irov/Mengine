@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kernel/Renderable.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/Factorable.h"
 
@@ -7,9 +8,12 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ZOrderRender
-        : public BaseRender
+        : public Renderable
+        , public BaseRender
         , public Factorable
     {
+        DECLARE_RENDERABLE();
+
     public:
         ZOrderRender();
         ~ZOrderRender() override;

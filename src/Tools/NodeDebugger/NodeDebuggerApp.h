@@ -678,6 +678,8 @@ namespace Mengine
         int m_height;
 
         // UI
+        DebuggerNode * m_selectedNode;
+
         DebuggerNode * m_selectedArrowNode;
         DebuggerNode * m_selectedSceneNode;
         DebuggerNode * m_selectedPickerableNode;

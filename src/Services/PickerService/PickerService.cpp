@@ -740,6 +740,7 @@ namespace Mengine
         Detail::PickerVisitor visitor( _states, false );
 
         RenderContext context;
+
         context.viewport = m_viewport.get();
         context.camera = m_camera.get();
         context.transformation = nullptr;

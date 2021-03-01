@@ -16,6 +16,8 @@ namespace Mengine
         , public DX9RenderImageExtensionInterface
         , public Factorable
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         DX9RenderImageTarget();
         ~DX9RenderImageTarget() override;

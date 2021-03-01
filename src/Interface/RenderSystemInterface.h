@@ -21,6 +21,7 @@
 #include "Interface/RenderProgramVariableInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Unknowable.h"
 
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
@@ -43,6 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class RenderSystemInterface
         : public ServiceInterface
+        , public Unknowable
     {
         SERVICE_DECLARE( "RenderSystem" )
 

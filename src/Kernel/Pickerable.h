@@ -33,5 +33,6 @@ namespace Mengine
 public:\
     Mengine::PickerInterface * getPicker() override{ return this; }\
     const Mengine::PickerInterface * getPicker() const override{ return this; }\
+    Mengine::Pickerable * getPickerable() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

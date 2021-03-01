@@ -31,6 +31,8 @@ namespace Mengine
         : public ServiceBase<RenderSystemInterface>
         , public DX9RenderSystemExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         DX9RenderSystem();
         ~DX9RenderSystem() override;

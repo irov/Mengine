@@ -1550,6 +1550,7 @@ namespace Mengine
                 );
 
                 RenderContext context;
+
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -2142,6 +2143,7 @@ namespace Mengine
                     MENGINE_UNUSED( _pressure );
 
                     RenderContext context;
+
                     context.camera = m_renderCamera.get();
                     context.viewport = m_renderViewport.get();
                     context.transformation = nullptr;
@@ -2242,6 +2244,7 @@ namespace Mengine
                 }
 
                 RenderContext context;
+
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -2284,6 +2287,7 @@ namespace Mengine
                 }
 
                 RenderContext context;
+
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;

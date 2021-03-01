@@ -4,6 +4,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/PixelFormat.h"
+#include "Kernel/Document.h"
 
 #include "Config/Typedef.h"
 

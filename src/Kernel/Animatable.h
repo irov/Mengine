@@ -20,6 +20,11 @@ namespace Mengine
         {
             return nullptr;
         };
+
+        virtual Animatable * getAnimatable()
+        {
+            return nullptr;
+        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Animatable> AnimatablePtr;

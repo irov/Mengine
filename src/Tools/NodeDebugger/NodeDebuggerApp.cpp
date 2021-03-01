@@ -78,6 +78,7 @@ namespace Mengine
         , m_shutdown( false )
         , m_width( 1280 )
         , m_height( 720 )
+        , m_selectedNode( nullptr )
         , m_selectedArrowNode( nullptr )
         , m_selectedSceneNode( nullptr )
         , m_selectedPickerableNode( nullptr )
@@ -372,10 +373,10 @@ namespace Mengine
 
             if( m_selectedTab == "scene" )
             {
-                if( m_selectedSceneNode && m_selectedSceneNode->dirty )
+                if( m_selectedNode && m_selectedNode->dirty )
                 {
-                    this->SendChangedNode( *m_selectedSceneNode );
-                    m_selectedSceneNode->dirty = false;
+                    this->SendChangedNode( *m_selectedNode );
+                    m_selectedNode->dirty = false;
                 }
 
                 if( m_selectedNodePath.empty() == false )
@@ -967,6 +968,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DestroyNode( DebuggerNode * _node )
     {
+        m_selectedNode = nullptr;
+
         if( m_selectedSceneNode == _node )
         {
             m_selectedSceneNode = nullptr;
@@ -1248,8 +1251,6 @@ namespace Mengine
             ImGui::RadioButton( "Render", &SceneTagId, 3 );
         }
 
-        DebuggerNode * selectedNode = nullptr;
-
         switch( SceneTagId )
         {
         case 0:
@@ -1262,7 +1263,7 @@ namespace Mengine
                         {
                             this->DoNodeElement( m_arrow, &m_selectedArrowNode, "ArrowFull" );
 
-                            selectedNode = m_selectedArrowNode;
+                            m_selectedNode = m_selectedArrowNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1278,7 +1279,7 @@ namespace Mengine
                         {
                             this->DoNodeElement( m_scene, &m_selectedSceneNode, "SceneFull" );
 
-                            selectedNode = m_selectedSceneNode;
+                            m_selectedNode = m_selectedSceneNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1294,7 +1295,7 @@ namespace Mengine
                         {
                             this->DoNodeElement( m_scenePickerable, &m_selectedPickerableNode, "ScenePickerable" );
 
-                            selectedNode = m_selectedPickerableNode;
+                            m_selectedNode = m_selectedPickerableNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1310,7 +1311,7 @@ namespace Mengine
                         {
                             this->DoNodeElement( m_sceneRenderable, &m_selectedRenderableNode, "SceneRenderable" );
 
-                            selectedNode = m_selectedRenderableNode;
+                            m_selectedNode = m_selectedRenderableNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1322,9 +1323,9 @@ namespace Mengine
 
         if( ImGui::BeginChild( "Panel" ) )
         {
-            if( selectedNode != nullptr )
+            if( m_selectedNode != nullptr )
             {
-                this->DoNodeProperties( selectedNode );
+                this->DoNodeProperties( m_selectedNode );
             }
         }
         ImGui::EndChild();

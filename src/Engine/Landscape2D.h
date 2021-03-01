@@ -44,6 +44,7 @@ namespace Mengine
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_TRANSFORMABLE();
 
     public:
         Landscape2D();

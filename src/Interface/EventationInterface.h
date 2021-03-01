@@ -7,9 +7,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static constexpr uint64_t EVENTATION_RECEIVER_MASK_FULL = ~0ULL;
     //////////////////////////////////////////////////////////////////////////
+    class Eventable;
+    //////////////////////////////////////////////////////////////////////////
     class EventationInterface
         : public Interface
     {
+    public:
+        virtual Eventable * getEventable() = 0;
+
     public:
         virtual void setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver ) = 0;
         virtual const EventReceiverInterfacePtr & getReceiver() const = 0;

@@ -5,9 +5,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class Animatable;
+    //////////////////////////////////////////////////////////////////////////
     class AnimationInterface
         : public Interface
     {
+    public:
+        virtual Animatable * getAnimatable() = 0;
+
     public:
         virtual void setLoop( bool _value ) = 0;
         virtual bool isLoop() const = 0;

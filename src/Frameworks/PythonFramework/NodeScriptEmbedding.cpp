@@ -364,6 +364,7 @@ namespace Mengine
                 );
 
                 RenderContext context;
+
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;

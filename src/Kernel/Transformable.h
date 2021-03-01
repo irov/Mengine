@@ -30,5 +30,6 @@ namespace Mengine
 public:\
     Mengine::TransformationInterface * getTransformation() override{ return this; }\
     const Mengine::TransformationInterface * getTransformation() const override{ return this; }\
+    Mengine::Transformable * getTransformable() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

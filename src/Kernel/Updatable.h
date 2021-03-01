@@ -30,5 +30,6 @@ namespace Mengine
 public:\
     Mengine::UpdationInterface * getUpdation() override{ return this; }\
     const Mengine::UpdationInterface * getUpdation() const override{ return this; }\
+    Mengine::Updatable * getUpdatable() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

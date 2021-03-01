@@ -1083,7 +1083,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode )
     {
-        Node * nodeChild = dynamic_cast<Node *>(_picker);
+        Pickerable * pickerable = _picker->getPickerable();
+
+        Node * nodeChild = dynamic_cast<Node *>(pickerable);
 
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
@@ -1105,7 +1107,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
-        Node * nodeChild = dynamic_cast<Node *>(_render);
+        Renderable * renderable = _render->getRenderable();
+
+        Node * nodeChild = dynamic_cast<Node *>(renderable);
 
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 

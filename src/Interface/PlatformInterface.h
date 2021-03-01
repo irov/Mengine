@@ -1,6 +1,11 @@
 #pragma once
 
-#include "Config/Typedef.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/DynamicLibraryInterface.h"
+#include "Interface/DateTimeProviderInterface.h"
+#include "Interface/ContentInterface.h"
+#include "Interface/UnknownInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
@@ -10,13 +15,7 @@
 #include "Kernel/Params.h"
 #include "Kernel/UnknownPointer.h"
 #include "Kernel/LambdaFilePath.h"
-
-#include "Interface/ServiceInterface.h"
-#include "Interface/MemoryInterface.h"
-#include "Interface/DynamicLibraryInterface.h"
-#include "Interface/DateTimeProviderInterface.h"
-#include "Interface/ContentInterface.h"
-#include "Interface/UnknownInterface.h"
+#include "Kernel/Unknowable.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
@@ -30,6 +29,7 @@ namespace Mengine
 {
     class PlatformInterface
         : public ServiceInterface
+        , public Unknowable
     {
         SERVICE_DECLARE( "PlatformService" );
 

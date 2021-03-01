@@ -58,14 +58,9 @@ namespace Mengine
 
             return reciever;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }
-//////////////////////////////////////////////////////////////////////////
-#define DECLARE_EVENTABLE()\
-public:\
-    Mengine::EventationInterface * getEventation() override{ return this; }\
-    const Mengine::EventationInterface * getEventation() const override{ return this; }\
-protected:
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_METHODRT(Event, R, Type)\
     Mengine::Helper::hasEventableReceiver( this, Event ) == false ? R : Mengine::Helper::getThisEventReciever<Type>( this, Event )

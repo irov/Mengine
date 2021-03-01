@@ -2059,12 +2059,6 @@ namespace Mengine
 
                 ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
 
-                const SurfacePtr & surface = shape->getSurface();
-                if( surface == nullptr )
-                {
-                    return;
-                }
-
                 const mt::box2f * boundingBox = childRender->getBoundingBox();
                 if( boundingBox == nullptr )
                 {
@@ -2078,13 +2072,21 @@ namespace Mengine
 
                 if( shape != nullptr )
                 {
-                    if( this->cheHitWithAlpha( shape ) == false )
+                    const SurfacePtr & surface = shape->getSurface();
+                    if( surface == nullptr )
                     {
+                        return;
+                    }
+
+                    if( this->cheHitWithAlpha( shape ) == true )
+                    {
+                        m_selectedNode = _child;
+
                         return;
                     }
                 }
 
-                m_selectedNode = _child;
+                
             } 
         } );
     }
@@ -2158,13 +2160,16 @@ namespace Mengine
         uint32_t textureCount = renderMaterial->getTextureCount();
         if( textureCount == 0 )
         {
-            return true;
+            return false;
         }
 
-        const RenderTextureInterfacePtr & renderTextureInterface = renderMaterial->getTexture( textureCount );
+        const RenderTextureInterfacePtr & renderTextureInterface = renderMaterial->getTexture( 0 );
 
         uint32_t width = renderTextureInterface->getWidth();
         uint32_t height = renderTextureInterface->getHeight();
+
+        const mt::uv4f & uv = surface->getUV( 0 );
+        MENGINE_UNUSED( uv );
 
         if( m_cursorWorldPosition.x >= width || m_cursorWorldPosition.y >= height )
         {
@@ -2173,26 +2178,40 @@ namespace Mengine
 
         const RenderImageInterfacePtr & renderImage = renderTextureInterface->getImage();
 
+        uint32_t renderImageWidth = renderImage->getHWWidth();
+        uint32_t renderImageHeight = renderImage->getHWHeight();
+
         const RenderImageProviderInterfacePtr & renderImageProviderInterface = renderImage->getRenderImageProvider();
 
         RenderImageLoaderInterfacePtr renderImageLoader = renderImageProviderInterface->getLoader( MENGINE_DOCUMENT_FACTORABLE );
 
+        RenderImageDesc imageDesc;
+        renderImageLoader->getImageDesc( &imageDesc );
+
         MemoryInterfacePtr memory = renderImageLoader->getMemory( 0, MENGINE_DOCUMENT_FACTORABLE );
 
-        uint8_t * alphaBuffer = memory->getBuffer();
+        uint8_t * alphaBufferMemory = memory->getBuffer();
 
-        uint32_t alphaIndex = m_cursorWorldPosition.y * width + m_cursorWorldPosition.x;
+        mt::vec2f firstPoint;
+        firstPoint.x = uv.p0.x * renderImageWidth;
+        firstPoint.y = uv.p0.y * renderImageHeight;
 
-        uint8_t alpha = alphaBuffer[alphaIndex];
+        uint32_t fuulYdistance = static_cast<uint32_t>( firstPoint.y + m_cursorWorldPosition.y );
+
+        uint32_t alphaIndex = fuulYdistance * imageDesc.width + static_cast<uint32_t>(m_cursorWorldPosition.x + firstPoint.x);
+
+        alphaIndex *= 4;
+
+        uint8_t alpha = alphaBufferMemory[alphaIndex + 3];
 
         uint8_t minAlpha = (uint8_t)(0.f * 255.f);
 
-        if( alpha <= minAlpha )
+        if( alpha == minAlpha )
         {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

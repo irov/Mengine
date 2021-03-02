@@ -113,7 +113,7 @@ namespace Mengine
 
         if( _unicode != nullptr )
         {
-            if( _unicodeCapacity <= _utf8Size )
+            if( _unicodeCapacity * 4 <= _utf8Size )
             {
                 return false;
             }

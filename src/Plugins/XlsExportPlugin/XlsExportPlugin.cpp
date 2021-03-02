@@ -6,6 +6,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 
+#define MENGINE_WINDOWS_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/UnicodeHelper.h"

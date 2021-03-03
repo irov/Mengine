@@ -1209,8 +1209,9 @@ namespace Mengine
                 const ConstString & locale = APPLICATION_SERVICE()
                     ->getLocale();
 
-                APPLICATION_SERVICE()
-                    ->setLocale( locale );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, locale, locale );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, locale, locale );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, locale, locale );
             }
 
             //if( _event.code == KC_0 && _event.isDown == true )

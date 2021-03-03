@@ -198,7 +198,7 @@ namespace Mengine
 
         uint8_t * alphaBuffer = this->getHitBuffer_( level );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, "'%s' hit file '%s' invalid get level buffer %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, "'%s' hit file '%s' invalid get level buffer %u:%u"
             , this->getName().c_str()
             , this->getContent()->getFilePath().c_str()
             , level
@@ -246,7 +246,7 @@ namespace Mengine
 
         if( bufferOffset >= m_mipmapsize )
         {
-            LOGGER_ERROR( "'%s' hit file '%s' invalid get level buffer %d:%d"
+            LOGGER_ERROR( "'%s' hit file '%s' invalid get level buffer %u:%u"
                 , this->getName().c_str()
                 , this->getContent()->getFilePath().c_str()
                 , _level

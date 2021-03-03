@@ -136,6 +136,7 @@ namespace Mengine
         void findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point );
         bool checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point );
         bool checkIsTransparencePoint( const ShapePtr & _currentNode
+            , const mt::vec2f & _point
             , const RenderImageLoaderInterfacePtr & _imageLoader
             , const RenderTextureInterfacePtr & _renderTexture
             , const RenderImageDesc & _imageDesc

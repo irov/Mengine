@@ -133,9 +133,16 @@ namespace Mengine
         void setUpdateSceneFlag( bool _flag ) override;
 
     protected:
-        void findChildRecursive( const NodePtr & _currentNode );
-        bool checkOnInfinityAndIntersectForSelectedNode( const mt::box2f & _boundingBox );
-        bool cheHitWithAlpha( const ShapePtr & _currentNode );
+        void findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point );
+        bool checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point );
+        bool checkIsTransparencePoint( const ShapePtr & _currentNode
+            , const RenderImageLoaderInterfacePtr & _imageLoader
+            , const RenderTextureInterfacePtr & _renderTexture
+            , const RenderImageDesc & _imageDesc
+            , const mt::uv4f & uv );
+
+        void getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _boundingBox ) const;
+        void getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * _bb ) const;
 
     protected:
         uint32_t m_globalKeyHandlerF2;

@@ -690,6 +690,11 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderContext * PlayerService::getRenderContext() const
+    {
+        return &m_renderContext;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         uint32_t debugMask = APPLICATION_SERVICE()

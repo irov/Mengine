@@ -82,6 +82,9 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
+        const RenderContext * getRenderContext() const override;
+
+    public:
         void initializeRenderResources() override;
         void finalizeRenderResources() override;
 

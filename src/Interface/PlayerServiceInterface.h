@@ -78,6 +78,9 @@ namespace Mengine
         virtual const RenderTargetInterfacePtr & getRenderTarget() const = 0;
 
     public:
+        virtual const RenderContext * getRenderContext() const = 0;
+
+    public:
         virtual const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const = 0;
 
     public:

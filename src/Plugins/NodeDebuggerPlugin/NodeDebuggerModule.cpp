@@ -128,23 +128,20 @@ namespace Mengine
                 const ScenePtr & currentScene = SCENE_SERVICE()
                     ->getCurrentScene();
 
-                const mt::vec2f & cursorPosition = INPUT_SERVICE()
-                    ->getCursorPosition( ETouchCode::TC_TOUCH0 );
-
                 const ArrowPtr & arrow = PLAYER_SERVICE()
                     ->getArrow();
 
-                RenderInterface * render = arrow->getRender();
+                mt::vec2f point = {_event.x, _event.y};
 
-                RenderContext context;
-                render->makeRenderContext( &context );
+                mt::vec2f adapt_screen_position;
+                arrow->adaptScreenPosition_( point, &adapt_screen_position );
 
                 mt::vec2f cursorWorldPosition;
-                arrow->calcMouseWorldPosition( &context, cursorPosition, &cursorWorldPosition );
+                PLAYER_SERVICE()
+                    ->calcGlobalMouseWorldPosition( adapt_screen_position, &cursorWorldPosition );
 
                 m_cursorWorldPosition = cursorWorldPosition;
 
-                mt::vec2f point = { _event.x, _event.y };
                 this->findChildRecursive( currentScene, point );
 
                 this->sendSelectedNode();
@@ -1548,6 +1545,11 @@ namespace Mengine
 
         pugi::xml_node xmlNode = payloadNode.append_child( "Node" );
 
+        if( m_selectedNode == nullptr )
+        {
+            return;
+        }
+
         UniqueId selectedNodeId = m_selectedNode->getUniqueIdentity();
         xmlNode.append_attribute( "SelectedNodeId" ).set_value( selectedNodeId );
 
@@ -2060,6 +2062,30 @@ namespace Mengine
             }
             else
             {
+                RenderInterface * render = _child->getRender();
+
+                if( render == nullptr )
+                {
+                    return;
+                }
+
+                const mt::box2f * rbb = render->getBoundingBox();
+
+                if( rbb == nullptr )
+                {
+                    return;
+                }
+
+                if( mt::is_infinity_box( *rbb ) == true )
+                {
+                    return;
+                }
+
+                if( mt::is_intersect( *rbb, m_cursorWorldPosition ) == false )
+                {
+                    return;
+                }
+
                 ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
 
                 if( shape != nullptr )
@@ -2068,24 +2094,17 @@ namespace Mengine
                     {
                         return;
                     }
-                    else
-                    {
-                        m_selectedNode = _child;
-                    }
                 }
+
+                m_selectedNode = _child;
             } 
         } );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point )
     {
-        RenderInterface * render = _currentNode->getRender();
-        if( render == nullptr )
-        {
-            return false;
-        }
-
         const SurfacePtr & surface = _currentNode->getSurface();
+
         if( surface == nullptr )
         {
             return false;
@@ -2094,6 +2113,7 @@ namespace Mengine
         const RenderMaterialInterfacePtr & renderMaterial = surface->getMaterial();
 
         uint32_t textureCount = renderMaterial->getTextureCount();
+
         if( textureCount == 0 )
         {
             return false;
@@ -2118,9 +2138,14 @@ namespace Mengine
             return false;
         }
 
+        if( imageDesc.channels != 4 )
+        {
+            return true;
+        }
+
         const mt::uv4f & uv = surface->getUV( 0 );
 
-        if( this->checkIsTransparencePoint( _currentNode, renderImageLoader, renderTextureInterface, imageDesc, uv ) == true )
+        if( this->checkIsTransparencePoint( _currentNode, _point, renderImageLoader, renderTextureInterface, imageDesc, uv ) == true )
         {
             return false;
         }
@@ -2129,26 +2154,35 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::checkIsTransparencePoint( const ShapePtr & _currentNode
+        , const mt::vec2f & _point
         , const RenderImageLoaderInterfacePtr & _imageLoader
         , const RenderTextureInterfacePtr & _renderTexture
         , const RenderImageDesc & _imageDesc
         , const mt::uv4f & _uv )
     {
         MENGINE_UNUSED( _renderTexture );
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
         const RenderCameraInterfacePtr & renderCamera = PLAYER_SERVICE()
             ->getRenderCamera();
 
         const RenderViewportInterfacePtr & renderViewport = PLAYER_SERVICE()
             ->getRenderViewport();
 
-        const Viewport & viewport = renderViewport->getViewport();
+        const mt::mat4f & vpm_inv = renderCamera->getCameraViewProjectionMatrixInv();
+        const Viewport & vp = renderViewport->getViewport();
+
+        mt::vec2f contentResolutionSize;
+        contentResolution.calcSize( &contentResolutionSize );
 
         mt::vec2f point_vp;
-        point_vp = m_cursorWorldPosition;
+        point_vp = _point * contentResolutionSize;
 
-        point_vp -= viewport.begin;
+        point_vp -= vp.begin;
 
-        mt::vec2f size = viewport.size();
+        mt::vec2f size = vp.size();
 
         if( size.x < mt::constant::eps || size.y < mt::constant::eps )
         {
@@ -2158,29 +2192,24 @@ namespace Mengine
         point_vp /= size;
 
         mt::vec2f point_norm;
-        point_norm.x = point_vp.x;
-        point_norm.y = point_vp.y;
-
-        const mt::mat4f & cameraViewProjectionMatrixInv = renderCamera->getCameraViewProjectionMatrixInv();
+        point_norm.x = point_vp.x * 2.f - 1.f;
+        point_norm.y = 1.f - point_vp.y * 2.f;
 
         mt::vec2f pointIn1;
-        mt::mul_v2_v2_m4( pointIn1, point_norm, cameraViewProjectionMatrixInv );
+        mt::mul_v2_v2_m4( pointIn1, point_norm, vpm_inv );
 
         TransformationInterface * currentNodeTransformation = _currentNode->getTransformation();
-        const mt::mat4f & worldMatrix = currentNodeTransformation->getWorldMatrix();
+        const mt::mat4f & wm = currentNodeTransformation->getWorldMatrix();
 
-        mt::mat4f invWorldMatrix;
-        mt::inv_m4_m4( invWorldMatrix, worldMatrix );
+        mt::mat4f invWM;
+        mt::inv_m4_m4( invWM, wm );
 
         mt::vec2f pointIn2;
-        mt::mul_v2_v2_m4( pointIn2, pointIn1, invWorldMatrix );
-
-        pointIn2.x -= invWorldMatrix.v3.x;
+        mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
 
         if( pointIn2.x < 0.f || pointIn2.y < 0.f )
         {
             return true;
-
         }
 
         MemoryInterfacePtr memory = _imageLoader->getMemory( 0, MENGINE_DOCUMENT_FACTORABLE );

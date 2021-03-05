@@ -679,6 +679,8 @@ namespace Mengine
 
         // UI
         DebuggerNode * m_selectedNode;
+        DebuggerNode * m_selectedNodeInCollapseHeader;
+        Vector<uint32_t> m_pathToSelectedNode;
 
         DebuggerNode * m_selectedArrowNode;
         DebuggerNode * m_selectedSceneNode;

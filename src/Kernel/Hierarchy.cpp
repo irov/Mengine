@@ -256,6 +256,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Hierarchy::foreachChildrenReverseBreak( const LambdaHierarchyBreak & _lambda ) const
+    {
+        for( IntrusiveSlugListHierarchyChild::const_reverse_iterator
+            it = m_children.rbegin(),
+            it_end = m_children.rend();
+            it != it_end;
+            ++it )
+        {
+            NodePtr child( *it );
+
+            if( _lambda( child ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Hierarchy::removeChild( const NodePtr & _node )
     {
         MENGINE_ASSERTION_FATAL( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), NodePtr::from( _node ) ) == true, "node '%s' not found children '%s'"

@@ -1550,6 +1550,9 @@ namespace Mengine
             return;
         }
 
+        const ConstString & selectedNodeName = m_selectedNode->getName();
+        xmlNode.append_attribute( "SelectedNodeName" ).set_value( selectedNodeName.c_str() );
+
         UniqueId selectedNodeId = m_selectedNode->getUniqueIdentity();
         xmlNode.append_attribute( "SelectedNodeId" ).set_value( selectedNodeId );
 
@@ -2031,19 +2034,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point )
     {
-        _currentNode->foreachChildrenReverse( [this, _point]( const NodePtr & _child )
+        bool result =_currentNode->foreachChildrenReverseBreak( [this, _point]( const NodePtr & _child ) -> bool
         {
             if( m_selectedNode != nullptr )
             {
-                return;
+                return true;
             }
 
             if( _child->isEnable() == false )
             {
-                return;
+                return true;
             }
 
             this->findChildRecursive( _child, _point );
+
+            if( m_selectedNode != nullptr )
+            {
+                return true;
+            }
 
             const ConstString & type = _child->getType();
 
@@ -2057,6 +2065,8 @@ namespace Mengine
                     if( mt::is_intersect( bbox, m_cursorWorldPosition ) == true && mt::is_infinity_box( bbox ) == false )
                     {
                         m_selectedNode = _child;
+
+                        return false;
                     }
                 }
             }
@@ -2066,24 +2076,24 @@ namespace Mengine
 
                 if( render == nullptr )
                 {
-                    return;
+                    return true;
                 }
 
                 const mt::box2f * rbb = render->getBoundingBox();
 
                 if( rbb == nullptr )
                 {
-                    return;
+                    return true;
                 }
 
                 if( mt::is_infinity_box( *rbb ) == true )
                 {
-                    return;
+                    return true;
                 }
 
                 if( mt::is_intersect( *rbb, m_cursorWorldPosition ) == false )
                 {
-                    return;
+                    return true;
                 }
 
                 ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
@@ -2092,13 +2102,19 @@ namespace Mengine
                 {
                     if( this->checkHit( shape, _point ) == false )
                     {
-                        return;
+                        return false;
                     }
                 }
 
                 m_selectedNode = _child;
+
+                return true;
             } 
+
+            return true;
         } );
+
+        MENGINE_UNUSED( result );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point )

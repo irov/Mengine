@@ -97,6 +97,7 @@ namespace Mengine
         void sendMemory();
         void sendObjectsLeak();
         void sendNetwork();
+        void sendSelectedNode();
 
     protected:
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
@@ -119,6 +120,7 @@ namespace Mengine
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
         void receiveGameControlCommand( const String & _command );
         void stringToPath( const String & _str, VectorNodePath * const _path ) const;
+        void pathToString( const VectorNodePath & _path, String * const _outStr ) const;
 
     protected:
         void notifyChangeArrow( const ArrowPtr & _arrow );
@@ -131,10 +133,26 @@ namespace Mengine
         void setUpdateSceneFlag( bool _flag ) override;
 
     protected:
+        void findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point );
+        bool checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point );
+        bool checkIsTransparencePoint( const ShapePtr & _currentNode
+            , const mt::vec2f & _point
+            , const RenderImageLoaderInterfacePtr & _imageLoader
+            , const RenderTextureInterfacePtr & _renderTexture
+            , const RenderImageDesc & _imageDesc
+            , const mt::uv4f & uv );
+
+        void getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _boundingBox ) const;
+        void getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * _bb ) const;
+
+    protected:
         uint32_t m_globalKeyHandlerF2;
+        uint32_t m_globalKeyHandlerForSendingSelectedNode;
 
         ArrowPtr m_arrow;
         ScenePtr m_scene;
+        NodePtr m_selectedNode;
+
         SocketInterfacePtr m_socket;
         AtomicBool m_shouldRecreateServer;
         AtomicBool m_shouldUpdateScene;
@@ -152,5 +170,7 @@ namespace Mengine
 
         cURLRequestListenerPtr m_networkLogger;
         UniqueId m_requestListenerId;
+
+        mt::vec2f m_cursorWorldPosition;
     };
 }

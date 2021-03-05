@@ -623,6 +623,7 @@ namespace Mengine
         void ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer );
         void ReceiveNetwork( const pugi::xml_node & _xmlContainer );
         void ReceiveSettings( const pugi::xml_node & _xmlContainer );
+        void ReceiveSelectedNode( const pugi::xml_node & _xmlContainer );
 
     protected:
         void DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
@@ -678,6 +679,8 @@ namespace Mengine
 
         // UI
         DebuggerNode * m_selectedNode;
+        DebuggerNode * m_selectedNodeInCollapseHeader;
+        Vector<uint32_t> m_pathToSelectedNode;
 
         DebuggerNode * m_selectedArrowNode;
         DebuggerNode * m_selectedSceneNode;

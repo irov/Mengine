@@ -148,9 +148,9 @@ namespace Mengine
 
                 m_selectedNode = nullptr;
             }
-            
+
         }, MENGINE_DOCUMENT_FACTORABLE );
-        
+
         m_globalKeyHandlerForSendingSelectedNode = idForSelectedNodeSender;
 
         return true;
@@ -527,7 +527,7 @@ namespace Mengine
         }
 
         NodePtr node = Helper::findUniqueNode( m_scene, m_selectedNodePath );
-        
+
         if( node == nullptr )
         {
             return;
@@ -2034,7 +2034,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point )
     {
-        bool result =_currentNode->foreachChildrenReverseBreak( [this, _point]( const NodePtr & _child ) -> bool
+        bool result = _currentNode->foreachChildrenReverseBreak( [this, _point]( const NodePtr & _child ) -> bool
         {
             if( m_selectedNode != nullptr )
             {
@@ -2109,7 +2109,7 @@ namespace Mengine
                 m_selectedNode = _child;
 
                 return true;
-            } 
+            }
 
             return true;
         } );
@@ -2149,7 +2149,7 @@ namespace Mengine
         mt::box2f bb_screen;
         this->getScreenBoundingBox( _currentNode, imageDesc, &bb_screen );
 
-        if( mt::is_intersect( bb_screen, _point ) == false && mt::is_infinity_box(bb_screen) == true )
+        if( mt::is_intersect( bb_screen, _point ) == false && mt::is_infinity_box( bb_screen ) == true )
         {
             return false;
         }
@@ -2285,8 +2285,8 @@ namespace Mengine
     {
         TransformationInterface * currentNodeTransformation = _node->getTransformation();
         const mt::mat4f & worldMatrix = currentNodeTransformation->getWorldMatrix();
-        
-        float hs_width = static_cast<float>( _imageDesc.width );
+
+        float hs_width = static_cast<float>(_imageDesc.width);
         float hs_height = static_cast<float>(_imageDesc.height);
 
         mt::vec2f minimal( 0.f, 0.f );

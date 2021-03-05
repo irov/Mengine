@@ -298,16 +298,12 @@ namespace Mengine
             cacheFontARGB[index] = totalFontColor.getAsARGB();
         }
 
-        float charScale = this->calcCharScale();
-
-        float charScaleTotal = charScale * m_autoScaleFactor;
-
         float lineOffset = this->calcLineOffset();
 
         float linesOffset = this->calcLinesOffset( lineOffset, _font );
 
         mt::vec2f base_offset( 0.f, 0.f );
-        base_offset.y = linesOffset * charScaleTotal;
+        base_offset.y = linesOffset * m_autoScaleFactor;
 
         TextRenderChunk chunk;
         chunk.vertex_begin = 0;
@@ -315,6 +311,10 @@ namespace Mengine
         chunk.material = nullptr;
 
         mt::vec2f offset = base_offset;
+
+        float charScale = this->calcCharScale();
+
+        float charScaleTotal = charScale * m_autoScaleFactor;
 
         for( const VectorTextLines2 & lines2 : layouts )
         {
@@ -611,7 +611,7 @@ namespace Mengine
         else
         {
             m_textParams &= ~EFP_FONT;
-        }        
+        }
 
         this->invalidateFont();
         this->invalidateTextLines();
@@ -820,7 +820,7 @@ namespace Mengine
             this->updateTextLines_();
         }
 
-        *_textSize = m_textSize;
+        *_textSize = m_textSize * m_autoScaleFactor;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const
@@ -1162,19 +1162,19 @@ namespace Mengine
             return false;
         }
 
+        m_textSize = textSize;
+        m_charCount = charCount;
+        m_layoutCount = layoutCount;
+
         m_autoScaleFactor = 1.f;
 
         if( m_autoScale == true )
         {
             if( m_textSize.x > m_maxLength )
             {
-                m_autoScaleFactor = m_maxLength / textSize.x;
+                m_autoScaleFactor = m_maxLength / m_textSize.x;
             }
         }
-
-        m_textSize = textSize * m_autoScaleFactor;
-        m_charCount = charCount;
-        m_layoutCount = layoutCount;
 
         this->updateTextLinesMaxCount_( &m_cacheTextLines );
 
@@ -1584,7 +1584,7 @@ namespace Mengine
             case ETFVA_CENTER:
                 {
                     offset = fontAscent - (fontHeight + _lineOffset) * layoutCountf * 0.5f;
-                    
+
                     if( m_anchorVerticalAlign == false )
                     {
                         offset += m_textSize.y * 0.5f;
@@ -2341,7 +2341,7 @@ namespace Mengine
 
         if( m_anchorPercent.x != 0.f || m_anchorPercent.y != 0.f )
         {
-            mt::vec2f anchor = m_textSize * m_anchorPercent;
+            mt::vec2f anchor = m_textSize * m_autoScaleFactor * m_anchorPercent;
 
             for( RenderVertex2D & vertex : m_vertexDataText )
             {

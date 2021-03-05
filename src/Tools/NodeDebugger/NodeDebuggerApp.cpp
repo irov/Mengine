@@ -105,6 +105,7 @@ namespace Mengine
         , m_TextureCount( 0 )
         , m_SoundSourcesCount( 0 )
         , m_SoundBuffersCount( 0 )
+        , m_selectedNodeInCollapseHeader( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -307,6 +308,12 @@ namespace Mengine
         {
             this->DestroyNode( m_sceneRenderable );
             m_sceneRenderable = nullptr;
+        }
+
+        if( m_selectedNodeInCollapseHeader != nullptr )
+        {
+            this->DestroyNode( m_selectedNodeInCollapseHeader );
+            m_selectedNodeInCollapseHeader = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -516,6 +523,10 @@ namespace Mengine
         else if( typeStr == "Network" )
         {
             this->ReceiveNetwork( payloadNode );
+        }
+        else if( typeStr == "SelectedNode" )
+        {
+            this->ReceiveSelectedNode( payloadNode );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -736,6 +747,46 @@ namespace Mengine
             desc.json = json;
 
             m_settings.emplace_back( desc );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveSelectedNode( const pugi::xml_node & _xmlContainer )
+    {
+        if( m_selectedTab == "scene" )
+        {
+            pugi::xml_node node = _xmlContainer.child( "Node" );
+
+            uint32_t id = node.attribute( "SelectedNodeId" ).as_uint();
+
+            String pathToRoot = node.attribute( "PathToRoot" ).value();
+
+            String selectedNodeName = node.attribute( "SelectedNodeName" ).value();
+
+            Vector<uint32_t> path = this->StringToPath( pathToRoot );
+
+            m_pathToSelectedNode = path;
+
+            Vector<DebuggerNode *> childrens = m_scene->children;
+            DebuggerNode * selectedNode;
+            for( Vector<uint32_t>::reverse_iterator iter = path.rbegin() + 1; iter != path.rend(); ++iter )
+            {
+                uint32_t value = *iter;
+                Vector<DebuggerNode *>::iterator childrenForUid = std::find_if( childrens.begin(), childrens.end(), [value](const DebuggerNode * _node)
+                {
+                    return _node->uid == value;
+                } );
+
+                if( childrenForUid == childrens.end() )
+                {
+                    return;
+                }
+
+                selectedNode = *childrenForUid;
+                childrens = selectedNode->children;
+            }
+
+            m_selectedSceneNode = selectedNode;
+            m_selectedNode = selectedNode;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1263,6 +1314,8 @@ namespace Mengine
                             this->DoNodeElement( m_scene, &m_selectedSceneNode, "SceneFull" );
 
                             m_selectedNode = m_selectedSceneNode;
+
+                            m_pathToSelectedNode.clear();
                         }
                         ImGui::EndChild();
                     }
@@ -2033,11 +2086,23 @@ namespace Mengine
             iconPtr = &icon;
         }
 
+        ImGuiTreeNodeFlags flag = _node->children.empty() ? flagsNoChildren : flagsNormal;
+
+        if( std::find( m_pathToSelectedNode.begin(), m_pathToSelectedNode.end(), _node->uid ) != m_pathToSelectedNode.end() )
+        {
+            ImGui::SetNextItemOpen( true );
+
+            if( _node->uid == m_pathToSelectedNode[0] )
+            {
+                flag = ImGuiTreeNodeFlags_Selected;
+            }
+        }
+
         std::pair<bool, bool> result = ImGuiExt::TreeNodeWithIcon
         (
             iconPtr,
             fullLabel.c_str(),
-            _node->children.empty() ? flagsNoChildren : flagsNormal,
+            flag,
             !_node->enable
         );
 

@@ -79,6 +79,7 @@ namespace Mengine
         typedef Lambda<bool( const NodePtr & )> LambdaHierarchyBreak;
         bool foreachChildrenSlugBreak( const LambdaHierarchyBreak & _lambda ) const;
         bool foreachChildrenUnslugBreak( const LambdaHierarchyBreak & _lambda ) const;
+        bool foreachChildrenReverseBreak( const LambdaHierarchyBreak & _lambda ) const;
 
     protected:
         virtual void _hierarchySetParent( Node * _newParent ) = 0;

@@ -85,6 +85,7 @@ namespace Mengine
             , float _scale
             , uint32_t _params
             , bool _isOverride
+            , bool * const _isDublicate
             , const DocumentPtr & _doc ) override;
 
         bool removeTextEntry( const ConstString & _textId ) override;

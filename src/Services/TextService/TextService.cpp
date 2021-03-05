@@ -93,6 +93,7 @@ namespace Mengine
             : m_textService( _textManager )
             , m_fileGroup( _fileGroup )
             , m_filePath( _filePath )
+            , m_successful( true )
 #if MENGINE_DOCUMENT_ENABLE
             , m_doc( _doc )
 #endif
@@ -194,6 +195,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
 
                     charOffset = value;
@@ -211,6 +214,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
 
                     lineOffset = value;
@@ -231,6 +236,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
 
                     colorFont.setRGBA( r, g, b, a );
@@ -248,6 +255,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
 
                     maxLength = value;
@@ -265,6 +274,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
 
                     isOverride = (value != 0);
@@ -297,6 +308,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
                 }
                 else if( MENGINE_STRCMP( str_key, "HorizontAlign" ) == 0 )
@@ -327,6 +340,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
                 }
                 else if( MENGINE_STRCMP( str_key, "CharScale" ) == 0 )
@@ -340,6 +355,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
 
                     charScale = value;
@@ -357,6 +374,8 @@ namespace Mengine
                             , textKey.c_str()
                             , str_value
                         );
+
+                        m_successful = false;
                     }
 
                     isEmpty = (value != 0);
@@ -392,18 +411,33 @@ namespace Mengine
                         , textKey.c_str()
                         , fontName.c_str()
                     );
+
+                    m_successful = false;
                 }
             }
 
+            bool isDublicate = false;
+
             Tags tags;
-            if( m_textService->addTextEntry( textKey, text_str_value, text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
+            if( m_textService->addTextEntry( textKey, text_str_value, text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
                     , m_fileGroup->getName().c_str()
                     , m_filePath.c_str()
                     , textKey.c_str()
                 );
+
+                if( isDublicate == false )
+                {
+                    m_successful = false;
+                }
             }
+        }
+
+    public:
+        bool isSuccessful() const
+        {
+            return m_successful;
         }
 
     protected:
@@ -411,6 +445,8 @@ namespace Mengine
 
         const FileGroupInterfacePtr & m_fileGroup;
         const FilePath & m_filePath;
+
+        bool m_successful;
 
 #if MENGINE_DOCUMENT_ENABLE
         DocumentPtr m_doc;
@@ -461,6 +497,11 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
+            return false;
+        }
+
+        if( tmsc.isSuccessful() == false )
+        {
             return false;
         }
 
@@ -582,12 +623,23 @@ namespace Mengine
         , float _scale
         , uint32_t _params
         , bool _isOverride
+        , bool * const _isDublicate
         , const DocumentPtr & _doc )
     {
+        if( _isDublicate != nullptr )
+        {
+            *_isDublicate = false;
+        }
+
         const TextEntryPtr & textEntry_has = m_texts.find( _key );
 
         if( textEntry_has != nullptr )
         {
+            if( _isDublicate != nullptr )
+            {
+                *_isDublicate = true;
+            }
+
             if( _isOverride == false )
             {
                 size_t text_size;

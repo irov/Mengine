@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizePlugin() override;
 
     protected:
-        void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
+        void notifyReloadLocale();
 
     protected:
         bool proccess_();

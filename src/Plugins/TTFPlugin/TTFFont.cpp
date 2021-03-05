@@ -636,12 +636,27 @@ namespace Mengine
             return true;
         }
 
-        FT_Vector ttf_kerning;
-        FT_Error err_code = FT_Get_Kerning( face, code_index, next_index, FT_KERNING_DEFAULT, &ttf_kerning );
+        FT_Error err_pixel_code = FT_Set_Pixel_Sizes( face, 0, m_height );
 
-        if( err_code != FT_Err_Ok )
+        if( err_pixel_code != FT_Err_Ok )
         {
-            const Char * err_message = FT_Error_String( err_code );
+            const Char * err_message = FT_Error_String( err_pixel_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid set pixel sizes '%u' error [%s]"
+                , this->getName().c_str()
+                , m_height
+                , err_message
+            );
+
+            return false;
+        }
+
+        FT_Vector ttf_kerning;
+        FT_Error err_kerning_code = FT_Get_Kerning( face, code_index, next_index, FT_KERNING_DEFAULT, &ttf_kerning );
+
+        if( err_kerning_code != FT_Err_Ok )
+        {
+            const Char * err_message = FT_Error_String( err_kerning_code );
 
             LOGGER_ERROR( "ttf font '%s' invalid get kerning code '%u' next '%u' error [%s]"
                 , this->getName().c_str()

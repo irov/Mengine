@@ -1202,15 +1202,42 @@ namespace Mengine
 
             if( _event.code == KC_E && _event.isDown == true && controlDown == true )
             {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
-                NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );
-                NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_POST );
-
                 const ConstString & locale = APPLICATION_SERVICE()
                     ->getLocale();
 
-                APPLICATION_SERVICE()
-                    ->setLocale( locale );
+                LOGGER_MESSAGE_RELEASE( "Reload locale [%s]"
+                    , locale.c_str()
+                );
+
+                class MyRestartSceneChange
+                    : public SceneChangeCallbackInterface
+                    , public Factorable
+                {
+                protected:
+                    void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
+                    {
+                        MENGINE_UNUSED( _enable );
+                        MENGINE_UNUSED( _remove );
+                        MENGINE_UNUSED( _error );
+
+                        if( _scene == nullptr )
+                        {
+                            const ConstString & locale = APPLICATION_SERVICE()
+                                ->getLocale();
+
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_POST );
+
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, locale, locale );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, locale, locale );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, locale, locale );
+                        }
+                    }
+                };
+
+                SCENE_SERVICE()
+                    ->restartCurrentScene( false, Helper::makeFactorableUnique<MyRestartSceneChange>( MENGINE_DOCUMENT_FACTORABLE ) );
             }
 
             //if( _event.code == KC_0 && _event.isDown == true )

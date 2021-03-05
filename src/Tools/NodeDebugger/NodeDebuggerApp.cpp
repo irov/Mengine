@@ -215,7 +215,7 @@ namespace Mengine
             [this]()
         {
             this->DoUINetwork();
-        } } );
+        }} );
         m_tabs.push_back( {
             "settings",
             "Settings",
@@ -767,11 +767,11 @@ namespace Mengine
             m_pathToSelectedNode = path;
 
             Vector<DebuggerNode *> childrens = m_scene->children;
-            DebuggerNode * selectedNode;
+            DebuggerNode * selectedNode = nullptr;
             for( Vector<uint32_t>::reverse_iterator iter = path.rbegin() + 1; iter != path.rend(); ++iter )
             {
                 uint32_t value = *iter;
-                Vector<DebuggerNode *>::iterator childrenForUid = std::find_if( childrens.begin(), childrens.end(), [value](const DebuggerNode * _node)
+                Vector<DebuggerNode *>::iterator childrenForUid = std::find_if( childrens.begin(), childrens.end(), [value]( const DebuggerNode * _node )
                 {
                     return _node->uid == value;
                 } );
@@ -1601,7 +1601,7 @@ namespace Mengine
                     MENGINE_SPRINTF( label, "##url%u", desk.id );
 
                     ImGui::InputText( label, (Char *)desk.url.data(), desk.url.size(), ImGuiInputTextFlags_ReadOnly );
-                    
+
                     if( openNode == true )
                     {
                         ImGui::Separator();
@@ -1713,7 +1713,7 @@ namespace Mengine
                         ImGui::SameLine();
 
                         Char buffer_value[256] = {'\0'};
-                        
+
                         struct buffer_desc
                         {
                             Char * buffer;
@@ -1810,7 +1810,7 @@ namespace Mengine
 
                 // TODO need make ability for copy text from ImGui::InputText
 
-                ++*_labelCounter;
+                ++ * _labelCounter;
 
                 Char label[32] = {'\0'};
                 MENGINE_SPRINTF( label, "##v%u"
@@ -2337,8 +2337,8 @@ namespace Mengine
 
         if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            ImGui::Text( "Name:" ); 
-            ImGui::SameLine(); 
+            ImGui::Text( "Name:" );
+            ImGui::SameLine();
             ImGui::PushItemWidth( 25.f + 8.f * _node->name.size() );
             ImGui::InputText( "##node_name", _node->name.data(), _node->name.size(), ImGuiInputTextFlags_ReadOnly );
             ImGui::PopItemWidth();
@@ -2346,20 +2346,20 @@ namespace Mengine
             ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
 
             ImGui::SameLine();
-            ImGui::Text( "Type:" ); 
-            ImGui::SameLine(); 
+            ImGui::Text( "Type:" );
+            ImGui::SameLine();
             ImGui::PushItemWidth( 25.f + 8.f * _node->type.size() );
             ImGui::InputText( "##node_type", _node->type.data(), _node->type.size(), ImGuiInputTextFlags_ReadOnly );
             ImGui::PopItemWidth();
             ImGui::SameLine();
-            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );            
+            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
 
             Char uid_text[64];
             MENGINE_SPRINTF( uid_text, "%u", _node->uid );
 
             ImGui::SameLine();
-            ImGui::Text( "UID:" ); 
-            ImGui::SameLine(); 
+            ImGui::Text( "UID:" );
+            ImGui::SameLine();
             ImGui::PushItemWidth( 25.f + 8.f * MENGINE_STRLEN( uid_text ) );
             ImGui::InputText( "##node_uid", uid_text, MENGINE_STRLEN( uid_text ), ImGuiInputTextFlags_ReadOnly );
             ImGui::PopItemWidth();

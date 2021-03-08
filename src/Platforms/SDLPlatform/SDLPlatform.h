@@ -35,6 +35,8 @@ namespace Mengine
         : public ServiceBase<PlatformInterface>
         , public SDLPlatformExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         SDLPlatform();
         ~SDLPlatform() override;

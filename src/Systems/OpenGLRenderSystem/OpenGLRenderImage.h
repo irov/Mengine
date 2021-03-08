@@ -17,6 +17,8 @@ namespace Mengine
         , public OpenGLRenderResourceHandler
         , public Factorable
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         OpenGLRenderImage();
         ~OpenGLRenderImage() override;

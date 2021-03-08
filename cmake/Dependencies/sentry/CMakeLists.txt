@@ -64,6 +64,11 @@ option(SENTRY_PIC "Build sentry (and dependent) libraries as position independen
 option(SENTRY_BUILD_TESTS "Build sentry-native tests" "${SENTRY_MAIN_PROJECT}")
 option(SENTRY_BUILD_EXAMPLES "Build sentry-native example(s)" "${SENTRY_MAIN_PROJECT}")
 
+option(SENTRY_LINK_PTHREAD "Link platform threads library" ON)
+if(SENTRY_LINK_PTHREAD)
+	find_package(Threads REQUIRED)
+endif()
+
 if(MSVC)
 	option(SENTRY_BUILD_RUNTIMESTATIC "Build sentry-native with static runtime" OFF)
 endif()
@@ -86,7 +91,7 @@ endif()
 
 if(WIN32)
 	set(SENTRY_DEFAULT_TRANSPORT "winhttp")
-elseif(APPLE OR LINUX)
+elseif((APPLE AND NOT IOS) OR LINUX)
 	set(SENTRY_DEFAULT_TRANSPORT "curl")
 else()
 	set(SENTRY_DEFAULT_TRANSPORT "none")
@@ -122,7 +127,7 @@ option(SENTRY_ENABLE_INSTALL "Enable sentry installation" "${SENTRY_MAIN_PROJECT
 if(MSVC AND CMAKE_GENERATOR_TOOLSET MATCHES "_xp$")
 	message(WARNING "Crashpad is not supported for MSVC with XP toolset. Default backend was switched to 'breakpad'")
 	set(SENTRY_DEFAULT_BACKEND "breakpad")
-elseif(APPLE OR WIN32)
+elseif((APPLE AND NOT IOS) OR WIN32)
 	set(SENTRY_DEFAULT_BACKEND "crashpad")
 elseif(LINUX)
 	set(SENTRY_DEFAULT_BACKEND "breakpad")
@@ -147,9 +152,6 @@ endif()
 
 if(SENTRY_BACKEND_CRASHPAD AND ANDROID)
 	message(FATAL_ERROR "The Crashpad backend is not currently supported on Android")
-endif()
-if(SENTRY_BACKEND_BREAKPAD AND ANDROID)
-	message(FATAL_ERROR "The Breakpad backend is not currently supported on Android")
 endif()
 
 message(STATUS "SENTRY_TRANSPORT=${SENTRY_TRANSPORT}")
@@ -218,6 +220,7 @@ endfunction()
 # ===== sentry library =====
 
 add_library(sentry ${SENTRY_LIBRARY_TYPE} "${PROJECT_SOURCE_DIR}/vendor/mpack.c")
+target_sources(sentry PRIVATE "${PROJECT_SOURCE_DIR}/include/sentry.h")
 add_library(sentry::sentry ALIAS sentry)
 add_subdirectory(src)
 
@@ -348,19 +351,29 @@ if(WIN32)
 	endif()
 endif()
 
-if(LINUX)
-	option(SENTRY_LINK_PTHREAD "Link Sentry with pthread" ON)
-	if(SENTRY_LINK_PTHREAD)
-		target_link_libraries(sentry PRIVATE pthread)
-	endif()
-	target_link_libraries(sentry PRIVATE dl)
-	target_link_libraries(sentry PRIVATE rt)
-elseif(ANDROID)
-	target_link_libraries(sentry PRIVATE dl log)
-elseif(MSVC)
-	target_link_libraries(sentry PRIVATE dbghelp version)
-elseif(MINGW)
-	target_link_libraries(sentry PRIVATE dbghelp version)
+# handle platform libraries
+if(ANDROID)
+    set(_SENTRY_PLATFORM_LIBS "dl" "log")
+elseif(LINUX)
+    set(_SENTRY_PLATFORM_LIBS "dl" "rt")
+elseif(WIN32)
+    set(_SENTRY_PLATFORM_LIBS "dbghelp" "version")
+endif()
+
+# handle platform threads library
+if(SENTRY_LINK_PTHREAD)
+	list(APPEND _SENTRY_PLATFORM_LIBS "Threads::Threads")
+endif()
+
+# apply platform libraries to sentry library
+if(SENTRY_LIBRARY_TYPE STREQUAL "static")
+    target_link_libraries(sentry PUBLIC ${_SENTRY_PLATFORM_LIBS})
+else()
+    target_link_libraries(sentry PRIVATE ${_SENTRY_PLATFORM_LIBS})
+endif()
+
+# suppress some errors and warnings for MinGW target
+if(MINGW)
 	target_compile_options(sentry PRIVATE
 		-Wno-unused-variable
 		-Wno-unused-parameter

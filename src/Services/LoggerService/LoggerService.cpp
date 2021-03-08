@@ -185,6 +185,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::_finalizeService()
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         for( const LoggerInterfacePtr & logger : m_loggers )
         {
             logger->flush();

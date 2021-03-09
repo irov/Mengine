@@ -42,7 +42,7 @@ namespace Mengine
         void fillKeys_();
 
     protected:
-        void calcCursorPosition_( int _mx, int _my, mt::vec2f * const _point ) const;
+        void calcCursorPosition_( Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const;
 
     protected:
         ETouchCode acquireFingerIndex_( SDL_FingerID _fingerId );

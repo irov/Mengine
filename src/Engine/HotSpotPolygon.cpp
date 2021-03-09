@@ -5,6 +5,7 @@
 #include "Interface/RenderViewportInterface.h"
 
 #include "Kernel/PolygonHelper.h"
+#include "Kernel/RenderCameraHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -64,7 +65,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotPolygon::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    bool HotSpotPolygon::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
     {
         if( m_global == true )
         {
@@ -76,15 +77,18 @@ namespace Mengine
             return m_outward;
         }
 
+        mt::vec2f rxy;
+        Helper::worldToScreenDelta( _context, _contentResolution, mt::vec2f( _radius, _radius ), &rxy );
+
         mt::box2f bb;
         this->getScreenPolygon( _context, _contentResolution, &bb, &m_polygonScreen );
 
-        if( mt::is_intersect( bb, _point, _radiusx, _radiusy ) == false )
+        if( mt::is_intersect( bb, _point, rxy.x, rxy.y ) == false )
         {
             return m_outward;
         }
 
-        if( Helper::intersects( m_polygonScreen, _point, _radiusx, _radiusy ) == false )
+        if( Helper::intersects( m_polygonScreen, _point, rxy.x, rxy.y ) == false )
         {
             return m_outward;
         }

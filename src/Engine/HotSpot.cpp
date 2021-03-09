@@ -281,10 +281,7 @@ namespace Mengine
             {
                 float radius = _arrow->getRadius();
 
-                mt::vec2f rxy;
-                Helper::worldToScreenDelta( _context, _contentResolution, mt::vec2f( radius, radius ), &rxy );
-
-                bool result = this->testRadius( _context, _contentResolution, _point, rxy.x, rxy.y );
+                bool result = this->testRadius( _context, _contentResolution, _point, radius );
 
                 return result;
             }break;

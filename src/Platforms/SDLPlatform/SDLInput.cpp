@@ -23,11 +23,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLInput::initialize()
     {
-        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
-        {
-            m_fingers[index] = -1;
-        }
-
         this->fillKeys_();
 
         return true;
@@ -37,7 +32,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLInput::calcCursorPosition_( int _mx, int _my, mt::vec2f * const _point ) const
+    void SDLInput::calcCursorPosition_( Sint32 _mx, Sint32 _my, mt::vec2f * const _point ) const
     {
         float x = static_cast<float>(_mx);
         float y = static_cast<float>(_my);
@@ -210,8 +205,7 @@ namespace Mengine
                 ETouchCode fingerIndex = this->releaseFingerIndex_( _event.tfinger.fingerId );
 
                 Helper::pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, false );
-            }
-            break;
+            }break;
         default:
             break;
         }
@@ -264,18 +258,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLInput::fillKeys_()
     {
-        for( uint32_t i = 0; i != KC_MAX_CODE; ++i )
-        {
-            m_keys[i] = KC_UNASSIGNED;
-
-            m_keyDown[i] = false;
-        }
-
-        for( uint32_t i = 0; i != SDL_NUM_SCANCODES; ++i )
-        {
-            m_codes[i] = SDL_SCANCODE_UNKNOWN;
-        }
-
         m_keys[SDL_SCANCODE_RETURN] = Mengine::KC_RETURN;
         m_keys[SDL_SCANCODE_ESCAPE] = Mengine::KC_ESCAPE;
         m_keys[SDL_SCANCODE_BACKSPACE] = Mengine::KC_BACK;
@@ -415,4 +397,5 @@ namespace Mengine
 
         return key;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

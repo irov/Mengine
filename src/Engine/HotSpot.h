@@ -49,7 +49,7 @@ namespace Mengine
 
     public:
         virtual bool testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;
-        virtual bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const = 0;
+        virtual bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const = 0;
         virtual bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
 
     protected:

@@ -188,7 +188,9 @@ namespace Mengine
         uint32_t i = (uint32_t)fi;
         uint32_t j = (uint32_t)fj;
 
-        float levelF = MT_logf( _radius ) * mt::constant::inv_log2;
+        float radiuslog = MT_logf( _radius );
+
+        float levelF = radiuslog * mt::constant::inv_log2;
         uint32_t level = (uint32_t)levelF;
 
         if( level >= m_mipmaplevel )
@@ -226,12 +228,12 @@ namespace Mengine
 
         uint8_t alpha = alphaBuffer[index];
 
-        if( alpha > minAlpha )
+        if( alpha <= minAlpha )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint8_t * ResourceHIT::getHitBuffer_( uint32_t _level ) const

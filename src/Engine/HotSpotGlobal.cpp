@@ -24,13 +24,12 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotGlobal::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    bool HotSpotGlobal::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _contentResolution );
         MENGINE_UNUSED( _point );
-        MENGINE_UNUSED( _radiusx );
-        MENGINE_UNUSED( _radiusy );
+        MENGINE_UNUSED( _radius );
 
         return !m_outward;
     }

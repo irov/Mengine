@@ -2,6 +2,8 @@
 
 #include "Config/Typedef.h"
 
+#define MENGINE_INPUT_MAX_KEY_CODE (256)
+
 namespace Mengine
 {
     enum EKeyCode : uint8_t

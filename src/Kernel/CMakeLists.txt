@@ -464,6 +464,7 @@ Assertion
     AssertionObservable.h
     AssertionObservable.cpp
     AssertionOptional.h
+    AssertionUnique.h
 )
 
 ADD_FILTER(

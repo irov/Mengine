@@ -202,7 +202,7 @@ namespace Mengine
             return false;
         }
 
-        std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+        std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
 
         if( keyDownCount != 1 )
         {
@@ -214,7 +214,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isAnyKeyDown() const
     {
-        std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+        std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, true );
 
         return keyDownCount != 0;
     }
@@ -230,7 +230,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isMouseButtonDown( EMouseCode _button ) const
     {
-        MENGINE_ASSERTION_FATAL( _button < 3 );
+        MENGINE_ASSERTION_FATAL( _button < MENGINE_INPUT_MAX_MOUSE_CODE );
 
         bool isDown = m_mouseBuffer[_button];
 
@@ -414,11 +414,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
     {
-        MENGINE_ASSERTION_FATAL( _event.code < 3 );
+        MENGINE_ASSERTION_FATAL( _event.code < MENGINE_INPUT_MAX_MOUSE_CODE );
 
         m_mouseBuffer[_event.code] = _event.isDown;
-
-        m_mouseBufferSpecial[_event.code] = _event.special.isSpecial;
 
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
@@ -428,24 +426,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseMoveEvent_( const InputMouseMoveEvent & _event )
     {
-        if( PLATFORM_SERVICE()
-            ->hasTouchpad() == true )
-        {
-            if( this->isAnyMouseButtonDown() == true )
-            {
-                this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
-                APPLICATION_SERVICE()
-                    ->mouseMove( _event );
-            }
-        }
-        else
-        {
-            this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
-
-            APPLICATION_SERVICE()
-                ->mouseMove( _event );
-        }
+        APPLICATION_SERVICE()
+            ->mouseMove( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseWheelEvent_( const InputMouseWheelEvent & _event )

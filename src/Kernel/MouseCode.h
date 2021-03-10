@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Config/Config.h"
 #include "Config/Typedef.h"
+
+#define MENGINE_INPUT_MAX_MOUSE_CODE (3)
 
 namespace Mengine
 {

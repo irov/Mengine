@@ -2201,7 +2201,7 @@ namespace Mengine
                 PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYBIND );
                 provider->initialize( arrow, camera, viewport, _cb, _args );
 
-                uint32_t id = INPUT_SERVICE()
+                UniqueId id = INPUT_SERVICE()
                     ->addMousePositionProvider( provider, MENGINE_DOCUMENT_PYBIND );
 
                 return id;

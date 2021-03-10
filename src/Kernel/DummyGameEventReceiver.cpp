@@ -63,7 +63,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown )
+    bool DummyGameEventReceiver::onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
     {
         MENGINE_UNUSED( _touchId );
         MENGINE_UNUSED( _x );
@@ -74,7 +74,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown )
+    bool DummyGameEventReceiver::onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
     {
         MENGINE_UNUSED( _touchId );
         MENGINE_UNUSED( _x );
@@ -85,7 +85,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown )
+    bool DummyGameEventReceiver::onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
     {
         MENGINE_UNUSED( _touchId );
         MENGINE_UNUSED( _x );
@@ -96,7 +96,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseMove( uint32_t _touchId, float _x, float _y, float _dx, float _dy )
+    bool DummyGameEventReceiver::onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy )
     {
         MENGINE_UNUSED( _touchId );
         MENGINE_UNUSED( _x );
@@ -107,7 +107,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel )
+    bool DummyGameEventReceiver::onGameMouseWheel( EMouseCode _button, float _x, float _y, int32_t _wheel )
     {
         MENGINE_UNUSED( _button );
         MENGINE_UNUSED( _x );

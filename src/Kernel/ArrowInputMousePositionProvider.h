@@ -9,9 +9,10 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ArrowInputMousePositionProvider
-        : public Factorable
-        , public InputMousePositionProviderInterface
+        : public InputMousePositionProviderInterface
+        , public Factorable
     {
     public:
         ArrowInputMousePositionProvider( Arrow * _arrow );
@@ -23,4 +24,7 @@ namespace Mengine
     protected:
         Arrow * m_arrow;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ArrowInputMousePositionProvider, InputMousePositionProviderInterface> ArrowInputMousePositionProviderPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

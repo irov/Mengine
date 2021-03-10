@@ -50,8 +50,10 @@ namespace Mengine
             return false;
         }
 
+        ArrowInputMousePositionProviderPtr provider = Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this );
+
         UniqueId inputMousePositionProviderId = INPUT_SERVICE()
-            ->addMousePositionProvider( Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->addMousePositionProvider( provider, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_UNIQUE_INVALID( inputMousePositionProviderId );
 

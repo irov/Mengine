@@ -8,13 +8,14 @@
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionUnique.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Arrow::Arrow()
         : m_arrowType( EAT_POINT )
-        , m_inputMousePositionProviderId( 0 )
+        , m_inputMousePositionProviderId( INVALIDATE_UNIQUE_ID )
         , m_pointClick( 0.f, 0.f )
         , m_radius( 0.f )
         , m_hided( false )
@@ -49,8 +50,12 @@ namespace Mengine
             return false;
         }
 
-        m_inputMousePositionProviderId = INPUT_SERVICE()
+        UniqueId inputMousePositionProviderId = INPUT_SERVICE()
             ->addMousePositionProvider( Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this ), MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_UNIQUE_INVALID( inputMousePositionProviderId );
+
+        m_inputMousePositionProviderId = inputMousePositionProviderId;
 
         const mt::vec2f & cursor_pos = INPUT_SERVICE()
             ->getCursorPosition( TC_TOUCH0 );

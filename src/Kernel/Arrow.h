@@ -63,7 +63,7 @@ namespace Mengine
     protected:
         EArrowType m_arrowType;
 
-        uint32_t m_inputMousePositionProviderId;
+        UniqueId m_inputMousePositionProviderId;
 
         mt::vec2f m_pointClick;
         float m_radius;

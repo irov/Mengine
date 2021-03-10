@@ -94,8 +94,7 @@ namespace Mengine
         VectorInputEvents m_eventsAux;
         VectorInputEvents m_events;
 
-        bool m_keyBuffer[256] = {false};
-        bool m_mouseBuffer[3] = {false};
-        bool m_mouseBufferSpecial[3] = {false};
+        bool m_keyBuffer[MENGINE_INPUT_MAX_KEY_CODE] = {false};
+        bool m_mouseBuffer[MENGINE_INPUT_MAX_MOUSE_CODE] = {false};
     };
 }

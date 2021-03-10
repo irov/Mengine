@@ -46,27 +46,27 @@ namespace Mengine
         return m_cb.call( _key, _x, _y );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
     {
         return m_cb.call( _touchId, _x, _y, _button, _isDown );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
     {
         return m_cb.call( _touchId, _x, _y, _button, _isDown );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown )
+    bool PythonGameEventReceiver::onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown )
     {
         return m_cb.call( _touchId, _x, _y, _button, _isDown );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseMove( uint32_t _touchId, float _x, float _y, float _dx, float _dy )
+    bool PythonGameEventReceiver::onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy )
     {
         return m_cb.call( _touchId, _x, _y, _dx, _dy );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonGameEventReceiver::onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel )
+    bool PythonGameEventReceiver::onGameMouseWheel( EMouseCode _button, float _x, float _y, int32_t _wheel )
     {
         return m_cb.call( _button, _x, _y, _wheel );
     }

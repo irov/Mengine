@@ -238,7 +238,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const WString & _params )
+    static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const MapWParams & _params )
     {
         MENGINE_UNUSED( _params );
 
@@ -259,6 +259,7 @@ namespace Mengine
         options.fileGroup = fileGroup;
         options.inputFilePath = Helper::stringizeFilePath( utf8_fromPath );
         options.outputFilePath = Helper::stringizeFilePath( utf8_toPath );
+        options.params = _params;
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
             ->createConverter( Helper::stringizeString( utf8_convertType ), MENGINE_DOCUMENT_FUNCTION );
@@ -290,14 +291,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool convert( const wchar_t * fromPath, const wchar_t * toPath, const wchar_t * convertType, const wchar_t * params )
+    static bool convert( const WString & fromPath, const WString & toPath, const WString & convertType, const MapWParams & params )
     {
         if( s_convert( fromPath, toPath, convertType, params ) == false )
         {
             LOGGER_ERROR( "convert: error process %ls to %ls convert %ls"
-                , fromPath
-                , toPath
-                , convertType
+                , fromPath.c_str()
+                , toPath.c_str()
+                , convertType.c_str()
             );
 
             return false;

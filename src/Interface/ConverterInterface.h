@@ -9,6 +9,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/String.h"
+#include "Kernel/Params.h"
 
 namespace Mengine
 {
@@ -19,6 +20,8 @@ namespace Mengine
 
         FilePath inputFilePath;
         FilePath outputFilePath;
+
+        MapWParams params;
     };
     //////////////////////////////////////////////////////////////////////////
     class ConverterInterface

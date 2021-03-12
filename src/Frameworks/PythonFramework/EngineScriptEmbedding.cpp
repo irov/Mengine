@@ -3202,7 +3202,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseLeaveHandlers;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseLeaveHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseLeaveHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3212,7 +3212,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3252,7 +3252,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseMoveHandlers;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3262,7 +3262,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3297,7 +3297,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerButtons;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3307,7 +3307,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3343,7 +3343,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerButtonEnds;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3353,7 +3353,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3383,7 +3383,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerWheels;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3395,7 +3395,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3431,7 +3431,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerButtonBegins;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3443,7 +3443,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3472,7 +3472,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalKeyHandler;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3484,7 +3484,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3511,7 +3511,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalTextHandler;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3523,12 +3523,12 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_removeGlobalHandler( uint32_t _id )
+            bool s_removeGlobalHandler( UniqueId _id )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();

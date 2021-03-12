@@ -1236,8 +1236,12 @@ namespace Mengine
                     }
                 };
 
+                typedef IntrusivePtr<MyRestartSceneChange> MyRestartSceneChangePtr;
+
+                MyRestartSceneChangePtr cb = Helper::makeFactorableUnique<MyRestartSceneChange>( MENGINE_DOCUMENT_FACTORABLE );
+
                 SCENE_SERVICE()
-                    ->restartCurrentScene( false, Helper::makeFactorableUnique<MyRestartSceneChange>( MENGINE_DOCUMENT_FACTORABLE ) );
+                    ->restartCurrentScene( false, cb );
             }
 
             //if( _event.code == KC_0 && _event.isDown == true )

@@ -9,6 +9,13 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        bool unicodeToUtf8( const WChar * _unicode, String * const _utf8 )
+        {
+            bool result = Helper::unicodeToUtf8Size( _unicode, MENGINE_UNKNOWN_SIZE, _utf8 );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, String * const _utf8 )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();

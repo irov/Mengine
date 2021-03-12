@@ -591,6 +591,9 @@ Core
     
     Params.h
     
+    ParamsHelper.h
+    ParamsHelper.cpp
+    
     Rect.h
     Rect.cpp
     

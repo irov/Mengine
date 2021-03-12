@@ -2654,8 +2654,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2695,8 +2697,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2752,9 +2756,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            const float * vp3 = mesh.position[index];
-                            vp.from_f3( vp3 );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2767,12 +2772,13 @@ namespace Mengine
                             {
                                 RenderVertex2D & v = vertices[index];
 
-                                mt::vec2f uv;
-                                const float * uv2 = mesh.uv[index];
-                                uv.from_f2( uv2 );
+                                const float * uv = mesh.uv[index];
 
-                                resourceImage->correctUVImage( uv, v.uv + 0 );
-                                resourceImage->correctUVAlpha( uv, v.uv + 1 );
+                                mt::vec2f vuv;
+                                vuv.from_f2( uv );
+
+                                resourceImage->correctUVImage( vuv, v.uv + 0 );
+                                resourceImage->correctUVAlpha( vuv, v.uv + 1 );
                             }
                         }
                         else
@@ -2915,8 +2921,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2978,15 +2986,19 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( mesh.position[index] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
+                            const float * uv = mesh.uv[index];
 
-                            resourceImage->correctUVImage( uv, v.uv + 0 );
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
+
+                            resourceImage->correctUVImage( vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
@@ -3014,11 +3026,13 @@ namespace Mengine
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {
-                            mt::vec2f uv;
-                            uv.from_f2( &track_matte_mesh->uv[index][0] );
+                            const float * uv = track_matte_mesh->uv[index];
+
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
+                            resourceTrackMatteImage->correctUVAlpha( vuv, &uv_correct );
 
                             if( uvbb[0] > uv_correct.x )
                             {
@@ -3091,15 +3105,19 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( mesh.position[index] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
+                            const float * uv = mesh.uv[index];
 
-                            resourceImage->correctUVImage( uv, v.uv + 0 );
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
+
+                            resourceImage->correctUVImage( vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
@@ -3127,11 +3145,13 @@ namespace Mengine
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {
-                            mt::vec2f uv;
-                            uv.from_f2( &track_matte_mesh->uv[index][0] );
+                            const float * uv = track_matte_mesh->uv[index];
+
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
+                            resourceTrackMatteImage->correctUVAlpha( vuv, &uv_correct );
 
                             if( uvbb[0] > uv_correct.x )
                             {

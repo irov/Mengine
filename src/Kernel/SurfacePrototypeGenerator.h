@@ -44,6 +44,9 @@ namespace Mengine
             const ConstString & prototype = this->getPrototype();
             surface->setType( prototype );
 
+            UniqueId uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
+            surface->setUniqueIdentity( uniqueIdentity );
+
 #if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Surface '%s' type '%s' create '%s'"
                 , surface->getName().c_str()

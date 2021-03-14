@@ -638,7 +638,6 @@ namespace Mengine
             node->setMovie( this );
 
             node->setName( subcomposition.name );
-            node->setType( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
             node->setDuration( subcomposition.duration );
             node->setFrameDuration( subcomposition.frameDuration );
 

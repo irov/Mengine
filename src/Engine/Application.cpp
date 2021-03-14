@@ -412,11 +412,15 @@ namespace Mengine
 
         m_renderPipeline = renderPipeline;
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &Application::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
+
         if( m_debugFileOpen == true )
         {
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
@@ -428,20 +432,6 @@ namespace Mengine
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
         }
 
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
-        {
-            PLAYER_SERVICE()
-                ->finalizeRenderResources();
-        }
-
-        m_cursorResource = nullptr;
-
-        if( m_renderPipeline != nullptr )
-        {
-            m_renderPipeline->finalize();
-            m_renderPipeline = nullptr;
-        }
-
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
@@ -451,6 +441,30 @@ namespace Mengine
         this->unregisterEntityGenerator_();
         this->unregisterSceneGenerator_();
         this->unregisterArrowGenerator_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::_stopService()
+    {
+        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        {
+            PLAYER_SERVICE()
+                ->finalizeRenderResources();
+        }
+
+        if( m_renderPipeline != nullptr )
+        {
+            m_renderPipeline->finalize();
+            m_renderPipeline = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::notifyEnginePrepareFinalize_()
+    {
+        if( m_cursorResource != nullptr )
+        {
+            m_cursorResource->release();
+            m_cursorResource = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseTypes_()

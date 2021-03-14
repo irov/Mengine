@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/EnumeratorServiceInterface.h"
+
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #else
@@ -44,6 +46,9 @@ namespace Mengine
 
             const ConstString & prototype = this->getPrototype();
             resource->setType( prototype );
+
+            UniqueId uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
+            resource->setUniqueIdentity( uniqueIdentity );
 
 #if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Resource '%s' type '%s' create '%s'"

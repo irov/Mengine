@@ -26,6 +26,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         bool getAllowFullscreenSwitchShortcut() const override;
@@ -173,6 +174,8 @@ namespace Mengine
         void notifyDebugResourceCompile_( Resource * _resource );
         void notifyDebugResourceRelease_( Resource * _resource );
 
+    protected:
+        void notifyEnginePrepareFinalize_();
 
     protected:        
         RenderPipelineInterfacePtr m_renderPipeline;

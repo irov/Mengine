@@ -5,6 +5,7 @@
 
 #include "Kernel/Compilable.h"
 #include "Kernel/Identity.h"
+#include "Kernel/Unique.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Unknowable.h"
@@ -31,6 +32,7 @@ namespace Mengine
         , public Compilable
         , public Magicable
         , public Identity
+        , public Unique
         , public Scriptable
         , public Visitable
         , public Unknowable

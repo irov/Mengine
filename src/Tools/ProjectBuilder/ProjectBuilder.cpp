@@ -810,6 +810,87 @@ public:
     }
 };
 //////////////////////////////////////////////////////////////////////////
+static bool s_ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, Mengine::ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
+{
+    MENGINE_UNUSED( _obj );
+
+    Mengine::ConstString cs_compare;
+    if( pybind::extract_value( _kernel, _compare, cs_compare, false ) == false )
+    {
+        return false;
+    }
+
+    switch( _op )
+    {
+    case pybind::POC_Less:
+        {
+            _result = *_self < cs_compare;
+        }break;
+    case pybind::POC_Lessequal:
+        {
+            _result = *_self <= cs_compare;
+        }break;
+    case pybind::POC_Equal:
+        {
+            _result = *_self == cs_compare;
+        }break;
+    case pybind::POC_Notequal:
+        {
+            _result = *_self != cs_compare;
+        }break;
+    case pybind::POC_Great:
+        {
+            _result = *_self > cs_compare;
+        }break;
+    case pybind::POC_Greatequal:
+        {
+            _result = *_self >= cs_compare;
+        }break;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+static const Mengine::Char * s_ConstString_repr( Mengine::ConstString * _cs )
+{
+    const Mengine::Char * str_repr = _cs->c_str();
+
+    return str_repr;
+}
+//////////////////////////////////////////////////////////////////////////
+static Mengine::ConstString::hash_type s_ConstString_hash( Mengine::ConstString * _cs )
+{
+    Mengine::ConstString::hash_type hash = _cs->hash();
+
+    return hash;
+}
+//////////////////////////////////////////////////////////////////////////
+static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+{
+    MENGINE_UNUSED( _kernel );
+    MENGINE_UNUSED( _user );
+
+    Mengine::ConstString * cstr = (Mengine::ConstString *)_place;
+
+    if( _kernel->string_check( _obj ) == true )
+    {
+        size_t size;
+        const char * value = _kernel->string_to_char_and_size( _obj, &size );
+
+        *cstr = Mengine::Helper::stringizeStringSize( value, size );
+
+        return true;
+    }
+    else if( _kernel->is_none( _obj ) == true )
+    {
+        *cstr = Mengine::ConstString::none();
+
+        return true;
+    }
+
+    return false;
+}
+//////////////////////////////////////////////////////////////////////////
 namespace Detail
 {
     class MyAllocator
@@ -975,6 +1056,16 @@ bool run()
 
     pybind::registration_stl_vector_type_cast<Mengine::String, Mengine::Vector<Mengine::String>>(kernel);
     pybind::registration_stl_vector_type_cast<Mengine::WString, Mengine::Vector<Mengine::WString>>(kernel);
+
+    pybind::structhash_<Mengine::ConstString>( kernel, "ConstString", true, py_tools_module )
+        .def_compare( &s_ConstString_compare )
+        .def_convert( &ConstString_convert, nullptr )
+        .def_repr( &s_ConstString_repr )
+        .def_hash( &s_ConstString_hash )
+        ;
+
+    pybind::registration_stl_map_type_cast<Mengine::ConstString, Mengine::String, Mengine::MapParams>(kernel);
+    pybind::registration_stl_map_type_cast<Mengine::ConstString, Mengine::WString, Mengine::MapWParams>(kernel);
 
     pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module )
         .def_native_kernel( "write", &Mengine::PythonLogger::py_write )

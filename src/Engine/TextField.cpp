@@ -1573,7 +1573,7 @@ namespace Mengine
         }
         else
         {
-            float layoutCountf = float( m_layoutCount );
+            float layoutCountf = (float)m_layoutCount;
 
             switch( verticalAlign )
             {

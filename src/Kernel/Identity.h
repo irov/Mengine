@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/Mixin.h"
+
+#include "Config/Typedef.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
@@ -22,9 +23,14 @@ namespace Mengine
         void setType( const ConstString & _type );
         MENGINE_INLINE const ConstString & getType() const;
 
+        void setUniqueIdentity( UniqueId _uniqueIdentity );
+        MENGINE_INLINE UniqueId getUniqueIdentity() const;
+
     protected:
         ConstString m_name;
         ConstString m_type;
+
+        UniqueId m_uniqueIdentity;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Identity> IdentityPtr;
@@ -37,6 +43,11 @@ namespace Mengine
     MENGINE_INLINE const ConstString & Identity::getType() const
     {
         return m_type;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE UniqueId Identity::getUniqueIdentity() const
+    {
+        return m_uniqueIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
 }

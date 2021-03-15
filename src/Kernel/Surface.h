@@ -3,7 +3,6 @@
 #include "Kernel/Factorable.h"
 
 #include "Kernel/Identity.h"
-#include "Kernel/Unique.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Materialable.h"
@@ -28,7 +27,6 @@ namespace Mengine
     class Surface
         : public Factorable
         , public Identity
-        , public Unique
         , public Visitable
         , public Scriptable
         , public Materialable

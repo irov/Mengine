@@ -246,12 +246,6 @@ Identity
 )
 
 ADD_FILTER(
-Unique
-    Unique.cpp
-    Unique.h
-)
-
-ADD_FILTER(
 Transformation
     Transformable.h
     BaseTransformation.cpp

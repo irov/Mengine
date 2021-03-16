@@ -7,6 +7,8 @@ namespace Mengine
     class ImageDecoderPVRTC
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderPVRTC );
+
     public:
         ImageDecoderPVRTC();
         ~ImageDecoderPVRTC() override;

@@ -14,6 +14,8 @@ namespace Mengine
         : public RenderVertexShaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX9RenderVertexShader );
+
     public:
         DX9RenderVertexShader();
         ~DX9RenderVertexShader() override;

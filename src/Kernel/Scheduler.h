@@ -18,7 +18,7 @@ namespace Mengine
         , public Updatable
         , protected BaseUpdation
     {
-    public:
+        DECLARE_FACTORABLE( Scheduler );
         DECLARE_UPDATABLE();
 
     public:

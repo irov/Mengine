@@ -13,10 +13,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderProgram
         : public RenderProgramInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX9RenderProgram );
+
     public:
         DX9RenderProgram();
         ~DX9RenderProgram() override;
@@ -52,6 +55,6 @@ namespace Mengine
         DX9RenderVertexAttributePtr m_vertexAttribute;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderProgram, class RenderProgramInterface> DX9RenderProgramPtr;
+    typedef IntrusivePtr<DX9RenderProgram, RenderProgramInterface> DX9RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
 }

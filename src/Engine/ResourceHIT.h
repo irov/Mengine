@@ -10,6 +10,7 @@ namespace Mengine
     class ResourceHIT
         : public ResourceTestPick
     {
+        DECLARE_FACTORABLE( ResourceHIT );
         DECLARE_VISITABLE( ResourceTestPick );
 
     public:

@@ -11,7 +11,7 @@ namespace Mengine
         : public Factory
     {
     public:
-        FactoryWithMutex( const Char * _name );
+        FactoryWithMutex();
         ~FactoryWithMutex() override;
 
     public:

@@ -10,6 +10,8 @@ namespace Mengine
     class ThreadTaskPacket
         : public ThreadTask
     {
+        DECLARE_FACTORABLE( ThreadTaskPacket );
+
     public:
         ThreadTaskPacket();
         ~ThreadTaskPacket() override;

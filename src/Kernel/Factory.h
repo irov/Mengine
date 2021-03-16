@@ -20,11 +20,15 @@ namespace Mengine
         : public Factorable
     {
     public:
-        Factory( const Char * _name );
+        Factory();
         ~Factory() override;
 
     public:
-        const Char * getName() const;
+        bool initialize( const ConstString & _type );
+        void finalize();
+
+    public:
+        MENGINE_INLINE const ConstString & getType() const;
 
     public:
         virtual FactorablePointer createObject( const DocumentPtr & _doc );
@@ -39,11 +43,11 @@ namespace Mengine
         virtual void _destroyObject( Factorable * _object ) = 0;
 
     protected:
-        const Char * m_name;
+        ConstString m_type;
 
         uint32_t m_count;
 
-#ifdef MENGINE_DEBUG
+#ifdef MENGINE_DEBUG        
         bool m_register;
 #endif
 
@@ -51,6 +55,11 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factory> FactoryPtr;
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const ConstString & Factory::getType() const
+    {
+        return m_type;
+    }
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {

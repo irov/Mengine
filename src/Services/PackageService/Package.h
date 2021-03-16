@@ -10,9 +10,12 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Package
         : public PackageInterface
     {
+        DECLARE_FACTORABLE( Package );
+
     public:
         Package();
         ~Package() override;

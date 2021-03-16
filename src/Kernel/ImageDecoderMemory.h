@@ -8,6 +8,8 @@ namespace Mengine
     class ImageDecoderMemory
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderMemory );
+
     public:
         ImageDecoderMemory();
         ~ImageDecoderMemory() override;

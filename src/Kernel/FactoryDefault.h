@@ -13,7 +13,6 @@ namespace Mengine
     {
     public:
         FactoryDefault()
-            : Factory( Typename<Type>::value )
         {
         }
 

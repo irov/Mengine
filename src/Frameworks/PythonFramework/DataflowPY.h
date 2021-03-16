@@ -10,10 +10,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DataflowPY
         : public DataflowInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DataflowPY );
+
     public:
         DataflowPY();
         ~DataflowPY() override;
@@ -42,6 +45,6 @@ namespace Mengine
         FactoryPtr m_factoryScriptCodeData;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DataflowPY> DataflowPYPtr;
+    typedef IntrusivePtr<DataflowPY, DataflowInterface> DataflowPYPtr;
     //////////////////////////////////////////////////////////////////////////
 }

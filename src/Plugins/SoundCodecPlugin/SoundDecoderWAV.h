@@ -8,6 +8,8 @@ namespace Mengine
     class SoundDecoderWAV
         : public SoundDecoder
     {
+        DECLARE_FACTORABLE( SoundDecoderWAV );
+
     public:
         SoundDecoderWAV();
         ~SoundDecoderWAV() override;

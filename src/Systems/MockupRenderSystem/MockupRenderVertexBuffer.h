@@ -11,6 +11,8 @@ namespace Mengine
         : public RenderVertexBufferInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderVertexBuffer );
+
     public:
         MockupRenderVertexBuffer();
         ~MockupRenderVertexBuffer() override;

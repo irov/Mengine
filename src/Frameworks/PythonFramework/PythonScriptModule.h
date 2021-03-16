@@ -3,6 +3,8 @@
 #include "Interface/ScriptModuleInterface.h"
 #include "Interface/LoggerInterface.h"
 
+#include "Kernel/Factorable.h"
+
 #include "pybind/types.hpp"
 #include "pybind/pybind.hpp"
 
@@ -18,6 +20,7 @@ namespace Mengine
 
     public:
         bool initialize( const pybind::module & _module );
+        void finalize();
 
     protected:
         bool onInitialize( const ConstString & _method ) override;

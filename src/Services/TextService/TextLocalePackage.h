@@ -14,6 +14,8 @@ namespace Mengine
     class TextLocalePackage
         : public Factorable
     {
+        DECLARE_FACTORABLE( TextLocalePackage );
+
     public:
         TextLocalePackage();
         ~TextLocalePackage() override;

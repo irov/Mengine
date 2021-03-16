@@ -17,11 +17,6 @@ namespace Mengine
         m_name = _name;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Identity::setType( const ConstString & _type )
-    {
-        m_type = _type;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Identity::setUniqueIdentity( UniqueId _uniqueIdentity )
     {
         m_uniqueIdentity = _uniqueIdentity;

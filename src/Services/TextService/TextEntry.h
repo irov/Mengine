@@ -12,6 +12,8 @@ namespace Mengine
         : public TextEntryInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( TextEntry );
+
     public:
         TextEntry();
         ~TextEntry() override;

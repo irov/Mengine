@@ -46,9 +46,6 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            const ConstString & prototype = this->getPrototype();
-            node->setType( prototype );
-
             UniqueId uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
             node->setUniqueIdentity( uniqueIdentity );
 

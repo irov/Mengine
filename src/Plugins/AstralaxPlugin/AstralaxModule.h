@@ -7,6 +7,8 @@ namespace Mengine
     class AstralaxModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AstralaxModule );
+
     public:
         AstralaxModule();
         ~AstralaxModule() override;

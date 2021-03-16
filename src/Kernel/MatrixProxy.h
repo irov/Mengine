@@ -12,6 +12,7 @@ namespace Mengine
         , protected DummyRender
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( MatrixProxy );
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_TRANSFORMABLE();

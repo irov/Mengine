@@ -13,6 +13,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceOzzSkeletonInterface
     {
+        DECLARE_FACTORABLE( ResourceOzzSkeleton );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

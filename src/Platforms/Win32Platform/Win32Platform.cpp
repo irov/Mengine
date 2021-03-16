@@ -635,6 +635,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::updateWndMessage_()
+    {
+        MSG msg;
+        while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
+        {
+            ::TranslateMessage( &msg );
+            ::DispatchMessage( &msg );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updatePlatform()
     {
         this->setActive_( true );
@@ -652,12 +662,7 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                MSG msg;
-                while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
-                {
-                    ::TranslateMessage( &msg );
-                    ::DispatchMessage( &msg );
-                }
+                this->updateWndMessage_();
 
                 if( m_close == true )
                 {
@@ -754,22 +759,6 @@ namespace Mengine
         LOGGER_MESSAGE( "stop platform" );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
-
-        if( m_alreadyRunningMonitor != nullptr )
-        {
-            m_alreadyRunningMonitor->finalize();
-            m_alreadyRunningMonitor = nullptr;
-        }
-
-        m_mouseEvent.stop();
-
-        if( m_hWnd != NULL )
-        {
-            ::CloseWindow( m_hWnd );
-            ::DestroyWindow( m_hWnd );
-
-            m_hWnd = NULL;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setIcon( uint32_t _icon )
@@ -2130,6 +2119,27 @@ namespace Mengine
         m_mouseEvent.setHWND( m_hWnd );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::destroyWindow()
+    {
+        if( m_alreadyRunningMonitor != nullptr )
+        {
+            m_alreadyRunningMonitor->finalize();
+            m_alreadyRunningMonitor = nullptr;
+        }
+
+        m_mouseEvent.stop();
+
+        if( m_hWnd != NULL )
+        {
+            ::CloseWindow( m_hWnd );
+            ::DestroyWindow( m_hWnd );
+            
+            m_hWnd = NULL;
+
+            this->updateWndMessage_();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     HWND Win32Platform::getWindowHandle() const

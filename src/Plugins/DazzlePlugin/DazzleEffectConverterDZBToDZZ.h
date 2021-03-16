@@ -9,6 +9,8 @@ namespace Mengine
     class DazzleEffectConverterDZBToDZZ
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( DazzleEffectConverterDZBToDZZ );
+
     public:
         DazzleEffectConverterDZBToDZZ();
         ~DazzleEffectConverterDZBToDZZ() override;

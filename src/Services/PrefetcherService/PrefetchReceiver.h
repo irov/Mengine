@@ -11,6 +11,8 @@ namespace Mengine
     class PrefetchReceiver
         : public Factorable
     {
+        DECLARE_FACTORABLE( PrefetchReceiver );
+
     public:
         PrefetchReceiver();
         ~PrefetchReceiver() override;

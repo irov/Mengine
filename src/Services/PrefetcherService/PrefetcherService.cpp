@@ -62,12 +62,12 @@ namespace Mengine
             m_threadQueue->addThread( threadName );
         }
 
-        m_factoryThreadTaskPrefetchImageDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchImageDecoder, 16>( STRINGIZE_STRING_LOCAL( "ThreadTaskPrefetchImageDecoder" ), MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadTaskPrefetchSoundDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchSoundDecoder, 16>( STRINGIZE_STRING_LOCAL( "ThreadTaskPrefetchSoundDecoder" ), MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadTaskPrefetchDataflow = Helper::makeFactoryPool<ThreadTaskPrefetchDataflow, 16>( STRINGIZE_STRING_LOCAL( "ThreadTaskPrefetchDataflow" ), MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadTaskPrefetchStream = Helper::makeFactoryPool<ThreadTaskPrefetchStream, 16>( STRINGIZE_STRING_LOCAL( "ThreadTaskPrefetchStream" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadTaskPrefetchImageDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchImageDecoder, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadTaskPrefetchSoundDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchSoundDecoder, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadTaskPrefetchDataflow = Helper::makeFactoryPool<ThreadTaskPrefetchDataflow, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadTaskPrefetchStream = Helper::makeFactoryPool<ThreadTaskPrefetchStream, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryPrefetchReceiver = Helper::makeFactoryPool<PrefetchReceiver, 256>( STRINGIZE_STRING_LOCAL( "PrefetchReceiver" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPrefetchReceiver = Helper::makeFactoryPool<PrefetchReceiver, 256>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

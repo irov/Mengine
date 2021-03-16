@@ -13,6 +13,7 @@ namespace Mengine
     class ResourceAstralax
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceAstralax );
         DECLARE_VISITABLE( Resource );
         DECLARE_MAGICABLE( MAGIC_PTZ );
 

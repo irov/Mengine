@@ -128,4 +128,9 @@ namespace Mengine
     static const Mengine::ConstString & getFactorableType(){return STRINGIZE_STRING_LOCAL( #Type );}\
     protected:
 //////////////////////////////////////////////////////////////////////////
+#define DECLARE_FACTORABLE_NONE(Type)\
+    public:\
+    static const Mengine::ConstString & getFactorableType(){return Mengine::ConstString::none();}\
+    protected:
+//////////////////////////////////////////////////////////////////////////
     

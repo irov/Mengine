@@ -12,6 +12,8 @@ namespace Mengine
     class MovieKeyConverterXMLToAEK
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( MovieKeyConverterXMLToAEK );
+
     public:
         MovieKeyConverterXMLToAEK();
         ~MovieKeyConverterXMLToAEK() override;

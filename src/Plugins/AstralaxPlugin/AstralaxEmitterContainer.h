@@ -30,6 +30,8 @@ namespace Mengine
         : public AstralaxEmitterContainerInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( AstralaxEmitterContainer );
+
     public:
         AstralaxEmitterContainer();
         ~AstralaxEmitterContainer() override;

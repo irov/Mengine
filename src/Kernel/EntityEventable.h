@@ -13,6 +13,7 @@ namespace Mengine
         , public Eventable
         , protected BaseEventation
     {
+        DECLARE_FACTORABLE( EntityEventable );
         DECLARE_EVENTABLE();
 
     public:

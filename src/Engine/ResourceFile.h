@@ -9,6 +9,7 @@ namespace Mengine
     class ResourceFile
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceFile );
         DECLARE_VISITABLE( Resource );
 
     public:

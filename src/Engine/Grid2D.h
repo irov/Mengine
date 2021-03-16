@@ -25,6 +25,7 @@ namespace Mengine
         , protected BaseRender
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Grid2D );
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_TRANSFORMABLE();

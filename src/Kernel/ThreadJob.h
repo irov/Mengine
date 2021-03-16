@@ -43,6 +43,8 @@ namespace Mengine
     class ThreadJob
         : public ThreadTask
     {
+        DECLARE_FACTORABLE( ThreadJob );
+
     public:
         ThreadJob();
         ~ThreadJob() override;

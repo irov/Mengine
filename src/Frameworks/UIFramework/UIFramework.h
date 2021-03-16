@@ -7,6 +7,8 @@ namespace Mengine
     class UIFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( UIFramework );
+
     public:
         UIFramework();
         ~UIFramework() override;

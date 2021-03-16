@@ -8,6 +8,8 @@ namespace Mengine
     class cURLGetMessageThreadTask
         : public cURLThreadTask
     {
+        DECLARE_FACTORABLE( cURLGetMessageThreadTask );
+
     public:
         cURLGetMessageThreadTask();
         ~cURLGetMessageThreadTask() override;

@@ -677,6 +677,8 @@ namespace Mengine
                 : public SceneChangeCallbackInterface
                 , public Factorable
             {
+                DECLARE_FACTORABLE( PythonSceneChangeCallback );
+
             public:
                 PythonSceneChangeCallback()
                 {
@@ -2119,6 +2121,8 @@ namespace Mengine
                 : public Factorable
                 , public InputMousePositionProviderInterface
             {
+                DECLARE_FACTORABLE( PyInputMousePositionProvider );
+
             public:
                 PyInputMousePositionProvider()
                     : m_arrow( nullptr )
@@ -2303,6 +2307,8 @@ namespace Mengine
             class AffectorGridBurnTransparency
                 : public Affector
             {
+                DECLARE_FACTORABLE( AffectorGridBurnTransparency );
+
             public:
                 AffectorGridBurnTransparency()
                     : m_pos( 0.f, 0.f )
@@ -2438,6 +2444,8 @@ namespace Mengine
             class AffectorUser
                 : public Affector
             {
+                DECLARE_FACTORABLE( AffectorUser );
+
             public:
                 bool initialize( const pybind::object & _cb, const pybind::args & _args )
                 {
@@ -2563,6 +2571,8 @@ namespace Mengine
             class AffectorNodeFollowerMethod
                 : public AffectorNodeFollower
             {
+                DECLARE_FACTORABLE( AffectorNodeFollowerMethod );
+
             public:
                 AffectorNodeFollowerMethod()
                 {
@@ -2623,6 +2633,9 @@ namespace Mengine
             class AffectorNodeFollowerCreator
                 : public Factorable
             {
+                DECLARE_FACTORABLE( AffectorNodeFollowerCreator );
+
+            protected:
                 typedef Lambda<void( const T_Value & )> T_Setter;
                 typedef Lambda<T_Value()> T_Getter;
 
@@ -3177,6 +3190,8 @@ namespace Mengine
             class PyGlobalMouseLeaveHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseLeaveHandler );
+
             protected:
                 void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
                 {
@@ -3220,6 +3235,8 @@ namespace Mengine
             class PyGlobalMouseMoveHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseMoveHandler );
+
             protected:
                 bool handleMouseMove( const InputMouseMoveEvent & _event ) override
                 {
@@ -3270,6 +3287,8 @@ namespace Mengine
             class PyGlobalMouseHandlerButton
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButton );
+
             protected:
                 bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
                 {
@@ -3315,6 +3334,8 @@ namespace Mengine
             class PyGlobalMouseHandlerButtonEnd
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButtonEnd );
+
             protected:
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
@@ -3361,6 +3382,8 @@ namespace Mengine
             class PyGlobalMouseHandlerWheel
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerWheel );
+
             protected:
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
@@ -3403,6 +3426,8 @@ namespace Mengine
             class PyGlobalMouseHandlerButtonBegin
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButtonBegin );
+
             protected:
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
@@ -3451,6 +3476,8 @@ namespace Mengine
             class PyGlobalKeyHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalKeyHandler );
+
             protected:
                 bool handleKeyEvent( const InputKeyEvent & _event ) override
                 {
@@ -3492,6 +3519,8 @@ namespace Mengine
             class PyGlobalTextHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalTextHandler );
+
             protected:
                 bool handleTextEvent( const InputTextEvent & _event ) override
                 {

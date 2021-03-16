@@ -63,6 +63,8 @@ namespace Mengine
     class BatchRenderPipeline
         : public RenderPipelineInterface
     {
+        DECLARE_FACTORABLE( BatchRenderPipeline );
+
     public:
         BatchRenderPipeline();
         ~BatchRenderPipeline() override;

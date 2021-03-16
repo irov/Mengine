@@ -50,6 +50,7 @@ namespace Mengine
         , protected BaseEventation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Meshget );
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();

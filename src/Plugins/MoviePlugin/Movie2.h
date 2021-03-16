@@ -54,6 +54,7 @@ namespace Mengine
         , protected BaseAnimation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Movie2 );
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();

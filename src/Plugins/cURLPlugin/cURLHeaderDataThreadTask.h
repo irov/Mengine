@@ -8,6 +8,8 @@ namespace Mengine
     class cURLHeaderDataThreadTask
         : public cURLThreadTask
     {
+        DECLARE_FACTORABLE( cURLHeaderDataThreadTask );
+
     public:
         cURLHeaderDataThreadTask();
         ~cURLHeaderDataThreadTask() override;

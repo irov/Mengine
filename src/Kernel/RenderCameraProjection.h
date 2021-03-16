@@ -7,6 +7,8 @@ namespace Mengine
     class RenderCameraProjection
         : public RenderCamera
     {
+        DECLARE_FACTORABLE( RenderCameraProjection );
+
     public:
         RenderCameraProjection();
         ~RenderCameraProjection() override;

@@ -15,6 +15,8 @@ namespace Mengine
         : public RenderImageLoaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DecoderRenderImageLoader );
+
     public:
         DecoderRenderImageLoader();
         ~DecoderRenderImageLoader() override;

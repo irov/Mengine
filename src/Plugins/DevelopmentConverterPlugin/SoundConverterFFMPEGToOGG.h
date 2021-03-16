@@ -7,6 +7,8 @@ namespace Mengine
     class SoundConverterFFMPEGToOGG
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( SoundConverterFFMPEGToOGG );
+
     public:
         SoundConverterFFMPEGToOGG();
         ~SoundConverterFFMPEGToOGG() override;

@@ -728,7 +728,6 @@ namespace Mengine
 
         ADD_PROTOTYPE( ResourceMusic );
         ADD_PROTOTYPE( ResourceImageSequence );
-        ADD_PROTOTYPE( ResourceImage );
         ADD_PROTOTYPE( ResourceImageData );
         ADD_PROTOTYPE( ResourceImageDefault );
         ADD_PROTOTYPE( ResourceImageSubstract );
@@ -757,7 +756,6 @@ namespace Mengine
 
         REMOVE_PROTOTYPE( ResourceMusic );
         REMOVE_PROTOTYPE( ResourceImageSequence );
-        REMOVE_PROTOTYPE( ResourceImage );
         REMOVE_PROTOTYPE( ResourceImageData );
         REMOVE_PROTOTYPE( ResourceImageDefault );
         REMOVE_PROTOTYPE( ResourceImageSubstract );

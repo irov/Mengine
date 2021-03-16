@@ -9,6 +9,7 @@
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AllocatorService );
+SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -28,6 +29,7 @@ extern "C"
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         SERVICE_CREATE( AllocatorService, nullptr );
+        SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
         return serviceProvider;
@@ -56,6 +58,9 @@ extern "C"
 
         SERVICE_FINALIZE( DocumentService );
         SERVICE_DESTROY( DocumentService );
+
+        SERVICE_FINALIZE( StringizeService );
+        SERVICE_DESTROY( StringizeService );
 
         SERVICE_FINALIZE( AllocatorService );
         SERVICE_DESTROY( AllocatorService );

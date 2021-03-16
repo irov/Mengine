@@ -648,6 +648,8 @@ namespace Mengine
             class AffectorVelocity2
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorVelocity2 );
+
             public:
                 AffectorVelocity2()
                     : m_node( nullptr )
@@ -1173,6 +1175,8 @@ namespace Mengine
             class AffectorCreatorInterpolateParabolic
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorCreatorInterpolateParabolic );
+
             public:
                 AffectorCreatorInterpolateParabolic()
                     : m_speed( 5.f )
@@ -1396,6 +1400,8 @@ namespace Mengine
             class AffectorCreatorFollowTo
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorCreatorFollowTo );
+
             public:
                 AffectorCreatorFollowTo()
                     : m_offset( 0.f, 0.f, 0.f )
@@ -1659,6 +1665,8 @@ namespace Mengine
             class AffectorCreatorFollowToW
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorCreatorFollowToW );
+
             public:
                 AffectorCreatorFollowToW()
                     : m_offset( 0.f, 0.f, 0.f )

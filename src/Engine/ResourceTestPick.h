@@ -12,6 +12,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceImageDataInterface
     {
+        DECLARE_FACTORABLE( ResourceTestPick );
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Resource );
 

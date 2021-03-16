@@ -8,6 +8,7 @@ namespace Mengine
     class ResourceCursorICO
         : public ResourceCursor
     {
+        DECLARE_FACTORABLE( ResourceCursorICO );
         DECLARE_VISITABLE( ResourceCursor );
 
     public:

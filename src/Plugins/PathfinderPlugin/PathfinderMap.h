@@ -25,6 +25,8 @@ namespace Mengine
     class PathfinderMap
         : public PathfinderMapInterface
     {
+        DECLARE_FACTORABLE( PathfinderMap );
+
     public:
         PathfinderMap();
         ~PathfinderMap() override;

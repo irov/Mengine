@@ -16,6 +16,8 @@ namespace Mengine
         , public OpenGLRenderResourceHandler
         , public Factorable
     {
+        DECLARE_FACTORABLE( OpenGLRenderTargetTexture );
+
     public:
         OpenGLRenderTargetTexture();
         ~OpenGLRenderTargetTexture() override;
@@ -87,6 +89,6 @@ namespace Mengine
         bool m_pow2;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderTargetTexture> OpenGLRenderTargetTexturePtr;
+    typedef IntrusivePtr<OpenGLRenderTargetTexture, RenderTargetInterface> OpenGLRenderTargetTexturePtr;
     //////////////////////////////////////////////////////////////////////////
 }

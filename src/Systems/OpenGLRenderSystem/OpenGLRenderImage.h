@@ -17,6 +17,7 @@ namespace Mengine
         , public OpenGLRenderResourceHandler
         , public Factorable
     {
+        DECLARE_FACTORABLE( RenderImageInterface );
         DECLARE_UNKNOWABLE();
 
     public:
@@ -115,6 +116,6 @@ namespace Mengine
         bool m_pow2;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderImage> OpenGLRenderImagePtr;
+    typedef IntrusivePtr<OpenGLRenderImage, RenderImageInterface> OpenGLRenderImagePtr;
     //////////////////////////////////////////////////////////////////////////
 }

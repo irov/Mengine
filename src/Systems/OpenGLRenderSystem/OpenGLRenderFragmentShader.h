@@ -18,6 +18,8 @@ namespace Mengine
         , public CompilableReference
         , public Factorable        
     {
+        DECLARE_FACTORABLE( RenderImageInterface );
+
     public:
         OpenGLRenderFragmentShader();
         ~OpenGLRenderFragmentShader() override;

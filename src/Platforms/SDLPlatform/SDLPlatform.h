@@ -70,6 +70,7 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
+        void destroyWindow() override;
 
     public:
         bool hasPlatformTag( const ConstString & _tag ) const override;
@@ -179,7 +180,7 @@ namespace Mengine
         void destroyWindow_();
 
     protected:
-        bool processEvents();
+        bool processEvents_();
 
     protected:
         void setActive_( bool _active );

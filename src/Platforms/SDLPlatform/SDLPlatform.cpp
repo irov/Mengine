@@ -716,8 +716,6 @@ namespace Mengine
     {
         m_active = false;
 
-        this->destroyWindow_();
-
         SDL_Quit();
 
         if( m_sdlInput != nullptr )
@@ -796,7 +794,7 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            bool quitRequest = this->processEvents();
+            bool quitRequest = this->processEvents_();
 
             if( quitRequest == true )
             {
@@ -1146,6 +1144,11 @@ namespace Mengine
         m_sdlInput->updateSurfaceResolution( dwf, dhf );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::destroyWindow()
+    {
+        this->destroyWindow_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasPlatformTag( const ConstString & _tag ) const
@@ -1598,7 +1601,7 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory );
-        
+
         if( MENGINE_STRLEN( pathDirectory ) == 0 )
         {
             return true;
@@ -1624,7 +1627,7 @@ namespace Mengine
             {
                 break;
             }
-            
+
             if( MENGINE_STRLEN( _path ) == 0 )
             {
                 break;
@@ -2063,17 +2066,17 @@ namespace Mengine
     bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv("HOME");
-            
+        char * homeBuffer = getenv( "HOME" );
+
         if( homeBuffer == nullptr )
         {
             LOGGER_ERROR( "invalid get env 'HOME'" );
-            
+
             return false;
         }
-        
+
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF(path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer);
+        MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
 
         if( this->createDirectory( path_pictures, _directoryPath ) == false )
         {
@@ -2130,18 +2133,18 @@ namespace Mengine
     bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv("HOME");
-            
+        char * homeBuffer = getenv( "HOME" );
+
         if( homeBuffer == nullptr )
         {
             LOGGER_ERROR( "invalid get env 'HOME'" );
-            
+
             return false;
         }
-        
+
         Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF(path_music, MENGINE_MAX_PATH, "%s/Music/", homeBuffer);
-        
+        MENGINE_SNPRINTF( path_music, MENGINE_MAX_PATH, "%s/Music/", homeBuffer );
+
         if( this->createDirectory( path_music, _directoryPath ) == false )
         {
             LOGGER_ERROR( "invalid create directory '%s%s'"
@@ -2641,13 +2644,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::processEvents()
+    bool SDLPlatform::processEvents_()
     {
-        if( m_shouldQuit == true )
-        {
-            return true;
-        }
-
         Uint32 windowID = SDL_GetWindowID( m_window );
 
         SDL_Event sdlEvent;
@@ -2730,6 +2728,11 @@ namespace Mengine
             }
         }
 
+        if( m_shouldQuit == true )
+        {
+            return true;
+        }
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2747,7 +2750,7 @@ namespace Mengine
 
         mt::vec2f point;
         m_sdlInput->getCursorPosition( &point );
-        
+
         Helper::pushMousePositionEvent( TC_TOUCH0, point.x, point.y, 0.f );
 
         if( m_active == false )

@@ -6,9 +6,12 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLDateTimeProvider
         : public DateTimeProviderInterface
     {
+        DECLARE_FACTORABLE( SDLDateTimeProvider );
+
     public:
         SDLDateTimeProvider();
         ~SDLDateTimeProvider() override;

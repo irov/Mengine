@@ -9,6 +9,8 @@ namespace Mengine
     class SDLFileGroupDirectory
         : public BaseFileGroup
     {
+        DECLARE_FACTORABLE( SDLFileGroupDirectory );
+
     public:
         SDLFileGroupDirectory();
         ~SDLFileGroupDirectory() override;

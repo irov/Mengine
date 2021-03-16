@@ -36,14 +36,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class T>
+        template<class Type>
         FactoryPtr makeFactoryDefault( const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _doc );
 
-            FactoryPtr factory = Helper::makeFactorableUnique<FactoryDefault<T>>( _doc );
+            FactoryPtr factory = Helper::makeFactorableUnique<FactoryDefault<Type>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
+
+            const ConstString & type = Type::getFactorableType();
+
+            factory->initialize( type );
 
             return factory;
         }

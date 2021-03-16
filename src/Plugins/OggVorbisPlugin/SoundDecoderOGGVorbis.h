@@ -10,6 +10,8 @@ namespace Mengine
     class SoundDecoderOGGVorbis
         : public SoundDecoder
     {
+        DECLARE_FACTORABLE( SoundDecoderOGGVorbis );
+
     public:
         SoundDecoderOGGVorbis();
         ~SoundDecoderOGGVorbis() override;

@@ -14,6 +14,8 @@ namespace Mengine
         : public RenderProgramVariableInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX9RenderProgramVariable );
+
     public:
         DX9RenderProgramVariable();
         ~DX9RenderProgramVariable() override;
@@ -74,6 +76,6 @@ namespace Mengine
         VectorVariables m_pixelVariables;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderProgramVariable> DX9RenderProgramVariablePtr;
+    typedef IntrusivePtr<DX9RenderProgramVariable, RenderProgramVariableInterface> DX9RenderProgramVariablePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -8,6 +8,8 @@ namespace Mengine
     class FEData
         : public FEDataInterface
     {
+        DECLARE_FACTORABLE( FEData );
+
     public:
         FEData();
         ~FEData() override;

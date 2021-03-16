@@ -21,6 +21,8 @@ namespace Mengine
     class ImageDecoderJPEG
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderJPEG );
+
     public:
         ImageDecoderJPEG();
         ~ImageDecoderJPEG() override;

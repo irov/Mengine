@@ -12,9 +12,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Factory::Factory( const Char * _name )
-        : m_name( _name )
-        , m_count( 0 )
+    Factory::Factory()
+        : m_count( 0 )
 #ifdef MENGINE_DEBUG
         , m_register( false )
 #endif
@@ -41,14 +40,23 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * Factory::getName() const
+    bool Factory::initialize( const ConstString & _type )
     {
-        return m_name;
+        m_type = _type;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Factory::finalize()
+    {
+        m_type.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer Factory::createObject( const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_FATAL( m_type.empty() == false );
 
         MENGINE_THREAD_GUARD_CHECK( Factory, this, "Factory::createObject" );
 
@@ -57,6 +65,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( object );
 
         ++m_count;
+
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
         object->setFactory( this );
@@ -108,6 +117,7 @@ namespace Mengine
         this->_destroyObject( _object );
 
         --m_count;
+
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }
     //////////////////////////////////////////////////////////////////////////

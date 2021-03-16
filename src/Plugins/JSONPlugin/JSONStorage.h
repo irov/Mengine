@@ -11,6 +11,8 @@ namespace Mengine
         : public JSONStorageInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( JSONStorage );
+
     public:
         JSONStorage();
         ~JSONStorage() override;

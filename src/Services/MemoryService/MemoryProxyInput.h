@@ -17,6 +17,8 @@ namespace Mengine
         : public MemoryProxyInputInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MemoryProxyInput );
+
     public:
         MemoryProxyInput();
         ~MemoryProxyInput() override;

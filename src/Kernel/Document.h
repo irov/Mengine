@@ -11,6 +11,8 @@ namespace Mengine
     class Document
         : public Factorable
     {
+        DECLARE_FACTORABLE( Document );
+
     public:
         Document();
         ~Document() override;

@@ -14,6 +14,8 @@ namespace Mengine
     class Movie2Data
         : public Movie2DataInterface
     {
+        DECLARE_FACTORABLE( Movie2Data );
+
     public:
         Movie2Data();
         ~Movie2Data() override;
@@ -62,6 +64,6 @@ namespace Mengine
         PoolImageDesc m_poolImageDesc;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Movie2Data> Movie2DataPtr;
+    typedef IntrusivePtr<Movie2Data, Movie2DataInterface> Movie2DataPtr;
     //////////////////////////////////////////////////////////////////////////
 }

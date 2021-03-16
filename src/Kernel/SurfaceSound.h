@@ -30,9 +30,9 @@ namespace Mengine
         , public Soundable
         , public SoundListenerInterface
         , protected BaseEventation
-        , protected BaseAnimation
-        
+        , protected BaseAnimation        
     {
+        DECLARE_FACTORABLE( SurfaceSound );
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
 

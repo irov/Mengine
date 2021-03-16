@@ -24,6 +24,7 @@ namespace Mengine
         virtual void stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash, ConstString * const _cstr ) = 0;
         virtual bool stringizeExternal( ConstStringHolder * const _holder, ConstString * const _cstr ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define STRINGIZE_SERVICE()\

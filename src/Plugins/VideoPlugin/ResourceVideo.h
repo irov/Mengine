@@ -14,6 +14,7 @@ namespace Mengine
         : public Resource
         , public UnknownVideoResourceInterface
     {
+        DECLARE_FACTORABLE( ResourceVideo );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

@@ -8,8 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32FileGroupDirectoryFactory::Win32FileGroupDirectoryFactory( const FilePath & _relationPath )
-        : Factory( Typename<Win32FileGroupDirectoryFactory>::value )
-        , m_relationPath( _relationPath )
+        : m_relationPath( _relationPath )
     {
     }
     //////////////////////////////////////////////////////////////////////////

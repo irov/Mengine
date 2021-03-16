@@ -21,6 +21,8 @@ namespace Mengine
     class LambdaAffectorInterpolateLinear
         : public LambdaAffectorInterpolate<T, ValueInterpolatorLinear<T> >
     {
+        DECLARE_FACTORABLE( LambdaAffectorInterpolateLinear );
+
     public:
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
 

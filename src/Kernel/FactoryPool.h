@@ -15,7 +15,6 @@ namespace Mengine
     {
     public:
         FactoryPool()
-            : F( Typename<Type>::value )
         {
         }
 
@@ -51,6 +50,10 @@ namespace Mengine
             IntrusivePtr<F> factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
+
+            const ConstString & type = Type::getFactorableType();
+
+            factory->initialize( type );
 
             return IntrusivePtr<F>( factory );
         }

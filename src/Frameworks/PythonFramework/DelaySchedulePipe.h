@@ -11,6 +11,8 @@ namespace Mengine
         : public SchedulerPipeInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DelaySchedulePipe );
+
     public:
         DelaySchedulePipe();
         ~DelaySchedulePipe() override;

@@ -162,7 +162,7 @@ namespace Mengine
 
         FMengineInitialize dlmengineInitialize = (FMengineInitialize)procInitializeMengine;
 
-        ServiceProviderInterface * serviceProvider = dlmengineInitialize();
+        ServiceProviderInterface * serviceProvider = (*dlmengineInitialize)();
 
         if( serviceProvider == nullptr )
         {
@@ -213,7 +213,7 @@ namespace Mengine
 
         FMengineBootstrap dlmengineBootstrap = (FMengineBootstrap)procBootstrapMengine;
 
-        if( dlmengineBootstrap() == false )
+        if( (*dlmengineBootstrap)() == false )
         {
             ::FreeLibrary( hInstance );
 
@@ -307,6 +307,12 @@ namespace Mengine
                 ->stopPlatform();
         }
 
+        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->destroyWindow();
+        }
+
         if( SERVICE_EXIST( Mengine::BootstrapperInterface ) == true )
         {
             BOOTSTRAPPER_SERVICE()
@@ -323,7 +329,7 @@ namespace Mengine
 
         FMengineFinalize dlmengineFinalize = (FMengineFinalize)procFinalizeMengine;
 
-        dlmengineFinalize();
+        (*dlmengineFinalize)();
 
         ::FreeLibrary( m_hInstance );
         m_hInstance = NULL;

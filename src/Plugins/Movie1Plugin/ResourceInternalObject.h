@@ -4,9 +4,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceInternalObject
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceInternalObject );
         DECLARE_VISITABLE( Resource );
 
     public:
@@ -30,4 +32,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceInternalObject> ResourceInternalObjectPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

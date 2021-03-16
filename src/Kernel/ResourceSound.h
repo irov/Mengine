@@ -10,6 +10,7 @@ namespace Mengine
     class ResourceSound
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceSound );
         DECLARE_VISITABLE( Resource );
 
     public:

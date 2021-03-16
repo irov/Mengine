@@ -10,6 +10,7 @@ namespace Mengine
     class ResourceImageSubstract
         : public ResourceImage
     {
+        DECLARE_FACTORABLE( ResourceImageSubstract );
         DECLARE_VISITABLE( ResourceImage );
 
     public:

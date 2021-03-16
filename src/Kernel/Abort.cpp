@@ -1,6 +1,8 @@
-#include "Crash.h"
+#include "Abort.h"
 
 #include "Interface/NotificationServiceInterface.h"
+
+#include <process.h>
 
 namespace Mengine
 {

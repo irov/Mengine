@@ -13,6 +13,8 @@ namespace Mengine
         : public RenderFragmentShaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX9RenderFragmentShader );
+
     public:
         DX9RenderFragmentShader();
         ~DX9RenderFragmentShader() override;

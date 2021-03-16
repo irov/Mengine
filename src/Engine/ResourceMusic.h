@@ -9,6 +9,7 @@ namespace Mengine
     class ResourceMusic
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceMusic );
         DECLARE_VISITABLE( Resource );
 
     public:

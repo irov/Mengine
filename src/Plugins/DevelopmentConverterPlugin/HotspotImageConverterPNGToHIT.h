@@ -7,6 +7,8 @@ namespace Mengine
     class HotspotImageConverterPNGToHIT
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( HotspotImageConverterPNGToHIT );
+
     public:
         HotspotImageConverterPNGToHIT();
         ~HotspotImageConverterPNGToHIT() override;

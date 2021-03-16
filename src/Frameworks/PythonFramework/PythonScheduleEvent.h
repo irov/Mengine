@@ -13,6 +13,8 @@ namespace Mengine
         : public SchedulerEventInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( PythonScheduleEvent );
+
     public:
         PythonScheduleEvent();
         ~PythonScheduleEvent() override;

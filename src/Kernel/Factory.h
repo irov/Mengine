@@ -8,6 +8,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Document.h"
 #include "Kernel/Pointer.h"
 
@@ -63,10 +64,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class T, class ... Args>
+        template<class Type, class ... Args>
         FactoryPtr makeFactory( const DocumentPtr & _doc, Args && ... _args )
         {
-            FactoryPtr factory = Helper::makeFactorableUnique<T>( _doc, std::forward<Args>( _args ) ... );
+            FactoryPtr factory = Helper::makeFactorableUnique<Type>( _doc, std::forward<Args>( _args ) ... );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( factory );
+
+            const ConstString & type = Type::getFactorableType();
+
+            factory->initialize( type );
 
             return factory;
         }

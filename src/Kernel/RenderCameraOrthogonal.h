@@ -7,6 +7,8 @@ namespace Mengine
     class RenderCameraOrthogonal
         : public RenderCamera
     {
+        DECLARE_FACTORABLE( RenderCameraOrthogonal );
+
     public:
         RenderCameraOrthogonal();
         ~RenderCameraOrthogonal() override;

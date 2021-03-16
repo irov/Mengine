@@ -15,6 +15,8 @@ namespace Mengine
         : public AreaOfInterestZoneInterface
         , public Scriptable
     {
+        DECLARE_FACTORABLE( AreaOfInterestZone );
+
     public:
         AreaOfInterestZone();
         ~AreaOfInterestZone() override;

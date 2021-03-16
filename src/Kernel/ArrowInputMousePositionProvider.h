@@ -14,6 +14,8 @@ namespace Mengine
         : public InputMousePositionProviderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( ArrowInputMousePositionProvider );
+
     public:
         ArrowInputMousePositionProvider( Arrow * _arrow );
         ~ArrowInputMousePositionProvider() override;

@@ -9,6 +9,8 @@ namespace Mengine
     class ShapePacMan
         : public Shape
     {
+        DECLARE_FACTORABLE( ShapePacMan );
+
     public:
         ShapePacMan();
         ~ShapePacMan() override;

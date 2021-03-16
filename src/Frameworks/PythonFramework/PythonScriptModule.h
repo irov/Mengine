@@ -10,10 +10,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PythonScriptModule
         : public ScriptModuleInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( PythonScriptModule );
+
     public:
         PythonScriptModule();
         ~PythonScriptModule() override;

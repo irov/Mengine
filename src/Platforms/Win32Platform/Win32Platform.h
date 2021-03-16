@@ -53,6 +53,7 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
+        void destroyWindow() override;
 
     protected:
         ATOM registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
@@ -210,6 +211,9 @@ namespace Mengine
     protected:
         bool initializeFileService_();
         void finalizeFileService_();
+
+    protected:
+        void updateWndMessage_();
 
     protected:
         WChar m_windowClassName[MENGINE_MAX_PATH] = {L'\0'};

@@ -27,6 +27,7 @@ namespace Mengine
         , protected BaseAnimation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( DazzleEffect );
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();

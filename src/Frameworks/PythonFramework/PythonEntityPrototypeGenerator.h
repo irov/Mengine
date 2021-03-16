@@ -14,6 +14,8 @@ namespace Mengine
     class PythonEntityPrototypeGenerator
         : public FactoryPrototypeGenerator
     {
+        DECLARE_FACTORABLE( PythonEntityPrototypeGenerator );
+
     public:
         PythonEntityPrototypeGenerator();
         ~PythonEntityPrototypeGenerator() override;

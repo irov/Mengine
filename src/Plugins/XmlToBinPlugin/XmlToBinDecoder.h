@@ -13,6 +13,8 @@ namespace Mengine
         : public XmlDecoderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( XmlToBinDecoder );
+
     public:
         XmlToBinDecoder();
         ~XmlToBinDecoder() override;

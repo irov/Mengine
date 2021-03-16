@@ -10,10 +10,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Movie2Scissor
         : public Factorable
         , public RenderScissorInterface
     {
+        DECLARE_FACTORABLE( Movie2Scissor );
+
     public:
         Movie2Scissor();
         ~Movie2Scissor() override;
@@ -34,4 +37,5 @@ namespace Mengine
     {
         return m_viewport;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

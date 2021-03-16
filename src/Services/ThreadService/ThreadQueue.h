@@ -13,6 +13,8 @@ namespace Mengine
     class ThreadQueue
         : public ThreadQueueInterface
     {
+        DECLARE_FACTORABLE( ThreadQueue );
+
     public:
         ThreadQueue();
         ~ThreadQueue() override;

@@ -13,6 +13,8 @@ namespace Mengine
     class SecureValue
         : public Factorable
     {
+        DECLARE_FACTORABLE( SecureValue );
+
     public:
         SecureValue();
         ~SecureValue() override;

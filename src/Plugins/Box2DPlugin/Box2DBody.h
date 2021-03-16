@@ -13,6 +13,8 @@ namespace Mengine
     class Box2DBody
         : public Box2DBodyInterface
     {
+        DECLARE_FACTORABLE( Box2DBody );
+
     public:
         Box2DBody();
         ~Box2DBody() override;

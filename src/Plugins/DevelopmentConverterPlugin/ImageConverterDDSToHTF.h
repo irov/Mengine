@@ -7,6 +7,8 @@ namespace Mengine
     class ImageConverterDDSToHTF
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( ImageConverterDDSToHTF );
+
     public:
         ImageConverterDDSToHTF();
         ~ImageConverterDDSToHTF() override;

@@ -7,6 +7,8 @@ namespace Mengine
     class ImGUIModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( ImGUIModule );
+
     public:
         ImGUIModule();
         ~ImGUIModule() override;

@@ -17,6 +17,7 @@ namespace Mengine
         , public RenderScissorInterface        
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( RenderScissor );
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();
 
@@ -67,4 +68,5 @@ namespace Mengine
 
         return m_viewportWM;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

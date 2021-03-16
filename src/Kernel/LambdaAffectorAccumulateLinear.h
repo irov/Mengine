@@ -9,6 +9,8 @@ namespace Mengine
     class LambdaAffectorAccumulateLinear
         : public LambdaAffectorInterpolate<T, ValueAccumulateLinear<T>>
     {
+        DECLARE_FACTORABLE( LambdaAffectorAccumulateLinear );
+
     public:
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
 

@@ -185,6 +185,7 @@ namespace Mengine
     class ResourceMovie
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceMovie );
         DECLARE_VISITABLE( Resource );
 
     public:
@@ -287,4 +288,5 @@ namespace Mengine
     {
         return m_keyFramePack;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

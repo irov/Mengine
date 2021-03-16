@@ -9,6 +9,8 @@ namespace Mengine
     class ThreadTaskPrefetchStream
         : public ThreadTaskPrefetch
     {
+        DECLARE_FACTORABLE( ThreadTaskPrefetchStream );
+
     public:
         ThreadTaskPrefetchStream();
         ~ThreadTaskPrefetchStream() override;

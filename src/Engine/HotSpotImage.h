@@ -10,6 +10,7 @@ namespace Mengine
     class HotSpotImage
         : public HotSpot
     {
+        DECLARE_FACTORABLE( HotSpotImage );
         DECLARE_VISITABLE( HotSpot );
 
     public:

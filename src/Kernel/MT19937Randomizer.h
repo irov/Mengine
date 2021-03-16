@@ -9,6 +9,8 @@ namespace Mengine
     class MT19937Randomizer
         : public RandomizerInterface
     {
+        DECLARE_FACTORABLE( MT19937Randomizer );
+
     public:
         MT19937Randomizer();
         ~MT19937Randomizer() override;

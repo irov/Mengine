@@ -41,7 +41,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Factorable::getType() const
     {
-        return m_factory->getType();
+        if( m_factory == nullptr )
+        {
+            return ConstString::none();
+        }
+
+        const ConstString & type = m_factory->getType();
+
+        return type;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::setImmortal( bool _value )

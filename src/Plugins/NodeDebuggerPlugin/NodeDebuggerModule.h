@@ -55,6 +55,8 @@ namespace Mengine
         , public ThreadWorkerInterface
         , public SceneDataProviderInterface
     {
+        DECLARE_FACTORABLE( NodeDebuggerModule );
+
     public:
         NodeDebuggerModule();
         ~NodeDebuggerModule() override;

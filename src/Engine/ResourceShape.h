@@ -9,6 +9,7 @@ namespace Mengine
     class ResourceShape
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceShape );
         DECLARE_VISITABLE( Resource );
 
     public:

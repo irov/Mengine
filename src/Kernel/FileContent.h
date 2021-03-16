@@ -11,6 +11,8 @@ namespace Mengine
     class FileContent
         : public BaseContent
     {
+        DECLARE_FACTORABLE( FileContent );
+
     public:
         FileContent();
         ~FileContent() override;

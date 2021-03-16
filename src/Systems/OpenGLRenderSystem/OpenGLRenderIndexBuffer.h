@@ -15,6 +15,8 @@ namespace Mengine
         , public OpenGLRenderResourceHandler
         , public Factorable
     {
+        DECLARE_FACTORABLE( OpenGLRenderIndexBuffer );
+
     public:
         OpenGLRenderIndexBuffer();
         ~OpenGLRenderIndexBuffer() override;
@@ -65,6 +67,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderIndexBuffer> OpenGLRenderIndexBufferPtr;
+    typedef IntrusivePtr<OpenGLRenderIndexBuffer, RenderIndexBufferInterface> OpenGLRenderIndexBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }

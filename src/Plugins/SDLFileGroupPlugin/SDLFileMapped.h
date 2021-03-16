@@ -11,6 +11,8 @@ namespace Mengine
         : public FileMappedInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SDLFileMapped );
+
     public:
         SDLFileMapped();
         ~SDLFileMapped() override;

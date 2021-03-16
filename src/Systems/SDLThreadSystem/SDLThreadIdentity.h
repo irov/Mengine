@@ -18,6 +18,8 @@ namespace Mengine
         : public ThreadIdentityInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SDLFileOutputStream );
+
     public:
         SDLThreadIdentity();
         ~SDLThreadIdentity() override;
@@ -61,6 +63,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLThreadIdentity> SDLThreadIdentityPtr;
+    typedef IntrusivePtr<SDLThreadIdentity, ThreadIdentityInterface> SDLThreadIdentityPtr;
     //////////////////////////////////////////////////////////////////////////
 }

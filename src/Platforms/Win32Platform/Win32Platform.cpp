@@ -309,6 +309,8 @@ namespace Mengine
             ::DestroyWindow( m_hWnd );
 
             m_hWnd = NULL;
+
+            this->updateWndMessage_();
         }
 
         if( m_hInstance != NULL )
@@ -759,6 +761,24 @@ namespace Mengine
         LOGGER_MESSAGE( "stop platform" );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
+
+        if( m_alreadyRunningMonitor != nullptr )
+        {
+            m_alreadyRunningMonitor->finalize();
+            m_alreadyRunningMonitor = nullptr;
+        }
+
+        m_mouseEvent.stop();
+
+        if( m_hWnd != NULL )
+        {
+            ::CloseWindow( m_hWnd );
+            ::DestroyWindow( m_hWnd );
+
+            m_hWnd = NULL;
+
+            this->updateWndMessage_();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setIcon( uint32_t _icon )
@@ -2119,27 +2139,6 @@ namespace Mengine
         m_mouseEvent.setHWND( m_hWnd );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::destroyWindow()
-    {
-        if( m_alreadyRunningMonitor != nullptr )
-        {
-            m_alreadyRunningMonitor->finalize();
-            m_alreadyRunningMonitor = nullptr;
-        }
-
-        m_mouseEvent.stop();
-
-        if( m_hWnd != NULL )
-        {
-            ::CloseWindow( m_hWnd );
-            ::DestroyWindow( m_hWnd );
-            
-            m_hWnd = NULL;
-
-            this->updateWndMessage_();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     HWND Win32Platform::getWindowHandle() const

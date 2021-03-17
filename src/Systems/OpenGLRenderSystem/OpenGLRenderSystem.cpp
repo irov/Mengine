@@ -194,7 +194,7 @@ namespace Mengine
         OPENGL_RENDER_CHECK_ERROR();
 
         GLint maxCombinedTextureImageUnits;
-        glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
+        GLCALL( glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );
 
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 
@@ -269,13 +269,13 @@ namespace Mengine
         uint32_t width = right - left;
         uint32_t height = top - bottom;
 
-        glEnable( GL_SCISSOR_TEST );
-        glScissor( left, bottom, width, height );
+        GLCALL( glEnable, (GL_SCISSOR_TEST) );
+        GLCALL( glScissor, (left, bottom, width, height) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::removeScissor()
     {
-        glDisable( GL_SCISSOR_TEST );
+        GLCALL( glDisable, (GL_SCISSOR_TEST) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
@@ -724,17 +724,17 @@ namespace Mengine
         {
         case CM_CULL_CW:
             {
-                GLCALL(glCullFace, (GL_FRONT));
-                GLCALL(glEnable, (GL_CULL_FACE));
+                GLCALL( glCullFace, (GL_FRONT) );
+                GLCALL( glEnable, (GL_CULL_FACE) );
             }break;
         case CM_CULL_CCW:
             {
-                GLCALL(glCullFace, (GL_BACK));
-                GLCALL(glEnable, (GL_CULL_FACE));
+                GLCALL( glCullFace, (GL_BACK) );
+                GLCALL( glEnable, (GL_CULL_FACE) );
             }break;
         case CM_CULL_NONE:
             {
-                GLCALL(glDisable, (GL_CULL_FACE));
+                GLCALL( glDisable, (GL_CULL_FACE) );
             }break;
         }
     }
@@ -792,8 +792,8 @@ namespace Mengine
 #ifndef MENGINE_RENDER_OPENGL_ES
         GLenum mode = Helper::toGLFillMode( _mode );
 
-        glPolygonMode( GL_FRONT_AND_BACK, mode );
-#endif      
+        GLCALL( glPolygonMode, (GL_FRONT_AND_BACK, mode) );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )

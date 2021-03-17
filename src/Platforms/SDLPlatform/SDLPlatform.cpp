@@ -716,6 +716,8 @@ namespace Mengine
     {
         m_active = false;
 
+        this->destroyWindow_();
+
         SDL_Quit();
 
         if( m_sdlInput != nullptr )
@@ -1144,11 +1146,6 @@ namespace Mengine
         m_sdlInput->updateSurfaceResolution( dwf, dhf );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::destroyWindow()
-    {
-        this->destroyWindow_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasPlatformTag( const ConstString & _tag ) const

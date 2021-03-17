@@ -307,12 +307,6 @@ namespace Mengine
                 ->stopPlatform();
         }
 
-        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
-        {
-            PLATFORM_SERVICE()
-                ->destroyWindow();
-        }
-
         if( SERVICE_EXIST( Mengine::BootstrapperInterface ) == true )
         {
             BOOTSTRAPPER_SERVICE()

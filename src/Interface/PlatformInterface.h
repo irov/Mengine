@@ -58,7 +58,6 @@ namespace Mengine
 
     public:
         virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;
-        virtual void destroyWindow() = 0;
 
     public:
         virtual const Tags & getPlatformTags() const = 0;

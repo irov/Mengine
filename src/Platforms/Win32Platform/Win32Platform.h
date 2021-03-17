@@ -53,7 +53,6 @@ namespace Mengine
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-        void destroyWindow() override;
 
     protected:
         ATOM registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra

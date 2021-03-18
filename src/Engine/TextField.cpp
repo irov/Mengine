@@ -34,6 +34,7 @@ namespace Mengine
         : m_horizontAlign( ETFHA_NONE )
         , m_verticalAlign( ETFVA_NONE )
         , m_invalidateFont( true )
+        , m_extraThickness( 0.f )
         , m_charScale( 1.f )
         , m_maxLength( 2048.f )
         , m_autoScaleFactor( 1.f )
@@ -1558,7 +1559,7 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent;
+                    offset = fontAscent - m_extraThickness * 2.f;
                 }break;
             case ETFVA_CENTER:
                 {
@@ -1579,7 +1580,7 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent;
+                    offset = fontAscent - m_extraThickness * 2.f;
                 }break;
             case ETFVA_CENTER:
                 {
@@ -1709,6 +1710,18 @@ namespace Mengine
     uint32_t TextField::getMaxCharCount() const
     {
         return m_maxCharCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setExtraThickness( float _extraThickness )
+    {
+        m_extraThickness = _extraThickness;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getExtraThickness() const
+    {
+        return m_extraThickness;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setMaxCharCount( uint32_t _maxCharCount )

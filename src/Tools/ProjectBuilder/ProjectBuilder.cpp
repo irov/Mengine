@@ -887,6 +887,18 @@ static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * 
 
         return true;
     }
+    else if( _kernel->unicode_check( _obj ) == true )
+    {
+        size_t size;
+        const wchar_t * value = _kernel->unicode_to_wchar_and_size( _obj, &size );
+
+        Mengine::String utf8_value;
+        Mengine::Helper::unicodeToUtf8Size( value, size, &utf8_value );
+
+        *cstr = Mengine::Helper::stringizeStringSize( utf8_value.c_str(), utf8_value.size() );
+
+        return true;
+    }
 
     return false;
 }
@@ -1010,20 +1022,29 @@ bool run()
 
     if( pythonDescs.empty() == true )
     {
-        LOGGER_ERROR( "invalid found python" );
+        LOGGER_ERROR( "invalid found any python" );
 
         return false;
     }
 
-    std::sort( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _l, const PythonDesc & _r )
+    std::vector<PythonDesc>::iterator it_found = std::find_if( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _desc )
     {
-        uint32_t lk = _l.major_version * 100 + _l.minor_version;
-        uint32_t rk = _r.major_version * 100 + _r.minor_version;
+        if( _desc.major_version == 3 && _desc.minor_version == 8 )
+        {
+            return true;
+        }
 
-        return lk < rk;
+        return false;
     } );
 
-    PythonDesc & desc = pythonDescs.back();
+    if( it_found == pythonDescs.end() )
+    {
+        LOGGER_ERROR( "invalid found python 3.8" );
+
+        return false;
+    }
+
+    PythonDesc & desc = *it_found;
 
     WCHAR * szPythonPath = desc.szPythonPath;
 

@@ -150,6 +150,10 @@ namespace Mengine
         bool isVerticalBottomAlign() const;
 
     public:
+        void setExtraThickness( float _extraThickness );
+        float getExtraThickness() const;
+
+    public:
         void setMaxCharCount( uint32_t _maxCharCount );
         uint32_t getMaxCharCount() const;
 
@@ -261,6 +265,8 @@ namespace Mengine
 
         mutable TextFontInterfacePtr m_totalFont;
         mutable bool m_invalidateFont;
+
+        float m_extraThickness;
 
         float m_charScale;
 

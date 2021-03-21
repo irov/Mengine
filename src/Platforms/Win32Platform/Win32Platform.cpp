@@ -42,6 +42,9 @@
 #include "Config/StdIntTypes.h"
 #include "Config/Utf8.h"
 
+
+#if !defined(MENGINE_WINDOWS_UNIVERSAL)
+
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
 #endif
@@ -50,6 +53,8 @@
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(pop) 
+#endif
+
 #endif
 
 #include <clocale>
@@ -110,6 +115,7 @@ namespace Mengine
     {
         ::setlocale( LC_ALL, MENGINE_SETLOCALE );
 
+#if !defined(MENGINE_WINDOWS_UNIVERSAL)
         HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
 
         if( hm_ntdll != NULL )
@@ -142,6 +148,7 @@ namespace Mengine
 
             ::FreeLibrary( hm_ntdll );
         }
+#endif
 
         m_hInstance = ::GetModuleHandle( NULL );
 

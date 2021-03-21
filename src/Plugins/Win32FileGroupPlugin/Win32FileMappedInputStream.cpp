@@ -24,6 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedInputStream::mapViewOfFile( HANDLE _hMapping, DWORD _dwAllocationGranularity, size_t _offset, size_t _size )
     {
+#if !defined(MENGINE_WINDOWS_UNIVERSAL)
         DWORD64 offset = (DWORD64)_offset;
         DWORD offsetHigh = (offset >> 32) & 0xFFFFFFFFlu;
         DWORD offsetLow = (offset >> 0) & 0xFFFFFFFFlu;
@@ -53,6 +54,13 @@ namespace Mengine
         m_end = m_base + m_size;
 
         return true;
+#endif
+        MENGINE_UNUSED( _hMapping );
+        MENGINE_UNUSED( _dwAllocationGranularity );
+        MENGINE_UNUSED( _offset );
+        MENGINE_UNUSED( _size );
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FileMappedInputStream::unmap()

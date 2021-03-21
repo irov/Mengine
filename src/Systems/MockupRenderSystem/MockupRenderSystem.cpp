@@ -77,7 +77,7 @@ namespace Mengine
 
         m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 
-        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX9" ) );
+        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "Mockup" ) );
 
         m_factoryRenderVertexAttribute = Helper::makeFactoryPool<MockupRenderVertexAttribute, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPool<MockupRenderVertexShader, 16>( MENGINE_DOCUMENT_FACTORABLE );
@@ -156,8 +156,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
-        float Engine_DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetX", -0.5f );
-        float Engine_DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetY", -0.5f );
+        float Engine_DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX11PerfectPixelOffsetX", -0.5f );
+        float Engine_DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX11PerfectPixelOffsetY", -0.5f );
 
         float perfect_x = Engine_DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
         float perfect_y = Engine_DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);

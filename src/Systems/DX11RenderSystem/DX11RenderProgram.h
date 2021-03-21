@@ -1,0 +1,57 @@
+#pragma once
+
+#include "Interface/RenderProgramInterface.h"
+
+#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+
+#include "DX11RenderVertexShader.h"
+#include "DX11RenderFragmentShader.h"
+#include "DX11RenderVertexAttribute.h"
+
+#include "math/uv4.h"
+#include "math/mat4.h"
+
+namespace Mengine
+{
+    class DX9RenderProgram
+        : public RenderProgramInterface
+        , public Factorable
+    {
+    public:
+        DX9RenderProgram();
+        ~DX9RenderProgram() override;
+
+    public:
+        const ConstString & getName() const override;
+
+    public:
+        const RenderVertexAttributeInterfacePtr & getVertexAttribute() const override;
+        const RenderVertexShaderInterfacePtr & getVertexShader() const override;
+        const RenderFragmentShaderInterfacePtr & getFragmentShader() const override;
+
+    public:
+        bool initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute );
+        void finalize();
+
+    public:
+        bool compile( IDirect3DDevice9 * _pD3DDevice );
+
+    public:
+        void enable( IDirect3DDevice9 * _pD3DDevice );
+        void disable( IDirect3DDevice9 * _pD3DDevice );
+
+    public:
+        void bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks );
+        void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
+
+    protected:
+        ConstString m_name;
+
+        DX9RenderVertexShaderPtr m_vertexShader;
+        DX9RenderFragmentShaderPtr m_fragmentShader;
+        DX9RenderVertexAttributePtr m_vertexAttribute;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DX9RenderProgram, class RenderProgramInterface> DX9RenderProgramPtr;
+    //////////////////////////////////////////////////////////////////////////
+}

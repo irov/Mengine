@@ -20,8 +20,10 @@
 #   elif defined(MENGINE_WINDOWS_VERSION_WIN10)
 #       define MENGINE_WINDOWS_VERSION _WIN32_WINNT_WIN10
 #   else
-#       ifdef MENGINE_TOOLCHAIN_MINGW
+#       if defined(MENGINE_TOOLCHAIN_MINGW)
 #           define MENGINE_WINDOWS_VERSION _WIN32_WINNT_WINXP
+#       elif defined(MENGINE_WINDOWS_UNIVERSAL)
+#           define MENGINE_WINDOWS_VERSION _WIN32_WINNT_WIN10
 #       else
 #           define MENGINE_WINDOWS_VERSION _WIN32_WINNT_VISTA
 #       endif
@@ -55,7 +57,7 @@
 #include <WinBase.h>
 
 #include <Psapi.h>
-#include <Shlwapi.h>
+#include <shlwapi.h>
 #include <Lmcons.h>
 
 #include <tlhelp32.h>
@@ -64,4 +66,5 @@
 
 #include <windowsx.h>
 #include <wtsapi32.h>
+#include <libloaderapi.h>
 #pragma warning(pop) 

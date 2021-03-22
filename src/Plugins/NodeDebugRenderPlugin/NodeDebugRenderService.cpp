@@ -76,8 +76,10 @@ namespace Mengine
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_timerFPS = PLATFORM_SERVICE()
-            ->addTimer( 1000.f, [this]()
+            ->addTimer( 1000.f, [this]( UniqueId _id )
         {
+            MENGINE_UNUSED( _id );
+
             const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
                 ->getDebugInfo();
 

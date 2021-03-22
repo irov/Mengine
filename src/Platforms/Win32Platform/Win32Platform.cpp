@@ -302,6 +302,11 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         for( const TimerDesc & desc : m_timers )
         {
+            if( desc.id == INVALIDATE_UNIQUE_ID )
+            {
+                continue;
+            }
+
             LOGGER_ERROR( "forgot remove win32 timer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
@@ -583,7 +588,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    UniqueId Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -604,18 +609,21 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::removeTimer( uint32_t _id )
+    void Win32Platform::removeTimer( UniqueId _id )
     {
         VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
         {
             return _desc.id == _id;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_timers.end(), "not found timer '%u'"
+            , _id
+        );
 
         TimerDesc & desc = *it_found;
 
-        desc.id = 0;
+        desc.id = INVALIDATE_UNIQUE_ID;
+        desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32Platform::getTicks() const
@@ -705,8 +713,13 @@ namespace Mengine
 
                     desc.time += desc.milliseconds;
 
-                    desc.lambda();
+                    desc.lambda( desc.id );
                 }
+
+                m_timers.erase( std::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+                {
+                    return _desc.id == INVALIDATE_UNIQUE_ID;
+                } ), m_timers.end() );
 
                 m_update = true;
 

@@ -30,8 +30,8 @@ namespace Mengine
         void _runService() override;
 
     public:
-        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
-        void removeTimer( uint32_t _id ) override;
+        UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        void removeTimer( UniqueId _id ) override;
 
     public:
         uint64_t getTicks() const override;

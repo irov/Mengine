@@ -14,7 +14,7 @@ main
 )
 endif()
 
-if(MENGINE_TOOLCHAIN_MINGW)
+if(MENGINE_WINDOWS_UNIVERSAL)
 ADD_FILTER(
 AppXManifest
     Package.appxmanifest

@@ -54,13 +54,14 @@ namespace Mengine
         m_end = m_base + m_size;
 
         return true;
-#endif
+#else
         MENGINE_UNUSED( _hMapping );
         MENGINE_UNUSED( _dwAllocationGranularity );
         MENGINE_UNUSED( _offset );
         MENGINE_UNUSED( _size );
 
         return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FileMappedInputStream::unmap()

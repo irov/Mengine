@@ -626,7 +626,16 @@ namespace Mengine
         }
 
         LARGE_INTEGER performanceCount;
-        ::QueryPerformanceCounter( &performanceCount );
+        if( ::QueryPerformanceCounter( &performanceCount ) == FALSE )
+        {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid query performance counter [error: %lu]"
+                , error
+            );
+
+            return 0ULL;
+        }
 
         LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
 

@@ -4212,6 +4212,19 @@ namespace Mengine
 
             MENGINE_WCSCAT( currentPath, L"/" );
             MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+
+            uint32_t Engine_BotId = CONFIG_VALUE( "Engine", "BotId", ~0U );
+
+            if( Engine_BotId != ~0U || HAS_OPTION( "bot" ) == true )
+            {
+                uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
+
+                WChar botId_suffix[16];
+                MENGINE_WSPRINTF( botId_suffix, L"%u", botId );
+
+                MENGINE_WCSCAT( currentPath, botId_suffix );
+            }
+
             MENGINE_WCSCAT( currentPath, L"/" );
 
             size_t currentPathLen;

@@ -17,6 +17,8 @@
 #include "Kernel/LambdaFilePath.h"
 #include "Kernel/Unknowable.h"
 
+#include "Config/UniqueId.h"
+
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
 #endif
@@ -39,9 +41,9 @@ namespace Mengine
         virtual void stopPlatform() = 0;
 
     public:
-        typedef Lambda<void()> LambdaTimer;
-        virtual uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) = 0;
-        virtual void removeTimer( uint32_t _id ) = 0;
+        typedef Lambda<void( UniqueId _id )> LambdaTimer;
+        virtual UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) = 0;
+        virtual void removeTimer( UniqueId _id ) = 0;
 
     public:
         virtual uint64_t getTicks() const = 0;

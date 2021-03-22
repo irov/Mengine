@@ -339,7 +339,7 @@ namespace Mengine
             uint32_t s_timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
                 const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_pipe->initialize( _delay );
@@ -358,7 +358,7 @@ namespace Mengine
             bool s_timingRemove( uint32_t _id )
             {
                 const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 bool successful = tm->remove( _id );
 
@@ -368,7 +368,7 @@ namespace Mengine
             SchedulerInterfacePtr s_createScheduler( const ConstString & _name )
             {
                 SchedulerInterfacePtr sm = PLAYER_SERVICE()
-                    ->createSchedulerManager( _name, MENGINE_DOCUMENT_PYBIND );
+                    ->createScheduler( _name, MENGINE_DOCUMENT_PYBIND );
 
                 return sm;
             }
@@ -378,7 +378,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _sm, "destroy scheduler is nullptr" );
 
                 bool successful = PLAYER_SERVICE()
-                    ->destroySchedulerManager( _sm );
+                    ->destroyScheduler( _sm );
 
                 return successful;
             }
@@ -400,7 +400,7 @@ namespace Mengine
                 }
 
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 uint32_t id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
 
@@ -410,7 +410,7 @@ namespace Mengine
             uint32_t s_schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
                 sl->initialize( _script, _args );
@@ -423,7 +423,7 @@ namespace Mengine
             bool s_scheduleRemove( uint32_t _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -438,7 +438,7 @@ namespace Mengine
             void s_scheduleRemoveAll()
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -451,7 +451,7 @@ namespace Mengine
             bool s_scheduleFreeze( uint32_t _id, bool _freeze )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -466,7 +466,7 @@ namespace Mengine
             void s_scheduleFreezeAll()
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -479,7 +479,7 @@ namespace Mengine
             void s_scheduleResumeAll()
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -492,7 +492,7 @@ namespace Mengine
             bool s_scheduleIsFreeze( uint32_t _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -507,7 +507,7 @@ namespace Mengine
             float s_scheduleTime( uint32_t _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -1085,6 +1085,25 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
                 return surface;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addTimer( float _delay, const pybind::object & _timer, const pybind::args & _args )
+            {
+                UniqueId id = PLATFORM_SERVICE()
+                    ->addTimer( _delay, [_timer, _args]( UniqueId _id )
+                {
+                    MENGINE_UNUSED( _id );
+
+                    _timer.call_args( _id, _args );
+                }, MENGINE_DOCUMENT_PYBIND );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removeTimer( UniqueId _id )
+            {
+                PLATFORM_SERVICE()
+                    ->removeTimer( _id );
             }
             //////////////////////////////////////////////////////////////////////////
             RandomizerInterfacePtr s_generateRandomizer( const ConstString & _prototype )
@@ -3916,6 +3935,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "createSprite", nodeScriptMethod, &EngineScriptMethod::s_createSprite );
 
         pybind::def_functor( _kernel, "generateRandomizer", nodeScriptMethod, &EngineScriptMethod::s_generateRandomizer );
+
+        pybind::def_functor_args( _kernel, "addTimer", nodeScriptMethod, &EngineScriptMethod::s_addTimer );
+        pybind::def_functor( _kernel, "removeTimer", nodeScriptMethod, &EngineScriptMethod::s_removeTimer );
 
         pybind::def_functor_args( _kernel, "timing", nodeScriptMethod, &EngineScriptMethod::s_timing );
         pybind::def_functor( _kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::s_timingRemove );

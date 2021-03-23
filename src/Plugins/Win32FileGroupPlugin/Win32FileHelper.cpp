@@ -42,7 +42,13 @@ namespace Mengine
             extendedParameters.lpSecurityAttributes = NULL;
             extendedParameters.hTemplateFile = NULL;
 
-            HANDLE handle = ::CreateFile2( pathCorrect, _desiredAccess, _sharedMode, _creationDisposition, &extendedParameters );
+            HANDLE handle = ::CreateFile2( 
+                pathCorrect, //lpFileName
+                _desiredAccess, //dwDesiredAccess
+                _sharedMode, //dwShareMode
+                _creationDisposition, //dwCreationDisposition
+                &extendedParameters //pCreateExParams
+            );
 #endif
 
             if( handle == INVALID_HANDLE_VALUE )

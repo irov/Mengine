@@ -1075,8 +1075,8 @@ bool run()
     pybind::registration_type_cast<Mengine::String>(kernel, pybind::make_type_cast<extract_String_type>(kernel));
     pybind::registration_type_cast<Mengine::WString>(kernel, pybind::make_type_cast<extract_WString_type>(kernel));
 
-    pybind::registration_stl_vector_type_cast<Mengine::String, Mengine::Vector<Mengine::String>>(kernel);
-    pybind::registration_stl_vector_type_cast<Mengine::WString, Mengine::Vector<Mengine::WString>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::Vector<Mengine::String>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::Vector<Mengine::WString>>(kernel);
 
     pybind::structhash_<Mengine::ConstString>( kernel, "ConstString", true, py_tools_module )
         .def_compare( &s_ConstString_compare )
@@ -1085,8 +1085,8 @@ bool run()
         .def_hash( &s_ConstString_hash )
         ;
 
-    pybind::registration_stl_map_type_cast<Mengine::ConstString, Mengine::String, Mengine::MapParams>(kernel);
-    pybind::registration_stl_map_type_cast<Mengine::ConstString, Mengine::WString, Mengine::MapWParams>(kernel);
+    pybind::registration_stl_map_type_cast<Mengine::MapParams>(kernel);
+    pybind::registration_stl_map_type_cast<Mengine::MapWParams>(kernel);
 
     pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module )
         .def_native_kernel( "write", &Mengine::PythonLogger::py_write )
@@ -1095,6 +1095,7 @@ bool run()
         .def_property( "errors", &Mengine::PythonLogger::getErrors, &Mengine::PythonLogger::setErrors )
         .def_property( "encoding", &Mengine::PythonLogger::getEncoding, &Mengine::PythonLogger::setEncoding )
         ;
+
     Mengine::PythonLogger * logger = new Mengine::PythonLogger();
     PyObject * py_logger = pybind::ptr( kernel, logger );
 
@@ -1103,7 +1104,6 @@ bool run()
 
     pybind::def_function_kernel( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
     pybind::def_function_kernel( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
-
 
     pybind::def_function( kernel, "convert", &Mengine::convert, py_tools_module );
     pybind::def_function_kernel( kernel, "isAlphaInImageFile", &Mengine::isAlphaInImageFile, py_tools_module );
@@ -1124,7 +1124,7 @@ bool run()
     kernel->incref( py_tools_module );
     kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
-    Mengine::WChar currentDirectory[MAX_PATH] = {0};
+    Mengine::WChar currentDirectory[MAX_PATH] = {L'\0'};
     if( ::GetCurrentDirectory( MAX_PATH, currentDirectory ) == 0 )
     {
         return false;

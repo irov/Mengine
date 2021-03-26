@@ -195,6 +195,11 @@ namespace Mengine
             ;
 
         pybind::interface_<Movie2Slot, pybind::bases<Node>>( _kernel, "Movie2Slot", false )
+            .def( "getMovieName", &Movie2Slot::getMovieName )
+            .def( "getCompositionName", &Movie2Slot::getCompositionName )
+            .def( "getLayerIndex", &Movie2Slot::getLayerIndex )
+            .def( "getDimension", &Movie2Slot::getDimension )
+            .def( "hasOption", &Movie2Slot::hasOption )
             ;
 
         pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable, Identity>>( _kernel, "Movie2SubComposition", false )

@@ -13,13 +13,6 @@ main
     mingw32_main.cpp
 )
 endif()
-
-if(MENGINE_WINDOWS_UNIVERSAL)
-ADD_FILTER(
-AppXManifest
-    Package.appxmanifest
-)
-endif()
     
 ADD_FILTER(
 Win32Application

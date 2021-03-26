@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 144;
+        return 146;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 2825539051; 
+        return 3637228181; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -3110,6 +3110,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::Meta_Layer()
             : Metabuf::Metadata()
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3121,6 +3122,13 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+        
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+        
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3131,6 +3139,20 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Matrix );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            if( (m_flagNoRequiredAttribute & EMETA_Dimension) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Dimension );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Options) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Options );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3884,6 +3906,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Premultiply );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Resize) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Resize );
             }
         
         }

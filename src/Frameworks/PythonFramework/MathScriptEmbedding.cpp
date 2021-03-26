@@ -576,8 +576,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MathScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::registration_stl_vector_type_cast<Polygon, Vector<Polygon>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<Polygon>>(_kernel);
 
         pybind::struct_<mt::vec2f>( _kernel, "vec2f" )
             .def_constructor( pybind::init<float, float>() )
@@ -745,7 +745,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MathScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<Polygon, Vector<Polygon>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<Polygon>>(_kernel);
     }
 }

@@ -150,17 +150,8 @@ namespace Mengine
 
         m_globalInputHandler = nullptr;
 
-        if( m_localScheduler != nullptr )
-        {
-            m_localScheduler->finalize();
-            m_localScheduler = nullptr;
-        }
-
-        if( m_globalScheduler != nullptr )
-        {
-            m_globalScheduler->finalize();
-            m_globalScheduler = nullptr;
-        }
+        m_localScheduler = nullptr;
+        m_globalScheduler = nullptr;
 
         for( const SchedulerInterfacePtr & scheduler : m_schedulers )
         {

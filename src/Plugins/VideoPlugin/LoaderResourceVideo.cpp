@@ -36,6 +36,7 @@ namespace Mengine
         metadata->getm_File_NoSeek( resource, &ResourceVideo::setNoSeek );
         metadata->getm_File_FrameRate( resource, &ResourceVideo::setFrameRate );
         metadata->getm_File_Duration( resource, &ResourceVideo::setDuration );
+        metadata->getm_File_Resize( resource, &ResourceVideo::setResize );
 
         return true;
     }

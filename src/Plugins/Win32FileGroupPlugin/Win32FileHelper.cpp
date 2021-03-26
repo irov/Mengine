@@ -19,7 +19,6 @@ namespace Mengine
             WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
             Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
-#ifndef MENGINE_WINDOWS_UNIVERSAL
             HANDLE handle = ::CreateFile( 
                 pathCorrect, //lpFileName
                 _desiredAccess, //dwDesiredAccess
@@ -29,27 +28,6 @@ namespace Mengine
                 FILE_ATTRIBUTE_NORMAL, //dwFlagsAndAttributes
                 NULL //hTemplateFile
             );
-#else
-            //Windows::Storage::StorageFolder ^ localFolder = Windows::Storage::ApplicationData::Current->LocalFolder;
-            //String ^ path = localFolder->Path;
-            //path += L"\\Test.txt";
-
-            CREATEFILE2_EXTENDED_PARAMETERS extendedParameters;
-            extendedParameters.dwSize = sizeof( CREATEFILE2_EXTENDED_PARAMETERS );
-            extendedParameters.dwFileAttributes = FILE_ATTRIBUTE_NORMAL & 0x0003FFF7;
-            extendedParameters.dwFileFlags = FILE_ATTRIBUTE_NORMAL & 0xFF3C0000;
-            extendedParameters.dwSecurityQosFlags = SECURITY_ANONYMOUS;
-            extendedParameters.lpSecurityAttributes = NULL;
-            extendedParameters.hTemplateFile = NULL;
-
-            HANDLE handle = ::CreateFile2( 
-                pathCorrect, //lpFileName
-                _desiredAccess, //dwDesiredAccess
-                _sharedMode, //dwShareMode
-                _creationDisposition, //dwCreationDisposition
-                &extendedParameters //pCreateExParams
-            );
-#endif
 
             if( handle == INVALID_HANDLE_VALUE )
             {
@@ -77,7 +55,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool Win32ValidateFile( const WChar * _path )
         {
-#ifndef MENGINE_WINDOWS_UNIVERSAL
             WIN32_FIND_DATA wfd;
             HANDLE hFind = ::FindFirstFile( _path, &wfd );
 
@@ -109,12 +86,6 @@ namespace Mengine
             }
 
             return true;
-#else
-
-            MENGINE_UNUSED( _path );
-
-            return true;
-#endif
         }
         //////////////////////////////////////////////////////////////////////////
         size_t Win32ConcatenateFilePathA( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _concatenatePath, size_t _capacity )

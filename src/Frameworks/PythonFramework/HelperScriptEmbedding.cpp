@@ -31,6 +31,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Base64.h"
 #include "Kernel/Crash.h"
+#include "Kernel/Optional.h"
 
 #include "Config/BuildVersion.h"
 #include "Config/GitSHA1.h"
@@ -3518,26 +3519,28 @@ namespace Mengine
             .def( "TC_TOUCH15", TC_TOUCH15 )
             ;
 
+        pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+
         pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
 
-        pybind::registration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
-        pybind::registration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorResourceImages>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
-        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
+        pybind::registration_stl_map_type_cast<MapParams>(_kernel);
+        pybind::registration_stl_map_type_cast<MapWParams>(_kernel);
 
         pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>(_kernel));
         pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>(_kernel));
 
-        pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
-        pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorString>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorWString>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorRenderIndex>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::registration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
-        pybind::registration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec3f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec4f>>(_kernel);
 
         pybind::struct_<Tags>( _kernel, "Tags" )
             .def_constructor( pybind::init<>() )
@@ -3853,25 +3856,28 @@ namespace Mengine
     {
         m_implement = nullptr;
 
+        pybind::unregistration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+
         pybind::unregistration_type_cast<Blobject>(_kernel);
         pybind::unregistration_type_cast<Tags>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorResourceImages>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::unregistration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
-        pybind::unregistration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<MapWParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<MapParams>(_kernel);
 
         pybind::unregistration_type_cast<String>(_kernel);
         pybind::unregistration_type_cast<WString>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<String, Vector<String>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<String>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<WString>>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorRenderIndex>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec3f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec4f>>(_kernel);
     }
+    //////////////////////////////////////////////////////////////////////////
 }

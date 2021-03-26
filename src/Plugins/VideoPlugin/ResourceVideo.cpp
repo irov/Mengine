@@ -18,6 +18,7 @@ namespace Mengine
     ResourceVideo::ResourceVideo()
         : m_frameRate( 0.f )
         , m_duration( 0.f )
+        , m_resize( 0.f )
         , m_alpha( false )
         , m_premultiply( false )
         , m_noSeek( false )
@@ -49,6 +50,16 @@ namespace Mengine
     float ResourceVideo::getDuration() const
     {
         return m_duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceVideo::setResize( float _resize )
+    {
+        m_resize = _resize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceVideo::getResize() const
+    {
+        return m_resize;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideo::_compile()

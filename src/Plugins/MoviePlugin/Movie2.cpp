@@ -451,7 +451,9 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "Movie2Slot" ) )
             {
                 Movie2SlotPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                    );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -462,6 +464,11 @@ namespace Mengine
 
                 const ConstString & movieName = this->getName();
                 node->setMovieName( movieName );
+                node->setCompositionName( m_compositionName );
+
+                node->setLayerIndex( layer.index );
+                node->setDimension( layer.dimension );
+                node->setOptions( layer.options );
 
                 this->addSlot_( layer.index, node );
 

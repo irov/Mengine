@@ -7,6 +7,7 @@ MESSAGE("MENGINE_XCODE_DEPLOY_PATH: ${MENGINE_XCODE_DEPLOY_PATH}")
 ADD_FILTER(
 src
     main.cpp
+    
     SDLApplication.cpp
     SDLApplication.h
     SDLMessageBoxLogger.cpp
@@ -14,6 +15,13 @@ src
     SDLStdioLogger.cpp
     SDLStdioLogger.h
 )
+
+if(MENGINE_WINDOWS_UNIVERSAL)
+ADD_FILTER(
+AppXManifest
+    Package.appxmanifest
+)
+endif()
 
 if(MENGINE_TARGET_ANDROID)
     ADD_FILTER(

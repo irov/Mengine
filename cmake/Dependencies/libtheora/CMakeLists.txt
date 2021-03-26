@@ -1,13 +1,13 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-project( theora )
+project(theora)
 
-SET( SOURCE_DIR ${THIRDPARTY_DIR}/libtheora )
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/libtheora)
 
-INCLUDE_DIRECTORIES( ${SOURCE_DIR}/include )
-INCLUDE_DIRECTORIES( ${SOURCE_DIR}/lib )
+INCLUDE_DIRECTORIES(${SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${SOURCE_DIR}/lib)
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libogg/include )
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libogg/include)
 
 # OUR SOURCES
 set( sources
@@ -33,4 +33,4 @@ set( sources
     ${SOURCE_DIR}/lib/encoder_disabled.c
     )
 
-add_library( ${PROJECT_NAME} STATIC ${sources} ${sources_ext} )
+add_library(${PROJECT_NAME} STATIC ${sources} ${sources_ext})

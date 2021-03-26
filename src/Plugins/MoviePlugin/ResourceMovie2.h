@@ -9,6 +9,8 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Color.h"
 #include "Kernel/Map.h"
+#include "Kernel/Optional.h"
+#include "Kernel/Floats.h"
 
 #include "math/mat4.h"
 
@@ -45,6 +47,8 @@ namespace Mengine
             ConstString type;
             mt::mat4f matrix;
             Color color;
+            Optional<mt::box2f> dimension;
+            UInt32s options;
         };
 
         typedef Vector<CompositionLayer> VectorCompositionLayers;

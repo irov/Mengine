@@ -38,7 +38,7 @@ macro(ADD_PYTHON_MODULE _NAME _STATIC_SRCS)
   endif()
 endmacro()
 
-add_python_module(signal    MOD_SRCS ${SOURCE_DIR}/Modules/signalmodule.c)
+#add_python_module(signal    MOD_SRCS ${SOURCE_DIR}/Modules/signalmodule.c)
 add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
 add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre.c)
@@ -55,7 +55,7 @@ add_python_module(cStringIO MOD_SRCS ${SOURCE_DIR}/Modules/cStringIO.c)
 add_python_module(_weakref MOD_SRCS ${SOURCE_DIR}/Modules/_weakref.c)
 
 if(WIN32 AND MSVC)
-    add_python_module(nt  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
+    #add_python_module(nt  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
 
     add_python_module(_lsprof MOD_SRCS ${SOURCE_DIR}/Modules/_lsprof.c)
     add_python_module(rotatingtree MOD_SRCS ${SOURCE_DIR}/Modules/rotatingtree.c)

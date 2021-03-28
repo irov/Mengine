@@ -8,6 +8,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ParamsHelper.h"
 
+#include "Config/StdIO.h"
+
 namespace Mengine
 {
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,8 +47,21 @@ namespace Mengine
         full_output += m_options.outputFilePath.c_str();
 
         String quality = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "quality" ), "10" );
+        float resize = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "resize" ), 1.f );
 
-        String buffer = "-loglevel error -y -threads 4 -i \"" + full_input + "\" -vcodec libtheora -f ogg -map_metadata -1 -an -q " + quality + " -pix_fmt yuv420p \"" + full_output + "\" -max_muxing_queue_size 1024";
+        String resize_cmd;
+        if( mt::equal_f_1( resize ) == false )
+        {
+            Char buffer[256] = {"/0"};
+            MENGINE_SPRINTF( buffer, "-vf \"scale=iw*%f:ih*%f\""
+                , resize
+                , resize
+            );
+
+            resize_cmd = buffer;
+        }
+
+        String buffer = "-loglevel error -y -threads 4 -i \"" + full_input + "\"" + resize_cmd + " -vcodec libtheora -f ogg -map_metadata -1 -an -q " + quality + " -pix_fmt yuv420p \"" + full_output + "\" -max_muxing_queue_size 1024";
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()

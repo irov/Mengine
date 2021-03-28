@@ -9,8 +9,11 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        template <class V>
-        V getParam( const MapParams & _params, const ConstString & _key, V && _default )
+        String getParam( const MapWParams & _params, const ConstString & _key, const Char * _default );
+        WString getParam( const MapWParams & _params, const ConstString & _key, WString && _default );
+        //////////////////////////////////////////////////////////////////////////
+        template <class T>
+        T getParam( const MapParams & _params, const ConstString & _key, T && _default )
         {
             typename MapParams::const_iterator it_found = _params.find( _key );
 
@@ -21,11 +24,11 @@ namespace Mengine
 
             const MapParams::mapped_type & value = it_found->second;
 
-            return value;
+            T type_value;
+            Helper::stringalized( value.c_str(), &type_value );
+
+            return type_value;
         }
-        //////////////////////////////////////////////////////////////////////////
-        String getParam( const MapWParams & _params, const ConstString & _key, const Char * _default );
-        WString getParam( const MapWParams & _params, const ConstString & _key, WString && _default );
         //////////////////////////////////////////////////////////////////////////
         template <class T>
         T getParam( const MapWParams & _params, const ConstString & _key, T && _default )

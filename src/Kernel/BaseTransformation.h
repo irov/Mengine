@@ -38,10 +38,6 @@ namespace Mengine
         MENGINE_INLINE bool isIdentityWorldMatrix() const override;
 
     public:
-        void setWorldPosition( const mt::vec3f & _pos ) override;
-        const mt::vec3f & getWorldPosition() const override;
-
-    public:
         MENGINE_INLINE const mt::mat4f & getLocalMatrix() const override;
 
     public:
@@ -83,15 +79,25 @@ namespace Mengine
 
         bool isIdentityOrientation() const override;
 
+    public:
         void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up ) override;
         void setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal ) override;
         void setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up ) override;
         void billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal ) override;
         void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up ) override;
 
+    public:
         mt::vec3f getAxisDirection() const override;
         mt::vec3f getAxisLeft() const override;
         mt::vec3f getAxisUp() const override;
+
+    public:
+        void setWorldPosition( const mt::vec3f & _pos ) override;
+
+    public:
+        mt::vec3f getWorldPosition() const override;
+        mt::vec3f getWorldScale() const override;
+        mt::vec3f getWorldOrientation() const override;
 
     public:
         void setTransformationData( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) override;

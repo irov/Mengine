@@ -21,7 +21,7 @@
 
 #include "math/box2.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 #ifndef MENGINE_TEXT_FIELD_MAX_TEXT
 #define MENGINE_TEXT_FIELD_MAX_TEXT 2048

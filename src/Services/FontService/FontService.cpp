@@ -26,7 +26,7 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FontService, Mengine::FontService );

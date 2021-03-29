@@ -50,7 +50,7 @@
 
 #include "math/mat3.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlayerService, Mengine::PlayerService );

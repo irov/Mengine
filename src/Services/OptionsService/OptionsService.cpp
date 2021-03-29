@@ -8,7 +8,7 @@
 
 #include "Config/StdString.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 #include <ctype.h>
 

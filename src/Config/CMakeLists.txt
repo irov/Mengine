@@ -48,6 +48,7 @@ src
     BuildInfo.h
     BuildVersion.h
     UniqueId.h
+    Algorithm.h
 )
 
 ADD_MENGINE_INTERFACE()

@@ -39,7 +39,7 @@
 
 #include "math/uv4.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::DX9RenderSystem );

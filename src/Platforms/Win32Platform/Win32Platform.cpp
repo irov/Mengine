@@ -41,7 +41,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 #include "Config/Utf8.h"
-
+#include "Config/Algorithm.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -56,7 +56,6 @@
 #include <clocale>
 #include <ctime>
 #include <iomanip>
-#include <algorithm>
 #include <functional>
 #include <cerrno>
 
@@ -3112,7 +3111,7 @@ namespace Mengine
         WChar fileCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( fileCorrect, _file );
 
-        ::PathAppend( szPath, pathCorrect );
+        MENGINE_WCSCAT( szPath, pathCorrect );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3128,7 +3127,7 @@ namespace Mengine
             }
         }
 
-        ::PathAppend( szPath, fileCorrect );
+        MENGINE_WCSCAT( szPath, fileCorrect );
 
         HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
@@ -3165,6 +3164,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const
+    {
+        HRESULT hr = ::SHGetFolderPath( NULL, _flag, NULL, 0, _path );
+
+        if( hr != S_OK )
+        {
+            LOGGER_ERROR( "invalid SHGetFolderPath flag [%lu] error [hr %lu]"
+                , _flag
+                , hr
+            );
+
+            return false;
+        }
+
+        Helper::pathCorrectBackslashW( _path );
+        MENGINE_WCSCAT( _path, L"/" );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
         WChar unicode_directoryPath[MENGINE_MAX_PATH] = {L'\0'};
@@ -3180,13 +3199,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR( "invalid getSpecialFolderPath CSIDL_COMMON_PICTURES '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3197,12 +3212,12 @@ namespace Mengine
         WChar unicode_directoryPath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_directoryPath_correct, unicode_directoryPath );
 
-        ::PathAppend( szPath, unicode_directoryPath_correct );
+        MENGINE_WCSCAT( szPath, unicode_directoryPath_correct );
 
         WChar unicode_filePath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
 
-        ::PathAppend( szPath, unicode_filePath_correct );
+        MENGINE_WCSCAT( szPath, unicode_filePath_correct );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3232,13 +3247,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR( "invalid SHGetFolderPath CSIDL_COMMON_PICTURES '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3275,13 +3286,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+            LOGGER_ERROR( "invalid SHGetFolderPath CSIDL_COMMON_MUSIC '%s%s'"
                 , _directoryPath
                 , _filePath
             );

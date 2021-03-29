@@ -31,7 +31,7 @@
 
 #include "utf8.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TextService, Mengine::TextService );

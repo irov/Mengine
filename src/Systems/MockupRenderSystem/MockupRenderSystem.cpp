@@ -30,7 +30,7 @@
 
 #include "math/uv4.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MockupRenderSystem, Mengine::MockupRenderSystem );

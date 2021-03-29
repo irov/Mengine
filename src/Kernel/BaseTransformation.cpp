@@ -1,10 +1,11 @@
 #include "Kernel/BaseTransformation.h"
 
-#include "math/angle.h"
-
 #include "Kernel/Assertion.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
+
+#include "math/angle.h"
+#include "math/quat.h"
 
 namespace Mengine
 {
@@ -772,13 +773,41 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec3f & BaseTransformation::getWorldPosition() const
+    mt::vec3f BaseTransformation::getWorldPosition() const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        const mt::vec3f & wp = wm.v3.to_vec3f();
+        mt::vec3f wp;
+        wp.x = wm.v3.x;
+        wp.y = wm.v3.y;
+        wp.z = wm.v3.z;
 
         return wp;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    mt::vec3f BaseTransformation::getWorldScale() const
+    {
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        mt::vec3f ws;
+        ws.x = wm.v0.x;
+        ws.y = wm.v1.y;
+        ws.z = wm.v2.z;
+
+        return ws;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    mt::vec3f BaseTransformation::getWorldOrientation() const
+    {
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        mt::quatf q;
+        mt::q_from_rot_m4( q, wm );
+
+        mt::vec3f wo;
+        mt::quat_to_euler( q, wo );
+
+        return wo;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseTransformation::setLocalOrigin( const mt::vec3f & _origin )

@@ -26,7 +26,7 @@
 
 #include "stdex/memorycopy.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FT_FLOOR(X) (((X) & -64) / 64)

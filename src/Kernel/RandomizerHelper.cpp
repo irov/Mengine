@@ -1,6 +1,6 @@
 #include "RandomizerHelper.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

@@ -2385,6 +2385,9 @@ namespace Mengine
             }
 
             uiReadOnlyVec3f( "World Position", transformation.worldPosition );
+            uiReadOnlyVec3f( "World Scale", transformation.worldScale );
+            uiReadOnlyVec3f( "World Orientation", transformation.worldOrientation );
+
             ImGui::Spacing();
         }
 

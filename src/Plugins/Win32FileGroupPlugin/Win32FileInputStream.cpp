@@ -12,7 +12,7 @@
 
 #include "stdex/memorycopy.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

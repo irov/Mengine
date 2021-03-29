@@ -51,6 +51,8 @@ namespace Mengine
         mt::vec3f scale;
         mt::vec3f orientation;
         mt::vec3f worldPosition;
+        mt::vec3f worldScale;
+        mt::vec3f worldOrientation;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
@@ -69,6 +71,8 @@ namespace Mengine
             DESERIALIZE_PROP( scale );
             DESERIALIZE_PROP( orientation );
             DESERIALIZE_PROP( worldPosition );
+            DESERIALIZE_PROP( worldScale );
+            DESERIALIZE_PROP( worldOrientation );
         }
     };
 

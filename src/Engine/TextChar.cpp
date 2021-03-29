@@ -6,7 +6,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/StringHelper.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

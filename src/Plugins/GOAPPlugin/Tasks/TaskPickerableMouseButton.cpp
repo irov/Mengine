@@ -52,6 +52,21 @@ namespace Mengine
                     return false;
                 }
 
+                if( _event.special.isAlt == true )
+                {
+                    return false;
+                }
+
+                if( _event.special.isShift == true )
+                {
+                    return false;
+                }                
+
+                if( _event.special.isControl == true )
+                {
+                    return false;
+                }
+
                 bool handle = true;
 
                 if( m_filter != nullptr )

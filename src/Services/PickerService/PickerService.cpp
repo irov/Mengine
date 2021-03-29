@@ -12,7 +12,7 @@
 #include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Assertion.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PickerService, Mengine::PickerService );

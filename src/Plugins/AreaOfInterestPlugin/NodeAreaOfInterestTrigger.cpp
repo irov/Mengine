@@ -63,9 +63,9 @@ namespace Mengine
 
         TransformationInterface * actorTransformation = actor->getTransformation();
 
-        const mt::vec3f & actor_pos = actorTransformation->getWorldPosition();
+        mt::vec3f actor_pos = actorTransformation->getWorldPosition();
 
-        const mt::vec3f & trigger_pos = this->getWorldPosition();
+        mt::vec3f trigger_pos = this->getWorldPosition();
 
         float actor_radius = actor->getRadius();
         float trigger_radius = this->getRadius();

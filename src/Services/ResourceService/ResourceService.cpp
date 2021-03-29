@@ -20,7 +20,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/FactoryPool.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceService, Mengine::ResourceService );

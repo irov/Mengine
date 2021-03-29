@@ -8,7 +8,7 @@
 
 #include "Config/StdIntTypes.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

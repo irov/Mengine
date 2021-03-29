@@ -19,7 +19,7 @@
 #include "Kernel/Logger.h"
 
 #include <cmath>
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::OpenGLRenderSystem );

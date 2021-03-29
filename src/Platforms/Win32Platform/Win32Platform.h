@@ -127,11 +127,14 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     protected:
-        bool existFile_( const WChar * _filePath );        
+        bool existFile_( const WChar * _filePath );
         bool createDirectory_( const WChar * _path, const WChar * _directory );
 
     public:
         DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;
+
+    protected:
+        bool getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;

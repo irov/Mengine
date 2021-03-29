@@ -17,11 +17,12 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
+#include "Config/Algorithm.h"
+
 #include <clocale>
 #include <memory>
 #include <cerrno>
 #include <ctime>
-#include <algorithm>
 #include <functional>
 #include <iomanip>
 

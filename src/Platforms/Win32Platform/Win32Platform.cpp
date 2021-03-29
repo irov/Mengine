@@ -3047,6 +3047,22 @@ namespace Mengine
 
         HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
+        if( handle == INVALID_HANDLE_VALUE )
+        {
+            DWORD error = ::GetLastError();
+
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_le, 1023 );
+
+            LOGGER_ERROR( "get file time '%ls' invalid CreateFile [error: %s (%lu)]"
+                , unicode_filePath
+                , str_le
+                , error
+            );
+
+            return 0U;
+        }
+
         FILETIME creation;
         FILETIME access;
         FILETIME write;
@@ -3054,6 +3070,17 @@ namespace Mengine
         if( ::GetFileTime( handle, &creation, &access, &write ) == FALSE )
         {
             ::CloseHandle( handle );
+
+            DWORD error = ::GetLastError();
+
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_le, 1023 );
+
+            LOGGER_ERROR( "get file time '%ls' invalid GetFileTime [error: %s (%lu)]"
+                , unicode_filePath
+                , str_le
+                , error
+            );
 
             return 0U;
         }
@@ -3077,7 +3104,7 @@ namespace Mengine
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _file, const void * _data, size_t _size )
     {
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        ::PathAppend( szPath, _userPath );
+        Helper::pathCorrectBackslashToW( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, _directoryPath );

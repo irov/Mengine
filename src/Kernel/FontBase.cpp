@@ -4,11 +4,17 @@
 
 #include "utf8.h"
 
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_TTF_METRICS_SYMBOL
+#define MENGINE_TTF_METRICS_SYMBOL 'A'
+#endif
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FontBase::FontBase()
         : m_params( EFP_NONE )
+        , m_metricsSymbol( MENGINE_TTF_METRICS_SYMBOL )
         , m_height( 0 )
         , m_lineOffset( 0.f )
         , m_charOffset( 0.f )
@@ -94,6 +100,16 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void FontBase::setMetricSymbol( GlyphCode _metricsSymbol )
+    {
+        m_metricsSymbol = _metricsSymbol;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GlyphCode FontBase::getMetricSymbol() const
+    {
+        return m_metricsSymbol;
+    }    
     //////////////////////////////////////////////////////////////////////////
     void FontBase::setHeight( uint32_t _height )
     {

@@ -2278,8 +2278,8 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                const Char * value = nullptr;
-                if( account->getSetting( _setting, &value ) == false )
+                const Char * setting_value = nullptr;
+                if( account->getSetting( _setting, &setting_value ) == false )
                 {
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
@@ -2289,11 +2289,16 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRCMP( value, "True" ) == 0 || MENGINE_STRCMP( value, "true" ) == 0 || MENGINE_STRCMP( value, "TRUE" ) == 0 )
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRICMP( setting_value, "true" ) == 0 )
                 {
                     return _kernel->ret_true();
                 }
-                else if( MENGINE_STRCMP( value, "False" ) == 0 || MENGINE_STRCMP( value, "false" ) == 0 || MENGINE_STRCMP( value, "FALSE" ) == 0 )
+                else if( MENGINE_STRICMP( setting_value, "false" ) == 0 )
                 {
                     return _kernel->ret_false();
                 }
@@ -2301,7 +2306,7 @@ namespace Mengine
                 LOGGER_ERROR( "account '%s' setting '%s' value '%s' is not bool [True|False]"
                     , _accountID.c_str()
                     , _setting.c_str()
-                    , value
+                    , setting_value
                 );
 
                 return _kernel->ret_none();
@@ -2324,6 +2329,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _kernel->ret_none();
                 }
 
@@ -2364,6 +2374,11 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
                 uint32_t value;
                 if( Helper::stringalized( setting_value, &value ) == false )
                 {
@@ -2398,6 +2413,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _kernel->ret_none();
                 }
 
@@ -2478,6 +2498,11 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
                 float value;
                 if( Helper::stringalized( setting_value, &value ) == false )
                 {
@@ -2517,6 +2542,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _default;
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _default;
                 }
 

@@ -38,6 +38,7 @@ namespace Mengine
 
     public:
         void setFTLibrary( FT_Library _library );
+        FT_Library getFTLibrary() const;
 
     public:
         void setEffect( const TextFontEffectInterfacePtr & _effect ) override;

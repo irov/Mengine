@@ -33,7 +33,6 @@
 #define MENGINE_FT_CEIL(X)  MENGINE_FT_FLOOR((X) + 63)
 #define MENGINE_FT_CEILF(X)  ((float)MENGINE_FT_CEIL((X)))
 //////////////////////////////////////////////////////////////////////////
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -61,6 +60,11 @@ namespace Mengine
     void TTFFont::setFTLibrary( FT_Library _ftlibrary )
     {
         m_ftlibrary = _ftlibrary;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    FT_Library TTFFont::getFTLibrary() const
+    {
+        return m_ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::setEffect( const TextFontEffectInterfacePtr & _effect )
@@ -140,7 +144,7 @@ namespace Mengine
             return false;
         }
 
-        GlyphCode code = 'A';
+        GlyphCode code = this->getMetricSymbol();
 
         FT_UInt glyph_index = FT_Get_Char_Index( face, code );
 
@@ -190,8 +194,10 @@ namespace Mengine
 
         m_dataTTF = data;
 
+        GlyphCode metricSymbol = this->getMetricSymbol();
+
         FT_Face face;
-        if( this->loadFaceGlyph_( 'A', &face ) == false )
+        if( this->loadFaceGlyph_( metricSymbol, &face ) == false )
         {
             return false;
         }
@@ -199,7 +205,7 @@ namespace Mengine
         FT_Size face_size = face->size;
 
         const FT_Size_Metrics & face_size_metrics = face_size->metrics;
-        
+
         if( FT_IS_SCALABLE( face ) == true )
         {
             FT_Fixed scale = face_size_metrics.y_scale;
@@ -636,7 +642,11 @@ namespace Mengine
             return true;
         }
 
-        FT_Error err_pixel_code = FT_Set_Pixel_Sizes( face, 0, m_height );
+        uint32_t sample = this->getSample();
+
+        int32_t fe_height = (int32_t)(m_height * sample);
+
+        FT_Error err_pixel_code = FT_Set_Pixel_Sizes( face, 0, fe_height );
 
         if( err_pixel_code != FT_Err_Ok )
         {

@@ -1659,7 +1659,7 @@ namespace Mengine
             }break;
         case ETFHA_CENTER:
             {
-                offset = -length * 0.5f;
+                offset = -(length + m_extraThickness * 2.f) * 0.5f;
 
                 if( m_anchorHorizontalAlign == false )
                 {

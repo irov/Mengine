@@ -43,6 +43,9 @@ namespace Mengine
         virtual bool _unfetch();
 
     public:
+        void setMetricSymbol( GlyphCode _metricsSymbol ) override;
+        GlyphCode getMetricSymbol() const override;
+
         void setHeight( uint32_t _height ) override;
         uint32_t getHeight() const override;
 
@@ -74,6 +77,8 @@ namespace Mengine
         ConstString m_type;
 
         uint32_t m_params;
+
+        GlyphCode m_metricsSymbol;
 
         uint32_t m_height;
 

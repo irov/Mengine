@@ -68,9 +68,6 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual bool isValid() const = 0;
-
-    public:
         virtual bool compileFont() = 0;
         virtual void releaseFont() = 0;
 

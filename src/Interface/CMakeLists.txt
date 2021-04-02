@@ -40,6 +40,7 @@ src
     TextFontConfigLoaderInterface.h
     TextEntryInterface.h
     TextServiceInterface.h
+    FontValidatorInterface.h
     FontServiceInterface.h
     InputStreamInterface.h
     OutputStreamInterface.h

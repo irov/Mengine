@@ -192,6 +192,7 @@ namespace Mengine
             .def( "hasText", &Movie2::hasText )
             .def( "hasMovieLayers", &Movie2::hasMovieLayers )
             .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
+            .def( "setExtraOpacityMovieLayers", &Movie2::setExtraOpacityMovieLayers )
             ;
 
         pybind::interface_<Movie2Slot, pybind::bases<Node>>( _kernel, "Movie2Slot", false )

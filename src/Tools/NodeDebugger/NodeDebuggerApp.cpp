@@ -269,6 +269,8 @@ namespace Mengine
             ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 
             glfwSwapBuffers( m_window );
+
+            std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -855,6 +857,24 @@ namespace Mengine
                 if( _node->componentSurface.surfaceImage.isContent )
                 {
                     _node->componentSurface.surfaceImage.content.deserialize( contentNode );
+                }
+
+                pugi::xml_node atlasNode = typeSurfaceImageNode.child( "Atlas" );
+
+                _node->componentSurface.hasAtlas = atlasNode;
+
+                if( _node->componentSurface.hasAtlas )
+                {
+                    _node->componentSurface.atlas.deserialize( atlasNode );
+
+                    pugi::xml_node contentNode = atlasNode.child( "Content" );
+
+                    _node->componentSurface.atlas.isContent = contentNode;
+
+                    if( _node->componentSurface.atlas.isContent )
+                    {
+                        _node->componentSurface.atlas.content.deserialize( contentNode );
+                    }
                 }
             }
         }
@@ -2305,6 +2325,19 @@ namespace Mengine
             ImGui::PopStyleColor();
         };
 
+        auto uiReadOnlyUV4 = [_node]( const char * _caption, const mt::uv4f & _prop )
+        {
+            mt::uv4f testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragFloat2( _caption, testValue.p0.buff() );
+            ImGui::DragFloat2( _caption, testValue.p1.buff() );
+            ImGui::DragFloat2( _caption, testValue.p2.buff() );
+            ImGui::DragFloat2( _caption, testValue.p3.buff() );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
         auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
         {
             int32_t testValue = _prop;
@@ -2461,6 +2494,7 @@ namespace Mengine
             {
                 uiReadOnlyString( "resource name", _node->componentSurface.surfaceImage.ResourceName );
                 uiReadOnlyString( "resource type", _node->componentSurface.surfaceImage.ResourceType );
+                uiReadOnlyUV4( "UV image", _node->componentSurface.surfaceImage.UVImage );
 
                 if( _node->componentSurface.surfaceImage.isContent && ImGui::CollapsingHeader( "Surface Image Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
@@ -2468,6 +2502,20 @@ namespace Mengine
                     uiReadOnlyString( "file path", _node->componentSurface.surfaceImage.content.FilePath );
                     uiReadOnlyString( "codec", _node->componentSurface.surfaceImage.content.CodecType );
                     uiReadOnlyString( "converter", _node->componentSurface.surfaceImage.content.ConverterType );
+                }
+            }
+
+            if( _node->componentSurface.hasAtlas && ImGui::CollapsingHeader( "Atlas:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                uiReadOnlyString( "resource name", _node->componentSurface.atlas.ResourceName );
+                uiReadOnlyString( "resource type", _node->componentSurface.atlas.ResourceType );                
+
+                if( _node->componentSurface.atlas.isContent && ImGui::CollapsingHeader( "Atlas Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                {
+                    uiReadOnlyString( "file group", _node->componentSurface.atlas.content.FileGroup );
+                    uiReadOnlyString( "file path", _node->componentSurface.atlas.content.FilePath );
+                    uiReadOnlyString( "codec", _node->componentSurface.atlas.content.CodecType );
+                    uiReadOnlyString( "converter", _node->componentSurface.atlas.content.ConverterType );
                 }
             }
         }

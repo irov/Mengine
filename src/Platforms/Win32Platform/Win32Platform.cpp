@@ -270,6 +270,31 @@ namespace Mengine
             this->finalizeFileService_();
         } );
 
+        if( HAS_OPTION( "workdir" ) == true )
+        {
+            Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+            if( this->getCurrentPath( currentPath ) == 0 )
+            {
+                LOGGER_ERROR( "invalid get current path for dll directory" );
+
+                return false;
+            }
+
+            if( ::SetDllDirectoryA( currentPath ) == FALSE )
+            {
+                DWORD error;
+                Char str_error[1024] = {'\0'};
+                this->getLastErrorMessage( &error, str_error, 1023 );
+
+                LOGGER_ERROR( "SetDllDirectoryA invalid [error: %s (%lu)]"
+                    , str_error
+                    , error
+                );
+
+                return false;
+            }
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4203,11 +4228,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getCurrentPath( Char * const _currentPath ) const
     {
+        const Char * option_workdir;
+        if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
+        {
+            MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( option_workdir ) < MENGINE_MAX_PATH );
+
+            MENGINE_STRCPY( _currentPath, option_workdir );
+
+            Helper::pathCorrectBackslashA( _currentPath );
+
+            size_t option_workdir_len = MENGINE_STRLEN( _currentPath );
+
+            return option_workdir_len;
+        }
+
         WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {
+            DWORD error;
+            Char str_error[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_error, 1023 );
+
+            LOGGER_ERROR( "GetCurrentDirectory invalid [error: %s (%lu)]"
+                , str_error
+                , error
+            );
+
             _currentPath[0] = '\0';
 
             return 0;

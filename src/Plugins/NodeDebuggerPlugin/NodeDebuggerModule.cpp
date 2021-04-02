@@ -51,6 +51,7 @@
 #include "Kernel/Blobject.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/RenderCameraHelper.h"
+#include "Kernel/ResourceImageSubstract.h"
 
 #include "Config/StdString.h"
 
@@ -1010,12 +1011,32 @@ namespace Mengine
 
         Detail::serializeNodeProp( resourceImage->getName(), "ResourceName", xmlNode );
         Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
+        Detail::serializeNodeProp( resourceImage->getUVImage(), "UVImage", xmlNode );
 
         const ContentInterfacePtr & content = resourceImage->getContent();
 
         if( content != nullptr && content->getFilePath() != ConstString::none() )
         {
             this->serializeContent( content, xmlNode );
+        }
+
+        ResourceImageSubstractPtr resourceImageSubstract = stdex::intrusive_dynamic_cast<ResourceImageSubstractPtr>(resourceImage);
+
+        if( resourceImageSubstract != nullptr )
+        {
+            pugi::xml_node xmlNodeAtlas = xmlNode.append_child( "Atlas" );
+
+            const ResourceImagePtr & resourceImageAtlas = resourceImageSubstract->getResourceImage();
+
+            Detail::serializeNodeProp( resourceImageAtlas->getName(), "ResourceName", xmlNodeAtlas );
+            Detail::serializeNodeProp( resourceImageAtlas->getType(), "ResourceType", xmlNodeAtlas );            
+
+            const ContentInterfacePtr & atlasContent = resourceImageAtlas->getContent();
+
+            if( atlasContent != nullptr && atlasContent->getFilePath() != ConstString::none() )
+            {
+                this->serializeContent( atlasContent, xmlNodeAtlas );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

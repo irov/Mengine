@@ -187,7 +187,7 @@ namespace Mengine
                     break;
                 }
 
-                if( immutable_opacity >= 0.00390625f )
+                if( immutable_opacity >= MENGINE_COLOR_MINIMAL_ALPHA )
                 {
                     break;
                 }
@@ -208,7 +208,7 @@ namespace Mengine
                     break;
                 }
 
-                if( immutable_opacity >= 0.00390625f )
+                if( immutable_opacity >= MENGINE_COLOR_MINIMAL_ALPHA )
                 {
                     break;
                 }
@@ -337,7 +337,7 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource )
+    bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource ) const
     {
         const ContentInterfacePtr & content = _resource->getContent();
 

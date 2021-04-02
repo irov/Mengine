@@ -34,6 +34,7 @@ namespace Mengine
 #endif
 
         LoggerInterfacePtr m_loggerMessageBox;
+        LoggerInterfacePtr m_loggerOutputDebug;
     };
     //////////////////////////////////////////////////////////////////////////
 }

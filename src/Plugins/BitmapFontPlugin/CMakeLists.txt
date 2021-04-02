@@ -15,6 +15,8 @@ src
     BitmapGlyphService.cpp
     BitmapFontPrototypeGenerator.h
     BitmapFontPrototypeGenerator.cpp
+    BitmapFontValidator.h
+    BitmapFontValidator.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)

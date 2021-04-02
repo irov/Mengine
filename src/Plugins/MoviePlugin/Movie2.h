@@ -94,6 +94,7 @@ namespace Mengine
     public:
         bool hasMovieLayers( const ConstString & _name ) const override;
         void setEnableMovieLayers( const ConstString & _name, bool _enable ) override;
+        void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) override;
 
     public:
         bool getWorldBoundingBox( mt::box2f * _bb ) const override;

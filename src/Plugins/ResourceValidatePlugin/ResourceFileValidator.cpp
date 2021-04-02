@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceFileValidator::_validate( const ResourceFilePtr & _resource )
+    bool ResourceFileValidator::_validate( const ResourceFilePtr & _resource ) const
     {
         bool successful = true;
 

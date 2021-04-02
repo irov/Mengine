@@ -1,4 +1,4 @@
-#include "Win32MessageBoxLogger.h"
+#include "Win32OutputDebugLogger.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -7,15 +7,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Win32MessageBoxLogger::Win32MessageBoxLogger()
+    Win32OutputDebugLogger::Win32OutputDebugLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Win32MessageBoxLogger::~Win32MessageBoxLogger()
+    Win32OutputDebugLogger::~Win32OutputDebugLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32MessageBoxLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count )
+    void Win32OutputDebugLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
@@ -25,7 +25,7 @@ namespace Mengine
         Char message[4096] = {'0'};
         MENGINE_SNPRINTF( message, 4096, "%.*s", _count, _data );
 
-        ::MessageBoxA( NULL, message, "Mengine critical error", MB_OK );
+        ::OutputDebugStringA( message );
     }
     //////////////////////////////////////////////////////////////////////////
 }

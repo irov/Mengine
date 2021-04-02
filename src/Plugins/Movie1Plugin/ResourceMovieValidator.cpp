@@ -30,7 +30,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovieValidator::_validate( const ResourceMoviePtr & _resource )
+    bool ResourceMovieValidator::_validate( const ResourceMoviePtr & _resource ) const
     {
         float frameDuration = _resource->getFrameDuration();
 

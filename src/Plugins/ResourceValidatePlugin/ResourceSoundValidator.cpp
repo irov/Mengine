@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceSoundValidator::_validate( const ResourceSoundPtr & _resource )
+    bool ResourceSoundValidator::_validate( const ResourceSoundPtr & _resource ) const
     {
         const ContentInterfacePtr & content = _resource->getContent();
 

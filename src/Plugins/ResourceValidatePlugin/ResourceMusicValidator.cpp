@@ -16,7 +16,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMusicValidator::_validate( const ResourceMusicPtr & _resource )
+    bool ResourceMusicValidator::_validate( const ResourceMusicPtr & _resource ) const
     {
         bool external = _resource->isExternal();
 

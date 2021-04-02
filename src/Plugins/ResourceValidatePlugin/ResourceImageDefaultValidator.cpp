@@ -93,10 +93,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageDefaultValidator::_validate( const ResourceImageDefaultPtr & _resource )
+    bool ResourceImageDefaultValidator::_validate( const ResourceImageDefaultPtr & _resource ) const
     {
-        const ResourceImageDefaultPtr & resource = stdex::intrusive_static_cast<ResourceImageDefaultPtr>(_resource);
-
         const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
@@ -205,8 +203,8 @@ namespace Mengine
             successful = false;
         }
 
-        const mt::vec2f & size = resource->getSize();
-        const mt::vec2f & maxSize = resource->getMaxSize();
+        const mt::vec2f & size = _resource->getSize();
+        const mt::vec2f & maxSize = _resource->getMaxSize();
 
         mt::vec2f test_size;
         if( size.x < 1.f || size.y < 1.f )

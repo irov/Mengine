@@ -24,7 +24,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSequenceValidator::_validate( const ResourceImageSequencePtr & _resource )
+    bool ResourceImageSequenceValidator::_validate( const ResourceImageSequencePtr & _resource ) const
     {
         bool successful = true;
 

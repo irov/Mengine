@@ -95,77 +95,6 @@ namespace Mengine
         m_effect = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::isValid() const
-    {
-        if( m_effect != nullptr )
-        {
-            if( m_effect->isValid() == false )
-            {
-                return false;
-            }
-        }
-
-        DataflowInterfacePtr dataflowTTF = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
-
-        if( dataflowTTF == nullptr )
-        {
-            return false;
-        }
-
-        const ContentInterfacePtr & content = this->getContent();
-
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        DataflowContext context;
-        context.filePath = filePath;
-
-        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, &context, MENGINE_DOCUMENT_FACTORABLE );
-
-        if( data == nullptr )
-        {
-            return false;
-        }
-
-        FT_Face face = data->getFTFace();
-
-        FT_Error err_code = FT_Set_Pixel_Sizes( face, 0, m_height );
-
-        if( err_code != FT_Err_Ok )
-        {
-            const Char * err_message = FT_Error_String( err_code );
-
-            LOGGER_ERROR( "ttf font '%s' invalid set pixel sizes '%u' error [%s]"
-                , this->getName().c_str()
-                , m_height
-                , err_message
-            );
-
-            return false;
-        }
-
-        GlyphCode code = this->getMetricSymbol();
-
-        FT_UInt glyph_index = FT_Get_Char_Index( face, code );
-
-        err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
-
-        if( err_code != FT_Err_Ok )
-        {
-            const Char * err_message = FT_Error_String( err_code );
-
-            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%u' error [%s]"
-                , this->getName().c_str()
-                , code
-                , err_message
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_compile()
     {
         if( m_effect != nullptr )
@@ -206,21 +135,12 @@ namespace Mengine
 
         const FT_Size_Metrics & face_size_metrics = face_size->metrics;
 
-        if( FT_IS_SCALABLE( face ) == true )
-        {
-            FT_Fixed scale = face_size_metrics.y_scale;
+        FT_Fixed scale = face_size_metrics.y_scale;
 
-            m_ttfAscender = MENGINE_FT_CEILF( FT_MulFix( face->ascender, scale ) );
-            m_ttfDescender = MENGINE_FT_CEILF( FT_MulFix( face->descender, scale ) );
-            m_ttfHeight = MENGINE_FT_CEILF( FT_MulFix( face->height, scale ) );
-        }
-        else
-        {
-            m_ttfAscender = MENGINE_FT_CEILF( face_size_metrics.ascender );
-            m_ttfDescender = MENGINE_FT_CEILF( face_size_metrics.descender );
-            m_ttfHeight = MENGINE_FT_CEILF( face_size_metrics.height );
-        }
-
+        m_ttfAscender = MENGINE_FT_CEILF( FT_MulFix( face->ascender, scale ) );
+        m_ttfDescender = MENGINE_FT_CEILF( FT_MulFix( face->descender, scale ) );
+        m_ttfHeight = MENGINE_FT_CEILF( FT_MulFix( face->ascender - face->descender, scale ) );
+        
         float sampleInv = this->getSampleInv();
 
         m_ttfAscender *= sampleInv;
@@ -502,22 +422,8 @@ namespace Mengine
             return false;
         }
 
-        uint32_t sample = this->getSample();
-
-        int32_t fe_height = (int32_t)(m_height * sample);
-
-        err_code = FT_Set_Pixel_Sizes( face, 0, fe_height );
-
-        if( err_code != FT_Err_Ok )
+        if( this->updateFTFaceSize( face ) == false )
         {
-            const Char * err_message = FT_Error_String( err_code );
-
-            LOGGER_ERROR( "ttf font '%s' invalid set pixel sizes '%d' error [%s]"
-                , this->getName().c_str()
-                , fe_height
-                , err_message
-            );
-
             FT_Done_Face( face );
 
             return false;
@@ -627,7 +533,7 @@ namespace Mengine
             return true;
         }
 
-        FT_Face face = m_dataTTF->getFTFace();
+        FT_Face face = this->getFTFace( m_dataTTF );
 
         if( FT_HAS_KERNING( face ) == false )
         {
@@ -640,25 +546,6 @@ namespace Mengine
         if( next_index == 0 )
         {
             return true;
-        }
-
-        uint32_t sample = this->getSample();
-
-        int32_t fe_height = (int32_t)(m_height * sample);
-
-        FT_Error err_pixel_code = FT_Set_Pixel_Sizes( face, 0, fe_height );
-
-        if( err_pixel_code != FT_Err_Ok )
-        {
-            const Char * err_message = FT_Error_String( err_pixel_code );
-
-            LOGGER_ERROR( "ttf font '%s' invalid set pixel sizes '%u' error [%s]"
-                , this->getName().c_str()
-                , m_height
-                , err_message
-            );
-
-            return false;
         }
 
         FT_Vector ttf_kerning;
@@ -739,30 +626,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const
     {
-        FT_Face face = m_dataTTF->getFTFace();
-
-        uint32_t sample = this->getSample();
-
-        int32_t fe_height = (int32_t)(m_height * sample);
-
-        FT_Error err_code = FT_Set_Pixel_Sizes( face, 0, fe_height );
-
-        if( err_code != FT_Err_Ok )
-        {
-            const Char * err_message = FT_Error_String( err_code );
-
-            LOGGER_ERROR( "font '%s' invalid set pixel height '%u' error [%s]"
-                , this->getName().c_str()
-                , m_height
-                , err_message
-            );
-
-            return false;
-        }
+        FT_Face face = this->getFTFace( m_dataTTF );
 
         FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
 
-        err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
+        FT_Error err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
 
         if( err_code != FT_Err_Ok )
         {
@@ -819,6 +687,42 @@ namespace Mengine
         }
 
         return 1.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    FT_Face TTFFont::getFTFace( const TTFDataInterfacePtr & _data ) const
+    {
+        FT_Face face = _data->getFTFace();
+
+        if( this->updateFTFaceSize( face ) == false )
+        {
+            return nullptr;
+        }
+
+        return face;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::updateFTFaceSize( FT_Face _face ) const
+    {
+        uint32_t sample = this->getSample();
+
+        int32_t fe_height = (int32_t)(m_height * sample);
+
+        FT_Error err_pixel_sizes = FT_Set_Pixel_Sizes( _face, 0, fe_height );
+
+        if( err_pixel_sizes != FT_Err_Ok )
+        {
+            const Char * err_message = FT_Error_String( err_pixel_sizes );
+
+            LOGGER_ERROR( "ttf font '%s' invalid set pixel sizes '%u' error [%s]"
+                , this->getName().c_str()
+                , fe_height
+                , err_message
+            );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -14,7 +14,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceAstralaxValidator::_validate( const ResourceAstralaxPtr & _resource )
+    bool ResourceAstralaxValidator::_validate( const ResourceAstralaxPtr & _resource ) const
     {
         bool successful = true;
 

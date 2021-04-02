@@ -847,6 +847,35 @@ namespace Mengine
         ae_set_movie_composition_nodes_enable_any( m_composition, _name.c_str(), _enable ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::setExtraOpacityMovieLayers( const ConstString & _name, float _opacity )
+    {
+        MENGINE_ASSERTION_FATAL( _opacity >= 0.f && _opacity <= 1.f );
+
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "name '%s' invalid get layer '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+
+#ifdef MENGINE_DEBUG
+        if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
+        {
+            LOGGER_ERROR( "name '%s' layer '%s' not found"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+#endif
+
+        ae_set_movie_composition_nodes_extra_opacity_any( m_composition, _name.c_str(), _opacity );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda )
     {
         const mt::mat4f & wm = this->getWorldMatrix();

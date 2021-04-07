@@ -14,6 +14,6 @@ namespace Mengine
         ~HotSpotImageDebugRender() override;
 
     protected:
-        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotImage * _node, bool _hide ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const HotSpotImage * _node, bool _hide ) override;
     };
 }

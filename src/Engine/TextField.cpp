@@ -1598,7 +1598,7 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent - m_extraThickness * 2.f;
+                    offset = fontAscent + m_extraThickness * 2.f;
                 }break;
             case ETFVA_CENTER:
                 {

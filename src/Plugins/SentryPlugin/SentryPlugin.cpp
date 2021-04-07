@@ -393,6 +393,16 @@ namespace Mengine
         sentry_set_extra( "Engine Commit", sentry_value_new_string( ENGINE_GIT_SHA1 ) );
 #endif
 
+#ifdef MENGINE_BUILD_TIMESTAMP
+        const Char * BUILD_TIMESTAMP = MENGINE_BUILD_TIMESTAMP;
+
+        LOGGER_MESSAGE( "Sentry set extra [Build Timestamp: %s]"
+            , BUILD_TIMESTAMP
+        );
+
+        sentry_set_extra( "Build Timestamp", sentry_value_new_string( BUILD_TIMESTAMP ) );
+#endif
+
         const Char * Info_ResourceCommit = CONFIG_VALUE( "Info", "ResourceCommit", "0000000000000000000000000000000000000000" );
 
         LOGGER_MESSAGE( "Sentry set extra [Resource Commit: %s]"

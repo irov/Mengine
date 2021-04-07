@@ -22,6 +22,6 @@ int main( int argc, char * argv[] )
 
     application.finalize();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 //////////////////////////////////////////////////////////////////////////

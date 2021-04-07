@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2DebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Movie2 * _node, bool _hide )
+    void Movie2DebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const Movie2 * _node, bool _hide )
     {
         _node->foreachRenderSlots( _renderPipeline, _context, [_hide]( Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
         {

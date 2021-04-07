@@ -255,7 +255,6 @@ namespace Mengine
             );
 
             ZipCentralDirectoryFileHeader header;
-
             zipFile->read( &header, sizeof( header ) );
 
             zipFile->read( &fileNameBuffer, header.fileNameLen );
@@ -276,6 +275,7 @@ namespace Mengine
                 {
                     uint64_t dataValue;
                     zipFile->read( &dataValue, sizeof( dataValue ) );
+
                     uncompressedSize = dataValue;
                 }
 
@@ -283,6 +283,7 @@ namespace Mengine
                 {
                     uint64_t dataValue;
                     zipFile->read( &dataValue, sizeof( dataValue ) );
+
                     compressedSize = dataValue;
                 }
 
@@ -290,6 +291,7 @@ namespace Mengine
                 {
                     uint64_t dataValue;
                     zipFile->read( &dataValue, sizeof( dataValue ) );
+
                     relativeOffset = dataValue;
                 }
             }
@@ -464,7 +466,7 @@ namespace Mengine
         }
 
         return false;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
     {
@@ -521,7 +523,7 @@ namespace Mengine
 
             return memory;
         }
-         
+
         InputStreamInterfacePtr stream = m_mappedFile->createInputStream( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
@@ -537,7 +539,7 @@ namespace Mengine
         );
 
         MapFileInfo::const_iterator it_found = m_files.find( _filePath );
- 
+
         MENGINE_ASSERTION_FATAL( it_found != m_files.end(), "zip '%s' file '%s' not found"
             , m_folderPath.c_str()
             , _filePath.c_str()

@@ -13,7 +13,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Node * _node, bool _hide ) = 0;
+        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const Node * _node, bool _hide ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<NodeDebugRenderInterface> NodeDebugRenderInterfacePtr;

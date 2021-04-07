@@ -71,7 +71,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( Node * _node, const RenderPipelineInterfacePtr &, const RenderContext * _context )> LambdaMovieRenderSlot;
-        virtual void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) = 0;
+        virtual void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

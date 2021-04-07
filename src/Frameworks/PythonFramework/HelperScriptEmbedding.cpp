@@ -1269,6 +1269,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             double s_watchdog( const ConstString & _tag )
             {
+                MENGINE_UNUSED( _tag );
+
                 double watch = WATCHDOG( _tag );
 
                 return watch;

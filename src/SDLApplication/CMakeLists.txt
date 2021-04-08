@@ -5,9 +5,12 @@ SET(MENGINE_XCODE_DEPLOY_PATH "Desktop" CACHE STRING "Mengine Xcode deploy path"
 MESSAGE("MENGINE_XCODE_DEPLOY_PATH: ${MENGINE_XCODE_DEPLOY_PATH}")
 
 ADD_FILTER(
-src
+main
     main.cpp
-    
+)
+
+ADD_FILTER(
+src
     SDLApplication.cpp
     SDLApplication.h
     SDLMessageBoxLogger.cpp
@@ -15,6 +18,17 @@ src
     SDLStdioLogger.cpp
     SDLStdioLogger.h
 )
+
+if(MENGINE_WINDOWS_UNIVERSAL)
+ADD_FILTER(
+entry_point
+    SDLUWPEntryPoint.cpp
+    SDLUWPResources.rc
+    SDLUWPResource_BlankCursor.cur
+)
+
+SET_SOURCE_FILES_PROPERTIES(SDLUWPEntryPoint.cpp PROPERTIES COMPILE_FLAGS /ZW)
+endif()
 
 if(MENGINE_WINDOWS_UNIVERSAL)
 ADD_FILTER(

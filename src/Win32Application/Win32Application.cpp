@@ -126,6 +126,7 @@ namespace Mengine
 
         m_loggerMessageBox = loggerMessageBox;
 
+#if defined(MENGINE_WINDOWS_DEBUG)
         Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerOutputDebug->setVerboseFlag( LM_ERROR );
@@ -134,6 +135,7 @@ namespace Mengine
             ->registerLogger( loggerOutputDebug );
 
         m_loggerOutputDebug = loggerOutputDebug;
+#endif
 
         return true;
     }
@@ -151,6 +153,7 @@ namespace Mengine
             m_loggerMessageBox = nullptr;
         }
 
+#if defined(MENGINE_WINDOWS_DEBUG)
         if( m_loggerOutputDebug != nullptr )
         {
             if( SERVICE_EXIST( LoggerServiceInterface ) == true )
@@ -161,6 +164,7 @@ namespace Mengine
 
             m_loggerOutputDebug = nullptr;
         }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()

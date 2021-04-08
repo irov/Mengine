@@ -19,22 +19,30 @@ src
     SDLStdioLogger.h
 )
 
-if(MENGINE_WINDOWS_UNIVERSAL)
-ADD_FILTER(
-entry_point
-    SDLUWPEntryPoint.cpp
-    SDLUWPResources.rc
-    SDLUWPResource_BlankCursor.cur
-)
-
-SET_SOURCE_FILES_PROPERTIES(SDLUWPEntryPoint.cpp PROPERTIES COMPILE_FLAGS /ZW)
+if(MENGINE_TOOLCHAIN_MSVC)
+    ADD_FILTER(
+    OutputDebugLogger
+        SDLOutputDebugLogger.cpp
+        SDLOutputDebugLogger.h
+    )
 endif()
 
 if(MENGINE_WINDOWS_UNIVERSAL)
-ADD_FILTER(
-AppXManifest
-    Package.appxmanifest
-)
+    ADD_FILTER(
+    EntryPoint
+        SDLUWPEntryPoint.cpp
+        SDLUWPResources.rc
+        SDLUWPResource_BlankCursor.cur
+    )
+
+    SET_SOURCE_FILES_PROPERTIES(SDLUWPEntryPoint.cpp PROPERTIES COMPILE_FLAGS /ZW)
+endif()
+
+if(MENGINE_WINDOWS_UNIVERSAL)
+    ADD_FILTER(
+    AppXManifest
+        Package.appxmanifest
+    )
 endif()
 
 if(MENGINE_TARGET_ANDROID)
@@ -45,13 +53,14 @@ if(MENGINE_TARGET_ANDROID)
     )
 endif()
 
+include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 
 LINK_DIRECTORIES(${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 if(MENGINE_TARGET_WINDOWS)
     set(CMAKE_CXX_STACK_SIZE 4194304)
-
+    
     ADD_EXECUTABLE(${PROJECT_NAME} WIN32 ${SRC_FILES})
 endif()
 

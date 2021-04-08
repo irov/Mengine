@@ -31,7 +31,7 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         , m_vertexArrayId( 0 )
 #endif
         , m_counterTexture( 0 )
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::~OpenGLRenderSystem()
     {
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         MENGINE_ASSERTION_FATAL( m_vertexArrayId == 0 );
 #endif
     }
@@ -77,7 +77,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::_finalizeService()
     {
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         if( m_vertexArrayId != 0 )
         {
             GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
@@ -165,7 +165,7 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-#ifndef MENGINE_RENDER_OPENGL_ES
+#ifdef MENGINE_RENDER_OPENGL_ES
         Mengine::initialize_GLEXT();
 #endif
 
@@ -213,7 +213,7 @@ namespace Mengine
         GLCALL( glDepthMask, (GL_FALSE) );
         GLCALL( glDepthFunc, (GL_LESS) );
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint vertexArrayId = 0;
         GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
@@ -604,7 +604,7 @@ namespace Mengine
             }
         }
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLCALL( glBindVertexArray, (m_vertexArrayId) );
 #endif
 
@@ -642,7 +642,7 @@ namespace Mengine
 
         m_currentProgram->disable();
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLCALL( glBindVertexArray, (0) );
 #endif
     }
@@ -1015,7 +1015,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         if( m_vertexArrayId != 0 )
         {
             GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
@@ -1033,7 +1033,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint vertexArrayId = 0;
         GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 

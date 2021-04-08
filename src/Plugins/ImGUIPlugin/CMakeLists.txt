@@ -30,6 +30,7 @@ if(MENGINE_PLATFORM_SDL)
         ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl.cpp
     )
 
+    include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 endif()
 

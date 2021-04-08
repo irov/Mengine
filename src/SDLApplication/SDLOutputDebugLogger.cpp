@@ -1,4 +1,4 @@
-#include "Win32OutputDebugLogger.h"
+#include "SDLOutputDebugLogger.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -7,15 +7,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Win32OutputDebugLogger::Win32OutputDebugLogger()
+    SDLOutputDebugLogger::SDLOutputDebugLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Win32OutputDebugLogger::~Win32OutputDebugLogger()
+    SDLOutputDebugLogger::~SDLOutputDebugLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32OutputDebugLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count )
+    void SDLOutputDebugLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );

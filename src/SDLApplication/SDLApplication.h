@@ -30,5 +30,9 @@ namespace Mengine
     protected:
         LoggerInterfacePtr m_loggerMessageBox;
         LoggerInterfacePtr m_loggerStdio;
+
+#if defined(MENGINE_WINDOWS_DEBUG)
+        LoggerInterfacePtr m_loggerOutputDebug;
+#endif
     };
 }

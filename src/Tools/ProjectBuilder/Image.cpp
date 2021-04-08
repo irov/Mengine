@@ -247,6 +247,10 @@ namespace Mengine
                 {
                     this_memory[to_index + 3] = paste_memory[paste_index + 3];
                 }
+                else if( m_channels == 4 )
+                {
+                    this_memory[to_index + 3] = 255;
+                }
             }
         }
 

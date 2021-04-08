@@ -876,7 +876,7 @@ namespace Mengine
         ae_set_movie_composition_nodes_extra_opacity_any( m_composition, _name.c_str(), _opacity );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda )
+    void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 

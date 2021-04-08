@@ -791,7 +791,7 @@ namespace Mengine
 
                 desc.time += desc.milliseconds;
 
-                desc.lambda();
+                desc.lambda( desc.id );
             }
 
             m_prevTime = currentTime;
@@ -1751,7 +1751,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -1902,8 +1902,9 @@ namespace Mengine
         MENGINE_UNUSED( _base );
         MENGINE_UNUSED( _path );
         MENGINE_UNUSED( _mask );
+        MENGINE_UNUSED( _lambda );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -1938,7 +1939,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
     static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
     {
@@ -2010,7 +2011,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _filePath );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
         {

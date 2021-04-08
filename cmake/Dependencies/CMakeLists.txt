@@ -564,6 +564,10 @@ if(MENGINE_DEPENDENCE_SDL2)
         if(MENGINE_TOOLCHAIN_MSVC)
             set(FORCE_STATIC_VCRT ${MENGINE_STATIC_CRT} CACHE BOOL "Force /MT for static VC runtimes" FORCE)
         endif()
+        
+        if(MENGINE_WINDOWS_UNIVERSAL)
+            SET(HAVE_SENSORSAPI_H OFF CACHE BOOL "HAVE_SENSORSAPI_H" FORCE)
+        endif()
 
         if(MENGINE_TARGET_WINDOWS)
             set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)

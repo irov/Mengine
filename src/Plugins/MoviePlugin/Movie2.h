@@ -100,7 +100,7 @@ namespace Mengine
         bool getWorldBoundingBox( mt::box2f * _bb ) const override;
 
     public:
-        void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) override;
+        void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const override;
 
     protected:
         bool _play( uint32_t _playId, float _time ) override;

@@ -15,7 +15,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FactoryService, Mengine::FactoryService );

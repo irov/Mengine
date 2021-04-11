@@ -18,7 +18,6 @@ extern "C" {
 
 
 #if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
-    extern void initnt( void );
     extern void init_lsprof( void );
     extern void initerrno( void );
     extern void init_functools( void );
@@ -42,7 +41,6 @@ extern "C" {
         {"marshal", PyMarshal_Init},
 
 #if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
-        {"nt", initnt},
         {"_lsprof", init_lsprof},
         {"errno", initerrno},
         {"_functools", init_functools},

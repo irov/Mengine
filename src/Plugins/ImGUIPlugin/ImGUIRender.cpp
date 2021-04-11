@@ -7,7 +7,7 @@
 #include "Interface/SDLPlatformExtensionInterface.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "Interface/DX9RenderImageExtensionInterface.h"
 #endif
 
@@ -27,7 +27,7 @@
 #include "imgui_impl_sdl.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "imgui_impl_dx9.h"
 #endif
 
@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImGUIRender::onRenderExternal() const
     {
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         ImGui_ImplDX9_NewFrame();
 #endif
 
@@ -109,7 +109,9 @@ namespace Mengine
 
         ImDrawData * imData = ImGui::GetDrawData();
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+        MENGINE_UNUSED( imData );
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         ImGui_ImplDX9_RenderDrawData( imData );
 #endif
 
@@ -121,21 +123,23 @@ namespace Mengine
     ImTextureID ImGUIRender::getImTexture( const RenderTextureInterfacePtr & _texture ) const
     {
         const RenderImageInterfacePtr & image = _texture->getImage();
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+                
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         DX9RenderImageExtensionInterface * extension = image->getRenderImageExtention();
 
         IDirect3DTexture9 * pD3DTexture = extension->getD3DTexture();
 
         return (ImTextureID)pD3DTexture;
-#endif
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         OpenGLRenderImageExtensionInterface * extension = image->getRenderImageExtention();
 
         GLuint UID = extension->getUID();
 
         return MENGINE_UINT32_TO_POINTER( ImTextureID, UID );
+#else
+        MENGINE_UNUSED( image );
+
+        return (ImTextureID)nullptr;
 #endif
     }
 }

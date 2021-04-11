@@ -1,4 +1,4 @@
-<Protocol Version = "144">
+<Protocol Version = "146">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -322,6 +322,8 @@
               <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
               <Attribute Name="Matrix" Type="mt::mat4f" Required="1"/>
               <Attribute Name="Color" Type="Color" Required="1"/>
+              <Attribute Name="Options" Type="Mengine::UInt32s"/>
+              <Attribute Name="Dimension" Type="mt::box2f"/>
             </Node>
             
             <Node Name="SubComposition">
@@ -414,6 +416,7 @@
           <Member Node="File" Name="NoSeek" Type="bool"/>
           <Member Node="File" Name="FrameRate" Type="float"/>
           <Member Node="File" Name="Duration" Type="float"/>
+          <Member Node="File" Name="Resize" Type="float"/>
         </Node>
 
         <Node Name="ResourceImageSequence" Inheritance="Resource">

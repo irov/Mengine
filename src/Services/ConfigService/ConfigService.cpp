@@ -10,7 +10,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConfigService, Mengine::ConfigService );

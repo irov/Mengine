@@ -13,7 +13,7 @@
 #include "Interface/SDLPlatformExtensionInterface.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "Interface/DX9RenderSystemExtensionInterface.h"
 #endif
 
@@ -40,7 +40,7 @@
 #include "imgui_impl_sdl.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
 #include "imgui_impl_dx9.h"
 #endif
 
@@ -167,7 +167,7 @@ namespace Mengine
         stream->write( imIniSettings, imIniSettingsSize );
         stream->flush();
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         ImGui_ImplDX9_Shutdown();
 #endif
 
@@ -220,7 +220,7 @@ namespace Mengine
         ImGui_ImplOpenGL2_Init();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getPlatformExtention();
 
@@ -243,14 +243,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImGUIModule::notifyRenderDeviceLostPrepare_()
     {
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         ImGui_ImplDX9_InvalidateDeviceObjects();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIModule::notifyRenderDeviceLostRestore_()
     {
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
         ImGui_ImplDX9_CreateDeviceObjects();
 #endif
     }

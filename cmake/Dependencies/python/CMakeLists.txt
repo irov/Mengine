@@ -38,7 +38,7 @@ macro(ADD_PYTHON_MODULE _NAME _STATIC_SRCS)
   endif()
 endmacro()
 
-add_python_module(signal    MOD_SRCS ${SOURCE_DIR}/Modules/signalmodule.c)
+#add_python_module(signal    MOD_SRCS ${SOURCE_DIR}/Modules/signalmodule.c)
 add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
 add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre.c)
@@ -55,7 +55,7 @@ add_python_module(cStringIO MOD_SRCS ${SOURCE_DIR}/Modules/cStringIO.c)
 add_python_module(_weakref MOD_SRCS ${SOURCE_DIR}/Modules/_weakref.c)
 
 if(WIN32 AND MSVC)
-    add_python_module(nt  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
+    #add_python_module(nt  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
 
     add_python_module(_lsprof MOD_SRCS ${SOURCE_DIR}/Modules/_lsprof.c)
     add_python_module(rotatingtree MOD_SRCS ${SOURCE_DIR}/Modules/rotatingtree.c)
@@ -89,31 +89,31 @@ set( HAVE_WAIT3 0 )
 set( HAVE_WAIT4 0 )
 set( HAVE_DEVICE_MACROS 0 )
 
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pymem.h ${SOURCE_DIR}/Include/pymem.h COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/stringobject.h ${SOURCE_DIR}/Include/stringobject.h COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/unicodeobject.h ${SOURCE_DIR}/Include/unicodeobject.h COPYONLY)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/random.c ${SOURCE_DIR}/Python/random.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pythonrun.c ${SOURCE_DIR}/Python/pythonrun.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/dtoa.c ${SOURCE_DIR}/Python/dtoa.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/sysmodule.c ${SOURCE_DIR}/Python/sysmodule.c)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/longobject.h ${SOURCE_DIR}/Include/longobject.h)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pyport.h ${SOURCE_DIR}/Include/pyport.h)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_io_bytesio.c ${SOURCE_DIR}/Modules/_io/bytesio.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_io_stringio.c ${SOURCE_DIR}/Modules/_io/stringio.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_randommodule.c ${SOURCE_DIR}/Modules/_randommodule.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_struct.c ${SOURCE_DIR}/Modules/_struct.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/cPickle.c ${SOURCE_DIR}/Modules/cPickle.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/sha256module.c ${SOURCE_DIR}/Modules/sha256module.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/socketmodule.c ${SOURCE_DIR}/Modules/socketmodule.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/floatobject.c ${SOURCE_DIR}/Objects/floatobject.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/longobject.c ${SOURCE_DIR}/Objects/longobject.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/obmalloc.c ${SOURCE_DIR}/Objects/obmalloc.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/bytesio.c ${SOURCE_DIR}/Modules/_io/bytesio.c)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/stringio.c ${SOURCE_DIR}/Modules/_io/stringio.c)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/longobject.h ${SOURCE_DIR}/Include/longobject.h COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/pyport.h ${SOURCE_DIR}/Include/pyport.h COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_io_bytesio.c ${SOURCE_DIR}/Modules/_io/bytesio.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_io_stringio.c ${SOURCE_DIR}/Modules/_io/stringio.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/_struct.c ${SOURCE_DIR}/Modules/_struct.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/cPickle.c ${SOURCE_DIR}/Modules/cPickle.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/sha256module.c ${SOURCE_DIR}/Modules/sha256module.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/socketmodule.c ${SOURCE_DIR}/Modules/socketmodule.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/floatobject.c ${SOURCE_DIR}/Objects/floatobject.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/longobject.c ${SOURCE_DIR}/Objects/longobject.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/obmalloc.c ${SOURCE_DIR}/Objects/obmalloc.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/bytesio.c ${SOURCE_DIR}/Modules/_io/bytesio.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Modified/stringio.c ${SOURCE_DIR}/Modules/_io/stringio.c COPYONLY)
 
 
 if(APPLE)
@@ -229,7 +229,6 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 				${SOURCE_DIR}/Python/formatter_string.c
                 ${SOURCE_DIR}/Python/pyctype.c
                 ${SOURCE_DIR}/Python/dtoa.c
-                ${SOURCE_DIR}/Python/random.c
                 )
 
 set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c
@@ -271,8 +270,7 @@ add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE)
 
-			  
-add_library( ${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} STATIC
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
               ${PARSER_SRCS}
               ${OBJECT_SRCS}

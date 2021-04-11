@@ -101,6 +101,9 @@ namespace Mengine
         virtual void setDuration( float _duration ) = 0;
         virtual float getDuration() const = 0;
 
+        virtual void setResize( float _resize ) = 0;
+        virtual float getResize() const = 0;
+
         virtual void setAlpha( bool _alpha ) = 0;
         virtual bool isAlpha() const = 0;
 

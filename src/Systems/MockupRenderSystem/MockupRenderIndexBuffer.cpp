@@ -74,7 +74,7 @@ namespace Mengine
                 , _count
                 , _offset
                 , m_indexCount
-                , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
+                , MENGINE_DOCUMENTABLE_STR( this, "DX11RenderIndexBuffer" )
             );
 
             return nullptr;

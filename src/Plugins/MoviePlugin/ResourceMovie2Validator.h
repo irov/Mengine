@@ -6,13 +6,10 @@
 
 #include "ResourceMovie2.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class ResourceMovie2Validator
         : public ResourceValidatorT<ResourceMovie2Ptr>
-        , public Factorable
     {
     public:
         ResourceMovie2Validator();
@@ -27,7 +24,7 @@ namespace Mengine
         const ArchivatorInterfacePtr & getArchivator() const;
 
     public:
-        bool _validate( const ResourceMovie2Ptr & _resource ) override;
+        bool _validate( const ResourceMovie2Ptr & _resource ) const override;
 
     protected:
         const aeMovieInstance * m_movieInstance;

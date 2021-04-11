@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PointDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Point * _node, bool _hide )
+    void PointDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const Point * _node, bool _hide )
     {
         if( _hide == true )
         {

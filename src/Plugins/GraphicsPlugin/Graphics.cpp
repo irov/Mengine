@@ -10,7 +10,7 @@
 
 #include "math/line2.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 static void * gp_malloc( gp_size_t _size, void * _ud )

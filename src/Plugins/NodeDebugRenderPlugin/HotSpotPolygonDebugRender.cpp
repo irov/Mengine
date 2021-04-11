@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotPolygonDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotPolygon * _node, bool _hide )
+    void HotSpotPolygonDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const HotSpotPolygon * _node, bool _hide )
     {
         MENGINE_UNUSED( _hide );
 
@@ -37,7 +37,7 @@ namespace Mengine
 
         uint32_t debugColor = Detail::COLOR_IDENTITY_VALUE;
 
-        PickerInterface * picker = _node->getPicker();
+        const PickerInterface * picker = _node->getPicker();
 
         if( picker->isPickerPicked() == true )
         {

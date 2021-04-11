@@ -4,7 +4,7 @@
 
 #include "Config/Lambda.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

@@ -9,7 +9,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UpdateService, Mengine::UpdateService );

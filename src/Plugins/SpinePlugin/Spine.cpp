@@ -11,7 +11,7 @@
 
 #include "stdex/memorycopy.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 #ifndef MENGINE_SPINE_MAX_VERTICES
 #define MENGINE_SPINE_MAX_VERTICES 512

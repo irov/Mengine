@@ -359,14 +359,62 @@ struct node_provider_t
     CHAR movie_name[128];
 };
 //////////////////////////////////////////////////////////////////////////
+static void __add_node_layer_data( node_provider_t * np, const ae_char_t * _type, const aeMovieNodeProviderCallbackData * _callbackData )
+{
+    pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
+
+    const aeMovieLayerData * layer_data = _callbackData->layer_data;
+
+    const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer_data );
+
+    xmlLayer.append_attribute( "Index" ).set_value( _callbackData->index );
+    xmlLayer.append_attribute( "Name" ).set_value( layer_name );
+    xmlLayer.append_attribute( "Type" ).set_value( _type );
+
+    xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
+
+    xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
+
+    uint32_t option_count = ae_get_movie_layer_data_options_count( layer_data );
+
+    if( option_count != 0 )
+    {
+        std::stringstream ss;
+
+        ae_uint32_t option0 = ae_get_movie_layer_data_option( layer_data, 0 );
+
+        ss << option0;
+
+        for( uint32_t index = 1; index != option_count; ++index )
+        {
+            ae_uint32_t option = ae_get_movie_layer_data_option( layer_data, index );
+
+            ss << ';' << option;
+        }
+
+        xmlLayer.append_attribute( "Options" ).set_value( ss.str().c_str() );
+    }
+
+    ae_aabb_t aabb;
+    if( ae_get_movie_layer_data_dimension( layer_data, &aabb ) == AE_TRUE )
+    {
+        char xmlDimension[4096];
+        sprintf( xmlDimension, "%s;%s;%s;%s"
+            , sf( aabb.minimal_x ).c_str()
+            , sf( aabb.minimal_x ).c_str()
+            , sf( aabb.minimal_x ).c_str()
+            , sf( aabb.minimal_x ).c_str()
+        );
+
+        xmlLayer.append_attribute( "Dimension" ).set_value( xmlDimension );
+    }
+}
+//////////////////////////////////////////////////////////////////////////
 static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
 {
     node_provider_t * np = (node_provider_t *)_ud;
 
     const aeMovieLayerData * layer_data = _callbackData->layer_data;
-
-    ae_uint32_t node_index = _callbackData->index;
-    const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer_data );
 
     ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer_data );
 
@@ -383,15 +431,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
     {
     case AE_MOVIE_LAYER_TYPE_TEXT:
         {
-            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
-
-            xmlLayer.append_attribute( "Index" ).set_value( node_index );
-            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
-            xmlLayer.append_attribute( "Type" ).set_value( "TextField" );
-
-            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
-
-            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
+            __add_node_layer_data( np, "TextField", _callbackData );
 
             *_nd = AE_NULLPTR;
 
@@ -399,31 +439,13 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         }break;
     case AE_MOVIE_LAYER_TYPE_SLOT:
         {
-            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
-
-            xmlLayer.append_attribute( "Index" ).set_value( node_index );
-            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
-            xmlLayer.append_attribute( "Type" ).set_value( "Movie2Slot" );
-
-            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
-
-            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
-
-            *_nd = AE_NULLPTR;
+            __add_node_layer_data( np, "Movie2Slot", _callbackData );
 
             return AE_TRUE;
         }break;
     case AE_MOVIE_LAYER_TYPE_SOCKET:
         {
-            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
-
-            xmlLayer.append_attribute( "Index" ).set_value( node_index );
-            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
-            xmlLayer.append_attribute( "Type" ).set_value( "HotSpotPolygon" );
-
-            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
-
-            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
+            __add_node_layer_data( np, "HotSpotPolygon", _callbackData );
 
             *_nd = AE_NULLPTR;
 
@@ -431,15 +453,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         }break;
     case AE_MOVIE_LAYER_TYPE_PARTICLE:
         {
-            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
-
-            xmlLayer.append_attribute( "Index" ).set_value( node_index );
-            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
-            xmlLayer.append_attribute( "Type" ).set_value( "AstralaxEmitter" );
-
-            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
-
-            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
+            __add_node_layer_data( np, "AstralaxEmitter", _callbackData );
 
             *_nd = AE_NULLPTR;
 
@@ -447,15 +461,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         }break;
     case AE_MOVIE_LAYER_TYPE_SPRITE:
         {
-            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
-
-            xmlLayer.append_attribute( "Index" ).set_value( node_index );
-            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
-            xmlLayer.append_attribute( "Type" ).set_value( "ShapeQuadFixed" );
-
-            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
-
-            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
+            __add_node_layer_data( np, "ShapeQuadFixed", _callbackData );
 
             *_nd = AE_NULLPTR;
 
@@ -554,16 +560,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in_path.empty() == true )
     {
-        message_error( "not found 'in' param\n"
-        );
+        message_error( "not found 'in' param\n" );
 
         return EXIT_FAILURE;
     }
 
     if( out_path.empty() == true )
     {
-        message_error( "not found 'out' param\n"
-        );
+        message_error( "not found 'out' param\n" );
 
         return EXIT_FAILURE;
     }
@@ -571,7 +575,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     CHAR utf8_movie_name[128];
     unicode_to_utf8( utf8_movie_name, 128, movie_name.c_str(), movie_name.size() );
 
-    const aeMovieInstance *  movieInstance = ae_create_movie_instance( "f86464bbdebf0fe3e684b03ec263d049d079e6f1"
+    const aeMovieInstance * movieInstance = ae_create_movie_instance( "f86464bbdebf0fe3e684b03ec263d049d079e6f1"
         , &stdlib_movie_alloc
         , &stdlib_movie_alloc_n
         , &stdlib_movie_free
@@ -581,8 +585,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( movieInstance == nullptr )
     {
-        message_error( "invalid create movie instance\n"
-        );
+        message_error( "invalid create movie instance\n" );
 
         return EXIT_FAILURE;
     }

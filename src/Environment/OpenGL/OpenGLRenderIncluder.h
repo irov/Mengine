@@ -37,22 +37,22 @@
 #   include "SDL_opengl.h"
 #   include "SDL_opengl_glext.h"
 
-#   define MENGINE_RENDER_OPENGL
-#   define MENGINE_RENDER_OPENGL_WINDOWS
+#   define MENGINE_RENDER_OPENGL_NORMAL
+#   define MENGINE_RENDER_OPENGL_NORMAL_WINDOWS
 #endif
 
 #if defined(MENGINE_PLATFORM_LINUX)
 #   include "SDL_opengl.h"
 #   include "SDL_opengl_glext.h"
 
-#   define MENGINE_RENDER_OPENGL
-#   define MENGINE_RENDER_OPENGL_LINUX
+#   define MENGINE_RENDER_OPENGL_NORMAL
+#   define MENGINE_RENDER_OPENGL_NORMAL_LINUX
 #endif
 
 #if defined(MENGINE_PLATFORM_OSX)
 #   include "SDL_opengl.h"
 #   include "SDL_opengl_glext.h"
 
-#   define MENGINE_RENDER_OPENGL
-#   define MENGINE_RENDER_OPENGL_OSX
+#   define MENGINE_RENDER_OPENGL_NORMAL
+#   define MENGINE_RENDER_OPENGL_NORMAL_OSX
 #endif

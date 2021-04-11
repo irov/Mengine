@@ -82,7 +82,9 @@ namespace Mengine
         , m_window( nullptr )
         , m_accelerometer( nullptr )
         , m_enumerator( 0 )
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
+#endif
         , m_sdlInput( nullptr )
         , m_icon( 0 )
         , m_prevTime( 0 )
@@ -791,7 +793,7 @@ namespace Mengine
 
                 desc.time += desc.milliseconds;
 
-                desc.lambda();
+                desc.lambda( desc.id );
             }
 
             m_prevTime = currentTime;
@@ -974,6 +976,8 @@ namespace Mengine
             return false;
         }
 
+#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#else
         SDL_GLContext glContext = SDL_GL_CreateContext( m_window );
 
         if( glContext == nullptr )
@@ -1097,6 +1101,7 @@ namespace Mengine
         );
 
         m_glContext = glContext;
+#endif
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         Resolution resoultion;
@@ -1751,7 +1756,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -1902,8 +1907,9 @@ namespace Mengine
         MENGINE_UNUSED( _base );
         MENGINE_UNUSED( _path );
         MENGINE_UNUSED( _mask );
+        MENGINE_UNUSED( _lambda );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -1938,7 +1944,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
     static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
     {
@@ -2010,7 +2016,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _filePath );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -2254,11 +2260,14 @@ namespace Mengine
     {
         return m_window;
     }
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
     //////////////////////////////////////////////////////////////////////////
     SDL_GLContext SDLPlatform::getGLContext() const
     {
         return m_glContext;
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     uint32_t SDLPlatform::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
     {
@@ -2388,9 +2397,10 @@ namespace Mengine
             );
         }
 
-        Uint32 windowFlags = SDL_WINDOW_OPENGL;
+        Uint32 windowFlags = 0;
 
 #if defined(MENGINE_PLATFORM_IOS)
+        windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
@@ -2456,6 +2466,7 @@ namespace Mengine
             );
         }
 #elif defined(MENGINE_PLATFORM_ANDROID)
+        windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
@@ -2510,7 +2521,17 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+#elif defined(MENGINE_WINDOWS_UNIVERSAL)
+        windowFlags |= SDL_WINDOW_HIDDEN;
+
+        if( _fullscreen == true )
+        {
+            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        }
+
+        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );
 #else
+        windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_HIDDEN;
 
         if( _fullscreen == true )
@@ -2548,7 +2569,7 @@ namespace Mengine
                 , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
-        }
+    }
 #endif
 
         LOGGER_MESSAGE_RELEASE( "num video displays: %d"
@@ -2624,15 +2645,17 @@ namespace Mengine
         m_window = window;
 
         return true;
-    }
+}
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::destroyWindow_()
     {
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         if( m_glContext != nullptr )
         {
             SDL_GL_DeleteContext( m_glContext );
             m_glContext = nullptr;
         }
+#endif
 
         if( m_window != nullptr )
         {

@@ -8,7 +8,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( InputService, Mengine::InputService );

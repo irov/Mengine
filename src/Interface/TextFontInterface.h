@@ -68,9 +68,6 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual bool isValid() const = 0;
-
-    public:
         virtual bool compileFont() = 0;
         virtual void releaseFont() = 0;
 
@@ -85,6 +82,9 @@ namespace Mengine
         virtual uint32_t getLayoutCount() const = 0;
 
     public:
+        virtual void setMetricSymbol( GlyphCode _symbol ) = 0;
+        virtual GlyphCode getMetricSymbol() const = 0;
+
         virtual void setHeight( uint32_t _height ) = 0;
         virtual uint32_t getHeight() const = 0;
 

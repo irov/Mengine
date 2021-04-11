@@ -7,7 +7,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SilentSoundSystem, Mengine::SilentSoundSystem );

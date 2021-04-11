@@ -14,6 +14,7 @@
 
 #include "math/vec2.h"
 #include "math/vec3.h"
+#include "math/uv4.h"
 
 #define PUGIXML_NO_STL
 #define PUGIXML_HEADER_ONLY
@@ -65,6 +66,18 @@ namespace Mengine
         MENGINE_INLINE void setXmlValue<mt::vec3f>( pugi::xml_attribute & _attrib, const mt::vec3f & _value )
         {
             std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM + std::to_string( _value.y ) + MENGINE_PATH_DELIM + std::to_string( _value.z );
+
+            _attrib.set_value( str.c_str() );
+        }
+
+        template <>
+        MENGINE_INLINE void setXmlValue<mt::uv4f>( pugi::xml_attribute & _attrib, const mt::uv4f & _value )
+        {
+            std::string str 
+                = std::to_string( _value.p0.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p0.y ) + MENGINE_PATH_DELIM
+                + std::to_string( _value.p1.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p1.y ) + MENGINE_PATH_DELIM
+                + std::to_string( _value.p2.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p2.y ) + MENGINE_PATH_DELIM
+                + std::to_string( _value.p3.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p3.y );
 
             _attrib.set_value( str.c_str() );
         }
@@ -154,6 +167,16 @@ namespace Mengine
             mt::vec3f result;
 
             deserializeFloats( _attrib, result.buff(), 3 );
+
+            return result;
+        }
+
+        template <>
+        MENGINE_INLINE mt::uv4f getXmlValue<mt::uv4f>( const pugi::xml_attribute & _attrib )
+        {
+            mt::uv4f result;
+
+            deserializeFloats( _attrib, result.buff(), 8 );
 
             return result;
         }
@@ -268,6 +291,15 @@ namespace Mengine
             static const Char * get_value()
             {
                 return "mt::vec3f";
+            }
+        };
+
+        template<>
+        struct prop_type_name<mt::uv4f>
+        {
+            static const Char * get_value()
+            {
+                return "mt::uv4f";
             }
         };
 

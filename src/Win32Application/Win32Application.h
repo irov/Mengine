@@ -20,10 +20,9 @@ namespace Mengine
     public:
         void loop();
 
-    protected:        
+    protected:
         bool initializeOptionsService_();
         bool initializeLoggerService_();
-        bool initializeArchiveService_();
 
     protected:
         void finalizeLoggerService_();
@@ -34,6 +33,10 @@ namespace Mengine
 #endif
 
         LoggerInterfacePtr m_loggerMessageBox;
+
+#if defined(MENGINE_WINDOWS_DEBUG)
+        LoggerInterfacePtr m_loggerOutputDebug;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
 }

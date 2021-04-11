@@ -22,7 +22,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageDataValidator::_validate( const ResourceImageDataPtr & _resource )
+    bool ResourceImageDataValidator::_validate( const ResourceImageDataPtr & _resource ) const
     {
         const ContentInterfacePtr & content = _resource->getContent();
 

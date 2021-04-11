@@ -21,7 +21,7 @@
 
 #include "math/utils.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundService, Mengine::SoundService );

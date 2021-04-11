@@ -30,8 +30,8 @@ namespace Mengine
         void _runService() override;
 
     public:
-        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
-        void removeTimer( uint32_t _id ) override;
+        UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        void removeTimer( UniqueId _id ) override;
 
     public:
         uint64_t getTicks() const override;
@@ -127,11 +127,14 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     protected:
-        bool existFile_( const WChar * _filePath );        
+        bool existFile_( const WChar * _filePath );
         bool createDirectory_( const WChar * _path, const WChar * _directory );
 
     public:
         DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;
+
+    protected:
+        bool getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;

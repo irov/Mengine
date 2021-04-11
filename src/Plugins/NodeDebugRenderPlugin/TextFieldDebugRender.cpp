@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node, bool _hide )
+    void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const TextField * _node, bool _hide )
     {
         if( _hide == true )
         {
@@ -21,14 +21,11 @@ namespace Mengine
         }
 
         {
-            Viewport viewport;
-            if( _node->calcTextViewport( &viewport ) == false )
-            {
-                return;
-            }
+            const mt::vec2f & offset = _node->getTextOffset();
+            const mt::vec2f & size = _node->getTextSize();
 
-            mt::vec2f b = viewport.begin;
-            mt::vec2f e = viewport.end;
+            mt::vec2f b = offset;
+            mt::vec2f e = offset + size;
 
             mt::vec2f v0( b.x, b.y );
             mt::vec2f v1( e.x, b.y );

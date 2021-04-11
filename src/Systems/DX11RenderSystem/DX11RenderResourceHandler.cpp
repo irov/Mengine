@@ -1,0 +1,25 @@
+#include "DX11RenderResourceHandler.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    DX11RenderResourceHandler::DX11RenderResourceHandler()
+        : m_pD3DDevice( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    DX11RenderResourceHandler::~DX11RenderResourceHandler()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderResourceHandler::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
+    {
+        m_pD3DDevice = _pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    IDirect3DDevice9 * DX11RenderResourceHandler::getDirect3DDevice9() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

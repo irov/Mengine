@@ -4,7 +4,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/DocumentHelper.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

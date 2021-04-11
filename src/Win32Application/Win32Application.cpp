@@ -12,16 +12,18 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Win32MessageBoxLogger.h"
+#include "Win32OutputDebugLogger.h"
 
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
+#include "Config/Algorithm.h"
+
 #include <clocale>
 #include <memory>
 #include <cerrno>
 #include <ctime>
-#include <algorithm>
 #include <functional>
 #include <iomanip>
 
@@ -124,6 +126,17 @@ namespace Mengine
 
         m_loggerMessageBox = loggerMessageBox;
 
+#if defined(MENGINE_WINDOWS_DEBUG)
+        Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+        loggerOutputDebug->setVerboseFlag( LM_ERROR );
+
+        LOGGER_SERVICE()
+            ->registerLogger( loggerOutputDebug );
+
+        m_loggerOutputDebug = loggerOutputDebug;
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -139,6 +152,19 @@ namespace Mengine
 
             m_loggerMessageBox = nullptr;
         }
+
+#if defined(MENGINE_WINDOWS_DEBUG)
+        if( m_loggerOutputDebug != nullptr )
+        {
+            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerOutputDebug );
+            }
+
+            m_loggerOutputDebug = nullptr;
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()

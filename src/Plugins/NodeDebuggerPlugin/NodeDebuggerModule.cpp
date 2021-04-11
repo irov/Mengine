@@ -51,6 +51,7 @@
 #include "Kernel/Blobject.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/RenderCameraHelper.h"
+#include "Kernel/ResourceImageSubstract.h"
 
 #include "Config/StdString.h"
 
@@ -119,35 +120,33 @@ namespace Mengine
         {
             MENGINE_UNUSED( _event );
 
-            if( INPUT_SERVICE()->isAltDown() == false )
+            if( _event.special.isAlt == false )
             {
                 return;
             }
-            else
-            {
-                const ScenePtr & currentScene = SCENE_SERVICE()
-                    ->getCurrentScene();
 
-                const ArrowPtr & arrow = PLAYER_SERVICE()
-                    ->getArrow();
+            const ScenePtr & currentScene = SCENE_SERVICE()
+                ->getCurrentScene();
 
-                mt::vec2f point = {_event.x, _event.y};
+            const ArrowPtr & arrow = PLAYER_SERVICE()
+                ->getArrow();
 
-                mt::vec2f adapt_screen_position;
-                arrow->adaptScreenPosition_( point, &adapt_screen_position );
+            mt::vec2f point = {_event.x, _event.y};
 
-                mt::vec2f cursorWorldPosition;
-                PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( adapt_screen_position, &cursorWorldPosition );
+            mt::vec2f adapt_screen_position;
+            arrow->adaptScreenPosition_( point, &adapt_screen_position );
 
-                m_cursorWorldPosition = cursorWorldPosition;
+            mt::vec2f cursorWorldPosition;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( adapt_screen_position, &cursorWorldPosition );
 
-                this->findChildRecursive( currentScene, point );
+            m_cursorWorldPosition = cursorWorldPosition;
 
-                this->sendSelectedNode();
+            this->findChildRecursive( currentScene, point );
 
-                m_selectedNode = nullptr;
-            }
+            this->sendSelectedNode();
+
+            m_selectedNode = nullptr;
 
         }, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -739,6 +738,8 @@ namespace Mengine
         Detail::serializeNodeProp( transformation->getLocalScale(), "scale", xmlNode );
         Detail::serializeNodeProp( transformation->getLocalOrientation(), "orientation", xmlNode );
         Detail::serializeNodeProp( transformation->getWorldPosition(), "worldPosition", xmlNode );
+        Detail::serializeNodeProp( transformation->getWorldScale(), "worldScale", xmlNode );
+        Detail::serializeNodeProp( transformation->getWorldOrientation(), "worldOrientation", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
@@ -1010,12 +1011,32 @@ namespace Mengine
 
         Detail::serializeNodeProp( resourceImage->getName(), "ResourceName", xmlNode );
         Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
+        Detail::serializeNodeProp( resourceImage->getUVImage(), "UVImage", xmlNode );
 
         const ContentInterfacePtr & content = resourceImage->getContent();
 
         if( content != nullptr && content->getFilePath() != ConstString::none() )
         {
             this->serializeContent( content, xmlNode );
+        }
+
+        ResourceImageSubstractPtr resourceImageSubstract = stdex::intrusive_dynamic_cast<ResourceImageSubstractPtr>(resourceImage);
+
+        if( resourceImageSubstract != nullptr )
+        {
+            pugi::xml_node xmlNodeAtlas = xmlNode.append_child( "Atlas" );
+
+            const ResourceImagePtr & resourceImageAtlas = resourceImageSubstract->getResourceImage();
+
+            Detail::serializeNodeProp( resourceImageAtlas->getName(), "ResourceName", xmlNodeAtlas );
+            Detail::serializeNodeProp( resourceImageAtlas->getType(), "ResourceType", xmlNodeAtlas );            
+
+            const ContentInterfacePtr & atlasContent = resourceImageAtlas->getContent();
+
+            if( atlasContent != nullptr && atlasContent->getFilePath() != ConstString::none() )
+            {
+                this->serializeContent( atlasContent, xmlNodeAtlas );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2075,6 +2096,21 @@ namespace Mengine
                 RenderInterface * render = _child->getRender();
 
                 if( render == nullptr )
+                {
+                    return true;
+                }
+
+                if( render->isRenderEnable() == false )
+                {
+                    return true;
+                }
+
+                if( render->isHide() == true )
+                {
+                    return true;
+                }
+
+                if( render->isLocalTransparent() == true )
                 {
                     return true;
                 }

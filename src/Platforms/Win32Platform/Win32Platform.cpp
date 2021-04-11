@@ -41,6 +41,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 #include "Config/Utf8.h"
+#include "Config/Algorithm.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -55,7 +56,6 @@
 #include <clocale>
 #include <ctime>
 #include <iomanip>
-#include <algorithm>
 #include <functional>
 #include <cerrno>
 
@@ -270,6 +270,31 @@ namespace Mengine
             this->finalizeFileService_();
         } );
 
+        if( HAS_OPTION( "workdir" ) == true )
+        {
+            Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+            if( this->getCurrentPath( currentPath ) == 0 )
+            {
+                LOGGER_ERROR( "invalid get current path for dll directory" );
+
+                return false;
+            }
+
+            if( ::SetDllDirectoryA( currentPath ) == FALSE )
+            {
+                DWORD error;
+                Char str_error[1024] = {'\0'};
+                this->getLastErrorMessage( &error, str_error, 1023 );
+
+                LOGGER_ERROR( "SetDllDirectoryA invalid [error: %s (%lu)]"
+                    , str_error
+                    , error
+                );
+
+                return false;
+            }
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -295,6 +320,11 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         for( const TimerDesc & desc : m_timers )
         {
+            if( desc.id == INVALIDATE_UNIQUE_ID )
+            {
+                continue;
+            }
+
             LOGGER_ERROR( "forgot remove win32 timer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
@@ -578,7 +608,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    UniqueId Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -599,18 +629,21 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::removeTimer( uint32_t _id )
+    void Win32Platform::removeTimer( UniqueId _id )
     {
         VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
         {
             return _desc.id == _id;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_timers.end(), "not found timer '%u'"
+            , _id
+        );
 
         TimerDesc & desc = *it_found;
 
-        desc.id = 0;
+        desc.id = INVALIDATE_UNIQUE_ID;
+        desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32Platform::getTicks() const
@@ -621,7 +654,16 @@ namespace Mengine
         }
 
         LARGE_INTEGER performanceCount;
-        ::QueryPerformanceCounter( &performanceCount );
+        if( ::QueryPerformanceCounter( &performanceCount ) == FALSE )
+        {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid query performance counter [error: %lu]"
+                , error
+            );
+
+            return 0ULL;
+        }
 
         LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
 
@@ -696,8 +738,13 @@ namespace Mengine
 
                     desc.time += desc.milliseconds;
 
-                    desc.lambda();
+                    desc.lambda( desc.id );
                 }
+
+                m_timers.erase( std::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+                {
+                    return _desc.id == INVALIDATE_UNIQUE_ID;
+                } ), m_timers.end() );
 
                 m_update = true;
 
@@ -3033,6 +3080,22 @@ namespace Mengine
 
         HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
+        if( handle == INVALID_HANDLE_VALUE )
+        {
+            DWORD error = ::GetLastError();
+
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_le, 1023 );
+
+            LOGGER_ERROR( "get file time '%ls' invalid CreateFile [error: %s (%lu)]"
+                , unicode_filePath
+                , str_le
+                , error
+            );
+
+            return 0U;
+        }
+
         FILETIME creation;
         FILETIME access;
         FILETIME write;
@@ -3040,6 +3103,17 @@ namespace Mengine
         if( ::GetFileTime( handle, &creation, &access, &write ) == FALSE )
         {
             ::CloseHandle( handle );
+
+            DWORD error = ::GetLastError();
+
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_le, 1023 );
+
+            LOGGER_ERROR( "get file time '%ls' invalid GetFileTime [error: %s (%lu)]"
+                , unicode_filePath
+                , str_le
+                , error
+            );
 
             return 0U;
         }
@@ -3063,7 +3137,7 @@ namespace Mengine
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _file, const void * _data, size_t _size )
     {
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        ::PathAppend( szPath, _userPath );
+        Helper::pathCorrectBackslashToW( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, _directoryPath );
@@ -3071,7 +3145,7 @@ namespace Mengine
         WChar fileCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( fileCorrect, _file );
 
-        ::PathAppend( szPath, pathCorrect );
+        MENGINE_WCSCAT( szPath, pathCorrect );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3087,7 +3161,7 @@ namespace Mengine
             }
         }
 
-        ::PathAppend( szPath, fileCorrect );
+        MENGINE_WCSCAT( szPath, fileCorrect );
 
         HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
@@ -3124,6 +3198,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const
+    {
+        HRESULT hr = ::SHGetFolderPath( NULL, _flag, NULL, 0, _path );
+
+        if( hr != S_OK )
+        {
+            LOGGER_ERROR( "invalid SHGetFolderPath flag [%lu] error [hr %lu]"
+                , _flag
+                , hr
+            );
+
+            return false;
+        }
+
+        Helper::pathCorrectBackslashW( _path );
+        MENGINE_WCSCAT( _path, L"/" );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
         WChar unicode_directoryPath[MENGINE_MAX_PATH] = {L'\0'};
@@ -3139,13 +3233,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR( "invalid getSpecialFolderPath CSIDL_COMMON_PICTURES '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3156,12 +3246,12 @@ namespace Mengine
         WChar unicode_directoryPath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_directoryPath_correct, unicode_directoryPath );
 
-        ::PathAppend( szPath, unicode_directoryPath_correct );
+        MENGINE_WCSCAT( szPath, unicode_directoryPath_correct );
 
         WChar unicode_filePath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
 
-        ::PathAppend( szPath, unicode_filePath_correct );
+        MENGINE_WCSCAT( szPath, unicode_filePath_correct );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3191,13 +3281,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR( "invalid SHGetFolderPath CSIDL_COMMON_PICTURES '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3234,13 +3320,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+            LOGGER_ERROR( "invalid SHGetFolderPath CSIDL_COMMON_MUSIC '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3331,7 +3413,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static BOOL GetModuleListPSAPI( TSymLoadModule64 pSymLoadModule64, HANDLE hProcess )
         {
-            HINSTANCE hPsapi = LoadLibraryW( L"psapi.dll" );
+            HINSTANCE hPsapi = ::LoadLibraryW( L"psapi.dll" );
 
             if( hPsapi == NULL )
             {
@@ -4155,11 +4237,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getCurrentPath( Char * const _currentPath ) const
     {
+        const Char * option_workdir;
+        if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
+        {
+            MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( option_workdir ) < MENGINE_MAX_PATH );
+
+            MENGINE_STRCPY( _currentPath, option_workdir );
+
+            Helper::pathCorrectBackslashA( _currentPath );
+
+            size_t option_workdir_len = MENGINE_STRLEN( _currentPath );
+
+            return option_workdir_len;
+        }
+
         WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {
+            DWORD error;
+            Char str_error[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_error, 1023 );
+
+            LOGGER_ERROR( "GetCurrentDirectory invalid [error: %s (%lu)]"
+                , str_error
+                , error
+            );
+
             _currentPath[0] = '\0';
 
             return 0;
@@ -4205,6 +4310,19 @@ namespace Mengine
 
             MENGINE_WCSCAT( currentPath, L"/" );
             MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+
+            uint32_t Engine_BotId = CONFIG_VALUE( "Engine", "BotId", ~0U );
+
+            if( Engine_BotId != ~0U || HAS_OPTION( "bot" ) == true )
+            {
+                uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
+
+                WChar botId_suffix[16];
+                MENGINE_WSPRINTF( botId_suffix, L"%u", botId );
+
+                MENGINE_WCSCAT( currentPath, botId_suffix );
+            }
+
             MENGINE_WCSCAT( currentPath, L"/" );
 
             size_t currentPathLen;

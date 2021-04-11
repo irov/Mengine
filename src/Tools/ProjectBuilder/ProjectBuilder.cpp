@@ -887,6 +887,18 @@ static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * 
 
         return true;
     }
+    else if( _kernel->unicode_check( _obj ) == true )
+    {
+        size_t size;
+        const wchar_t * value = _kernel->unicode_to_wchar_and_size( _obj, &size );
+
+        Mengine::String utf8_value;
+        Mengine::Helper::unicodeToUtf8Size( value, size, &utf8_value );
+
+        *cstr = Mengine::Helper::stringizeStringSize( utf8_value.c_str(), utf8_value.size() );
+
+        return true;
+    }
 
     return false;
 }
@@ -1010,20 +1022,29 @@ bool run()
 
     if( pythonDescs.empty() == true )
     {
-        LOGGER_ERROR( "invalid found python" );
+        LOGGER_ERROR( "invalid found any python" );
 
         return false;
     }
 
-    std::sort( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _l, const PythonDesc & _r )
+    std::vector<PythonDesc>::iterator it_found = std::find_if( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _desc )
     {
-        uint32_t lk = _l.major_version * 100 + _l.minor_version;
-        uint32_t rk = _r.major_version * 100 + _r.minor_version;
+        if( _desc.major_version == 3 && _desc.minor_version == 8 )
+        {
+            return true;
+        }
 
-        return lk < rk;
+        return false;
     } );
 
-    PythonDesc & desc = pythonDescs.back();
+    if( it_found == pythonDescs.end() )
+    {
+        LOGGER_ERROR( "invalid found python 3.8" );
+
+        return false;
+    }
+
+    PythonDesc & desc = *it_found;
 
     WCHAR * szPythonPath = desc.szPythonPath;
 
@@ -1054,8 +1075,8 @@ bool run()
     pybind::registration_type_cast<Mengine::String>(kernel, pybind::make_type_cast<extract_String_type>(kernel));
     pybind::registration_type_cast<Mengine::WString>(kernel, pybind::make_type_cast<extract_WString_type>(kernel));
 
-    pybind::registration_stl_vector_type_cast<Mengine::String, Mengine::Vector<Mengine::String>>(kernel);
-    pybind::registration_stl_vector_type_cast<Mengine::WString, Mengine::Vector<Mengine::WString>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::Vector<Mengine::String>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::Vector<Mengine::WString>>(kernel);
 
     pybind::structhash_<Mengine::ConstString>( kernel, "ConstString", true, py_tools_module )
         .def_compare( &s_ConstString_compare )
@@ -1064,8 +1085,8 @@ bool run()
         .def_hash( &s_ConstString_hash )
         ;
 
-    pybind::registration_stl_map_type_cast<Mengine::ConstString, Mengine::String, Mengine::MapParams>(kernel);
-    pybind::registration_stl_map_type_cast<Mengine::ConstString, Mengine::WString, Mengine::MapWParams>(kernel);
+    pybind::registration_stl_map_type_cast<Mengine::MapParams>(kernel);
+    pybind::registration_stl_map_type_cast<Mengine::MapWParams>(kernel);
 
     pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module )
         .def_native_kernel( "write", &Mengine::PythonLogger::py_write )
@@ -1074,6 +1095,7 @@ bool run()
         .def_property( "errors", &Mengine::PythonLogger::getErrors, &Mengine::PythonLogger::setErrors )
         .def_property( "encoding", &Mengine::PythonLogger::getEncoding, &Mengine::PythonLogger::setEncoding )
         ;
+
     Mengine::PythonLogger * logger = new Mengine::PythonLogger();
     PyObject * py_logger = pybind::ptr( kernel, logger );
 
@@ -1082,7 +1104,6 @@ bool run()
 
     pybind::def_function_kernel( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
     pybind::def_function_kernel( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
-
 
     pybind::def_function( kernel, "convert", &Mengine::convert, py_tools_module );
     pybind::def_function_kernel( kernel, "isAlphaInImageFile", &Mengine::isAlphaInImageFile, py_tools_module );
@@ -1103,7 +1124,7 @@ bool run()
     kernel->incref( py_tools_module );
     kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
-    Mengine::WChar currentDirectory[MAX_PATH] = {0};
+    Mengine::WChar currentDirectory[MAX_PATH] = {L'\0'};
     if( ::GetCurrentDirectory( MAX_PATH, currentDirectory ) == 0 )
     {
         return false;

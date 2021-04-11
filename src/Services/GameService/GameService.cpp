@@ -285,8 +285,8 @@ namespace Mengine
         bool is_debug = false;
 #endif
 
-        LOGGER_MESSAGE( "personality preparation debug(%d)"
-            , is_debug
+        LOGGER_MESSAGE( "personality preparation [%s]"
+            , is_debug == true ? "debug" : "release"
         );
 
         bool result = EVENTABLE_METHODR( EVENT_GAME_PREPARATION, true )

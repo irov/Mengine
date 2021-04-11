@@ -27,9 +27,6 @@ namespace Mengine
         void finalize() override;
 
     protected:
-        bool isValid() const override;
-
-    protected:
         bool _compile() override;
         void _release() override;
 

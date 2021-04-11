@@ -31,6 +31,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Base64.h"
 #include "Kernel/Crash.h"
+#include "Kernel/Optional.h"
 
 #include "Config/BuildVersion.h"
 #include "Config/GitSHA1.h"
@@ -1268,6 +1269,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             double s_watchdog( const ConstString & _tag )
             {
+                MENGINE_UNUSED( _tag );
+
                 double watch = WATCHDOG( _tag );
 
                 return watch;
@@ -2277,8 +2280,8 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                const Char * value = nullptr;
-                if( account->getSetting( _setting, &value ) == false )
+                const Char * setting_value = nullptr;
+                if( account->getSetting( _setting, &setting_value ) == false )
                 {
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
@@ -2288,11 +2291,16 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRCMP( value, "True" ) == 0 || MENGINE_STRCMP( value, "true" ) == 0 || MENGINE_STRCMP( value, "TRUE" ) == 0 )
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRICMP( setting_value, "true" ) == 0 )
                 {
                     return _kernel->ret_true();
                 }
-                else if( MENGINE_STRCMP( value, "False" ) == 0 || MENGINE_STRCMP( value, "false" ) == 0 || MENGINE_STRCMP( value, "FALSE" ) == 0 )
+                else if( MENGINE_STRICMP( setting_value, "false" ) == 0 )
                 {
                     return _kernel->ret_false();
                 }
@@ -2300,7 +2308,7 @@ namespace Mengine
                 LOGGER_ERROR( "account '%s' setting '%s' value '%s' is not bool [True|False]"
                     , _accountID.c_str()
                     , _setting.c_str()
-                    , value
+                    , setting_value
                 );
 
                 return _kernel->ret_none();
@@ -2323,6 +2331,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _kernel->ret_none();
                 }
 
@@ -2363,6 +2376,11 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
                 uint32_t value;
                 if( Helper::stringalized( setting_value, &value ) == false )
                 {
@@ -2397,6 +2415,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _kernel->ret_none();
                 }
 
@@ -2477,6 +2500,11 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
                 float value;
                 if( Helper::stringalized( setting_value, &value ) == false )
                 {
@@ -2516,6 +2544,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _default;
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _default;
                 }
 
@@ -3518,26 +3551,28 @@ namespace Mengine
             .def( "TC_TOUCH15", TC_TOUCH15 )
             ;
 
+        pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+
         pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
 
-        pybind::registration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
-        pybind::registration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorResourceImages>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
-        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
+        pybind::registration_stl_map_type_cast<MapParams>(_kernel);
+        pybind::registration_stl_map_type_cast<MapWParams>(_kernel);
 
         pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>(_kernel));
         pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>(_kernel));
 
-        pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
-        pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorString>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorWString>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorRenderIndex>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::registration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
-        pybind::registration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec3f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec4f>>(_kernel);
 
         pybind::struct_<Tags>( _kernel, "Tags" )
             .def_constructor( pybind::init<>() )
@@ -3853,25 +3888,28 @@ namespace Mengine
     {
         m_implement = nullptr;
 
+        pybind::unregistration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+
         pybind::unregistration_type_cast<Blobject>(_kernel);
         pybind::unregistration_type_cast<Tags>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorResourceImages>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::unregistration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
-        pybind::unregistration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<MapWParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<MapParams>(_kernel);
 
         pybind::unregistration_type_cast<String>(_kernel);
         pybind::unregistration_type_cast<WString>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<String, Vector<String>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<String>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<WString>>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorRenderIndex>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec3f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec4f>>(_kernel);
     }
+    //////////////////////////////////////////////////////////////////////////
 }

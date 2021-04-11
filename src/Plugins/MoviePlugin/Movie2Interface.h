@@ -64,13 +64,14 @@ namespace Mengine
     public:
         virtual bool hasMovieLayers( const ConstString & _name ) const = 0;
         virtual void setEnableMovieLayers( const ConstString & _name, bool _enable ) = 0;
+        virtual void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) = 0;
 
     public:
         virtual bool getWorldBoundingBox( mt::box2f * _bb ) const = 0;
 
     public:
         typedef Lambda<void( Node * _node, const RenderPipelineInterfacePtr &, const RenderContext * _context )> LambdaMovieRenderSlot;
-        virtual void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) = 0;
+        virtual void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

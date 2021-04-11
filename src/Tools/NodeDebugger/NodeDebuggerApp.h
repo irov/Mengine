@@ -51,6 +51,8 @@ namespace Mengine
         mt::vec3f scale;
         mt::vec3f orientation;
         mt::vec3f worldPosition;
+        mt::vec3f worldScale;
+        mt::vec3f worldOrientation;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
@@ -69,6 +71,8 @@ namespace Mengine
             DESERIALIZE_PROP( scale );
             DESERIALIZE_PROP( orientation );
             DESERIALIZE_PROP( worldPosition );
+            DESERIALIZE_PROP( worldScale );
+            DESERIALIZE_PROP( worldOrientation );
         }
     };
 
@@ -301,6 +305,28 @@ namespace Mengine
     {
         String ResourceName;
         String ResourceType;
+        mt::uv4f UVImage;
+
+        bool isContent;
+        NodeContent content;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            MENGINE_UNUSED( _xmlNode );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( ResourceName );
+            DESERIALIZE_PROP( ResourceType );
+            DESERIALIZE_PROP( UVImage );
+        }
+    };
+
+    struct NodeAtlas
+    {
+        String ResourceName;
+        String ResourceType;        
 
         bool isContent;
         NodeContent content;
@@ -315,7 +341,7 @@ namespace Mengine
             DESERIALIZE_PROP( ResourceName );
             DESERIALIZE_PROP( ResourceType );
         }
-    };
+    };    
 
     struct NodeComponentSurface
     {
@@ -332,6 +358,9 @@ namespace Mengine
 
         bool isTypeSurfaceImage;
         NodeSurfaceImage surfaceImage;
+
+        bool hasAtlas;
+        NodeAtlas atlas;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {

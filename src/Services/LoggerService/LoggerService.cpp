@@ -15,7 +15,7 @@
 
 #include "Config/StdIO.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( LoggerService, Mengine::LoggerService );

@@ -15,6 +15,7 @@
 #include "TTFPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"
 #include "TTFDataflow.h"
+#include "TTFFontValidator.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _ft_malloc( size_t _size )
@@ -87,6 +88,7 @@ namespace Mengine
 
         VOCABULARY_SET( TextFontConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
+        VOCABULARY_SET( FontValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_ftlibrary = ftlibrary;
 
@@ -128,6 +130,7 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
 
         SERVICE_FINALIZE( TTFAtlasService );
 

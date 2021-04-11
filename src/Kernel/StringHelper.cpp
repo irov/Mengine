@@ -10,7 +10,7 @@
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

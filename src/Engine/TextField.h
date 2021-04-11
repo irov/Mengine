@@ -151,6 +151,10 @@ namespace Mengine
         bool isVerticalBottomAlign() const;
 
     public:
+        void setExtraThickness( float _extraThickness );
+        float getExtraThickness() const;
+
+    public:
         void setMaxCharCount( uint32_t _maxCharCount );
         uint32_t getMaxCharCount() const;
 
@@ -159,6 +163,7 @@ namespace Mengine
 
     public:
         const mt::vec2f & getTextSize() const;
+        const mt::vec2f & getTextOffset() const;
         bool calcTextViewport( Viewport * const _viewport ) const;
         void calcTotalTextSize( mt::vec2f * const _textSize ) const;
 
@@ -211,7 +216,7 @@ namespace Mengine
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
-        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
+        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
 
     public:
         MENGINE_INLINE const TextEntryInterfacePtr & getTotalTextEntry() const;
@@ -263,6 +268,8 @@ namespace Mengine
         mutable TextFontInterfacePtr m_totalFont;
         mutable bool m_invalidateFont;
 
+        float m_extraThickness;
+
         float m_charScale;
 
         float m_maxLength;
@@ -287,6 +294,7 @@ namespace Mengine
 
         mutable uint32_t m_charCount;
         mutable uint32_t m_layoutCount;
+        mutable mt::vec2f m_textOffset;
         mutable mt::vec2f m_textSize;
 
         bool m_anchorHorizontalAlign;

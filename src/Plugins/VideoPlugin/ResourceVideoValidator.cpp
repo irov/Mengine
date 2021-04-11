@@ -104,7 +104,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource )
+    bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource ) const
     {
         VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder( MENGINE_DOCUMENT_FACTORABLE );
 

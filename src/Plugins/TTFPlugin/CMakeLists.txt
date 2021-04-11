@@ -10,6 +10,8 @@ src
     TTFFont.cpp
     TTFFontConfigLoader.h
     TTFFontConfigLoader.cpp
+    TTFFontValidator.h
+    TTFFontValidator.cpp
     TTFDataInterface.h
     TTFData.h
     TTFData.cpp

@@ -14,6 +14,6 @@ namespace Mengine
         ~TextFieldDebugRender() override;
 
     protected:
-        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node, bool _hide ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const TextField * _node, bool _hide ) override;
     };
 }

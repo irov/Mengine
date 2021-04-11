@@ -114,7 +114,9 @@ namespace Mengine
 #endif
 
 #if MENGINE_ALLOCATOR_DEBUG
+#   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
+#   endif
 
         //MENGINE_ASSERTION_FATAL( m_reportTotal == 0 );
 #endif
@@ -288,7 +290,9 @@ namespace Mengine
         MENGINE_UNUSED( _pointer );
 
 #if MENGINE_ALLOCATOR_DEBUG
+#   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
+#   endif
 
         size_t size = _msize( _pointer );
 

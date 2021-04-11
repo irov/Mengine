@@ -3,13 +3,13 @@
 #include "ResourceValidatorInterface.h"
 
 namespace Mengine
-{    
+{
     template<class T>
     class ResourceValidatorT
         : public ResourceValidatorInterface
     {
     public:
-        bool validate( const ResourcePtr & _resource ) override
+        bool validate( const ResourcePtr & _resource ) const override
         {
             const T & resourceT = stdex::intrusive_static_cast<T>(_resource);
 
@@ -17,6 +17,6 @@ namespace Mengine
         }
 
     protected:
-        virtual bool _validate( const T & _resource ) = 0;
+        virtual bool _validate( const T & _resource ) const = 0;
     };
 }

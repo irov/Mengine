@@ -5592,6 +5592,15 @@ namespace Metacode
                     public:
                         Meta_Layer();
                     
+                    protected:
+                        enum NoRequiredAttribute
+                        {
+                            EMETA_Dimension = (1 <<1),
+                            EMETA_Options = (1 <<0),
+                        };
+                        
+                        uint32_t m_flagNoRequiredAttribute;
+                        
                     public:
                         template<class C, class M>
                         void getm_Color( C _self, M _method ) const
@@ -5604,6 +5613,49 @@ namespace Metacode
                             return this->m_Color;
                         }
                         
+                        bool has_Dimension() const
+                        {
+                            return (m_flagNoRequiredAttribute & EMETA_Dimension) != 0;
+                        }
+                        
+                        template<class C, class M>
+                        bool getm_Dimension( C _self, M _method ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Dimension) == 0 )
+                            {
+                                return false;
+                            }
+                        
+                            (_self->*_method)( this->m_Dimension );
+                        
+                            return true;
+                        }
+                        
+                        bool get_Dimension( mt::box2f * _value ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Dimension) == 0 )
+                            {
+                                return false;
+                            }
+                        
+                            *_value = this->m_Dimension;
+                        
+                            return true;
+                        }
+                        
+                        bool getd_Dimension( mt::box2f * _value, const mt::box2f & _default ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Dimension) == 0 )
+                            {
+                                *_value = _default;
+                        
+                                return false;
+                            }
+                        
+                            *_value = this->m_Dimension;
+                        
+                            return true;
+                        }
                         template<class C, class M>
                         void getm_Index( C _self, M _method ) const
                         {
@@ -5637,6 +5689,49 @@ namespace Metacode
                             return this->m_Name;
                         }
                         
+                        bool has_Options() const
+                        {
+                            return (m_flagNoRequiredAttribute & EMETA_Options) != 0;
+                        }
+                        
+                        template<class C, class M>
+                        bool getm_Options( C _self, M _method ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Options) == 0 )
+                            {
+                                return false;
+                            }
+                        
+                            (_self->*_method)( this->m_Options );
+                        
+                            return true;
+                        }
+                        
+                        bool get_Options( Mengine::UInt32s * _value ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Options) == 0 )
+                            {
+                                return false;
+                            }
+                        
+                            *_value = this->m_Options;
+                        
+                            return true;
+                        }
+                        
+                        bool getd_Options( Mengine::UInt32s * _value, const Mengine::UInt32s & _default ) const
+                        {
+                            if( (m_flagNoRequiredAttribute & EMETA_Options) == 0 )
+                            {
+                                *_value = _default;
+                        
+                                return false;
+                            }
+                        
+                            *_value = this->m_Options;
+                        
+                            return true;
+                        }
                         template<class C, class M>
                         void getm_Type( C _self, M _method ) const
                         {
@@ -5653,15 +5748,18 @@ namespace Metacode
                     
                     protected:
                         void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                        void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                         void _preparationIncludes( uint32_t _id, uint32_t _count );
                         void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                     
                     public:
                     protected:
                         Mengine::Color m_Color;
+                        mt::box2f m_Dimension;
                         uint32_t m_Index;
                         mt::mat4f m_Matrix;
                         Mengine::ConstString m_Name;
+                        Mengine::UInt32s m_Options;
                         Mengine::ConstString m_Type;
                     };
                     
@@ -6608,6 +6706,7 @@ namespace Metacode
                     EMETA_File_FrameRate = (1 <<7),
                     EMETA_File_NoSeek = (1 <<6),
                     EMETA_File_Premultiply = (1 <<3),
+                    EMETA_File_Resize = (1 <<9),
                 };
                 
             public:
@@ -6832,6 +6931,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_Resize() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_Resize) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Resize( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Resize) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Resize );
+                
+                    return true;
+                }
+                
+                bool get_File_Resize( float * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Resize) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Resize;
+                
+                    return true;
+                }
+                
             public:
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
@@ -6851,6 +6980,7 @@ namespace Metacode
                 bool m_File_NoSeek;
                 Mengine::FilePath m_File_Path;
                 bool m_File_Premultiply;
+                float m_File_Resize;
             };
             
             class Meta_ResourceWindow

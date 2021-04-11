@@ -2,10 +2,13 @@
 
 #include "Kernel/Logger.h"
 
+#include "movie/movie.hpp"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Movie2Slot::Movie2Slot()
+        : m_layerIndex( ~0U )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,6 +24,58 @@ namespace Mengine
     const ConstString & Movie2Slot::getMovieName() const
     {
         return m_movieName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2Slot::setCompositionName( const ConstString & _compositionName )
+    {
+        m_compositionName = _compositionName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Movie2Slot::getCompositionName() const
+    {
+        return m_compositionName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2Slot::setLayerIndex( uint32_t _layerIndex )
+    {
+        m_layerIndex = _layerIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Movie2Slot::getLayerIndex() const
+    {
+        return m_layerIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2Slot::setDimension( const Optional<mt::box2f> & _dimension )
+    {
+        m_dimension = _dimension;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Optional<mt::box2f> & Movie2Slot::getDimension() const
+    {
+        return m_dimension;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2Slot::setOptions( const UInt32s & _options )
+    {
+        m_options = _options;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const UInt32s & Movie2Slot::getOptions() const
+    {
+        return m_options;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2Slot::hasOption( const Char * _option4 ) const
+    {
+        ae_uint32_t option = ae_make_option( _option4 );
+
+        if( std::find( m_options.begin(), m_options.end(), option ) == m_options.end() )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_destroy()

@@ -10,7 +10,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MemoryService, Mengine::MemoryService );

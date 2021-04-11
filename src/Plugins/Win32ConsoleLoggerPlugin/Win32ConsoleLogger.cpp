@@ -43,8 +43,12 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::createConsole_()
-    {
+    {        
+#if !defined(MENGINE_WINDOWS_UNIVERSAL)
         HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
+#else
+        HMODULE hKernel32 = ::LoadPackagedLibrary( L"Kernel32.dll", 0 );
+#endif
 
         if( hKernel32 == nullptr )
         {

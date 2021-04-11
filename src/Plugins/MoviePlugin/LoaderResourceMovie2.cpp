@@ -74,6 +74,14 @@ namespace Mengine
                 layer.matrix = layerMatrix;
                 layer.color = layerColor;
 
+                mt::box2f dimension;
+                if( meta_layer.get_Dimension( &dimension ) == true )
+                {
+                    layer.dimension = dimension;
+                }
+
+                meta_layer.get_Options( &layer.options );
+
                 desc.layers.emplace_back( layer );
             }
 

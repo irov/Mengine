@@ -75,7 +75,7 @@ namespace Mengine
         SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskLocalDelay::ScheduleEvent>( MENGINE_DOCUMENT_VALUE( m_doc, nullptr ), this, _node );
 
         const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
-            ->getScheduler();
+            ->getLocalScheduler();
 
         uint32_t id = scheduler->event( m_time, ev, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
@@ -96,10 +96,11 @@ namespace Mengine
         if( m_id != 0 )
         {
             const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
-                ->getScheduler();
+                ->getLocalScheduler();
 
             scheduler->remove( m_id );
             m_id = 0;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

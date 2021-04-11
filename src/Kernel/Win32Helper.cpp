@@ -17,7 +17,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _path );
 
-#ifdef MENGINE_PLATFORM_WINDOWS
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
                 HMODULE hm = NULL;
 
                 if( ::GetModuleHandleEx( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |

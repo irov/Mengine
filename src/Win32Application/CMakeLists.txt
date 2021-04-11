@@ -16,10 +16,13 @@ endif()
     
 ADD_FILTER(
 Win32Application
+    
     Win32Application.cpp
     Win32Application.h
     Win32MessageBoxLogger.h
     Win32MessageBoxLogger.cpp
+    Win32OutputDebugLogger.h
+    Win32OutputDebugLogger.cpp
 )
 
 if(MENGINE_TOOLCHAIN_MINGW)

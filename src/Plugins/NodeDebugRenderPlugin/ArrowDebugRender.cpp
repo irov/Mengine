@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Arrow * _node, bool _hide )
+    void ArrowDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const Arrow * _node, bool _hide )
     {
         MENGINE_UNUSED( _hide );
 

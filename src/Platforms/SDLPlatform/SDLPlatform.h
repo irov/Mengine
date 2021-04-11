@@ -167,7 +167,11 @@ namespace Mengine
 
     public:
         SDL_Window * getWindow() const override;
+
+
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         SDL_GLContext getGLContext() const override;
+#endif
 
     public:
         uint32_t addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;
@@ -235,7 +239,9 @@ namespace Mengine
         FactoryPtr m_factoryDynamicLibraries;
         FactoryPtr m_factoryDateTimeProviders;
 
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         SDL_GLContext m_glContext;
+#endif
 
         SDLInputPtr m_sdlInput;
 

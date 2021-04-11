@@ -25,7 +25,6 @@ namespace Mengine
 
     protected:
         ConstString m_name;
-        ConstString m_type;
 
         UniqueId m_uniqueIdentity;
     };

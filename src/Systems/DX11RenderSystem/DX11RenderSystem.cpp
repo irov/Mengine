@@ -50,14 +50,12 @@ namespace Mengine
     typedef IDirect3D9 * (WINAPI * PDIRECT3DCREATE9)(UINT);
     //////////////////////////////////////////////////////////////////////////
     DX11RenderSystem::DX11RenderSystem()
-        : m_pD3D( nullptr )
-        , m_pD3DDevice( nullptr )
-        , m_d3dpp( nullptr )
+        : m_pD3DDevice( nullptr )
+        , m_pD3DDeviceContext( nullptr )
         , m_hd3d9( nullptr )
         , m_fullscreen( true )
         , m_depth( false )
         , m_adapterToUse( D3DADAPTER_DEFAULT )
-        , m_deviceType( D3DDEVTYPE_HAL )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
         , m_vertexAttributeEnable( false )
@@ -95,50 +93,32 @@ namespace Mengine
     {
         m_frames = 0;
 
-        const Char * utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", "d3d9.dll" );
+        UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
-        WString unicode_d3d9DLL;
-        Helper::utf8ToUnicode( utf8_d3d9DLL, &unicode_d3d9DLL );
+#ifdef MENGINE_DEBUG
+        creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
 
-        HMODULE hd3d9 = ::LoadLibrary( unicode_d3d9DLL.c_str() );
-
-        if( hd3d9 == nullptr )
+        D3D_FEATURE_LEVEL featureLevels[] =
         {
-            DWORD error = ::GetLastError();
+            D3D_FEATURE_LEVEL_9_1
+        };
 
-            LOGGER_ERROR( "Failed to load d3d9 dll '%s' [error: %lu]"
-                , utf8_d3d9DLL
-                , error
-            );
-
-            return false;
-        }
-
-        m_hd3d9 = hd3d9;
-
-        PDIRECT3DCREATE9 pDirect3DCreate9 = (PDIRECT3DCREATE9)::GetProcAddress( m_hd3d9, "Direct3DCreate9" );
-
-        if( pDirect3DCreate9 == nullptr )
-        {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address [error: %lu]"
-                , error
-            );
-
-            return false;
-        }
-
-        LOGGER_INFO( "render", "Initializing DX11RenderSystem..." );
-
-        IDirect3D9 * pD3D = (*pDirect3DCreate9)(D3D_SDK_VERSION);
-
-        if( pD3D == nullptr )
-        {
-            LOGGER_ERROR( "Can't create D3D interface" );
-
-            return false;
-        }
+        // Create the Direct3D 11 API device object and a corresponding context.
+        ID3D11Device * device;
+        ID3D11DeviceContext * context;
+        D3D11CreateDevice(
+            nullptr, // Specify nullptr to use the default adapter.
+            D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            creationFlags,
+            featureLevels,
+            ARRAYSIZE( featureLevels ),
+            D3D11_SDK_VERSION, // UWP apps must set this to D3D11_SDK_VERSION.
+            &device, // Returns the Direct3D device created.
+            nullptr,
+            &context // Returns the device immediate context.
+        );
 
         m_pD3D = pD3D;
 
@@ -1129,7 +1109,12 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX11RenderSystem::getDirect3DDevice9() const
+    ID3D11Device * DX11RenderSystem::getDirect3D11Device() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ID3D11DeviceContext * DX11RenderSystem::getDirect3D11DeviceContext() const
     {
         return m_pD3DDevice;
     }

@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderFragmentShader
         : public RenderFragmentShaderInterface
         , public Factorable

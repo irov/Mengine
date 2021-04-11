@@ -134,7 +134,8 @@ namespace Mengine
         UnknownPointer getRenderSystemExtention() override;
 
     public:
-        IDirect3DDevice9 * getDirect3DDevice9() const override;
+        ID3D11Device * getDirect3D11Device() const override;
+        ID3D11DeviceContext * getDirect3D11DeviceContext() const override;
 
     protected:
         void updateVSyncDPP_();
@@ -156,17 +157,8 @@ namespace Mengine
         bool m_fullscreen;
         bool m_depth;
 
-        IDirect3D9 * m_pD3D;
-        IDirect3DDevice9 * m_pD3DDevice;
-
-        D3DCAPS9 m_d3dCaps;
-
-        D3DPRESENT_PARAMETERS m_d3dppW;
-        D3DPRESENT_PARAMETERS m_d3dppFS;
-
-        D3DDISPLAYMODE m_displayMode;
-
-        D3DPRESENT_PARAMETERS * m_d3dpp;
+        ID3D11Device * m_pD3DDevice;
+        ID3D11DeviceContext * m_pD3DDeviceContext;
 
         // sync routines
         uint32_t m_frames;
@@ -192,12 +184,7 @@ namespace Mengine
         void updateWVPInvMatrix_();
 
     protected:
-        D3DMULTISAMPLE_TYPE findMatchingMultiSampleType_( uint32_t _MultiSampleCount );
-        D3DFORMAT findMatchingZFormat_( D3DFORMAT _backBufferFormat );
-
-    protected:
         UINT m_adapterToUse;
-        D3DDEVTYPE m_deviceType;
 
         Viewport m_viewport;
 

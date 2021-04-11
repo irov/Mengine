@@ -2,7 +2,7 @@
 
 #include "Interface/RenderIndexBufferInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderResourceHandler.h"
 
@@ -10,14 +10,14 @@
 
 namespace Mengine
 {
-    class DX9RenderIndexBuffer
+    class DX11RenderIndexBuffer
         : public RenderIndexBufferInterface
         , public Factorable
-        , public DX9RenderResourceHandler
+        , public DX11RenderResourceHandler
     {
     public:
-        DX9RenderIndexBuffer();
-        ~DX9RenderIndexBuffer() override;
+        DX11RenderIndexBuffer();
+        ~DX11RenderIndexBuffer() override;
 
     public:
         bool initialize( uint32_t _indexSize, EBufferType _bufferType ) override;
@@ -59,6 +59,6 @@ namespace Mengine
         MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderIndexBuffer> DX9RenderIndexBufferPtr;
+    typedef IntrusivePtr<DX11RenderIndexBuffer, RenderIndexBufferInterface> DX11RenderIndexBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }

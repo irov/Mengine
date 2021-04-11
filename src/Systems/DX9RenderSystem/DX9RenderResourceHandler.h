@@ -8,7 +8,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class DX9RenderResourceHandler
         : public Mixin
         , public stdex::intrusive_linked<DX9RenderResourceHandler>        

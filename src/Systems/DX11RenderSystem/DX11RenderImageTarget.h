@@ -1,29 +1,30 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
-#include "Interface/DX9RenderImageExtensionInterface.h"
+#include "Interface/DX11RenderImageExtensionInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
-
-    class DX9RenderImageTarget
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class DX11RenderTargetTexture> DX11RenderTargetTexturePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class DX11RenderImageTarget
         : public RenderImageInterface
-        , public DX9RenderImageExtensionInterface
+        , public DX11RenderImageExtensionInterface
         , public Factorable
     {
         DECLARE_UNKNOWABLE();
 
     public:
-        DX9RenderImageTarget();
-        ~DX9RenderImageTarget() override;
+        DX11RenderImageTarget();
+        ~DX11RenderImageTarget() override;
 
     public:
-        void initialize( const DX9RenderTargetTexturePtr & _target );
+        void initialize( const DX11RenderTargetTexturePtr & _target );
         void finalize();
 
     public:
@@ -59,9 +60,9 @@ namespace Mengine
         IDirect3DTexture9 * getD3DTexture() const override;
 
     protected:
-        DX9RenderTargetTexturePtr m_target;
+        DX11RenderTargetTexturePtr m_target;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderImageTarget> DX9RenderImageTargetPtr;
+    typedef IntrusivePtr<DX11RenderImageTarget, RenderImageInterface> DX9RenderImageTargetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

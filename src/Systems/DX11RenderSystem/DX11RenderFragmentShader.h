@@ -3,19 +3,19 @@
 #include "Interface/RenderFragmentShaderInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
-    class DX9RenderFragmentShader
+    class DX11RenderFragmentShader
         : public RenderFragmentShaderInterface
         , public Factorable
     {
     public:
-        DX9RenderFragmentShader();
-        ~DX9RenderFragmentShader() override;
+        DX11RenderFragmentShader();
+        ~DX11RenderFragmentShader() override;
 
     public:
         const ConstString & getName() const override;
@@ -40,6 +40,6 @@ namespace Mengine
         bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderFragmentShader, RenderFragmentShaderInterface> DX9RenderFragmentShaderPtr;
+    typedef IntrusivePtr<DX11RenderFragmentShader, RenderFragmentShaderInterface> DX11RenderFragmentShaderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

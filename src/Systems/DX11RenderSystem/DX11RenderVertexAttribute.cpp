@@ -10,19 +10,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderVertexAttribute::DX9RenderVertexAttribute()
+    DX11RenderVertexAttribute::DX11RenderVertexAttribute()
         : m_elementSize( 0 )
         , m_pD3DDevice( nullptr )
         , m_pD3DVertexDeclaration( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderVertexAttribute::~DX9RenderVertexAttribute()
+    DX11RenderVertexAttribute::~DX11RenderVertexAttribute()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
+    bool DX11RenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
     {
         m_name = _name;
         m_elementSize = _elementSize;
@@ -30,12 +30,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexAttribute::finalize()
+    void DX11RenderVertexAttribute::finalize()
     {
         DXRELEASE( m_pD3DVertexDeclaration );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
 
@@ -82,27 +82,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & DX9RenderVertexAttribute::getName() const
+    const ConstString & DX11RenderVertexAttribute::getName() const
     {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderVertexAttribute::getElementSize() const
+    uint32_t DX11RenderVertexAttribute::getElementSize() const
     {
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexAttribute::enable()
+    void DX11RenderVertexAttribute::enable()
     {
         DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexAttribute::disable()
+    void DX11RenderVertexAttribute::disable()
     {
         DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
+    void DX11RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
         AttributeDesc desc;
         desc.uniform = _uniform;

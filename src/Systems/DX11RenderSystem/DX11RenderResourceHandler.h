@@ -2,20 +2,19 @@
 
 #include "Kernel/Mixin.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "stdex/intrusive_linked.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class DX9RenderResourceHandler
+    class DX11RenderResourceHandler
         : public Mixin
-        , public stdex::intrusive_linked<DX9RenderResourceHandler>        
+        , public stdex::intrusive_linked<DX11RenderResourceHandler>
     {
     public:
-        DX9RenderResourceHandler();
-        ~DX9RenderResourceHandler() override;
+        DX11RenderResourceHandler();
+        ~DX11RenderResourceHandler() override;
 
     public:
         void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );

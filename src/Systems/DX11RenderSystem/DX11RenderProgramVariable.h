@@ -2,7 +2,7 @@
 
 #include "Interface/RenderProgramVariableInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Vector.h"
@@ -10,13 +10,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderProgramVariable
+    class DX11RenderProgramVariable
         : public RenderProgramVariableInterface
         , public Factorable
     {
     public:
-        DX9RenderProgramVariable();
-        ~DX9RenderProgramVariable() override;
+        DX11RenderProgramVariable();
+        ~DX11RenderProgramVariable() override;
 
     public:
         bool initialize( uint32_t _vertexCount, uint32_t _pixelCount );
@@ -74,6 +74,6 @@ namespace Mengine
         VectorVariables m_pixelVariables;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderProgramVariable> DX9RenderProgramVariablePtr;
+    typedef IntrusivePtr<DX11RenderProgramVariable, RenderProgramVariableInterface> DX11RenderProgramVariablePtr;
     //////////////////////////////////////////////////////////////////////////
 }

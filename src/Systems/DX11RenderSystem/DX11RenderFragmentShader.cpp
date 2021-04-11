@@ -8,23 +8,23 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderFragmentShader::DX9RenderFragmentShader()
+    DX11RenderFragmentShader::DX11RenderFragmentShader()
         : m_pD3DPixelShader( nullptr )
         , m_compile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderFragmentShader::~DX9RenderFragmentShader()
+    DX11RenderFragmentShader::~DX11RenderFragmentShader()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & DX9RenderFragmentShader::getName() const
+    const ConstString & DX11RenderFragmentShader::getName() const
     {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderFragmentShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
+    bool DX11RenderFragmentShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
     {
         m_name = _name;
 
@@ -34,14 +34,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderFragmentShader::finalize()
+    void DX11RenderFragmentShader::finalize()
     {
         m_memory = nullptr;
 
         DXRELEASE( m_pD3DPixelShader );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderFragmentShader::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderFragmentShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
         MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
 
@@ -62,7 +62,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderFragmentShader::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderFragmentShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
         DXCALL( _pD3DDevice, SetPixelShader, (m_pD3DPixelShader) );
     }

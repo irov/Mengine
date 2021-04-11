@@ -63,6 +63,6 @@ namespace Mengine
         DX11RenderTargetTexturePtr m_target;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX11RenderImageTarget, RenderImageInterface> DX9RenderImageTargetPtr;
+    typedef IntrusivePtr<DX11RenderImageTarget, RenderImageInterface> DX11RenderImageTargetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

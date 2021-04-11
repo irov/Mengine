@@ -177,16 +177,16 @@ namespace Mengine
         bool restore_();
 
     protected:
-        void onDestroyDX9VertexAttribute_( DX11RenderVertexAttribute * _attribute );
-        void onDestroyDX9VertexShader_( DX11RenderVertexShader * _shader );
-        void onDestroyDX9FragmentShader_( DX11RenderFragmentShader * _shader );
-        void onDestroyDX9Program_( DX11RenderProgram * _program );
-        void onDestroyDX9VertexBuffer_( DX11RenderVertexBuffer * _buffer );
-        void onDestroyDX9IndexBuffer_( DX11RenderIndexBuffer * _buffer );
-        void onDestroyDX9RenderImage_( DX11RenderImage * _image );
-        void onDestroyDX9RenderImageTarget_( DX11RenderImageTarget * _imageTarget );
-        void onDestroyDX9RenderTargetTexture_( DX11RenderTargetTexture * _targetTexture );
-        void onDestroyDX9RenderTargetOffscreen_( DX11RenderTargetOffscreen * _targetOffscreen );
+        void onDestroyVertexAttribute_( DX11RenderVertexAttribute * _attribute );
+        void onDestroyVertexShader_( DX11RenderVertexShader * _shader );
+        void onDestroyFragmentShader_( DX11RenderFragmentShader * _shader );
+        void onDestroyProgram_( DX11RenderProgram * _program );
+        void onDestroyVertexBuffer_( DX11RenderVertexBuffer * _buffer );
+        void onDestroyIndexBuffer_( DX11RenderIndexBuffer * _buffer );
+        void onDestroyRenderImage_( DX11RenderImage * _image );
+        void onDestroyRenderImageTarget_( DX11RenderImageTarget * _imageTarget );
+        void onDestroyRenderTargetTexture_( DX11RenderTargetTexture * _targetTexture );
+        void onDestroyRenderTargetOffscreen_( DX11RenderTargetOffscreen * _targetOffscreen );
 
     protected:
         void updateWVPInvMatrix_();
@@ -225,8 +225,8 @@ namespace Mengine
         typedef Vector<DX11RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;
 
-        typedef IntrusiveList<DX11RenderResourceHandler> IntrusiveListDX9RenderResourceHandler;
-        IntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
+        typedef IntrusiveList<DX11RenderResourceHandler> IntrusiveListRenderResourceHandler;
+        IntrusiveListRenderResourceHandler m_renderResourceHandlers;
 
         mt::mat4f m_projectionMatrix;
         mt::mat4f m_modelViewMatrix;

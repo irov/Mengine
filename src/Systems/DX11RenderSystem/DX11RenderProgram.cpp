@@ -7,35 +7,35 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderProgram::DX9RenderProgram()
+    DX11RenderProgram::DX11RenderProgram()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderProgram::~DX9RenderProgram()
+    DX11RenderProgram::~DX11RenderProgram()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & DX9RenderProgram::getName() const
+    const ConstString & DX11RenderProgram::getName() const
     {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderVertexAttributeInterfacePtr & DX9RenderProgram::getVertexAttribute() const
+    const RenderVertexAttributeInterfacePtr & DX11RenderProgram::getVertexAttribute() const
     {
         return m_vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderVertexShaderInterfacePtr & DX9RenderProgram::getVertexShader() const
+    const RenderVertexShaderInterfacePtr & DX11RenderProgram::getVertexShader() const
     {
         return m_vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderFragmentShaderInterfacePtr & DX9RenderProgram::getFragmentShader() const
+    const RenderFragmentShaderInterfacePtr & DX11RenderProgram::getFragmentShader() const
     {
         return m_fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderProgram::initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute )
+    bool DX11RenderProgram::initialize( const ConstString & _name, const DX11RenderVertexShaderPtr & _vertexShader, const DX11RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute )
     {
         m_name = _name;
 
@@ -46,14 +46,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgram::finalize()
+    void DX11RenderProgram::finalize()
     {
         m_vertexShader = nullptr;
         m_fragmentShader = nullptr;
         m_vertexAttribute = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
     {
         MENGINE_UNUSED( _pD3DDevice );
 
@@ -64,7 +64,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgram::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderProgram::enable( IDirect3DDevice9 * _pD3DDevice )
     {
         if( m_vertexShader != nullptr )
         {
@@ -82,7 +82,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgram::disable( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderProgram::disable( IDirect3DDevice9 * _pD3DDevice )
     {
         if( m_vertexShader != nullptr )
         {
@@ -100,7 +100,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgram::bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks )
+    void DX11RenderProgram::bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks )
     {
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
@@ -121,7 +121,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
+    void DX11RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
     {
         MENGINE_UNUSED( _worldMatrix );
         MENGINE_UNUSED( _viewMatrix );

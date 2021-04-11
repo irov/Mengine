@@ -74,6 +74,6 @@ namespace Mengine
         VectorVariables m_pixelVariables;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderProgramVariable> DX9RenderProgramVariablePtr;
+    typedef IntrusivePtr<DX9RenderProgramVariable, RenderProgramVariableInterface> DX9RenderProgramVariablePtr;
     //////////////////////////////////////////////////////////////////////////
 }

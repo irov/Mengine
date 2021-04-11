@@ -2,6 +2,8 @@
 
 #include "Interface/RenderEnumInterface.h"
 
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
+
 #include "Kernel/RenderIndex.h"
 #include "Kernel/PixelFormat.h"
 

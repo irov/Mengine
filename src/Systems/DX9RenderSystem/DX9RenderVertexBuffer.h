@@ -60,6 +60,6 @@ namespace Mengine
         MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderVertexBuffer> DX9RenderVertexBufferPtr;
+    typedef IntrusivePtr<DX9RenderVertexBuffer, RenderVertexBufferInterface> DX9RenderVertexBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }

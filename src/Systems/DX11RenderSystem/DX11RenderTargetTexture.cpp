@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderTargetTexture::DX9RenderTargetTexture()
+    DX11RenderTargetTexture::DX11RenderTargetTexture()
         : m_width( 0 )
         , m_height( 0 )
         , m_channels( 0 )
@@ -23,12 +23,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderTargetTexture::~DX9RenderTargetTexture()
+    DX11RenderTargetTexture::~DX11RenderTargetTexture()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
+    bool DX11RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
     {
         m_width = _width;
         m_height = _height;
@@ -69,66 +69,66 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::_initialize()
+    bool DX11RenderTargetTexture::_initialize()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetTexture::finalize()
+    void DX11RenderTargetTexture::finalize()
     {
         DXRELEASE( m_pD3DTexture );
 
         this->_finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetTexture::_finalize()
+    void DX11RenderTargetTexture::_finalize()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHWChannels() const
+    uint32_t DX11RenderTargetTexture::getHWChannels() const
     {
         return m_channels;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHWDepth() const
+    uint32_t DX11RenderTargetTexture::getHWDepth() const
     {
         return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
-    EPixelFormat DX9RenderTargetTexture::getHWPixelFormat() const
+    EPixelFormat DX11RenderTargetTexture::getHWPixelFormat() const
     {
         return m_format;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHWMipmaps() const
+    uint32_t DX11RenderTargetTexture::getHWMipmaps() const
     {
         return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHWWidth() const
+    uint32_t DX11RenderTargetTexture::getHWWidth() const
     {
         return m_hwWidth;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHWHeight() const
+    uint32_t DX11RenderTargetTexture::getHWHeight() const
     {
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    float DX9RenderTargetTexture::getHWWidthInv() const
+    float DX11RenderTargetTexture::getHWWidthInv() const
     {
         return m_hwWidthInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    float DX9RenderTargetTexture::getHWHeightInv() const
+    float DX11RenderTargetTexture::getHWHeightInv() const
     {
         return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
+    void DX11RenderTargetTexture::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
     {
         float uv_width = _size.x * m_hwWidthInv;
         float uv_height = _size.y * m_hwHeightInv;
@@ -137,7 +137,7 @@ namespace Mengine
         _viewport->end = mt::vec2f( uv_width, uv_height );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::begin()
+    bool DX11RenderTargetTexture::begin()
     {
         IDirect3DSurface9 * pD3DSurface;
         DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
@@ -158,7 +158,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetTexture::end()
+    void DX11RenderTargetTexture::end()
     {
         DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
 
@@ -172,7 +172,7 @@ namespace Mengine
         m_pD3DSurface = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
+    bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
         MENGINE_UNUSED( _buffer );
         MENGINE_UNUSED( _pitch );
@@ -180,22 +180,22 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderTargetTexture::getDirect3dDevice9() const
+    IDirect3DDevice9 * DX11RenderTargetTexture::getDirect3dDevice9() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DTexture9 * DX9RenderTargetTexture::getDirect3dTexture9() const
+    IDirect3DTexture9 * DX11RenderTargetTexture::getDirect3dTexture9() const
     {
         return m_pD3DTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetTexture::onRenderReset()
+    void DX11RenderTargetTexture::onRenderReset()
     {
         DXRELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::onRenderRestore()
+    bool DX11RenderTargetTexture::onRenderRestore()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
 

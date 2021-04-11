@@ -75,6 +75,6 @@ namespace Mengine
         IDirect3DSurface9 * m_pD3DSurfaceOld;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
+    typedef IntrusivePtr<DX9RenderTargetTexture, RenderTargetInterface> DX9RenderTargetTexturePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -3,7 +3,7 @@
 #include "Interface/RenderVertexAttributeInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Vector.h"
@@ -11,13 +11,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderVertexAttribute
+    class DX11RenderVertexAttribute
         : public RenderVertexAttributeInterface
         , public Factorable
     {
     public:
-        DX9RenderVertexAttribute();
-        ~DX9RenderVertexAttribute() override;
+        DX11RenderVertexAttribute();
+        ~DX11RenderVertexAttribute() override;
 
     public:
         bool initialize( const ConstString & _name, uint32_t _elementSize );
@@ -60,6 +60,6 @@ namespace Mengine
         VectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderVertexAttribute, RenderVertexAttributeInterface> DX9RenderVertexAttributePtr;
+    typedef IntrusivePtr<DX11RenderVertexAttribute, RenderVertexAttributeInterface> DX11RenderVertexAttributePtr;
     //////////////////////////////////////////////////////////////////////////
 }

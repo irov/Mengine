@@ -9,8 +9,9 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class DX9RenderTargetTexture, class RenderTargetInterface> DX9RenderTargetTexturePtr;
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderImageTarget
         : public RenderImageInterface
         , public DX9RenderImageExtensionInterface

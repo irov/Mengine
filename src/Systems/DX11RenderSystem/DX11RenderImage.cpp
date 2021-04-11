@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderImage::DX9RenderImage()
+    DX11RenderImage::DX11RenderImage()
         : m_pD3DTexture( nullptr )
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
@@ -22,12 +22,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderImage::~DX9RenderImage()
+    DX11RenderImage::~DX11RenderImage()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat )
+    bool DX11RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat )
     {
         D3DFORMAT D3DFormat = Helper::toD3DFormat( _pixelFormat );
 
@@ -63,14 +63,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::finalize()
+    void DX11RenderImage::finalize()
     {
         m_renderImageProvider = nullptr;
 
         DXRELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::bind( uint32_t _stage )
+    void DX11RenderImage::bind( uint32_t _stage )
     {
 #ifdef MENGINE_DEBUG
         DWORD fillmode;
@@ -85,22 +85,22 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::unbind( uint32_t _stage )
+    void DX11RenderImage::unbind( uint32_t _stage )
     {
         DXCALL( m_pD3DDevice, SetTexture, (_stage, nullptr) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
+    void DX11RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         m_renderImageProvider = _renderImageProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderImageProviderInterfacePtr & DX9RenderImage::getRenderImageProvider() const
+    const RenderImageProviderInterfacePtr & DX11RenderImage::getRenderImageProvider() const
     {
         return m_renderImageProvider;
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer DX9RenderImage::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    Pointer DX11RenderImage::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         DWORD flags;
         if( _readOnly == true )
@@ -131,7 +131,7 @@ namespace Mengine
         return bits;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderImage::unlock( uint32_t _level, bool _successful )
+    bool DX11RenderImage::unlock( uint32_t _level, bool _successful )
     {
         MENGINE_UNUSED( _successful );
 
@@ -143,71 +143,71 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderImage::getD3DDevice() const
+    IDirect3DDevice9 * DX11RenderImage::getD3DDevice() const
     {
         IDirect3DDevice9 * device9 = this->getDirect3DDevice9();
 
         return device9;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DTexture9 * DX9RenderImage::getD3DTexture() const
+    IDirect3DTexture9 * DX11RenderImage::getD3DTexture() const
     {
         return m_pD3DTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderImage::getHWWidth() const
+    uint32_t DX11RenderImage::getHWWidth() const
     {
         return m_hwWidth;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderImage::getHWHeight() const
+    uint32_t DX11RenderImage::getHWHeight() const
     {
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    EPixelFormat DX9RenderImage::getHWPixelFormat() const
+    EPixelFormat DX11RenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    float DX9RenderImage::getHWWidthInv() const
+    float DX11RenderImage::getHWWidthInv() const
     {
         return m_hwWidthInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    float DX9RenderImage::getHWHeightInv() const
+    float DX11RenderImage::getHWHeightInv() const
     {
         return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderImage::getHWChannels() const
+    uint32_t DX11RenderImage::getHWChannels() const
     {
         return m_hwChannels;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderImage::getHWDepth() const
+    uint32_t DX11RenderImage::getHWDepth() const
     {
         return 1; //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderImage::getHWMipmaps() const
+    uint32_t DX11RenderImage::getHWMipmaps() const
     {
         return m_hwMipmaps;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::onRenderReset()
+    void DX11RenderImage::onRenderReset()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderImage::onRenderRestore()
+    bool DX11RenderImage::onRenderRestore()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer DX9RenderImage::getRenderImageExtention()
+    UnknownPointer DX11RenderImage::getRenderImageExtention()
     {
         return this;
     }

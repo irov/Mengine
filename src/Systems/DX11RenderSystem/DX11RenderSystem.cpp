@@ -42,14 +42,14 @@
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderSystem, Mengine::DX9RenderSystem );
+SERVICE_FACTORY( RenderSystem, Mengine::DX11RenderSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IDirect3D9 * (WINAPI * PDIRECT3DCREATE9)(UINT);
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderSystem::DX9RenderSystem()
+    DX11RenderSystem::DX11RenderSystem()
         : m_pD3D( nullptr )
         , m_pD3DDevice( nullptr )
         , m_d3dpp( nullptr )
@@ -77,21 +77,21 @@ namespace Mengine
         mt::ident_m4( m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderSystem::~DX9RenderSystem()
+    DX11RenderSystem::~DX11RenderSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ERenderPlatform DX9RenderSystem::getRenderPlatformType() const
+    ERenderPlatform DX11RenderSystem::getRenderPlatformType() const
     {
-        return RP_DX9;
+        return RP_DX11;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & DX9RenderSystem::getRenderPlatformName() const
+    const ConstString & DX11RenderSystem::getRenderPlatformName() const
     {
         return m_renderSystemName;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::_initializeService()
+    bool DX11RenderSystem::_initializeService()
     {
         m_frames = 0;
 
@@ -129,7 +129,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "render", "Initializing DX9RenderSystem..." );
+        LOGGER_INFO( "render", "Initializing DX11RenderSystem..." );
 
         IDirect3D9 * pD3D = (*pDirect3DCreate9)(D3D_SDK_VERSION);
 
@@ -205,24 +205,24 @@ namespace Mengine
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX11" );
 
-        m_factoryRenderVertexAttribute = Helper::makeFactoryPoolWithListener<DX9RenderVertexAttribute, 8>( this, &DX9RenderSystem::onDestroyDX9VertexAttribute_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<DX9RenderVertexShader, 16>( this, &DX9RenderSystem::onDestroyDX9VertexShader_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<DX9RenderFragmentShader, 16>( this, &DX9RenderSystem::onDestroyDX9FragmentShader_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<DX9RenderProgram, 16>( this, &DX9RenderSystem::onDestroyDX9Program_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX9RenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryVertexBuffer = Helper::makeFactoryPoolWithListener<DX9RenderVertexBuffer, 8>( this, &DX9RenderSystem::onDestroyDX9VertexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryIndexBuffer = Helper::makeFactoryPoolWithListener<DX9RenderIndexBuffer, 8>( this, &DX9RenderSystem::onDestroyDX9IndexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderVertexAttribute = Helper::makeFactoryPoolWithListener<DX11RenderVertexAttribute, 8>( this, &DX11RenderSystem::onDestroyVertexAttribute_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<DX11RenderVertexShader, 16>( this, &DX11RenderSystem::onDestroyVertexShader_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<DX11RenderFragmentShader, 16>( this, &DX11RenderSystem::onDestroyFragmentShader_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<DX11RenderProgram, 16>( this, &DX11RenderSystem::onDestroyProgram_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX11RenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryVertexBuffer = Helper::makeFactoryPoolWithListener<DX11RenderVertexBuffer, 8>( this, &DX11RenderSystem::onDestroyVertexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryIndexBuffer = Helper::makeFactoryPoolWithListener<DX11RenderIndexBuffer, 8>( this, &DX11RenderSystem::onDestroyIndexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryRenderImage = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<DX9RenderImageTarget, 16>( this, &DX9RenderSystem::onDestroyDX9RenderImageTarget_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderImage = Helper::makeFactoryPoolWithListener<DX11RenderImage, 128>( this, &DX11RenderSystem::onDestroyRenderImage_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<DX11RenderImageTarget, 16>( this, &DX11RenderSystem::onDestroyRenderImageTarget_, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX11RenderTargetTexture, 16>( this, &DX11RenderSystem::onDestroyRenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX11RenderTargetOffscreen, 16>( this, &DX11RenderSystem::onDestroyRenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::_finalizeService()
+    void DX11RenderSystem::_finalizeService()
     {
         m_deferredCompileVertexShaders.clear();
         m_deferredCompileFragmentShaders.clear();
@@ -270,7 +270,7 @@ namespace Mengine
         m_factoryRenderTargetOffscreen = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    D3DMULTISAMPLE_TYPE DX9RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )
+    D3DMULTISAMPLE_TYPE DX11RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )
     {
         D3DMULTISAMPLE_TYPE MultiSampleType = D3DMULTISAMPLE_NONE;
         for( uint32_t MultiSampleIndex = _MultiSampleCount; MultiSampleIndex != 0; --MultiSampleIndex )
@@ -299,7 +299,7 @@ namespace Mengine
         return MultiSampleType;
     }
     //////////////////////////////////////////////////////////////////////////
-    D3DFORMAT DX9RenderSystem::findMatchingZFormat_( D3DFORMAT _backBufferFormat )
+    D3DFORMAT DX11RenderSystem::findMatchingZFormat_( D3DFORMAT _backBufferFormat )
     {
         const D3DFORMAT DepthFormats[] = {D3DFMT_D32
             , D3DFMT_D24S8
@@ -328,7 +328,7 @@ namespace Mengine
         return *pFormatList;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution
+    bool DX11RenderSystem::createRenderWindow( const Resolution & _resolution
         , uint32_t _bits
         , bool _fullscreen
         , bool _depth
@@ -470,7 +470,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                const Char * message = Helper::getDX9ErrorMessage( hr );
+                const Char * message = Helper::getDX11ErrorMessage( hr );
 
                 LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
@@ -486,7 +486,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                const Char * message = Helper::getDX9ErrorMessage( hr );
+                const Char * message = Helper::getDX11ErrorMessage( hr );
 
                 LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
@@ -502,7 +502,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                const Char * message = Helper::getDX9ErrorMessage( hr );
+                const Char * message = Helper::getDX11ErrorMessage( hr );
 
                 LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
@@ -518,7 +518,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                const Char * message = Helper::getDX9ErrorMessage( hr );
+                const Char * message = Helper::getDX11ErrorMessage( hr );
 
                 LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
@@ -534,7 +534,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                const Char * message = Helper::getDX9ErrorMessage( hr );
+                const Char * message = Helper::getDX11ErrorMessage( hr );
 
                 LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
@@ -550,7 +550,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                const Char * message = Helper::getDX9ErrorMessage( hr );
+                const Char * message = Helper::getDX11ErrorMessage( hr );
 
                 LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
@@ -567,7 +567,7 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            const Char * message = Helper::getDX9ErrorMessage( hr );
+            const Char * message = Helper::getDX11ErrorMessage( hr );
 
             LOGGER_ERROR( "Can't create D3D device error: %s (hr:%x, hwnd:%p) BackBuffer Size %u:%u Format %u"
                 , message
@@ -590,7 +590,7 @@ namespace Mengine
             , Helper::getD3DFormatName( m_displayMode.Format )
         );
 
-        for( const DX9RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
+        for( const DX11RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
             if( shader->compile( m_pD3DDevice ) == false )
             {
@@ -600,7 +600,7 @@ namespace Mengine
 
         m_deferredCompileVertexShaders.clear();
 
-        for( const DX9RenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
+        for( const DX11RenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
         {
             if( shader->compile( m_pD3DDevice ) == false )
             {
@@ -610,7 +610,7 @@ namespace Mengine
 
         m_deferredCompileFragmentShaders.clear();
 
-        for( const DX9RenderVertexAttributePtr & attribute : m_deferredCompileVertexAttributes )
+        for( const DX11RenderVertexAttributePtr & attribute : m_deferredCompileVertexAttributes )
         {
             if( attribute->compile( m_pD3DDevice ) == false )
             {
@@ -620,7 +620,7 @@ namespace Mengine
 
         m_deferredCompileVertexAttributes.clear();
 
-        for( const DX9RenderProgramPtr & program : m_deferredCompilePrograms )
+        for( const DX11RenderProgramPtr & program : m_deferredCompilePrograms )
         {
             if( program->compile( m_pD3DDevice ) == false )
             {
@@ -630,20 +630,20 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
-        LOGGER_MESSAGE_RELEASE( "DirectX9 create render window successfully!" );
+        LOGGER_MESSAGE_RELEASE( "DirectX11 create render window successfully!" );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
+    void DX11RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        float DirectX9_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetX", -0.5f );
-        float DirectX9_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX9", "PerfectPixelOffsetY", -0.0f );
+        float DirectX11_PerfectPixelOffsetX = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetX", 0.0f );
+        float DirectX11_PerfectPixelOffsetY = CONFIG_VALUE( "DirectX11", "PerfectPixelOffsetY", 0.0f );
 
-        float perfect_x = DirectX9_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        float perfect_y = DirectX9_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
+        float perfect_x = DirectX11_PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        float perfect_y = DirectX11_PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
         mt::mat4f vmperfect;
         mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
@@ -653,7 +653,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setViewMatrix( const mt::mat4f & _modelViewMatrix )
+    void DX11RenderSystem::setViewMatrix( const mt::mat4f & _modelViewMatrix )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -662,7 +662,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
+    void DX11RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -671,11 +671,11 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderImageInterfacePtr DX11RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DX9RenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
+        DX11RenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderImage, "invalid create render texture" );
 
@@ -736,11 +736,11 @@ namespace Mengine
         return renderImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DX9RenderTargetTexturePtr renderTargetTexture = m_factoryRenderTargetTexture->createObject( _doc );
+        DX11RenderTargetTexturePtr renderTargetTexture = m_factoryRenderTargetTexture->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture );
 
@@ -782,11 +782,11 @@ namespace Mengine
         return renderTargetTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DX9RenderTargetOffscreenPtr renderTargetOffscreen = m_factoryRenderTargetOffscreen->createObject( _doc );
+        DX11RenderTargetOffscreenPtr renderTargetOffscreen = m_factoryRenderTargetOffscreen->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen );
 
@@ -826,13 +826,13 @@ namespace Mengine
         return renderTargetOffscreen;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
+    RenderImageInterfacePtr DX11RenderSystem::createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DX9RenderTargetTexturePtr renderTargetTexture = stdex::intrusive_static_cast<DX9RenderTargetTexturePtr>(_renderTarget);
+        DX11RenderTargetTexturePtr renderTargetTexture = stdex::intrusive_static_cast<DX11RenderTargetTexturePtr>(_renderTarget);
 
-        DX9RenderImageTargetPtr renderImageTarget = m_factoryRenderImageTarget->createObject( _doc );
+        DX11RenderImageTargetPtr renderImageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderImageTarget );
 
@@ -843,7 +843,7 @@ namespace Mengine
         return renderImageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::resetDevice_()
+    bool DX11RenderSystem::resetDevice_()
     {
         if( m_fullscreen == false )
         {
@@ -873,7 +873,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::beginScene()
+    bool DX11RenderSystem::beginScene()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -924,14 +924,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::endScene()
+    void DX11RenderSystem::endScene()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         DXCALL( m_pD3DDevice, EndScene, () );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::swapBuffers()
+    void DX11RenderSystem::swapBuffers()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -976,7 +976,7 @@ namespace Mengine
         ++m_frames;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
+    void DX11RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1002,7 +1002,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, Clear, (0, NULL, frameBufferFlags, argb, _depth, _stencil) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setScissor( const Viewport & _viewport )
+    void DX11RenderSystem::setScissor( const Viewport & _viewport )
     {
         mt::mat4f pm;
         mt::mul_m4_m4( pm, m_projectionMatrix, m_modelViewMatrix );
@@ -1035,12 +1035,12 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetScissorRect, (&r) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::removeScissor()
+    void DX11RenderSystem::removeScissor()
     {
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, FALSE) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setViewport( const Viewport & _viewport )
+    void DX11RenderSystem::setViewport( const Viewport & _viewport )
     {
         if( m_viewport.equalViewport( _viewport ) == true )
         {
@@ -1052,7 +1052,7 @@ namespace Mengine
         this->updateViewport_( m_viewport );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::updateViewport_( const Viewport & _viewport )
+    void DX11RenderSystem::updateViewport_( const Viewport & _viewport )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1080,7 +1080,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
+    void DX11RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
     {
         if( m_windowResolution == _resolution && m_fullscreen == _fullscreen )
         {
@@ -1107,34 +1107,34 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderSystem::getAvailableTextureMemory() const
+    uint32_t DX11RenderSystem::getAvailableTextureMemory() const
     {
         UINT availableTextureMem = m_pD3DDevice->GetAvailableTextureMem();
 
         return (uint32_t)availableTextureMem;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderSystem::getTextureMemoryUse() const
+    uint32_t DX11RenderSystem::getTextureMemoryUse() const
     {
         return m_textureMemoryUse;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderSystem::getTextureCount() const
+    uint32_t DX11RenderSystem::getTextureCount() const
     {
         return m_textureCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer DX9RenderSystem::getRenderSystemExtention()
+    UnknownPointer DX11RenderSystem::getRenderSystemExtention()
     {
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderSystem::getDirect3DDevice9() const
+    IDirect3DDevice9 * DX11RenderSystem::getDirect3DDevice9() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::supportTextureFormat( EPixelFormat _format ) const
+    bool DX11RenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
         D3DFORMAT dxformat = Helper::toD3DFormat( _format );
 
@@ -1153,7 +1153,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::supportTextureNonPow2() const
+    bool DX11RenderSystem::supportTextureNonPow2() const
     {
         if( (m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
         {
@@ -1163,7 +1163,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderSystem::getMaxCombinedTextureImageUnits() const
+    uint32_t DX11RenderSystem::getMaxCombinedTextureImageUnits() const
     {
         DWORD MaxSimultaneousTextures = m_d3dCaps.MaxSimultaneousTextures;
 
@@ -1175,14 +1175,14 @@ namespace Mengine
         return (uint32_t)MaxSimultaneousTextures;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
+    void DX11RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::onWindowChangeFullscreen( bool _fullscreen )
+    bool DX11RenderSystem::onWindowChangeFullscreen( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );
 
@@ -1191,17 +1191,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onWindowMovedOrResized()
+    void DX11RenderSystem::onWindowMovedOrResized()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onWindowClose()
+    void DX11RenderSystem::onWindowClose()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix )
+    void DX11RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1231,7 +1231,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::releaseResources_()
+    bool DX11RenderSystem::releaseResources_()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1296,7 +1296,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::restore_()
+    bool DX11RenderSystem::restore_()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1310,7 +1310,7 @@ namespace Mengine
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
 
-        for( DX9RenderResourceHandler * handler : m_renderResourceHandlers )
+        for( DX11RenderResourceHandler * handler : m_renderResourceHandlers )
         {
             handler->onRenderReset();
         }
@@ -1329,7 +1329,7 @@ namespace Mengine
         }
         else if( cooperativeLevel == D3DERR_INVALIDCALL )
         {
-            const Char * message = Helper::getDX9ErrorMessage( cooperativeLevel );
+            const Char * message = Helper::getDX11ErrorMessage( cooperativeLevel );
 
             MENGINE_ERROR_FATAL( "failed to reset device: %s (hr:%x)"
                 , message
@@ -1340,7 +1340,7 @@ namespace Mengine
         }
         else if( FAILED( cooperativeLevel ) == true )
         {
-            const Char * message = Helper::getDX9ErrorMessage( cooperativeLevel );
+            const Char * message = Helper::getDX11ErrorMessage( cooperativeLevel );
 
             LOGGER_ERROR( "failed to reset device: %s (hr:%x)"
                 , message
@@ -1352,7 +1352,7 @@ namespace Mengine
 
         m_lostDevice = false;
 
-        for( DX9RenderResourceHandler * handler : m_renderResourceHandlers )
+        for( DX11RenderResourceHandler * handler : m_renderResourceHandlers )
         {
             if( handler->onRenderRestore() == false )
             {
@@ -1366,7 +1366,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::release_()
+    void DX11RenderSystem::release_()
     {
         if( m_pD3DDevice != nullptr )
         {
@@ -1396,9 +1396,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentPtr & _doc )
+    RenderVertexBufferInterfacePtr DX11RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentPtr & _doc )
     {
-        DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
+        DX11RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
@@ -1423,7 +1423,7 @@ namespace Mengine
         return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
+    bool DX11RenderSystem::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
     {
         if( _vertexBuffer == nullptr )
         {
@@ -1449,9 +1449,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const DocumentPtr & _doc )
+    RenderIndexBufferInterfacePtr DX11RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const DocumentPtr & _doc )
     {
-        DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
+        DX11RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
@@ -1471,7 +1471,7 @@ namespace Mengine
         return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )
+    bool DX11RenderSystem::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )
     {
         if( _indexBuffer == nullptr )
         {
@@ -1497,7 +1497,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
+    void DX11RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
         uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
@@ -1516,7 +1516,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
+    void DX11RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
     {
         MENGINE_UNUSED( _program );
 
@@ -1548,7 +1548,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
+    void DX11RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1578,7 +1578,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
+    void DX11RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1602,7 +1602,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_BORDERCOLOR, _border) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTextureFactor( uint32_t _color )
+    void DX11RenderSystem::setTextureFactor( uint32_t _color )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1611,7 +1611,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_TEXTUREFACTOR, color) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setCullMode( ECullMode _mode )
+    void DX11RenderSystem::setCullMode( ECullMode _mode )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1620,7 +1620,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_CULLMODE, mode) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setDepthBufferTestEnable( bool _depthTest )
+    void DX11RenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1629,7 +1629,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZENABLE, test) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
+    void DX11RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1638,7 +1638,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZWRITEENABLE, dWrite) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
+    void DX11RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1647,7 +1647,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZFUNC, func) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setFillMode( EFillMode _mode )
+    void DX11RenderSystem::setFillMode( EFillMode _mode )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1656,7 +1656,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_FILLMODE, mode) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
+    void DX11RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1685,7 +1685,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_COLORWRITEENABLE, value) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
+    void DX11RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1694,7 +1694,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHABLENDENABLE, alphaBlend) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
+    void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1719,9 +1719,9 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
+    RenderVertexAttributeInterfacePtr DX11RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
     {
-        DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
+        DX11RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( attribute, "invalid create attribute '%s'"
             , _name.c_str()
@@ -1755,9 +1755,9 @@ namespace Mengine
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
+    RenderFragmentShaderInterfacePtr DX11RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
     {
-        DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
+        DX11RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
             , _name.c_str()
@@ -1791,9 +1791,9 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
+    RenderVertexShaderInterfacePtr DX11RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
     {
-        DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
+        DX11RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
             , _name.c_str()
@@ -1827,11 +1827,11 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
+    RenderProgramInterfacePtr DX11RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _samplerCount );
 
-        DX9RenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
+        DX11RenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( program, "invalid create program '%s'"
             , _name.c_str()
@@ -1865,11 +1865,11 @@ namespace Mengine
         return program;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
+    void DX11RenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
     {
         if( _program != nullptr )
         {
-            DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
+            DX11RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
 
             dx9_program->enable( m_pD3DDevice );
 
@@ -1927,16 +1927,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
+    void DX11RenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
     {
-        DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
+        DX11RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
 
         dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )
+    RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )
     {
-        DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
+        DX11RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable"
         );
@@ -1951,21 +1951,21 @@ namespace Mengine
         return variable;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )
+    bool DX11RenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )
     {
         if( _variable == nullptr )
         {
             return true;
         }
 
-        DX9RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX9RenderProgramVariablePtr>(_variable);
+        DX11RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX11RenderProgramVariablePtr>(_variable);
 
         bool successful = dx9_variable->apply( m_pD3DDevice, _program );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setVSync( bool _vSync )
+    void DX11RenderSystem::setVSync( bool _vSync )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -1985,7 +1985,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::updateVSyncDPP_()
+    void DX11RenderSystem::updateVSyncDPP_()
     {
         if( m_waitForVSync == true )
         {
@@ -1999,27 +1999,27 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9VertexAttribute_( DX9RenderVertexAttribute * _attribute )
+    void DX11RenderSystem::onDestroyVertexAttribute_( DX11RenderVertexAttribute * _attribute )
     {
         _attribute->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9VertexShader_( DX9RenderVertexShader * _shader )
+    void DX11RenderSystem::onDestroyVertexShader_( DX11RenderVertexShader * _shader )
     {
         _shader->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9FragmentShader_( DX9RenderFragmentShader * _shader )
+    void DX11RenderSystem::onDestroyFragmentShader_( DX11RenderFragmentShader * _shader )
     {
         _shader->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9Program_( DX9RenderProgram * _program )
+    void DX11RenderSystem::onDestroyProgram_( DX11RenderProgram * _program )
     {
         _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9VertexBuffer_( DX9RenderVertexBuffer * _buffer )
+    void DX11RenderSystem::onDestroyVertexBuffer_( DX11RenderVertexBuffer * _buffer )
     {
         _buffer->finalize();
 
@@ -2028,7 +2028,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9IndexBuffer_( DX9RenderIndexBuffer * _buffer )
+    void DX11RenderSystem::onDestroyIndexBuffer_( DX11RenderIndexBuffer * _buffer )
     {
         _buffer->finalize();
 
@@ -2037,7 +2037,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9RenderImage_( DX9RenderImage * _image )
+    void DX11RenderSystem::onDestroyRenderImage_( DX11RenderImage * _image )
     {
         _image->finalize();
 
@@ -2055,12 +2055,12 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9RenderImageTarget_( DX9RenderImageTarget * _imageTarget )
+    void DX11RenderSystem::onDestroyRenderImageTarget_( DX11RenderImageTarget * _imageTarget )
     {
         _imageTarget->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9RenderTargetTexture_( DX9RenderTargetTexture * _targetTexture )
+    void DX11RenderSystem::onDestroyRenderTargetTexture_( DX11RenderTargetTexture * _targetTexture )
     {
         _targetTexture->finalize();
 
@@ -2078,7 +2078,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen )
+    void DX11RenderSystem::onDestroyRenderTargetOffscreen_( DX11RenderTargetOffscreen * _targetOffscreen )
     {
         _targetOffscreen->finalize();
 
@@ -2096,7 +2096,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::updateWVPInvMatrix_()
+    void DX11RenderSystem::updateWVPInvMatrix_()
     {
         mt::mat4f totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
 

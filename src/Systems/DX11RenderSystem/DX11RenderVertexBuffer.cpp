@@ -17,7 +17,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderVertexBuffer::DX9RenderVertexBuffer()
+    DX11RenderVertexBuffer::DX11RenderVertexBuffer()
         : m_bufferType( BT_STATIC )
         , m_vertexSize( 0 )
         , m_vertexCapacity( 0 )
@@ -29,12 +29,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
+    DX11RenderVertexBuffer::~DX11RenderVertexBuffer()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexBuffer == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::initialize( uint32_t _vertexSize, EBufferType _bufferType )
+    bool DX11RenderVertexBuffer::initialize( uint32_t _vertexSize, EBufferType _bufferType )
     {
         m_vertexSize = _vertexSize;
         m_bufferType = _bufferType;
@@ -66,24 +66,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexBuffer::finalize()
+    void DX11RenderVertexBuffer::finalize()
     {
         m_memory = nullptr;
 
         DXRELEASE( m_pD3DVertexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderVertexBuffer::getVertexCount() const
+    uint32_t DX11RenderVertexBuffer::getVertexCount() const
     {
         return m_vertexCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderVertexBuffer::getVertexSize() const
+    uint32_t DX11RenderVertexBuffer::getVertexSize() const
     {
         return m_vertexSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::resize( uint32_t _vertexCount )
+    bool DX11RenderVertexBuffer::resize( uint32_t _vertexCount )
     {
         m_vertexCount = _vertexCount;
 
@@ -109,7 +109,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
+    MemoryInterfacePtr DX11RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
         if( _offset + _count > m_vertexCount )
         {
@@ -158,7 +158,7 @@ namespace Mengine
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::unlock()
+    bool DX11RenderVertexBuffer::unlock()
     {
         m_memory->setBuffer( nullptr, 0 );
 
@@ -173,7 +173,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
+    bool DX11RenderVertexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
         if( _count > m_vertexCapacity )
         {
@@ -217,17 +217,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexBuffer::enable()
+    void DX11RenderVertexBuffer::enable()
     {
         DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pD3DVertexBuffer, 0, m_vertexSize) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexBuffer::disable()
+    void DX11RenderVertexBuffer::disable()
     {
         DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexBuffer::onRenderReset()
+    void DX11RenderVertexBuffer::onRenderReset()
     {
         if( m_pool == D3DPOOL_MANAGED )
         {
@@ -239,7 +239,7 @@ namespace Mengine
         DXRELEASE( m_pD3DVertexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::onRenderRestore()
+    bool DX11RenderVertexBuffer::onRenderRestore()
     {
         if( m_pool == D3DPOOL_MANAGED )
         {

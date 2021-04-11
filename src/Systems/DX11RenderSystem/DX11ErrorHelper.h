@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "Kernel/Assertion.h"
 
@@ -15,13 +15,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        const Char * getDX9ErrorMessage( HRESULT _hr );
+        const Char * getDX11ErrorMessage( HRESULT _hr );
     }
     //////////////////////////////////////////////////////////////////////////
-    class DX9ErrorHelper
+    class DX11ErrorHelper
     {
     public:
-        DX9ErrorHelper( const Char * _file, uint32_t _line, const Char * _method );
+        DX11ErrorHelper( const Char * _file, uint32_t _line, const Char * _method );
 
     public:
         bool operator == ( HRESULT _hr ) const;
@@ -35,7 +35,7 @@ namespace Mengine
 /////
 //////////////////////////////////////////////////////////////////////////
 #define DXERRORCHECK( MethodName, HRES )\
-    (Mengine::DX9ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MethodName ) == HRES)
+    (Mengine::DX11ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MethodName ) == HRES)
 //////////////////////////////////////////////////////////////////////////
 #define IF_DXERRORCHECK( Method, HRES )\
     if( DXERRORCHECK(#Method, HRES) )

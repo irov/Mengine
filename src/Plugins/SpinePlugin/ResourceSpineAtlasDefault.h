@@ -12,6 +12,7 @@ namespace Mengine
     class ResourceSpineAtlasDefault
         : public ResourceSpineAtlas
     {
+        DECLARE_FACTORABLE( ResourceSpineAtlasDefault );
         DECLARE_VISITABLE( ResourceSpineAtlas );
 
     public:

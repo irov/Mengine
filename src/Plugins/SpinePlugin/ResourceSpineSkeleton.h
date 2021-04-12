@@ -14,6 +14,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceSpineSkeletonInterface
     {
+        DECLARE_FACTORABLE( ResourceSpineSkeleton );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

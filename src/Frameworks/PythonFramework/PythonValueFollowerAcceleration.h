@@ -9,6 +9,8 @@ namespace Mengine
     class PythonValueFollowerAcceleration
         : public PythonValueFollower
     {
+        DECLARE_FACTORABLE( PythonValueFollowerAcceleration );
+
     public:
         PythonValueFollowerAcceleration();
         ~PythonValueFollowerAcceleration() override;

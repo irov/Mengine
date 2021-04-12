@@ -266,11 +266,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        PLATFORM_SERVICE()
-            ->stopPlatform();
+        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->stopPlatform();
+        }
 
-        BOOTSTRAPPER_SERVICE()
-            ->stop();
+        if( SERVICE_EXIST( Mengine::BootstrapperInterface ) == true )
+        {
+            BOOTSTRAPPER_SERVICE()
+                ->stop();
+        }
 
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"

@@ -30,6 +30,7 @@ namespace Mengine
         , protected BaseEventation
         , protected BaseAnimation
     {
+        DECLARE_FACTORABLE( Movie2SubComposition );
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
 

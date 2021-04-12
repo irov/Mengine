@@ -17,6 +17,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceOzzMeshInterface
     {
+        DECLARE_FACTORABLE( ResourceOzzMesh );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

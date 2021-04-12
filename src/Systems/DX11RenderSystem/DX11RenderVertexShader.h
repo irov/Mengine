@@ -3,20 +3,20 @@
 #include "Interface/RenderVertexShaderInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderVertexShader
+    class DX11RenderVertexShader
         : public RenderVertexShaderInterface
         , public Factorable
     {
     public:
-        DX9RenderVertexShader();
-        ~DX9RenderVertexShader() override;
+        DX11RenderVertexShader();
+        ~DX11RenderVertexShader() override;
 
     public:
         const ConstString & getName() const override;
@@ -41,6 +41,6 @@ namespace Mengine
         bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderVertexShader, RenderVertexShaderInterface> DX9RenderVertexShaderPtr;
+    typedef IntrusivePtr<DX11RenderVertexShader, RenderVertexShaderInterface> DX11RenderVertexShaderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

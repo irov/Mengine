@@ -16,6 +16,7 @@ namespace Mengine
         : public Node
         , protected BaseRender
     {
+        DECLARE_FACTORABLE( MovieInternalObject );
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
 

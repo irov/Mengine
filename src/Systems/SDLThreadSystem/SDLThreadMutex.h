@@ -9,10 +9,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLThreadMutex
         : public ThreadMutexInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SDLFileOutputStream );
+
     public:
         SDLThreadMutex();
         ~SDLThreadMutex() override;
@@ -38,6 +41,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLThreadMutex> SDLThreadMutexPtr;
+    typedef IntrusivePtr<SDLThreadMutex, ThreadMutexInterface> SDLThreadMutexPtr;
     //////////////////////////////////////////////////////////////////////////
 }

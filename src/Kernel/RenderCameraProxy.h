@@ -12,6 +12,8 @@ namespace Mengine
         : public Factorable
         , public RenderCameraInterface
     {
+        DECLARE_FACTORABLE( RenderCameraProxy );
+
     public:
         RenderCameraProxy();
         ~RenderCameraProxy() override;

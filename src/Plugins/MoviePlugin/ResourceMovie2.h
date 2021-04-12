@@ -22,6 +22,7 @@ namespace Mengine
     class ResourceMovie2
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceMovie2 );
         DECLARE_VISITABLE( Resource );
         DECLARE_MAGICABLE( MAGIC_AEZ );
 

@@ -12,6 +12,8 @@ namespace Mengine
     class BitmapFont
         : public FontBase
     {
+        DECLARE_FACTORABLE( BitmapFont );
+
     public:
         BitmapFont();
         ~BitmapFont() override;
@@ -59,6 +61,6 @@ namespace Mengine
         RenderTextureInterfacePtr m_textureOutline;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BitmapFont> BitmapFontPtr;
+    typedef IntrusivePtr<BitmapFont, TextFontInterface> BitmapFontPtr;
     //////////////////////////////////////////////////////////////////////////
 }

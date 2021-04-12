@@ -9,6 +9,8 @@ namespace Mengine
     class ImageDecoderPNG
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderPNG );
+
     public:
         ImageDecoderPNG();
         ~ImageDecoderPNG() override;

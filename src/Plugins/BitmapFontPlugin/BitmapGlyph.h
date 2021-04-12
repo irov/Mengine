@@ -25,6 +25,8 @@ namespace Mengine
     class BitmapGlyph
         : public Factorable
     {
+        DECLARE_FACTORABLE( BitmapGlyph );
+
     public:
         BitmapGlyph();
         ~BitmapGlyph() override;

@@ -13,6 +13,8 @@ namespace Mengine
         : public RenderVertexAttributeInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderVertexAttribute );
+
     public:
         MockupRenderVertexAttribute();
         ~MockupRenderVertexAttribute() override;

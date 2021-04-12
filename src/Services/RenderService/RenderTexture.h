@@ -12,6 +12,8 @@ namespace Mengine
     class RenderTexture
         : public RenderTextureInterface
     {
+        DECLARE_FACTORABLE( RenderTexture );
+
     public:
         RenderTexture();
         ~RenderTexture() override;

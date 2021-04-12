@@ -14,6 +14,8 @@ namespace Mengine
         : public RenderProgramVariableInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( OpenGLRenderProgramVariable );
+
     public:
         OpenGLRenderProgramVariable();
         ~OpenGLRenderProgramVariable() override;
@@ -76,6 +78,6 @@ namespace Mengine
         VectorVariables m_pixelVariables;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderProgramVariable> OpenGLRenderProgramVariablePtr;
+    typedef IntrusivePtr<OpenGLRenderProgramVariable, RenderProgramVariableInterface> OpenGLRenderProgramVariablePtr;
     //////////////////////////////////////////////////////////////////////////
 }

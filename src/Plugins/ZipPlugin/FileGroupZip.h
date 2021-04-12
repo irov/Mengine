@@ -14,6 +14,8 @@ namespace Mengine
     class FileGroupZip
         : public BaseFileGroup
     {
+        DECLARE_FACTORABLE( FileGroupZip );
+
     public:
         FileGroupZip();
         ~FileGroupZip() override;

@@ -193,6 +193,8 @@ namespace Mengine
             class MusicAffectorCallback
                 : public AffectorCallbackInterface
             {
+                DECLARE_FACTORABLE( MusicAffectorCallback );
+
             public:
                 MusicAffectorCallback()
                 {

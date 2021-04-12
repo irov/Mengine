@@ -10,6 +10,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceJSONInterface
     {
+        DECLARE_FACTORABLE( ResourceJSON );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

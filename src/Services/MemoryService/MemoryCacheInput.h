@@ -18,6 +18,8 @@ namespace Mengine
         : public MemoryCacheInputInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Document );
+
     public:
         MemoryCacheInput();
         ~MemoryCacheInput() override;

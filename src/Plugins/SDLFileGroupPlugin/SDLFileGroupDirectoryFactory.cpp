@@ -7,8 +7,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileGroupDirectoryFactory::SDLFileGroupDirectoryFactory( const FilePath & _relationPath )
-        : Factory( "SDLFileGroupDirectory" )
-        , m_relationPath( _relationPath )
+        : m_relationPath( _relationPath )
     {
     }
     //////////////////////////////////////////////////////////////////////////

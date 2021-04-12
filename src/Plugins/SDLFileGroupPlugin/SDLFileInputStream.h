@@ -7,7 +7,9 @@
 
 #include "SDL_rwops.h"
 
+#ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
+#endif
 
 namespace Mengine
 {
@@ -16,6 +18,8 @@ namespace Mengine
         : public FileInputStreamInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SDLFileInputStream );
+
     public:
         SDLFileInputStream();
         ~SDLFileInputStream() override;

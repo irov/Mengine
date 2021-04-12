@@ -7,6 +7,8 @@ namespace Mengine
     class VideoConverterFFMPEGToWEBM
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( VideoConverterFFMPEGToWEBM );
+
     public:
         VideoConverterFFMPEGToWEBM();
         ~VideoConverterFFMPEGToWEBM() override;

@@ -24,6 +24,7 @@ namespace Mengine
     class ResourceWindow
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceWindow );
         DECLARE_VISITABLE( Resource );
 
     public:

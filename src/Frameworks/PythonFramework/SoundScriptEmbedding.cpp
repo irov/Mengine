@@ -381,6 +381,8 @@ namespace Mengine
             class SoundAffectorCallback
                 : public AffectorCallbackInterface
             {
+                DECLARE_FACTORABLE( SoundAffectorCallback );
+
             public:
                 SoundAffectorCallback()
                 {

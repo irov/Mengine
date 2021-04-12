@@ -8,6 +8,8 @@ namespace Mengine
     class SurfaceSolidColor
         : public Surface
     {
+        DECLARE_FACTORABLE( SurfaceSolidColor );
+
     public:
         SurfaceSolidColor();
         ~SurfaceSolidColor() override;

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
-#include "Interface/DX9RenderImageExtensionInterface.h"
+#include "Interface/DX11RenderImageExtensionInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderResourceHandler.h"
 
@@ -11,17 +11,17 @@
 
 namespace Mengine
 {
-    class DX9RenderImage
+    class DX11RenderImage
         : public RenderImageInterface
-        , public DX9RenderImageExtensionInterface
+        , public DX11RenderImageExtensionInterface
         , public Factorable
-        , public DX9RenderResourceHandler
+        , public DX11RenderResourceHandler
     {
         DECLARE_UNKNOWABLE();
 
     public:
-        DX9RenderImage();
-        ~DX9RenderImage() override;
+        DX11RenderImage();
+        ~DX11RenderImage() override;
 
     public:
         bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat );
@@ -80,6 +80,6 @@ namespace Mengine
         float m_hwHeightInv;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderImage, RenderImageInterface> DX9RenderImagePtr;
+    typedef IntrusivePtr<DX11RenderImage, RenderImageInterface> DX11RenderImagePtr;
     //////////////////////////////////////////////////////////////////////////
 }

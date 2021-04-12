@@ -13,6 +13,8 @@ namespace Mengine
         : public DynamicLibraryInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Win32DynamicLibrary );
+
     public:
         Win32DynamicLibrary();
         ~Win32DynamicLibrary() override;

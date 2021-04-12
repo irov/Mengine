@@ -13,6 +13,8 @@ namespace Mengine
         : public SoundIdentityInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SoundIdentity );
+
     public:
         SoundIdentity();
         ~SoundIdentity() override;

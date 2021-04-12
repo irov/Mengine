@@ -16,6 +16,8 @@ namespace Mengine
     class PythonScriptModuleLoader
         : public Factorable
     {
+        DECLARE_FACTORABLE( PythonScriptModuleLoader );
+
     public:
         PythonScriptModuleLoader();
         ~PythonScriptModuleLoader() override;

@@ -16,6 +16,8 @@ namespace Mengine
         : public MemoryBufferInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MemoryBuffer );
+
     public:
         MemoryBuffer();
         ~MemoryBuffer() override;

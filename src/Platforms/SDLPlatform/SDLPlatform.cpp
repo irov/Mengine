@@ -798,7 +798,7 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            bool quitRequest = this->processEvents();
+            bool quitRequest = this->processEvents_();
 
             if( quitRequest == true )
             {
@@ -2664,13 +2664,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::processEvents()
+    bool SDLPlatform::processEvents_()
     {
-        if( m_shouldQuit == true )
-        {
-            return true;
-        }
-
         Uint32 windowID = SDL_GetWindowID( m_window );
 
         SDL_Event sdlEvent;
@@ -2751,6 +2746,11 @@ namespace Mengine
             default:
                 break;
             }
+        }
+
+        if( m_shouldQuit == true )
+        {
+            return true;
         }
 
         return false;

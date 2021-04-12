@@ -18,7 +18,7 @@ namespace Mengine
         : public Factory
     {
     public:
-        explicit FactoryWithListener( const Char * _name );
+        FactoryWithListener();
         ~FactoryWithListener() override;
 
     public:
@@ -26,7 +26,6 @@ namespace Mengine
 
     public:
         void destroyObject( Factorable * _object ) override;
-
 
     protected:
         FactoryDestroyListenerInterfacePtr m_destroyListener;

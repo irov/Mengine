@@ -13,6 +13,8 @@ namespace Mengine
         : public FileOutputStreamInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SDLFileOutputStream );
+
     public:
         SDLFileOutputStream();
         ~SDLFileOutputStream() override;

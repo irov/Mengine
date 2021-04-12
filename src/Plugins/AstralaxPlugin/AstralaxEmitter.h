@@ -46,6 +46,7 @@ namespace Mengine
         , protected BaseAnimation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( AstralaxEmitter );
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();

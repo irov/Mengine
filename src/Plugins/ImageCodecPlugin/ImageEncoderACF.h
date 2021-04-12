@@ -9,6 +9,8 @@ namespace Mengine
     class ImageEncoderACF
         : public ImageEncoder
     {
+        DECLARE_FACTORABLE( ImageEncoderACF );
+
     public:
         ImageEncoderACF();
         ~ImageEncoderACF() override;

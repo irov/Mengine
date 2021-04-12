@@ -2,6 +2,8 @@
 
 #include "Interface/RenderEnumInterface.h"
 
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
+
 #include "Kernel/RenderIndex.h"
 #include "Kernel/PixelFormat.h"
 
@@ -12,7 +14,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static constexpr D3DFORMAT D32SFormats[] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT)0};
+        static constexpr DXGI_FORMAT D32SFormats[] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT)0};
         static constexpr D3DFORMAT D32Formats[] = {D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT)0};
         static constexpr D3DFORMAT D16SFormats[] = {D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT)0};
         static constexpr D3DFORMAT D16Formats[] = {D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT)0};

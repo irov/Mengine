@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/DX9RenderSystemExtensionInterface.h"
+#include "Interface/DX11RenderSystemExtensionInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderResourceHandler.h"
 
@@ -15,27 +15,27 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class DX9RenderImage, class RenderImageInterface> DX9RenderImagePtr;
-    typedef IntrusivePtr<class DX9RenderVertexShader, class RenderVertexShaderInterface> DX9RenderVertexShaderPtr;
-    typedef IntrusivePtr<class DX9RenderFragmentShader, class RenderFragmentShaderInterface> DX9RenderFragmentShaderPtr;
-    typedef IntrusivePtr<class DX9RenderVertexAttribute, class RenderVertexAttributeInterface> DX9RenderVertexAttributePtr;
-    typedef IntrusivePtr<class DX9RenderProgram, class RenderProgramInterface> DX9RenderProgramPtr;
+    typedef IntrusivePtr<class DX11RenderImage, class RenderImageInterface> DX11RenderImagePtr;
+    typedef IntrusivePtr<class DX11RenderVertexShader, class RenderVertexShaderInterface> DX11RenderVertexShaderPtr;
+    typedef IntrusivePtr<class DX11RenderFragmentShader, class RenderFragmentShaderInterface> DX11RenderFragmentShaderPtr;
+    typedef IntrusivePtr<class DX11RenderVertexAttribute, class RenderVertexAttributeInterface> DX11RenderVertexAttributePtr;
+    typedef IntrusivePtr<class DX11RenderProgram, class RenderProgramInterface> DX11RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderVertexBuffer;
-    class DX9RenderIndexBuffer;
-    class DX9RenderImageTarget;
-    class DX9RenderTargetTexture;
-    class DX9RenderTargetOffscreen;
+    class DX11RenderVertexBuffer;
+    class DX11RenderIndexBuffer;
+    class DX11RenderImageTarget;
+    class DX11RenderTargetTexture;
+    class DX11RenderTargetOffscreen;
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderSystem
+    class DX11RenderSystem
         : public ServiceBase<RenderSystemInterface>
-        , public DX9RenderSystemExtensionInterface
+        , public DX11RenderSystemExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
     public:
-        DX9RenderSystem();
-        ~DX9RenderSystem() override;
+        DX11RenderSystem();
+        ~DX11RenderSystem() override;
 
     public:
         bool _initializeService() override;
@@ -134,7 +134,8 @@ namespace Mengine
         UnknownPointer getRenderSystemExtention() override;
 
     public:
-        IDirect3DDevice9 * getDirect3DDevice9() const override;
+        ID3D11Device * getDirect3D11Device() const override;
+        ID3D11DeviceContext * getDirect3D11DeviceContext() const override;
 
     protected:
         void updateVSyncDPP_();
@@ -156,17 +157,8 @@ namespace Mengine
         bool m_fullscreen;
         bool m_depth;
 
-        IDirect3D9 * m_pD3D;
-        IDirect3DDevice9 * m_pD3DDevice;
-
-        D3DCAPS9 m_d3dCaps;
-
-        D3DPRESENT_PARAMETERS m_d3dppW;
-        D3DPRESENT_PARAMETERS m_d3dppFS;
-
-        D3DDISPLAYMODE m_displayMode;
-
-        D3DPRESENT_PARAMETERS * m_d3dpp;
+        ID3D11Device * m_pD3DDevice;
+        ID3D11DeviceContext * m_pD3DDeviceContext;
 
         // sync routines
         uint32_t m_frames;
@@ -177,27 +169,22 @@ namespace Mengine
         bool restore_();
 
     protected:
-        void onDestroyDX9VertexAttribute_( DX9RenderVertexAttribute * _attribute );
-        void onDestroyDX9VertexShader_( DX9RenderVertexShader * _shader );
-        void onDestroyDX9FragmentShader_( DX9RenderFragmentShader * _shader );
-        void onDestroyDX9Program_( DX9RenderProgram * _program );
-        void onDestroyDX9VertexBuffer_( DX9RenderVertexBuffer * _buffer );
-        void onDestroyDX9IndexBuffer_( DX9RenderIndexBuffer * _buffer );
-        void onDestroyDX9RenderImage_( DX9RenderImage * _image );
-        void onDestroyDX9RenderImageTarget_( DX9RenderImageTarget * _imageTarget );
-        void onDestroyDX9RenderTargetTexture_( DX9RenderTargetTexture * _targetTexture );
-        void onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen );
+        void onDestroyVertexAttribute_( DX11RenderVertexAttribute * _attribute );
+        void onDestroyVertexShader_( DX11RenderVertexShader * _shader );
+        void onDestroyFragmentShader_( DX11RenderFragmentShader * _shader );
+        void onDestroyProgram_( DX11RenderProgram * _program );
+        void onDestroyVertexBuffer_( DX11RenderVertexBuffer * _buffer );
+        void onDestroyIndexBuffer_( DX11RenderIndexBuffer * _buffer );
+        void onDestroyRenderImage_( DX11RenderImage * _image );
+        void onDestroyRenderImageTarget_( DX11RenderImageTarget * _imageTarget );
+        void onDestroyRenderTargetTexture_( DX11RenderTargetTexture * _targetTexture );
+        void onDestroyRenderTargetOffscreen_( DX11RenderTargetOffscreen * _targetOffscreen );
 
     protected:
         void updateWVPInvMatrix_();
 
     protected:
-        D3DMULTISAMPLE_TYPE findMatchingMultiSampleType_( uint32_t _MultiSampleCount );
-        D3DFORMAT findMatchingZFormat_( D3DFORMAT _backBufferFormat );
-
-    protected:
         UINT m_adapterToUse;
-        D3DDEVTYPE m_deviceType;
 
         Viewport m_viewport;
 
@@ -213,20 +200,20 @@ namespace Mengine
         FactoryPtr m_factoryRenderTargetTexture;
         FactoryPtr m_factoryRenderTargetOffscreen;
 
-        typedef Vector<DX9RenderVertexShaderPtr> VectorRenderVertexShaders;
+        typedef Vector<DX11RenderVertexShaderPtr> VectorRenderVertexShaders;
         VectorRenderVertexShaders m_deferredCompileVertexShaders;
 
-        typedef Vector<DX9RenderFragmentShaderPtr> VectorRenderFragmentShaders;
+        typedef Vector<DX11RenderFragmentShaderPtr> VectorRenderFragmentShaders;
         VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
-        typedef Vector<DX9RenderVertexAttributePtr> VectorRenderVertexAttributes;
+        typedef Vector<DX11RenderVertexAttributePtr> VectorRenderVertexAttributes;
         VectorRenderVertexAttributes m_deferredCompileVertexAttributes;
 
-        typedef Vector<DX9RenderProgramPtr> VectorRenderPrograms;
+        typedef Vector<DX11RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;
 
-        typedef IntrusiveList<DX9RenderResourceHandler> IntrusiveListDX9RenderResourceHandler;
-        IntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
+        typedef IntrusiveList<DX11RenderResourceHandler> IntrusiveListRenderResourceHandler;
+        IntrusiveListRenderResourceHandler m_renderResourceHandlers;
 
         mt::mat4f m_projectionMatrix;
         mt::mat4f m_modelViewMatrix;

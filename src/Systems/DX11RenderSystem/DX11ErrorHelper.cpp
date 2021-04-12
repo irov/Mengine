@@ -12,7 +12,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        const Char * getDX9ErrorMessage( HRESULT _hr )
+        const Char * getDX11ErrorMessage( HRESULT _hr )
         {
             switch( _hr )
             {
@@ -63,23 +63,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9ErrorHelper::DX9ErrorHelper( const Char * _file, uint32_t _line, const Char * _method )
+    DX11ErrorHelper::DX11ErrorHelper( const Char * _file, uint32_t _line, const Char * _method )
         : m_file( _file )
         , m_line( _line )
         , m_method( _method )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9ErrorHelper::operator == ( HRESULT _hr ) const
+    bool DX11ErrorHelper::operator == ( HRESULT _hr ) const
     {
         if( _hr == S_OK )
         {
             return false;
         }
 
-        const Char * message = Helper::getDX9ErrorMessage( _hr );
+        const Char * message = Helper::getDX11ErrorMessage( _hr );
 
-        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("[DX9] file '%s' line %u call '%s' get error: %s (hr:%x)"
+        LOGGER_VERBOSE_LEVEL( ConstString::none(), LM_ERROR, LCOLOR_RED, nullptr, 0 )("[DX11] file '%s' line %u call '%s' get error: %s (hr:%x)"
             , m_file
             , m_line
             , m_method

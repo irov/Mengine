@@ -7,6 +7,8 @@ namespace Mengine
     class ModuleCameraDebugGizmo
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( ModuleCameraDebugGizmo );
+
     public:
         ModuleCameraDebugGizmo();
         ~ModuleCameraDebugGizmo() override;

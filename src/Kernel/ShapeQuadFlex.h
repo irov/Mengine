@@ -8,6 +8,8 @@ namespace Mengine
     class ShapeQuadFlex
         : public ShapeQuad
     {
+        DECLARE_FACTORABLE( ShapeQuadFlex );
+
     public:
         ShapeQuadFlex();
         ~ShapeQuadFlex() override;

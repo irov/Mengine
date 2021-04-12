@@ -8,23 +8,23 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderVertexShader::DX9RenderVertexShader()
+    DX11RenderVertexShader::DX11RenderVertexShader()
         : m_pD3DVertexShader( nullptr )
         , m_compile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderVertexShader::~DX9RenderVertexShader()
+    DX11RenderVertexShader::~DX11RenderVertexShader()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & DX9RenderVertexShader::getName() const
+    const ConstString & DX11RenderVertexShader::getName() const
     {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
+    bool DX11RenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
     {
         m_name = _name;
 
@@ -34,14 +34,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexShader::finalize()
+    void DX11RenderVertexShader::finalize()
     {
         m_memory = nullptr;
 
         DXRELEASE( m_pD3DVertexShader );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
 
@@ -62,7 +62,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
         DXCALL( _pD3DDevice, SetVertexShader, (m_pD3DVertexShader) );
     }

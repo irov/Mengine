@@ -339,6 +339,8 @@ namespace Mengine
             ::DestroyWindow( m_hWnd );
 
             m_hWnd = NULL;
+
+            this->updateWndMessage_();
         }
 
         if( m_hInstance != NULL )
@@ -677,6 +679,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::updateWndMessage_()
+    {
+        MSG msg;
+        while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
+        {
+            ::TranslateMessage( &msg );
+            ::DispatchMessage( &msg );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updatePlatform()
     {
         this->setActive_( true );
@@ -694,12 +706,7 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                MSG msg;
-                while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
-                {
-                    ::TranslateMessage( &msg );
-                    ::DispatchMessage( &msg );
-                }
+                this->updateWndMessage_();
 
                 if( m_close == true )
                 {
@@ -816,6 +823,8 @@ namespace Mengine
             ::DestroyWindow( m_hWnd );
 
             m_hWnd = NULL;
+
+            this->updateWndMessage_();
         }
     }
     //////////////////////////////////////////////////////////////////////////

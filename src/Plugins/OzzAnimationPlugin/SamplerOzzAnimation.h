@@ -21,6 +21,7 @@ namespace Mengine
         , protected BaseUpdation
         , protected BaseEventation
     {
+        DECLARE_FACTORABLE( SamplerOzzAnimation );
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
         DECLARE_EVENTABLE();

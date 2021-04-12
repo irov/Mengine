@@ -21,6 +21,8 @@ namespace Mengine
     class OpenALSoundBufferStream
         : public OpenALSoundBufferBase
     {
+        DECLARE_FACTORABLE( OpenALSoundBufferStream );
+
     public:
         OpenALSoundBufferStream();
         ~OpenALSoundBufferStream() override;

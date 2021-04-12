@@ -7,6 +7,8 @@ namespace Mengine
     class PythonFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( PythonFramework );
+
     public:
         PythonFramework();
         ~PythonFramework() override;

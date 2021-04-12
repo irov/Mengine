@@ -12,10 +12,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class TTFDataflow
         : public DataflowInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( TTFDataflow );
+
     public:
         TTFDataflow();
         ~TTFDataflow() override;

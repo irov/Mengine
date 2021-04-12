@@ -13,6 +13,7 @@ namespace Mengine
         , protected BaseUpdation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( RenderCameraOrthogonal );
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
         DECLARE_TRANSFORMABLE();

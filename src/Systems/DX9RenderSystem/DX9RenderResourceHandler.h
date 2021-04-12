@@ -4,14 +4,13 @@
 
 #include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
-#include "stdex/intrusive_linked.h"
+#include "Kernel/IntrusiveLinked.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class DX9RenderResourceHandler
         : public Mixin
-        , public stdex::intrusive_linked<DX9RenderResourceHandler>        
+        , public IntrusiveLinked<DX9RenderResourceHandler>
     {
     public:
         DX9RenderResourceHandler();

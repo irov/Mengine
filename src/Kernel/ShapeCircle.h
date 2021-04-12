@@ -11,6 +11,7 @@ namespace Mengine
     class ShapeCircle
         : public Shape
     {
+        DECLARE_FACTORABLE( ShapeCircle );
         DECLARE_VISITABLE( Node );
 
     public:

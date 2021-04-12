@@ -12,6 +12,8 @@ namespace Mengine
     class Win32FileGroupDirectory
         : public BaseFileGroup
     {
+        DECLARE_FACTORABLE( Win32FileGroupDirectory );
+
     public:
         Win32FileGroupDirectory();
         ~Win32FileGroupDirectory() override;

@@ -13,6 +13,8 @@ namespace Mengine
         : public DataflowInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( FEDataflow );
+
     public:
         FEDataflow();
         ~FEDataflow() override;

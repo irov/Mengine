@@ -3,21 +3,21 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderResourceHandler::DX9RenderResourceHandler()
+    DX11RenderResourceHandler::DX11RenderResourceHandler()
         : m_pD3DDevice( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderResourceHandler::~DX9RenderResourceHandler()
+    DX11RenderResourceHandler::~DX11RenderResourceHandler()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderResourceHandler::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderResourceHandler::setDirect3D11Device( ID3D11Device * _pD3DDevice )
     {
         m_pD3DDevice = _pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX9RenderResourceHandler::getDirect3DDevice9() const
+    ID3D11Device * DX11RenderResourceHandler::getDirect3D11Device() const
     {
         return m_pD3DDevice;
     }

@@ -36,6 +36,7 @@ namespace Mengine
         , protected BaseRender
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( NodeOzzAnimation );
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();

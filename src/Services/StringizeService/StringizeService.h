@@ -19,7 +19,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class StringizeService
         : public ServiceBase<StringizeServiceInterface>
     {

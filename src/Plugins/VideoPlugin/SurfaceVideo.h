@@ -27,6 +27,7 @@ namespace Mengine
         , protected BaseEventation
         , protected BaseAnimation
     {
+        DECLARE_FACTORABLE( SurfaceVideo );
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
@@ -108,6 +109,6 @@ namespace Mengine
         mt::uv4f m_uv;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SurfaceVideo> SurfaceVideoPtr;
+    typedef IntrusiveSurfacePtr<SurfaceVideo> SurfaceVideoPtr;
     //////////////////////////////////////////////////////////////////////////
 }

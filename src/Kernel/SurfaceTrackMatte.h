@@ -20,6 +20,8 @@ namespace Mengine
     class SurfaceTrackMatte
         : public Surface
     {
+        DECLARE_FACTORABLE( SurfaceTrackMatte );
+
     public:
         SurfaceTrackMatte();
         ~SurfaceTrackMatte() override;

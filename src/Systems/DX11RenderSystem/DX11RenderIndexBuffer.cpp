@@ -17,7 +17,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderIndexBuffer::DX9RenderIndexBuffer()
+    DX11RenderIndexBuffer::DX11RenderIndexBuffer()
         : m_bufferType( BT_STATIC )
         , m_indexSize( 0 )
         , m_indexCapacity( 0 )
@@ -29,12 +29,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderIndexBuffer::~DX9RenderIndexBuffer()
+    DX11RenderIndexBuffer::~DX11RenderIndexBuffer()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DIndexBuffer == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
+    bool DX11RenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
     {
         m_indexSize = _indexSize;
         m_bufferType = _bufferType;
@@ -68,24 +68,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderIndexBuffer::finalize()
+    void DX11RenderIndexBuffer::finalize()
     {
         m_memory = nullptr;
 
         DXRELEASE( m_pD3DIndexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderIndexBuffer::getIndexCount() const
+    uint32_t DX11RenderIndexBuffer::getIndexCount() const
     {
         return m_indexCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderIndexBuffer::getIndexSize() const
+    uint32_t DX11RenderIndexBuffer::getIndexSize() const
     {
         return m_indexSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::resize( uint32_t _indexCount )
+    bool DX11RenderIndexBuffer::resize( uint32_t _indexCount )
     {
         m_indexCount = _indexCount;
 
@@ -111,7 +111,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
+    MemoryInterfacePtr DX11RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
         if( _offset + _count > m_indexCount )
         {
@@ -160,7 +160,7 @@ namespace Mengine
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::unlock()
+    bool DX11RenderIndexBuffer::unlock()
     {
         m_memory->setBuffer( nullptr, 0 );
 
@@ -176,7 +176,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
+    bool DX11RenderIndexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
         if( _offset + _count > m_indexCapacity )
         {
@@ -219,17 +219,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderIndexBuffer::enable()
+    void DX11RenderIndexBuffer::enable()
     {
         DXCALL( m_pD3DDevice, SetIndices, (m_pD3DIndexBuffer) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderIndexBuffer::disable()
+    void DX11RenderIndexBuffer::disable()
     {
         DXCALL( m_pD3DDevice, SetIndices, (nullptr) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderIndexBuffer::onRenderReset()
+    void DX11RenderIndexBuffer::onRenderReset()
     {
         if( m_pool == D3DPOOL_MANAGED )
         {
@@ -241,7 +241,7 @@ namespace Mengine
         DXRELEASE( m_pD3DIndexBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::onRenderRestore()
+    bool DX11RenderIndexBuffer::onRenderRestore()
     {
         if( m_pool == D3DPOOL_MANAGED )
         {

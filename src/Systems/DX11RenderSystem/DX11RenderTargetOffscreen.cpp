@@ -10,17 +10,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderTargetOffscreen::DX9RenderTargetOffscreen()
+    DX11RenderTargetOffscreen::DX11RenderTargetOffscreen()
         : m_pD3DSurfacePlain( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderTargetOffscreen::~DX9RenderTargetOffscreen()
+    DX11RenderTargetOffscreen::~DX11RenderTargetOffscreen()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DSurfacePlain == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetOffscreen::_initialize()
+    bool DX11RenderTargetOffscreen::_initialize()
     {
         IDirect3DSurface9 * pD3DSurfacePlain;
         IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &pD3DSurfacePlain, NULL) )
@@ -33,14 +33,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetOffscreen::_finalize()
+    void DX11RenderTargetOffscreen::_finalize()
     {
-        DX9RenderTargetTexture::_finalize();
+        DX11RenderTargetTexture::_finalize();
 
         DXRELEASE( m_pD3DSurfacePlain );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
+    bool DX11RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
         if( m_pD3DSurfacePlain == nullptr )
         {

@@ -6,6 +6,8 @@ namespace Mengine
     class Win32FileGroupDirectoryFactory
         : public Factory
     {
+        DECLARE_FACTORABLE( Win32FileGroupDirectoryFactory );
+
     public:
         Win32FileGroupDirectoryFactory( const FilePath & _relationPath );
         ~Win32FileGroupDirectoryFactory() override;

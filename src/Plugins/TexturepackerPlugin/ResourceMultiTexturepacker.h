@@ -9,6 +9,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceMultiTexturepackerInterface
     {
+        DECLARE_FACTORABLE( ResourceMultiTexturepacker );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

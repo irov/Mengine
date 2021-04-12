@@ -8,6 +8,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Document.h"
 #include "Kernel/Pointer.h"
 
@@ -20,11 +21,15 @@ namespace Mengine
         : public Factorable
     {
     public:
-        Factory( const Char * _name );
+        Factory();
         ~Factory() override;
 
     public:
-        const Char * getName() const;
+        bool initialize( const ConstString & _type );
+        void finalize();
+
+    public:
+        MENGINE_INLINE const ConstString & getType() const;
 
     public:
         virtual FactorablePointer createObject( const DocumentPtr & _doc );
@@ -39,11 +44,11 @@ namespace Mengine
         virtual void _destroyObject( Factorable * _object ) = 0;
 
     protected:
-        const Char * m_name;
+        ConstString m_type;
 
         uint32_t m_count;
 
-#ifdef MENGINE_DEBUG
+#ifdef MENGINE_DEBUG        
         bool m_register;
 #endif
 
@@ -52,12 +57,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factory> FactoryPtr;
     //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const ConstString & Factory::getType() const
+    {
+        return m_type;
+    }
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class T, class ... Args>
+        template<class Type, class ... Args>
         FactoryPtr makeFactory( const DocumentPtr & _doc, Args && ... _args )
         {
-            FactoryPtr factory = Helper::makeFactorableUnique<T>( _doc, std::forward<Args>( _args ) ... );
+            FactoryPtr factory = Helper::makeFactorableUnique<Type>( _doc, std::forward<Args>( _args ) ... );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( factory );
+
+            const ConstString & type = Type::getFactorableType();
+
+            factory->initialize( type );
 
             return factory;
         }

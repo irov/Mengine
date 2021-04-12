@@ -14,6 +14,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceDazzleEffectCustomInterface
     {
+        DECLARE_FACTORABLE( ResourceDazzleEffectCustom );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

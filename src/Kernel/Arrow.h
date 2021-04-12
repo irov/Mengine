@@ -19,6 +19,8 @@ namespace Mengine
     class Arrow
         : public Entity
     {
+        DECLARE_FACTORABLE( Arrow );
+
     public:
         Arrow();
         ~Arrow() override;

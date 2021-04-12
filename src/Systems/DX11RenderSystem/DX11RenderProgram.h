@@ -2,7 +2,7 @@
 
 #include "Interface/RenderProgramInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderVertexShader.h"
 #include "DX11RenderFragmentShader.h"
@@ -13,13 +13,13 @@
 
 namespace Mengine
 {
-    class DX9RenderProgram
+    class DX11RenderProgram
         : public RenderProgramInterface
         , public Factorable
     {
     public:
-        DX9RenderProgram();
-        ~DX9RenderProgram() override;
+        DX11RenderProgram();
+        ~DX11RenderProgram() override;
 
     public:
         const ConstString & getName() const override;
@@ -30,7 +30,7 @@ namespace Mengine
         const RenderFragmentShaderInterfacePtr & getFragmentShader() const override;
 
     public:
-        bool initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute );
+        bool initialize( const ConstString & _name, const DX11RenderVertexShaderPtr & _vertexShader, const DX11RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute );
         void finalize();
 
     public:
@@ -47,11 +47,11 @@ namespace Mengine
     protected:
         ConstString m_name;
 
-        DX9RenderVertexShaderPtr m_vertexShader;
-        DX9RenderFragmentShaderPtr m_fragmentShader;
-        DX9RenderVertexAttributePtr m_vertexAttribute;
+        DX11RenderVertexShaderPtr m_vertexShader;
+        DX11RenderFragmentShaderPtr m_fragmentShader;
+        DX11RenderVertexAttributePtr m_vertexAttribute;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderProgram, class RenderProgramInterface> DX9RenderProgramPtr;
+    typedef IntrusivePtr<DX11RenderProgram, RenderProgramInterface> DX11RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
 }

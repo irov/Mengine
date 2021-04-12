@@ -21,6 +21,8 @@ namespace Mengine
     class LambdaAffectorInterpolateLinear
         : public LambdaAffectorInterpolate<T, ValueInterpolatorLinear<T> >
     {
+        DECLARE_FACTORABLE( LambdaAffectorInterpolateLinear );
+
     public:
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
 
@@ -48,6 +50,8 @@ namespace Mengine
     class LambdaAffectorInterpolateQuadratic
         : public LambdaAffectorInterpolate<T, ValueInterpolatorQuadratic<T> >
     {
+        DECLARE_FACTORABLE( LambdaAffectorInterpolateQuadratic );
+
     public:
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
 
@@ -75,6 +79,8 @@ namespace Mengine
     class LambdaAffectorInterpolateBezier
         : public LambdaAffectorInterpolate<T, ValueInterpolatorBezier<T, N> >
     {
+        DECLARE_FACTORABLE( LambdaAffectorInterpolateBezier );
+
     public:
         typedef Lambda<void( const T & )> LambdaSettuper;
         typedef Lambda<T()> LambdaGetter;
@@ -211,6 +217,8 @@ namespace Mengine
         class NodeAffectorCreatorInterpolateLinear
             : public Factorable
         {
+            DECLARE_FACTORABLE( NodeAffectorCreatorInterpolateLinear );
+
         public:
             typedef LambdaAffectorInterpolateLinear<T> AffectorType;
             typedef typename AffectorType::LambdaSettuper LambdaSettuper;
@@ -268,6 +276,8 @@ namespace Mengine
         class NodeAffectorCreatorInterpolateQuadratic
             : public Factorable
         {
+            DECLARE_FACTORABLE( NodeAffectorCreatorInterpolateQuadratic );
+
         public:
             typedef LambdaAffectorInterpolateQuadratic<T> AffectorType;
             typedef typename AffectorType::LambdaSettuper LambdaSettuper;
@@ -326,6 +336,8 @@ namespace Mengine
         class NodeAffectorCreatorInterpolateBezier
             : public Factorable
         {
+            DECLARE_FACTORABLE( NodeAffectorCreatorInterpolateBezier );
+
         public:
             typedef LambdaAffectorInterpolateBezier<T, N> AffectorType;
             typedef typename AffectorType::LambdaSettuper LambdaSettuper;

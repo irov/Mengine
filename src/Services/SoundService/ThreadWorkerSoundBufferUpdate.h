@@ -8,10 +8,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ThreadWorkerSoundBufferUpdate
         : public ThreadWorkerInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( ThreadWorkerSoundBufferUpdate );
+
     public:
         ThreadWorkerSoundBufferUpdate();
         ~ThreadWorkerSoundBufferUpdate() override;

@@ -8,6 +8,7 @@ namespace Mengine
     class HotSpotGlobal
         : public HotSpot
     {
+        DECLARE_FACTORABLE( HotSpotGlobal );
         DECLARE_VISITABLE( HotSpot );
 
     public:

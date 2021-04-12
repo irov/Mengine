@@ -18,6 +18,8 @@ namespace Mengine
         : public FileInputStreamInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Win32FileInputStream );
+
     public:
         Win32FileInputStream();
         ~Win32FileInputStream() override;

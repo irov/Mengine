@@ -167,12 +167,14 @@ Render
     RenderServiceInterface.h
     RenderSystemInterface.h
     DX9RenderSystemExtensionInterface.h
+    DX11RenderSystemExtensionInterface.h
     OpenGLRenderSystemExtensionInterface.h
     RenderProgramVariableInterface.h
     RenderImageInterface.h
     RenderImageLoaderInterface.h
     RenderImageProviderInterface.h
     DX9RenderImageExtensionInterface.h
+    DX11RenderImageExtensionInterface.h
     OpenGLRenderImageExtensionInterface.h
     RenderTextureInterface.h
     RenderViewportInterface.h

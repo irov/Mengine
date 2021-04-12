@@ -215,6 +215,9 @@ namespace Mengine
         void finalizeFileService_();
 
     protected:
+        void updateWndMessage_();
+
+    protected:
         WChar m_windowClassName[MENGINE_MAX_PATH] = {L'\0'};
 
         HINSTANCE m_hInstance;

@@ -11,6 +11,8 @@ namespace Mengine
         : public RenderTargetInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderTargetTexture );
+
     public:
         MockupRenderTargetTexture();
         ~MockupRenderTargetTexture() override;

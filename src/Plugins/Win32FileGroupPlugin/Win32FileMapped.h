@@ -14,6 +14,8 @@ namespace Mengine
         : public FileMappedInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Win32FileMapped );
+
     public:
         Win32FileMapped();
         ~Win32FileMapped() override;

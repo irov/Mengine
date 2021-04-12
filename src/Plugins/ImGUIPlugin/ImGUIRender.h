@@ -19,6 +19,7 @@ namespace Mengine
         , protected BaseRender
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( ImGUIRender );
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_RENDERABLE();

@@ -10,8 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FactoryWithMutex::FactoryWithMutex( const Char * _name )
-        : Factory( _name )
+    FactoryWithMutex::FactoryWithMutex()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,16 +32,21 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
+        MENGINE_ASSERTION_FATAL( m_type.empty() == false );
+
         if( m_mutex != nullptr )
         {
             m_mutex->lock();
         }
 
-        ++m_count;
-        IntrusivePtrBase::intrusive_ptr_add_ref( this );
-
         Factorable * object = this->_createObject();
         
+        MENGINE_ASSERTION_MEMORY_PANIC( object );
+
+        ++m_count;
+
+        IntrusivePtrBase::intrusive_ptr_add_ref( this );
+
         if( m_mutex != nullptr )
         {
             m_mutex->unlock();
@@ -92,6 +96,7 @@ namespace Mengine
         this->_destroyObject( _object );
 
         --m_count;
+
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
 
         if( m_mutex != nullptr )

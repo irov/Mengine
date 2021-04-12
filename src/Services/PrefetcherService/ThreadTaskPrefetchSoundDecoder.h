@@ -9,6 +9,8 @@ namespace Mengine
     class ThreadTaskPrefetchSoundDecoder
         : public ThreadTaskPrefetch
     {
+        DECLARE_FACTORABLE( ThreadTaskPrefetchSoundDecoder );
+
     public:
         ThreadTaskPrefetchSoundDecoder();
         ~ThreadTaskPrefetchSoundDecoder() override;

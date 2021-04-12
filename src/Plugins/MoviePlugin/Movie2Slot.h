@@ -13,6 +13,7 @@ namespace Mengine
         , protected DummyRender
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Movie2Slot );
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_TRANSFORMABLE();

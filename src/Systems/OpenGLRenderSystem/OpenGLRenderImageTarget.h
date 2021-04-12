@@ -19,6 +19,7 @@ namespace Mengine
         , public OpenGLRenderResourceHandler
         , public Factorable
     {
+        DECLARE_FACTORABLE( OpenGLRenderImageTarget );
         DECLARE_UNKNOWABLE();
 
     public:
@@ -68,6 +69,6 @@ namespace Mengine
         OpenGLRenderTargetTexturePtr m_renderTarget;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderImageTarget> OpenGLRenderImageTargetPtr;
+    typedef IntrusivePtr<OpenGLRenderImageTarget, RenderImageInterface> OpenGLRenderImageTargetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

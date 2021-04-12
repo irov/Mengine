@@ -13,7 +13,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    template<class T>
+    template<class Type>
     class FrameworkFactory
         : public FrameworkFactoryInterface
     {
@@ -29,9 +29,13 @@ namespace Mengine
     public:
         bool initialize() override
         {
-            FactoryPtr factory = Helper::makeFactoryDefault<T>( MENGINE_DOCUMENT_FACTORABLE );
+            FactoryPtr factory = Helper::makeFactoryDefault<Type>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
+
+            const ConstString & type = Type::getFactorableType();
+
+            factory->initialize( type );
 
             m_factory = factory;
 
@@ -48,7 +52,7 @@ namespace Mengine
     public:
         FrameworkInterfacePtr createFramework( const DocumentPtr & _doc ) override
         {
-            IntrusivePtr<T> module = m_factory->createObject( _doc );
+            IntrusivePtr<Type> module = m_factory->createObject( _doc );
 
             return module;
         }

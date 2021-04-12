@@ -507,7 +507,7 @@ namespace Mengine
                             return;
                         }
 
-                        String name = _factory->getName();
+                        ConstString name = _factory->getType();
 
                         m_scopes[count].emplace_back( name );
                     }
@@ -526,11 +526,11 @@ namespace Mengine
                             ++it )
                         {
                             uint32_t c = it->first;
-                            const VectorString & l = it->second;
+                            const VectorConstString & l = it->second;
 
-                            for( const String & s : l )
+                            for( const ConstString & s : l )
                             {
-                                ss << "Factory: " << s << " " << c << std::endl;
+                                ss << "Factory: " << s.c_str() << " " << c << std::endl;
 
                                 if( ++iterator == 15 )
                                 {
@@ -548,7 +548,7 @@ namespace Mengine
                     }
 
                 protected:
-                    typedef Map<uint32_t, VectorString> MapPybindScope;
+                    typedef Map<uint32_t, VectorConstString> MapPybindScope;
                     MapPybindScope m_scopes;
                 };
 

@@ -10,6 +10,8 @@ namespace Mengine
     class ImageDecoderResourcePrefetcher
         : public BaseResourcePrefetcher
     {
+        DECLARE_FACTORABLE( ImageDecoderResourcePrefetcher );
+
     public:
         ImageDecoderResourcePrefetcher();
         ~ImageDecoderResourcePrefetcher() override;

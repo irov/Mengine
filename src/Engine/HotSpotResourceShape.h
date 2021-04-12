@@ -10,6 +10,7 @@ namespace Mengine
     class HotSpotResourceShape
         : public HotSpotPolygon
     {
+        DECLARE_FACTORABLE( HotSpotResourceShape );
         DECLARE_VISITABLE( HotSpotPolygon );
 
     public:

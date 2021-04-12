@@ -183,7 +183,7 @@ namespace Mengine
         void destroyWindow_();
 
     protected:
-        bool processEvents();
+        bool processEvents_();
 
     protected:
         void setActive_( bool _active );

@@ -12,6 +12,8 @@ namespace Mengine
         : public RenderFragmentShaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderFragmentShader );
+
     public:
         MockupRenderFragmentShader();
         ~MockupRenderFragmentShader() override;

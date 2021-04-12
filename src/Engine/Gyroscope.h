@@ -10,6 +10,7 @@ namespace Mengine
         : public Node
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Gyroscope );
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();
 

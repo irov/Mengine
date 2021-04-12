@@ -15,6 +15,7 @@ namespace Mengine
         , public UnknownPhysicalPlaceholderInterface
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( PhysicalPlaceholder );
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();

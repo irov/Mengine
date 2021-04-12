@@ -9,6 +9,8 @@ namespace Mengine
     class ThreadTaskPrefetchDataflow
         : public ThreadTaskPrefetch
     {
+        DECLARE_FACTORABLE( ThreadTaskPrefetchDataflow );
+
     public:
         ThreadTaskPrefetchDataflow();
         ~ThreadTaskPrefetchDataflow() override;

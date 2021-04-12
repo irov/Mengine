@@ -8,6 +8,8 @@ namespace Mengine
     class OpenALSoundBufferMemory
         : public OpenALSoundBufferBase
     {
+        DECLARE_FACTORABLE( OpenALSoundBufferMemory );
+
     public:
         OpenALSoundBufferMemory();
         ~OpenALSoundBufferMemory() override;

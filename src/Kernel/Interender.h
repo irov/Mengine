@@ -13,6 +13,7 @@ namespace Mengine
         , protected DummyPicker
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Interender );
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_PICKERABLE();

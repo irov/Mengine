@@ -8,6 +8,7 @@ namespace Mengine
     class HotSpotCircle
         : public HotSpot
     {
+        DECLARE_FACTORABLE( HotSpotCircle );
         DECLARE_VISITABLE( HotSpot );
 
     public:

@@ -2,7 +2,7 @@
 
 #include "Interface/RenderTargetInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderResourceHandler.h"
 
@@ -11,14 +11,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderTargetTexture
+    class DX11RenderTargetTexture
         : public RenderTargetInterface
         , public Factorable
-        , public DX9RenderResourceHandler
+        , public DX11RenderResourceHandler
     {
     public:
-        DX9RenderTargetTexture();
-        ~DX9RenderTargetTexture() override;
+        DX11RenderTargetTexture();
+        ~DX11RenderTargetTexture() override;
 
     public:
         bool initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format );
@@ -75,6 +75,6 @@ namespace Mengine
         IDirect3DSurface9 * m_pD3DSurfaceOld;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
+    typedef IntrusivePtr<DX11RenderTargetTexture, RenderTargetInterface> DX11RenderTargetTexturePtr;
     //////////////////////////////////////////////////////////////////////////
 }

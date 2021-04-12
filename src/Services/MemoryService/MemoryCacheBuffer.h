@@ -25,6 +25,8 @@ namespace Mengine
         : public MemoryBufferInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MemoryCacheBuffer );
+
     public:
         MemoryCacheBuffer();
         ~MemoryCacheBuffer() override;

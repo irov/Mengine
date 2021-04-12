@@ -46,7 +46,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE void assertPythonEventReceiver( const Identity * _identity, const pybind::dict & _kwds )
+        MENGINE_INLINE void assertPythonEventReceiver( const Factorable * _factorable, const pybind::dict & _kwds )
         {
             if( _kwds.empty() == true )
             {
@@ -62,15 +62,13 @@ namespace Mengine
                 String k = it.key();
 
                 LOGGER_ERROR( "node '%s:%s' invalid kwds '%s'"
-                    , _identity->getType().c_str()
-                    , _identity->getName().c_str()
+                    , _factorable->getType().c_str()
                     , k.c_str()
                 );
             }
 
             MENGINE_ERROR_FATAL( "invalid python event receiver '%s:%s'"
-                , _identity->getType().c_str()
-                , _identity->getName().c_str()
+                , _factorable->getType().c_str()
             );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -181,8 +179,8 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
-#   define MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER(Identity, Kwds)\
-    Helper::assertPythonEventReceiver(Identity, Kwds)
+#   define MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER(Factorable, Kwds)\
+    Helper::assertPythonEventReceiver(Factorable, Kwds)
 #else
 #   define MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER(Identity, Kwds)
 #endif

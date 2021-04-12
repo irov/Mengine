@@ -11,6 +11,8 @@ namespace Mengine
     class ResourceBank
         : public ResourceBankInterface
     {
+        DECLARE_FACTORABLE( ResourceBank );
+
     public:
         ResourceBank();
         ~ResourceBank() override;

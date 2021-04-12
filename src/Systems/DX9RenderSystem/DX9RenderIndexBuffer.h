@@ -10,11 +10,14 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderIndexBuffer
         : public RenderIndexBufferInterface
         , public Factorable
         , public DX9RenderResourceHandler
     {
+        DECLARE_FACTORABLE( DX9RenderIndexBuffer );
+
     public:
         DX9RenderIndexBuffer();
         ~DX9RenderIndexBuffer() override;
@@ -59,6 +62,6 @@ namespace Mengine
         MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderIndexBuffer> DX9RenderIndexBufferPtr;
+    typedef IntrusivePtr<DX9RenderIndexBuffer, RenderIndexBufferInterface> DX9RenderIndexBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -13,6 +13,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceOzzAnimationInterface
     {
+        DECLARE_FACTORABLE( ResourceOzzAnimation );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 

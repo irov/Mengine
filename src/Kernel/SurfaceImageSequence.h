@@ -34,6 +34,7 @@ namespace Mengine
         , protected BaseEventation
         , protected BaseAnimation
     {
+        DECLARE_FACTORABLE( SurfaceImageSequence );
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
 

@@ -11,6 +11,8 @@ namespace Mengine
         : public RenderIndexBufferInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderIndexBuffer );
+
     public:
         MockupRenderIndexBuffer();
         ~MockupRenderIndexBuffer() override;

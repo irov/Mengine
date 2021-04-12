@@ -2,7 +2,7 @@
 
 #include "Interface/RenderVertexBufferInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderResourceHandler.h"
 
@@ -11,14 +11,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DX9RenderVertexBuffer
+    class DX11RenderVertexBuffer
         : public RenderVertexBufferInterface
         , public Factorable
-        , public DX9RenderResourceHandler
+        , public DX11RenderResourceHandler
     {
     public:
-        DX9RenderVertexBuffer();
-        ~DX9RenderVertexBuffer() override;
+        DX11RenderVertexBuffer();
+        ~DX11RenderVertexBuffer() override;
 
     public:
         bool initialize( uint32_t _vertexSize, EBufferType _bufferType ) override;
@@ -60,6 +60,6 @@ namespace Mengine
         MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderVertexBuffer> DX9RenderVertexBufferPtr;
+    typedef IntrusivePtr<DX11RenderVertexBuffer, RenderVertexBufferInterface> DX11RenderVertexBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }

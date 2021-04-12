@@ -30,6 +30,7 @@ namespace Mengine
         , public UnknownTTFFontInterface
         , public Observable
     {
+        DECLARE_FACTORABLE( TTFFont );
         DECLARE_UNKNOWABLE();
 
     public:

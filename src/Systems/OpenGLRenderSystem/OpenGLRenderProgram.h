@@ -31,6 +31,8 @@ namespace Mengine
         , public CompilableReference
         , public Factorable        
     {
+        DECLARE_FACTORABLE( OpenGLRenderProgram );
+
     public:
         OpenGLRenderProgram();
         ~OpenGLRenderProgram() override;
@@ -82,7 +84,7 @@ namespace Mengine
         GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES] = {-1};
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderProgram> OpenGLRenderProgramPtr;
+    typedef IntrusivePtr<OpenGLRenderProgram, RenderProgramInterface> OpenGLRenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

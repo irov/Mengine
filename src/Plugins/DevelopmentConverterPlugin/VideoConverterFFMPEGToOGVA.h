@@ -7,6 +7,8 @@ namespace Mengine
     class VideoConverterFFMPEGToOGVA
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( VideoConverterFFMPEGToOGVA );
+
     public:
         VideoConverterFFMPEGToOGVA();
         ~VideoConverterFFMPEGToOGVA() override;

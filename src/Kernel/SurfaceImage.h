@@ -9,6 +9,8 @@ namespace Mengine
     class SurfaceImage
         : public Surface
     {
+        DECLARE_FACTORABLE( SurfaceImage );
+
     public:
         SurfaceImage();
         ~SurfaceImage() override;

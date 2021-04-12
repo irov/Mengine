@@ -9,6 +9,8 @@ namespace Mengine
     class PythonValueFollowerLinear
         : public PythonValueFollower
     {
+        DECLARE_FACTORABLE( PythonValueFollowerLinear );
+
     public:
         PythonValueFollowerLinear();
         ~PythonValueFollowerLinear() override;

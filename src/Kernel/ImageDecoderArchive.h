@@ -10,6 +10,8 @@ namespace Mengine
     class ImageDecoderArchive
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderArchive );
+
     public:
         ImageDecoderArchive();
         ~ImageDecoderArchive() override;

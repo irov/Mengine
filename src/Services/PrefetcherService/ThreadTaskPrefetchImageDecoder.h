@@ -10,6 +10,8 @@ namespace Mengine
     class ThreadTaskPrefetchImageDecoder
         : public ThreadTaskPrefetch
     {
+        DECLARE_FACTORABLE( ThreadTaskPrefetchImageDecoder );
+
     public:
         ThreadTaskPrefetchImageDecoder();
         ~ThreadTaskPrefetchImageDecoder() override;

@@ -12,6 +12,8 @@ namespace Mengine
         : public RenderVertexShaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderVertexShader );
+
     public:
         MockupRenderVertexShader();
         ~MockupRenderVertexShader() override;

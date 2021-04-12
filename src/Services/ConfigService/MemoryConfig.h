@@ -13,6 +13,8 @@ namespace Mengine
     class MemoryConfig
         : public ConfigInterface
     {
+        DECLARE_FACTORABLE( MemoryConfig );
+
     public:
         MemoryConfig();
         ~MemoryConfig() override;

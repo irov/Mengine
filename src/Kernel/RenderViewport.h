@@ -12,12 +12,14 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderViewport
         : public Node
         , public Observable
-        , public RenderViewportInterface        
+        , public RenderViewportInterface
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( RenderViewport );
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();
 
@@ -75,4 +77,5 @@ namespace Mengine
 
         return m_viewportWM;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

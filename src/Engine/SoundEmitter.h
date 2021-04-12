@@ -14,6 +14,7 @@ namespace Mengine
         : public Node
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( SoundEmitter );
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();
 

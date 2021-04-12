@@ -7,6 +7,8 @@ namespace Mengine
     class ShaderConverterTextToPSO
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( ShaderConverterTextToPSO );
+
     public:
         ShaderConverterTextToPSO();
         ~ShaderConverterTextToPSO() override;

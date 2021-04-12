@@ -156,16 +156,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
-        float Engine_DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX11PerfectPixelOffsetX", -0.5f );
-        float Engine_DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX11PerfectPixelOffsetY", -0.5f );
-
-        float perfect_x = Engine_DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        float perfect_y = Engine_DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
-
-        mt::mat4f vmperfect;
-        mt::make_translation_m4( vmperfect, perfect_x, perfect_y, 0.f );
-
-        mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+        m_projectionMatrix = _projectionMatrix;
 
         this->updateWVPInvMatrix_();
     }

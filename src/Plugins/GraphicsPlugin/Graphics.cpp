@@ -92,6 +92,41 @@ namespace Mengine
         return lineWidth;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::setOutlineWidth( float _outlineWidth )
+    {
+        GP_CALL( gp_set_outline_width, (m_canvas, _outlineWidth) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Graphics::getOutlineWidth() const
+    {
+        float outlineWidth;
+        GP_CALL( gp_get_outline_width, (m_canvas, &outlineWidth) );
+
+        return outlineWidth;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setOutlineColor( const Color & _color )
+    {
+        float r = _color.getR();
+        float g = _color.getG();
+        float b = _color.getB();
+        float a = _color.getA();
+
+        GP_CALL( gp_set_outline_color, (m_canvas, r, g, b, a) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Color Graphics::getOutlineColor() const
+    {
+        gp_color_t c;
+        GP_CALL( gp_get_outline_color, (m_canvas, &c) );
+
+        return Color( c.r, c.g, c.b, c.a );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::setLineSoft( float _penumbra )
     {
         GP_CALL( gp_set_penumbra, (m_canvas, _penumbra) );

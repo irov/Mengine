@@ -40,6 +40,12 @@ namespace Mengine
         void setLineWidth( float _width ) override;
         float getLineWidth() const override;
 
+        void setOutlineWidth( float _outlineWidth ) override;
+        float getOutlineWidth() const override;
+
+        void setOutlineColor( const Color & _color ) override;
+        Color getOutlineColor() const override;
+
         void setLineSoft( float _penumbra ) override;
         float getLineSoft() const override;
 

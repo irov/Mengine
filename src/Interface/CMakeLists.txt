@@ -40,9 +40,11 @@ src
     TextFontConfigLoaderInterface.h
     TextEntryInterface.h
     TextServiceInterface.h
+    FontValidatorInterface.h
     FontServiceInterface.h
     InputStreamInterface.h
     OutputStreamInterface.h
+    MappedInterface.h
     LoggerInterface.h
     LoggerServiceInterface.h
     ApplicationInterface.h
@@ -142,8 +144,8 @@ ADD_FILTER(
 File
     FileServiceInterface.h
     FileInputStreamInterface.h
-    FileMappedStreamInterface.h
     FileOutputStreamInterface.h
+    FileMappedInterface.h
     FileGroupInterface.h
 )   
 
@@ -165,12 +167,14 @@ Render
     RenderServiceInterface.h
     RenderSystemInterface.h
     DX9RenderSystemExtensionInterface.h
+    DX11RenderSystemExtensionInterface.h
     OpenGLRenderSystemExtensionInterface.h
     RenderProgramVariableInterface.h
     RenderImageInterface.h
     RenderImageLoaderInterface.h
     RenderImageProviderInterface.h
     DX9RenderImageExtensionInterface.h
+    DX11RenderImageExtensionInterface.h
     OpenGLRenderImageExtensionInterface.h
     RenderTextureInterface.h
     RenderViewportInterface.h

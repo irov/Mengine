@@ -11,7 +11,7 @@
 
 #include "math/utils.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {
@@ -367,6 +367,7 @@ namespace Mengine
         {
             return _event.dead;
         } );
+
         m_schedulers.erase( it_erase, m_schedulers.end() );
 
         for( SchedulerEventDesc & desc : m_schedulers )

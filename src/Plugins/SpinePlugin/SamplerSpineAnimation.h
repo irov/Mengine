@@ -20,8 +20,10 @@ namespace Mengine
         , public BaseUpdation
         , public BaseEventation
     {
+        DECLARE_FACTORABLE( SamplerSpineAnimation );
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
+        DECLARE_UPDATABLE();
 
     public:
         SamplerSpineAnimation();

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #define MENGINE_THREAD_PRIORITY_LOWEST (-2)
 #define MENGINE_THREAD_PRIORITY_BELOW_NORMAL (-1)
 #define MENGINE_THREAD_PRIORITY_NORMAL (0)

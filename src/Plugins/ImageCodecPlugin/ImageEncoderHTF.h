@@ -9,6 +9,8 @@ namespace Mengine
     class ImageEncoderHTF
         : public ImageEncoder
     {
+        DECLARE_FACTORABLE( ImageEncoderHTF );
+
     public:
         ImageEncoderHTF();
         ~ImageEncoderHTF() override;

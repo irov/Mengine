@@ -8,6 +8,8 @@ namespace Mengine
     class PythonScriptCodeData
         : public ScriptCodeDataInterface
     {
+        DECLARE_FACTORABLE( PythonScriptCodeData );
+
     public:
         PythonScriptCodeData();
         ~PythonScriptCodeData() override;

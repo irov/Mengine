@@ -15,7 +15,7 @@ namespace Mengine
         ~Movie2DebugRender() override;
 
     protected:
-        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Movie2 * _node, bool _hide ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const Movie2 * _node, bool _hide ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2DebugRender> Movie2DebugRenderVisitorPtr;

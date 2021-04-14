@@ -15,6 +15,8 @@ namespace Mengine
         : public SoundSourceInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( OpenALSoundSource );
+
     public:
         OpenALSoundSource();
         ~OpenALSoundSource() override;

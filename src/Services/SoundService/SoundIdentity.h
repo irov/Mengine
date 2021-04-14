@@ -13,6 +13,8 @@ namespace Mengine
         : public SoundIdentityInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SoundIdentity );
+
     public:
         SoundIdentity();
         ~SoundIdentity() override;
@@ -31,6 +33,7 @@ namespace Mengine
 
         void setSoundListener( const SoundListenerInterfacePtr & _listener ) override;
         const SoundListenerInterfacePtr & getSoundListener() const override;
+        SoundListenerInterfacePtr popSoundListener() const override;
 
     public:
         bool isStreamable() const override;
@@ -49,7 +52,7 @@ namespace Mengine
         SoundListenerInterfacePtr listener;
 
         ThreadWorkerSoundBufferUpdatePtr worker;
-        uint32_t bufferId;
+        uint32_t workerId;
 
         float time_left;
         MixerValue volume;

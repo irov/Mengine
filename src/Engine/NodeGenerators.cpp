@@ -28,10 +28,12 @@
 #include "SoundEmitter.h"
 #include "TextField.h"
 #include "Window.h"
-#include "ShapeCircle.h"
-#include "ShapePacMan.h"
-#include "ShapeQuadFixed.h"
-#include "ShapeQuadFlex.h"
+
+#include "Kernel/ShapeCircle.h"
+#include "Kernel/ShapePacMan.h"
+#include "Kernel/ShapeQuadSize.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -79,6 +81,7 @@ MENGINE_NODE_GENERATE( TextField )
 MENGINE_NODE_GENERATE( Window )
 MENGINE_NODE_GENERATE( ShapeCircle )
 MENGINE_NODE_GENERATE( ShapePacMan )
+MENGINE_NODE_GENERATE( ShapeQuadSize )
 MENGINE_NODE_GENERATE( ShapeQuadFixed )
 MENGINE_NODE_GENERATE( ShapeQuadFlex )
 //////////////////////////////////////////////////////////////////////////

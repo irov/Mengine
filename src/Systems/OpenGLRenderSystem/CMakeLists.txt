@@ -38,6 +38,7 @@ if(MENGINE_TARGET_IOS)
     add_definitions(-DGLES_SILENCE_DEPRECATION)
 endif()
 
+include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
 include_directories(${THIRDPARTY_DIR}/SDL2/include)
 
 ADD_MENGINE_LIBRARY(Systems)

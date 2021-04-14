@@ -23,6 +23,10 @@ namespace Mengine
         void trim( String * const _str, bool _left = true, bool _right = true );
         //////////////////////////////////////////////////////////////////////////
         bool toupper( const Char * _str, Char * _upper, size_t _capacity );
+        void toupper( const String & _in, String * const _upper );
+        //////////////////////////////////////////////////////////////////////////
+        bool tolower( const Char * _str, Char * _upper, size_t _capacity );
+        void tolower( const String & _str, String * const _lower );
         //////////////////////////////////////////////////////////////////////////
     }
 };

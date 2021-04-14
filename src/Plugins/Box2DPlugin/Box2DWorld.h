@@ -23,6 +23,8 @@ namespace Mengine
         , public b2ContactFilter
         , public b2ContactListener
     {
+        DECLARE_FACTORABLE( Box2DWorld );
+
     public:
         Box2DWorld();
         ~Box2DWorld() override;

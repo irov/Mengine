@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Identity.h"
-#include "Kernel/Unique.h"
 #include "Kernel/Hierarchy.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Pickerable.h"
@@ -31,7 +30,6 @@ namespace Mengine
     class Node
         : public Factorable
         , public Identity
-        , public Unique
         , public Compilable
         , public Hierarchy
         , public Updatable
@@ -297,7 +295,7 @@ namespace Mengine
 
             T t = stdex::intrusive_static_cast<T>(_node);
 
-            return std::move( t );
+            return t;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -333,7 +331,7 @@ namespace Mengine
 
             T t = stdex::intrusive_dynamic_cast<T>(_node);
 
-            return std::move( t );
+            return t;
         }
     }
     //////////////////////////////////////////////////////////////////////////

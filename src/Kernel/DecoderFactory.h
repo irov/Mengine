@@ -67,8 +67,9 @@ namespace Mengine
 
             if( factory->initialize() == false )
             {
-                LOGGER_ERROR( "invalid initialize decoder '%s'"
+                LOGGER_ERROR( "invalid initialize decoder '%s' type '%s'"
                     , _type.c_str()
+                    , T::getFactorableType().c_str()
                 );
 
                 return nullptr;

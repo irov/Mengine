@@ -10,6 +10,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextFontConfigLoaderInterface.h"
+#include "Interface/FontValidatorInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -26,7 +27,7 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FontService, Mengine::FontService );
@@ -194,12 +195,17 @@ namespace Mengine
             {
                 const TextFontInterfacePtr & font = value.element;
 
-                if( font->isValid() == false )
+                const ConstString & fontType = font->getType();
+
+                FontValidatorInterfacePtr fontValidator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FontValidator" ), fontType );
+
+                if( fontValidator->validate( font ) == false )
                 {
-                    LOGGER_ERROR( "invalid initialize '%s:%s' font '%s' invalidate!"
+                    LOGGER_ERROR( "invalid initialize '%s:%s' font '%s' type '%s' invalidate!"
                         , _fileGroup->getName().c_str()
                         , _filePath.c_str()
                         , font->getName().c_str()
+                        , fontType.c_str()
                     );
 
                     valid_successful = false;

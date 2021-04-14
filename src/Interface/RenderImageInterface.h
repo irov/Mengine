@@ -7,12 +7,13 @@
 #include "Kernel/Pointer.h"
 #include "Kernel/Rect.h"
 #include "Kernel/PixelFormat.h"
+#include "Kernel/Unknowable.h"
 #include "Kernel/UnknownPointer.h"
 
 namespace Mengine
 {
     class RenderImageInterface
-        : public Mixin
+        : public Unknowable
     {
     public:
         virtual void bind( uint32_t _stage ) = 0;

@@ -3,7 +3,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

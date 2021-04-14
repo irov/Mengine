@@ -91,6 +91,10 @@
 #define MENGINE_TOUPPER(c) ::toupper(c)
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_TOLOWER
+#define MENGINE_TOLOWER(c) ::tolower(c)
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STRICMP
 #if defined(MENGINE_COMPILER_MSVC)
 #   define MENGINE_STRICMP(a, b) ::_stricmp(a, b)

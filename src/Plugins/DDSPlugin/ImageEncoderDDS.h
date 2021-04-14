@@ -7,6 +7,8 @@ namespace Mengine
     class ImageEncoderDDS
         : public ImageEncoder
     {
+        DECLARE_FACTORABLE( ImageEncoderDDS );
+
     public:
         ImageEncoderDDS();
         ~ImageEncoderDDS() override;

@@ -1,7 +1,10 @@
 #pragma once
 
+#include "Interface/MemoryInterface.h"
+
 #include "Kernel/Mixin.h"
 #include "Kernel/PixelFormat.h"
+#include "Kernel/Document.h"
 
 #include "Config/Typedef.h"
 
@@ -28,6 +31,9 @@ namespace Mengine
 
     public:
         virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
+
+    public:
+        virtual MemoryInterfacePtr getMemory( uint32_t _codecFlags, const DocumentPtr & _doc ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;

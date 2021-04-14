@@ -4,6 +4,8 @@
 
 #include "Kernel/Params.h"
 #include "Kernel/KeyCode.h"
+#include "Kernel/TouchCode.h"
+#include "Kernel/MouseCode.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 
@@ -65,11 +67,11 @@ namespace Mengine
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
         virtual bool onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) = 0;
         virtual bool onGameText( WChar _key, float _x, float _y ) = 0;
-        virtual bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
-        virtual bool onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
-        virtual bool onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
-        virtual bool onGameMouseMove( uint32_t _touchId, float _x, float _y, float _dx, float _dy ) = 0;
-        virtual bool onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel ) = 0;
+        virtual bool onGameMouseButton( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;
+        virtual bool onGameMouseButtonBegin( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;
+        virtual bool onGameMouseButtonEnd( ETouchCode _touchId, float _x, float _y, EMouseCode _button, bool _isDown ) = 0;
+        virtual bool onGameMouseMove( ETouchCode _touchId, float _x, float _y, float _dx, float _dy ) = 0;
+        virtual bool onGameMouseWheel( EMouseCode _button, float _x, float _y, int32_t _wheel ) = 0;
         virtual void onGameAppMouseEnter( float _x, float _y ) = 0;
         virtual void onGameAppMouseLeave() = 0;
         virtual void onGameTimeFactor( float _timeFactor ) = 0;

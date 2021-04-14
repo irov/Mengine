@@ -14,6 +14,8 @@
 #include "Kernel/DocumentHelper.h"
 #endif
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -23,6 +25,8 @@ namespace Mengine
         : public MemoryBufferInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MemoryCacheBuffer );
+
     public:
         MemoryCacheBuffer();
         ~MemoryCacheBuffer() override;
@@ -47,7 +51,7 @@ namespace Mengine
     protected:
         MemoryService * m_memoryManager;
 
-        uint32_t m_bufferId;
+        UniqueId m_bufferId;
 
         void * m_data;
         size_t m_size;

@@ -16,6 +16,7 @@ namespace Mengine
         : public ResourceSpineAtlas
         , public UnknownResourceSpineAtlasTexturepackerInterface
     {
+        DECLARE_FACTORABLE( ResourceSpineAtlasTexturepacker );
         DECLARE_VISITABLE( ResourceSpineAtlas );
         DECLARE_UNKNOWABLE();
 

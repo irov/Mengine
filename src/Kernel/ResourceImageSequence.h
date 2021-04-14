@@ -20,6 +20,7 @@ namespace Mengine
     class ResourceImageSequence
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceImageSequence );
         DECLARE_VISITABLE( Resource );
 
     public:

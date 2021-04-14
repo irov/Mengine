@@ -292,7 +292,7 @@ namespace Mengine
             {
                 uint16_t it = m_iterators[index];
 
-                VectorFunnelSteps steps = m_steps[index];
+                const VectorFunnelSteps & steps = m_steps[it];
 
                 VectorFunnelSteps::size_type steps_size = steps.size();
 

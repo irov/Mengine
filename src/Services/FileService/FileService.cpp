@@ -12,6 +12,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionContainer.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
@@ -71,16 +72,16 @@ namespace Mengine
         m_defaultFileGroup = nullptr;
         m_globalFileGroup = nullptr;
 
-        for( HashtableFileGroups::const_reverse_iterator
-            it = m_fileGroups.rbegin(),
-            it_end = m_fileGroups.rend();
-            it != it_end;
-            ++it )
+#ifdef MENGINE_DEBUG
+        for( const HashtableFileGroups::value_type & value : m_fileGroups )
         {
-            const FileGroupInterfacePtr & group = it->element;
-
-            group->finalize();
+            LOGGER_ERROR( "was forgotten unmount '%s'"
+                , value.key.c_str()
+            );
         }
+#endif
+
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_fileGroups );
 
         m_fileGroups.clear();
     }

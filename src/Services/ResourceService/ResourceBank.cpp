@@ -12,7 +12,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadGuardScope.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

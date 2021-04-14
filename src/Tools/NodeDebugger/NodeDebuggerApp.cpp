@@ -79,6 +79,10 @@ namespace Mengine
         , m_width( 1280 )
         , m_height( 720 )
         , m_selectedNode( nullptr )
+        , m_selectedArrowNode( nullptr )
+        , m_selectedSceneNode( nullptr )
+        , m_selectedPickerableNode( nullptr )
+        , m_selectedRenderableNode( nullptr )
         , m_defaultIcon( nullptr )
         , m_currentTab( 0 )
         , m_serverAddress()
@@ -101,6 +105,7 @@ namespace Mengine
         , m_TextureCount( 0 )
         , m_SoundSourcesCount( 0 )
         , m_SoundBuffersCount( 0 )
+        , m_selectedNodeInCollapseHeader( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -210,7 +215,7 @@ namespace Mengine
             [this]()
         {
             this->DoUINetwork();
-        } } );
+        }} );
         m_tabs.push_back( {
             "settings",
             "Settings",
@@ -264,6 +269,8 @@ namespace Mengine
             ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 
             glfwSwapBuffers( m_window );
+
+            std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -303,6 +310,12 @@ namespace Mengine
         {
             this->DestroyNode( m_sceneRenderable );
             m_sceneRenderable = nullptr;
+        }
+
+        if( m_selectedNodeInCollapseHeader != nullptr )
+        {
+            this->DestroyNode( m_selectedNodeInCollapseHeader );
+            m_selectedNodeInCollapseHeader = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -513,6 +526,10 @@ namespace Mengine
         {
             this->ReceiveNetwork( payloadNode );
         }
+        else if( typeStr == "SelectedNode" )
+        {
+            this->ReceiveSelectedNode( payloadNode );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveArrow( const pugi::xml_node & _xmlContainer )
@@ -533,7 +550,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_arrow, path );
+            m_selectedArrowNode = this->PathToNode( m_arrow, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -555,7 +572,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_scene, path );
+            m_selectedSceneNode = this->PathToNode( m_scene, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -577,7 +594,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_scenePickerable, path );
+            m_selectedPickerableNode = this->PathToNode( m_scenePickerable, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -599,7 +616,7 @@ namespace Mengine
 
             Vector<uint32_t> path = this->StringToPath( m_lastSelectedNodePath );
 
-            m_selectedNode = this->PathToNode( m_sceneRenderable, path );
+            m_selectedRenderableNode = this->PathToNode( m_sceneRenderable, path );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -735,6 +752,46 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveSelectedNode( const pugi::xml_node & _xmlContainer )
+    {
+        if( m_selectedTab == "scene" )
+        {
+            pugi::xml_node node = _xmlContainer.child( "Node" );
+
+            uint32_t id = node.attribute( "SelectedNodeId" ).as_uint();
+
+            String pathToRoot = node.attribute( "PathToRoot" ).value();
+
+            String selectedNodeName = node.attribute( "SelectedNodeName" ).value();
+
+            Vector<uint32_t> path = this->StringToPath( pathToRoot );
+
+            m_pathToSelectedNode = path;
+
+            Vector<DebuggerNode *> childrens = m_scene->children;
+            DebuggerNode * selectedNode = nullptr;
+            for( Vector<uint32_t>::reverse_iterator iter = path.rbegin() + 1; iter != path.rend(); ++iter )
+            {
+                uint32_t value = *iter;
+                Vector<DebuggerNode *>::iterator childrenForUid = std::find_if( childrens.begin(), childrens.end(), [value]( const DebuggerNode * _node )
+                {
+                    return _node->uid == value;
+                } );
+
+                if( childrenForUid == childrens.end() )
+                {
+                    return;
+                }
+
+                selectedNode = *childrenForUid;
+                childrens = selectedNode->children;
+            }
+
+            m_selectedSceneNode = selectedNode;
+            m_selectedNode = selectedNode;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node )
     {
         _node->deserialize( _xmlNode );
@@ -800,6 +857,24 @@ namespace Mengine
                 if( _node->componentSurface.surfaceImage.isContent )
                 {
                     _node->componentSurface.surfaceImage.content.deserialize( contentNode );
+                }
+
+                pugi::xml_node atlasNode = typeSurfaceImageNode.child( "Atlas" );
+
+                _node->componentSurface.hasAtlas = atlasNode;
+
+                if( _node->componentSurface.hasAtlas )
+                {
+                    _node->componentSurface.atlas.deserialize( atlasNode );
+
+                    pugi::xml_node contentNode = atlasNode.child( "Content" );
+
+                    _node->componentSurface.atlas.isContent = contentNode;
+
+                    if( _node->componentSurface.atlas.isContent )
+                    {
+                        _node->componentSurface.atlas.content.deserialize( contentNode );
+                    }
                 }
             }
         }
@@ -947,9 +1022,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DestroyNode( DebuggerNode * _node )
     {
-        if( m_selectedNode == _node )
+        m_selectedNode = nullptr;
+
+        if( m_selectedSceneNode == _node )
         {
-            m_selectedNode = nullptr;
+            m_selectedSceneNode = nullptr;
+        }
+
+        if( m_selectedArrowNode == _node )
+        {
+            m_selectedArrowNode = nullptr;
+        }
+
+        if( m_selectedPickerableNode == _node )
+        {
+            m_selectedPickerableNode = nullptr;
+        }
+
+        if( m_selectedRenderableNode == _node )
+        {
+            m_selectedRenderableNode = nullptr;
         }
 
         for( DebuggerNode * n : _node->children )
@@ -1223,7 +1315,9 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "ArrowTree", ImVec2( 0, 200.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_arrow, "ArrowFull" );
+                            this->DoNodeElement( m_arrow, &m_selectedArrowNode, "ArrowFull" );
+
+                            m_selectedNode = m_selectedArrowNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1237,7 +1331,11 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scene, "SceneFull" );
+                            this->DoNodeElement( m_scene, &m_selectedSceneNode, "SceneFull" );
+
+                            m_selectedNode = m_selectedSceneNode;
+
+                            m_pathToSelectedNode.clear();
                         }
                         ImGui::EndChild();
                     }
@@ -1251,7 +1349,9 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_scenePickerable, "ScenePickerable" );
+                            this->DoNodeElement( m_scenePickerable, &m_selectedPickerableNode, "ScenePickerable" );
+
+                            m_selectedNode = m_selectedPickerableNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1265,7 +1365,9 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            this->DoNodeElement( m_sceneRenderable, "SceneRenderable" );
+                            this->DoNodeElement( m_sceneRenderable, &m_selectedRenderableNode, "SceneRenderable" );
+
+                            m_selectedNode = m_selectedRenderableNode;
                         }
                         ImGui::EndChild();
                     }
@@ -1277,7 +1379,7 @@ namespace Mengine
 
         if( ImGui::BeginChild( "Panel" ) )
         {
-            if( m_selectedNode )
+            if( m_selectedNode != nullptr )
             {
                 this->DoNodeProperties( m_selectedNode );
             }
@@ -1519,7 +1621,7 @@ namespace Mengine
                     MENGINE_SPRINTF( label, "##url%u", desk.id );
 
                     ImGui::InputText( label, (Char *)desk.url.data(), desk.url.size(), ImGuiInputTextFlags_ReadOnly );
-                    
+
                     if( openNode == true )
                     {
                         ImGui::Separator();
@@ -1631,7 +1733,7 @@ namespace Mengine
                         ImGui::SameLine();
 
                         Char buffer_value[256] = {'\0'};
-                        
+
                         struct buffer_desc
                         {
                             Char * buffer;
@@ -1728,7 +1830,7 @@ namespace Mengine
 
                 // TODO need make ability for copy text from ImGui::InputText
 
-                ++*_labelCounter;
+                ++ * _labelCounter;
 
                 Char label[32] = {'\0'};
                 MENGINE_SPRINTF( label, "##v%u"
@@ -1983,9 +2085,9 @@ namespace Mengine
         return ss.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, const String & _tag )
+    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, DebuggerNode ** _selectedNode, const String & _tag )
     {
-        const ImGuiTreeNodeFlags seletedFlag = (m_selectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
+        const ImGuiTreeNodeFlags seletedFlag = (*_selectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
         const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
@@ -2004,24 +2106,36 @@ namespace Mengine
             iconPtr = &icon;
         }
 
+        ImGuiTreeNodeFlags flag = _node->children.empty() ? flagsNoChildren : flagsNormal;
+
+        if( std::find( m_pathToSelectedNode.begin(), m_pathToSelectedNode.end(), _node->uid ) != m_pathToSelectedNode.end() )
+        {
+            ImGui::SetNextItemOpen( true );
+
+            if( _node->uid == m_pathToSelectedNode[0] )
+            {
+                flag = ImGuiTreeNodeFlags_Selected;
+            }
+        }
+
         std::pair<bool, bool> result = ImGuiExt::TreeNodeWithIcon
         (
             iconPtr,
             fullLabel.c_str(),
-            _node->children.empty() ? flagsNoChildren : flagsNormal,
+            flag,
             !_node->enable
         );
 
         if( result.second )
         {
-            this->OnSelectNode( _node );
+            this->OnSelectNode( _node, _selectedNode );
         }
 
         if( result.first )
         {
             for( DebuggerNode * child : _node->children )
             {
-                this->DoNodeElement( child, _tag );
+                this->DoNodeElement( child, _selectedNode, _tag );
             }
 
             ImGui::TreePop();
@@ -2211,6 +2325,19 @@ namespace Mengine
             ImGui::PopStyleColor();
         };
 
+        auto uiReadOnlyUV4 = [_node]( const char * _caption, const mt::uv4f & _prop )
+        {
+            mt::uv4f testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragFloat2( _caption, testValue.p0.buff() );
+            ImGui::DragFloat2( _caption, testValue.p1.buff() );
+            ImGui::DragFloat2( _caption, testValue.p2.buff() );
+            ImGui::DragFloat2( _caption, testValue.p3.buff() );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
         auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
         {
             int32_t testValue = _prop;
@@ -2243,8 +2370,8 @@ namespace Mengine
 
         if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            ImGui::Text( "Name:" ); 
-            ImGui::SameLine(); 
+            ImGui::Text( "Name:" );
+            ImGui::SameLine();
             ImGui::PushItemWidth( 25.f + 8.f * _node->name.size() );
             ImGui::InputText( "##node_name", _node->name.data(), _node->name.size(), ImGuiInputTextFlags_ReadOnly );
             ImGui::PopItemWidth();
@@ -2252,20 +2379,20 @@ namespace Mengine
             ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
 
             ImGui::SameLine();
-            ImGui::Text( "Type:" ); 
-            ImGui::SameLine(); 
+            ImGui::Text( "Type:" );
+            ImGui::SameLine();
             ImGui::PushItemWidth( 25.f + 8.f * _node->type.size() );
             ImGui::InputText( "##node_type", _node->type.data(), _node->type.size(), ImGuiInputTextFlags_ReadOnly );
             ImGui::PopItemWidth();
             ImGui::SameLine();
-            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );            
+            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
 
             Char uid_text[64];
             MENGINE_SPRINTF( uid_text, "%u", _node->uid );
 
             ImGui::SameLine();
-            ImGui::Text( "UID:" ); 
-            ImGui::SameLine(); 
+            ImGui::Text( "UID:" );
+            ImGui::SameLine();
             ImGui::PushItemWidth( 25.f + 8.f * MENGINE_STRLEN( uid_text ) );
             ImGui::InputText( "##node_uid", uid_text, MENGINE_STRLEN( uid_text ), ImGuiInputTextFlags_ReadOnly );
             ImGui::PopItemWidth();
@@ -2291,6 +2418,9 @@ namespace Mengine
             }
 
             uiReadOnlyVec3f( "World Position", transformation.worldPosition );
+            uiReadOnlyVec3f( "World Scale", transformation.worldScale );
+            uiReadOnlyVec3f( "World Orientation", transformation.worldOrientation );
+
             ImGui::Spacing();
         }
 
@@ -2364,6 +2494,7 @@ namespace Mengine
             {
                 uiReadOnlyString( "resource name", _node->componentSurface.surfaceImage.ResourceName );
                 uiReadOnlyString( "resource type", _node->componentSurface.surfaceImage.ResourceType );
+                uiReadOnlyUV4( "UV image", _node->componentSurface.surfaceImage.UVImage );
 
                 if( _node->componentSurface.surfaceImage.isContent && ImGui::CollapsingHeader( "Surface Image Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
@@ -2371,6 +2502,20 @@ namespace Mengine
                     uiReadOnlyString( "file path", _node->componentSurface.surfaceImage.content.FilePath );
                     uiReadOnlyString( "codec", _node->componentSurface.surfaceImage.content.CodecType );
                     uiReadOnlyString( "converter", _node->componentSurface.surfaceImage.content.ConverterType );
+                }
+            }
+
+            if( _node->componentSurface.hasAtlas && ImGui::CollapsingHeader( "Atlas:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                uiReadOnlyString( "resource name", _node->componentSurface.atlas.ResourceName );
+                uiReadOnlyString( "resource type", _node->componentSurface.atlas.ResourceType );                
+
+                if( _node->componentSurface.atlas.isContent && ImGui::CollapsingHeader( "Atlas Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                {
+                    uiReadOnlyString( "file group", _node->componentSurface.atlas.content.FileGroup );
+                    uiReadOnlyString( "file path", _node->componentSurface.atlas.content.FilePath );
+                    uiReadOnlyString( "codec", _node->componentSurface.atlas.content.CodecType );
+                    uiReadOnlyString( "converter", _node->componentSurface.atlas.content.ConverterType );
                 }
             }
         }
@@ -2450,15 +2595,15 @@ namespace Mengine
         m_connectionStatus = ConnectionStatus::DisconnectionRequested;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::OnSelectNode( DebuggerNode * _node )
+    void NodeDebuggerApp::OnSelectNode( DebuggerNode * _node, DebuggerNode ** _selectedNode )
     {
-        if( m_selectedNode != _node )
+        if( *_selectedNode != _node )
         {
-            m_selectedNode = _node;
+            *_selectedNode = _node;
 
-            if( m_selectedNode != nullptr )
+            if( *_selectedNode != nullptr )
             {
-                Vector<uint32_t> path = this->CollectNodePath( m_selectedNode );
+                Vector<uint32_t> path = this->CollectNodePath( *_selectedNode );
 
                 m_selectedNodePath = this->PathToString( path );
             }

@@ -16,6 +16,8 @@
 #include "Interface/FontServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
@@ -47,10 +49,14 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Blobject.h"
+#include "Kernel/StringHelper.h"
+#include "Kernel/RenderCameraHelper.h"
+#include "Kernel/ResourceImageSubstract.h"
 
 #include "Config/StdString.h"
 
 #include <iomanip>
+#include <iterator>
 
 namespace Mengine
 {
@@ -61,6 +67,7 @@ namespace Mengine
         , m_shouldUpdateScene( false )
         , m_workerId( 0 )
         , m_globalKeyHandlerF2( 0 )
+        , m_globalKeyHandlerForSendingSelectedNode( 0 )
         , m_requestListenerId( 0 )
     {
     }
@@ -109,6 +116,42 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( m_requestListenerId != INVALIDATE_UNIQUE_ID );
         }
 
+        uint32_t idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
+        {
+            MENGINE_UNUSED( _event );
+
+            if( _event.special.isAlt == false )
+            {
+                return;
+            }
+
+            const ScenePtr & currentScene = SCENE_SERVICE()
+                ->getCurrentScene();
+
+            const ArrowPtr & arrow = PLAYER_SERVICE()
+                ->getArrow();
+
+            mt::vec2f point = {_event.x, _event.y};
+
+            mt::vec2f adapt_screen_position;
+            arrow->adaptScreenPosition_( point, &adapt_screen_position );
+
+            mt::vec2f cursorWorldPosition;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( adapt_screen_position, &cursorWorldPosition );
+
+            m_cursorWorldPosition = cursorWorldPosition;
+
+            this->findChildRecursive( currentScene, point );
+
+            this->sendSelectedNode();
+
+            m_selectedNode = nullptr;
+
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_globalKeyHandlerForSendingSelectedNode = idForSelectedNodeSender;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -154,6 +197,18 @@ namespace Mengine
         {
             Helper::removeGlobalHandler( m_globalKeyHandlerF2 );
             m_globalKeyHandlerF2 = 0;
+        }
+
+        if( m_globalKeyHandlerForSendingSelectedNode != 0 )
+        {
+            Helper::removeGlobalHandler( m_globalKeyHandlerForSendingSelectedNode );
+            m_globalKeyHandlerForSendingSelectedNode = 0;
+        }
+
+        if( m_networkLogger != nullptr )
+        {
+            m_networkLogger->setSceneDataProvider( nullptr );
+            m_networkLogger = nullptr;
         }
 
         if( SERVICE_EXIST( cURLServiceInterface ) == true )
@@ -683,6 +738,8 @@ namespace Mengine
         Detail::serializeNodeProp( transformation->getLocalScale(), "scale", xmlNode );
         Detail::serializeNodeProp( transformation->getLocalOrientation(), "orientation", xmlNode );
         Detail::serializeNodeProp( transformation->getWorldPosition(), "worldPosition", xmlNode );
+        Detail::serializeNodeProp( transformation->getWorldScale(), "worldScale", xmlNode );
+        Detail::serializeNodeProp( transformation->getWorldOrientation(), "worldOrientation", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
@@ -880,9 +937,9 @@ namespace Mengine
         Detail::serializeNodeProp( resourceSpineSkeleton->getName(), "ResourceName", xmlNode );
         Detail::serializeNodeProp( resourceSpineSkeleton->getType(), "ResourceType", xmlNode );
 
-        const ContentInterface * content = resourceSpineSkeleton->getContent();
+        const ContentInterfacePtr & content = resourceSpineSkeleton->getContent();
 
-        if( content != nullptr )
+        if( content != nullptr && content->getFilePath() != ConstString::none() )
         {
             this->serializeContent( content, xmlNode );
         }
@@ -954,12 +1011,32 @@ namespace Mengine
 
         Detail::serializeNodeProp( resourceImage->getName(), "ResourceName", xmlNode );
         Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
+        Detail::serializeNodeProp( resourceImage->getUVImage(), "UVImage", xmlNode );
 
-        const ContentInterface * content = resourceImage->getContent();
+        const ContentInterfacePtr & content = resourceImage->getContent();
 
-        if( content != nullptr )
+        if( content != nullptr && content->getFilePath() != ConstString::none() )
         {
             this->serializeContent( content, xmlNode );
+        }
+
+        ResourceImageSubstractPtr resourceImageSubstract = stdex::intrusive_dynamic_cast<ResourceImageSubstractPtr>(resourceImage);
+
+        if( resourceImageSubstract != nullptr )
+        {
+            pugi::xml_node xmlNodeAtlas = xmlNode.append_child( "Atlas" );
+
+            const ResourceImagePtr & resourceImageAtlas = resourceImageSubstract->getResourceImage();
+
+            Detail::serializeNodeProp( resourceImageAtlas->getName(), "ResourceName", xmlNodeAtlas );
+            Detail::serializeNodeProp( resourceImageAtlas->getType(), "ResourceType", xmlNodeAtlas );            
+
+            const ContentInterfacePtr & atlasContent = resourceImageAtlas->getContent();
+
+            if( atlasContent != nullptr && atlasContent->getFilePath() != ConstString::none() )
+            {
+                this->serializeContent( atlasContent, xmlNodeAtlas );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -985,7 +1062,7 @@ namespace Mengine
 
         Detail::serializeNodeProp( _surfaceImageSequence->getCurrentFrame(), "CurrentFrame", xmlNode );
 
-        const ContentInterface * content = resourceImageSequence->getContent();
+        const ContentInterfacePtr & content = resourceImageSequence->getContent();
 
         if( content != nullptr )
         {
@@ -993,7 +1070,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::serializeContent( const ContentInterface * _content, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeContent( const ContentInterfacePtr & _content, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Content" );
 
@@ -1077,7 +1154,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode )
     {
-        Node * nodeChild = dynamic_cast<Node *>(_picker);
+        Pickerable * pickerable = _picker->getPickerable();
+
+        Node * nodeChild = dynamic_cast<Node *>(pickerable);
 
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
@@ -1099,7 +1178,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
-        Node * nodeChild = dynamic_cast<Node *>(_render);
+        Renderable * renderable = _render->getRenderable();
+
+        Node * nodeChild = dynamic_cast<Node *>(renderable);
 
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
@@ -1460,6 +1541,49 @@ namespace Mengine
             xml_object.append_attribute( "Id" ).set_value( request.id );
             xml_object.append_attribute( "Url" ).set_value( request.url.c_str() );
         }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef MENGINE_DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendSelectedNode()
+    {
+        pugi::xml_document xml_doc;
+        pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "SelectedNode" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        pugi::xml_node xmlNode = payloadNode.append_child( "Node" );
+
+        if( m_selectedNode == nullptr )
+        {
+            return;
+        }
+
+        const ConstString & selectedNodeName = m_selectedNode->getName();
+        xmlNode.append_attribute( "SelectedNodeName" ).set_value( selectedNodeName.c_str() );
+
+        UniqueId selectedNodeId = m_selectedNode->getUniqueIdentity();
+        xmlNode.append_attribute( "SelectedNodeId" ).set_value( selectedNodeId );
+
+        VectorNodePath pathToRoot;
+        Helper::findPathToRootFromParent( m_scene, m_selectedNode, &pathToRoot );
+
+        String pathStr;
+        this->pathToString( pathToRoot, &pathStr );
+
+        xmlNode.append_attribute( "PathToRoot" ).set_value( pathStr.c_str() );
 
         NodeDebuggerPacket packet;
 
@@ -1887,6 +2011,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::pathToString( const VectorNodePath & _path, String * const _outStr ) const
+    {
+        Stringstream stream;
+        std::copy( _path.begin(), _path.end(), std::ostream_iterator<UniqueId>( stream, "/" ) );
+
+        *_outStr = stream.str();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::notifyChangeArrow( const ArrowPtr & _arrow )
     {
         this->setArrow( _arrow );
@@ -1919,6 +2051,293 @@ namespace Mengine
     void NodeDebuggerModule::setUpdateSceneFlag( bool _flag )
     {
         m_shouldUpdateScene = _flag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::findChildRecursive( const NodePtr & _currentNode, const mt::vec2f & _point )
+    {
+        bool result = _currentNode->foreachChildrenReverseBreak( [this, _point]( const NodePtr & _child ) -> bool
+        {
+            if( m_selectedNode != nullptr )
+            {
+                return true;
+            }
+
+            if( _child->isEnable() == false )
+            {
+                return true;
+            }
+
+            this->findChildRecursive( _child, _point );
+
+            if( m_selectedNode != nullptr )
+            {
+                return true;
+            }
+
+            const ConstString & type = _child->getType();
+
+            DebuggerBoundingBoxInterfacePtr boundingBoxInterfacePtr = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), type );
+
+            if( boundingBoxInterfacePtr != nullptr )
+            {
+                mt::box2f bbox;
+                if( boundingBoxInterfacePtr->getBoundingBox( _child, &bbox ) == true )
+                {
+                    if( mt::is_intersect( bbox, m_cursorWorldPosition ) == true && mt::is_infinity_box( bbox ) == false )
+                    {
+                        m_selectedNode = _child;
+
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                RenderInterface * render = _child->getRender();
+
+                if( render == nullptr )
+                {
+                    return true;
+                }
+
+                if( render->isRenderEnable() == false )
+                {
+                    return true;
+                }
+
+                if( render->isHide() == true )
+                {
+                    return true;
+                }
+
+                if( render->isLocalTransparent() == true )
+                {
+                    return true;
+                }
+
+                const mt::box2f * rbb = render->getBoundingBox();
+
+                if( rbb == nullptr )
+                {
+                    return true;
+                }
+
+                if( mt::is_infinity_box( *rbb ) == true )
+                {
+                    return true;
+                }
+
+                if( mt::is_intersect( *rbb, m_cursorWorldPosition ) == false )
+                {
+                    return true;
+                }
+
+                ShapePtr shape = stdex::intrusive_dynamic_cast<ShapePtr>(_child);
+
+                if( shape != nullptr )
+                {
+                    if( this->checkHit( shape, _point ) == false )
+                    {
+                        return false;
+                    }
+                }
+
+                m_selectedNode = _child;
+
+                return true;
+            }
+
+            return true;
+        } );
+
+        MENGINE_UNUSED( result );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NodeDebuggerModule::checkHit( const ShapePtr & _currentNode, const mt::vec2f & _point )
+    {
+        const SurfacePtr & surface = _currentNode->getSurface();
+
+        if( surface == nullptr )
+        {
+            return false;
+        }
+
+        const RenderMaterialInterfacePtr & renderMaterial = surface->getMaterial();
+
+        uint32_t textureCount = renderMaterial->getTextureCount();
+
+        if( textureCount == 0 )
+        {
+            return false;
+        }
+
+        const RenderTextureInterfacePtr & renderTextureInterface = renderMaterial->getTexture( 0 );
+
+        const RenderImageInterfacePtr & renderImage = renderTextureInterface->getImage();
+
+        const RenderImageProviderInterfacePtr & renderImageProviderInterface = renderImage->getRenderImageProvider();
+
+        RenderImageLoaderInterfacePtr renderImageLoader = renderImageProviderInterface->getLoader( MENGINE_DOCUMENT_FACTORABLE );
+
+        RenderImageDesc imageDesc;
+        renderImageLoader->getImageDesc( &imageDesc );
+
+        mt::box2f bb_screen;
+        this->getScreenBoundingBox( _currentNode, imageDesc, &bb_screen );
+
+        if( mt::is_intersect( bb_screen, _point ) == false && mt::is_infinity_box( bb_screen ) == true )
+        {
+            return false;
+        }
+
+        if( imageDesc.channels != 4 )
+        {
+            return true;
+        }
+
+        const mt::uv4f & uv = surface->getUV( 0 );
+
+        if( this->checkIsTransparencePoint( _currentNode, _point, renderImageLoader, renderTextureInterface, imageDesc, uv ) == true )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NodeDebuggerModule::checkIsTransparencePoint( const ShapePtr & _currentNode
+        , const mt::vec2f & _point
+        , const RenderImageLoaderInterfacePtr & _imageLoader
+        , const RenderTextureInterfacePtr & _renderTexture
+        , const RenderImageDesc & _imageDesc
+        , const mt::uv4f & _uv )
+    {
+        MENGINE_UNUSED( _renderTexture );
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        const RenderCameraInterfacePtr & renderCamera = PLAYER_SERVICE()
+            ->getRenderCamera();
+
+        const RenderViewportInterfacePtr & renderViewport = PLAYER_SERVICE()
+            ->getRenderViewport();
+
+        const mt::mat4f & vpm_inv = renderCamera->getCameraViewProjectionMatrixInv();
+        const Viewport & vp = renderViewport->getViewport();
+
+        mt::vec2f contentResolutionSize;
+        contentResolution.calcSize( &contentResolutionSize );
+
+        mt::vec2f point_vp;
+        point_vp = _point * contentResolutionSize;
+
+        point_vp -= vp.begin;
+
+        mt::vec2f size = vp.size();
+
+        if( size.x < mt::constant::eps || size.y < mt::constant::eps )
+        {
+            return true;
+        }
+
+        point_vp /= size;
+
+        mt::vec2f point_norm;
+        point_norm.x = point_vp.x * 2.f - 1.f;
+        point_norm.y = 1.f - point_vp.y * 2.f;
+
+        mt::vec2f pointIn1;
+        mt::mul_v2_v2_m4( pointIn1, point_norm, vpm_inv );
+
+        TransformationInterface * currentNodeTransformation = _currentNode->getTransformation();
+        const mt::mat4f & wm = currentNodeTransformation->getWorldMatrix();
+
+        mt::mat4f invWM;
+        mt::inv_m4_m4( invWM, wm );
+
+        mt::vec2f pointIn2;
+        mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
+
+        if( pointIn2.x < 0.f || pointIn2.y < 0.f )
+        {
+            return true;
+        }
+
+        MemoryInterfacePtr memory = _imageLoader->getMemory( 0, MENGINE_DOCUMENT_FACTORABLE );
+
+        uint8_t * alphaBufferMemory = memory->getBuffer();
+
+        const RenderImageInterfacePtr & renderImage = _renderTexture->getImage();
+
+        uint32_t renderImageWidth = renderImage->getHWWidth();
+        uint32_t renderImageHeight = renderImage->getHWHeight();
+
+        mt::vec2f firstPoint;
+        firstPoint.x = _uv.p0.x * renderImageWidth;
+        firstPoint.y = _uv.p0.y * renderImageHeight;
+
+        uint32_t fuulYdistance = static_cast<uint32_t>(firstPoint.y + pointIn2.y);
+
+        uint32_t alphaIndex = fuulYdistance * _imageDesc.width + static_cast<uint32_t>(pointIn2.x + firstPoint.x);
+
+        alphaIndex *= 4;
+
+        uint8_t alpha = alphaBufferMemory[alphaIndex + 3];
+
+        uint8_t minAlpha = (uint8_t)(0.f * 255.f);
+
+        if( alpha == minAlpha )
+        {
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _boundingBox ) const
+    {
+        mt::box2f boundingBox;
+        this->getWorldBoundingBox( _node, _imageDesc, &boundingBox );
+
+        const ArrowPtr & arrow = PLAYER_SERVICE()
+            ->getArrow();
+
+        RenderInterface * render = arrow->getRender();
+
+        RenderContext context;
+        render->makeRenderContext( &context );
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        mt::box2f bb_screen;
+        Helper::worldToScreenBox( &context, contentResolution, boundingBox, &bb_screen );
+
+        *_boundingBox = bb_screen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * _bb ) const
+    {
+        TransformationInterface * currentNodeTransformation = _node->getTransformation();
+        const mt::mat4f & worldMatrix = currentNodeTransformation->getWorldMatrix();
+
+        float hs_width = static_cast<float>(_imageDesc.width);
+        float hs_height = static_cast<float>(_imageDesc.height);
+
+        mt::vec2f minimal( 0.f, 0.f );
+        mt::vec2f maximal( hs_width, hs_height );
+
+        mt::vec2f minimal_wm;
+        mt::mul_v2_v2_m4( minimal_wm, minimal, worldMatrix );
+
+        mt::vec2f maximal_wm;
+        mt::mul_v2_v2_m4( maximal_wm, maximal, worldMatrix );
+
+        mt::box2f bb;
+        mt::set_box_from_two_point( bb, minimal_wm, maximal_wm );
+
+        *_bb = bb;
     }
     //////////////////////////////////////////////////////////////////////////
 }

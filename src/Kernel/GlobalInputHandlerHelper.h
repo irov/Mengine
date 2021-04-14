@@ -4,6 +4,7 @@
 
 #include "Kernel/Document.h"
 #include "Config/Lambda.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
@@ -15,13 +16,13 @@ namespace Mengine
         typedef Lambda<void( const InputMouseMoveEvent & )> LambdaInputMouseMoveEvent;
         typedef Lambda<void( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc );
-        uint32_t addGlobalKeyOnceHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc );
-        uint32_t addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentPtr & _doc );
-        uint32_t addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const DocumentPtr & _doc );
-        uint32_t addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const DocumentPtr & _doc );
+        UniqueId addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc );
+        UniqueId addGlobalKeyOnceHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc );
+        UniqueId addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentPtr & _doc );
+        UniqueId addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const DocumentPtr & _doc );
+        UniqueId addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const DocumentPtr & _doc );
         //////////////////////////////////////////////////////////////////////////
-        void removeGlobalHandler( uint32_t _id );
+        void removeGlobalHandler( UniqueId _id );
         //////////////////////////////////////////////////////////////////////////
     }
 }

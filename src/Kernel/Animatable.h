@@ -30,5 +30,6 @@ namespace Mengine
 public:\
     Mengine::AnimationInterface * getAnimation() override{ return this; }\
     const Mengine::AnimationInterface * getAnimation() const override{ return this; }\
+    Mengine::Animatable * getAnimatable() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

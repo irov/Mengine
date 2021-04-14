@@ -15,6 +15,8 @@ namespace Mengine
         , public OpenGLRenderResourceHandler
         , public Factorable
     {
+        DECLARE_FACTORABLE( OpenGLRenderVertexBuffer );
+
     public:
         OpenGLRenderVertexBuffer();
         ~OpenGLRenderVertexBuffer() override;
@@ -68,6 +70,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderVertexBuffer> OpenGLRenderVertexBufferPtr;
+    typedef IntrusivePtr<OpenGLRenderVertexBuffer, RenderVertexBufferInterface> OpenGLRenderVertexBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }

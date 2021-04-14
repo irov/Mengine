@@ -36,13 +36,13 @@ namespace Mengine
         };
         //////////////////////////////////////////////////////////////////////////
         template<class C, class M, class T>
-        FactoryDestroyListenerInterfacePtr makeFactoryDestroyListener( C * _class, M _method, const DocumentPtr & _doc )
+        static FactoryDestroyListenerInterfacePtr makeFactoryDestroyListener( C * _class, M _method, const DocumentPtr & _doc )
         {
             return Helper::makeFactorableUnique<MethodFactoryDestroyListener<C, M, T>>( _doc, _class, _method );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C, class M>
-        void setupFactoryDestroyListener( const FactoryWithListenerPtr & _factory, C * _class, M _method, const DocumentPtr & _doc )
+        static void setupFactoryDestroyListener( const FactoryWithListenerPtr & _factory, C * _class, M _method, const DocumentPtr & _doc )
         {
             FactoryDestroyListenerInterfacePtr destroyListener = Helper::makeFactorableUnique<MethodFactoryDestroyListener<C, M, T>>( _doc, _class, _method );
 

@@ -14,7 +14,7 @@ namespace Mengine
         , public Renderable
         , protected BaseRender
     {
-    public:
+        DECLARE_FACTORABLE( Layer2DRenderTarget );
         DECLARE_RENDERABLE();
 
     public:

@@ -10,6 +10,8 @@
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
 
+#include "Config/Algorithm.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -296,6 +298,47 @@ namespace Mengine
             _upper[len] = '\0';
 
             return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void toupper( const String & _in, String * const _upper )
+        {
+            std::transform( _in.begin(), _in.end(), _upper->begin(),
+                []( Char c )
+            {
+                return (Char)MENGINE_TOUPPER( c );
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool tolower( const Char * _str, Char * _lower, size_t _capacity )
+        {
+            size_t len = MENGINE_STRLEN( _str );
+
+            if( len >= _capacity )
+            {
+                return false;
+            }
+
+            for( size_t index = 0, index_end = len;
+                index != index_end;
+                ++index )
+            {
+                Char ch = _str[index];
+
+                _lower[index] = (Char)MENGINE_TOLOWER( ch );
+            }
+
+            _lower[len] = '\0';
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void tolower( const String & _str, String * const _lower )
+        {
+            std::transform( _str.begin(), _str.end(), _lower->begin(),
+                []( Char c )
+            {
+                return (Char)MENGINE_TOLOWER( c );
+            } );
         }
         //////////////////////////////////////////////////////////////////////////
     }

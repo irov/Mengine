@@ -10,7 +10,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const FilePath & getResourceFilePath( const ResourcePtr & _resource )
         {
-            const ContentInterface * content = _resource->getContent();
+            const ContentInterfacePtr & content = _resource->getContent();
 
             if( content == nullptr )
             {

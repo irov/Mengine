@@ -15,6 +15,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/PathString.h"
+#include "Kernel/UID.h"
 
 #include "Config/StdString.h"
 
@@ -40,6 +41,8 @@ namespace Mengine
         PathString settingsPath;
         settingsPath += m_folderPath;
         settingsPath += "settings.ini";
+
+        Helper::makeUID( 20, m_uid.data );
 
         m_settingsPath = Helper::stringizeFilePath( settingsPath );
 

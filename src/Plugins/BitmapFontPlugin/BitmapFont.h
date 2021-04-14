@@ -3,17 +3,16 @@
 #include "Kernel/Compilable.h"
 #include "Kernel/Reference.h"
 #include "Kernel/FontBase.h"
-#include "Kernel/BaseContent.h"
 
 #include "BitmapGlyph.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class BitmapFont
         : public FontBase
-        , protected BaseContent
     {
-        DECLARE_CONTENTABLE();
+        DECLARE_FACTORABLE( BitmapFont );
 
     public:
         BitmapFont();
@@ -26,9 +25,6 @@ namespace Mengine
     protected:
         bool initialize() override;
         void finalize() override;
-
-    protected:
-        bool isValid() const override;
 
     protected:
         bool _compile() override;
@@ -65,6 +61,6 @@ namespace Mengine
         RenderTextureInterfacePtr m_textureOutline;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BitmapFont> BitmapFontPtr;
+    typedef IntrusivePtr<BitmapFont, TextFontInterface> BitmapFontPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -11,7 +11,10 @@ namespace Mengine
     {
     public:
         virtual SDL_Window * getWindow() const = 0;
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         virtual SDL_GLContext getGLContext() const = 0;
+#endif
 
     public:
         typedef Lambda<void( SDL_Event * event )> LambdaSDLEventHandler;

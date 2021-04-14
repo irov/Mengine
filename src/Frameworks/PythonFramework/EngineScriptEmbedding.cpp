@@ -25,36 +25,17 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-
-#include "Kernel/ThreadTask.h"
-#include "Kernel/Scene.h"
-#include "Kernel/Arrow.h"
-#include "Kernel/MT19937Randomizer.h"
-#include "Kernel/InputServiceHelper.h"
-#include "Kernel/FileStreamHelper.h"
-#include "Kernel/UnicodeHelper.h"
-#include "Kernel/Assertion.h"
-#include "Kernel/AssertionResourceType.h"
-#include "Kernel/ConstStringHelper.h"
-
-#include "Engine/ResourceFile.h"
-#include "Engine/ResourceSound.h"
-#include "Engine/ResourceTestPick.h"
-#include "Engine/ResourceHIT.h"
-#include "Engine/ResourceShape.h"
-
-#include "Kernel/ResourceImageDefault.h"
-#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
-#include "Kernel/ResourceImageSubstract.h"
-#include "Kernel/ResourceImageSequence.h"
-#include "Kernel/ResourceImageSolid.h"
-#include "Kernel/ResourceImageData.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/PickerServiceInterface.h"
+#include "Interface/RenderServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
-#include "Interface/ApplicationInterface.h"
-#include "Interface/PickerServiceInterface.h"
+#include "Engine/ResourceFile.h"
+#include "Engine/ResourceTestPick.h"
+#include "Engine/ResourceHIT.h"
+#include "Engine/ResourceShape.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -66,23 +47,35 @@
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
 
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/ShapeQuadFlex.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/Point.h"
 #include "Engine/Line.h"
-#include "Kernel/RenderCameraProjection.h"
 
-#include "ScriptHolder.h"
+#include "Kernel/ThreadTask.h"
+#include "Kernel/Scene.h"
+#include "Kernel/Arrow.h"
+#include "Kernel/MT19937Randomizer.h"
+#include "Kernel/InputServiceHelper.h"
+#include "Kernel/FileStreamHelper.h"
+#include "Kernel/UnicodeHelper.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/AssertionResourceType.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/PolygonHelper.h"
+#include "Kernel/ResourceSound.h"
 
-#include "Engine/SurfaceSound.h"
-#include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceImageSequence.h"
-#include "Engine/SurfaceSolidColor.h"
-
+#include "Kernel/ResourceImageDefault.h"
+#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceImageSubstract.h"
+#include "Kernel/ResourceImageSequence.h"
+#include "Kernel/ResourceImageSolid.h"
+#include "Kernel/ResourceImageData.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -90,13 +83,16 @@
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 
-#include "Kernel/ResourceImage.h"
-#include "Kernel/PolygonHelper.h"
+#include "ScriptHolder.h"
+
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceImageSequence.h"
+#include "Kernel/SurfaceSolidColor.h"
 
 #include "Engine/Meshget.h"
 #include "Engine/Isometric.h"
 #include "Engine/Window.h"
-
 
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
@@ -104,8 +100,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
-#include "Interface/RenderServiceInterface.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
@@ -345,7 +339,7 @@ namespace Mengine
             uint32_t s_timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
                 const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
                 py_pipe->initialize( _delay );
@@ -364,7 +358,7 @@ namespace Mengine
             bool s_timingRemove( uint32_t _id )
             {
                 const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 bool successful = tm->remove( _id );
 
@@ -374,7 +368,7 @@ namespace Mengine
             SchedulerInterfacePtr s_createScheduler( const ConstString & _name )
             {
                 SchedulerInterfacePtr sm = PLAYER_SERVICE()
-                    ->createSchedulerManager( _name, MENGINE_DOCUMENT_PYBIND );
+                    ->createScheduler( _name, MENGINE_DOCUMENT_PYBIND );
 
                 return sm;
             }
@@ -384,7 +378,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( _sm, "destroy scheduler is nullptr" );
 
                 bool successful = PLAYER_SERVICE()
-                    ->destroySchedulerManager( _sm );
+                    ->destroyScheduler( _sm );
 
                 return successful;
             }
@@ -406,7 +400,7 @@ namespace Mengine
                 }
 
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 uint32_t id = sm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYBIND );
 
@@ -416,7 +410,7 @@ namespace Mengine
             uint32_t s_schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
                 sl->initialize( _script, _args );
@@ -429,7 +423,7 @@ namespace Mengine
             bool s_scheduleRemove( uint32_t _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -444,7 +438,7 @@ namespace Mengine
             void s_scheduleRemoveAll()
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -457,7 +451,7 @@ namespace Mengine
             bool s_scheduleFreeze( uint32_t _id, bool _freeze )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -472,7 +466,7 @@ namespace Mengine
             void s_scheduleFreezeAll()
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -485,7 +479,7 @@ namespace Mengine
             void s_scheduleResumeAll()
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -498,7 +492,7 @@ namespace Mengine
             bool s_scheduleIsFreeze( uint32_t _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -513,7 +507,7 @@ namespace Mengine
             float s_scheduleTime( uint32_t _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                    ->getScheduler();
+                    ->getLocalScheduler();
 
                 if( sm == nullptr )
                 {
@@ -683,6 +677,8 @@ namespace Mengine
                 : public SceneChangeCallbackInterface
                 , public Factorable
             {
+                DECLARE_FACTORABLE( PythonSceneChangeCallback );
+
             public:
                 PythonSceneChangeCallback()
                 {
@@ -1093,6 +1089,25 @@ namespace Mengine
                 return surface;
             }
             //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addTimer( float _delay, const pybind::object & _timer, const pybind::args & _args )
+            {
+                UniqueId id = PLATFORM_SERVICE()
+                    ->addTimer( _delay, [_timer, _args]( UniqueId _id )
+                {
+                    MENGINE_UNUSED( _id );
+
+                    _timer.call_args( _id, _args );
+                }, MENGINE_DOCUMENT_PYBIND );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removeTimer( UniqueId _id )
+            {
+                PLATFORM_SERVICE()
+                    ->removeTimer( _id );
+            }
+            //////////////////////////////////////////////////////////////////////////
             RandomizerInterfacePtr s_generateRandomizer( const ConstString & _prototype )
             {
                 RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
@@ -1464,7 +1479,7 @@ namespace Mengine
 
                 resource->setName( _resourceName );
 
-                ContentInterface * content = resource->getContent();
+                ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 content->setFileGroup( fileGroup );
                 content->setFilePath( _filePath );
@@ -1478,6 +1493,8 @@ namespace Mengine
                 }
 
                 content->setCodecType( newCodecType );
+
+                resource->setContent( content );
 
                 resource->setMaxSize( maxSize );
                 resource->setSize( maxSize );
@@ -1554,6 +1571,7 @@ namespace Mengine
                 );
 
                 RenderContext context;
+
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -1565,7 +1583,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_pushMouseMove( uint32_t _touchId, const mt::vec2f & _pos )
+            void s_pushMouseMove( ETouchCode _touchId, const mt::vec2f & _pos )
             {
                 const mt::vec2f & cp = INPUT_SERVICE()
                     ->getCursorPosition( _touchId );
@@ -1581,7 +1599,7 @@ namespace Mengine
                 Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
+            void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
             {
                 mt::vec2f pos_screen;
                 if( this->s_calcMouseScreenPosition( _pos, &pos_screen ) == false )
@@ -2011,7 +2029,7 @@ namespace Mengine
                     return false;
                 }
 
-                const ContentInterface * content = resource->getContent();
+                const ContentInterfacePtr & content = resource->getContent();
 
                 const FilePath & filePath = content->getFilePath();
                 const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
@@ -2122,6 +2140,8 @@ namespace Mengine
                 : public Factorable
                 , public InputMousePositionProviderInterface
             {
+                DECLARE_FACTORABLE( PyInputMousePositionProvider );
+
             public:
                 PyInputMousePositionProvider()
                     : m_arrow( nullptr )
@@ -2146,6 +2166,7 @@ namespace Mengine
                     MENGINE_UNUSED( _pressure );
 
                     RenderContext context;
+
                     context.camera = m_renderCamera.get();
                     context.viewport = m_renderViewport.get();
                     context.transformation = nullptr;
@@ -2203,7 +2224,7 @@ namespace Mengine
                 PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYBIND );
                 provider->initialize( arrow, camera, viewport, _cb, _args );
 
-                uint32_t id = INPUT_SERVICE()
+                UniqueId id = INPUT_SERVICE()
                     ->addMousePositionProvider( provider, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
@@ -2246,6 +2267,7 @@ namespace Mengine
                 }
 
                 RenderContext context;
+
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -2288,6 +2310,7 @@ namespace Mengine
                 }
 
                 RenderContext context;
+
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -2303,6 +2326,8 @@ namespace Mengine
             class AffectorGridBurnTransparency
                 : public Affector
             {
+                DECLARE_FACTORABLE( AffectorGridBurnTransparency );
+
             public:
                 AffectorGridBurnTransparency()
                     : m_pos( 0.f, 0.f )
@@ -2438,6 +2463,8 @@ namespace Mengine
             class AffectorUser
                 : public Affector
             {
+                DECLARE_FACTORABLE( AffectorUser );
+
             public:
                 bool initialize( const pybind::object & _cb, const pybind::args & _args )
                 {
@@ -2563,6 +2590,8 @@ namespace Mengine
             class AffectorNodeFollowerMethod
                 : public AffectorNodeFollower
             {
+                DECLARE_FACTORABLE( AffectorNodeFollowerMethod );
+
             public:
                 AffectorNodeFollowerMethod()
                 {
@@ -2623,6 +2652,9 @@ namespace Mengine
             class AffectorNodeFollowerCreator
                 : public Factorable
             {
+                DECLARE_FACTORABLE( AffectorNodeFollowerCreator );
+
+            protected:
                 typedef Lambda<void( const T_Value & )> T_Setter;
                 typedef Lambda<T_Value()> T_Getter;
 
@@ -2863,19 +2895,19 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getCursorPosition()
             {
-                mt::vec2f wp = this->s_getTouchPosition( 0 );
+                mt::vec2f wp = this->s_getTouchPosition( TC_TOUCH0 );
 
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
             mt::vec2f s_getMousePosition()
             {
-                mt::vec2f wp = this->s_getTouchPosition( 0 );
+                mt::vec2f wp = this->s_getTouchPosition( TC_TOUCH0 );
 
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_getTouchPosition( uint32_t _touchId )
+            mt::vec2f s_getTouchPosition( ETouchCode _touchId )
             {
                 const mt::vec2f & pos = INPUT_SERVICE()
                     ->getCursorPosition( _touchId );
@@ -2921,9 +2953,13 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             pybind::list s_pickHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
             {
+                InputSpecialData special;
+                INPUT_SERVICE()
+                    ->getSpecial( &special );
+
                 VectorPickers pickers;
                 PICKER_SERVICE()
-                    ->pickTraps( _point, 0, 0.f, &pickers );
+                    ->pickTraps( _point, TC_TOUCH0, 0.f, special, &pickers );
 
                 pybind::list pyret( _kernel );
 
@@ -3173,6 +3209,8 @@ namespace Mengine
             class PyGlobalMouseLeaveHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseLeaveHandler );
+
             protected:
                 void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
                 {
@@ -3198,7 +3236,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseLeaveHandlers;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseLeaveHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseLeaveHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3208,7 +3246,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3216,6 +3254,8 @@ namespace Mengine
             class PyGlobalMouseMoveHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseMoveHandler );
+
             protected:
                 bool handleMouseMove( const InputMouseMoveEvent & _event ) override
                 {
@@ -3248,7 +3288,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseMoveHandlers;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3258,7 +3298,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3266,6 +3306,8 @@ namespace Mengine
             class PyGlobalMouseHandlerButton
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButton );
+
             protected:
                 bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
                 {
@@ -3293,7 +3335,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerButtons;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3303,7 +3345,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3311,6 +3353,8 @@ namespace Mengine
             class PyGlobalMouseHandlerButtonEnd
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButtonEnd );
+
             protected:
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
@@ -3339,7 +3383,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerButtonEnds;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3349,7 +3393,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3357,6 +3401,8 @@ namespace Mengine
             class PyGlobalMouseHandlerWheel
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerWheel );
+
             protected:
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
@@ -3379,7 +3425,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerWheels;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3391,7 +3437,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3399,6 +3445,8 @@ namespace Mengine
             class PyGlobalMouseHandlerButtonBegin
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButtonBegin );
+
             protected:
                 //////////////////////////////////////////////////////////////////////////
                 bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
@@ -3427,7 +3475,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalMouseHandlerButtonBegins;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3439,7 +3487,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3447,6 +3495,8 @@ namespace Mengine
             class PyGlobalKeyHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalKeyHandler );
+
             protected:
                 bool handleKeyEvent( const InputKeyEvent & _event ) override
                 {
@@ -3468,7 +3518,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalKeyHandler;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3480,7 +3530,7 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
@@ -3488,6 +3538,8 @@ namespace Mengine
             class PyGlobalTextHandler
                 : public PyGlobalBaseHandler
             {
+                DECLARE_FACTORABLE( PyGlobalTextHandler );
+
             protected:
                 bool handleTextEvent( const InputTextEvent & _event ) override
                 {
@@ -3507,7 +3559,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryPtr m_factoryPyGlobalTextHandler;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3519,12 +3571,12 @@ namespace Mengine
 
                 handler->initialize( _cb, _args );
 
-                uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_removeGlobalHandler( uint32_t _id )
+            bool s_removeGlobalHandler( UniqueId _id )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -3760,7 +3812,7 @@ namespace Mengine
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
                             , _resource->getType().c_str()
-                            , _resource->getContent() ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                            , _resource->getContent() != nullptr ? _resource->getContent()->getFilePath().c_str() : "[no content]"
                         );
                     }
                 } );
@@ -3785,7 +3837,7 @@ namespace Mengine
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
                             , _resource->getType().c_str()
-                            , _resource->getContent() ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                            , _resource->getContent() != nullptr ? _resource->getContent()->getFilePath().c_str() : "[no content]"
                         );
                     }
                 } );
@@ -3912,6 +3964,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "createSprite", nodeScriptMethod, &EngineScriptMethod::s_createSprite );
 
         pybind::def_functor( _kernel, "generateRandomizer", nodeScriptMethod, &EngineScriptMethod::s_generateRandomizer );
+
+        pybind::def_functor_args( _kernel, "addTimer", nodeScriptMethod, &EngineScriptMethod::s_addTimer );
+        pybind::def_functor( _kernel, "removeTimer", nodeScriptMethod, &EngineScriptMethod::s_removeTimer );
 
         pybind::def_functor_args( _kernel, "timing", nodeScriptMethod, &EngineScriptMethod::s_timing );
         pybind::def_functor( _kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::s_timingRemove );

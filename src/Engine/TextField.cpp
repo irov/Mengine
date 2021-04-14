@@ -21,7 +21,7 @@
 
 #include "math/box2.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 #ifndef MENGINE_TEXT_FIELD_MAX_TEXT
 #define MENGINE_TEXT_FIELD_MAX_TEXT 2048
@@ -34,6 +34,7 @@ namespace Mengine
         : m_horizontAlign( ETFHA_NONE )
         , m_verticalAlign( ETFVA_NONE )
         , m_invalidateFont( true )
+        , m_extraThickness( 0.f )
         , m_charScale( 1.f )
         , m_maxLength( 2048.f )
         , m_autoScaleFactor( 1.f )
@@ -45,6 +46,7 @@ namespace Mengine
         , m_charCount( 0 )
         , m_layoutCount( 0 )
         , m_textSize( 0.f, 0.f )
+        , m_textOffset( 0.f, 0.f )
         , m_anchorHorizontalAlign( true )
         , m_anchorVerticalAlign( true )
         , m_wrap( true )
@@ -320,7 +322,7 @@ namespace Mengine
         {
             float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
 
-            offset.x = alignOffsetX * m_autoScaleFactor;
+            offset.x = alignOffsetX * charScaleTotal;
 
             for( const VectorTextLines & lines : lines2 )
             {
@@ -611,7 +613,7 @@ namespace Mengine
         else
         {
             m_textParams &= ~EFP_FONT;
-        }        
+        }
 
         this->invalidateFont();
         this->invalidateTextLines();
@@ -774,6 +776,16 @@ namespace Mengine
         }
 
         return m_textSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & TextField::getTextOffset() const
+    {
+        if( this->isInvalidateTextLines() == true )
+        {
+            this->updateTextLines_();
+        }
+
+        return m_textOffset;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::calcTextViewport( Viewport * const _viewport ) const
@@ -980,7 +992,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, uint32_t * const _charCount, uint32_t * const _layoutCount ) const
+    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const
     {
         float charOffset = this->calcCharOffset();
         float lineOffset = this->calcLineOffset();
@@ -1021,9 +1033,21 @@ namespace Mengine
             layouts.emplace_back( textLine2 );
         }
 
+        if( layouts.empty() == true )
+        {
+            *_charCount = 0;
+            *_layoutCount = 0;
+            *_textSize = mt::vec2f( 0.f, 0.f );
+            *_textOffset = mt::vec2f( 0.f, 0.f );
+
+            return true;
+        }
+
         uint32_t charCount = 0;
 
         float text_length = 0.f;
+        float text_offset = this->getHorizontAlignOffset_( layouts[0] );
+
         for( const VectorTextLines2 & lines2 : layouts )
         {
             float line_length = 0.f;
@@ -1037,7 +1061,10 @@ namespace Mengine
                 line_chars += line.getCharsDataSize();
             }
 
+            float line_offset = this->getHorizontAlignOffset_( lines2 );
+
             text_length = MENGINE_MAX( text_length, line_length );
+            text_offset = MENGINE_MIN( text_offset, line_offset );
             charCount += line_chars;
         }
 
@@ -1049,20 +1076,29 @@ namespace Mengine
         textSize.x = text_length;
 
         float fontHeight = _font->getFontHeight();
-        float fontAscent = _font->getFontAscent();
+        //float fontAscent = _font->getFontAscent();
 
         VectorTextLinesLayout::size_type lineCount = layouts.size();
 
         if( lineCount > 0 )
         {
-            textSize.y = (lineOffset + fontHeight) * (lineCount - 1) + fontAscent;
+            textSize.y = (lineOffset + fontHeight) * (lineCount - 1) + fontHeight + m_extraThickness * 2.f;
         }
         else
         {
-            textSize.y = fontAscent;
+            textSize.y = fontHeight + m_extraThickness * 2.f;
         }
 
         *_textSize = textSize;
+
+        mt::vec2f textOffset;
+        textOffset.x = text_offset;
+
+        float lines_offset = this->calcLinesOffset( lineOffset, _font );
+
+        textOffset.y = -lines_offset;
+
+        *_textOffset = textOffset;
 
         return true;
     }
@@ -1074,6 +1110,8 @@ namespace Mengine
         m_layouts.clear();
         m_textSize.x = 0.f;
         m_textSize.y = 0.f;
+        m_textOffset.x = 0.f;
+        m_textOffset.y = 0.f;
         m_charCount = 0;
 
         if( m_textId.empty() == true && m_text.empty() == true )
@@ -1155,14 +1193,16 @@ namespace Mengine
         this->updateTextLinesWrap_( &m_cacheTextLines );
 
         mt::vec2f textSize;
+        mt::vec2f textOffset;
         uint32_t charCount;
         uint32_t layoutCount;
-        if( this->updateTextLinesDimension_( baseFont, m_cacheTextLines, &textSize, &charCount, &layoutCount ) == false )
+        if( this->updateTextLinesDimension_( baseFont, m_cacheTextLines, &textSize, &textOffset, &charCount, &layoutCount ) == false )
         {
             return false;
         }
 
         m_textSize = textSize;
+        m_textOffset = textOffset;
         m_charCount = charCount;
         m_layoutCount = layoutCount;
 
@@ -1558,7 +1598,7 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent;
+                    offset = fontAscent + m_extraThickness * 2.f;
                 }break;
             case ETFVA_CENTER:
                 {
@@ -1573,18 +1613,18 @@ namespace Mengine
         }
         else
         {
-            float layoutCountf = float( m_layoutCount );
+            float layoutCountf = (float)m_layoutCount;
 
             switch( verticalAlign )
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent;
+                    offset = fontAscent + m_extraThickness * 2.f;
                 }break;
             case ETFVA_CENTER:
                 {
                     offset = fontAscent - (fontHeight + _lineOffset) * layoutCountf * 0.5f;
-                    
+
                     if( m_anchorVerticalAlign == false )
                     {
                         offset += m_textSize.y * 0.5f;
@@ -1693,6 +1733,14 @@ namespace Mengine
 
         m_layouts.clear();
         m_chunks.clear();
+
+        for( const CacheFont & cache : m_cacheFonts )
+        {
+            const TextFontInterfacePtr & font = cache.font;
+
+            font->releaseFont();
+        }
+
         m_cacheFonts.clear();
 
         Node::_dispose();
@@ -1701,6 +1749,18 @@ namespace Mengine
     uint32_t TextField::getMaxCharCount() const
     {
         return m_maxCharCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setExtraThickness( float _extraThickness )
+    {
+        m_extraThickness = _extraThickness;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getExtraThickness() const
+    {
+        return m_extraThickness;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setMaxCharCount( uint32_t _maxCharCount )
@@ -2333,14 +2393,6 @@ namespace Mengine
 
         if( m_anchorPercent.x != 0.f || m_anchorPercent.y != 0.f )
         {
-            //mt::box2f box;
-            //mt::insideout_box( box );
-
-            //for( const RenderVertex2D & vertex : m_vertexDataText )
-            //{
-            //    mt::add_internal_point( box, vertex.position.x, vertex.position.y );
-            //}
-
             mt::vec2f anchor = m_textSize * m_autoScaleFactor * m_anchorPercent;
 
             for( RenderVertex2D & vertex : m_vertexDataText )

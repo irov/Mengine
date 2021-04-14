@@ -13,6 +13,8 @@ namespace Mengine
         : public RenderProgramInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderProgram );
+
     public:
         MockupRenderProgram();
         ~MockupRenderProgram() override;

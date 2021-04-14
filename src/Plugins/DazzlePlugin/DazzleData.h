@@ -12,6 +12,8 @@ namespace Mengine
     class DazzleData
         : public DazzleDataInterface
     {
+        DECLARE_FACTORABLE( DazzleData );
+
     public:
         DazzleData();
         ~DazzleData() override;

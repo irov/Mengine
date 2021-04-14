@@ -4,11 +4,11 @@
 
 #include "Kernel/ConstStringHelper.h"
 
-#include "SurfaceImage.h"
-#include "SurfaceImageSequence.h"
-#include "SurfaceSolidColor.h"
-#include "SurfaceSound.h"
-#include "SurfaceTrackMatte.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceImageSequence.h"
+#include "Kernel/SurfaceSolidColor.h"
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceTrackMatte.h"
 
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_SURFACE_GENERATE(X)\

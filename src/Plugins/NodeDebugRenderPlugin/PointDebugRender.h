@@ -14,6 +14,6 @@ namespace Mengine
         ~PointDebugRender() override;
 
     protected:
-        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Point * _node, bool _hide ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const Point * _node, bool _hide ) override;
     };
 }

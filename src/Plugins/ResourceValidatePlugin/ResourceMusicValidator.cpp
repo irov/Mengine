@@ -16,7 +16,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMusicValidator::_validate( const ResourceMusicPtr & _resource )
+    bool ResourceMusicValidator::_validate( const ResourceMusicPtr & _resource ) const
     {
         bool external = _resource->isExternal();
 
@@ -25,7 +25,7 @@ namespace Mengine
             return true;
         }
 
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();

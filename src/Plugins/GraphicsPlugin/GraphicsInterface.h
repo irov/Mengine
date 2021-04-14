@@ -17,6 +17,12 @@ namespace Mengine
         virtual void setLineWidth( float _width ) = 0;
         virtual float getLineWidth() const = 0;
 
+        virtual void setOutlineWidth( float _outlineWidth ) = 0;
+        virtual float getOutlineWidth() const = 0;
+
+        virtual void setOutlineColor( const Color & _color ) = 0;
+        virtual Color getOutlineColor() const = 0;
+
         virtual void setLineSoft( float _penumbra ) = 0;
         virtual float getLineSoft() const = 0;
 

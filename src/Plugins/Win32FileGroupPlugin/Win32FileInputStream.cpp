@@ -12,7 +12,7 @@
 
 #include "stdex/memorycopy.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {
@@ -291,7 +291,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read )
     {
-        uint8_t * buf_offset = (uint8_t *)_buf + _offset;
+        uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
 
         DWORD bytesRead = 0;
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )

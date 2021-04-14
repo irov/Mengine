@@ -30,5 +30,6 @@ namespace Mengine
 public:\
     Mengine::RenderInterface * getRender() override{ return this; }\
     const Mengine::RenderInterface * getRender() const override{ return this; }\
+    Mengine::Renderable * getRenderable() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

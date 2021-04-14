@@ -32,6 +32,7 @@ namespace Mengine
         , protected BaseEventation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Checkbox );
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE();
         DECLARE_TRANSFORMABLE();

@@ -8,6 +8,8 @@ namespace Mengine
     class SDLFileGroupDirectoryFactory
         : public Factory
     {
+        DECLARE_FACTORABLE( SDLFileGroupDirectoryFactory );
+
     public:
         SDLFileGroupDirectoryFactory( const FilePath & _relationPath );
         ~SDLFileGroupDirectoryFactory() override;

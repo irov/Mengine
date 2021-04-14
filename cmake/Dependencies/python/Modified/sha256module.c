@@ -111,12 +111,12 @@ static void SHAcopy(SHAobject *src, SHAobject *dest)
 
 /* Various logical functions */
 #define ROR(x, y)\
-( ((((unsigned long)(x)&0xffffffffffffffffUL)>>(unsigned long)((y)&31)) | \
-((unsigned long)(x)<<(unsigned long)(32-((y)&31)))) & 0xffffffffffffffffUL)
+( ((((unsigned long)(x)&PY_SIZE_MAX)>>(unsigned long)((y)&31)) | \
+((unsigned long)(x)<<(unsigned long)(32-((y)&31)))) & PY_SIZE_MAX)
 #define Ch(x,y,z)       (z ^ (x & (y ^ z)))
 #define Maj(x,y,z)      (((x | y) & z) | (x & y))
 #define S(x, n)         ROR((x),(n))
-#define R(x, n)         (((x)&0xffffffffffffffffUL)>>(n))
+#define R(x, n)         (((x)&PY_SIZE_MAX)>>(n))
 #define Sigma0(x)       (S(x, 2) ^ S(x, 13) ^ S(x, 22))
 #define Sigma1(x)       (S(x, 6) ^ S(x, 11) ^ S(x, 25))
 #define Gamma0(x)       (S(x, 7) ^ S(x, 18) ^ R(x, 3))

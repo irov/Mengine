@@ -72,6 +72,8 @@ namespace Mengine
 
         dz_instance_set_time( m_instance, _time * 0.001f );
 
+        dz_instance_emit_resume( m_instance );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -103,6 +105,8 @@ namespace Mengine
     bool DazzleEffect::_interrupt( uint32_t _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
+
+        dz_instance_emit_pause( m_instance );
 
         return true;
     }
@@ -202,7 +206,7 @@ namespace Mengine
         const dz_effect_t * effect = data->getDazzleEffect();
 
         dz_instance_t * instance;
-        if( dz_instance_create( m_service, &instance, effect, 0, DZ_NULLPTR ) == DZ_FAILURE )
+        if( dz_instance_create( m_service, &instance, effect, DZ_NULLPTR ) == DZ_FAILURE )
         {
             LOGGER_ERROR( "dazzle '%s' resource '%s' invalid instance create"
                 , this->getName().c_str()
@@ -330,6 +334,7 @@ namespace Mengine
 
         dz_instance_compute_mesh( m_instance, &mesh, chunks, 16, &chunk_count );
 
+        this->updateVertexUV_( m_renderVertices, vertexCount );
         this->updateVertexColor_( m_renderVertices, vertexCount );
         this->updateVertexWM_( m_renderVertices, vertexCount );
 
@@ -409,6 +414,20 @@ namespace Mengine
             mt::mul_v3_v3_m4( wm_pos, r.position, wm );
 
             r.position = wm_pos;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DazzleEffect::updateVertexUV_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const
+    {
+        for( uint16_t
+            it = 0,
+            it_end = _verticesCount;
+            it != it_end;
+            ++it )
+        {
+            RenderVertex2D & r = _vertices[it];
+            
+            m_resourceImage->correctUVImage( r.uv[0], &(r.uv[0]) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

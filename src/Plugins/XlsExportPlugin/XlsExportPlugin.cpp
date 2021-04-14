@@ -6,6 +6,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
 
+#define MENGINE_WINDOWS_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/UnicodeHelper.h"
@@ -115,8 +116,19 @@ namespace Mengine
 
         Detail::MyXlsAllocator * allocator = Helper::newT<Detail::MyXlsAllocator>();
 
+#if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
+        int32_t crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
+        int32_t crt_error = _CrtSetReportMode( _CRT_ERROR, _CRTDBG_REPORT_MODE );
+        int32_t crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
+#endif
 
         pybind::kernel_interface * kernel = pybind::initialize( allocator, shortpath_exportPath, false, false, true );
+
+#if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
+        _CrtSetReportMode( _CRT_WARN, crt_warn );
+        _CrtSetReportMode( _CRT_ERROR, crt_error );
+        _CrtSetReportMode( _CRT_ASSERT, crt_assert );
+#endif
 
         //PyObject * xls_module = pybind::module_init( "Xls" );
 
@@ -169,7 +181,7 @@ namespace Mengine
         pybind::def_functor( kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins );
         pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &XlsExportPlugin::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RELOAD_LOCALE, &XlsExportPlugin::notifyReloadLocale, MENGINE_DOCUMENT_FACTORABLE );
 
         this->proccess_();
 
@@ -194,14 +206,11 @@ namespace Mengine
         Helper::deleteT( m_warninglogger );
         Helper::deleteT( m_errorLogger );
 
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RELOAD_LOCALE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    void XlsExportPlugin::notifyReloadLocale()
     {
-        MENGINE_UNUSED( _prevLocale );
-        MENGINE_UNUSED( _currentlocale );
-
         this->proccess_();
     }
     //////////////////////////////////////////////////////////////////////////

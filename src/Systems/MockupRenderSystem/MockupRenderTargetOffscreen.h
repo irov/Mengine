@@ -8,6 +8,8 @@ namespace Mengine
     class MockupRenderTargetOffscreen
         : public MockupRenderTargetTexture
     {
+        DECLARE_FACTORABLE( MockupRenderTargetOffscreen );
+
     public:
         MockupRenderTargetOffscreen();
         ~MockupRenderTargetOffscreen() override;

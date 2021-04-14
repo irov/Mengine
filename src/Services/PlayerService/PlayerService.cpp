@@ -50,7 +50,7 @@
 
 #include "math/mat3.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlayerService, Mengine::PlayerService );
@@ -82,7 +82,7 @@ namespace Mengine
             return false;
         }
 
-        m_scheduler = scheduler;
+        m_localScheduler = scheduler;
 
         SchedulerPtr schedulerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -93,7 +93,7 @@ namespace Mengine
             return false;
         }
 
-        m_schedulerGlobal = schedulerGlobal;
+        m_globalScheduler = schedulerGlobal;
 
         m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -112,7 +112,7 @@ namespace Mengine
             m_randomizer->setSeed( randomSeed );
         }
 
-        m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE ); 
+        m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
         m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderContext.viewport = nullptr;
@@ -149,17 +149,20 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
 
         m_globalInputHandler = nullptr;
-        m_scheduler = nullptr;
-        m_schedulerGlobal = nullptr;
+
+        m_localScheduler = nullptr;
+        m_globalScheduler = nullptr;
 
         for( const SchedulerInterfacePtr & scheduler : m_schedulers )
         {
+#ifdef MENGINE_DEBUG
             const Char * doc = MENGINE_DOCUMENTABLE_STR( scheduler.get(), "forgotten scheduler" );
 
             LOGGER_ERROR( "was forgotten finalize scheduler '%s' (doc: %s)"
                 , scheduler->getName().c_str()
                 , doc
             );
+#endif
 
             scheduler->finalize();
         }
@@ -214,24 +217,24 @@ namespace Mengine
             m_globalInputHandler->finalize();
         }
 
-        if( m_scheduler != nullptr )
+        if( m_localScheduler != nullptr )
         {
-            m_scheduler->finalize();
+            m_localScheduler->finalize();
         }
 
-        if( m_schedulerGlobal != nullptr )
+        if( m_globalScheduler != nullptr )
         {
-            m_schedulerGlobal->finalize();
+            m_globalScheduler->finalize();
         }
 
-        if( m_scheduler != nullptr )
+        if( m_localScheduler != nullptr )
         {
-            m_scheduler->removeAll();
+            m_localScheduler->removeAll();
         }
 
-        if( m_schedulerGlobal != nullptr )
+        if( m_globalScheduler != nullptr )
         {
-            m_schedulerGlobal->removeAll();
+            m_globalScheduler->removeAll();
         }
 
         if( m_affectorable != nullptr )
@@ -239,10 +242,10 @@ namespace Mengine
             if( m_affectorable->availableAffectorHub() == true )
             {
                 const AffectorHubInterfacePtr & affectorHub = m_affectorable->getAffectorHub();
-                
+
                 affectorHub->stopAllAffectors();
                 m_affectorable->clearAffectorHub();
-            }            
+            }
         }
 
         if( m_affectorableGlobal != nullptr )
@@ -314,7 +317,7 @@ namespace Mengine
         Helper::screenToWorldDelta( &m_renderContext, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
-    SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name, const DocumentPtr & _doc )
+    SchedulerInterfacePtr PlayerService::createScheduler( const ConstString & _name, const DocumentPtr & _doc )
     {
         SchedulerPtr sm = m_factoryScheduleManager->createObject( _doc );
 
@@ -332,7 +335,7 @@ namespace Mengine
         return sm;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::destroySchedulerManager( const SchedulerInterfacePtr & _scheduler )
+    bool PlayerService::destroyScheduler( const SchedulerInterfacePtr & _scheduler )
     {
         VectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
 
@@ -357,14 +360,14 @@ namespace Mengine
         return m_globalInputHandler;
     }
     //////////////////////////////////////////////////////////////////////////
-    const SchedulerInterfacePtr & PlayerService::getScheduler() const
+    const SchedulerInterfacePtr & PlayerService::getLocalScheduler() const
     {
-        return m_scheduler;
+        return m_localScheduler;
     }
     //////////////////////////////////////////////////////////////////////////
     const SchedulerInterfacePtr & PlayerService::getGlobalScheduler() const
     {
-        return m_schedulerGlobal;
+        return m_globalScheduler;
     }
     //////////////////////////////////////////////////////////////////////////
     const RandomizerInterfacePtr & PlayerService::getRandomizer() const
@@ -690,6 +693,11 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderContext * PlayerService::getRenderContext() const
+    {
+        return &m_renderContext;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         uint32_t debugMask = APPLICATION_SERVICE()
@@ -842,9 +850,9 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        if( m_scheduler != nullptr )
+        if( m_localScheduler != nullptr )
         {
-            m_scheduler->removeAll();
+            m_localScheduler->removeAll();
         }
 
         if( m_affectorable != nullptr )
@@ -906,9 +914,9 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        if( m_scheduler != nullptr )
+        if( m_localScheduler != nullptr )
         {
-            m_scheduler->removeAll();
+            m_localScheduler->removeAll();
         }
 
         if( m_affectorable != nullptr )
@@ -919,7 +927,7 @@ namespace Mengine
 
                 affectorHub->stopAllAffectors();
             }
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyRestartSceneDisable( const ScenePtr & _scene )
@@ -953,9 +961,9 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        if( m_scheduler != nullptr )
+        if( m_localScheduler != nullptr )
         {
-            m_scheduler->removeAll();
+            m_localScheduler->removeAll();
         }
 
         if( m_affectorable != nullptr )

@@ -11,12 +11,16 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderImage
         : public RenderImageInterface
         , public DX9RenderImageExtensionInterface
         , public Factorable
         , public DX9RenderResourceHandler
     {
+        DECLARE_FACTORABLE( DX9RenderImage );
+        DECLARE_UNKNOWABLE();
+
     public:
         DX9RenderImage();
         ~DX9RenderImage() override;

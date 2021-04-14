@@ -69,7 +69,7 @@ namespace Mengine
         return m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotBubbles::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    bool HotSpotBubbles::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
     {
         MENGINE_UNUSED( _contentResolution );
 
@@ -93,7 +93,7 @@ namespace Mengine
 
             float v_sqrlength = v.sqrlength();
 
-            if( v_sqrlength < (b.radius + _radiusx) * (b.radius + _radiusy) )
+            if( v_sqrlength < (b.radius + _radius) * (b.radius + _radius) )
             {
                 return !m_outward;
             }

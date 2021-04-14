@@ -48,7 +48,6 @@
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
-SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
@@ -647,7 +646,6 @@ namespace Mengine
     bool Bootstrapper::createServices_()
     {
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
-        SERVICE_CREATE( StringizeService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1488,13 +1486,15 @@ namespace Mengine
             m_loggerFile = nullptr;
         }
 
+        FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
         SERVICE_FINALIZE( Platform );
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( LoggerService );
-        SERVICE_FINALIZE( StringizeService );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
 
@@ -1547,8 +1547,7 @@ namespace Mengine
         SERVICE_DESTROY( ComponentService );
         SERVICE_DESTROY( Platform );
         SERVICE_DESTROY( NotificationService );
-        SERVICE_DESTROY( LoggerService );
-        SERVICE_DESTROY( StringizeService );
+        SERVICE_DESTROY( LoggerService );        
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
     }

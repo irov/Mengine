@@ -15,7 +15,7 @@
 #include "math/config.h"
 #include "math/constant.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

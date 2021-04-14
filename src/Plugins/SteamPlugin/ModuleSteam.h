@@ -10,6 +10,8 @@ namespace Mengine
     class ModuleSteam
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( ModuleSteam );
+
     public:
         ModuleSteam();
         ~ModuleSteam() override;

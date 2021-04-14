@@ -2,8 +2,7 @@
 
 #include "BaseResourcePrefetcher.h"
 
-#include "Engine/ResourceSound.h"
-
+#include "Kernel/ResourceSound.h"
 #include "Kernel/Factorable.h"
 
 namespace Mengine

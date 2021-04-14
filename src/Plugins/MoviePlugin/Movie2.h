@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/TextField.h"
 
+#include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseAnimation.h"
@@ -54,6 +54,7 @@ namespace Mengine
         , protected BaseAnimation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Movie2 );
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
@@ -94,12 +95,13 @@ namespace Mengine
     public:
         bool hasMovieLayers( const ConstString & _name ) const override;
         void setEnableMovieLayers( const ConstString & _name, bool _enable ) override;
+        void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) override;
 
     public:
         bool getWorldBoundingBox( mt::box2f * _bb ) const override;
 
     public:
-        void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) override;
+        void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const override;
 
     protected:
         bool _play( uint32_t _playId, float _time ) override;

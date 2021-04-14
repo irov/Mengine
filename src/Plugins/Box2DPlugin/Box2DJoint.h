@@ -9,6 +9,8 @@ namespace Mengine
     class Box2DJoint
         : public Box2DJointInterface
     {
+        DECLARE_FACTORABLE( Box2DJoint );
+
     public:
         Box2DJoint();
         ~Box2DJoint() override;

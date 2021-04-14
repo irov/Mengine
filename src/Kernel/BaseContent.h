@@ -19,6 +19,7 @@ namespace Mengine
         void setFilePath( const FilePath & _filePath ) override;
         const FilePath & getFilePath() const override;
 
+    public:
         void setCodecType( const ConstString & _codecType ) override;
         const ConstString & getCodecType() const override;
 
@@ -37,8 +38,8 @@ namespace Mengine
 
     protected:
         FileGroupInterfacePtr m_fileGroup;
-
         FilePath m_filePath;
+
         ConstString m_codecType;
         ConstString m_converterType;
 

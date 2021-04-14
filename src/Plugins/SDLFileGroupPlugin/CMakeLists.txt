@@ -14,12 +14,13 @@ src
     SDLFileInputStream.cpp
     SDLFileOutputStream.cpp
     SDLFileOutputStream.h
-    SDLFileMappedStream.h
-    SDLFileMappedStream.cpp
+    SDLFileMapped.h
+    SDLFileMapped.cpp
 	SDLFileHelper.h
 	SDLFileHelper.cpp
 )
 
+include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_SDLFILEGROUP)

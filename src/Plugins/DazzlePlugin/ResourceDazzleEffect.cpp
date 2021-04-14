@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceDazzleEffect::_compile()
     {
-        ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FilePath & filePath = content->getFilePath();
 

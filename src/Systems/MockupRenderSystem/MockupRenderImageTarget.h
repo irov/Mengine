@@ -13,6 +13,8 @@ namespace Mengine
         : public RenderImageInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( MockupRenderImageTarget );
+
     public:
         MockupRenderImageTarget();
         ~MockupRenderImageTarget() override;

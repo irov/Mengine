@@ -15,6 +15,8 @@ namespace Mengine
         : public RenderImageLoaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DecoderRenderImageLoader );
+
     public:
         DecoderRenderImageLoader();
         ~DecoderRenderImageLoader() override;
@@ -27,6 +29,9 @@ namespace Mengine
 
     protected:
         bool load( const RenderImageInterfacePtr & _image ) const override;
+
+    protected:
+        MemoryInterfacePtr getMemory( uint32_t _codecFlags, const DocumentPtr & _doc ) const override;
 
     protected:
         ImageDecoderInterfacePtr createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType ) const;

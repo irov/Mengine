@@ -30,33 +30,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_compile()
     {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-        const FilePath & filePath = this->getFilePath();
+        const ContentInterfacePtr & content = this->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "name '%s' - hit file '%s' not found"
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
-        const ConstString & codecType = this->getCodecType();
+        const ConstString & codecType = content->getCodecType();
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "name '%s' - hit file '%s' invalid create decoder '%s'"
             , this->getName().c_str()
-            , this->getFilePath().c_str()
-            , this->getCodecType().c_str()
+            , this->getContent()->getFilePath().c_str()
+            , this->getContent()->getCodecType().c_str()
         );
 
         if( decoder->prepareData( stream ) == false )
         {
             LOGGER_ERROR( "name '%s' - hit file '%s' invalid initialize decoder '%s'"
                 , this->getName().c_str()
-                , this->getFilePath().c_str()
-                , this->getCodecType().c_str()
+                , this->getContent()->getFilePath().c_str()
+                , this->getContent()->getCodecType().c_str()
             );
 
             return false;
@@ -76,7 +78,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( mipmap, "name '%s' - hit file '%s' invalid create memory"
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         size_t mipmapsize = (size_t)dataInfo->mipmapsize;
@@ -84,7 +86,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "name '%s' - hit file '%s' invalid new memory '%zu'"
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
             , mipmapsize
         );
 
@@ -94,7 +96,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "name '%s' invalid decode hit '%s' size %u (%zu)"
                 , this->getName().c_str()
-                , this->getFilePath().c_str()
+                , this->getContent()->getFilePath().c_str()
                 , m_mipmapsize
                 , mipmapsize
             );
@@ -111,28 +113,6 @@ namespace Mengine
     void ResourceHIT::_release()
     {
         m_mipmap = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceHIT::setPath( const FilePath & _filePath )
-    {
-        const FilePath & filePath = this->getFilePath();
-
-        if( filePath == _filePath )
-        {
-            return;
-        }
-
-        this->recompile( [this, &_filePath]()
-        {
-            this->setFilePath( _filePath );
-
-            if( _filePath.empty() == true )
-            {
-                return false;
-            }
-
-            return true;
-        } );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::testPoint( const mt::vec2f & _point, float _minAlpha ) const
@@ -208,7 +188,9 @@ namespace Mengine
         uint32_t i = (uint32_t)fi;
         uint32_t j = (uint32_t)fj;
 
-        float levelF = MT_logf( _radius ) * mt::constant::inv_log2;
+        float radiuslog = MT_logf( _radius );
+
+        float levelF = radiuslog * mt::constant::inv_log2;
         uint32_t level = (uint32_t)levelF;
 
         if( level >= m_mipmaplevel )
@@ -218,9 +200,9 @@ namespace Mengine
 
         uint8_t * alphaBuffer = this->getHitBuffer_( level );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, "'%s' hit file '%s' invalid get level buffer %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, "'%s' hit file '%s' invalid get level buffer %u:%u"
             , this->getName().c_str()
-            , this->getFilePath().c_str()
+            , this->getContent()->getFilePath().c_str()
             , level
             , m_mipmaplevel
         );
@@ -246,12 +228,12 @@ namespace Mengine
 
         uint8_t alpha = alphaBuffer[index];
 
-        if( alpha > minAlpha )
+        if( alpha <= minAlpha )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint8_t * ResourceHIT::getHitBuffer_( uint32_t _level ) const
@@ -266,9 +248,9 @@ namespace Mengine
 
         if( bufferOffset >= m_mipmapsize )
         {
-            LOGGER_ERROR( "'%s' hit file '%s' invalid get level buffer %d:%d"
+            LOGGER_ERROR( "'%s' hit file '%s' invalid get level buffer %u:%u"
                 , this->getName().c_str()
-                , this->getFilePath().c_str()
+                , this->getContent()->getFilePath().c_str()
                 , _level
                 , m_mipmaplevel
             );

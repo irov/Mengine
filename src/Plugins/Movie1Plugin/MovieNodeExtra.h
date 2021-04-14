@@ -12,6 +12,7 @@ namespace Mengine
         : public Node
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( MovieNodeExtra );
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();
 

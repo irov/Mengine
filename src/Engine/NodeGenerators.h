@@ -41,6 +41,7 @@ MENGINE_NODE_GENERATE( TextField )
 MENGINE_NODE_GENERATE( Window )
 MENGINE_NODE_GENERATE( ShapeCircle )
 MENGINE_NODE_GENERATE( ShapePacMan )
+MENGINE_NODE_GENERATE( ShapeQuadSize )
 MENGINE_NODE_GENERATE( ShapeQuadFixed )
 MENGINE_NODE_GENERATE( ShapeQuadFlex )
 //////////////////////////////////////////////////////////////////////////

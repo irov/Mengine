@@ -27,9 +27,9 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
 
-        ContentInterface * content = resource->getContent();
+        const ContentInterfacePtr & content = resource->getContent();
 
-        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
 
         ConstString dataflowType;
         if( metadata->get_File_Dataflow( &dataflowType ) == false )
@@ -73,6 +73,14 @@ namespace Mengine
                 layer.type = layerType;
                 layer.matrix = layerMatrix;
                 layer.color = layerColor;
+
+                mt::box2f dimension;
+                if( meta_layer.get_Dimension( &dimension ) == true )
+                {
+                    layer.dimension = dimension;
+                }
+
+                meta_layer.get_Options( &layer.options );
 
                 desc.layers.emplace_back( layer );
             }

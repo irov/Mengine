@@ -13,7 +13,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
-#include "Kernel/UID.h"
 #include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -111,10 +110,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
-        AccountUID uid;
-        Helper::makeUID( 20, uid.data );
-
-        account->setUID( uid );
+        LOGGER_MESSAGE( "create account '%s' UID '%.20s'"
+            , account->getID().c_str()
+            , account->getUID().data
+        );
 
         return account;
     }
@@ -133,8 +132,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( account );
 
-        LOGGER_INFO( "account", "create global account '%s'"
-            , accountID.c_str()
+        LOGGER_MESSAGE( "create account '%s' UID '%.20s'"
+            , account->getID().c_str()
+            , account->getUID().data
         );
 
         return account;
@@ -153,11 +153,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "account with ID '%s' invalid create. Account not created"
             , _accountID.c_str()
         );
-
-        AccountUID uid;
-        Helper::makeUID( 20, uid.data );
-
-        newAccount->setUID( uid );
 
         m_currentAccountID = newAccount->getID();
 
@@ -198,11 +193,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "Account with ID '%s' invalid create. Account not created"
             , _accountID.c_str()
         );
-
-        AccountUID uid;
-        Helper::makeUID( 20, uid.data );
-
-        newAccount->setUID( uid );
 
         m_globalAccountID = newAccount->getID();
 
@@ -293,6 +283,11 @@ namespace Mengine
             }
         }
 
+        LOGGER_MESSAGE( "delete account '%s' UID '%.20s'"
+            , account->getID().c_str()
+            , account->getUID().data
+        );
+
         account->finalize();
 
         if( m_accountProvider != nullptr )
@@ -325,6 +320,11 @@ namespace Mengine
         }
 
         m_currentAccountID = _accountID;
+
+        LOGGER_MESSAGE( "select account '%s' UID '%.20s'"
+            , account->getID().c_str()
+            , account->getUID().data
+        );
 
         account->apply();
 

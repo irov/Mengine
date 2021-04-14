@@ -12,6 +12,8 @@ namespace Mengine
     class AreaOfInterestTrigger
         : public AreaOfInterestTriggerInterface
     {
+        DECLARE_FACTORABLE( AreaOfInterestTrigger );
+
     public:
         AreaOfInterestTrigger();
         ~AreaOfInterestTrigger() override;

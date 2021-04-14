@@ -9,6 +9,8 @@ namespace Mengine
     class SDLFileGroupDirectory
         : public BaseFileGroup
     {
+        DECLARE_FACTORABLE( SDLFileGroupDirectory );
+
     public:
         SDLFileGroupDirectory();
         ~SDLFileGroupDirectory() override;
@@ -44,6 +46,14 @@ namespace Mengine
         OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) override;
         bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) override;
         bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
+
+    public:
+        bool isAvailableMappedFile() const override;
+
+    public:
+        MappedInterfacePtr createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) override;
+        bool openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared ) override;
+        bool closeMappedFile( const MappedInterfacePtr & _stream ) override;
 
     protected:
         FactoryPtr m_factoryInputStream;

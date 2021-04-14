@@ -17,6 +17,8 @@ namespace Mengine
     class BaseAffectorHub
         : public AffectorHubInterface
     {
+        DECLARE_FACTORABLE( BaseAffectorHub );
+
     public:
         BaseAffectorHub();
         ~BaseAffectorHub() override;

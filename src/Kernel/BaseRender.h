@@ -115,6 +115,9 @@ namespace Mengine
         void updateRendering_() const;
 
     protected:
+        void invalidateRendering();
+
+    protected:
         BaseRender * m_relationRender;
         BaseRender * m_extraRelationRender;
 

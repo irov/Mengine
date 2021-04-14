@@ -16,12 +16,12 @@ namespace Mengine
                 return;
             }
 
-            const Char * name = _factory->getName();
+            const ConstString & type = _factory->getType();
             uint32_t count = _factory->getCountObject();
 
             Char msg[1024] = {'\0'};
             MENGINE_SNPRINTF( msg, 1024, "[Assert] Factory '%s' not empty ['%u']"
-                , name
+                , type.c_str()
                 , count
             );
 

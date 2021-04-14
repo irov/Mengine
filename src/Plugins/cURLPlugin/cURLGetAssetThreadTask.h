@@ -11,6 +11,8 @@ namespace Mengine
     class cURLGetAssetThreadTask
         : public cURLThreadTask
     {
+        DECLARE_FACTORABLE( cURLGetAssetThreadTask );
+
     public:
         cURLGetAssetThreadTask();
         ~cURLGetAssetThreadTask() override;

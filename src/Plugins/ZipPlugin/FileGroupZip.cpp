@@ -83,8 +83,66 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 #pragma pack( pop )
+    //////////////////////////////////////////////////////////////////////////    
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static voidpf s_alloc_func( voidpf _opaque, uInt _items, uInt _size )
+        {
+            MENGINE_UNUSED( _opaque );
+
+            uInt total = _items * _size;
+
+            void * p = Helper::allocateMemory( total, "zip" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_free_func( voidpf _opaque, voidpf _address )
+        {
+            MENGINE_UNUSED( _opaque );
+
+            Helper::deallocateMemory( _address, "zip" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_inflate_memory( void * const _buffer, size_t _capacity, z_const void * _src, size_t _size )
+        {
+            z_stream zs;
+            zs.next_in = static_cast<z_const Bytef *>(_src);
+            zs.avail_in = (uInt)_size;
+
+            zs.next_out = static_cast<Bytef *>(_buffer);
+            zs.avail_out = (uInt)_capacity;
+
+            zs.zalloc = &s_alloc_func;
+            zs.zfree = &s_free_func;
+
+            int32_t err_init = inflateInit2( &zs, -MAX_WBITS );
+
+            if( err_init != Z_OK )
+            {
+                return false;
+            }
+
+            int32_t err_inflate = inflate( &zs, Z_FINISH );
+            int32_t err_end = inflateEnd( &zs );
+
+            if( err_inflate != Z_STREAM_END )
+            {
+                return false;
+            }
+
+            if( err_end != Z_OK )
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     FileGroupZip::FileGroupZip()
+        : m_mappedThreshold( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -94,6 +152,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::_initialize()
     {
+        if( m_baseFileGroup->isAvailableMappedFile() == true )
+        {
+            m_mappedThreshold = CONFIG_VALUE( "Engine", "ZipMappedThreshold", 262144U );
+
+            FileGroupInterface * mappedFileGroup;
+            FileMappedInterfacePtr mappedFile = m_baseFileGroup->createMappedFile( m_folderPath, &mappedFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+
+            if( mappedFileGroup->openMappedFile( m_folderPath, mappedFile, false ) == false )
+            {
+                return false;
+            }
+
+            m_mappedFile = mappedFile;
+        }
+
         if( this->loadHeader_() == false )
         {
             LOGGER_ERROR( "can't load header '%s'"
@@ -123,6 +196,7 @@ namespace Mengine
         m_indexes.clear();
 
         m_zipFile = nullptr;
+        m_mappedFile = nullptr;
 
         m_mutex = nullptr;
     }
@@ -181,7 +255,6 @@ namespace Mengine
             );
 
             ZipCentralDirectoryFileHeader header;
-
             zipFile->read( &header, sizeof( header ) );
 
             zipFile->read( &fileNameBuffer, header.fileNameLen );
@@ -202,6 +275,7 @@ namespace Mengine
                 {
                     uint64_t dataValue;
                     zipFile->read( &dataValue, sizeof( dataValue ) );
+
                     uncompressedSize = dataValue;
                 }
 
@@ -209,6 +283,7 @@ namespace Mengine
                 {
                     uint64_t dataValue;
                     zipFile->read( &dataValue, sizeof( dataValue ) );
+
                     compressedSize = dataValue;
                 }
 
@@ -216,6 +291,7 @@ namespace Mengine
                 {
                     uint64_t dataValue;
                     zipFile->read( &dataValue, sizeof( dataValue ) );
+
                     relativeOffset = dataValue;
                 }
             }
@@ -392,59 +468,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    static voidpf s_alloc_func( voidpf _opaque, uInt _items, uInt _size )
-    {
-        MENGINE_UNUSED( _opaque );
-
-        uInt total = _items * _size;
-
-        void * p = Helper::allocateMemory( total, "zip" );
-
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_free_func( voidpf _opaque, voidpf _address )
-    {
-        MENGINE_UNUSED( _opaque );
-
-        Helper::deallocateMemory( _address, "zip" );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_inflate_memory( void * const _buffer, size_t _capacity, z_const void * _src, size_t _size )
-    {
-        z_stream zs;
-        zs.next_in = static_cast<z_const Bytef *>(_src);
-        zs.avail_in = (uInt)_size;
-
-        zs.next_out = static_cast<Bytef *>(_buffer);
-        zs.avail_out = (uInt)_capacity;
-
-        zs.zalloc = &s_alloc_func;
-        zs.zfree = &s_free_func;
-
-        int32_t err_init = inflateInit2( &zs, -MAX_WBITS );
-
-        if( err_init != Z_OK )
-        {
-            return false;
-        }
-
-        int32_t err_inflate = inflate( &zs, Z_FINISH );
-        int32_t err_end = inflateEnd( &zs );
-
-        if( err_inflate != Z_STREAM_END )
-        {
-            return false;
-        }
-
-        if( err_end != Z_OK )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
     {
         if( m_parentFileGroup != nullptr )
@@ -462,29 +485,50 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        if( _streaming == true )
-        {
-            InputStreamInterfacePtr stream = m_baseFileGroup->createInputFile( _filePath, true, nullptr, _doc );
-
-            if( _fileGroup != nullptr )
-            {
-                *_fileGroup = this;
-            }
-
-            return stream;
-        }
-
-        MemoryInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryInput( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
-
         if( _fileGroup != nullptr )
         {
             *_fileGroup = this;
         }
 
-        return memory;
+        if( _streaming == true )
+        {
+            if( m_mappedFile != nullptr )
+            {
+                InputStreamInterfacePtr stream = m_mappedFile->createInputStream( _doc );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+                return stream;
+            }
+            else
+            {
+                InputStreamInterfacePtr stream = m_baseFileGroup->createInputFile( _filePath, true, nullptr, _doc );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+                return stream;
+            }
+        }
+
+        MapFileInfo::const_iterator it_found = m_files.find( _filePath );
+
+        const FileInfo & fi = it_found->second;
+
+        if( fi.file_size < m_mappedThreshold || fi.compr_method != Z_NO_COMPRESSION || m_mappedFile == nullptr )
+        {
+            MemoryInputInterfacePtr memory = MEMORY_SERVICE()
+                ->createMemoryInput( _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+
+            return memory;
+        }
+
+        InputStreamInterfacePtr stream = m_mappedFile->createInputStream( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+
+        return stream;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
@@ -522,40 +566,62 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
-            if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true, _share ) == false )
+            if( m_mappedFile != nullptr )
             {
-                LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
-                    , m_folderPath.c_str()
-                    , _filePath.c_str()
-                    , fi.seek_pos
-                    , fi.file_size
-                );
+                if( m_mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true, _share ) == false )
+                {
+                    LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
+                        , m_folderPath.c_str()
+                        , _filePath.c_str()
+                        , fi.seek_pos
+                        , fi.file_size
+                    );
 
-                return false;
+                    return false;
+                }
             }
 
             return true;
         }
 
-        MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
-
         if( fi.compr_method == Z_NO_COMPRESSION )
         {
-            void * buffer = memory->newBuffer( fi.file_size );
+            if( fi.file_size < m_mappedThreshold || m_mappedFile == nullptr )
+            {
+                MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
-                , m_folderPath.c_str()
-                , _filePath.c_str()
-                , fi.unz_size
-            );
+                void * buffer = memory->newBuffer( fi.file_size );
 
-            m_mutex->lock();
-            m_zipFile->seek( file_offset );
-            m_zipFile->read( buffer, fi.file_size );
-            m_mutex->unlock();
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
+                    , m_folderPath.c_str()
+                    , _filePath.c_str()
+                    , fi.unz_size
+                );
+
+                m_mutex->lock();
+                m_zipFile->seek( file_offset );
+                m_zipFile->read( buffer, fi.file_size );
+                m_mutex->unlock();
+            }
+            else
+            {
+                if( m_mappedFile->openInputStream( _stream, file_offset, fi.file_size ) == false )
+                {
+                    return false;
+                }
+            }
         }
         else
         {
+            MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
+
             void * buffer = memory->newBuffer( fi.unz_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, "zip '%s' file '%s' failed new memory %zu"
@@ -581,7 +647,7 @@ namespace Mengine
             m_zipFile->read( compress_memory, fi.file_size );
             m_mutex->unlock();
 
-            if( s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
+            if( Detail::s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
             {
                 LOGGER_ERROR( "zip '%s' file '%s' failed inflate"
                     , m_folderPath.c_str()
@@ -630,6 +696,42 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::isAvailableMappedFile() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MappedInterfacePtr FileGroupZip::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _fileGroup );
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared )
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _stream );
+        MENGINE_UNUSED( _shared );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::closeMappedFile( const MappedInterfacePtr & _stream )
+    {
+        MENGINE_UNUSED( _stream );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

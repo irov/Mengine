@@ -21,6 +21,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonScriptModule::finalize()
+    {
+        m_module = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModule::onInitialize( const ConstString & _method )
     {
 #ifdef MENGINE_DEBUG
@@ -88,4 +93,5 @@ namespace Mengine
     {
         return m_module;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

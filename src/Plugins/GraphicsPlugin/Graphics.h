@@ -22,6 +22,7 @@ namespace Mengine
         , protected BaseRender
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Graphics );
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_TRANSFORMABLE();
@@ -39,6 +40,12 @@ namespace Mengine
     public:
         void setLineWidth( float _width ) override;
         float getLineWidth() const override;
+
+        void setOutlineWidth( float _outlineWidth ) override;
+        float getOutlineWidth() const override;
+
+        void setOutlineColor( const Color & _color ) override;
+        Color getOutlineColor() const override;
 
         void setLineSoft( float _penumbra ) override;
         float getLineSoft() const override;

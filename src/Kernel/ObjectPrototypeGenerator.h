@@ -40,8 +40,8 @@ namespace Mengine
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
-            const ConstString & prototype = this->getPrototype();
-            object->setType( prototype );
+            UniqueId uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
+            object->setUniqueIdentity( uniqueIdentity );
 
 #if MENGINE_DOCUMENT_ENABLE
             DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object '%s' type '%s' create '%s'"

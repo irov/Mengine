@@ -9,6 +9,8 @@ namespace Mengine
     class PickEncoderHIT
         : public PickEncoder
     {
+        DECLARE_FACTORABLE( PickEncoderHIT );
+
     public:
         PickEncoderHIT();
         ~PickEncoderHIT() override;

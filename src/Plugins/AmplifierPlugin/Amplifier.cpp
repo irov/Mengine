@@ -111,7 +111,7 @@ namespace Mengine
             , _resourceName.c_str()
         );
 
-        const ContentInterface * content = resourceMusic->getContent();
+        const ContentInterfacePtr & content = resourceMusic->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -150,7 +150,9 @@ namespace Mengine
 
         if( _callback != nullptr )
         {
-            soundIdentity->setSoundListener( Helper::makeFactorableUnique<Amplifier::MyMusicSoundListener>( MENGINE_DOCUMENT_FACTORABLE, _callback ) );
+            SoundListenerInterfacePtr soundListener = Helper::makeFactorableUnique<Amplifier::MyMusicSoundListener>( MENGINE_DOCUMENT_FACTORABLE, _callback );
+
+            soundIdentity->setSoundListener( soundListener );
         }
 
         if( SOUND_SERVICE()
@@ -212,8 +214,7 @@ namespace Mengine
 
         if( m_soundIdentity != nullptr )
         {
-            SoundIdentityInterfacePtr keep_soundIdentity = m_soundIdentity;
-            m_soundIdentity = nullptr;
+            SoundIdentityInterfacePtr keep_soundIdentity = std::move( m_soundIdentity );
 
             SOUND_SERVICE()
                 ->stopEmitter( keep_soundIdentity );

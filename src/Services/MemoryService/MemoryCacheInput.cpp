@@ -44,7 +44,7 @@ namespace Mengine
         this->uncache_();
 
         void * memory;
-        uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
+        UniqueId bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
 
         if( bufferId == INVALIDATE_UNIQUE_ID )
         {

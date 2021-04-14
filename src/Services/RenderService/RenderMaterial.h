@@ -11,6 +11,8 @@ namespace Mengine
         : public RenderMaterialInterface
         , public IntrusiveLinked<RenderMaterial>
     {
+        DECLARE_FACTORABLE( RenderMaterial );
+
     public:
         RenderMaterial();
         ~RenderMaterial() override;

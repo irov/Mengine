@@ -231,67 +231,67 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc )
+        UniqueId addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _doc, _code, _isDown, _event, false );
 
-            uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalKeyOnceHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc )
+        UniqueId addGlobalKeyOnceHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _doc, _code, _isDown, _event, true );
 
-            uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentPtr & _doc )
+        UniqueId addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseButtonHandler>( _doc, _code, _isDown, _event );
 
-            uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const DocumentPtr & _doc )
+        UniqueId addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseMoveHandler>( _doc, _event );
 
-            uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const DocumentPtr & _doc )
+        UniqueId addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseWheelHandler>( _doc, _event );
 
-            uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void removeGlobalHandler( uint32_t _id )
+        void removeGlobalHandler( UniqueId _id )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();

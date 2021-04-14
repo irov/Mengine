@@ -159,9 +159,18 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        struct MovieLayerDataVisitorDesc
+        {
+            ResourceMovie2Ptr resource;
+            bool successful;
+        };
+    }    
+    //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
     {
-        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
+        MovieLayerDataVisitorDesc * desc = (MovieLayerDataVisitorDesc *)_ud;
 
         const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _compositionData );
         const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _layerData );
@@ -170,6 +179,27 @@ namespace Mengine
 
         switch( layerType )
         {
+        case AE_MOVIE_LAYER_TYPE_SLOT:
+            {
+                ae_float_t immutable_opacity;
+                if( ae_get_movie_layer_data_immutable_opacity( _layerData, &immutable_opacity ) == AE_FALSE )
+                {
+                    break;
+                }
+
+                if( immutable_opacity >= MENGINE_COLOR_MINIMAL_ALPHA )
+                {
+                    break;
+                }
+
+                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' slot layer '%s' opacity transparent"
+                    , desc->resource->getName().c_str()
+                    , compositionDataName
+                    , layerDataName
+                );
+
+                desc->successful = false;
+            }break;
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 ae_float_t immutable_opacity;
@@ -178,16 +208,18 @@ namespace Mengine
                     break;
                 }
 
-                if( immutable_opacity >= 0.00390625f )
+                if( immutable_opacity >= MENGINE_COLOR_MINIMAL_ALPHA )
                 {
                     break;
                 }
 
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' text layer '%s' opacity transparent"
-                    , resourceMovie2->getName().c_str()
+                    , desc->resource->getName().c_str()
                     , compositionDataName
                     , layerDataName
                 );
+
+                desc->successful = false;
             }break;
         case AE_MOVIE_LAYER_TYPE_VIDEO:
             {
@@ -205,13 +237,15 @@ namespace Mengine
                 }
 
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' video layer '%s' scale [%f - %f - %f]"
-                    , resourceMovie2->getName().c_str()
+                    , desc->resource->getName().c_str()
                     , compositionDataName
                     , layerDataName
                     , immutable_scale_x
                     , immutable_scale_y
                     , immutable_scale_z
                 );
+
+                desc->successful = false;
             }break;
         default:
             {
@@ -223,7 +257,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
     {
-        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
+        MovieLayerDataVisitorDesc * desc = (MovieLayerDataVisitorDesc *)_ud;
 
         const aeMovieLayerData * layer_data = _callbackData->layer_data;
 
@@ -243,12 +277,12 @@ namespace Mengine
                         const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
 
                         LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' layer '%s' has track matte non-image type"
-                            , resourceMovie2->getName().c_str()
+                            , desc->resource->getName().c_str()
                             , compositionDataName
                             , layerDataName
                         );
 
-                        return AE_FALSE;
+                        desc->successful = false;
                     }
 
                     return AE_TRUE;
@@ -263,12 +297,12 @@ namespace Mengine
                         const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
 
                         LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' text layer '%s' has track matte non-image type"
-                            , resourceMovie2->getName().c_str()
+                            , desc->resource->getName().c_str()
                             , compositionDataName
                             , layerDataName
                         );
 
-                        return AE_FALSE;
+                        desc->successful = false;
                     }
 
                     return AE_TRUE;
@@ -303,9 +337,9 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource )
+    bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource ) const
     {
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
 
@@ -392,7 +426,11 @@ namespace Mengine
 
         bool successful = true;
 
-        if( ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
+        MovieLayerDataVisitorDesc desc;
+        desc.resource = _resource;
+        desc.successful = true;
+
+        if( ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, &desc ) == AE_FALSE )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
                 , _resource->getName().c_str()
@@ -403,7 +441,12 @@ namespace Mengine
             successful = false;
         }
 
-        if( ae_visit_movie_composition_data( movieData, __movie_composition_data_visitor, (ae_voidptr_t)_resource.get() ) == AE_FALSE )
+        if( desc.successful == false )
+        {
+            successful = false;
+        }
+
+        if( ae_visit_movie_composition_data( movieData, __movie_composition_data_visitor, &desc ) == AE_FALSE )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
                 , _resource->getName().c_str()

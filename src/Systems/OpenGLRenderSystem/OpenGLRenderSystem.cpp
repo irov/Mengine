@@ -165,7 +165,7 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-#ifdef MENGINE_RENDER_OPENGL_ES
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         Mengine::initialize_GLEXT();
 #endif
 

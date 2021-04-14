@@ -1,6 +1,6 @@
 #include "OpenGLRenderExtension.h"
 
-#ifndef MENGINE_RENDER_OPENGL_ES
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
 
 #include "SDL_video.h"
 

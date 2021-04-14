@@ -19,30 +19,17 @@ namespace Mengine
     struct VideoCodecDataInfo
         : public CodecDataInfo
     {
-        VideoCodecDataInfo() noexcept
-            : frameWidth( 0 )
-            , frameHeight( 0 )
-            , width( 0 )
-            , height( 0 )
-            , fps( 0.f )
-            , channel( 0 )
-            , duration( 0.f )
-            , format( PF_UNKNOWN )
-            , clamp( true )
-        {
-        }
+        uint32_t frameWidth = 0;
+        uint32_t frameHeight = 0;
+        uint32_t width = 0;
+        uint32_t height = 0;
+        float fps = 0.f;
+        uint32_t channel = 0;
 
-        uint32_t frameWidth;
-        uint32_t frameHeight;
-        uint32_t width;
-        uint32_t height;
-        float fps;
-        uint32_t channel;
+        float duration = 0.f;
 
-        float duration;
-
-        EPixelFormat format;
-        bool clamp;
+        EPixelFormat format = PF_UNKNOWN;
+        bool clamp = true;
 
         float getFrameTime() const
         {
@@ -53,26 +40,15 @@ namespace Mengine
     struct VideoCodecOptions
         : public CodecOptions
     {
-        VideoCodecOptions()
-            : pixelFormat( PF_UNKNOWN )
-            , duration( 0.f )
-            , fps( 0.f )
-            , alpha( false )
-            , premultiply( false )
-            , mock( false )
-            , noSeek( false )
-        {
-        }
+        EPixelFormat pixelFormat = PF_UNKNOWN;
 
-        EPixelFormat pixelFormat;
+        float duration = 0.f;
+        float fps = 0.f;
+        bool alpha = false;
+        bool premultiply = false;
 
-        float duration;
-        float fps;
-        bool alpha;
-        bool premultiply;
-
-        bool mock;
-        bool noSeek;
+        bool mock = false;
+        bool noSeek = false;
     };
     //////////////////////////////////////////////////////////////////////////
     class VideoDecoderInterface

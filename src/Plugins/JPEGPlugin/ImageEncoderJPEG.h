@@ -18,6 +18,8 @@ namespace Mengine
     class ImageEncoderJPEG
         : public ImageEncoder
     {
+        DECLARE_FACTORABLE( ImageEncoderJPEG );
+
     public:
         ImageEncoderJPEG();
         ~ImageEncoderJPEG() override;

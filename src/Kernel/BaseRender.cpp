@@ -4,7 +4,7 @@
 
 #include "Kernel/Assertion.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {
@@ -17,7 +17,7 @@ namespace Mengine
         , m_hide( false )
         , m_localHide( false )
         , m_rendering( true )
-        , m_invalidateRendering( false )
+        , m_invalidateRendering( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ namespace Mengine
 
         this->invalidateColor();
 
-        m_invalidateRendering = true;
+        this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()
@@ -91,7 +91,7 @@ namespace Mengine
 
         this->invalidateColor();
 
-        m_invalidateRendering = true;
+        this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeExtraRelationRender()
@@ -113,7 +113,7 @@ namespace Mengine
 
         this->invalidateColor();
 
-        m_invalidateRendering = true;
+        this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::emptyRenderChildren() const
@@ -162,7 +162,7 @@ namespace Mengine
     {
         m_renderEnable = _renderEnable;
 
-        m_invalidateRendering = true;
+        this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setHide( bool _hide )
@@ -176,7 +176,7 @@ namespace Mengine
 
         this->_setHide( _hide );
 
-        m_invalidateRendering = true;
+        this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setHide( bool _hide )
@@ -405,12 +405,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _transparent );
 
-        m_invalidateRendering = true;
+        this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::updateRendering_() const
     {
-        m_invalidateRendering = true;
+        m_invalidateRendering = false;
 
         m_rendering = false;
 
@@ -430,6 +430,11 @@ namespace Mengine
         }
 
         m_rendering = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::invalidateRendering()
+    {
+        m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

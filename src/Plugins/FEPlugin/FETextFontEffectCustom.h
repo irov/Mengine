@@ -9,6 +9,7 @@ namespace Mengine
         : public FETextFontEffectBase
         , public UnknownFECustomInterface
     {
+        DECLARE_FACTORABLE( FETextFontEffectCustom );
         DECLARE_UNKNOWABLE();
 
     public:

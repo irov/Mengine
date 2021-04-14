@@ -31,7 +31,8 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            GlyphCode glyphChar = (GlyphCode)*it;
+            Char32 c = *it;
+            GlyphCode glyphChar = (GlyphCode)c;
 
             U32String::const_iterator it_kerning = it;
             std::advance( it_kerning, 1 );
@@ -66,7 +67,10 @@ namespace Mengine
             m_length += charData.advance + m_charOffset;
         }
 
-        m_length -= m_charOffset;
+        if( _text.empty() == false )
+        {
+            m_length -= m_charOffset;
+        }
 
         return successful;
     }

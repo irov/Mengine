@@ -12,6 +12,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        bool unicodeToUtf8( const WChar * _unicode, String * const _utf8 );
         bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, String * const _utf8 );
         bool unicodeToUtf8( const WString & _unicode, String * const _utf8 );
         bool unicodeToUtf8( const WChar * _unicode, Char * const _utf8, size_t _utf8Capacity, size_t * const _utf8Size = nullptr );

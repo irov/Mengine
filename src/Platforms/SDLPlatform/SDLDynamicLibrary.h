@@ -7,10 +7,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLDynamicLibrary
         : public DynamicLibraryInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( SDLDynamicLibrary );
+
     public:
         SDLDynamicLibrary();
         ~SDLDynamicLibrary() override;

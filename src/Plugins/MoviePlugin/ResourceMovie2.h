@@ -6,10 +6,11 @@
 #include "Movie2DataInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Color.h"
 #include "Kernel/Map.h"
+#include "Kernel/Optional.h"
+#include "Kernel/Floats.h"
 
 #include "math/mat4.h"
 
@@ -20,10 +21,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMovie2
         : public Resource
-        , protected BaseContent
     {
+        DECLARE_FACTORABLE( ResourceMovie2 );
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
         DECLARE_MAGICABLE( MAGIC_AEZ );
 
     public:
@@ -48,6 +48,8 @@ namespace Mengine
             ConstString type;
             mt::mat4f matrix;
             Color color;
+            Optional<mt::box2f> dimension;
+            UInt32s options;
         };
 
         typedef Vector<CompositionLayer> VectorCompositionLayers;

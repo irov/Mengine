@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
-
 #include "Kernel/FilePath.h"
 
 namespace Mengine
@@ -10,10 +8,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceFile
         : public Resource
-        , protected BaseContent
     {
+        DECLARE_FACTORABLE( ResourceFile );
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceFile();

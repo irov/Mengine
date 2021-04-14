@@ -246,12 +246,6 @@ Identity
 )
 
 ADD_FILTER(
-Unique
-    Unique.cpp
-    Unique.h
-)
-
-ADD_FILTER(
 Transformation
     Transformable.h
     BaseTransformation.cpp
@@ -317,7 +311,7 @@ Resource
 )
 
 ADD_FILTER(
-ResourceImage
+Resource\\\\Image
     ResourceImage.cpp
     ResourceImage.h
     ResourceImageData.cpp
@@ -332,6 +326,66 @@ ResourceImage
     ResourceImageSubstractRGBAndAlpha.h
     ResourceImageSequence.cpp
     ResourceImageSequence.h    
+)
+
+ADD_FILTER(
+Resource\\\\Sound
+    ResourceSound.cpp
+    ResourceSound.h
+)
+
+ADD_FILTER(
+Surface\\\\SurfaceSound
+    SurfaceSound.cpp
+    SurfaceSound.h
+)
+
+ADD_FILTER(
+Surface\\\\SurfaceSolidColor
+    SurfaceSolidColor.cpp
+    SurfaceSolidColor.h
+)
+
+ADD_FILTER(
+Surface\\\\SurfaceImage
+    SurfaceImage.cpp
+    SurfaceImage.h
+)
+
+ADD_FILTER(
+Surface\\\\SurfaceImageSequence
+    SurfaceImageSequence.cpp
+    SurfaceImageSequence.h
+)
+
+ADD_FILTER(
+Surface\\\\SurfaceTrackMatte
+    SurfaceTrackMatte.cpp
+    SurfaceTrackMatte.h
+)
+
+ADD_FILTER(
+Shape\\\\ShapeCircle
+    ShapeCircle.cpp
+    ShapeCircle.h
+)
+
+ADD_FILTER(
+Shape\\\\ShapePacMan
+    ShapePacMan.cpp
+    ShapePacMan.h
+)
+
+ADD_FILTER(
+Shape\\\\ShapeQuad
+    ShapeQuad.cpp
+    ShapeQuad.h
+    ShapeQuadSize.cpp
+    ShapeQuadSize.h
+    ShapeQuadFixed.cpp
+    ShapeQuadFixed.h
+    ShapeQuadFlex.cpp
+    ShapeQuadFlex.h
 )
 
 ADD_FILTER(
@@ -404,6 +458,7 @@ Assertion
     AssertionObservable.h
     AssertionObservable.cpp
     AssertionOptional.h
+    AssertionUnique.h
 )
 
 ADD_FILTER(
@@ -529,6 +584,9 @@ Core
     StringFormat.cpp
     
     Params.h
+    
+    ParamsHelper.h
+    ParamsHelper.cpp
     
     Rect.h
     Rect.cpp
@@ -666,6 +724,7 @@ Core
     LoggerLevel.h
     KeyCode.h
     MouseCode.h
+    TouchCode.h
     
     Document.h
     Document.cpp    
@@ -720,6 +779,9 @@ Core
     
     BuildMode.h
     BuildMode.cpp
+    
+    FileContent.h
+    FileContent.cpp
 )
 
 ADD_FILTER(

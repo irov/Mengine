@@ -7,7 +7,6 @@ Metabuf
     Metatype.cpp
     Metatype.h
     Metacache.h
-    protocol.xml
 )
    
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

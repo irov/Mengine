@@ -22,6 +22,7 @@ namespace Mengine
         , protected DummyPicker
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Layer2D );
         DECLARE_VISITABLE( Layer );
         DECLARE_RENDERABLE();
         DECLARE_PICKERABLE();

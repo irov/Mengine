@@ -1,5 +1,7 @@
 #include "BitmapFontConfigLoader.h"
 
+#include "Interface/PrototypeServiceInterface.h"
+
 #include "BitmapFontInterface.h"
 
 #include "BitmapFont.h"
@@ -76,10 +78,12 @@ namespace Mengine
             return false;
         }
 
-        ContentInterface * content = _font->getContent();
+        ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         content->setFileGroup( _fileGroup );
         content->setFilePath( pathFontImage );
+
+        font->setContent( content );
 
         return true;
     }

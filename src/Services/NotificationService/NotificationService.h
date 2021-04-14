@@ -33,11 +33,11 @@ namespace Mengine
     public:
         bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
 
-    public:
+    protected:
         void addObserver_( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc );
         void removeObserver_( uint32_t _id, Observable * _observer );
 
-    public:
+    protected:
         bool hasObserver_( uint32_t _id, Observable * _observer ) const;
         void updateObservers_( uint32_t _id );
 

@@ -2,6 +2,8 @@
 
 #include "Interface/FileServiceInterface.h"
 
+#include "PyCURLReceiver.h"
+
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -15,47 +17,7 @@
 #include "curl/curl.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        class PyCURLReceiver
-            : public Factorable
-            , public cURLReceiverInterface
-        {
-        public:
-            PyCURLReceiver()
-            {
-            }
-
-            ~PyCURLReceiver() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override
-            {
-                MENGINE_UNUSED( _headers );
-
-                m_cb.call_args( _id, _status, _error, _response, _code, _successful, m_args );
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyCURLReceiver> PyCURLReceiverPtr;
-        //////////////////////////////////////////////////////////////////////////        
-    }
+{    
     //////////////////////////////////////////////////////////////////////////
     cURLScriptEmbedding::cURLScriptEmbedding()
     {
@@ -76,7 +38,7 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
@@ -90,7 +52,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
@@ -110,7 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
@@ -124,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver );
 
@@ -246,7 +208,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "downloadAsset", this, &cURLScriptEmbedding::downloadAsset );
         pybind::def_functor( _kernel, "cancelRequest", this, &cURLScriptEmbedding::cancelRequest );
 
-        m_factoryPyHttpReceiver = Helper::makeFactoryPool<Detail::PyCURLReceiver, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPyHttpReceiver = Helper::makeFactoryPool<PyCURLReceiver, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

@@ -3,7 +3,6 @@
 #include "MovieKeyFrameInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/Vector.h"
@@ -185,10 +184,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMovie
         : public Resource
-        , protected BaseContent
     {
+        DECLARE_FACTORABLE( ResourceMovie );
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceMovie();
@@ -290,4 +288,5 @@ namespace Mengine
     {
         return m_keyFramePack;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

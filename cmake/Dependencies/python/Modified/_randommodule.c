@@ -149,7 +149,7 @@ init_genrand(RandomObject *self, unsigned long s)
     unsigned long *mt;
 
     mt = self->state;
-    mt[0]= s & 0xffffffffffffffffUL;
+    mt[0]= s & PY_SIZE_MAX;
     for (mti=1; mti<N; mti++) {
         mt[mti] =
         (1812433253UL * (mt[mti-1] ^ (mt[mti-1] >> 30)) + mti);
@@ -157,7 +157,7 @@ init_genrand(RandomObject *self, unsigned long s)
         /* In the previous versions, MSBs of the seed affect   */
         /* only MSBs of the array mt[].                                */
         /* 2002/01/09 modified by Makoto Matsumoto                     */
-        mt[mti] &= 0xffffffffffffffffUL;
+        mt[mti] &= PY_SIZE_MAX;
         /* for >32 bit machines */
     }
     self->index = mti;
@@ -180,7 +180,7 @@ init_by_array(RandomObject *self, unsigned long init_key[], unsigned long key_le
     for (; k; k--) {
         mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))
                  + init_key[j] + j; /* non linear */
-        mt[i] &= 0xffffffffffffffffUL; /* for WORDSIZE > 32 machines */
+        mt[i] &= PY_SIZE_MAX; /* for WORDSIZE > 32 machines */
         i++; j++;
         if (i>=N) { mt[0] = mt[N-1]; i=1; }
         if (j>=key_length) j=0;
@@ -188,7 +188,7 @@ init_by_array(RandomObject *self, unsigned long init_key[], unsigned long key_le
     for (k=N-1; k; k--) {
         mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))
                  - i; /* non linear */
-        mt[i] &= 0xffffffffffffffffUL; /* for WORDSIZE > 32 machines */
+        mt[i] &= PY_SIZE_MAX; /* for WORDSIZE > 32 machines */
         i++;
         if (i>=N) { mt[0] = mt[N-1]; i=1; }
     }
@@ -262,7 +262,7 @@ random_seed(RandomObject *self, PyObject *args)
     if (key == NULL)
         goto Done;
 
-    masklower = PyLong_FromUnsignedLong( 0xffffffffffffffffUL );
+    masklower = PyLong_FromUnsignedLong( PY_SIZE_MAX );
     if (masklower == NULL)
         goto Done;
     thirtytwo = PyInt_FromLong(32L);
@@ -364,7 +364,7 @@ random_setstate(RandomObject *self, PyObject *state)
         element = PyLong_AsUnsignedLong(PyTuple_GET_ITEM(state, i));
         if (element == (unsigned long)-1 && PyErr_Occurred())
             return NULL;
-        new_state[i] = element & 0xffffffffffffffffUL; /* Make sure we get sane state */
+        new_state[i] = element & PY_SIZE_MAX; /* Make sure we get sane state */
     }
 
     index = PyLong_AsLong(PyTuple_GET_ITEM(state, i));
@@ -443,7 +443,7 @@ random_jumpahead(RandomObject *self, PyObject *n)
     nonzero = 0;
     for (i = 1; i < N; i++) {
         mt[i] += i+1;
-        mt[i] &= 0xffffffffffffffffUL; /* for WORDSIZE > 32 machines */
+        mt[i] &= PY_SIZE_MAX; /* for WORDSIZE > 32 machines */
         nonzero |= mt[i];
     }
 
@@ -452,7 +452,7 @@ random_jumpahead(RandomObject *self, PyObject *n)
        normal case, we fall back to the pre-issue 14591 behaviour for mt[0]. */
     if (nonzero) {
         mt[0] += 1;
-        mt[0] &= 0xffffffffffffffffUL; /* for WORDSIZE > 32 machines */
+        mt[0] &= PY_SIZE_MAX; /* for WORDSIZE > 32 machines */
     }
     else {
         mt[0] = 0x80000000UL;

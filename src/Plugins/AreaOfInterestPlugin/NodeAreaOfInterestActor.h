@@ -20,6 +20,7 @@ namespace Mengine
         , public AreaOfInterestActorProviderInterface
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( NodeAreaOfInterestActor );
         DECLARE_VISITABLE( Node );
         DECLARE_TRANSFORMABLE();
 

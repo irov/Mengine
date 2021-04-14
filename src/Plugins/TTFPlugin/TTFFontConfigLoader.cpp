@@ -61,10 +61,12 @@ namespace Mengine
                 return false;
             }
 
-            ContentInterface * content = _font->getContent();
+            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             content->setFileGroup( _fileGroup );
             content->setFilePath( ttfPath );
+
+            _font->setContent( content );
         }
         else
         {
@@ -78,9 +80,10 @@ namespace Mengine
                 return false;
             }
 
+            ConstString groupName;
             Char utf8_ttfPath[MENGINE_MAX_PATH] = {'\0'};
             if( PLATFORM_SERVICE()
-                ->getSystemFontPath( ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
+                ->getSystemFontPath( &groupName, ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {
                 LOGGER_ERROR( "invalid font '%s' don't found '%s' path"
                     , name.c_str()
@@ -93,12 +96,14 @@ namespace Mengine
             FilePath ttfPath = Helper::stringizeFilePath( utf8_ttfPath );
 
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+                ->getFileGroup( groupName );
 
-            ContentInterface * content = _font->getContent();
+            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             content->setFileGroup( fileGroup );
             content->setFilePath( ttfPath );
+
+            _font->setContent( content );
         }
 
         uint32_t height;
@@ -118,12 +123,14 @@ namespace Mengine
         {
             TextFontEffectInterfacePtr textFontEffet = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), MENGINE_DOCUMENT_FACTORABLE );
 
-            UnknownFEFileInterface * unknownFE = textFontEffet->getDynamicUnknown();
-
-            ContentInterface * content = unknownFE->getContent();
+            ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             content->setFilePath( FEPath );
             content->setFileGroup( _fileGroup );
+
+            textFontEffet->setContent( content );
+
+            UnknownFEFileInterface * unknownFE = textFontEffet->getDynamicUnknown();
 
             ConstString FEName;
             if( _config->hasValue( name.c_str(), "FEName", &FEName ) == false )

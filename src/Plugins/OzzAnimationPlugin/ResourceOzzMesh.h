@@ -5,7 +5,6 @@
 #include "OzzDetail.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 
 #include "Kernel/Vector.h"
 
@@ -17,12 +16,10 @@ namespace Mengine
     class ResourceOzzMesh
         : public Resource
         , public UnknownResourceOzzMeshInterface
-        , protected BaseContent
-        
     {
+        DECLARE_FACTORABLE( ResourceOzzMesh );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceOzzMesh();

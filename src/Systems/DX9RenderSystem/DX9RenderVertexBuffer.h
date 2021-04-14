@@ -16,6 +16,8 @@ namespace Mengine
         , public Factorable
         , public DX9RenderResourceHandler
     {
+        DECLARE_FACTORABLE( DX9RenderVertexBuffer );
+
     public:
         DX9RenderVertexBuffer();
         ~DX9RenderVertexBuffer() override;
@@ -60,6 +62,6 @@ namespace Mengine
         MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderVertexBuffer> DX9RenderVertexBufferPtr;
+    typedef IntrusivePtr<DX9RenderVertexBuffer, RenderVertexBufferInterface> DX9RenderVertexBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }

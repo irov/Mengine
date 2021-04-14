@@ -19,6 +19,10 @@
 #   include "SDLStdioLogger.h"
 #endif
 
+#if defined(MENGINE_WINDOWS_DEBUG)
+#   include "SDLOutputDebugLogger.h"
+#endif
+
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
@@ -52,7 +56,7 @@ namespace Mengine
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
-        for( int32_t i = 1; i != _argc; ++i )
+        for( int32_t i = 1; i < _argc; ++i )
         {
             const Char * arg = _argv[i];
 
@@ -96,6 +100,17 @@ namespace Mengine
 
         m_loggerMessageBox = loggerMessageBox;
 
+#if defined(MENGINE_WINDOWS_DEBUG)
+        SDLOutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<SDLOutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
+
+        loggerOutputDebug->setVerboseFlag( LM_ERROR );
+
+        LOGGER_SERVICE()
+            ->registerLogger( loggerOutputDebug );
+
+        m_loggerOutputDebug = loggerOutputDebug;
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -116,6 +131,19 @@ namespace Mengine
 
             m_loggerMessageBox = nullptr;
         }
+
+#if defined(MENGINE_WINDOWS_DEBUG)
+        if( m_loggerOutputDebug != nullptr )
+        {
+            if( SERVICE_EXIST( LoggerServiceInterface ) == true )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerOutputDebug );
+            }
+
+            m_loggerOutputDebug = nullptr;
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize( int32_t _argc, Char ** const _argv )
@@ -238,11 +266,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        PLATFORM_SERVICE()
-            ->stopPlatform();
+        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->stopPlatform();
+        }
 
-        BOOTSTRAPPER_SERVICE()
-            ->stop();
+        if( SERVICE_EXIST( Mengine::BootstrapperInterface ) == true )
+        {
+            BOOTSTRAPPER_SERVICE()
+                ->stop();
+        }
 
 #ifdef MENGINE_PLUGIN_MENGINE_DLL
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"

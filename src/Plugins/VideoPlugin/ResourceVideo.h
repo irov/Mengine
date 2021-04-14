@@ -3,7 +3,6 @@
 #include "VideoInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 #include "Kernel/ResourceCacher.h"
 
 #include "math/vec2.h"
@@ -14,10 +13,9 @@ namespace Mengine
     class ResourceVideo
         : public Resource
         , public UnknownVideoResourceInterface
-        , protected BaseContent        
     {
+        DECLARE_FACTORABLE( ResourceVideo );
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
         DECLARE_UNKNOWABLE();
 
     public:
@@ -31,6 +29,9 @@ namespace Mengine
     public:
         void setDuration( float _duration ) override;
         float getDuration() const override;
+
+        void setResize( float _resize ) override;
+        float getResize() const override;
 
     public:
         void setAlpha( bool _alpha ) override;
@@ -59,6 +60,7 @@ namespace Mengine
     protected:
         float m_frameRate;
         float m_duration;
+        float m_resize;
 
         typedef ResourceCacher<VideoDecoderInterfacePtr> ResourceCacherVideoDecoder;
         ResourceCacherVideoDecoder m_videoDecoderCacher;

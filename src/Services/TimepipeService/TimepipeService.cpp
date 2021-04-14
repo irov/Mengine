@@ -4,7 +4,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimepipeService, Mengine::TimepipeService );

@@ -4,7 +4,7 @@
 
 #include <random>
 #include <functional>
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

@@ -7,6 +7,8 @@ namespace Mengine
     class ImageConverterPNGToACF
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( ImageConverterPNGToACF );
+
     public:
         ImageConverterPNGToACF();
         ~ImageConverterPNGToACF() override;

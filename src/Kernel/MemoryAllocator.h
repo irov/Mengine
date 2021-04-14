@@ -105,7 +105,7 @@ namespace Mengine
 
             new (memory_buffer)T( std::forward<Args &&>( _args ) ... );
 
-            return std::launder( static_cast<T *>(memory_buffer) );
+            return static_cast<T *>(memory_buffer);
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>

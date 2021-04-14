@@ -3,8 +3,6 @@
 #include "Kernel/Resource.h"
 #include "Kernel/UnknownResourceImageDataInterface.h"
 
-#include "Kernel/BaseContent.h"
-
 #include "math/vec2.h"
 
 namespace Mengine
@@ -13,11 +11,10 @@ namespace Mengine
     class ResourceImageData
         : public Resource
         , public UnknownResourceImageDataInterface
-        , protected BaseContent        
     {
+        DECLARE_FACTORABLE( ResourceImageData );
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceImageData();

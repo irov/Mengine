@@ -11,6 +11,8 @@ namespace Mengine
     class ImageDecoderHTF
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderHTF );
+
     public:
         ImageDecoderHTF();
         ~ImageDecoderHTF() override;

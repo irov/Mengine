@@ -27,6 +27,7 @@ namespace Mengine
         , protected BaseAnimation
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( DazzleEffect );
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
@@ -87,6 +88,7 @@ namespace Mengine
     protected:
         void updateVertexColor_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const;
         void updateVertexWM_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const;
+        void updateVertexUV_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const;
 
     protected:
         ResourcePtr m_resourceDazzleEffect;

@@ -2,17 +2,14 @@
 
 #include "ResourceCursor.h"
 
-#include "Kernel/BaseContent.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ResourceCursorICO
         : public ResourceCursor
-        , protected BaseContent
     {
+        DECLARE_FACTORABLE( ResourceCursorICO );
         DECLARE_VISITABLE( ResourceCursor );
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceCursorICO();

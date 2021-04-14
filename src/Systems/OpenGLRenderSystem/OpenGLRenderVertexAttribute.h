@@ -16,12 +16,15 @@ namespace Mengine
         , public OpenGLRenderResourceHandler
         , public Factorable
     {
+        DECLARE_FACTORABLE( OpenGLRenderVertexAttribute );
+
     public:
         OpenGLRenderVertexAttribute();
         ~OpenGLRenderVertexAttribute() override;
 
     public:
         bool initialize( const ConstString & _name, uint32_t _elementSize );
+        void finalize();
 
     public:
         bool compile( GLuint _program );

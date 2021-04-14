@@ -164,4 +164,5 @@ namespace Mengine
         m_affectorable = nullptr;
         m_transformable = nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

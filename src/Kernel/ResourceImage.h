@@ -99,6 +99,8 @@ namespace Mengine
         bool m_hasAlpha;
         bool m_isPremultiply;
         bool m_isPow2;
+        bool m_isUVImageIdentity;
+        bool m_isUVAlphaIdentity;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceImage> ResourceImagePtr;
@@ -156,6 +158,8 @@ namespace Mengine
     MENGINE_INLINE void ResourceImage::setUVTextureImage( const mt::uv4f & _uv )
     {
         m_uvTextureImage = _uv;
+
+        m_isUVImageIdentity = mt::uv4_is_identity( m_uvTextureImage );
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const mt::uv4f & ResourceImage::getUVTextureImage() const
@@ -166,6 +170,8 @@ namespace Mengine
     MENGINE_INLINE void ResourceImage::setUVTextureAlpha( const mt::uv4f & _uv )
     {
         m_uvTextureAlpha = _uv;
+
+        m_isUVAlphaIdentity = mt::uv4_is_identity( m_uvTextureAlpha );
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const mt::uv4f & ResourceImage::getUVTextureAlpha() const

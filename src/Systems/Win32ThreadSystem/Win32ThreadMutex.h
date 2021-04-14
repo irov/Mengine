@@ -16,6 +16,8 @@ namespace Mengine
         : public ThreadMutexInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Win32ThreadMutex );
+
     public:
         Win32ThreadMutex();
         ~Win32ThreadMutex() override;

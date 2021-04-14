@@ -45,6 +45,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/Interender.h"
 #include "Kernel/MatrixProxy.h"
+#include "Kernel/FileContent.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -98,16 +99,17 @@
 #include "Window.h"
 #include "Landscape2D.h"
 
-#include "ShapeCircle.h"
-#include "ShapePacMan.h"
-#include "ShapeQuadFixed.h"
-#include "ShapeQuadFlex.h"
+#include "Kernel/ShapeCircle.h"
+#include "Kernel/ShapePacMan.h"
+#include "Kernel/ShapeQuadSize.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/ShapeQuadFlex.h"
 
-#include "SurfaceSound.h"
-#include "SurfaceImage.h"
-#include "SurfaceImageSequence.h"
-#include "SurfaceTrackMatte.h"
-#include "SurfaceSolidColor.h"
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceImageSequence.h"
+#include "Kernel/SurfaceTrackMatte.h"
+#include "Kernel/SurfaceSolidColor.h"
 
 // All Resource type
 #include "Kernel/ResourceImageSequence.h"
@@ -116,10 +118,10 @@
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceSound.h"
 
 #include "ResourceMusic.h"
 #include "ResourceFile.h"
-#include "ResourceSound.h"
 #include "ResourceWindow.h"
 #include "ResourceHIT.h"
 #include "ResourceShape.h"
@@ -410,11 +412,15 @@ namespace Mengine
 
         m_renderPipeline = renderPipeline;
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &Application::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
+
         if( m_debugFileOpen == true )
         {
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
@@ -424,20 +430,6 @@ namespace Mengine
         {
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
-        }
-
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
-        {
-            PLAYER_SERVICE()
-                ->finalizeRenderResources();
-        }
-
-        m_cursorResource = nullptr;
-
-        if( m_renderPipeline != nullptr )
-        {
-            m_renderPipeline->finalize();
-            m_renderPipeline = nullptr;
         }
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
@@ -451,9 +443,39 @@ namespace Mengine
         this->unregisterArrowGenerator_();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Application::_stopService()
+    {
+        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        {
+            PLAYER_SERVICE()
+                ->finalizeRenderResources();
+        }
+
+        if( m_renderPipeline != nullptr )
+        {
+            m_renderPipeline->finalize();
+            m_renderPipeline = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::notifyEnginePrepareFinalize_()
+    {
+        if( m_cursorResource != nullptr )
+        {
+            m_cursorResource->release();
+            m_cursorResource = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseTypes_()
     {
         LOGGER_MESSAGE( "Register Base Generator..." );
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<FileContent, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -485,6 +507,9 @@ namespace Mengine
     void Application::unregisterBaseTypes_()
     {
         LOGGER_MESSAGE( "Unregister Base Generator..." );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none() );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none() );
@@ -540,6 +565,7 @@ namespace Mengine
         NODE_FACTORY( Window );
         NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );
+        NODE_FACTORY( ShapeQuadSize );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
 
@@ -601,6 +627,7 @@ namespace Mengine
         NODE_FACTORY( Window );
         NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );
+        NODE_FACTORY( ShapeQuadSize );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
 
@@ -701,7 +728,6 @@ namespace Mengine
 
         ADD_PROTOTYPE( ResourceMusic );
         ADD_PROTOTYPE( ResourceImageSequence );
-        ADD_PROTOTYPE( ResourceImage );
         ADD_PROTOTYPE( ResourceImageData );
         ADD_PROTOTYPE( ResourceImageDefault );
         ADD_PROTOTYPE( ResourceImageSubstract );
@@ -730,7 +756,6 @@ namespace Mengine
 
         REMOVE_PROTOTYPE( ResourceMusic );
         REMOVE_PROTOTYPE( ResourceImageSequence );
-        REMOVE_PROTOTYPE( ResourceImage );
         REMOVE_PROTOTYPE( ResourceImageData );
         REMOVE_PROTOTYPE( ResourceImageDefault );
         REMOVE_PROTOTYPE( ResourceImageSubstract );
@@ -1033,7 +1058,7 @@ namespace Mengine
                 m_debugPause = true;
             }
 
-            if( _event.isAlt == true && _event.isDown == true )
+            if( _event.special.isAlt == true && _event.isDown == true )
             {
                 float timeFactor = -1.f;
 
@@ -1071,7 +1096,7 @@ namespace Mengine
 
                 float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
 
-                if( _event.isAlt == true )
+                if( _event.special.isAlt == true )
                 {
                     Debug_TimeFactorStep = 1.f;
                 }
@@ -1093,7 +1118,7 @@ namespace Mengine
 
                 float Debug_TimeFactorStep = CONFIG_VALUE( "Debug", "TimeFactorStep", 0.0625f );
 
-                if( _event.isAlt == true )
+                if( _event.special.isAlt == true )
                 {
                     Debug_TimeFactorStep = 1.f;
                 }
@@ -1189,15 +1214,46 @@ namespace Mengine
 
             if( _event.code == KC_E && _event.isDown == true && controlDown == true )
             {
-                NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
-                NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );
-                NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_POST );
-
                 const ConstString & locale = APPLICATION_SERVICE()
                     ->getLocale();
 
-                APPLICATION_SERVICE()
-                    ->setLocale( locale );
+                LOGGER_MESSAGE_RELEASE( "Reload locale [%s]"
+                    , locale.c_str()
+                );
+
+                class MyRestartSceneChange
+                    : public SceneChangeCallbackInterface
+                    , public Factorable
+                {
+                protected:
+                    void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
+                    {
+                        MENGINE_UNUSED( _enable );
+                        MENGINE_UNUSED( _remove );
+                        MENGINE_UNUSED( _error );
+
+                        if( _scene == nullptr )
+                        {
+                            const ConstString & locale = APPLICATION_SERVICE()
+                                ->getLocale();
+
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_POST );
+
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, locale, locale );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, locale, locale );
+                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, locale, locale );
+                        }
+                    }
+                };
+
+                typedef IntrusivePtr<MyRestartSceneChange> MyRestartSceneChangePtr;
+
+                MyRestartSceneChangePtr cb = Helper::makeFactorableUnique<MyRestartSceneChange>( MENGINE_DOCUMENT_FACTORABLE );
+
+                SCENE_SERVICE()
+                    ->restartCurrentScene( false, cb );
             }
 
             //if( _event.code == KC_0 && _event.isDown == true )
@@ -1294,7 +1350,8 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-            ne.type = IET_MOUSE_ENTER;
+
+            ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;
             ne.y = vy;
@@ -1422,7 +1479,8 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-            ne.type = IET_MOUSE_ENTER;
+            
+            ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;
             ne.y = vy;
@@ -1430,9 +1488,6 @@ namespace Mengine
 
             this->mouseEnter( ne );
         }
-
-        //GAME_SERVICE()
-        //    ->mousePosition( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::mouseEnter( const InputMouseEnterEvent & _event )
@@ -1604,9 +1659,12 @@ namespace Mengine
                 ->update( m_focus );
         }
 
-        if( m_update == false && (m_focus == false || m_freeze == true) && m_nopause == true )
+        if( m_nopause == false )
         {
-            return false;
+            if( m_update == false && (m_focus == false || m_freeze == true) )
+            {
+                return false;
+            }
         }
 
         GAME_SERVICE()
@@ -2245,7 +2303,7 @@ namespace Mengine
         {
             bool vsync = this->getVSync();
 
-            if( RENDER_SERVICE() != nullptr )
+            if( SERVICE_EXIST( RenderServiceInterface ) == true )
             {
                 RENDER_SERVICE()
                     ->setVSync( vsync );
@@ -2266,9 +2324,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::setCursorMode( bool _mode )
+    void Application::setCursorMode( bool _cursorMode )
     {
-        m_cursorMode = _mode;
+        if( m_cursorMode == _cursorMode )
+        {
+            return;
+        }
+
+        m_cursorMode = _cursorMode;
 
         if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
@@ -2279,7 +2342,7 @@ namespace Mengine
         if( m_cursorMode == true && m_cursorResource != nullptr )
         {
             const ConstString & name = m_cursorResource->getName();
-            const ContentInterface * content = m_cursorResource->getContent();
+            const ContentInterfacePtr & content = m_cursorResource->getContent();
             const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
             PLATFORM_SERVICE()
@@ -2296,6 +2359,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::setCursorIcon( const ConstString & _resourceName )
     {
+        if( m_cursorResource != nullptr && _resourceName == m_cursorResource->getName() )
+        {
+            return;
+        }
+
         ResourceCursorPtr cursorResource = RESOURCE_SERVICE()
             ->getResourceReference( ConstString::none(), _resourceName );
 
@@ -2327,7 +2395,7 @@ namespace Mengine
         }
 
         const ConstString & name = m_cursorResource->getName();
-        const ContentInterface * content = m_cursorResource->getContent();
+        const ContentInterfacePtr & content = m_cursorResource->getContent();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
         PLATFORM_SERVICE()

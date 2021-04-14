@@ -51,30 +51,9 @@ namespace Mengine
         m_textureOutline = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::isValid() const
-    {
-        const ContentInterface * content = this->getContent();
-
-        if( content->existContent() == false )
-        {
-            const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-            const FilePath & filePath = content->getFilePath();
-
-            LOGGER_ERROR( "font '%s' not found file '%s:%s'"
-                , this->getName().c_str()
-                , fileGroup->getName().c_str()
-                , filePath.c_str()
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::_compile()
     {
-        const ContentInterface * content = this->getContent();
+        const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();

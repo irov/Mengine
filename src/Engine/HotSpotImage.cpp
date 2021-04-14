@@ -181,7 +181,7 @@ namespace Mengine
         return result != m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotImage::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    bool HotSpotImage::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
     {
         MENGINE_UNUSED( _contentResolution );
         MENGINE_UNUSED( _context );
@@ -191,10 +191,13 @@ namespace Mengine
             return !m_outward;
         }
 
+        mt::vec2f rxy;
+        Helper::worldToScreenDelta( _context, _contentResolution, mt::vec2f( _radius, _radius ), &rxy );
+
         mt::box2f bb_screen;
         this->getScreenBoundingBox( _context, _contentResolution, &bb_screen );
 
-        if( mt::is_intersect( bb_screen, _point, _radiusx, _radiusy ) == false )
+        if( mt::is_intersect( bb_screen, _point, rxy.x, rxy.y ) == false )
         {
             return m_outward;
         }
@@ -234,7 +237,7 @@ namespace Mengine
         mt::vec2f pointIn2;
         mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
 
-        bool result = m_resourceTestPick->testRadius( pointIn2, _radiusx, m_alphaTest );
+        bool result = m_resourceTestPick->testRadius( pointIn2, _radius, m_alphaTest );
 
         return result != m_outward;
     }

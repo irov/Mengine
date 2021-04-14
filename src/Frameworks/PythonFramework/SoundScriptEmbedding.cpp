@@ -7,6 +7,8 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
+#include "Environment/Python/PythonDocumentTraceback.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -17,12 +19,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourceHelper.h"
-
-#include "Environment/Python/PythonDocumentTraceback.h"
+#include "Kernel/ResourceSound.h"
 
 #include "Config/Lambda.h"
-
-#include "Engine/ResourceSound.h"
 
 #include "pybind/pybind.hpp"
 
@@ -382,6 +381,8 @@ namespace Mengine
             class SoundAffectorCallback
                 : public AffectorCallbackInterface
             {
+                DECLARE_FACTORABLE( SoundAffectorCallback );
+
             public:
                 SoundAffectorCallback()
                 {
@@ -791,4 +792,5 @@ namespace Mengine
 
         m_implement = nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

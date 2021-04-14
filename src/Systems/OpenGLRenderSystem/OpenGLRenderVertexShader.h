@@ -18,6 +18,8 @@ namespace Mengine
         , public CompilableReference
         , public Factorable        
     {
+        DECLARE_FACTORABLE( OpenGLRenderVertexShader );
+
     public:
         OpenGLRenderVertexShader();
         ~OpenGLRenderVertexShader() override;

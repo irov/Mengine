@@ -31,6 +31,9 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     embedding
         cURLScriptEmbedding.cpp
         cURLScriptEmbedding.h
+        
+        PyCURLReceiver.cpp
+        PyCURLReceiver.h
         )
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

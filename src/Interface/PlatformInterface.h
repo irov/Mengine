@@ -1,6 +1,11 @@
 #pragma once
 
-#include "Config/Typedef.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/DynamicLibraryInterface.h"
+#include "Interface/DateTimeProviderInterface.h"
+#include "Interface/ContentInterface.h"
+#include "Interface/UnknownInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
@@ -10,13 +15,9 @@
 #include "Kernel/Params.h"
 #include "Kernel/UnknownPointer.h"
 #include "Kernel/LambdaFilePath.h"
+#include "Kernel/Unknowable.h"
 
-#include "Interface/ServiceInterface.h"
-#include "Interface/MemoryInterface.h"
-#include "Interface/DynamicLibraryInterface.h"
-#include "Interface/DateTimeProviderInterface.h"
-#include "Interface/ContentInterface.h"
-#include "Interface/UnknownInterface.h"
+#include "Config/UniqueId.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
@@ -30,6 +31,7 @@ namespace Mengine
 {
     class PlatformInterface
         : public ServiceInterface
+        , public Unknowable
     {
         SERVICE_DECLARE( "PlatformService" );
 
@@ -39,9 +41,9 @@ namespace Mengine
         virtual void stopPlatform() = 0;
 
     public:
-        typedef Lambda<void()> LambdaTimer;
-        virtual uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) = 0;
-        virtual void removeTimer( uint32_t _id ) = 0;
+        typedef Lambda<void( UniqueId _id )> LambdaTimer;
+        virtual UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) = 0;
+        virtual void removeTimer( UniqueId _id ) = 0;
 
     public:
         virtual uint64_t getTicks() const = 0;
@@ -90,6 +92,7 @@ namespace Mengine
 
         virtual void setCursorPosition( const mt::vec2f & _pos ) = 0;
         virtual void setCursorIcon( const ConstString & _icon ) = 0;
+        virtual bool hasCursorIcon( const ConstString & _icon ) const = 0;
 
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;
@@ -97,7 +100,7 @@ namespace Mengine
         virtual bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;
-        virtual bool notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _memory ) = 0;
+        virtual bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _memory ) = 0;
 
     public:
         virtual void onEvent( const ConstString & _event, const MapWParams & _params ) = 0;
@@ -106,7 +109,7 @@ namespace Mengine
         virtual float getJoystickAxis( uint32_t _index ) const = 0;
 
     public:
-        virtual size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const = 0;
+        virtual size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const = 0;
 
     public:
         virtual bool getMaxClientResolution( Resolution * const _resolution ) const = 0;

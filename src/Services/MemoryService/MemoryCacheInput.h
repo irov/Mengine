@@ -7,6 +7,8 @@
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/ThreadGuard.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -16,6 +18,8 @@ namespace Mengine
         : public MemoryCacheInputInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Document );
+
     public:
         MemoryCacheInput();
         ~MemoryCacheInput() override;
@@ -51,7 +55,7 @@ namespace Mengine
     protected:
         MemoryService * m_memoryManager;
 
-        uint32_t m_bufferId;
+        UniqueId m_bufferId;
 
         uint8_t * m_data;
         size_t m_size;

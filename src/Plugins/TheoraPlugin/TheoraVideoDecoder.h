@@ -10,6 +10,8 @@ namespace Mengine
     class TheoraVideoDecoder
         : public VideoDecoder
     {
+        DECLARE_FACTORABLE( TheoraVideoDecoder );
+
     public:
         TheoraVideoDecoder();
         ~TheoraVideoDecoder() override;

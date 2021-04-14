@@ -7,6 +7,8 @@ namespace Mengine
     class RenderBatch
         : public RenderBatchInterface
     {
+        DECLARE_FACTORABLE( RenderBatch );
+
     public:
         RenderBatch();
         ~RenderBatch() override;

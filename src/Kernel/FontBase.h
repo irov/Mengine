@@ -16,6 +16,10 @@ namespace Mengine
         ~FontBase() override;
 
     public:
+        void setContent( const ContentInterfacePtr & _content ) override;
+        const ContentInterfacePtr & getContent() const override;
+
+    public:
         void setName( const ConstString & _name ) override;
         const ConstString & getName() const override;
 
@@ -39,6 +43,9 @@ namespace Mengine
         virtual bool _unfetch();
 
     public:
+        void setMetricSymbol( GlyphCode _metricsSymbol ) override;
+        GlyphCode getMetricSymbol() const override;
+
         void setHeight( uint32_t _height ) override;
         uint32_t getHeight() const override;
 
@@ -64,10 +71,14 @@ namespace Mengine
         virtual bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) = 0;
 
     protected:
+        ContentInterfacePtr m_content;
+
         ConstString m_name;
         ConstString m_type;
 
         uint32_t m_params;
+
+        GlyphCode m_metricsSymbol;
 
         uint32_t m_height;
 

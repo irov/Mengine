@@ -35,6 +35,8 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/AssertionAllocator.h"
+#include "Kernel/InputServiceHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -80,14 +82,16 @@ namespace Mengine
         , m_window( nullptr )
         , m_accelerometer( nullptr )
         , m_enumerator( 0 )
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
+#endif
         , m_sdlInput( nullptr )
         , m_icon( 0 )
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
+        , m_active( false )
         , m_shouldQuit( false )
         , m_running( false )
-        , m_pause( false )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -130,9 +134,11 @@ namespace Mengine
 
         return sizeof( deploy_mac_data ) - 1;
 #elif defined(MENGINE_PLATFORM_OSX)
-        const char * basePath = SDL_GetBasePath();
+        char * basePath = SDL_GetBasePath();
 
         MENGINE_STRCPY( _currentPath, basePath );
+
+        SDL_free( basePath );
 
         return MENGINE_STRLEN( _currentPath );
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -220,10 +226,11 @@ namespace Mengine
         return axis;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const
+    size_t SDLPlatform::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );
         MENGINE_UNUSED( _fontPath );
+        MENGINE_UNUSED( _groupName );
 
         _fontPath[0] = '\0';
 
@@ -709,6 +716,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalizeService()
     {
+        m_active = false;
+
         this->destroyWindow_();
 
         SDL_Quit();
@@ -743,6 +752,8 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+
+        MENGINE_ASSERTION_ALLOCATOR( "SDL" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()
@@ -782,19 +793,12 @@ namespace Mengine
 
                 desc.time += desc.milliseconds;
 
-                desc.lambda();
+                desc.lambda( desc.id );
             }
 
             m_prevTime = currentTime;
 
-            if( m_pause == true )
-            {
-                SDL_Delay( 100 );
-
-                continue;
-            }
-
-            bool quitRequest = this->processEvents();
+            bool quitRequest = this->processEvents_();
 
             if( quitRequest == true )
             {
@@ -816,11 +820,12 @@ namespace Mengine
                     ->tick( frameTime );
             }
 
-            if( APPLICATION_SERVICE()
-                ->isFocus() == true )
+            if( this->isNeedWindowRender() == true )
             {
-                if( APPLICATION_SERVICE()
-                    ->render() == true )
+                bool sucessful = APPLICATION_SERVICE()
+                    ->render();
+
+                if( sucessful == true )
                 {
                     APPLICATION_SERVICE()
                         ->flush();
@@ -971,6 +976,8 @@ namespace Mengine
             return false;
         }
 
+#if defined(MENGINE_WINDOWS_UNIVERSAL)
+#else
         SDL_GLContext glContext = SDL_GL_CreateContext( m_window );
 
         if( glContext == nullptr )
@@ -1094,6 +1101,7 @@ namespace Mengine
         );
 
         m_glContext = glContext;
+#endif
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
         Resolution resoultion;
@@ -1337,7 +1345,16 @@ namespace Mengine
     {
         MENGINE_UNUSED( _icon );
 
-        // empty
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::hasCursorIcon( const ConstString & _icon ) const
+    {
+        MENGINE_UNUSED( _icon );
+
+        //ToDo
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::showKeyboard()
@@ -1413,7 +1430,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
+    bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
     {
         MENGINE_UNUSED( _name );
         MENGINE_UNUSED( _content );
@@ -1586,7 +1603,7 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory );
-        
+
         if( MENGINE_STRLEN( pathDirectory ) == 0 )
         {
             return true;
@@ -1612,7 +1629,7 @@ namespace Mengine
             {
                 break;
             }
-            
+
             if( MENGINE_STRLEN( _path ) == 0 )
             {
                 break;
@@ -1739,7 +1756,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -1890,8 +1907,9 @@ namespace Mengine
         MENGINE_UNUSED( _base );
         MENGINE_UNUSED( _path );
         MENGINE_UNUSED( _mask );
+        MENGINE_UNUSED( _lambda );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -1926,7 +1944,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
     //////////////////////////////////////////////////////////////////////////
     static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
     {
@@ -1998,7 +2016,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _filePath );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_WINDOWS_UNIVERSAL)
         WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
@@ -2051,17 +2069,17 @@ namespace Mengine
     bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv("HOME");
-            
+        char * homeBuffer = getenv( "HOME" );
+
         if( homeBuffer == nullptr )
         {
             LOGGER_ERROR( "invalid get env 'HOME'" );
-            
+
             return false;
         }
-        
+
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF(path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer);
+        MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
 
         if( this->createDirectory( path_pictures, _directoryPath ) == false )
         {
@@ -2118,18 +2136,18 @@ namespace Mengine
     bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_OSX)
-        char * homeBuffer = getenv("HOME");
-            
+        char * homeBuffer = getenv( "HOME" );
+
         if( homeBuffer == nullptr )
         {
             LOGGER_ERROR( "invalid get env 'HOME'" );
-            
+
             return false;
         }
-        
+
         Char path_music[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_SNPRINTF(path_music, MENGINE_MAX_PATH, "%s/Music/", homeBuffer);
-        
+        MENGINE_SNPRINTF( path_music, MENGINE_MAX_PATH, "%s/Music/", homeBuffer );
+
         if( this->createDirectory( path_music, _directoryPath ) == false )
         {
             LOGGER_ERROR( "invalid create directory '%s%s'"
@@ -2242,11 +2260,14 @@ namespace Mengine
     {
         return m_window;
     }
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
     //////////////////////////////////////////////////////////////////////////
     SDL_GLContext SDLPlatform::getGLContext() const
     {
         return m_glContext;
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     uint32_t SDLPlatform::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
     {
@@ -2376,9 +2397,10 @@ namespace Mengine
             );
         }
 
-        Uint32 windowFlags = SDL_WINDOW_OPENGL;
+        Uint32 windowFlags = 0;
 
 #if defined(MENGINE_PLATFORM_IOS)
+        windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
@@ -2444,6 +2466,7 @@ namespace Mengine
             );
         }
 #elif defined(MENGINE_PLATFORM_ANDROID)
+        windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_SHOWN;
         windowFlags |= SDL_WINDOW_RESIZABLE;
         windowFlags |= SDL_WINDOW_FULLSCREEN;
@@ -2498,7 +2521,17 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
+#elif defined(MENGINE_WINDOWS_UNIVERSAL)
+        windowFlags |= SDL_WINDOW_HIDDEN;
+
+        if( _fullscreen == true )
+        {
+            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        }
+
+        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );
 #else
+        windowFlags |= SDL_WINDOW_OPENGL;
         windowFlags |= SDL_WINDOW_HIDDEN;
 
         if( _fullscreen == true )
@@ -2536,7 +2569,7 @@ namespace Mengine
                 , Engine_SDL_GL_CONTEXT_MINOR_VERSION
                 , SDL_GetError()
             );
-        }
+    }
 #endif
 
         LOGGER_MESSAGE_RELEASE( "num video displays: %d"
@@ -2612,15 +2645,17 @@ namespace Mengine
         m_window = window;
 
         return true;
-    }
+}
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::destroyWindow_()
     {
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         if( m_glContext != nullptr )
         {
             SDL_GL_DeleteContext( m_glContext );
             m_glContext = nullptr;
         }
+#endif
 
         if( m_window != nullptr )
         {
@@ -2629,13 +2664,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::processEvents()
+    bool SDLPlatform::processEvents_()
     {
-        if( m_shouldQuit == true )
-        {
-            return true;
-        }
-
         Uint32 windowID = SDL_GetWindowID( m_window );
 
         SDL_Event sdlEvent;
@@ -2718,19 +2748,86 @@ namespace Mengine
             }
         }
 
+        if( m_shouldQuit == true )
+        {
+            return true;
+        }
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setActive_( bool _active )
     {
-        APPLICATION_SERVICE()
-            ->setFocus( _active );
+        if( m_active == _active )
+        {
+            return;
+        }
 
-        INPUT_SERVICE()
-            ->onFocus( _active );
+        m_active = _active;
 
-        APPLICATION_SERVICE()
-            ->turnSound( _active );
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
+
+        mt::vec2f point;
+        m_sdlInput->getCursorPosition( &point );
+
+        Helper::pushMousePositionEvent( TC_TOUCH0, point.x, point.y, 0.f );
+
+        if( m_active == false )
+        {
+            if( nopause == false )
+            {
+                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+            }
+        }
+        else
+        {
+            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+        }
+
+        if( nopause == false )
+        {
+            APPLICATION_SERVICE()
+                ->setFocus( m_active );
+
+            INPUT_SERVICE()
+                ->onFocus( m_active );
+
+            APPLICATION_SERVICE()
+                ->turnSound( m_active );
+        }
+        else
+        {
+            APPLICATION_SERVICE()
+                ->setFocus( true );
+
+            INPUT_SERVICE()
+                ->onFocus( true );
+
+            APPLICATION_SERVICE()
+                ->turnSound( true );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::isNeedWindowRender() const
+    {
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
+
+        if( nopause == true )
+        {
+            return true;
+        }
+
+        bool focus = APPLICATION_SERVICE()
+            ->isFocus();
+
+        if( focus == true && m_active == true )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::initializeFileService_()

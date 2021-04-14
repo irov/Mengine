@@ -17,29 +17,16 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/AnimationInterface.h"
 #include "Interface/RenderSystemInterface.h"
-
-#include "Engine/ResourceFile.h"
-#include "Engine/ResourceMusic.h"
-#include "Engine/ResourceSound.h"
-#include "Engine/ResourceTestPick.h"
-#include "Engine/ResourceHIT.h"
-#include "Engine/ResourceShape.h"
-#include "Engine/ResourceCursorICO.h"
-#include "Engine/ResourceCursorSystem.h"
-
-#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
-#include "Kernel/ResourceImageSubstract.h"
-
-#include "Plugins/MoviePlugin/ResourceMovie2.h"
-
 #include "Interface/ApplicationInterface.h"
 
-#include "ScriptHolder.h"
+#include "Plugins/MoviePlugin/ResourceMovie2.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 #include "Environment/Python/PythonScriptWrapper.h"
+
+#include "ScriptHolder.h"
 
 #include "ScriptableAffectorCallback.h"
 #include "PythonEntityBehavior.h"
@@ -49,7 +36,18 @@
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
 
+#include "Engine/ResourceFile.h"
+#include "Engine/ResourceMusic.h"
+#include "Engine/ResourceTestPick.h"
+#include "Engine/ResourceHIT.h"
+#include "Engine/ResourceShape.h"
+#include "Engine/ResourceCursorICO.h"
+#include "Engine/ResourceCursorSystem.h"
+
+#include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
+#include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/Polygon.h"
+#include "Kernel/ResourceSound.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
 #include "Kernel/Rect.h"
@@ -546,7 +544,7 @@ namespace Mengine
             {
                 Char debugId[256] = {'\0'};
                 MENGINE_SNPRINTF( debugId, 256, "%p"
-                    , _node 
+                    , _node
                 );
 
                 return String( debugId );
@@ -650,6 +648,8 @@ namespace Mengine
             class AffectorVelocity2
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorVelocity2 );
+
             public:
                 AffectorVelocity2()
                     : m_node( nullptr )
@@ -778,7 +778,7 @@ namespace Mengine
                     , easing
                     , callback
                     , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -1175,6 +1175,8 @@ namespace Mengine
             class AffectorCreatorInterpolateParabolic
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorCreatorInterpolateParabolic );
+
             public:
                 AffectorCreatorInterpolateParabolic()
                     : m_speed( 5.f )
@@ -1377,7 +1379,7 @@ namespace Mengine
                     , callback
                     , NodePtr( _node ), _end, _v0, _time
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -1398,6 +1400,8 @@ namespace Mengine
             class AffectorCreatorFollowTo
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorCreatorFollowTo );
+
             public:
                 AffectorCreatorFollowTo()
                     : m_offset( 0.f, 0.f, 0.f )
@@ -1640,7 +1644,7 @@ namespace Mengine
                     , _rotate
                     , _rotationSpeed, _rotationAcceleration, _rotationLimit
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector );
 
@@ -1661,6 +1665,8 @@ namespace Mengine
             class AffectorCreatorFollowToW
                 : public BaseAffector
             {
+                DECLARE_FACTORABLE( AffectorCreatorFollowToW );
+
             public:
                 AffectorCreatorFollowToW()
                     : m_offset( 0.f, 0.f, 0.f )
@@ -1846,7 +1852,7 @@ namespace Mengine
                     , NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector );
 
@@ -1870,7 +1876,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
 
-                affectorHub->stopAffectors( ETA_ANGLE );                
+                affectorHub->stopAffectors( ETA_ANGLE );
             }
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
@@ -1992,7 +1998,7 @@ namespace Mengine
                 {
                     return;
                 }
-                
+
                 eventation->removeEvents();
             }
             //////////////////////////////////////////////////////////////////////////
@@ -2069,7 +2075,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' is not activate"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2078,7 +2084,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' is not after activate"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2087,14 +2093,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( render, "node '%s' is not renderable"
                     , _node->getName().c_str()
-                    );
+                );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( easing, "node '%s' not found easing '%s'"
                     , _node->getName().c_str()
                     , _easingType.c_str()
-                    );
+                );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
@@ -2112,7 +2118,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
                     , _node->getName().c_str()
-                    );
+                );
 
                 s_Node_colorStop( _node );
 
@@ -2120,7 +2126,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' after color stop is inactivate"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2133,7 +2139,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' invalid add affector"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2149,7 +2155,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' is not activate"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2158,7 +2164,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' is not after activate"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2168,7 +2174,7 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( render, "node '%s' type '%s' is not renderable"
                     , _node->getName().c_str()
                     , _node->getType().c_str()
-                    );
+                );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
@@ -2176,7 +2182,7 @@ namespace Mengine
                     , _node->getName().c_str()
                     , _node->getType().c_str()
                     , _easingType.c_str()
-                    );
+                );
 
                 ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
@@ -2194,7 +2200,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
                     , _node->getName().c_str()
-                    );
+                );
 
                 s_Node_colorStop( _node );
 
@@ -2202,7 +2208,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' after color stop is inactivate"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2215,7 +2221,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "node '%s' invalid add affector"
                         , _node->getName().c_str()
-                        );
+                    );
 
                     return 0;
                 }
@@ -2248,6 +2254,10 @@ namespace Mengine
             .def_smart_pointer()
             ;
 
+        pybind::interface_<Factorable>( _kernel, "Factorable", true )
+            .def( "getType", &Factorable::getType )
+            ;
+
         pybind::interface_<Mixin>( _kernel, "Mixin", true )
             .def_smart_pointer()
             ;
@@ -2259,7 +2269,7 @@ namespace Mengine
         pybind::interface_<Identity, pybind::bases<Mixin>>( _kernel, "Identity" )
             .def( "setName", &Identity::setName )
             .def( "getName", &Identity::getName )
-            .def( "getType", &Identity::getType )
+            .def( "getUniqueIdentity", &Node::getUniqueIdentity )
             ;
 
         pybind::interface_<BoundingBox, pybind::bases<Mixin>>( _kernel, "BoundingBox" )
@@ -2368,17 +2378,15 @@ namespace Mengine
             .def( "isValidNoExist", &ContentInterface::isValidNoExist )
             ;
 
-        pybind::interface_<Contentable, pybind::bases<Mixin>>( _kernel, "Contentable" )
-            .def_mutable( "getContent", &Contentable::getContent )
-            ;
-
-        pybind::interface_<Resource, pybind::bases<Contentable, Scriptable, Compilable, Identity>>( _kernel, "Resource", false )
+        pybind::interface_<Resource, pybind::bases<Factorable, Scriptable, Compilable, Identity>>( _kernel, "Resource", false )
+            .def( "setContent", &Resource::setContent )
+            .def( "getContent", &Resource::getContent )
+            .def( "setGroupName", &Resource::setGroupName )
+            .def( "getGroupName", &Resource::getGroupName )
             .def( "initialize", &Resource::initialize )
             .def( "finalize", &Resource::finalize )
             .def( "setLocale", &Resource::setLocale )
             .def( "getLocale", &Resource::getLocale )
-            .def( "setGroupName", &Resource::setGroupName )
-            .def( "getGroupName", &Resource::getGroupName )
             .def( "cache", &Resource::cache )
             .def( "uncache", &Resource::uncache )
             ;
@@ -2536,14 +2544,13 @@ namespace Mengine
             .def( "hasParent", &Hierarchy::hasParent )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Eventable, Animatable, Identity, Transformable, Compilable, Renderable, Pickerable, Affectorable, Hierarchy>>( _kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Factorable, Scriptable, Eventable, Animatable, Identity, Transformable, Compilable, Renderable, Pickerable, Affectorable, Hierarchy>>( _kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
             .def( "isActivate", &Node::isActivate )
             .def( "freeze", &Node::freeze )
-            .def( "isFreeze", &Node::isFreeze )
-            .def( "getUniqueIdentity", &Node::getUniqueIdentity )
+            .def( "isFreeze", &Node::isFreeze )            
             .def( "findUniqueChild", &Node::findUniqueChild )
             .def_proxy_static( "removeChildren", scriptMethod, &KernelScriptMethod::s_Node_removeChild )
             .def_proxy_static( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeAllChild )
@@ -2598,7 +2605,7 @@ namespace Mengine
             .def( "getSpeedFactor", &Affector::getSpeedFactor )
             ;
 
-        pybind::interface_<Surface, pybind::bases<Scriptable, Eventable, Animatable, Identity, Materialable, Compilable>>( _kernel, "Surface", false )
+        pybind::interface_<Surface, pybind::bases<Factorable, Scriptable, Eventable, Animatable, Identity, Materialable, Compilable>>( _kernel, "Surface", false )
             .def( "setAnchor", &Surface::setAnchor )
             .def( "getAnchor", &Surface::getAnchor )
             .def( "getMaxSize", &Surface::getMaxSize )

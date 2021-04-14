@@ -35,6 +35,8 @@ namespace Mengine
         : public ServiceBase<PlatformInterface>
         , public SDLPlatformExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         SDLPlatform();
         ~SDLPlatform() override;
@@ -100,6 +102,7 @@ namespace Mengine
 
         void setCursorPosition( const mt::vec2f & _pos ) override;
         void setCursorIcon( const ConstString & _icon ) override;
+        bool hasCursorIcon( const ConstString & _icon ) const override;
 
         void showKeyboard() override;
         void hideKeyboard() override;
@@ -107,7 +110,7 @@ namespace Mengine
         bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
         void notifyVsyncChanged( bool _vsync ) override;
         void notifyCursorModeChanged( bool _mode ) override;
-        bool notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer ) override;
+        bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer ) override;
 
     public:
         void onEvent( const ConstString & _event, const MapWParams & _params ) override;
@@ -116,7 +119,7 @@ namespace Mengine
         float getJoystickAxis( uint32_t _index ) const override;
 
     public:
-        size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const override;
+        size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
         bool getMaxClientResolution( Resolution * const _resolution ) const override;
@@ -164,7 +167,11 @@ namespace Mengine
 
     public:
         SDL_Window * getWindow() const override;
+
+
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         SDL_GLContext getGLContext() const override;
+#endif
 
     public:
         uint32_t addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;
@@ -176,10 +183,13 @@ namespace Mengine
         void destroyWindow_();
 
     protected:
-        bool processEvents();
+        bool processEvents_();
 
     protected:
         void setActive_( bool _active );
+
+    protected:
+        bool isNeedWindowRender() const;
 
     protected:
         bool initializeFileService_();
@@ -229,7 +239,9 @@ namespace Mengine
         FactoryPtr m_factoryDynamicLibraries;
         FactoryPtr m_factoryDateTimeProviders;
 
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         SDL_GLContext m_glContext;
+#endif
 
         SDLInputPtr m_sdlInput;
 
@@ -240,9 +252,9 @@ namespace Mengine
 
         float m_pauseUpdatingTime;
 
+        bool m_active;
         bool m_shouldQuit;
         bool m_running;
-        bool m_pause;
 
         bool m_desktop;
         bool m_touchpad;

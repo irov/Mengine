@@ -10,6 +10,8 @@ namespace Mengine
 	class AreaOfInterestActor
 		: public AreaOfInterestActorInterface
 	{
+		DECLARE_FACTORABLE( AreaOfInterestActor );
+
 	public:
 		AreaOfInterestActor();
 		~AreaOfInterestActor() override;

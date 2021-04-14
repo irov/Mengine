@@ -31,6 +31,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Base64.h"
 #include "Kernel/Crash.h"
+#include "Kernel/Optional.h"
 
 #include "Config/BuildVersion.h"
 #include "Config/GitSHA1.h"
@@ -121,8 +122,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_setLocale( const ConstString & _locale )
             {
+                const Tags & platformTags = PLATFORM_SERVICE()
+                    ->getPlatformTags();
+
                 if( PACKAGE_SERVICE()
-                    ->existLocalePackage( _locale, {} ) == false )
+                    ->existLocalePackage( _locale, platformTags ) == false )
                 {
                     LOGGER_ERROR( "not found game localization for language '%s'"
                         , _locale.c_str()
@@ -143,6 +147,20 @@ namespace Mengine
                     ->getLocale();
 
                 return locale;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_hasLocale( const ConstString & _locale )
+            {
+                const Tags & platformTags = PLATFORM_SERVICE()
+                    ->getPlatformTags();
+
+                if( PACKAGE_SERVICE()
+                    ->existLocalePackage( _locale, platformTags ) == false )
+                {
+                    return false;
+                }
+
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
             float s_isometric_length_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
@@ -1251,6 +1269,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             double s_watchdog( const ConstString & _tag )
             {
+                MENGINE_UNUSED( _tag );
+
                 double watch = WATCHDOG( _tag );
 
                 return watch;
@@ -2260,8 +2280,8 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                const Char * value = nullptr;
-                if( account->getSetting( _setting, &value ) == false )
+                const Char * setting_value = nullptr;
+                if( account->getSetting( _setting, &setting_value ) == false )
                 {
                     LOGGER_ERROR( "account '%s' setting '%s' not found"
                         , _accountID.c_str()
@@ -2271,11 +2291,16 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRCMP( value, "True" ) == 0 || MENGINE_STRCMP( value, "true" ) == 0 || MENGINE_STRCMP( value, "TRUE" ) == 0 )
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRICMP( setting_value, "true" ) == 0 )
                 {
                     return _kernel->ret_true();
                 }
-                else if( MENGINE_STRCMP( value, "False" ) == 0 || MENGINE_STRCMP( value, "false" ) == 0 || MENGINE_STRCMP( value, "FALSE" ) == 0 )
+                else if( MENGINE_STRICMP( setting_value, "false" ) == 0 )
                 {
                     return _kernel->ret_false();
                 }
@@ -2283,7 +2308,7 @@ namespace Mengine
                 LOGGER_ERROR( "account '%s' setting '%s' value '%s' is not bool [True|False]"
                     , _accountID.c_str()
                     , _setting.c_str()
-                    , value
+                    , setting_value
                 );
 
                 return _kernel->ret_none();
@@ -2306,6 +2331,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _kernel->ret_none();
                 }
 
@@ -2346,6 +2376,11 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
                 uint32_t value;
                 if( Helper::stringalized( setting_value, &value ) == false )
                 {
@@ -2380,6 +2415,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _kernel->ret_none();
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _kernel->ret_none();
                 }
 
@@ -2460,6 +2500,11 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
+                    return _kernel->ret_none();
+                }
+
                 float value;
                 if( Helper::stringalized( setting_value, &value ) == false )
                 {
@@ -2499,6 +2544,11 @@ namespace Mengine
                         , _setting.c_str()
                     );
 
+                    return _default;
+                }
+
+                if( MENGINE_STRLEN( setting_value ) == 0 )
+                {
                     return _default;
                 }
 
@@ -3482,26 +3532,47 @@ namespace Mengine
             .def( "MC_MBUTTON", MC_MBUTTON )
             ;
 
+        pybind::enum_<ETouchCode>( _kernel, "TouchCode" )
+            .def( "TC_TOUCH0", TC_TOUCH0 )
+            .def( "TC_TOUCH1", TC_TOUCH1 )
+            .def( "TC_TOUCH2", TC_TOUCH2 )
+            .def( "TC_TOUCH3", TC_TOUCH3 )
+            .def( "TC_TOUCH4", TC_TOUCH4 )
+            .def( "TC_TOUCH5", TC_TOUCH5 )
+            .def( "TC_TOUCH6", TC_TOUCH6 )
+            .def( "TC_TOUCH7", TC_TOUCH7 )
+            .def( "TC_TOUCH8", TC_TOUCH8 )
+            .def( "TC_TOUCH9", TC_TOUCH9 )
+            .def( "TC_TOUCH10", TC_TOUCH10 )
+            .def( "TC_TOUCH11", TC_TOUCH11 )
+            .def( "TC_TOUCH12", TC_TOUCH12 )
+            .def( "TC_TOUCH13", TC_TOUCH13 )
+            .def( "TC_TOUCH14", TC_TOUCH14 )
+            .def( "TC_TOUCH15", TC_TOUCH15 )
+            ;
+
+        pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+
         pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
 
-        pybind::registration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
-        pybind::registration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorResourceImages>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
-        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
+        pybind::registration_stl_map_type_cast<MapParams>(_kernel);
+        pybind::registration_stl_map_type_cast<MapWParams>(_kernel);
 
         pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>(_kernel));
         pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>(_kernel));
 
-        pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
-        pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorString>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorWString>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+        pybind::registration_stl_vector_type_cast<VectorRenderIndex>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::registration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
-        pybind::registration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec3f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Vector<mt::vec4f>>(_kernel);
 
         pybind::struct_<Tags>( _kernel, "Tags" )
             .def_constructor( pybind::init<>() )
@@ -3738,6 +3809,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "setLocale", helperScriptMethod, &HelperScriptMethod::s_setLocale );
         pybind::def_functor( _kernel, "getLocale", helperScriptMethod, &HelperScriptMethod::s_getLocale );
+        pybind::def_functor( _kernel, "hasLocale", helperScriptMethod, &HelperScriptMethod::s_hasLocale );
 
         pybind::def_functor( _kernel, "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
         pybind::def_functor( _kernel, "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );
@@ -3816,25 +3888,28 @@ namespace Mengine
     {
         m_implement = nullptr;
 
+        pybind::unregistration_stl_optional_type_cast<Optional<mt::box2f>>( _kernel );
+
         pybind::unregistration_type_cast<Blobject>(_kernel);
         pybind::unregistration_type_cast<Tags>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorResourceImages>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::unregistration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
-        pybind::unregistration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<MapWParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<MapParams>(_kernel);
 
         pybind::unregistration_type_cast<String>(_kernel);
         pybind::unregistration_type_cast<WString>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<String, Vector<String>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<String>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<WString>>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<VectorRenderIndex>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec2f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec3f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Vector<mt::vec4f>>(_kernel);
     }
+    //////////////////////////////////////////////////////////////////////////
 }

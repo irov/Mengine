@@ -16,6 +16,8 @@ namespace Mengine
         : public AccountInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Account );
+
     public:
         Account();
         ~Account() override;

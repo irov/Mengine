@@ -19,7 +19,7 @@
 #include "Kernel/Logger.h"
 
 #include <cmath>
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::OpenGLRenderSystem );
@@ -31,7 +31,7 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         , m_vertexArrayId( 0 )
 #endif
         , m_counterTexture( 0 )
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::~OpenGLRenderSystem()
     {
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         MENGINE_ASSERTION_FATAL( m_vertexArrayId == 0 );
 #endif
     }
@@ -77,7 +77,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::_finalizeService()
     {
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         if( m_vertexArrayId != 0 )
         {
             GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
@@ -165,7 +165,7 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-#ifndef MENGINE_RENDER_OPENGL_ES
+#ifdef MENGINE_RENDER_OPENGL_ES
         Mengine::initialize_GLEXT();
 #endif
 
@@ -194,7 +194,7 @@ namespace Mengine
         OPENGL_RENDER_CHECK_ERROR();
 
         GLint maxCombinedTextureImageUnits;
-        glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
+        GLCALL( glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );
 
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 
@@ -213,7 +213,7 @@ namespace Mengine
         GLCALL( glDepthMask, (GL_FALSE) );
         GLCALL( glDepthFunc, (GL_LESS) );
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint vertexArrayId = 0;
         GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
@@ -269,13 +269,13 @@ namespace Mengine
         uint32_t width = right - left;
         uint32_t height = top - bottom;
 
-        glEnable( GL_SCISSOR_TEST );
-        glScissor( left, bottom, width, height );
+        GLCALL( glEnable, (GL_SCISSOR_TEST) );
+        GLCALL( glScissor, (left, bottom, width, height) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::removeScissor()
     {
-        glDisable( GL_SCISSOR_TEST );
+        GLCALL( glDisable, (GL_SCISSOR_TEST) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
@@ -604,7 +604,7 @@ namespace Mengine
             }
         }
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLCALL( glBindVertexArray, (m_vertexArrayId) );
 #endif
 
@@ -642,7 +642,7 @@ namespace Mengine
 
         m_currentProgram->disable();
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLCALL( glBindVertexArray, (0) );
 #endif
     }
@@ -724,17 +724,17 @@ namespace Mengine
         {
         case CM_CULL_CW:
             {
-                GLCALL(glCullFace, (GL_FRONT));
-                GLCALL(glEnable, (GL_CULL_FACE));
+                GLCALL( glCullFace, (GL_FRONT) );
+                GLCALL( glEnable, (GL_CULL_FACE) );
             }break;
         case CM_CULL_CCW:
             {
-                GLCALL(glCullFace, (GL_BACK));
-                GLCALL(glEnable, (GL_CULL_FACE));
+                GLCALL( glCullFace, (GL_BACK) );
+                GLCALL( glEnable, (GL_CULL_FACE) );
             }break;
         case CM_CULL_NONE:
             {
-                GLCALL(glDisable, (GL_CULL_FACE));
+                GLCALL( glDisable, (GL_CULL_FACE) );
             }break;
         }
     }
@@ -792,8 +792,8 @@ namespace Mengine
 #ifndef MENGINE_RENDER_OPENGL_ES
         GLenum mode = Helper::toGLFillMode( _mode );
 
-        glPolygonMode( GL_FRONT_AND_BACK, mode );
-#endif      
+        GLCALL( glPolygonMode, (GL_FRONT_AND_BACK, mode) );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
@@ -1015,7 +1015,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         if( m_vertexArrayId != 0 )
         {
             GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
@@ -1033,7 +1033,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _fullscreen );
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint vertexArrayId = 0;
         GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 

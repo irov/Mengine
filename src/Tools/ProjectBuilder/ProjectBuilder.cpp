@@ -238,7 +238,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const WString & _params )
+    static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const MapWParams & _params )
     {
         MENGINE_UNUSED( _params );
 
@@ -259,6 +259,7 @@ namespace Mengine
         options.fileGroup = fileGroup;
         options.inputFilePath = Helper::stringizeFilePath( utf8_fromPath );
         options.outputFilePath = Helper::stringizeFilePath( utf8_toPath );
+        options.params = _params;
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
             ->createConverter( Helper::stringizeString( utf8_convertType ), MENGINE_DOCUMENT_FUNCTION );
@@ -290,14 +291,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool convert( const wchar_t * fromPath, const wchar_t * toPath, const wchar_t * convertType, const wchar_t * params )
+    static bool convert( const WString & fromPath, const WString & toPath, const WString & convertType, const MapWParams & params )
     {
         if( s_convert( fromPath, toPath, convertType, params ) == false )
         {
             LOGGER_ERROR( "convert: error process %ls to %ls convert %ls"
-                , fromPath
-                , toPath
-                , convertType
+                , fromPath.c_str()
+                , toPath.c_str()
+                , convertType.c_str()
             );
 
             return false;
@@ -809,6 +810,99 @@ public:
     }
 };
 //////////////////////////////////////////////////////////////////////////
+static bool s_ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, Mengine::ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
+{
+    MENGINE_UNUSED( _obj );
+
+    Mengine::ConstString cs_compare;
+    if( pybind::extract_value( _kernel, _compare, cs_compare, false ) == false )
+    {
+        return false;
+    }
+
+    switch( _op )
+    {
+    case pybind::POC_Less:
+        {
+            _result = *_self < cs_compare;
+        }break;
+    case pybind::POC_Lessequal:
+        {
+            _result = *_self <= cs_compare;
+        }break;
+    case pybind::POC_Equal:
+        {
+            _result = *_self == cs_compare;
+        }break;
+    case pybind::POC_Notequal:
+        {
+            _result = *_self != cs_compare;
+        }break;
+    case pybind::POC_Great:
+        {
+            _result = *_self > cs_compare;
+        }break;
+    case pybind::POC_Greatequal:
+        {
+            _result = *_self >= cs_compare;
+        }break;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+static const Mengine::Char * s_ConstString_repr( Mengine::ConstString * _cs )
+{
+    const Mengine::Char * str_repr = _cs->c_str();
+
+    return str_repr;
+}
+//////////////////////////////////////////////////////////////////////////
+static Mengine::ConstString::hash_type s_ConstString_hash( Mengine::ConstString * _cs )
+{
+    Mengine::ConstString::hash_type hash = _cs->hash();
+
+    return hash;
+}
+//////////////////////////////////////////////////////////////////////////
+static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+{
+    MENGINE_UNUSED( _kernel );
+    MENGINE_UNUSED( _user );
+
+    Mengine::ConstString * cstr = (Mengine::ConstString *)_place;
+
+    if( _kernel->string_check( _obj ) == true )
+    {
+        size_t size;
+        const char * value = _kernel->string_to_char_and_size( _obj, &size );
+
+        *cstr = Mengine::Helper::stringizeStringSize( value, size );
+
+        return true;
+    }
+    else if( _kernel->is_none( _obj ) == true )
+    {
+        *cstr = Mengine::ConstString::none();
+
+        return true;
+    }
+    else if( _kernel->unicode_check( _obj ) == true )
+    {
+        size_t size;
+        const wchar_t * value = _kernel->unicode_to_wchar_and_size( _obj, &size );
+
+        Mengine::String utf8_value;
+        Mengine::Helper::unicodeToUtf8Size( value, size, &utf8_value );
+
+        *cstr = Mengine::Helper::stringizeStringSize( utf8_value.c_str(), utf8_value.size() );
+
+        return true;
+    }
+
+    return false;
+}
+//////////////////////////////////////////////////////////////////////////
 namespace Detail
 {
     class MyAllocator
@@ -928,20 +1022,29 @@ bool run()
 
     if( pythonDescs.empty() == true )
     {
-        LOGGER_ERROR( "invalid found python" );
+        LOGGER_ERROR( "invalid found any python" );
 
         return false;
     }
 
-    std::sort( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _l, const PythonDesc & _r )
+    std::vector<PythonDesc>::iterator it_found = std::find_if( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _desc )
     {
-        uint32_t lk = _l.major_version * 100 + _l.minor_version;
-        uint32_t rk = _r.major_version * 100 + _r.minor_version;
+        if( _desc.major_version == 3 && _desc.minor_version == 8 )
+        {
+            return true;
+        }
 
-        return lk < rk;
+        return false;
     } );
 
-    PythonDesc & desc = pythonDescs.back();
+    if( it_found == pythonDescs.end() )
+    {
+        LOGGER_ERROR( "invalid found python 3.8" );
+
+        return false;
+    }
+
+    PythonDesc & desc = *it_found;
 
     WCHAR * szPythonPath = desc.szPythonPath;
 
@@ -972,8 +1075,18 @@ bool run()
     pybind::registration_type_cast<Mengine::String>(kernel, pybind::make_type_cast<extract_String_type>(kernel));
     pybind::registration_type_cast<Mengine::WString>(kernel, pybind::make_type_cast<extract_WString_type>(kernel));
 
-    pybind::registration_stl_vector_type_cast<Mengine::String, Mengine::Vector<Mengine::String>>(kernel);
-    pybind::registration_stl_vector_type_cast<Mengine::WString, Mengine::Vector<Mengine::WString>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::Vector<Mengine::String>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::Vector<Mengine::WString>>(kernel);
+
+    pybind::structhash_<Mengine::ConstString>( kernel, "ConstString", true, py_tools_module )
+        .def_compare( &s_ConstString_compare )
+        .def_convert( &ConstString_convert, nullptr )
+        .def_repr( &s_ConstString_repr )
+        .def_hash( &s_ConstString_hash )
+        ;
+
+    pybind::registration_stl_map_type_cast<Mengine::MapParams>(kernel);
+    pybind::registration_stl_map_type_cast<Mengine::MapWParams>(kernel);
 
     pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module )
         .def_native_kernel( "write", &Mengine::PythonLogger::py_write )
@@ -982,6 +1095,7 @@ bool run()
         .def_property( "errors", &Mengine::PythonLogger::getErrors, &Mengine::PythonLogger::setErrors )
         .def_property( "encoding", &Mengine::PythonLogger::getEncoding, &Mengine::PythonLogger::setEncoding )
         ;
+
     Mengine::PythonLogger * logger = new Mengine::PythonLogger();
     PyObject * py_logger = pybind::ptr( kernel, logger );
 
@@ -990,7 +1104,6 @@ bool run()
 
     pybind::def_function_kernel( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
     pybind::def_function_kernel( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
-
 
     pybind::def_function( kernel, "convert", &Mengine::convert, py_tools_module );
     pybind::def_function_kernel( kernel, "isAlphaInImageFile", &Mengine::isAlphaInImageFile, py_tools_module );
@@ -1011,7 +1124,7 @@ bool run()
     kernel->incref( py_tools_module );
     kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
-    Mengine::WChar currentDirectory[MAX_PATH] = {0};
+    Mengine::WChar currentDirectory[MAX_PATH] = {L'\0'};
     if( ::GetCurrentDirectory( MAX_PATH, currentDirectory ) == 0 )
     {
         return false;

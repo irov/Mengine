@@ -32,7 +32,7 @@ namespace Mengine
     {
         m_factoryInputStream = Helper::makeFactoryPool<Win32FileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryOutputStream = Helper::makeFactoryPool<Win32FileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryWin32MappedFile = Helper::makeFactoryPool<Win32FileMappedStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMappedFile = Helper::makeFactoryPool<Win32FileMapped, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -41,11 +41,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStream );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStream );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32MappedFile );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMappedFile );
 
         m_factoryInputStream = nullptr;
         m_factoryOutputStream = nullptr;
-        m_factoryWin32MappedFile = nullptr;
+        m_factoryMappedFile = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::isPacked() const
@@ -277,6 +277,68 @@ namespace Mengine
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
         bool result = file->close();
+
+        MENGINE_ASSERTION_RETURN( result == true, false, "failed close file '%s'"
+            , m_folderPath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::isAvailableMappedFile() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MappedInterfacePtr Win32FileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _filePath );
+
+        if( m_parentFileGroup != nullptr )
+        {
+            if( this->existFile( _filePath, false ) == false )
+            {
+                MappedInterfacePtr mapped = m_parentFileGroup->createMappedFile( _filePath, _fileGroup, _doc );
+
+                return mapped;
+            }
+        }
+
+        Win32FileMappedPtr mapped = m_factoryMappedFile->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mapped );
+
+        if( _fileGroup != nullptr )
+        {
+            *_fileGroup = this;
+        }
+
+        return mapped;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileMappedInterface * mapped = stdex::intrusive_get<FileMappedInterface *>( _stream );
+
+        bool result = mapped->open( m_relationPath, m_folderPath, _filePath, _shared );
+
+        MENGINE_ASSERTION_RETURN( result == true, false, "failed mapped file '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::closeMappedFile( const MappedInterfacePtr & _stream )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
+
+        FileMappedInterface * mapped = stdex::intrusive_get<FileMappedInterface *>( _stream );
+
+        bool result = mapped->close();
 
         MENGINE_ASSERTION_RETURN( result == true, false, "failed close file '%s'"
             , m_folderPath.c_str()

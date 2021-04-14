@@ -40,6 +40,8 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
+#include "Config/Utf8.h"
+#include "Config/Algorithm.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -54,7 +56,6 @@
 #include <clocale>
 #include <ctime>
 #include <iomanip>
-#include <algorithm>
 #include <functional>
 #include <cerrno>
 
@@ -269,6 +270,31 @@ namespace Mengine
             this->finalizeFileService_();
         } );
 
+        if( HAS_OPTION( "workdir" ) == true )
+        {
+            Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+            if( this->getCurrentPath( currentPath ) == 0 )
+            {
+                LOGGER_ERROR( "invalid get current path for dll directory" );
+
+                return false;
+            }
+
+            if( ::SetDllDirectoryA( currentPath ) == FALSE )
+            {
+                DWORD error;
+                Char str_error[1024] = {'\0'};
+                this->getLastErrorMessage( &error, str_error, 1023 );
+
+                LOGGER_ERROR( "SetDllDirectoryA invalid [error: %s (%lu)]"
+                    , str_error
+                    , error
+                );
+
+                return false;
+            }
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -294,6 +320,11 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         for( const TimerDesc & desc : m_timers )
         {
+            if( desc.id == INVALIDATE_UNIQUE_ID )
+            {
+                continue;
+            }
+
             LOGGER_ERROR( "forgot remove win32 timer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
@@ -308,6 +339,8 @@ namespace Mengine
             ::DestroyWindow( m_hWnd );
 
             m_hWnd = NULL;
+
+            this->updateWndMessage_();
         }
 
         if( m_hInstance != NULL )
@@ -575,7 +608,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    UniqueId Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -596,18 +629,21 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::removeTimer( uint32_t _id )
+    void Win32Platform::removeTimer( UniqueId _id )
     {
         VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
         {
             return _desc.id == _id;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_timers.end(), "not found timer '%u'"
+            , _id
+        );
 
         TimerDesc & desc = *it_found;
 
-        desc.id = 0;
+        desc.id = INVALIDATE_UNIQUE_ID;
+        desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32Platform::getTicks() const
@@ -618,7 +654,16 @@ namespace Mengine
         }
 
         LARGE_INTEGER performanceCount;
-        ::QueryPerformanceCounter( &performanceCount );
+        if( ::QueryPerformanceCounter( &performanceCount ) == FALSE )
+        {
+            DWORD error = ::GetLastError();
+
+            LOGGER_ERROR( "invalid query performance counter [error: %lu]"
+                , error
+            );
+
+            return 0ULL;
+        }
 
         LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
 
@@ -632,6 +677,16 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "run platform" );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::updateWndMessage_()
+    {
+        MSG msg;
+        while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
+        {
+            ::TranslateMessage( &msg );
+            ::DispatchMessage( &msg );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::updatePlatform()
@@ -651,12 +706,7 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                MSG msg;
-                while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
-                {
-                    ::TranslateMessage( &msg );
-                    ::DispatchMessage( &msg );
-                }
+                this->updateWndMessage_();
 
                 if( m_close == true )
                 {
@@ -688,8 +738,13 @@ namespace Mengine
 
                     desc.time += desc.milliseconds;
 
-                    desc.lambda();
+                    desc.lambda( desc.id );
                 }
+
+                m_timers.erase( std::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+                {
+                    return _desc.id == INVALIDATE_UNIQUE_ID;
+                } ), m_timers.end() );
 
                 m_update = true;
 
@@ -768,6 +823,8 @@ namespace Mengine
             ::DestroyWindow( m_hWnd );
 
             m_hWnd = NULL;
+
+            this->updateWndMessage_();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -824,7 +881,7 @@ namespace Mengine
         return (size_t)len;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const
+    size_t Win32Platform::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         WChar unicode_fontName[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _fontName, unicode_fontName, MENGINE_MAX_PATH ) == false )
@@ -900,12 +957,8 @@ namespace Mengine
             return MENGINE_PATH_INVALID_LENGTH;
         }
 
-        WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
-        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
-
         WChar fullDir[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WSPRINTF( fullDir, L"%s\\Fonts\\%s"
-            , winDir
+        MENGINE_WSPRINTF( fullDir, L"Fonts\\%s"
             , unicode_fontPath
         );
 
@@ -916,6 +969,8 @@ namespace Mengine
 
             return MENGINE_PATH_INVALID_LENGTH;
         }
+
+        *_groupName = STRINGIZE_STRING_LOCAL( "windows" );
 
         return utf8_size;
     }
@@ -1484,7 +1539,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+                    Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
@@ -1538,7 +1593,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
                     }
                 }
 
@@ -1548,7 +1603,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
                     }
                 }
 
@@ -1558,7 +1613,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_MBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
                     }
                 }
 
@@ -1571,7 +1626,7 @@ namespace Mengine
                     ::InvalidateRect( hWnd, NULL, FALSE );
                     ::UpdateWindow( hWnd );
 
-                    Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+                    Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
                 }
 
                 if( m_lastMouse == false )
@@ -1615,7 +1670,7 @@ namespace Mengine
                 fdx /= width;
                 fdy /= height;
 
-                Helper::pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
+                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f );
 
                 handle = true;
                 *_result = 0;
@@ -1709,7 +1764,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -1736,7 +1791,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[0] = false;
@@ -1763,7 +1818,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = FALSE;
@@ -1789,7 +1844,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[1] = false;
@@ -1816,7 +1871,7 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -1842,7 +1897,7 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick[2] = false;
@@ -2216,14 +2271,18 @@ namespace Mengine
         ::SetCursor( m_cursor );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
+    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _content );
+
         const FilePath & filePath = _content->getFilePath();
 
         MapCursors::iterator it_found = m_cursors.find( filePath );
 
         if( it_found == m_cursors.end() )
         {
+            MENGINE_ASSERTION_MEMORY_PANIC( _buffer );
+
             if( _buffer->empty() == true )
             {
                 LOGGER_ERROR( "'%s' buffer empty"
@@ -3024,6 +3083,22 @@ namespace Mengine
 
         HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
+        if( handle == INVALID_HANDLE_VALUE )
+        {
+            DWORD error = ::GetLastError();
+
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_le, 1023 );
+
+            LOGGER_ERROR( "get file time '%ls' invalid CreateFile [error: %s (%lu)]"
+                , unicode_filePath
+                , str_le
+                , error
+            );
+
+            return 0U;
+        }
+
         FILETIME creation;
         FILETIME access;
         FILETIME write;
@@ -3031,6 +3106,17 @@ namespace Mengine
         if( ::GetFileTime( handle, &creation, &access, &write ) == FALSE )
         {
             ::CloseHandle( handle );
+
+            DWORD error = ::GetLastError();
+
+            Char str_le[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_le, 1023 );
+
+            LOGGER_ERROR( "get file time '%ls' invalid GetFileTime [error: %s (%lu)]"
+                , unicode_filePath
+                , str_le
+                , error
+            );
 
             return 0U;
         }
@@ -3054,7 +3140,7 @@ namespace Mengine
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _file, const void * _data, size_t _size )
     {
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        ::PathAppend( szPath, _userPath );
+        Helper::pathCorrectBackslashToW( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, _directoryPath );
@@ -3062,7 +3148,7 @@ namespace Mengine
         WChar fileCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( fileCorrect, _file );
 
-        ::PathAppend( szPath, pathCorrect );
+        MENGINE_WCSCAT( szPath, pathCorrect );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3078,7 +3164,7 @@ namespace Mengine
             }
         }
 
-        ::PathAppend( szPath, fileCorrect );
+        MENGINE_WCSCAT( szPath, fileCorrect );
 
         HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
@@ -3115,6 +3201,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const
+    {
+        HRESULT hr = ::SHGetFolderPath( NULL, _flag, NULL, 0, _path );
+
+        if( hr != S_OK )
+        {
+            LOGGER_ERROR( "invalid SHGetFolderPath flag [%lu] error [hr %lu]"
+                , _flag
+                , hr
+            );
+
+            return false;
+        }
+
+        Helper::pathCorrectBackslashW( _path );
+        MENGINE_WCSCAT( _path, L"/" );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
         WChar unicode_directoryPath[MENGINE_MAX_PATH] = {L'\0'};
@@ -3130,13 +3236,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR( "invalid getSpecialFolderPath CSIDL_COMMON_PICTURES '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3147,12 +3249,12 @@ namespace Mengine
         WChar unicode_directoryPath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_directoryPath_correct, unicode_directoryPath );
 
-        ::PathAppend( szPath, unicode_directoryPath_correct );
+        MENGINE_WCSCAT( szPath, unicode_directoryPath_correct );
 
         WChar unicode_filePath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
 
-        ::PathAppend( szPath, unicode_filePath_correct );
+        MENGINE_WCSCAT( szPath, unicode_filePath_correct );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3182,13 +3284,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR( "invalid SHGetFolderPath CSIDL_COMMON_PICTURES '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3225,13 +3323,9 @@ namespace Mengine
         }
 
         WChar szPath[MENGINE_MAX_PATH] = {L'\0'};
-        if( FAILED( ::SHGetFolderPath( NULL
-            , CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
-            , NULL
-            , 0
-            , szPath ) ) )
+        if( this->getSpecialFolderPath_( CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE, szPath ) == false )
         {
-            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+            LOGGER_ERROR( "invalid SHGetFolderPath CSIDL_COMMON_MUSIC '%s%s'"
                 , _directoryPath
                 , _filePath
             );
@@ -3322,7 +3416,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static BOOL GetModuleListPSAPI( TSymLoadModule64 pSymLoadModule64, HANDLE hProcess )
         {
-            HINSTANCE hPsapi = LoadLibraryW( L"psapi.dll" );
+            HINSTANCE hPsapi = ::LoadLibraryW( L"psapi.dll" );
 
             if( hPsapi == NULL )
             {
@@ -3791,7 +3885,7 @@ namespace Mengine
             Char str_le[1024] = {'\0'};
             this->getLastErrorMessage( &error, str_le, 1023 );
 
-            LOGGER_ERROR( "invalid open thread [%u] ShowWindow [error: %s (%lu)]"
+            LOGGER_ERROR( "invalid open thread [%llu] ShowWindow [error: %s (%lu)]"
                 , _threadId
                 , str_le
                 , error
@@ -4146,11 +4240,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getCurrentPath( Char * const _currentPath ) const
     {
+        const Char * option_workdir;
+        if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
+        {
+            MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( option_workdir ) < MENGINE_MAX_PATH );
+
+            MENGINE_STRCPY( _currentPath, option_workdir );
+
+            Helper::pathCorrectBackslashA( _currentPath );
+
+            size_t option_workdir_len = MENGINE_STRLEN( _currentPath );
+
+            return option_workdir_len;
+        }
+
         WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
         DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {
+            DWORD error;
+            Char str_error[1024] = {'\0'};
+            this->getLastErrorMessage( &error, str_error, 1023 );
+
+            LOGGER_ERROR( "GetCurrentDirectory invalid [error: %s (%lu)]"
+                , str_error
+                , error
+            );
+
             _currentPath[0] = '\0';
 
             return 0;
@@ -4196,6 +4313,19 @@ namespace Mengine
 
             MENGINE_WCSCAT( currentPath, L"/" );
             MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+
+            uint32_t Engine_BotId = CONFIG_VALUE( "Engine", "BotId", ~0U );
+
+            if( Engine_BotId != ~0U || HAS_OPTION( "bot" ) == true )
+            {
+                uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
+
+                WChar botId_suffix[16];
+                MENGINE_WSPRINTF( botId_suffix, L"%u", botId );
+
+                MENGINE_WCSCAT( currentPath, botId_suffix );
+            }
+
             MENGINE_WCSCAT( currentPath, L"/" );
 
             size_t currentPathLen;
@@ -4363,13 +4493,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setCursorIcon( const ConstString & _icon )
     {
-        MapCursors::iterator it_found = m_cursors.find( _icon );
+        MapCursors::const_iterator it_found = m_cursors.find( _icon );
 
         MENGINE_ASSERTION_FATAL( it_found != m_cursors.end() );
 
         m_cursor = it_found->second;
 
         ::SetCursor( m_cursor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::hasCursorIcon( const ConstString & _icon ) const
+    {
+        MapCursors::const_iterator it_found = m_cursors.find( _icon );
+
+        if( it_found == m_cursors.end() )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::showKeyboard()
@@ -4427,19 +4569,19 @@ namespace Mengine
         mt::vec2f point;
         if( this->calcCursorPosition_( &point ) == true )
         {
-            Helper::pushMousePositionEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMousePositionEvent( TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( m_active == false )
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
         }
 
         if( nopause == false )
@@ -4450,10 +4592,8 @@ namespace Mengine
             INPUT_SERVICE()
                 ->onFocus( m_active );
 
-            bool turnSound = m_active;
-
             APPLICATION_SERVICE()
-                ->turnSound( turnSound );
+                ->turnSound( m_active );
         }
         else
         {
@@ -4670,7 +4810,7 @@ namespace Mengine
     {
         LOGGER_INFO( "system", "Initialize Win32 file group..." );
 
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
@@ -4688,7 +4828,7 @@ namespace Mengine
         );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory: '%s'"
                 , currentPath
@@ -4699,7 +4839,7 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory: '%s'"
                 , currentPath
@@ -4709,11 +4849,36 @@ namespace Mengine
         }
 #endif
 
+        WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
+        ::GetWindowsDirectory( winDir, MENGINE_MAX_PATH );
+
+        Helper::pathCorrectBackslashW( winDir );
+        ::PathRemoveBackslash( winDir );
+        MENGINE_WCSCAT( winDir, L"/" );
+
+        Utf8 utf8_winDir[MENGINE_MAX_PATH] = {'\0'};
+        Helper::unicodeToUtf8( winDir, utf8_winDir, MENGINE_MAX_PATH );
+
+        FilePath winDirPath = Helper::stringizeFilePath( utf8_winDir );
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ), nullptr, nullptr, winDirPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            LOGGER_ERROR( "failed to mount dev directory: '%s'"
+                , currentPath
+            );
+
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::finalizeFileService_()
     {
+        FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ) );
+
 #ifndef MENGINE_MASTER_RELEASE
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );

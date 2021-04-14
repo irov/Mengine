@@ -15,7 +15,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FactoryService, Mengine::FactoryService );
@@ -172,7 +172,7 @@ namespace Mengine
         desc.factory = _factory;
 
 #ifdef MENGINE_DEBUG
-        desc.factory_name = _factory->getName();
+        desc.factory_name = _factory->getType().c_str();
 #endif
 
         m_factories.emplace_back( desc );
@@ -269,7 +269,7 @@ namespace Mengine
         desc.generation = m_generation;
         desc.factory = _factory;
         desc.factorable = _factorable;
-        desc.factory_name = _factory->getName();
+        desc.factory_name = _factory->getType().c_str();
         desc.factorable_doc = _doc;
 
         VectorObjectLeakDesc & descs = m_objectLeakDescs[hash];

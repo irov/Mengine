@@ -25,6 +25,8 @@ namespace Mengine
         : public ServiceBase<RenderSystemInterface>
         , public OpenGLRenderSystemExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         OpenGLRenderSystem();
         ~OpenGLRenderSystem() override;
@@ -209,7 +211,7 @@ namespace Mengine
         FactoryPtr m_factoryRenderProgram;
         FactoryPtr m_factoryRenderProgramVariable;
 
-#ifdef MENGINE_RENDER_OPENGL
+#ifdef MENGINE_RENDER_OPENGL_NORMAL
         GLuint m_vertexArrayId;
 #endif
 

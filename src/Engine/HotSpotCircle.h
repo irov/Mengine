@@ -8,6 +8,7 @@ namespace Mengine
     class HotSpotCircle
         : public HotSpot
     {
+        DECLARE_FACTORABLE( HotSpotCircle );
         DECLARE_VISITABLE( HotSpot );
 
     public:
@@ -23,7 +24,7 @@ namespace Mengine
 
     protected:
         bool testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const override;
-        bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const override;
+        bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const override;
         bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
     protected:

@@ -23,6 +23,8 @@ namespace Mengine
         : public ThreadIdentityInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( Win32ThreadIdentity );
+
     public:
         Win32ThreadIdentity();
         ~Win32ThreadIdentity() override;

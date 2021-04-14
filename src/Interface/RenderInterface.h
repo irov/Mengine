@@ -12,6 +12,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class Renderable;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderInterface> RenderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderInterface
@@ -19,6 +21,9 @@ namespace Mengine
         , public Colorable
         , public BoundingBox
     {
+    public:
+        virtual Renderable * getRenderable() = 0;
+
     public:
         virtual void setRelationRender( RenderInterface * _relationRender ) = 0;
         virtual void removeRelationRender() = 0;

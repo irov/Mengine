@@ -9,6 +9,8 @@ namespace Mengine
     class ParticleConverterPTCToPTZ
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( ParticleConverterPTCToPTZ );
+
     public:
         ParticleConverterPTCToPTZ();
         ~ParticleConverterPTCToPTZ() override;

@@ -2,6 +2,7 @@
 
 #include "Interface/ServantInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Unknowable.h"
 #include "Kernel/CompilableReference.h"
@@ -17,6 +18,10 @@ namespace Mengine
         , public CompilableReference
         , public Unknowable
     {
+    public:
+        virtual void setContent( const ContentInterfacePtr & _content ) = 0;
+        virtual const ContentInterfacePtr & getContent() const = 0;
+
     public:
         virtual void setEffectSample( uint32_t _effectSample ) = 0;
         virtual uint32_t getEffectSample() const = 0;

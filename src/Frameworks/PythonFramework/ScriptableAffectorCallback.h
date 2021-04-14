@@ -12,6 +12,8 @@ namespace Mengine
     class ScriptableAffectorCallback
         : public AffectorCallbackInterface
     {
+        DECLARE_FACTORABLE( ScriptableAffectorCallback );
+
     public:
         ScriptableAffectorCallback();
         ~ScriptableAffectorCallback() override;

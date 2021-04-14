@@ -51,6 +51,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderVertexAttribute::finalize()
+    {
+        m_attributes.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexAttribute::compile( GLuint _program )
     {
         for( AttributeDesc & attribute : m_attributes )

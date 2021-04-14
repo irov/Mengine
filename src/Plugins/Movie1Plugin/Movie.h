@@ -65,6 +65,7 @@ namespace Mengine
         , protected BaseRender
         , protected BaseTransformation
     {
+        DECLARE_FACTORABLE( Movie );
         DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();

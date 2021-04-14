@@ -27,6 +27,7 @@ namespace Mengine
         , public BaseRender
         , public BaseTransformation
     {
+        DECLARE_FACTORABLE( Spine );
         DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_UPDATABLE();

@@ -36,6 +36,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentPtr & _doc )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow );
+
         DataInterfacePtr data = _dataflow->create( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create data '%s'"

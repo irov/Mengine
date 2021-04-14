@@ -10,7 +10,6 @@
 #include "Kernel/String.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FontBase.h"
-#include "Kernel/BaseContent.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
@@ -30,9 +29,8 @@ namespace Mengine
         : public FontBase
         , public UnknownTTFFontInterface
         , public Observable
-        , protected BaseContent
     {
-        DECLARE_CONTENTABLE();
+        DECLARE_FACTORABLE( TTFFont );
         DECLARE_UNKNOWABLE();
 
     public:
@@ -41,6 +39,7 @@ namespace Mengine
 
     public:
         void setFTLibrary( FT_Library _library );
+        FT_Library getFTLibrary() const;
 
     public:
         void setEffect( const TextFontEffectInterfacePtr & _effect ) override;
@@ -49,9 +48,6 @@ namespace Mengine
     public:
         bool initialize() override;
         void finalize() override;
-
-    protected:
-        bool isValid() const override;
 
     protected:
         bool _compile() override;
@@ -94,6 +90,10 @@ namespace Mengine
     protected:
         uint32_t getSample() const;
         float getSampleInv() const;
+
+    protected:
+        FT_Face getFTFace( const TTFDataInterfacePtr & _data ) const;
+        bool updateFTFaceSize( FT_Face _face ) const;
 
     protected:
         FT_Library m_ftlibrary;

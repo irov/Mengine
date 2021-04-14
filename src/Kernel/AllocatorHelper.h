@@ -4,6 +4,9 @@
 #include "Config/StdInt.h"
 #include "Config/StdDef.h"
 
+#include <utility>
+#include <new>
+
 namespace Mengine
 {
     namespace Helper
@@ -50,7 +53,7 @@ namespace Mengine
 
             new (memory_buffer)T( std::forward<Args &&>( _args ) ... );
 
-            return std::launder( static_cast<T *>(memory_buffer) );
+            return static_cast<T *>(memory_buffer);
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>

@@ -10,9 +10,9 @@
 
 #include "Movie2Data.h"
 
-#include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceSound.h"
-#include "Engine/SurfaceTrackMatte.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/SurfaceSound.h"
+#include "Kernel/SurfaceTrackMatte.h"
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Layer.h"
@@ -451,7 +451,9 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "Movie2Slot" ) )
             {
                 Movie2SlotPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                    );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -462,6 +464,11 @@ namespace Mengine
 
                 const ConstString & movieName = this->getName();
                 node->setMovieName( movieName );
+                node->setCompositionName( m_compositionName );
+
+                node->setLayerIndex( layer.index );
+                node->setDimension( layer.dimension );
+                node->setOptions( layer.options );
 
                 this->addSlot_( layer.index, node );
 
@@ -638,7 +645,6 @@ namespace Mengine
             node->setMovie( this );
 
             node->setName( subcomposition.name );
-            node->setType( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
             node->setDuration( subcomposition.duration );
             node->setFrameDuration( subcomposition.frameDuration );
 
@@ -841,7 +847,36 @@ namespace Mengine
         ae_set_movie_composition_nodes_enable_any( m_composition, _name.c_str(), _enable ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda )
+    void Movie2::setExtraOpacityMovieLayers( const ConstString & _name, float _opacity )
+    {
+        MENGINE_ASSERTION_FATAL( _opacity >= 0.f && _opacity <= 1.f );
+
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "name '%s' invalid get layer '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+
+#ifdef MENGINE_DEBUG
+        if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
+        {
+            LOGGER_ERROR( "name '%s' layer '%s' not found"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+#endif
+
+        ae_set_movie_composition_nodes_extra_opacity_any( m_composition, _name.c_str(), _opacity );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -2615,14 +2650,6 @@ namespace Mengine
 
                         Helper::nodeRenderChildren( node, _renderPipeline, &context, true );
                     }break;
-                case AE_MOVIE_LAYER_TYPE_SOCKET:
-                    {
-                        //HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
-
-                        //RenderInterfacePtr render = node->getRender();
-
-                        //render->render( &state );
-                    }break;
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = Helper::reinterpretNodeCast<ShapeQuadFixed *>( mesh.element_userdata );
@@ -2662,8 +2689,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2678,7 +2707,7 @@ namespace Mengine
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-                            ->getSolidMaterial( blend_mode );
+                            ->getSolidMaterial( blend_mode, false );
 
                         _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
@@ -2703,8 +2732,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2719,7 +2750,7 @@ namespace Mengine
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-                            ->getSolidMaterial( blend_mode );
+                            ->getSolidMaterial( blend_mode, false );
 
                         _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
@@ -2760,9 +2791,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            const float * vp3 = mesh.position[index];
-                            vp.from_f3( vp3 );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2775,12 +2807,13 @@ namespace Mengine
                             {
                                 RenderVertex2D & v = vertices[index];
 
-                                mt::vec2f uv;
-                                const float * uv2 = mesh.uv[index];
-                                uv.from_f2( uv2 );
+                                const float * uv = mesh.uv[index];
 
-                                resourceImage->correctUVImage( uv, v.uv + 0 );
-                                resourceImage->correctUVAlpha( uv, v.uv + 1 );
+                                mt::vec2f vuv;
+                                vuv.from_f2( uv );
+
+                                resourceImage->correctUVImage( vuv, v.uv + 0 );
+                                resourceImage->correctUVAlpha( vuv, v.uv + 1 );
                             }
                         }
                         else
@@ -2923,8 +2956,10 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
@@ -2986,15 +3021,19 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( mesh.position[index] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
+                            const float * uv = mesh.uv[index];
 
-                            resourceImage->correctUVImage( uv, v.uv + 0 );
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
+
+                            resourceImage->correctUVImage( vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
@@ -3022,11 +3061,13 @@ namespace Mengine
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {
-                            mt::vec2f uv;
-                            uv.from_f2( &track_matte_mesh->uv[index][0] );
+                            const float * uv = track_matte_mesh->uv[index];
+
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
+                            resourceTrackMatteImage->correctUVAlpha( vuv, &uv_correct );
 
                             if( uvbb[0] > uv_correct.x )
                             {
@@ -3099,15 +3140,19 @@ namespace Mengine
                         {
                             RenderVertex2D & v = vertices[index];
 
+                            const float * p = mesh.position[index];
+
                             mt::vec3f vp;
-                            vp.from_f3( mesh.position[index] );
+                            vp.from_f3( p );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
+                            const float * uv = mesh.uv[index];
 
-                            resourceImage->correctUVImage( uv, v.uv + 0 );
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
+
+                            resourceImage->correctUVImage( vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
@@ -3135,11 +3180,13 @@ namespace Mengine
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {
-                            mt::vec2f uv;
-                            uv.from_f2( &track_matte_mesh->uv[index][0] );
+                            const float * uv = track_matte_mesh->uv[index];
+
+                            mt::vec2f vuv;
+                            vuv.from_f2( uv );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
+                            resourceTrackMatteImage->correctUVAlpha( vuv, &uv_correct );
 
                             if( uvbb[0] > uv_correct.x )
                             {

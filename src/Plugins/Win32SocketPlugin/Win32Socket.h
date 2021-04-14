@@ -16,6 +16,8 @@ namespace Mengine
         , public Win32SocketOutputStream
         , public Factorable
     {
+        DECLARE_FACTORABLE( Win32Socket );
+
     public:
         Win32Socket();
         ~Win32Socket() override;

@@ -8,7 +8,7 @@
 
 #include "Config/StdIntTypes.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -243,7 +243,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentPtr & _doc )
+    UniqueId PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -265,7 +265,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputHandlerInterfacePtr PlayerGlobalInputHandler::removeGlobalHandler( uint32_t _id )
+    InputHandlerInterfacePtr PlayerGlobalInputHandler::removeGlobalHandler( UniqueId _id )
     {
         VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
         {
@@ -410,16 +410,16 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentPtr & _doc )
+    UniqueId PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentPtr & _doc )
     {
         InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _doc, _code, _lambda );
 
-        uint32_t id = this->addGlobalHandler( handler, _doc );
+        UniqueId id = this->addGlobalHandler( handler, _doc );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PlayerGlobalInputHandler::enableGlobalHandler( uint32_t _id, bool _value )
+    bool PlayerGlobalInputHandler::enableGlobalHandler( UniqueId _id, bool _value )
     {
         VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
         {
@@ -461,6 +461,7 @@ namespace Mengine
         {
             return _handle.dead;
         } );
+
         m_handlers.erase( it_erase, m_handlers.end() );
     }
     //////////////////////////////////////////////////////////////////////////

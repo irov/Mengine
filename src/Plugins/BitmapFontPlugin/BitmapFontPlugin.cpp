@@ -9,6 +9,7 @@
 #include "BitmapGlyphService.h"
 #include "BitmapFontConfigLoader.h"
 #include "BitmapFontPrototypeGenerator.h"
+#include "BitmapFontValidator.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( BitmapGlyphService );
@@ -37,6 +38,8 @@ namespace Mengine
 
         VOCABULARY_SET( TextFontConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), STRINGIZE_STRING_LOCAL( "Bitmap" ), Helper::makeFactorableUnique<BitmapFontConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
+        VOCABULARY_SET( FontValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "Bitmap" ), Helper::makeFactorableUnique<BitmapFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,6 +49,7 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
 
         SERVICE_FINALIZE( BitmapGlyphService );
     }

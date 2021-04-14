@@ -84,7 +84,7 @@ namespace Mengine
         return m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotCircle::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    bool HotSpotCircle::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
     {
         MENGINE_UNUSED( _contentResolution );
         
@@ -119,7 +119,7 @@ namespace Mengine
         mt::vec2f r;
         mt::mul_v2_v2_m4_r( r, mt::vec2f( m_radius, m_radius ), wm );
 
-        if( v_sqrlength < (r.x + _radiusx) * (r.y + _radiusy) )
+        if( v_sqrlength < (r.x + _radius) * (r.y + _radius) )
         {
             return !m_outward;
         }

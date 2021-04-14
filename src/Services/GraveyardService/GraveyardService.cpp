@@ -8,7 +8,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GraveyardService, Mengine::GraveyardService );

@@ -26,6 +26,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         bool getAllowFullscreenSwitchShortcut() const override;
@@ -153,7 +154,7 @@ namespace Mengine
         void updateNotification();
         void setVSync( bool _vsync ) override;
         bool getVSync() const override;
-        void setCursorMode( bool _mode ) override;
+        void setCursorMode( bool _cursorMode ) override;
         bool getCursorMode() const override;
         void setCursorIcon( const ConstString & _resourceName ) override;
 
@@ -173,6 +174,8 @@ namespace Mengine
         void notifyDebugResourceCompile_( Resource * _resource );
         void notifyDebugResourceRelease_( Resource * _resource );
 
+    protected:
+        void notifyEnginePrepareFinalize_();
 
     protected:        
         RenderPipelineInterfacePtr m_renderPipeline;
@@ -213,6 +216,7 @@ namespace Mengine
 
         float m_maxFrameTime;
 
+        ConstString m_cursorResourceName;
         ResourceCursorPtr m_cursorResource;
 
         Char m_companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};

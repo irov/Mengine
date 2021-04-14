@@ -26,7 +26,7 @@
 
 #include "curl/curl.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( cURLService, Mengine::cURLService );

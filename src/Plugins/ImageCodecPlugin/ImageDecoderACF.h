@@ -11,6 +11,8 @@ namespace Mengine
     class ImageDecoderACF
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderACF );
+
     public:
         ImageDecoderACF();
         ~ImageDecoderACF() override;

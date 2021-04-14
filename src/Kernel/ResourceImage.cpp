@@ -16,6 +16,8 @@ namespace Mengine
         , m_hasAlpha( false )
         , m_isPremultiply( false )
         , m_isPow2( false )
+        , m_isUVImageIdentity( false )
+        , m_isUVAlphaIdentity( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -68,6 +70,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::correctUVImage( const mt::vec2f & _in, mt::vec2f * const _out ) const
     {
+        if( m_isUVImageIdentity == true )
+        {
+            *_out = _in;
+
+            return;
+        }
+
         if( m_uvImageRotate == false )
         {
             mt::uv4_quad_point( *_out, m_uvTextureImage, _in );
@@ -80,6 +89,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::correctUVAlpha( const mt::vec2f & _in, mt::vec2f * const _out ) const
     {
+        if( m_isUVAlphaIdentity == true )
+        {
+            *_out = _in;
+        }
+
         if( m_uvAlphaRotate == false )
         {
             mt::uv4_quad_point( *_out, m_uvTextureAlpha, _in );

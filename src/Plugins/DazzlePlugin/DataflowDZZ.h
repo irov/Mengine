@@ -10,10 +10,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DataflowDZZ
         : public DataflowInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DataflowDZZ );
+
     public:
         DataflowDZZ();
         ~DataflowDZZ() override;
@@ -48,6 +51,6 @@ namespace Mengine
         FactoryPtr m_factoryDazzleData;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DataflowDZZ> DataflowDZZPtr;
+    typedef IntrusivePtr<DataflowDZZ, DataflowInterface> DataflowDZZPtr;
     //////////////////////////////////////////////////////////////////////////
 }

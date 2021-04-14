@@ -12,6 +12,8 @@
 #include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
+typedef std::vector<uint8_t> Blobject;
+//////////////////////////////////////////////////////////////////////////
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
@@ -36,7 +38,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-static bool loadFile( const std::wstring & _filepath, Mengine::Blobject & _buffer )
+static bool loadFile( const std::wstring & _filepath, Blobject & _buffer )
 {
     FILE * f = ::_wfopen( _filepath.c_str(), L"rb" );
 
@@ -56,7 +58,7 @@ static bool loadFile( const std::wstring & _filepath, Mengine::Blobject & _buffe
     if( f_size == 0 )
     {
         ::fclose( f );
-        
+
         message_error( "invalid size %ls\n"
             , _filepath.c_str()
         );
@@ -74,7 +76,7 @@ static bool loadFile( const std::wstring & _filepath, Mengine::Blobject & _buffe
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-static bool writeCompress( const std::wstring & _filepath, const Mengine::Blobject & _buffer, Mengine::magic_number_type numberz, Mengine::magic_version_type versionz )
+static bool writeCompress( const std::wstring & _filepath, const Blobject & _buffer, Mengine::magic_number_type numberz, Mengine::magic_version_type versionz )
 {
     FILE * fz = ::_wfopen( _filepath.c_str(), L"wb" );
 
@@ -139,21 +141,19 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in_path.empty() == true )
     {
-        message_error( "not found 'in' param\n"
-        );
+        message_error( "not found 'in' param\n" );
 
         return EXIT_FAILURE;
     }
 
     if( out_path.empty() == true )
     {
-        message_error( "not found 'out' param\n"
-        );
+        message_error( "not found 'out' param\n" );
 
         return EXIT_FAILURE;
     }
 
-    Mengine::Blobject buffer;
+    Blobject buffer;
     if( loadFile( in_path, buffer ) == false )
     {
         return EXIT_FAILURE;

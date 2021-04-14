@@ -283,7 +283,7 @@ endif()
 
 add_definitions(-DUSING_GENERATED_CONFIG_H)
 # General includes
-include_directories(${SDL2_BINARY_DIR}/include ${SDL2_SOURCE_DIR}/include)
+include_directories(${THIRDPARTY_CONFIG_DIR}/SDL ${SDL2_SOURCE_DIR}/include)
 if(USE_GCC OR USE_CLANG)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -idirafter \"${SDL2_SOURCE_DIR}/src/video/khronos\"")
 else()
@@ -2075,7 +2075,8 @@ endif()
 # endif()
 
 configure_file("${SDL2_SOURCE_DIR}/include/SDL_config.h.cmake"
-  "${SDL2_BINARY_DIR}/include/SDL_config.h")
+  "${THIRDPARTY_CONFIG_DIR}/SDL/SDL_config.h")
+include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
 
 # Prepare the flags and remove duplicates
 if(EXTRA_LDFLAGS)
@@ -2208,6 +2209,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
 
 # Always build SDLmain
 if(NOT WINDOWS_STORE)
+include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
 add_library(SDL2main STATIC ${SDLMAIN_SOURCES})
 target_include_directories(SDL2main PUBLIC "$<BUILD_INTERFACE:${SDL2_SOURCE_DIR}/include>" $<INSTALL_INTERFACE:include> $<INSTALL_INTERFACE:include/SDL2>)
 set(_INSTALL_LIBS "SDL2main")
@@ -2221,6 +2223,7 @@ if (ANDROID AND HAVE_HIDAPI)
 endif()
 
 if(SDL_SHARED)
+  include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
   add_library(SDL2 SHARED ${SOURCE_FILES} ${VERSION_SOURCES})
   if(APPLE)
     set_target_properties(SDL2 PROPERTIES
@@ -2263,6 +2266,7 @@ endif()
 
 if(ANDROID)
   if(HAVE_HIDAPI)
+    include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
     add_library(hidapi SHARED ${SDL2_SOURCE_DIR}/src/hidapi/android/hid.cpp)
   endif()
 
@@ -2279,6 +2283,7 @@ endif()
 
 if(SDL_STATIC)
   set (BUILD_SHARED_LIBS FALSE)
+  include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
   add_library(SDL2-static STATIC ${SOURCE_FILES})
   if (NOT SDL_SHARED OR NOT WIN32)
     set_target_properties(SDL2-static PROPERTIES OUTPUT_NAME "SDL2")
@@ -2297,7 +2302,7 @@ if(SDL_STATIC)
   # libraries - do we need to consider this?
   set(_INSTALL_LIBS "SDL2-static" ${_INSTALL_LIBS})
   target_link_libraries(SDL2-static ${EXTRA_LIBS} ${EXTRA_LDFLAGS})
-  target_include_directories(SDL2-static PUBLIC "$<BUILD_INTERFACE:${SDL2_SOURCE_DIR}/include>" $<INSTALL_INTERFACE:include> $<INSTALL_INTERFACE:include/SDL2>)
+  target_include_directories(SDL2-static PUBLIC "$<BUILD_INTERFACE:${SDL2_SOURCE_DIR}/include>" "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL>" $<INSTALL_INTERFACE:include> $<INSTALL_INTERFACE:include/SDL2>)
   if(ANDROID)
     target_include_directories(SDL2-static PRIVATE ${ANDROID_NDK}/sources/android/cpufeatures)
   else()
@@ -2312,6 +2317,7 @@ endif()
 
 if(SDL_TEST)
   file(GLOB TEST_SOURCES ${SDL2_SOURCE_DIR}/src/test/*.c)
+  include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
   add_library(SDL2_test STATIC ${TEST_SOURCES})
 
   add_subdirectory(test)

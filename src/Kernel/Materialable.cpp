@@ -57,6 +57,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentPtr & _doc )
         {
+            MENGINE_ASSERTION_FATAL( _resourceImage->isCompile() == true );
+
             uint32_t texturesNum = 0;
             RenderTextureInterfacePtr textures[2];
             mt::uv4f uvs[2];
@@ -260,7 +262,14 @@ namespace Mengine
 
                             if( color.isSolid() == false || _solid == false )
                             {
-                                materialId = EM_COLOR_BLEND;
+                                if( premultiply == false )
+                                {
+                                    materialId = EM_COLOR_BLEND;
+                                }
+                                else
+                                {
+                                    materialId = EM_COLOR_BLEND_PREMULTIPLY;
+                                }
                             }
                             else
                             {
@@ -271,7 +280,14 @@ namespace Mengine
                         {
                             if( _solid == false )
                             {
-                                materialId = EM_COLOR_BLEND;
+                                if( premultiply == false )
+                                {
+                                    materialId = EM_COLOR_BLEND;
+                                }
+                                else
+                                {
+                                    materialId = EM_COLOR_BLEND_PREMULTIPLY;
+                                }
                             }
                             else
                             {
@@ -584,10 +600,10 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & Materialable::getSolidMaterial( EMaterialBlendMode _blendMode ) const
+    const RenderMaterialInterfacePtr & Materialable::getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const
     {
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-            ->getSolidMaterial( _blendMode );
+            ->getSolidMaterial( _blendMode, _premultiply );
 
         return material;
     }

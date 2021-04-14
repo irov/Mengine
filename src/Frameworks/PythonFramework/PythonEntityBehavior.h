@@ -10,6 +10,8 @@ namespace Mengine
     class PythonEntityBehavior
         : public EntityBehaviorInterface
     {
+        DECLARE_FACTORABLE( PythonEntityBehavior );
+
     public:
         PythonEntityBehavior();
         ~PythonEntityBehavior() override;

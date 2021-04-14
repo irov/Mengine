@@ -8,6 +8,8 @@ namespace Mengine
     class TTFData
         : public TTFDataInterface
     {
+        DECLARE_FACTORABLE( TTFData );
+
     public:
         TTFData();
         ~TTFData() override;
@@ -29,6 +31,6 @@ namespace Mengine
         MemoryInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TTFData> TTFDataPtr;
+    typedef IntrusivePtr<TTFData, TTFDataInterface> TTFDataPtr;
     //////////////////////////////////////////////////////////////////////////
 }

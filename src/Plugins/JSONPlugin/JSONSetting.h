@@ -9,6 +9,8 @@ namespace Mengine
     class JSONSetting
         : public SettingInterface
     {
+        DECLARE_FACTORABLE( JSONSetting );
+
     public:
         JSONSetting();
         ~JSONSetting() override;

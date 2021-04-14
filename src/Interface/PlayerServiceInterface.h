@@ -49,8 +49,8 @@ namespace Mengine
         virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) = 0;
 
     public:
-        virtual SchedulerInterfacePtr createSchedulerManager( const ConstString & _name, const DocumentPtr & _doc ) = 0;
-        virtual bool destroySchedulerManager( const SchedulerInterfacePtr & _scheduler ) = 0;
+        virtual SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentPtr & _doc ) = 0;
+        virtual bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) = 0;
 
     public:
         virtual const RenderCameraOrthogonalPtr & getDefaultCamera2D() const = 0;
@@ -78,10 +78,13 @@ namespace Mengine
         virtual const RenderTargetInterfacePtr & getRenderTarget() const = 0;
 
     public:
+        virtual const RenderContext * getRenderContext() const = 0;
+
+    public:
         virtual const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const = 0;
 
     public:
-        virtual const SchedulerInterfacePtr & getScheduler() const = 0;
+        virtual const SchedulerInterfacePtr & getLocalScheduler() const = 0;
         virtual const SchedulerInterfacePtr & getGlobalScheduler() const = 0;
 
     public:

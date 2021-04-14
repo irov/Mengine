@@ -11,6 +11,7 @@ namespace Mengine
     class ResourceImageSolid
         : public ResourceImage
     {
+        DECLARE_FACTORABLE( ResourceImageSolid );
         DECLARE_VISITABLE( ResourceImage );
 
     public:

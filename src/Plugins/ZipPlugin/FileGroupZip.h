@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/InputStreamInterface.h"
+#include "Interface/FileMappedInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
@@ -13,6 +14,8 @@ namespace Mengine
     class FileGroupZip
         : public BaseFileGroup
     {
+        DECLARE_FACTORABLE( FileGroupZip );
+
     public:
         FileGroupZip();
         ~FileGroupZip() override;
@@ -49,11 +52,22 @@ namespace Mengine
         bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream ) override;
         bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) override;
 
+    public:
+        bool isAvailableMappedFile() const override;
+
+    public:
+        MappedInterfacePtr createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) override;
+        bool openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared ) override;
+        bool closeMappedFile( const MappedInterfacePtr & _stream ) override;
+
     protected:
         bool loadHeader_();
 
     protected:
         InputStreamInterfacePtr m_zipFile;
+        FileMappedInterfacePtr m_mappedFile;
+
+        uint32_t m_mappedThreshold;
 
         ThreadMutexInterfacePtr m_mutex;
 

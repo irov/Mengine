@@ -10,6 +10,8 @@ namespace Mengine
     class ImageDecoderWEBP
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderWEBP );
+
     public:
         ImageDecoderWEBP();
         ~ImageDecoderWEBP() override;

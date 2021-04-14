@@ -56,7 +56,7 @@ namespace Mengine
         mt::vec2f camera_vpwm_center;
         camera_vpwm.getCenter( camera_vpwm_center );
 
-        const mt::vec3f & target_wp = this->getWorldPosition();
+        mt::vec3f target_wp = this->getWorldPosition();
 
         mt::vec2f target2d_wp;
         target2d_wp.x = target_wp.x;

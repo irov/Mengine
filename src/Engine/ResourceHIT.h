@@ -4,17 +4,14 @@
 
 #include "ResourceTestPick.h"
 
-#include "Kernel/BaseContent.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ResourceHIT
         : public ResourceTestPick
-        , protected BaseContent
     {
+        DECLARE_FACTORABLE( ResourceHIT );
         DECLARE_VISITABLE( ResourceTestPick );
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceHIT();
@@ -23,9 +20,6 @@ namespace Mengine
     protected:
         bool _compile() override;
         void _release() override;
-
-    public:
-        void setPath( const FilePath & _filePath );
 
     public:
         bool testPoint( const mt::vec2f & _point, float _minAlpha ) const override;

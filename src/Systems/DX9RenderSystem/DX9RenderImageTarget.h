@@ -9,13 +9,17 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class DX9RenderTargetTexture, class RenderTargetInterface> DX9RenderTargetTexturePtr;
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderImageTarget
         : public RenderImageInterface
         , public DX9RenderImageExtensionInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX9RenderImageTarget );
+        DECLARE_UNKNOWABLE();
+
     public:
         DX9RenderImageTarget();
         ~DX9RenderImageTarget() override;
@@ -60,6 +64,6 @@ namespace Mengine
         DX9RenderTargetTexturePtr m_target;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderImageTarget> DX9RenderImageTargetPtr;
+    typedef IntrusivePtr<DX9RenderImageTarget, RenderImageInterface> DX9RenderImageTargetPtr;
     //////////////////////////////////////////////////////////////////////////
 }

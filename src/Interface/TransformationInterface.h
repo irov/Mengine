@@ -39,11 +39,16 @@ namespace Mengine
         | TRANSFORMATION_INVALIDATE_ORIENTATION_Y
         | TRANSFORMATION_INVALIDATE_ORIENTATION_Z;
     //////////////////////////////////////////////////////////////////////////
+    class Transformable;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class TransformationInterface> TransformationInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TransformationInterface
         : public Interface
     {
+    public:
+        virtual Transformable * getTransformable() = 0;
+
     public:
         virtual void setRelationTransformation( TransformationInterface * _relationTransformation ) = 0;
         virtual TransformationInterface * getRelationTransformation() const = 0;
@@ -57,10 +62,6 @@ namespace Mengine
     public:
         virtual bool isIdentityLocalMatrix() const = 0;
         virtual bool isIdentityWorldMatrix() const = 0;
-
-    public:
-        virtual void setWorldPosition( const mt::vec3f & _pos ) = 0;
-        virtual const mt::vec3f & getWorldPosition() const = 0;
 
     public:
         virtual const mt::mat4f & getLocalMatrix() const = 0;
@@ -104,15 +105,25 @@ namespace Mengine
 
         virtual bool isIdentityOrientation() const = 0;
 
+    public:
         virtual void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up ) = 0;
         virtual void setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal ) = 0;
         virtual void setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up ) = 0;
         virtual void billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal ) = 0;
         virtual void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up ) = 0;
 
+    public:
         virtual mt::vec3f getAxisDirection() const = 0;
         virtual mt::vec3f getAxisLeft() const = 0;
         virtual mt::vec3f getAxisUp() const = 0;
+
+    public:
+        virtual void setWorldPosition( const mt::vec3f & _pos ) = 0;
+
+    public:
+        virtual mt::vec3f getWorldPosition() const = 0;
+        virtual mt::vec3f getWorldScale() const = 0;
+        virtual mt::vec3f getWorldOrientation() const = 0;
 
     public:
         virtual void setTransformationData( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) = 0;

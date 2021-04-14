@@ -15,6 +15,8 @@ namespace Mengine
     class IniConfig
         : public ConfigInterface
     {
+        DECLARE_FACTORABLE( IniConfig );
+
     public:
         IniConfig();
         ~IniConfig() override;

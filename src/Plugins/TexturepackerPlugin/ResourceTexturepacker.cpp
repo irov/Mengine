@@ -3,6 +3,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ContentInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
@@ -238,11 +239,11 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
-            const ContentInterface * json_content = m_resourceJSON->getContent();
+            const ContentInterfacePtr & json_content = m_resourceJSON->getContent();
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
 
-            ContentInterface * resource_content = resourceImage->getContent();
+            ContentInterfacePtr resource_content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
 
@@ -253,6 +254,8 @@ namespace Mengine
                 ->findCodecType( newFilePath );
 
             resource_content->setCodecType( codecType );
+
+            resourceImage->setContent( resource_content );
 
             jpp::object root_meta_size = root_meta["size"];
             mt::vec2f atlasSize;

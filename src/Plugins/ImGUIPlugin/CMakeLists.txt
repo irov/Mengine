@@ -30,10 +30,11 @@ if(MENGINE_PLATFORM_SDL)
         ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_sdl.cpp
     )
 
+    include_directories(${THIRDPARTY_CONFIG_DIR}/SDL)
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 endif()
 
-if(MENGINE_RENDER_DIRECTX)
+if(MENGINE_RENDER_DIRECTX9)
     ADD_FILTER(
     imgui_render_ext
         ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_dx9.h

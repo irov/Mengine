@@ -14,11 +14,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceAstralaxValidator::_validate( const ResourceAstralaxPtr & _resource )
+    bool ResourceAstralaxValidator::_validate( const ResourceAstralaxPtr & _resource ) const
     {
         bool successful = true;
 
-        const ContentInterface * content = _resource->getContent();
+        const ContentInterfacePtr & content = _resource->getContent();
 
         const FilePath & filePath = content->getFilePath();
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();

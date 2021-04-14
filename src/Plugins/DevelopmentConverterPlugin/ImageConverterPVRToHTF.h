@@ -7,6 +7,8 @@ namespace Mengine
     class ImageConverterPVRToHTF
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( ImageConverterPVRToHTF );
+
     public:
         ImageConverterPVRToHTF();
         ~ImageConverterPVRToHTF() override;

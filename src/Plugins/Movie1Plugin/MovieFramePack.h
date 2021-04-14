@@ -9,9 +9,12 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MovieFramePack
         : public MovieFramePackInterface
     {
+        DECLARE_FACTORABLE( MovieFramePack );
+
     public:
         MovieFramePack();
         ~MovieFramePack() override;

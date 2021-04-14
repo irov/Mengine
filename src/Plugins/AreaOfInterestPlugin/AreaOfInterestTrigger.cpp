@@ -1,7 +1,7 @@
 #include "AreaOfInterestTrigger.h"
 #include "AreaOfInterestActor.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 namespace Mengine
 {

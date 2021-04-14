@@ -100,6 +100,9 @@ namespace Mengine
 
             virtual ~My_observer_bind_call()
             {
+#ifdef MENGINE_WINDOWS_DEBUG
+                MENGINE_ASSERTION_FATAL( m_prev_handler_count == 0 );
+#endif
             }
 
         public:

@@ -4,7 +4,6 @@
 #include "Config/Char.h"
 
 #include "Kernel/HashType.h"
-#include "Kernel/Factorable.h"
 #include "Kernel/IntrusiveLinked.h"
 
 namespace Mengine

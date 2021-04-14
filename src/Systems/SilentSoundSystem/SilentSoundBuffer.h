@@ -10,6 +10,8 @@ namespace Mengine
     class SilentSoundBuffer
         : public SoundBufferInterface
     {
+        DECLARE_FACTORABLE( SilentSoundBuffer );
+
     public:
         SilentSoundBuffer();
         ~SilentSoundBuffer() override;

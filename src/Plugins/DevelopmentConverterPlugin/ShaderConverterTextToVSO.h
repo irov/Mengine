@@ -7,6 +7,8 @@ namespace Mengine
     class ShaderConverterTextToVSO
         : public DevelopmentConverter
     {
+        DECLARE_FACTORABLE( ShaderConverterTextToVSO );
+
     public:
         ShaderConverterTextToVSO();
         ~ShaderConverterTextToVSO() override;

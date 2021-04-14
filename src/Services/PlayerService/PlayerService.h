@@ -39,14 +39,14 @@ namespace Mengine
         void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) override;
 
     public:
-        SchedulerInterfacePtr createSchedulerManager( const ConstString & _name, const DocumentPtr & _doc ) override;
-        bool destroySchedulerManager( const SchedulerInterfacePtr & _scheduler ) override;
+        SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentPtr & _doc ) override;
+        bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) override;
 
     public:
         const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const override;
 
     public:
-        const SchedulerInterfacePtr & getScheduler() const override;
+        const SchedulerInterfacePtr & getLocalScheduler() const override;
         const SchedulerInterfacePtr & getGlobalScheduler() const override;
 
     public:
@@ -80,6 +80,9 @@ namespace Mengine
     public:
         void setRenderTarget( const RenderTargetInterfacePtr & _target ) override;
         const RenderTargetInterfacePtr & getRenderTarget() const override;
+
+    public:
+        const RenderContext * getRenderContext() const override;
 
     public:
         void initializeRenderResources() override;
@@ -141,8 +144,8 @@ namespace Mengine
 
         GlobalInputHandlerInterfacePtr m_globalInputHandler;
 
-        SchedulerInterfacePtr m_scheduler;
-        SchedulerInterfacePtr m_schedulerGlobal;
+        SchedulerInterfacePtr m_localScheduler;
+        SchedulerInterfacePtr m_globalScheduler;
 
         RandomizerInterfacePtr m_randomizer;
 

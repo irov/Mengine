@@ -47,9 +47,9 @@ android {
         if (project.hasProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
             print 'ANDROID_APP_ID = '
-        } else if (System.getenv('ANDROID_ANDROID_APP_ID')) {
-            applicationId System.getenv('ANDROID_ANDROID_APP_ID')
-            print 'ANDROID_ANDROID_APP_ID = '
+        } else if (System.getenv('ANDROID_APP_ID')) {
+            applicationId System.getenv('ANDROID_APP_ID')
+            print 'ANDROID_APP_ID = '
         } else {
             applicationId "org.Mengine.ANDROID_APP_ID"
             print 'HARDCODE ANDROID_APP_ID = '

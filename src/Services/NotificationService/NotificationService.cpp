@@ -9,7 +9,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/MixinDebug.h"
 
-#include <algorithm>
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( NotificationService, Mengine::NotificationService );
@@ -193,6 +193,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::hasObserver( Observable * _observer ) const
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         for( const VectorObservers & observers : m_observers )
         {
             for( const ObserverDesc & desc : observers )

@@ -18,6 +18,8 @@ namespace Mengine
         : public ServiceBase<PlatformInterface>
         , public Win32PlatformExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         Win32Platform();
         ~Win32Platform() override;
@@ -28,8 +30,8 @@ namespace Mengine
         void _runService() override;
 
     public:
-        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
-        void removeTimer( uint32_t _id ) override;
+        UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        void removeTimer( UniqueId _id ) override;
 
     public:
         uint64_t getTicks() const override;
@@ -83,6 +85,7 @@ namespace Mengine
 
         void setCursorPosition( const mt::vec2f & _pos ) override;
         void setCursorIcon( const ConstString & _icon ) override;
+        bool hasCursorIcon( const ConstString & _icon ) const override;
 
         void showKeyboard() override;
         void hideKeyboard() override;
@@ -90,7 +93,7 @@ namespace Mengine
         bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
         void notifyVsyncChanged( bool _vsync ) override;
         void notifyCursorModeChanged( bool _mode ) override;
-        bool notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer ) override;
+        bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer ) override;
 
     public:
         void onEvent( const ConstString & _event, const MapWParams & _params ) override;
@@ -100,7 +103,7 @@ namespace Mengine
 
     public:
         size_t getShortPathName( const Char * _path, Char * const _short ) const override;
-        size_t getSystemFontPath( const Char * _fontName, Char * const _fontPath ) const override;
+        size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
         bool getMaxClientResolution( Resolution * const _resolution ) const override;
@@ -124,11 +127,14 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     protected:
-        bool existFile_( const WChar * _filePath );        
+        bool existFile_( const WChar * _filePath );
         bool createDirectory_( const WChar * _path, const WChar * _directory );
 
     public:
         DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;
+
+    protected:
+        bool getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
@@ -207,6 +213,9 @@ namespace Mengine
     protected:
         bool initializeFileService_();
         void finalizeFileService_();
+
+    protected:
+        void updateWndMessage_();
 
     protected:
         WChar m_windowClassName[MENGINE_MAX_PATH] = {L'\0'};

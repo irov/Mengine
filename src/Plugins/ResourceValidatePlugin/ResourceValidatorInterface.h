@@ -1,18 +1,17 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
+#include "Interface/ServantInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/Resource.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ResourceValidatorInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
-        virtual bool validate( const ResourcePtr & _resource ) = 0;
+        virtual bool validate( const ResourcePtr & _resource ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceValidatorInterface> ResourceValidatorInterfacePtr;

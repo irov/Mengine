@@ -3,7 +3,6 @@
 #include "OzzAnimationInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/BaseContent.h"
 
 #include "ozz/animation/runtime/animation.h"
 
@@ -13,11 +12,10 @@ namespace Mengine
     class ResourceOzzAnimation
         : public Resource
         , public UnknownResourceOzzAnimationInterface
-        , protected BaseContent        
     {
+        DECLARE_FACTORABLE( ResourceOzzAnimation );
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceOzzAnimation();

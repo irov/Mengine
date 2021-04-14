@@ -178,7 +178,7 @@ namespace Mengine
     {
         if( m_personalTransparent == false )
         {
-            if( m_personalColor.getA() < 0.00390625f )
+            if( m_personalColor.getA() < MENGINE_COLOR_MINIMAL_ALPHA )
             {
                 m_personalTransparent = true;
 
@@ -187,7 +187,7 @@ namespace Mengine
         }
         else
         {
-            if( m_personalColor.getA() > 0.00390625f )
+            if( m_personalColor.getA() > MENGINE_COLOR_MINIMAL_ALPHA )
             {
                 m_personalTransparent = false;
 

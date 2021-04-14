@@ -12,6 +12,8 @@ namespace Mengine
         : public SchedulerPipeInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( PythonSchedulePipe );
+
     public:
         PythonSchedulePipe();
         ~PythonSchedulePipe() override;

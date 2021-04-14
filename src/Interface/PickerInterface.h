@@ -14,11 +14,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class Pickerable;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Arrow, class Node> ArrowPtr;
     //////////////////////////////////////////////////////////////////////////
     class PickerInterface
         : public Interface
     {
+    public:
+        virtual Pickerable * getPickerable() = 0;
+
     public:
         virtual void setRelationPicker( PickerInterface * _relationPicker ) = 0;
         virtual void removeRelationPicker() = 0;

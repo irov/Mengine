@@ -2,7 +2,7 @@
 
 #include "Interface/NotificationServiceInterface.h"
 
-#include <process.h>
+#include <stdlib.h>
 
 namespace Mengine
 {

@@ -1,0 +1,1 @@
+@call %~dp0make_solution_msvc15_dx11.bat Debug

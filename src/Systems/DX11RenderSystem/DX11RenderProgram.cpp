@@ -53,7 +53,7 @@ namespace Mengine
         m_vertexAttribute = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderProgram::compile( ID3D11Device * _pD3DDevice )
     {
         MENGINE_UNUSED( _pD3DDevice );
 
@@ -64,7 +64,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderProgram::enable( ID3D11Device * _pD3DDevice )
     {
         if( m_vertexShader != nullptr )
         {
@@ -82,7 +82,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::disable( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderProgram::disable( ID3D11Device * _pD3DDevice )
     {
         if( m_vertexShader != nullptr )
         {
@@ -100,7 +100,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks )
+    void DX11RenderProgram::bindTextureMask( ID3D11Device * _pD3DDevice, const mt::uv4f * _textureMasks )
     {
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
@@ -121,7 +121,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
+    void DX11RenderProgram::bindMatrix( ID3D11Device * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
     {
         MENGINE_UNUSED( _worldMatrix );
         MENGINE_UNUSED( _viewMatrix );

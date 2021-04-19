@@ -25,13 +25,13 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( IDirect3DDevice9 * _pD3DDevice );
+        bool compile( ID3D11Device * _pD3DDevice );
 
     public:
-        void enable( IDirect3DDevice9 * _pD3DDevice );
+        void enable(ID3D11DeviceContext * _pD3DDeviceContext );
 
     protected:
-        IDirect3DPixelShader9 * m_pD3DPixelShader;
+        ID3D11PixelShader * m_pD3DPixelShader;
 
         ConstString m_name;
 

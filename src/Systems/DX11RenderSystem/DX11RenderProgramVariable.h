@@ -38,7 +38,7 @@ namespace Mengine
         void updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
-        bool apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program );
+        bool apply( ID3D11Device * _pD3DDevice, const RenderProgramInterfacePtr & _program );
 
     public:
         enum EProgramVariableType

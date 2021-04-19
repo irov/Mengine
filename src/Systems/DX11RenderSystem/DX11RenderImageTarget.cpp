@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::bind( uint32_t _stage )
     {
-        IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
+        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice9();
         IDirect3DTexture9 * pD3DTexture = m_target->getDirect3dTexture9();
 
 #ifdef MENGINE_DEBUG
@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::unbind( uint32_t _stage )
     {
-        IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
+        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice9();
 
         DXCALL( pD3DDevice, SetTexture, (_stage, nullptr) );
     }
@@ -77,9 +77,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX11RenderImageTarget::getD3DDevice() const
+    ID3D11Device * DX11RenderImageTarget::getD3DDevice() const
     {
-        IDirect3DDevice9 * pD3DDevice = m_target->getDirect3dDevice9();
+        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice9();
 
         return pD3DDevice;
     }

@@ -24,7 +24,7 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( IDirect3DDevice9 * _pD3DDevice );
+        bool compile( ID3D11Device * _pD3DDevice );
 
     public:
         void enable() override;
@@ -41,7 +41,7 @@ namespace Mengine
         ConstString m_name;
         uint32_t m_elementSize;
 
-        IDirect3DDevice9 * m_pD3DDevice;
+        ID3D11Device * m_pD3DDevice;
         IDirect3DVertexDeclaration9 * m_pD3DVertexDeclaration;
 
         struct AttributeDesc

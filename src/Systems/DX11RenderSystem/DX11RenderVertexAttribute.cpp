@@ -35,7 +35,7 @@ namespace Mengine
         DXRELEASE( m_pD3DVertexDeclaration );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderVertexAttribute::compile( ID3D11Device * _pD3DDevice )
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
 

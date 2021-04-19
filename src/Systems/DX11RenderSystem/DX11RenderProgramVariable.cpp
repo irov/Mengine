@@ -125,7 +125,7 @@ namespace Mengine
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderProgramVariable::apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program )
+    bool DX11RenderProgramVariable::apply( ID3D11Device * _pD3DDevice, const RenderProgramInterfacePtr & _program )
     {
         MENGINE_UNUSED( _program );
 

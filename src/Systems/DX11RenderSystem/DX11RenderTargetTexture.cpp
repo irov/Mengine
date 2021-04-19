@@ -180,7 +180,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX11RenderTargetTexture::getDirect3dDevice9() const
+    ID3D11Device * DX11RenderTargetTexture::getDirect3dDevice9() const
     {
         return m_pD3DDevice;
     }

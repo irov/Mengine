@@ -34,15 +34,15 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( IDirect3DDevice9 * _pD3DDevice );
+        bool compile( ID3D11Device * _pD3DDevice );
 
     public:
-        void enable( IDirect3DDevice9 * _pD3DDevice );
-        void disable( IDirect3DDevice9 * _pD3DDevice );
+        void enable( ID3D11Device * _pD3DDevice );
+        void disable( ID3D11Device * _pD3DDevice );
 
     public:
-        void bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks );
-        void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
+        void bindTextureMask( ID3D11Device * _pD3DDevice, const mt::uv4f * _textureMasks );
+        void bindMatrix( ID3D11Device * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:
         ConstString m_name;

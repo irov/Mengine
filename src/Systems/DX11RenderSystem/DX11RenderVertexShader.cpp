@@ -41,18 +41,18 @@ namespace Mengine
         DXRELEASE( m_pD3DVertexShader );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderVertexShader::compile( ID3D11Device * _pD3DDevice )
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
 
-        const DWORD * dx_source = m_memory->getBuffer();
+        const DWORD * shader_compile_data = m_memory->getBuffer();
 
         LOGGER_INFO( "render", "compile vertex shader '%s'"
             , this->getName().c_str()
         );
 
-        IDirect3DVertexShader9 * pD3DVertexShader;
-        IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &pD3DVertexShader) )
+        ID3D11VertexShader * pD3DVertexShader;
+        IF_DXCALL( _pD3DDevice, CreateVertexShader, (shader_compile_data, m_memory->getSize(), NULL, &pD3DVertexShader) )
         {
             return false;
         }
@@ -62,9 +62,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX11RenderVertexShader::enable(ID3D11DeviceContext * _pD3DDeviceContext)
     {
-        DXCALL( _pD3DDevice, SetVertexShader, (m_pD3DVertexShader) );
-    }
+		_pD3DDeviceContext->VSSetShader(m_pD3DVertexShader, nullptr, 0);
+	}
     //////////////////////////////////////////////////////////////////////////
 }

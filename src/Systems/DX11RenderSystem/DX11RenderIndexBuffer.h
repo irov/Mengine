@@ -5,6 +5,7 @@
 #include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderResourceHandler.h"
+#include "DX11RenderBuffer.h"
 
 #include "Kernel/Factorable.h"
 
@@ -13,7 +14,7 @@ namespace Mengine
     class DX11RenderIndexBuffer
         : public RenderIndexBufferInterface
         , public Factorable
-        , public DX11RenderResourceHandler
+        , public DX11RenderBuffer
     {
     public:
         DX11RenderIndexBuffer();
@@ -40,23 +41,6 @@ namespace Mengine
 
     protected:
         bool draw( const void * _buffer, uint32_t _offset, uint32_t _count ) override;
-
-    protected:
-        void onRenderReset() override;
-        bool onRenderRestore() override;
-
-    protected:
-        EBufferType m_bufferType;
-        uint32_t m_indexSize;
-        uint32_t m_indexCapacity;
-        uint32_t m_indexCount;
-
-        DWORD m_usage;
-        D3DFORMAT m_format;
-        D3DPOOL m_pool;
-        IDirect3DIndexBuffer9 * m_pD3DIndexBuffer;
-
-        MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderIndexBuffer, RenderIndexBufferInterface> DX11RenderIndexBufferPtr;

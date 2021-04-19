@@ -143,9 +143,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DDevice9 * DX11RenderImage::getD3DDevice() const
+    ID3D11Device * DX11RenderImage::getD3DDevice() const
     {
-        IDirect3DDevice9 * device9 = this->getDirect3DDevice9();
+        ID3D11Device * device9 = this->getDirect3DDevice9();
 
         return device9;
     }

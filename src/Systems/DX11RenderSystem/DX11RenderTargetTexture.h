@@ -51,7 +51,7 @@ namespace Mengine
         bool getData( void * const _buffer, size_t _pitch ) const override;
 
     public:
-        IDirect3DDevice9 * getDirect3dDevice9() const;
+        ID3D11Device * getDirect3dDevice9() const;
         IDirect3DTexture9 * getDirect3dTexture9() const;
 
     protected:

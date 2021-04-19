@@ -56,7 +56,7 @@ namespace Mengine
         UnknownPointer getRenderImageExtention() override;
 
     public:
-        IDirect3DDevice9 * getD3DDevice() const override;
+        ID3D11Device * getD3DDevice() const override;
         IDirect3DTexture9 * getD3DTexture() const override;
 
     protected:

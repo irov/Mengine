@@ -5,6 +5,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class MemoryServiceInterface
         : public ServiceInterface
     {

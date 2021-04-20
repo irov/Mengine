@@ -15,6 +15,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderPipelineInterface
         : public ServantInterface
     {

@@ -1368,6 +1368,8 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP );
         }
 
+        SERVICE_FINALIZE( SceneService );
+
         if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
@@ -1376,12 +1378,6 @@ namespace Mengine
 
         m_packagesPaths.clear();
         m_settingsPaths.clear();
-
-        if( SERVICE_EXIST( SceneServiceInterface ) == true )
-        {
-            SCENE_SERVICE()
-                ->destroyCurrentScene();
-        }
 
         if( SERVICE_EXIST( ApplicationInterface ) == true )
         {
@@ -1422,7 +1418,6 @@ namespace Mengine
                 ->stopTasks();
         }
 
-        SERVICE_FINALIZE( SceneService );
         SERVICE_FINALIZE( GameService );
         SERVICE_FINALIZE( Application );
 

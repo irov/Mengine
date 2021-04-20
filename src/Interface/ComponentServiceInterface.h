@@ -6,6 +6,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ComponentServiceInterface
         : public ServiceInterface
     {

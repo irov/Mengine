@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Map.h"
@@ -10,7 +10,7 @@
 namespace Mengine
 {
     class WatchdogService
-        : public ServiceBase<WatchdogInterface>
+        : public ServiceBase<WatchdogServiceInterface>
     {
     public:
         WatchdogService();

@@ -704,14 +704,14 @@ namespace Mengine
                     {
                         if( _scene == nullptr )
                         {
-                            m_cb.call_args( nullptr, _enable, m_args );
+                            m_cb.call_args( nullptr, _enable, _error, m_args );
                         }
                         else
                         {
                             const PythonEntityBehaviorPtr & behavior = _scene->getBehavior();
                             const pybind::object & py_scene = behavior->getScriptObject();
 
-                            m_cb.call_args( py_scene, _enable, m_args );
+                            m_cb.call_args( py_scene, _enable, _error, m_args );
                         }
                     }
                     else
@@ -731,6 +731,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool createCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return false;
+                }
+
                 PythonSceneChangeCallbackPtr py_cb;
 
                 if( _cb.is_none() == false )
@@ -788,6 +793,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool setCurrentScene( const ScenePtr & _scene, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return false;
+                }
+
                 PythonSceneChangeCallbackPtr py_cb = nullptr;
 
                 if( _cb.is_none() == false )
@@ -835,6 +845,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool restartCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return false;
+                }
+
                 PythonSceneChangeCallbackPtr py_cb = nullptr;
 
                 if( _cb.is_none() == false )
@@ -865,6 +880,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const ScenePtr & getCurrentScene()
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return ScenePtr::none();
+                }
+
                 const ScenePtr & scene = SCENE_SERVICE()
                     ->getCurrentScene();
 
@@ -924,6 +944,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool createGlobalScene()
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return false;
+                }
+
                 bool successful = SCENE_SERVICE()
                     ->createGlobalScene();
 
@@ -932,12 +957,22 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void removeGlobalScene()
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return;
+                }
+
                 SCENE_SERVICE()
                     ->removeGlobalScene();
             }
             //////////////////////////////////////////////////////////////////////////
             const ScenePtr & getGlobalScene()
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return ScenePtr::none();
+                }
+
                 const ScenePtr & scene = SCENE_SERVICE()
                     ->getGlobalScene();
 
@@ -1906,11 +1941,6 @@ namespace Mengine
             protected:
                 bool filterResource( Resource * _resource ) const
                 {
-                    if( _resource->isCompile() == false )
-                    {
-                        return false;
-                    }
-
                     if( _resource->isCache() == false )
                     {
                         return false;
@@ -3071,6 +3101,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )
             {
+                if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+                {
+                    return false;
+                }
+
                 if( _cb.is_callable() == false )
                 {
                     LOGGER_ERROR( "cb '%s' not callable"

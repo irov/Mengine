@@ -16,8 +16,8 @@ namespace Mengine
         : m_resourceBank( nullptr )
         , m_compileReferenceCount( 0 )
         , m_prefetchReferenceCount( 0 )
+        , m_cacheReferenceCount( 0 )
         , m_initialize( false )
-        , m_cache( false )
         , m_groupCache( false )
         , m_keep( false )
         , m_mapping( false )
@@ -30,8 +30,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_compileReferenceCount == 0 );
         MENGINE_ASSERTION_FATAL( m_prefetchReferenceCount == 0 );
+        MENGINE_ASSERTION_FATAL( m_cacheReferenceCount == 0 );
         MENGINE_ASSERTION_FATAL( m_initialize == false );
-        MENGINE_ASSERTION_FATAL( m_cache == false );
         MENGINE_ASSERTION_FATAL( m_resourceBank == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ namespace Mengine
             , this->getType().c_str()
         );
 
-        if( ++m_compileReferenceCount == 1 )
+        if( m_compileReferenceCount == 0 )
         {
             LOGGER_INFO( "resource", "compile '%s:%s' group '%s'"
                 , this->getType().c_str()
@@ -168,8 +168,6 @@ namespace Mengine
 
             if( Compilable::compile() == false )
             {
-                m_compileReferenceCount = 0;
-
                 return false;
             }
 
@@ -177,6 +175,8 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this );
 #endif
         }
+
+        ++m_compileReferenceCount;
 
         return true;
     }
@@ -196,7 +196,9 @@ namespace Mengine
             , this->getGroupName().c_str()
         );
 
-        if( --m_compileReferenceCount == 0 )
+        --m_compileReferenceCount;
+
+        if( m_compileReferenceCount == 0 )
         {
             LOGGER_INFO( "resource", "release '%s:%s' group '%s'"
                 , this->getType().c_str()
@@ -254,31 +256,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::cache()
     {
-        if( this->compile() == false )
+        if( m_cacheReferenceCount == 0 )
         {
-            LOGGER_ERROR( "resource '%s:%s' group '%s' invalid increment reference"
-                , this->getGroupName().c_str()
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-            );
+            if( this->compile() == false )
+            {
+                LOGGER_ERROR( "resource '%s:%s' group '%s' invalid increment reference"
+                    , this->getGroupName().c_str()
+                    , this->getName().c_str()
+                    , this->getGroupName().c_str()
+                );
 
-            return false;
+                return false;
+            }
+        
+            this->_cache();
         }
 
-        m_cache = true;
-
-        this->_cache();
+        ++m_cacheReferenceCount;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::uncache()
     {
-        m_cache = false;
+        --m_cacheReferenceCount;
 
-        this->_uncache();
+        if( m_cacheReferenceCount == 0 )
+        {
+            this->_uncache();
 
-        this->release();
+            this->release();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::_cache()

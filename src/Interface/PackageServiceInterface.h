@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PackageServiceInterface
         : public ServiceInterface
     {

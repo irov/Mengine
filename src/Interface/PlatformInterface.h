@@ -29,6 +29,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PlatformInterface
         : public ServiceInterface
         , public Unknowable

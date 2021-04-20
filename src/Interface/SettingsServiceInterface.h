@@ -10,7 +10,8 @@
 #include "Config/Lambda.h"
 
 namespace Mengine
-{    
+{
+    //////////////////////////////////////////////////////////////////////////
     class SettingsServiceInterface
         : public ServiceInterface
     {

@@ -9,7 +9,6 @@ namespace Mengine
     class LoadableInterface
         : public Interface
     {
-    public:
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LoadableInterface> LoadableInterfacePtr;

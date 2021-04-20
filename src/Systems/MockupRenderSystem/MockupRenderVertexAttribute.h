@@ -24,10 +24,6 @@ namespace Mengine
         void finalize();
 
     public:
-        void enable() override;
-        void disable() override;
-
-    public:
         const ConstString & getName() const override;
         uint32_t getElementSize() const override;
 

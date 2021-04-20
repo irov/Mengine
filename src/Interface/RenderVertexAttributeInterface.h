@@ -17,10 +17,6 @@ namespace Mengine
 
     public:
         virtual void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) = 0;
-
-    public:
-        virtual void enable() = 0;
-        virtual void disable() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderVertexAttributeInterface> RenderVertexAttributeInterfacePtr;

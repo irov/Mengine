@@ -38,16 +38,6 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderVertexAttribute::enable()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderVertexAttribute::disable()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MockupRenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
         AttributeDesc desc;

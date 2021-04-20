@@ -17,6 +17,8 @@ namespace Mengine
     class AndroidNativeUnityAdsModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AndroidNativeUnityAdsModule );
+
     public:
         typedef AndroidEventation<UnityAdsEventHandler> UnityAdsEventation;
         typedef typename UnityAdsEventation::LambdaEventHandler LambdaUnityAdsEventHandler;

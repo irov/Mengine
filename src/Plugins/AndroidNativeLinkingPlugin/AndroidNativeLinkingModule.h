@@ -15,6 +15,8 @@ namespace Mengine
     class AndroidNativeLinkingModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AndroidNativeLinkingModule );
+
     public:
         typedef AndroidEventation<LinkingEventHandler> LinkingEventation;
         typedef LinkingEventation::LambdaEventHandler LambdaLinkingEventHandler;

@@ -30,8 +30,8 @@ namespace Mengine
         bool compile( GLuint _program );
 
     public:
-        void enable() override;
-        void disable() override;
+        void enable();
+        void disable();
 
     protected:
         const ConstString & getName() const override;

@@ -5,12 +5,14 @@
 
 #include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
+#include "DX11RenderTargetTexture.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class DX11RenderTargetTexture> DX11RenderTargetTexturePtr;
+    //typedef IntrusivePtr<class DX11RenderTargetTexture> DX11RenderTargetTexturePtr;
     //////////////////////////////////////////////////////////////////////////
     class DX11RenderImageTarget
         : public RenderImageInterface
@@ -57,7 +59,7 @@ namespace Mengine
 
     public:
         ID3D11Device * getD3DDevice() const override;
-        IDirect3DTexture9 * getD3DTexture() const override;
+		ID3D11Texture2D * getD3DTexture() const override;
 
     protected:
         DX11RenderTargetTexturePtr m_target;

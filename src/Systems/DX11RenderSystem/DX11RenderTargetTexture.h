@@ -51,29 +51,33 @@ namespace Mengine
         bool getData( void * const _buffer, size_t _pitch ) const override;
 
     public:
-        ID3D11Device * getDirect3dDevice9() const;
-        IDirect3DTexture9 * getDirect3dTexture9() const;
+        ID3D11Device * getDirect3dDevice11() const;
+		ID3D11Texture2D * getD3DTexture() const;
+		ID3D11ShaderResourceView * getD3DShaderResource() const;
 
     protected:
         void onRenderReset() override;
         bool onRenderRestore() override;
 
     protected:
-        uint32_t m_width;
-        uint32_t m_height;
-        uint32_t m_channels;
-        EPixelFormat m_format;
+		ID3D11Texture2D * m_pD3DTexture;
+		ID3D11ShaderResourceView* m_pD3DResourceView;
+		// interface for render target
+		ID3D11RenderTargetView* m_pRenderTargetView;
 
-        uint32_t m_hwWidth;
-        uint32_t m_hwHeight;
+		D3D11_TEXTURE2D_DESC m_textureDesc;
 
-        float m_hwWidthInv;
-        float m_hwHeightInv;
-        
-        IDirect3DTexture9 * m_pD3DTexture;
-        IDirect3DSurface9 * m_pD3DSurface;
-        IDirect3DSurface9 * m_pD3DSurfaceOld;
-    };
+		EPixelFormat m_hwPixelFormat;
+
+		uint32_t m_hwChannels;
+
+		float m_hwWidthInv;
+		float m_hwHeightInv;
+
+		// bind
+		ID3D11RenderTargetView* m_pRenderTargetViewOld;
+		ID3D11DepthStencilView* m_pDepthStencilMain;
+	};
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderTargetTexture, RenderTargetInterface> DX11RenderTargetTexturePtr;
     //////////////////////////////////////////////////////////////////////////

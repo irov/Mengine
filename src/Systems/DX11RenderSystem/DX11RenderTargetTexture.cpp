@@ -9,62 +9,72 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetTexture::DX11RenderTargetTexture()
-        : m_width( 0 )
-        , m_height( 0 )
-        , m_channels( 0 )
-        , m_format( PF_UNKNOWN )
-        , m_hwWidth( 0 )
-        , m_hwHeight( 0 )
+        : m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
         , m_pD3DTexture( nullptr )
-        , m_pD3DSurface( nullptr )
-        , m_pD3DSurfaceOld( nullptr )
+        , m_pD3DResourceView( nullptr )
+        , m_pRenderTargetView( nullptr )
+		, m_pRenderTargetViewOld(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetTexture::~DX11RenderTargetTexture()
     {
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
+		MENGINE_ASSERTION_FATAL(m_pD3DTexture == nullptr);
+
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
     {
-        m_width = _width;
-        m_height = _height;
-        m_channels = _channels;
-        m_format = _format;
+		DXGI_FORMAT D3DFormat = Helper::toD3DFormat(_format);
+		if (D3DFormat == DXGI_FORMAT_UNKNOWN)
+		{
+			// TODO: handle log
+			return false;
+		}
 
-        D3DFORMAT d3dformat = Helper::toD3DFormat( m_format );
+		m_textureDesc.Format = D3DFormat;
+		m_textureDesc.Width = _width;
+		m_textureDesc.Height = _height;
+		m_textureDesc.MipLevels = 1;
+		m_textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		m_textureDesc.Usage = D3D11_USAGE_DEFAULT;
 
-        IDirect3DTexture9 * pD3DTexture;
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &pD3DTexture, NULL) )
-        {
-            return false;
-        }
+		m_hwChannels = _channels;
+		m_hwPixelFormat = _format;
 
-        D3DSURFACE_DESC texDesc;
-        IF_DXCALL( pD3DTexture, GetLevelDesc, (0, &texDesc) )
-        {
-            DXRELEASE( pD3DTexture );
+		m_hwWidthInv = 1.f / (float)m_textureDesc.Width;
+		m_hwHeightInv = 1.f / (float)m_textureDesc.Height;
 
-            return false;
-        }
+		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &m_pD3DTexture))
+		{
+			return nullptr;
+		}
 
-        m_hwWidth = texDesc.Width;
-        m_hwHeight = texDesc.Height;
+		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 
-        m_hwWidthInv = 1.f / (float)m_hwWidth;
-        m_hwHeightInv = 1.f / (float)m_hwHeight;
+		shaderResourceViewDesc.Format = m_textureDesc.Format;
+		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+		shaderResourceViewDesc.Texture2D.MipLevels = m_textureDesc.MipLevels;
 
-        if( this->_initialize() == false )
-        {
-            DXRELEASE( pD3DTexture );
+		IF_DXCALL(m_pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView))
+		{
+			return nullptr;
+		}
 
-            return false;
-        }
+		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 
-        m_pD3DTexture = pD3DTexture;
+		renderTargetViewDesc.Format = m_textureDesc.Format;
+		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+		IF_DXCALL(m_pD3DDevice, CreateRenderTargetView, (m_pD3DTexture, &renderTargetViewDesc, &m_pRenderTargetView))
+		{
+			return nullptr;
+		}
 
         return true;
     }
@@ -90,7 +100,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderTargetTexture::getHWChannels() const
     {
-        return m_channels;
+        return m_hwChannels;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderTargetTexture::getHWDepth() const
@@ -100,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EPixelFormat DX11RenderTargetTexture::getHWPixelFormat() const
     {
-        return m_format;
+        return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderTargetTexture::getHWMipmaps() const
@@ -110,12 +120,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderTargetTexture::getHWWidth() const
     {
-        return m_hwWidth;
+        return m_textureDesc.Width;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderTargetTexture::getHWHeight() const
     {
-        return m_hwHeight;
+        return m_textureDesc.Height;
     }
     //////////////////////////////////////////////////////////////////////////
     float DX11RenderTargetTexture::getHWWidthInv() const
@@ -139,38 +149,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::begin()
     {
-        IDirect3DSurface9 * pD3DSurface;
-        DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
 
-        if( pD3DSurface == nullptr )
-        {
-            return false;
-        }
+		pImmediateContext->OMGetRenderTargets(1, &m_pRenderTargetViewOld, &m_pDepthStencilMain);
+		pImmediateContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilMain);
 
-        IDirect3DSurface9 * pD3DSurfaceOld;
-        DXCALL( m_pD3DDevice, GetRenderTarget, (0, &pD3DSurfaceOld) );
-
-        DXCALL( m_pD3DDevice, SetRenderTarget, (0, pD3DSurface) );
-
-        m_pD3DSurfaceOld = pD3DSurfaceOld;
-        m_pD3DSurface = pD3DSurface;
+		pImmediateContext->Release();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::end()
     {
-        DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
 
-        if( m_pD3DSurfaceOld != nullptr )
-        {
-            m_pD3DSurfaceOld->Release();
-            m_pD3DSurfaceOld = nullptr;
-        }
+		pImmediateContext->OMSetRenderTargets(1, &m_pRenderTargetViewOld, m_pDepthStencilMain);
 
-        m_pD3DSurface->Release();
-        m_pD3DSurface = nullptr;
-    }
+		pImmediateContext->Release();
+	}
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
@@ -180,35 +178,27 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Device * DX11RenderTargetTexture::getDirect3dDevice9() const
+    ID3D11Device * DX11RenderTargetTexture::getDirect3dDevice11() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DTexture9 * DX11RenderTargetTexture::getDirect3dTexture9() const
+	ID3D11Texture2D * DX11RenderTargetTexture::getD3DTexture() const
     {
         return m_pD3DTexture;
     }
+	//////////////////////////////////////////////////////////////////////////
+	ID3D11ShaderResourceView * DX11RenderTargetTexture::getD3DShaderResource() const
+	{
+		return m_pD3DResourceView;
+	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::onRenderReset()
     {
-        DXRELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::onRenderRestore()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
-
-        D3DFORMAT D3DFormat = Helper::toD3DFormat( m_format );
-
-        IDirect3DTexture9 * pD3DTexture;
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, D3DFormat, D3DPOOL_DEFAULT, &pD3DTexture, nullptr) )
-        {
-            return false;
-        }
-
-        m_pD3DTexture = pD3DTexture;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

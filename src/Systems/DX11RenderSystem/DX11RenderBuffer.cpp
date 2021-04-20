@@ -175,7 +175,7 @@ namespace Mengine
             return false;
         }
 
-		// TODO: somehow needs needs to reinterpret offset to subresource
+		// TODO: somehow needs to reinterpret offset to subresource
         // UINT offsetToLock = (UINT)(_offset * m_elementSize);
 
 		D3D11_MAP mapFlags;

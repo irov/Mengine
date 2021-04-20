@@ -19,22 +19,22 @@ namespace Mengine
         ~DX11RenderBuffer() override;
 
     public:
-		MENGINE_INLINE bool initializeBuffer( uint32_t _elementSize, EBufferType _bufferType );
-		MENGINE_INLINE void finalizeBuffer();
+		bool initializeBuffer( uint32_t _elementSize, EBufferType _bufferType );
+		void finalizeBuffer();
 
     protected:
         uint32_t getElementsCount() const;
         uint32_t getElementSize() const;
 
     protected:
-		MENGINE_INLINE bool resizeBuffer( uint32_t _elementsCount, void* _initData );
+		bool resizeBuffer( uint32_t _elementsCount, void* _initData );
 
     protected:
-		MENGINE_INLINE MemoryInterfacePtr lockBuffer( uint32_t _offset, uint32_t _size );
-		MENGINE_INLINE bool unlockBuffer();
+		MemoryInterfacePtr lockBuffer( uint32_t _offset, uint32_t _size );
+		bool unlockBuffer();
 
     protected:
-		MENGINE_INLINE bool drawBuffer( const void * _buffer, uint32_t _offset, uint32_t _count );
+		bool drawBuffer( const void * _buffer, uint32_t _offset, uint32_t _count );
 
     protected:
         void onRenderReset() override;

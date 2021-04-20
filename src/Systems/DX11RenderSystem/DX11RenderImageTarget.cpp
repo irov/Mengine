@@ -26,28 +26,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::bind( uint32_t _stage )
     {
-        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice9();
-        IDirect3DTexture9 * pD3DTexture = m_target->getDirect3dTexture9();
+        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
+		ID3D11ShaderResourceView * pD3DShaderResource = m_target->getD3DShaderResource();
+
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		pD3DDevice->GetImmediateContext(&pImmediateContext);
 
 #ifdef MENGINE_DEBUG
-        DWORD fillmode;
-        DXCALL( pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 
-        if( fillmode != D3DFILL_WIREFRAME )
-        {
-            DXCALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
-        }
+		pImmediateContext->PSSetShaderResources(_stage, 1, &pD3DShaderResource);
+
 #else
-        DXCALL( pD3DDevice, SetTexture, (_stage, pD3DTexture) );
+		pImmediateContext->PSSetShaderResources(_stage, 1, &pD3DShaderResource);
 #endif
-    }
+		pImmediateContext->Release();
+	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::unbind( uint32_t _stage )
     {
-        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice9();
+		ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
 
-        DXCALL( pD3DDevice, SetTexture, (_stage, nullptr) );
-    }
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		pD3DDevice->GetImmediateContext(&pImmediateContext);
+
+		pImmediateContext->PSSetShaderResources(_stage, 1, nullptr);
+
+		pImmediateContext->Release();
+	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
@@ -79,14 +84,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ID3D11Device * DX11RenderImageTarget::getD3DDevice() const
     {
-        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice9();
+        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
 
         return pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    IDirect3DTexture9 * DX11RenderImageTarget::getD3DTexture() const
+	ID3D11Texture2D * DX11RenderImageTarget::getD3DTexture() const
     {
-        IDirect3DTexture9 * pD3DTexture = m_target->getDirect3dTexture9();
+		ID3D11Texture2D * pD3DTexture = m_target->getD3DTexture();
 
         return pD3DTexture;
     }

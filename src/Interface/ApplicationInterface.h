@@ -25,6 +25,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ApplicationInterface
         : public ServiceInterface
     {

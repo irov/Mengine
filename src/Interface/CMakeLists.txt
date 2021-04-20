@@ -70,7 +70,7 @@ src
     PrototypeGeneratorInterface.h
     PrototypeServiceInterface.h
     VocabularyServiceInterface.h
-    WatchdogInterface.h
+    WatchdogServiceInterface.h
     ArchivatorInterface.h
     ArchiveServiceInterface.h
     PrefetcherObserverInterface.h

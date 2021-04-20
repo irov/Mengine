@@ -2,7 +2,7 @@
 
 #include "Interface/CodecInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"

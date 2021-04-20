@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderTextureInterface
         : public ServantInterface
     {

@@ -21,7 +21,7 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/GameServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"

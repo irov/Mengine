@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ConfigServiceInterface
         : public ServiceInterface
     {

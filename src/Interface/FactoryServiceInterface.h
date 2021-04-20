@@ -8,7 +8,8 @@
 #include "Kernel/Factory.h"
 
 namespace Mengine
-{    
+{
+    //////////////////////////////////////////////////////////////////////////
     class FactoryServiceInterface
         : public ServiceInterface
     {
@@ -32,7 +33,7 @@ namespace Mengine
     public:
         virtual void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) = 0;
         virtual void debugFactoryDestroyObject( const Factory * _factory, const Factorable * _factorable ) = 0;
-    };    
+    };
 }
 //////////////////////////////////////////////////////////////////////////
 #define FACTORY_SERVICE()\

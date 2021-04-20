@@ -119,13 +119,13 @@ namespace Mengine
 
         uint32_t m_compileReferenceCount;
         uint32_t m_prefetchReferenceCount;
+        uint32_t m_cacheReferenceCount;
 
         ConstString m_locale;
         ConstString m_groupName;
         Tags m_tags;
         
         bool m_initialize;
-        bool m_cache;
         bool m_groupCache;
         bool m_keep;
         bool m_mapping;
@@ -190,7 +190,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Resource::isCache() const
     {
-        return m_cache;
+        return m_cacheReferenceCount != 0;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Resource::isIgnored() const

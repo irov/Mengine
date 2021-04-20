@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PrototypeServiceInterface
         : public ServiceInterface
     {

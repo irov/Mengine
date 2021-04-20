@@ -11,7 +11,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
@@ -1271,7 +1271,7 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _tag );
 
-                double watch = WATCHDOG( _tag );
+                double watch = MENGINE_WATCHDOG( _tag );
 
                 return watch;
             }

@@ -28,9 +28,6 @@ namespace Mengine
         virtual bool removeCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
 
     public:
-        virtual void destroyCurrentScene() = 0;
-
-    public:
         virtual const ScenePtr & getCurrentScene() const = 0;
 
     public:

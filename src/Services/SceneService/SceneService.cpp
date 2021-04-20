@@ -56,7 +56,7 @@ namespace Mengine
 
         m_commands.clear();
 
-        this->destroyCurrentScene();
+        this->destroyCurrentScene_();
         this->removeGlobalScene();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -272,7 +272,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::removeCurrentScene_( const SceneCommandDesc & _desc )
     {
-        this->destroyCurrentScene();
+        this->destroyCurrentScene_();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_COMPLETE );
 
@@ -284,7 +284,7 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_COMPLETE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SceneService::destroyCurrentScene()
+    void SceneService::destroyCurrentScene_()
     {
         if( m_scene == m_globalScene )
         {

@@ -41,38 +41,66 @@ namespace Mengine
 
         m_pD3DDevice = _pD3DDevice;
 
-        D3DVERTEXELEMENT9 declaration[64];
+		D3D11_INPUT_ELEMENT_DESC declaration[64];
 
         DWORD declaration_iterator = 0;
 
         for( const AttributeDesc & desc : m_attributes )
         {
+			D3D11_INPUT_ELEMENT_DESC& element = declaration[declaration_iterator++];
+
             if( desc.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
             {
-                declaration[declaration_iterator++] = { 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 };
+				element.InputSlot = 0;
+				element.AlignedByteOffset = 0;
+				element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+				element.InstanceDataStepRate = 0;
+
+				element.SemanticName = "Position"; // this name must be same in shader
+				element.SemanticIndex = 0;
+				element.Format = DXGI_FORMAT_R32G32B32_FLOAT;
             }
             else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
             {
-                declaration[declaration_iterator++] = { 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 };
+				element.InputSlot = 0;
+				element.AlignedByteOffset = 12; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
+				element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+				element.InstanceDataStepRate = 0;
+
+				element.SemanticName = "Color"; // this name must be same in shader
+				element.SemanticIndex = 0;
+				element.Format = DXGI_FORMAT_R32_UINT;
             }
             else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
             {
-                declaration[declaration_iterator++] = { 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 };
+				element.InputSlot = 0;
+				element.AlignedByteOffset = 16; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
+				element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+				element.InstanceDataStepRate = 0;
+
+				element.SemanticName = "TEXCOORD"; // this name must be same in shader
+				element.SemanticIndex = 0;
+				element.Format = DXGI_FORMAT_R32G32_FLOAT;
             }
             else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
             {
-                declaration[declaration_iterator++] = { 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 };
+				element.InputSlot = 0;
+				element.AlignedByteOffset = 24; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
+				element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+				element.InstanceDataStepRate = 0;
+
+				element.SemanticName = "TEXCOORD"; // this name must be same in shader
+				element.SemanticIndex = 1;
+				element.Format = DXGI_FORMAT_R32G32_FLOAT;
+
             }
         }
-
-        declaration[declaration_iterator] = D3DDECL_END();
 
         LOGGER_INFO( "render", "create vertex declaration '%s'"
             , m_name.c_str()
         );
 
-        IDirect3DVertexDeclaration9 * pD3DVertexDeclaration;
-        IF_DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &pD3DVertexDeclaration) )
+        IF_DXCALL( m_pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, &pD3DVertexDeclaration) )
         {
             return false;
         }

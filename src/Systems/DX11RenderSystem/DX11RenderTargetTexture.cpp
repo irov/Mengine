@@ -79,23 +79,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderTargetTexture::_initialize()
-    {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::finalize()
     {
-        DXRELEASE( m_pD3DTexture );
-
-        this->_finalize();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderTargetTexture::_finalize()
-    {
-        //Empty
+        DXRELEASE(m_pD3DTexture);
+		DXRELEASE(m_pD3DResourceView);
+		DXRELEASE(m_pRenderTargetView);
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderTargetTexture::getHWChannels() const
@@ -191,6 +179,10 @@ namespace Mengine
 	ID3D11ShaderResourceView * DX11RenderTargetTexture::getD3DShaderResource() const
 	{
 		return m_pD3DResourceView;
+	}
+	D3D11_TEXTURE2D_DESC DX11RenderTargetTexture::GetTextureDesc() const
+	{
+		return m_textureDesc;
 	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::onRenderReset()

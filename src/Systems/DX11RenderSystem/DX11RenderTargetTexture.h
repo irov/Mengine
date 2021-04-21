@@ -24,10 +24,6 @@ namespace Mengine
         bool initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format );
         void finalize();
 
-    protected:
-        virtual bool _initialize();
-        virtual void _finalize();
-
     public:
         uint32_t getHWMipmaps() const override;
         uint32_t getHWWidth() const override;
@@ -54,6 +50,8 @@ namespace Mengine
         ID3D11Device * getDirect3dDevice11() const;
 		ID3D11Texture2D * getD3DTexture() const;
 		ID3D11ShaderResourceView * getD3DShaderResource() const;
+
+		D3D11_TEXTURE2D_DESC GetTextureDesc() const;
 
     protected:
         void onRenderReset() override;

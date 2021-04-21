@@ -125,7 +125,7 @@
         <VertexAttribute Name = "Vertex2D_UV1"/>
         
         <Sampler Count = "1"/>
-    </Program>        
+    </Program>
     
     <Program Name = "Color">
         <VertexShader Name = "Vertex_Color"/>
@@ -134,7 +134,7 @@
         
         <Sampler Count = "0"/>
     </Program>
-    
+
     <Program Name = "Ozz_Blend">
         <VertexShader Name = "Vertex_Blend"/>
         <FragmentShader Name = "Ozz_Fragment_Blend"/>
@@ -142,6 +142,14 @@
         
         <Sampler Count = "1"/>
     </Program>
+
+    <Program Name = "Color_Premultiply">
+        <VertexShader Name = "Vertex_Color"/>
+        <FragmentShader Name = "Fragment_Color_Premultiply"/>
+        <VertexAttribute Name = "Vertex2D_UV0"/>
+        
+        <Sampler Count = "0"/>
+    </Program>    
     
 	<Material Name = "Texture_TrackMatte_Blend">
         <AlphaBlend Enable = "1"/>
@@ -226,7 +234,7 @@
 
 	<Material Name = "Texture_TrackMatteInverted_Intensive_ExternalAlpha">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE"/>
         
@@ -235,7 +243,7 @@
     
 	<Material Name = "Texture_TrackMatteInverted_Intensive_Premultiply">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "ONE" Dest = "ONE"/>
         
@@ -244,7 +252,7 @@
     
 	<Material Name = "Texture_TrackMatteInverted_Intensive_Premultiply_ExternalAlpha">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "ONE" Dest = "ONE"/>
         
@@ -267,16 +275,16 @@
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "AlphaMask"/>
-	</Material>    
+	</Material>
        
-    <Material Name = "Debug" Debug = "true">        
+    <Material Name = "Debug" Debug = "true">
         <AlphaBlend Enable = "0"/>
         <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Color"/>
-	</Material>       
+	</Material>
     
 	<Material Name = "Texture_Solid">
         <AlphaBlend Enable = "0"/>
@@ -285,11 +293,11 @@
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Blend"/>
-	</Material>        
+	</Material>
     
 	<Material Name = "Texture_Blend">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>  
         
@@ -298,39 +306,39 @@
     
 	<Material Name = "Texture_Blend_WC">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <TextureStages Stage = "0">
             <AddressMode U = "WRAP" V = "CLAMP"/>
-        </TextureStages>        
+        </TextureStages>
         
         <Program Name = "Blend"/>
 	</Material>
     
 	<Material Name = "Texture_Blend_WW">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <TextureStages Stage = "0">
             <AddressMode U = "WRAP" V = "WRAP"/>
-        </TextureStages>        
+        </TextureStages>
         
         <Program Name = "Blend"/>
-	</Material>    
+	</Material>
     
 	<Material Name = "Texture_Blend_CW">
         <AlphaBlend Enable = "1"/>
-        <DepthBufferWrite Enable = "0"/>        
+        <DepthBufferWrite Enable = "0"/>
         
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <TextureStages Stage = "0">
             <AddressMode U = "CLAMP" V = "WRAP"/>
-        </TextureStages>        
+        </TextureStages>
         
         <Program Name = "Blend"/>
 	</Material>      
@@ -342,7 +350,7 @@
         <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
                 
         <Program Name = "Blend_Premultiply"/>
-	</Material>    
+	</Material>
     
     <Material Name = "Texture_Intensive_Premultiply">
         <AlphaBlend Enable = "1"/>
@@ -353,7 +361,7 @@
         <Program Name = "Blend_Premultiply"/>
 	</Material>
     
-    <Material Name = "Texture_Intensive">        
+    <Material Name = "Texture_Intensive">
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
@@ -362,7 +370,7 @@
         <Program Name = "Blend"/>
 	</Material>       
     
-    <Material Name = "Texture_Multiply">        
+    <Material Name = "Texture_Multiply">
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
@@ -380,11 +388,11 @@
         <Program Name = "Blend_Premultiply"/>
 	</Material>
 
-    <Material Name = "Texture_Screen">        
+    <Material Name = "Texture_Screen">
         <AlphaBlend Enable = "1"/>
         <DepthBufferWrite Enable = "0"/>
         
-        <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_COLOUR"/>      
+        <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_COLOUR"/>
         
         <Program Name = "Blend"/>
 	</Material>    
@@ -565,7 +573,7 @@
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Color"/>
-	</Material>    
+	</Material>
     
     <Material Name = "Color_Blend">        
         <AlphaBlend Enable = "1"/>
@@ -574,7 +582,16 @@
         <BlendFactor Source = "SOURCE_ALPHA" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
         
         <Program Name = "Color"/>
-	</Material>   
+	</Material>
+    
+    <Material Name = "Color_Blend_Premultiply">
+        <AlphaBlend Enable = "1"/>
+        <DepthBufferWrite Enable = "0"/>
+        
+        <BlendFactor Source = "ONE" Dest = "ONE_MINUS_SOURCE_ALPHA"/>
+        
+        <Program Name = "Color_Premultiply"/>
+	</Material>    
 
     <Material Name = "Color_Intensive">        
         <AlphaBlend Enable = "1"/>

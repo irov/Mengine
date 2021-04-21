@@ -1,5 +1,6 @@
+#version 330 core
+
 uniform sampler2D inSampler0;
-uniform sampler2D inSampler1;
 
 uniform vec4 uvsl;
 
@@ -13,29 +14,31 @@ uniform float u_timefactor;
 uniform float u_timescale;
 uniform float u_timeamplitude;
 
-varying vec4 v_Col;
-varying vec2 v_UV0;
-varying vec2 v_UV1;
+in vec4 v_Col;
+in vec2 v_UV0;
+
+out vec4 fragColor;
 
 float sRGB(float t){ return mix(1.055*pow(t, 1./2.4) - 0.055, 12.92*t, step(t, 0.0031308)); }
 vec3 sRGB(in vec3 c) { return vec3 (sRGB(c.x), sRGB(c.y), sRGB(c.z)); }
 
 void main()
 {    
-    vec4 c = texture2D(inSampler0, v_UV0.xy);
-    float a = texture2D(inSampler1, v_UV1.xy).w;
+    vec4 col_t = texture(inSampler0, v_UV0.xy);
     
     float ux = (v_UV0.x + uvsl.x) * uvsl.z;
     float uy = (v_UV0.y + uvsl.y) * uvsl.w;
     
     float tx = (ux - 0.5) * cos(u_timefactor * u_timeamplitude) * u_timescale;
     float ty = (uy - 0.5) * sin(u_timefactor * u_timeamplitude) * u_timescale;
-    vec3 col1 = u_color0.xyz + vec3(vec2(u_scale0x * tx, u_scale0y * ty), 0.0);
-    vec3 col2 = u_color1.xyz + vec3(vec2(u_scale1x * ty, u_scale1y * tx), 0.0);
+    vec3 col1 = u_color0.xyz + vec3(u_scale0x * tx, u_scale0y * ty, 0.0);
+    vec3 col2 = u_color1.xyz + vec3(u_scale1x * ty, u_scale1y * tx, 0.0);
     
     vec3 col = mix(col2, col1, ux * uy);
     
-    col = sRGB(col);
+    vec3 col_s = sRGB(col);
     
-	gl_FragColor = v_Col * c * vec4( col, a );
+	vec4 c = v_Col * col_t * vec4( col_s, 1.0 );
+    
+    fragColor = c;
 }

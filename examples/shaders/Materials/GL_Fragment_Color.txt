@@ -1,0 +1,12 @@
+#version 330 core
+
+in vec4 v_Col;
+
+out vec4 fragColor;
+
+void main(void)
+{
+	vec4 c = v_Col;
+    
+    fragColor = c;
+}

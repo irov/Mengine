@@ -1,0 +1,16 @@
+#version 330 core
+
+uniform sampler2D inSampler0;
+
+in vec4 v_Col;
+in vec2 v_UV0;
+
+out vec4 fragColor;
+
+void main(void)
+{
+	vec4 c0 = texture(inSampler0, v_UV0);
+	vec4 c = v_Col * c0 * v_Col.w;
+    
+    fragColor = c;
+}

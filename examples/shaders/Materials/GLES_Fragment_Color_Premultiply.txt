@@ -1,0 +1,6 @@
+varying mediump vec4 v_Col;
+
+void main(void)
+{
+	gl_FragColor = v_Col * v_Col.w;
+}

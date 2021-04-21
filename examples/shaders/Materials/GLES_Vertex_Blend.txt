@@ -3,17 +3,14 @@ uniform highp mat4 wvpMatrix;
 attribute highp vec4 inVert;
 attribute mediump vec4 inCol;
 attribute highp vec2 inUV0;
-attribute highp vec2 inUV1;
 
 varying mediump vec4 v_Col;
 varying highp vec2 v_UV0;
-varying highp vec2 v_UV1;
 
 void main(void)
 {
-	gl_Position = wvpMatrix * inVert;
-	v_Col = inCol;
+    gl_Position = wvpMatrix * inVert;
+    v_Col = inCol;
     v_UV0 = inUV0;
-    v_UV1 = inUV1;
 }
 

@@ -767,8 +767,7 @@ namespace Mengine
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
-            LOGGER_ERROR( "invalid initialize program variable"
-            );
+            LOGGER_ERROR( "invalid initialize program variable" );
 
             return nullptr;
         }

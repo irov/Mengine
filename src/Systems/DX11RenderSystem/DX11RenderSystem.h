@@ -159,6 +159,11 @@ namespace Mengine
 
         ID3D11Device * m_pD3DDevice;
         ID3D11DeviceContext * m_pD3DDeviceContext;
+		// буфер для хранения данных изображения перед выводом
+		IDXGISwapChain* m_SwapChain;
+
+		DXGI_MODE_DESC* m_DisplayModeList;
+		UINT			m_DisplayModeListNum;
 
         // sync routines
         uint32_t m_frames;

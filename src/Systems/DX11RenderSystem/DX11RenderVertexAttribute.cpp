@@ -118,24 +118,14 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::enable()
+    void DX11RenderVertexAttribute::enable(ID3D11DeviceContext * _pD3DDeviceContext)
     {
-		ID3D11DeviceContext *pImmediateContext = nullptr;
-		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
-
-		pImmediateContext->IASetInputLayout(m_pD3DVertexDeclaration);
-
-		pImmediateContext->Release();
+		_pD3DDeviceContext->IASetInputLayout(m_pD3DVertexDeclaration);
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::disable()
+    void DX11RenderVertexAttribute::disable(ID3D11DeviceContext * _pD3DDeviceContext)
     {
-		ID3D11DeviceContext *pImmediateContext = nullptr;
-		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
-
-		pImmediateContext->IASetInputLayout(nullptr);
-
-		pImmediateContext->Release();
+		_pD3DDeviceContext->IASetInputLayout(nullptr);
 	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )

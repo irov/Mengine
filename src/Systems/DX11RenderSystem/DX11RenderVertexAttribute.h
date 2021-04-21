@@ -27,8 +27,8 @@ namespace Mengine
         bool compile( ID3D11Device * _pD3DDevice, const void * _pShaderBytecodeWithInputSignature, uint32_t _bytecodeLength);
 
     public:
-        void enable() override;
-        void disable() override;
+        void enable(ID3D11DeviceContext * _pD3DDeviceContext);
+        void disable(ID3D11DeviceContext * _pD3DDeviceContext);
 
     public:
         const ConstString & getName() const override;

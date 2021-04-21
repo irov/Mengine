@@ -3,11 +3,13 @@
 #include "DX11ErrorHelper.h"
 
 #include "Kernel/Logger.h"
+#include "stdex/memorycopy.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderProgram::DX11RenderProgram()
+		: m_bindMatrixBuffer(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -51,74 +53,72 @@ namespace Mengine
         m_vertexShader = nullptr;
         m_fragmentShader = nullptr;
         m_vertexAttribute = nullptr;
+
+		DXRELEASE(m_bindMatrixBuffer);
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderProgram::compile( ID3D11Device * _pD3DDevice )
     {
-        MENGINE_UNUSED( _pD3DDevice );
+		D3D11_BUFFER_DESC descConstBuffer;
 
-        LOGGER_INFO( "render", "compile program '%s'"
-            , this->getName().c_str()
-        );
+		descConstBuffer.Usage = D3D11_USAGE_DYNAMIC;
+		descConstBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		descConstBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		descConstBuffer.MiscFlags = 0;
+		descConstBuffer.StructureByteStride = 0;
+
+		IF_DXCALL(_pD3DDevice, CreateBuffer, (&descConstBuffer, nullptr, &m_bindMatrixBuffer))
+		{
+			return false;
+		}
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgram::enable( ID3D11Device * _pD3DDevice )
     {
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		_pD3DDevice->GetImmediateContext(&pImmediateContext);
+
         if( m_vertexShader != nullptr )
         {
-            m_vertexShader->enable( _pD3DDevice );
+            m_vertexShader->enable(pImmediateContext);
         }
 
         if( m_fragmentShader != nullptr )
         {
-            m_fragmentShader->enable( _pD3DDevice );
+            m_fragmentShader->enable(pImmediateContext);
         }
 
         if( m_vertexAttribute != nullptr )
         {
-            m_vertexAttribute->enable();
+            m_vertexAttribute->enable(pImmediateContext);
         }
+
+		pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgram::disable( ID3D11Device * _pD3DDevice )
     {
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		_pD3DDevice->GetImmediateContext(&pImmediateContext);
+
         if( m_vertexShader != nullptr )
         {
-            DXCALL( _pD3DDevice, SetVertexShader, (NULL) );
-        }
+			pImmediateContext->VSSetShader(nullptr, nullptr, 0);
+		}
 
         if( m_fragmentShader != nullptr )
         {
-            DXCALL( _pD3DDevice, SetPixelShader, (NULL) );
-        }
+			pImmediateContext->PSSetShader(nullptr, nullptr, 0);
+		}
 
         if( m_vertexAttribute != nullptr )
         {
-            DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
+			m_vertexAttribute->disable(pImmediateContext);
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::bindTextureMask( ID3D11Device * _pD3DDevice, const mt::uv4f * _textureMasks )
-    {
-        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
-        {
-            const mt::uv4f & mask = _textureMasks[index];
 
-            float uvs[8];
-            uvs[0 * 2 + 0] = mask.p0.x;
-            uvs[0 * 2 + 1] = mask.p0.y;
-            uvs[1 * 2 + 0] = mask.p1.x;
-            uvs[1 * 2 + 1] = mask.p1.y;
-            uvs[2 * 2 + 0] = mask.p2.x;
-            uvs[2 * 2 + 1] = mask.p2.y;
-            uvs[3 * 2 + 0] = mask.p3.x;
-            uvs[3 * 2 + 1] = mask.p3.y;
-
-            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2 + 0, uvs + 0, 1) );
-            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2 + 1, uvs + 4, 1) );
-        }
+		pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgram::bindMatrix( ID3D11Device * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
@@ -127,7 +127,22 @@ namespace Mengine
         MENGINE_UNUSED( _viewMatrix );
         MENGINE_UNUSED( _projectionMatrix );
 
-        DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, _totalPMWInvMatrix.buff(), 4) );
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		_pD3DDevice->GetImmediateContext(&pImmediateContext);
+
+		auto hResult = pImmediateContext->Map(m_bindMatrixBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource);
+		if (FAILED(hResult))
+		{
+			// TODO: add error log
+			return;
+		}
+
+		stdex::memorycopy(mappedResource.pData, 0, _totalPMWInvMatrix.buff(), 16);
+
+		pImmediateContext->Unmap(m_bindMatrixBuffer, 0);
+
     }
     //////////////////////////////////////////////////////////////////////////
 }

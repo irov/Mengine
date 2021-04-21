@@ -41,7 +41,7 @@ namespace Mengine
         void disable( ID3D11Device * _pD3DDevice );
 
     public:
-        void bindTextureMask( ID3D11Device * _pD3DDevice, const mt::uv4f * _textureMasks );
+		// b0 - first buffer must be float4x4 
         void bindMatrix( ID3D11Device * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:
@@ -50,6 +50,8 @@ namespace Mengine
         DX11RenderVertexShaderPtr m_vertexShader;
         DX11RenderFragmentShaderPtr m_fragmentShader;
         DX11RenderVertexAttributePtr m_vertexAttribute;
+
+		ID3D11Buffer* m_bindMatrixBuffer;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderProgram, RenderProgramInterface> DX11RenderProgramPtr;

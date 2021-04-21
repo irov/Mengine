@@ -42,6 +42,9 @@ namespace Mengine
         void foreachResources( const LambdaResourceView & _lambda ) const override;
 
     protected:
+        void overrideResource( const ResourcePtrView & _resource, Resource ** const _override );
+
+    protected:
         ThreadMutexInterfacePtr m_mutex;
         
         typedef Hashtable<ConstString, ResourcePtrView> HashtableResources;

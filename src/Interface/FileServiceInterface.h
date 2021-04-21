@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class FileServiceInterface
         : public ServiceInterface
     {

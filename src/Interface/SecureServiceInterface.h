@@ -5,7 +5,8 @@
 #include "Kernel/HashType.h"
 
 namespace Mengine
-{    
+{
+    //////////////////////////////////////////////////////////////////////////
     class SecureServiceInterface
         : public ServiceInterface
     {

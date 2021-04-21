@@ -17,6 +17,8 @@ namespace Mengine
     class AndroidNativeFacebookModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AndroidNativeFacebookModule );
+
     public:
         typedef AndroidEventation<FacebookEventHandler> FacebookEventation;
         typedef typename FacebookEventation::LambdaEventHandler LambdaFacebookEventHandler;

@@ -14,6 +14,8 @@ namespace Mengine
     class AndroidNativeDevToDevModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AndroidNativeDevToDevModule );
+
     public:
         typedef AndroidEventation<DevToDevEventHandler> DevToDevEventation;
         typedef typename DevToDevEventation::LambdaEventHandler LambdaDevToDevEventHandler;

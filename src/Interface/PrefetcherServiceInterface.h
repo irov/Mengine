@@ -17,6 +17,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PrefetcherServiceInterface
         : public ServiceInterface
     {

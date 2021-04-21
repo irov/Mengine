@@ -1,11 +1,13 @@
+#version 330 core
+
 uniform mat4 wvpMatrix;
 
-attribute vec4 inVert;
-attribute vec4 inCol;
-attribute vec2 inUV0;
+in vec4 inVert;
+in vec4 inCol;
+in vec2 inUV0;
 
-varying vec4 v_Col;
-varying vec2 v_UV0;
+out vec4 v_Col;
+out vec2 v_UV0;
 
 void main(void)
 {

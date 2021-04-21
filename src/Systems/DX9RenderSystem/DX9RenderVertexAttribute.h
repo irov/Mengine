@@ -29,8 +29,8 @@ namespace Mengine
         bool compile( IDirect3DDevice9 * _pD3DDevice );
 
     public:
-        void enable() override;
-        void disable() override;
+        void enable();
+        void disable();
 
     public:
         const ConstString & getName() const override;

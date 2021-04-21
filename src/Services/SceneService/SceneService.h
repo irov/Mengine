@@ -26,9 +26,6 @@ namespace Mengine
         bool removeCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb ) override;
 
     public:
-        void destroyCurrentScene() override;
-
-    public:
         const ScenePtr & getCurrentScene() const override;
 
     public:
@@ -41,6 +38,9 @@ namespace Mengine
 
     public:
         bool isProcess() const override;
+
+    protected:
+        void destroyCurrentScene_();
 
     protected:
         enum ESceneCommandType

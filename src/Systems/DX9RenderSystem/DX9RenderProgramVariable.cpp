@@ -105,7 +105,7 @@ namespace Mengine
     {
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        float * values = &m_dataFloats[v.offset];
+        float * values = &m_pixelFloats[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ namespace Mengine
     {
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        int32_t * values = &m_dataIntegers[v.offset];
+        int32_t * values = &m_pixelIntegers[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ namespace Mengine
     {
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        int32_t * values = &m_dataBooleans[v.offset];
+        int32_t * values = &m_pixelBooleans[v.offset];
         std::copy( _values, _values + _size * _count, values );
     }
     //////////////////////////////////////////////////////////////////////////

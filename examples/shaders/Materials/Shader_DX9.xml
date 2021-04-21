@@ -1,5 +1,5 @@
 <DataBlock Name="Shaders_Standart">
-    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "DX9">        
+    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "DX9">
         <Element Size = "32"/>
         <Attribute Uniform = "inVert" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
         <Attribute Uniform = "inCol" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
@@ -34,7 +34,7 @@
     
     <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Ozz_Fragment_Blend.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>   
+    </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Blend.txt" Converter="text2pso" Compile="1"/>
@@ -42,15 +42,15 @@
     
     <FragmentShader Name = "Fragment_Blend_Premultiply" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Blend_Premultiply.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>    
+    </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend_OnlyColor" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Blend_OnlyColor.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>    
+    </FragmentShader>
            
     <FragmentShader Name = "Fragment_TrackMatte" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_TrackMatte.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>    
+    </FragmentShader>
        
     <FragmentShader Name = "Fragment_TrackMatteInverted" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_TrackMatteInverted.txt" Converter="text2pso" Compile="1"/>
@@ -62,11 +62,11 @@
     
     <FragmentShader Name = "Fragment_TrackMatteInverted_ExternalAlpha" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_TrackMatteInverted_ExternalAlpha.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>    
+    </FragmentShader>
         
     <FragmentShader Name = "Fragment_AlphaMask" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_AlphaMask.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>   
+    </FragmentShader>
     
     <FragmentShader Name = "Fragment_Accumulator" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Accumulator.txt" Converter="text2pso" Compile="1"/>
@@ -74,7 +74,7 @@
 
     <FragmentShader Name = "Fragment_Blend_ExternalAlpha" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Blend_ExternalAlpha.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>    
+    </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend_ExternalAlpha_OnlyColor" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Blend_ExternalAlpha_OnlyColor.txt" Converter="text2pso" Compile="1"/>
@@ -102,7 +102,7 @@
     
     <FragmentShader Name = "Fragment_Alphapow" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_Alphapow.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>    
+    </FragmentShader>
     
     <FragmentShader Name = "Fragment_HSL" RenderPlatform = "DX9">
         <File Path = "Materials/DX9_Fragment_HSL.txt" Converter="text2pso" Compile="1"/>

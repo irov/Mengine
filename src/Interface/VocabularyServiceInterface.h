@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class VocabularyServiceInterface
         : public ServiceInterface
     {

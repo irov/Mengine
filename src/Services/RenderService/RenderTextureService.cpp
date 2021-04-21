@@ -1,6 +1,6 @@
 #include "RenderTextureService.h"
 
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"

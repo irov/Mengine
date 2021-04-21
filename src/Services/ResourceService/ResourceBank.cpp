@@ -182,32 +182,37 @@ namespace Mengine
 
         resource->setMapping( true );
 
-        m_resources.change( _name, resource );
+        ResourcePtrView prev_resource = m_resources.change( _name, resource );
 
         if( _groupName != ConstString::none() )
         {
-            ResourcePtrView prev_resource = m_resourcesGroup.change( _groupName, _name, resource );
+            prev_resource = m_resourcesGroup.change( _groupName, _name, resource );
+        }
 
-            if( prev_resource != nullptr )
-            {
-                prev_resource->finalize();
-                prev_resource->setMapping( false );
-
-                bool prev_keep = prev_resource->isKeep();
-
-                if( prev_keep == true )
-                {
-                    IntrusivePtrBase::intrusive_ptr_dec_ref( prev_resource.get() );
-                }
-            }
-
-            if( _override != nullptr )
-            {
-                *_override = prev_resource.get();
-            }
+        if( prev_resource != nullptr )
+        {
+            this->overrideResource( prev_resource, _override );
         }
 
         return resource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceBank::overrideResource( const ResourcePtrView & _resource, Resource ** const _override )
+    {
+        _resource->finalize();
+        _resource->setMapping( false );
+
+        bool prev_keep = _resource->isKeep();
+
+        if( prev_keep == true )
+        {
+            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource.get() );
+        }
+
+        if( _override != nullptr && IntrusivePtrBase::intrusive_ptr_get_ref( _resource.get() ) != 0 )
+        {
+            *_override = _resource.get();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::removeResource( const ResourcePtr & _resource )

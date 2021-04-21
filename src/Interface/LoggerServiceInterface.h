@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class LoggerServiceInterface
         : public ServiceInterface
     {

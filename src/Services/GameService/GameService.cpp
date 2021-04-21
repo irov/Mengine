@@ -3,7 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 

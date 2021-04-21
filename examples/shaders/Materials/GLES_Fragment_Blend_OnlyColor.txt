@@ -1,17 +1,12 @@
 uniform sampler2D inSampler0;
-uniform sampler2D inSampler1;
 
 varying highp vec2 v_UV0;
-varying highp vec2 v_UV1;
 varying mediump vec4 v_Col;
 
 void main(void)
 {
 	mediump vec4 c0 = texture2D(inSampler0, v_UV0);
-    mediump vec4 c1 = texture2D(inSampler1, v_UV1);
-    
-	mediump vec4 c = v_Col * c0;
-    c.a = c1.a;
-    
+	mediump vec4 c = v_Col;
+	c.w = c.w * c0.w;
 	gl_FragColor = c;
 }

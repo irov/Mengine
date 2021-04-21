@@ -611,7 +611,7 @@ namespace Mengine
         m_currentIndexBuffer->enable();
         m_currentVertexBuffer->enable();
 
-        const RenderVertexAttributeInterfacePtr & vertexAttribute = m_currentProgram->getVertexAttribute();
+        const OpenGLRenderVertexAttributePtr & vertexAttribute = m_currentProgram->getVertexAttribute();
 
         vertexAttribute->enable();
 

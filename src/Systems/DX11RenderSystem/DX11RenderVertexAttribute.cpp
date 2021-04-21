@@ -35,7 +35,7 @@ namespace Mengine
         DXRELEASE( m_pD3DVertexDeclaration );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderVertexAttribute::compile( ID3D11Device * _pD3DDevice )
+    bool DX11RenderVertexAttribute::compile( ID3D11Device * _pD3DDevice, const void * _pShaderBytecodeWithInputSignature, uint32_t _bytecodeLength)
     {
         MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
 
@@ -100,12 +100,10 @@ namespace Mengine
             , m_name.c_str()
         );
 
-        IF_DXCALL( m_pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, &pD3DVertexDeclaration) )
+        IF_DXCALL( m_pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, _pShaderBytecodeWithInputSignature, _bytecodeLength, &m_pD3DVertexDeclaration) )
         {
             return false;
         }
-
-        m_pD3DVertexDeclaration = pD3DVertexDeclaration;
 
         return true;
     }
@@ -122,13 +120,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexAttribute::enable()
     {
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
+
+		pImmediateContext->IASetInputLayout(m_pD3DVertexDeclaration);
+
+		pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexAttribute::disable()
     {
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
-    }
+		ID3D11DeviceContext *pImmediateContext = nullptr;
+		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
+
+		pImmediateContext->IASetInputLayout(nullptr);
+
+		pImmediateContext->Release();
+	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {

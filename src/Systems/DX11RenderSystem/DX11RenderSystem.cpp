@@ -416,7 +416,7 @@ namespace Mengine
 		depthBufferDesc.MipLevels = 1;
 		depthBufferDesc.ArraySize = 1;
 		depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		depthBufferDesc.SampleDesc.Count = 1;
+		depthBufferDesc.SampleDesc.Count = _MultiSampleCount;
 		depthBufferDesc.SampleDesc.Quality = 0;
 		depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -693,6 +693,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
     {
+		MENGINE_UNUSED(_channels);
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         DX11RenderTargetOffscreenPtr renderTargetOffscreen = m_factoryRenderTargetOffscreen->createObject( _doc );
@@ -809,7 +811,7 @@ namespace Mengine
 		m_pD3DDeviceContext->ClearRenderTargetView(m_renderTargetView, color);
 
 		// Clear the depth buffer.
-		m_pD3DDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, _depth, _stencil);
+		m_pD3DDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, _depth, (UINT8)_stencil);
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
@@ -1161,6 +1163,9 @@ namespace Mengine
     void DX11RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
         uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
     {
+		MENGINE_UNUSED(_vertexCount);
+		MENGINE_UNUSED(_minIndex);
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
 		D3D11_PRIMITIVE_TOPOLOGY primitiveType = Helper::toD3DPrimitiveType( _type );
@@ -1168,7 +1173,7 @@ namespace Mengine
         UINT primCount = Helper::getPrimitiveCount( _type, _indexCount );
 
 		if(primitiveType == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-			m_pD3DDeviceContext->DrawIndexed(primCount * 3, _minIndex, _vertexBase);
+			m_pD3DDeviceContext->DrawIndexed(primCount * 3, _indexStart, _vertexBase);
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
@@ -1239,6 +1244,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
     {
+		MENGINE_UNUSED(_border);
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "device not created");
 
@@ -1412,6 +1419,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
     {
+		MENGINE_UNUSED(_minification);
+		MENGINE_UNUSED(_mipmap);
+		MENGINE_UNUSED(_magnification);
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();

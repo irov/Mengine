@@ -14,6 +14,8 @@ namespace Mengine
         : public RenderProgramVariableInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderProgramVariable );
+
     public:
         DX11RenderProgramVariable();
         ~DX11RenderProgramVariable() override;

@@ -72,7 +72,18 @@ namespace Mengine
 			return false;
 		}
 
+        m_vertexShader->compile( _pD3DDevice );
+        m_fragmentShader->compile( _pD3DDevice );
+        m_vertexAttribute->compile( _pD3DDevice );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderProgram::release()
+    {
+        m_vertexShader->release();
+        m_fragmentShader->release();
+        m_vertexAttribute->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgram::enable( ID3D11Device * _pD3DDevice )

@@ -35,6 +35,7 @@ namespace Mengine
 
     public:
         bool compile( ID3D11Device * _pD3DDevice );
+        void release();
 
     public:
         void enable( ID3D11Device * _pD3DDevice );

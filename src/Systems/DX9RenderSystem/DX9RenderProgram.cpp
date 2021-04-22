@@ -55,13 +55,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        MENGINE_UNUSED( _pD3DDevice );
-
         LOGGER_INFO( "render", "compile program '%s'"
             , this->getName().c_str()
         );
 
+        m_vertexShader->compile( _pD3DDevice );
+        m_fragmentShader->compile( _pD3DDevice );
+        m_vertexAttribute->compile( _pD3DDevice );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgram::release()
+    {
+        LOGGER_INFO( "render", "release program '%s'"
+            , this->getName().c_str()
+        );
+
+        m_vertexShader->release();
+        m_fragmentShader->release();
+        m_vertexAttribute->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgram::enable( IDirect3DDevice9 * _pD3DDevice )
@@ -78,7 +91,7 @@ namespace Mengine
 
         if( m_vertexAttribute != nullptr )
         {
-            m_vertexAttribute->enable();
+            m_vertexAttribute->enable( _pD3DDevice );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -97,27 +110,6 @@ namespace Mengine
         if( m_vertexAttribute != nullptr )
         {
             DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgram::bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks )
-    {
-        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
-        {
-            const mt::uv4f & mask = _textureMasks[index];
-
-            float uvs[8];
-            uvs[0 * 2 + 0] = mask.p0.x;
-            uvs[0 * 2 + 1] = mask.p0.y;
-            uvs[1 * 2 + 0] = mask.p1.x;
-            uvs[1 * 2 + 1] = mask.p1.y;
-            uvs[2 * 2 + 0] = mask.p2.x;
-            uvs[2 * 2 + 1] = mask.p2.y;
-            uvs[3 * 2 + 0] = mask.p3.x;
-            uvs[3 * 2 + 1] = mask.p3.y;
-
-            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2 + 0, uvs + 0, 1) );
-            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2 + 1, uvs + 4, 1) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

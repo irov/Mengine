@@ -8,6 +8,8 @@
 #include "DX9RenderFragmentShader.h"
 #include "DX9RenderVertexAttribute.h"
 
+#include "Kernel/CompilableReference.h"
+
 #include "math/uv4.h"
 #include "math/mat4.h"
 
@@ -38,17 +40,17 @@ namespace Mengine
 
     public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );
+        void release();
 
     public:
         void enable( IDirect3DDevice9 * _pD3DDevice );
         void disable( IDirect3DDevice9 * _pD3DDevice );
 
     public:
-        void bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks );
         void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:
-        ConstString m_name;
+        ConstString m_name;        
 
         DX9RenderVertexShaderPtr m_vertexShader;
         DX9RenderFragmentShaderPtr m_fragmentShader;

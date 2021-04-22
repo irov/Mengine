@@ -27,10 +27,11 @@ namespace Mengine
 
     public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );
+        void release();
 
     public:
-        void enable();
-        void disable();
+        void enable( IDirect3DDevice9 * _pD3DDevice );
+        void disable( IDirect3DDevice9 * _pD3DDevice );
 
     public:
         const ConstString & getName() const override;
@@ -43,7 +44,8 @@ namespace Mengine
         ConstString m_name;
         uint32_t m_elementSize;
 
-        IDirect3DDevice9 * m_pD3DDevice;
+        uint32_t m_compileReferenceCount;
+
         IDirect3DVertexDeclaration9 * m_pD3DVertexDeclaration;
 
         struct AttributeDesc

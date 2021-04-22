@@ -16,11 +16,11 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Viewport.h"
 
-//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
 #   include <type_traits>
 #   include <stdexcept>
 #endif
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -218,16 +218,9 @@ namespace Mengine
                 return nullptr;
             }
 
-            try
+            if( dynamic_cast<typename Detail::reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
             {
-                if( dynamic_cast<typename Detail::reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
-                {
-                    throw std::runtime_error( "reinterpret node cast" );
-                }
-            }
-            catch( const std::exception & )
-            {
-                throw;
+                throw std::runtime_error( "reinterpret node cast" );
             }
 #endif
 
@@ -247,7 +240,7 @@ namespace Mengine
 
             if( dynamic_cast<T>(_node) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static node cast" );
             }
 #endif
 
@@ -267,7 +260,7 @@ namespace Mengine
 
             if( dynamic_cast<T>(_node) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static node cast" );
             }
 #endif
 
@@ -289,7 +282,7 @@ namespace Mengine
 
             if( stdex::intrusive_dynamic_cast<T>(_node) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static node cast" );
             }
 #endif
 

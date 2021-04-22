@@ -145,7 +145,7 @@ namespace Mengine
 
             if( dynamic_cast<T>(_surface) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static surface cast" );
             }
 #endif
 
@@ -165,7 +165,7 @@ namespace Mengine
 
             if( dynamic_cast<T>(_surface) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static surface cast" );
             }
 #endif
 

@@ -52,6 +52,9 @@ namespace Mengine
     DX11RenderSystem::DX11RenderSystem()
         : m_pD3DDevice( nullptr )
         , m_pD3DDeviceContext( nullptr )
+        , m_SwapChain( nullptr )
+        , m_DisplayModeList( nullptr )
+        , m_DisplayModeListNum( 0 )
         , m_hd3d9( nullptr )
         , m_fullscreen( true )
         , m_depth( false )
@@ -224,9 +227,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::_finalizeService()
     {
-        m_deferredCompileVertexShaders.clear();
-        m_deferredCompileFragmentShaders.clear();
-        m_deferredCompileVertexAttributes.clear();
         m_deferredCompilePrograms.clear();
 
         this->release_();
@@ -528,36 +528,6 @@ namespace Mengine
             , m_d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
         );
 */
-
-        for( const DX11RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileVertexShaders.clear();
-
-        for( const DX11RenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileFragmentShaders.clear();
-
-        for( const DX11RenderVertexAttributePtr & attribute : m_deferredCompileVertexAttributes )
-        {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileVertexAttributes.clear();
 
         for( const DX11RenderProgramPtr & program : m_deferredCompilePrograms )
         {
@@ -1485,22 +1455,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile attribute '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexAttributes.emplace_back( attribute );
-        }
-
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1521,22 +1475,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileFragmentShaders.emplace_back( shader );
-        }
-
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1555,22 +1493,6 @@ namespace Mengine
             );
 
             return nullptr;
-        }
-
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexShaders.emplace_back( shader );
         }
 
         return shader;
@@ -1781,6 +1703,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDestroyProgram_( DX11RenderProgram * _program )
     {
+        _program->release();
         _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////

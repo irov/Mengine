@@ -21,11 +21,12 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
+        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _precompile );
         void finalize();
 
     public:
         bool compile( ID3D11Device * _pD3DDevice );
+        void release();
 
     public:
         void enable(ID3D11DeviceContext * _pD3DDeviceContext );
@@ -33,11 +34,11 @@ namespace Mengine
     protected:
         ID3D11PixelShader * m_pD3DPixelShader;
 
+        uint32_t m_compileReferenceCount;
+
         ConstString m_name;
 
         MemoryInterfacePtr m_memory;
-
-        bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderFragmentShader, RenderFragmentShaderInterface> DX11RenderFragmentShaderPtr;

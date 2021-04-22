@@ -25,10 +25,11 @@ namespace Mengine
 
     public:
         bool compile( ID3D11Device * _pD3DDevice, const void * _pShaderBytecodeWithInputSignature, uint32_t _bytecodeLength);
+        void release();
 
     public:
-        void enable(ID3D11DeviceContext * _pD3DDeviceContext);
-        void disable(ID3D11DeviceContext * _pD3DDeviceContext);
+        void enable( ID3D11DeviceContext * _pD3DDeviceContext );
+        void disable( ID3D11DeviceContext * _pD3DDeviceContext );
 
     public:
         const ConstString & getName() const override;
@@ -41,7 +42,8 @@ namespace Mengine
         ConstString m_name;
         uint32_t m_elementSize;
 
-        ID3D11Device * m_pD3DDevice;
+        uint32_t m_compileReferenceCount;
+
 		ID3D11InputLayout * m_pD3DVertexDeclaration;
 
         struct AttributeDesc

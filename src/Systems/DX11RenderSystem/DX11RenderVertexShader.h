@@ -14,6 +14,8 @@ namespace Mengine
         : public RenderVertexShaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderVertexShader );
+
     public:
         DX11RenderVertexShader();
         ~DX11RenderVertexShader() override;

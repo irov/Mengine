@@ -10,6 +10,11 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 
+#ifdef MENGINE_DEBUG
+#   include <type_traits>
+#   include <stdexcept>
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -27,6 +32,8 @@ namespace Mengine
             DecoderInterfacePtr decoder = this->createDecoder( _type, _doc );
 
 #ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<DecoderInterface, std::remove_pointer_t<typename T::value_type>>, "static decoder cast use on non 'DecoderInterface' type");
+
             if( decoder == nullptr )
             {
                 return nullptr;
@@ -34,7 +41,7 @@ namespace Mengine
 
             if( stdex::intrusive_dynamic_cast<T>(decoder) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static decoder cast" );
             }
 #endif
 
@@ -52,6 +59,8 @@ namespace Mengine
             EncoderInterfacePtr encoder = this->createEncoder( _type, _doc );
 
 #ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<EncoderInterface, std::remove_pointer_t<typename T::value_type>>, "static encoder cast use on non 'EncoderInterface' type");
+
             if( encoder == nullptr )
             {
                 return nullptr;
@@ -59,7 +68,7 @@ namespace Mengine
 
             if( stdex::intrusive_dynamic_cast<T>(encoder) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static encoder cast" );
             }
 #endif
 

@@ -224,9 +224,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::_finalizeService()
     {
-        m_deferredCompileVertexShaders.clear();
-        m_deferredCompileFragmentShaders.clear();
-        m_deferredCompileVertexAttributes.clear();
         m_deferredCompilePrograms.clear();
 
         this->release_();
@@ -589,36 +586,6 @@ namespace Mengine
             , m_windowResolution.getHeight()
             , Helper::getD3DFormatName( m_displayMode.Format )
         );
-
-        for( const DX9RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileVertexShaders.clear();
-
-        for( const DX9RenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileFragmentShaders.clear();
-
-        for( const DX9RenderVertexAttributePtr & attribute : m_deferredCompileVertexAttributes )
-        {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileVertexAttributes.clear();
 
         for( const DX9RenderProgramPtr & program : m_deferredCompilePrograms )
         {
@@ -1736,22 +1703,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile attribute '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexAttributes.emplace_back( attribute );
-        }
-
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1772,22 +1723,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileFragmentShaders.emplace_back( shader );
-        }
-
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1806,22 +1741,6 @@ namespace Mengine
             );
 
             return nullptr;
-        }
-
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexShaders.emplace_back( shader );
         }
 
         return shader;
@@ -2016,6 +1935,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9Program_( DX9RenderProgram * _program )
     {
+        _program->release();
         _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////

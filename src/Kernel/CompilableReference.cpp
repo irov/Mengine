@@ -7,20 +7,20 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     CompilableReference::CompilableReference()
-        : m_compileReference( 0 )
+        : m_compileReferenceCount( 0 )
     {        
     }
     //////////////////////////////////////////////////////////////////////////
     CompilableReference::~CompilableReference()
     {
-        MENGINE_ASSERTION_FATAL( m_compileReference == 0 );
+        MENGINE_ASSERTION_FATAL( m_compileReferenceCount == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool CompilableReference::compile()
     {
         MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this, "CompilableReference::compile" );
 
-        if( ++m_compileReference == 1 )
+        if( ++m_compileReferenceCount == 1 )
         {
             if( Compilable::compile() == false )
             {
@@ -35,9 +35,9 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this, "CompilableReference::release" );
 
-        MENGINE_ASSERTION_FATAL( m_compileReference != 0, "release compilable refcount == 0" );
+        MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "release compilable refcount == 0" );
 
-        if( --m_compileReference == 0 )
+        if( --m_compileReferenceCount == 0 )
         {
             Compilable::release();
         }

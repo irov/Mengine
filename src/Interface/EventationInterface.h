@@ -2,6 +2,11 @@
 
 #include "Interface/EventReceiverInterface.h"
 
+#ifdef MENGINE_DEBUG
+#   include <type_traits>
+#   include <stdexcept>
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -36,17 +41,19 @@ namespace Mengine
         {
             const EventReceiverInterfacePtr & reciever = this->getEventReciever( _event );
 
-            if( reciever == nullptr )
+            EventReceiverInterface * r = reciever.get();
+
+#ifdef MENGINE_DEBUG
+            static_assert(std::is_base_of_v<EventReceiverInterface, std::remove_pointer_t<T>>, "static event reciever cast use on non 'EventReceiverInterface' type");
+
+            if( r == nullptr )
             {
                 return nullptr;
             }
 
-            EventReceiverInterface * r = reciever.get();
-
-#ifdef MENGINE_DEBUG
             if( dynamic_cast<T>(r) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static event reciever cast" );
             }
 #endif
 

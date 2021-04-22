@@ -226,17 +226,10 @@ namespace Mengine
                 return nullptr;
             }
 
-            try
+            if( dynamic_cast<typename Detail::reinterpret_resource_cast_void_t<T>::type>(static_cast<T>(_resource)) == nullptr )
             {
-                if( dynamic_cast<typename Detail::reinterpret_resource_cast_void_t<T>::type>(static_cast<T>(_resource)) == nullptr )
-                {
-                    throw std::runtime_error( "reinterpret resource cast" );
-                }
-            }
-            catch( const std::exception & )
-            {
-                throw;
-            }
+                throw std::runtime_error( "reinterpret resource cast" );
+            }            
 #endif
 
             return reinterpret_cast<T>(_resource);
@@ -255,7 +248,7 @@ namespace Mengine
 
             if( dynamic_cast<T>(_resource) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static resource cast" );
             }
 #endif
 
@@ -275,7 +268,7 @@ namespace Mengine
 
             if( dynamic_cast<T>(_resource) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static resource cast" );
             }
 #endif
 
@@ -295,7 +288,7 @@ namespace Mengine
 
             if( stdex::intrusive_dynamic_cast<T>(_resource) == nullptr )
             {
-                throw;
+                throw std::runtime_error( "static resource cast" );
             }
 #endif
 

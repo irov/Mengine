@@ -7,6 +7,7 @@ namespace Mengine
     class Scene
         : public Entity
     {
+        DECLARE_FACTORABLE( Scene );
         DECLARE_VISITABLE( Entity );
 
     public:

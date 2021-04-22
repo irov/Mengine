@@ -54,6 +54,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FontService::_finalizeService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FontService::_stopService()
+    {
         for( const HashtableTextFont::value_type & value : m_fonts )
         {
             const TextFontInterfacePtr & font = value.element;
@@ -63,12 +67,8 @@ namespace Mengine
 
         m_fonts.clear();
 
-        if( m_defaultFont != nullptr )
-        {
-            m_defaultFont->finalize();
-            m_defaultFont = nullptr;
-        }
-    }    
+        m_defaultFont = nullptr;
+    }
     //////////////////////////////////////////////////////////////////////////
     TextFontInterfacePtr FontService::createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc )
     {

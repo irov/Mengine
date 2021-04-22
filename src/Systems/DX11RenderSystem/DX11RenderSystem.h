@@ -172,7 +172,7 @@ namespace Mengine
 		ID3D11DepthStencilView*		m_depthStencilView;
 		ID3D11RasterizerState*		m_rasterState;
 		ID3D11BlendState*			m_blendState;
-		ID3D11SamplerState*			m_samplerState[MENGINE_MAX_TEXTURE_STAGES];
+        ID3D11SamplerState * m_samplerState[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
 
         // sync routines
         uint32_t m_frames;
@@ -213,15 +213,6 @@ namespace Mengine
         FactoryPtr m_factoryRenderImageTarget;
         FactoryPtr m_factoryRenderTargetTexture;
         FactoryPtr m_factoryRenderTargetOffscreen;
-
-        typedef Vector<DX11RenderVertexShaderPtr> VectorRenderVertexShaders;
-        VectorRenderVertexShaders m_deferredCompileVertexShaders;
-
-        typedef Vector<DX11RenderFragmentShaderPtr> VectorRenderFragmentShaders;
-        VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
-
-        typedef Vector<DX11RenderVertexAttributePtr> VectorRenderVertexAttributes;
-        VectorRenderVertexAttributes m_deferredCompileVertexAttributes;
 
         typedef Vector<DX11RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;

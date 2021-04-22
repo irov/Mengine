@@ -12,6 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetOffscreen::DX11RenderTargetOffscreen()
         : m_pD3DTexture( nullptr )
+		, m_pD3DTextureSource(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,13 +27,33 @@ namespace Mengine
 		textureDesc.Usage = D3D11_USAGE_STAGING;
 		textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &m_pD3DTexture))
+		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture))
 		{
 			return false;
 		}
 
+		m_renderTargetTexture = _renderTargetTexture;
+
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool DX11RenderTargetOffscreen::initialize(ID3D11Texture2D * _textureSource)
+	{
+		D3D11_TEXTURE2D_DESC textureDesc;
+		_textureSource->GetDesc(&textureDesc);
+
+		textureDesc.Usage = D3D11_USAGE_STAGING;
+		textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+
+		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture))
+		{
+			return false;
+		}
+
+		m_pD3DTextureSource = _textureSource;
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetOffscreen::finalize()
     {
@@ -44,7 +65,11 @@ namespace Mengine
 		ID3D11DeviceContext *pImmediateContext = nullptr;
 		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
 
-		pImmediateContext->CopyResource(m_pD3DTexture, _renderTargetTexture->getD3DTexture());
+		ID3D11Texture2D * _textureSource = m_pD3DTextureSource;
+		if (_textureSource == nullptr)
+			_textureSource = m_renderTargetTexture->getD3DTexture();
+
+		pImmediateContext->CopyResource(m_pD3DTexture, _textureSource);
 
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		pImmediateContext->Map(m_pD3DTexture, 0, D3D11_MAP_READ, 0, &mappedResource);

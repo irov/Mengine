@@ -18,6 +18,7 @@ namespace Mengine
 
     public:
 		bool initialize(DX11RenderTargetTexturePtr _renderTargetTexture);
+		bool initialize(ID3D11Texture2D * _textureSource);
 		void finalize();
 
     public:
@@ -26,6 +27,7 @@ namespace Mengine
     protected:
 		ID3D11Texture2D * m_pD3DTexture;
 
+		ID3D11Texture2D * m_pD3DTextureSource;
 		DX11RenderTargetTexturePtr m_renderTargetTexture;
     };
     //////////////////////////////////////////////////////////////////////////

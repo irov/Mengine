@@ -161,9 +161,18 @@ namespace Mengine
         ID3D11DeviceContext * m_pD3DDeviceContext;
 		// буфер для хранения данных изображения перед выводом
 		IDXGISwapChain* m_SwapChain;
+		DXGI_MODE_DESC m_SwapChainBufferDesc;
 
 		DXGI_MODE_DESC* m_DisplayModeList;
 		UINT			m_DisplayModeListNum;
+
+		ID3D11RenderTargetView*		m_renderTargetView;
+		ID3D11Texture2D*			m_depthStencilBuffer;
+		ID3D11DepthStencilState*	m_depthStencilState;
+		ID3D11DepthStencilView*		m_depthStencilView;
+		ID3D11RasterizerState*		m_rasterState;
+		ID3D11BlendState*			m_blendState;
+		ID3D11SamplerState*			m_samplerState[MENGINE_MAX_TEXTURE_STAGES];
 
         // sync routines
         uint32_t m_frames;
@@ -239,6 +248,5 @@ namespace Mengine
         bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
 
         bool m_waitForVSync;
-        bool m_lostDevice;
     };
 }

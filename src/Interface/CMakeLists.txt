@@ -192,6 +192,7 @@ Render
     RenderVertexAttributeInterface.h
     RenderMaterialInterface.h
     RenderBatchInterface.h
+    RenderOrderInterface.h
     RenderPipelineInterface.h
 )
 

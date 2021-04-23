@@ -2157,7 +2157,7 @@ namespace Mengine
             ::ShowWindow( m_hWnd, SW_SHOW );
         }
 
-        if( WTSRegisterSessionNotification( m_hWnd, NOTIFY_FOR_ALL_SESSIONS ) == FALSE )
+        if( ::WTSRegisterSessionNotification( m_hWnd, NOTIFY_FOR_ALL_SESSIONS ) == FALSE )
         {
             DWORD error = ::GetLastError();
 

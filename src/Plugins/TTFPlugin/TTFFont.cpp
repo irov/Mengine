@@ -90,6 +90,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_dataTTF == nullptr );
 
+        m_content = nullptr;
+
         this->clearGlyphs_();
 
         m_effect = nullptr;

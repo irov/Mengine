@@ -45,6 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BitmapFont::finalize()
     {
+        m_content = nullptr;
         m_glyph = nullptr;
 
         m_textureFont = nullptr;

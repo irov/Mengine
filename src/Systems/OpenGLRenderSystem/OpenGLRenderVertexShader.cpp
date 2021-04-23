@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReference() == 0 );
+        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0 );
 
         m_memory = nullptr;
     }

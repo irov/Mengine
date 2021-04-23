@@ -27,6 +27,8 @@ src
     DX11RenderEnum.h
     DX11ErrorHelper.h
     DX11ErrorHelper.cpp
+    DX11RenderBuffer.h
+    DX11RenderBuffer.cpp
     DX11RenderProgramVariable.h
     DX11RenderProgramVariable.cpp
     DX11RenderResourceHandler.h
@@ -34,3 +36,5 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Systems)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} d3d11 dxgi)

@@ -74,7 +74,7 @@ namespace Mengine
 
         m_vertexShader->compile( _pD3DDevice );
         m_fragmentShader->compile( _pD3DDevice );
-        m_vertexAttribute->compile( _pD3DDevice );
+        m_vertexAttribute->compile( _pD3DDevice, m_vertexShader->getShaderCompileData(), m_vertexShader->getShaderCompileDataSize());
 
         return true;
     }

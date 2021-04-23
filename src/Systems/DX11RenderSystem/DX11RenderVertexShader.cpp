@@ -81,4 +81,14 @@ namespace Mengine
 		_pD3DDeviceContext->VSSetShader(m_pD3DVertexShader, nullptr, 0);
 	}
     //////////////////////////////////////////////////////////////////////////
+	void* DX11RenderVertexShader::getShaderCompileData() const
+	{
+		return m_memory->getBuffer();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t DX11RenderVertexShader::getShaderCompileDataSize() const
+	{
+		return m_memory->getSize();
+	}
+
 }

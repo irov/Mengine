@@ -792,6 +792,23 @@ namespace Mengine
 			m_SwapChain->Present(0, DXGI_PRESENT_DO_NOT_WAIT);
 		}
 
+		// clear all states created for frame except current one
+		for (auto state : m_samplerFrameRelease)
+			state->Release();
+		m_samplerFrameRelease.clear();
+
+		for (auto state : m_rasterizerFrameRelease)
+			state->Release();
+		m_rasterizerFrameRelease.clear();
+
+		for (auto state : m_blendFrameRelease)
+			state->Release();
+		m_blendFrameRelease.clear();
+
+		for (auto state : m_dsFrameRelease)
+			state->Release();
+		m_dsFrameRelease.clear();
+
         ++m_frames;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1231,11 +1248,8 @@ namespace Mengine
 			blendDesc.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp(_separateOp);
 		}
 
-		if (m_blendState != nullptr)
-		{
-			m_blendState->Release();
-			m_blendState = nullptr;
-		}
+		m_blendFrameRelease.push_back(m_blendState);
+		m_blendState = nullptr;
 
 		IF_DXCALL(m_pD3DDevice, CreateBlendState, (&blendDesc, &m_blendState))
 		{
@@ -1272,7 +1286,8 @@ namespace Mengine
 		{
 			samplerState->GetDesc(&samplerDesc);
 
-			DXRELEASE(m_samplerState[_stage]);
+			m_samplerFrameRelease.push_back(m_samplerState[_stage]);
+			m_samplerState[_stage] = nullptr;
 		}
 		else
 			ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -1308,7 +1323,8 @@ namespace Mengine
 		m_rasterState->GetDesc(&rasterDesc);
 		rasterDesc.CullMode = Helper::toD3DCullMode(_mode);
 
-		DXRELEASE(m_rasterState);
+		m_rasterizerFrameRelease.push_back(m_rasterState);
+		m_rasterState = nullptr;
 
 		IF_DXCALL(m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState))
 		{
@@ -1328,7 +1344,8 @@ namespace Mengine
 		m_rasterState->GetDesc(&rasterDesc);
 		rasterDesc.DepthClipEnable = _depthTest ? 1 : 0;
 
-		DXRELEASE(m_rasterState);
+		m_rasterizerFrameRelease.push_back(m_rasterState);
+		m_rasterState = nullptr;
 
 		IF_DXCALL(m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState))
 		{
@@ -1348,7 +1365,8 @@ namespace Mengine
 		m_depthStencilState->GetDesc(&depthDesc);
 		depthDesc.DepthEnable = _depthWrite ? 1 : 0;
 
-		DXRELEASE(m_depthStencilState);
+		m_dsFrameRelease.push_back(m_depthStencilState);
+		m_depthStencilState = nullptr;
 
 		IF_DXCALL(m_pD3DDevice, CreateDepthStencilState, (&depthDesc, &m_depthStencilState))
 		{
@@ -1368,7 +1386,8 @@ namespace Mengine
 		m_depthStencilState->GetDesc(&depthDesc);
 		depthDesc.DepthFunc = Helper::toD3DCmpFunc(_depthFunction);
 
-		DXRELEASE(m_depthStencilState);
+		m_dsFrameRelease.push_back(m_depthStencilState);
+		m_depthStencilState = nullptr;
 
 		IF_DXCALL(m_pD3DDevice, CreateDepthStencilState, (&depthDesc, &m_depthStencilState))
 		{
@@ -1390,7 +1409,8 @@ namespace Mengine
 		m_rasterState->GetDesc(&rasterDesc);
 		rasterDesc.FillMode = Helper::toD3DFillMode(_mode);
 
-		DXRELEASE(m_rasterState);
+		m_rasterizerFrameRelease.push_back(m_rasterState);
+		m_rasterState = nullptr;
 
 		IF_DXCALL(m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState))
 		{

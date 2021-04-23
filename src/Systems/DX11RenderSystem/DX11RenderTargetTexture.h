@@ -16,6 +16,8 @@ namespace Mengine
         , public Factorable
         , public DX11RenderResourceHandler
     {
+        DECLARE_FACTORABLE( DX11RenderTargetTexture );
+
     public:
         DX11RenderTargetTexture();
         ~DX11RenderTargetTexture() override;

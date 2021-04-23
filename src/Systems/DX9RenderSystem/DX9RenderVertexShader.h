@@ -24,11 +24,12 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
+        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _precompile );
         void finalize();
 
     public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );
+        void release();
 
     public:
         void enable( IDirect3DDevice9 * _pD3DDevice );
@@ -36,11 +37,11 @@ namespace Mengine
     protected:
         IDirect3DVertexShader9 * m_pD3DVertexShader;
 
+        uint32_t m_compileReferenceCount;
+
         ConstString m_name;
 
         MemoryInterfacePtr m_memory;
-
-        bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderVertexShader, RenderVertexShaderInterface> DX9RenderVertexShaderPtr;

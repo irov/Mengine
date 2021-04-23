@@ -12,7 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexAttribute::DX9RenderVertexAttribute()
         : m_elementSize( 0 )
-        , m_pD3DDevice( nullptr )
+        , m_compileReferenceCount( 0 )
         , m_pD3DVertexDeclaration( nullptr )
     {
     }
@@ -31,55 +31,62 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::finalize()
-    {
-        DXRELEASE( m_pD3DVertexDeclaration );
+    {        
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
-
-        m_pD3DDevice = _pD3DDevice;
-
-        D3DVERTEXELEMENT9 declaration[64];
-
-        DWORD declaration_iterator = 0;
-
-        for( const AttributeDesc & desc : m_attributes )
+        if( m_compileReferenceCount == 0 )
         {
-            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
+            MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+
+            D3DVERTEXELEMENT9 declaration[64];
+
+            DWORD declaration_iterator = 0;
+
+            for( const AttributeDesc & desc : m_attributes )
             {
-                declaration[declaration_iterator++] = { 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 };
+                if( desc.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
+                {
+                    declaration[declaration_iterator++] = {0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0};
+                }
+                else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
+                {
+                    declaration[declaration_iterator++] = {0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0};
+                }
+                else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
+                {
+                    declaration[declaration_iterator++] = {0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0};
+                }
+                else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
+                {
+                    declaration[declaration_iterator++] = {0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1};
+                }
             }
-            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
+
+            declaration[declaration_iterator] = D3DDECL_END();
+
+            LOGGER_INFO( "render", "create vertex declaration '%s'"
+                , m_name.c_str()
+            );
+
+            IDirect3DVertexDeclaration9 * pD3DVertexDeclaration;
+            IF_DXCALL( _pD3DDevice, CreateVertexDeclaration, (declaration, &pD3DVertexDeclaration) )
             {
-                declaration[declaration_iterator++] = { 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 };
+                return false;
             }
-            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
-            {
-                declaration[declaration_iterator++] = { 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 };
-            }
-            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
-            {
-                declaration[declaration_iterator++] = { 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 };
-            }
+
+            m_pD3DVertexDeclaration = pD3DVertexDeclaration;
         }
 
-        declaration[declaration_iterator] = D3DDECL_END();
-
-        LOGGER_INFO( "render", "create vertex declaration '%s'"
-            , m_name.c_str()
-        );
-
-        IDirect3DVertexDeclaration9 * pD3DVertexDeclaration;
-        IF_DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &pD3DVertexDeclaration) )
-        {
-            return false;
-        }
-
-        m_pD3DVertexDeclaration = pD3DVertexDeclaration;
+        ++m_compileReferenceCount;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderVertexAttribute::release()
+    {
+        DXRELEASE( m_pD3DVertexDeclaration );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderVertexAttribute::getName() const
@@ -92,14 +99,14 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexAttribute::enable()
+    void DX9RenderVertexAttribute::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
+        DXCALL( _pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexAttribute::disable()
+    void DX9RenderVertexAttribute::disable( IDirect3DDevice9 * _pD3DDevice )
     {
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+        DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )

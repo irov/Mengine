@@ -9,10 +9,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX11RenderFragmentShader
         : public RenderFragmentShaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderFragmentShader );
+
     public:
         DX11RenderFragmentShader();
         ~DX11RenderFragmentShader() override;

@@ -12,13 +12,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    //typedef IntrusivePtr<class DX11RenderTargetTexture> DX11RenderTargetTexturePtr;
-    //////////////////////////////////////////////////////////////////////////
     class DX11RenderImageTarget
         : public RenderImageInterface
         , public DX11RenderImageExtensionInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderImageTarget );
         DECLARE_UNKNOWABLE();
 
     public:

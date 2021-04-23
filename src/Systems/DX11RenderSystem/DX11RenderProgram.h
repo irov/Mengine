@@ -13,10 +13,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX11RenderProgram
         : public RenderProgramInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderProgram );
+
     public:
         DX11RenderProgram();
         ~DX11RenderProgram() override;

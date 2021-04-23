@@ -11,11 +11,14 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX11RenderIndexBuffer
         : public RenderIndexBufferInterface
         , public Factorable
         , public DX11RenderBuffer
     {
+        DECLARE_FACTORABLE( DX11RenderIndexBuffer );
+
     public:
         DX11RenderIndexBuffer();
         ~DX11RenderIndexBuffer() override;

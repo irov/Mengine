@@ -51,6 +51,7 @@ namespace Mengine
 		}
 
 		m_pD3DTextureSource = _textureSource;
+		m_textureDesc = textureDesc;
 
 		return true;
 	}
@@ -59,6 +60,64 @@ namespace Mengine
     {
         DXRELEASE(m_pD3DTexture);
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool DX11RenderTargetOffscreen::begin()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX11RenderTargetOffscreen::end()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX11RenderTargetOffscreen::getHWMipmaps() const
+	{
+		return 1U;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX11RenderTargetOffscreen::getHWWidth() const
+	{
+		return m_textureDesc.Width;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX11RenderTargetOffscreen::getHWHeight() const
+	{
+		return m_textureDesc.Height;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX11RenderTargetOffscreen::getHWChannels() const
+	{
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX11RenderTargetOffscreen::getHWDepth() const
+	{
+		return 1U;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	EPixelFormat DX11RenderTargetOffscreen::getHWPixelFormat() const
+	{
+		return EPixelFormat::PF_UNKNOWN;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float DX11RenderTargetOffscreen::getHWWidthInv() const
+	{
+		return 1.0f / m_textureDesc.Width;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float DX11RenderTargetOffscreen::getHWHeightInv() const
+	{
+		return  1.0f / m_textureDesc.Height;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX11RenderTargetOffscreen::calcViewport(const mt::vec2f & _size, Viewport * const _viewport) const
+	{
+		float uv_width = _size.x * getHWWidthInv();
+		float uv_height = _size.y * getHWHeightInv();
+
+		_viewport->begin = mt::vec2f(0.f, 0.f);
+		_viewport->end = mt::vec2f(uv_width, uv_height);
+	}
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
@@ -84,5 +143,13 @@ namespace Mengine
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	void DX11RenderTargetOffscreen::onRenderReset()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DX11RenderTargetOffscreen::onRenderRestore()
+	{
+		return true;
+	}
 }

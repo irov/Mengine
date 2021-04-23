@@ -177,6 +177,12 @@ namespace Mengine
         // sync routines
         uint32_t m_frames;
 
+		// free frame
+		Vector<ID3D11SamplerState*> m_samplerFrameRelease;
+		Vector<ID3D11RasterizerState*> m_rasterizerFrameRelease;
+		Vector<ID3D11BlendState*> m_blendFrameRelease;
+		Vector<ID3D11DepthStencilState*> m_dsFrameRelease;
+
     protected:
         bool releaseResources_();
         void release_();

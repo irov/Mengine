@@ -34,6 +34,9 @@ namespace Mengine
     public:
         void enable(ID3D11DeviceContext * _pD3DDeviceContext);
 
+		void* getShaderCompileData() const;
+		size_t getShaderCompileDataSize() const;
+
     protected:
         ID3D11VertexShader * m_pD3DVertexShader;
 

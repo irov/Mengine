@@ -95,6 +95,11 @@ namespace Mengine
 
         return pD3DTexture;
     }
+	//////////////////////////////////////////////////////////////////////////
+	ID3D11ShaderResourceView * DX11RenderImageTarget::getD3DShaderResource() const
+	{
+		return m_target->getD3DShaderResource();
+	}
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImageTarget::getHWWidth() const
     {

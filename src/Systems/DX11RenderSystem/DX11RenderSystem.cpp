@@ -797,6 +797,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
     {
+		MENGINE_UNUSED(_frameBufferTypes);
+
 		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "device context not found");
 
 		float color[4];
@@ -935,6 +937,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
+		MENGINE_UNUSED(_format);
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

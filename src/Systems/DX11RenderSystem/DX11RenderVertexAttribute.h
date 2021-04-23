@@ -15,6 +15,8 @@ namespace Mengine
         : public RenderVertexAttributeInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderVertexAttribute );
+
     public:
         DX11RenderVertexAttribute();
         ~DX11RenderVertexAttribute() override;

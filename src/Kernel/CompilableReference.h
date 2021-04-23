@@ -14,23 +14,23 @@ namespace Mengine
         ~CompilableReference() override;
 
     public:
-        MENGINE_INLINE uint32_t getCompileReference() const;
+        MENGINE_INLINE uint32_t getCompileReferenceCount() const;
 
     public:
         bool compile() override;
         void release() override;
 
     private:
-        uint32_t m_compileReference;
+        uint32_t m_compileReferenceCount;
 
         MENGINE_THREAD_GUARD_INIT( CompilableReference );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<CompilableReference> CompilableReferencePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE uint32_t CompilableReference::getCompileReference() const
+    MENGINE_INLINE uint32_t CompilableReference::getCompileReferenceCount() const
     {
-        return m_compileReference;
+        return m_compileReferenceCount;
     }
     //////////////////////////////////////////////////////////////////////////
 }

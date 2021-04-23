@@ -17,6 +17,8 @@ namespace Mengine
         , public Factorable
         , public DX11RenderBuffer
     {
+        DECLARE_FACTORABLE( DX11RenderVertexBuffer );
+
     public:
         DX11RenderVertexBuffer();
         ~DX11RenderVertexBuffer() override;

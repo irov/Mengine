@@ -12,6 +12,8 @@ namespace Mengine
 		, public Factorable
 		, public DX11RenderResourceHandler
     {
+        DECLARE_FACTORABLE( DX11RenderTargetOffscreen );
+
     public:
         DX11RenderTargetOffscreen();
         ~DX11RenderTargetOffscreen() override;

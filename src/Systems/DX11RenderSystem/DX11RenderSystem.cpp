@@ -361,7 +361,7 @@ namespace Mengine
 		swapChainDesc.OutputWindow = win32Platform->getWindowHandle();
 
 		// Turn multisampling off.
-		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Count = _MultiSampleCount;
 		swapChainDesc.SampleDesc.Quality = 0;
 
 		// Set to full screen or windowed mode.
@@ -371,11 +371,13 @@ namespace Mengine
 		swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 		swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-		// Discard the back buffer contents after presenting.
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-		//	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+		// Discard the back buffer contents after presenting.		
+		if(_MultiSampleCount > 1)
+			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		else
+			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
-			// Don't set the advanced flags.
+		// Don't set the advanced flags.
 		swapChainDesc.Flags = 0;
 
 		result = factory->CreateSwapChain(m_pD3DDevice, &swapChainDesc, &m_SwapChain);
@@ -469,7 +471,10 @@ namespace Mengine
 
 		// Set up the depth stencil view description.
 		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		if(_MultiSampleCount <= 1)
+			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		else
+			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 		depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 		// Create the depth stencil view.

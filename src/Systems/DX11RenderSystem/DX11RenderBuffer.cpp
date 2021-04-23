@@ -126,8 +126,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
 
-        uint32_t offsetSize = _offset * m_elementSize;
-        uint32_t lockSize = _count * m_elementSize;
+        //uint32_t offsetSize = _offset * m_elementSize;
+        //uint32_t lockSize = _count * m_elementSize;
 
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 
@@ -165,6 +165,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderBuffer::drawBuffer( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
+		MENGINE_UNUSED(_offset);
+
         if( _count > m_elementsCount)
         {
             LOGGER_ERROR( "draw count %u more capacity %u (doc: %s)"

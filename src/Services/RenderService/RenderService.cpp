@@ -77,6 +77,7 @@ namespace Mengine
         }
 
         m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderOrder = Helper::makeFactoryPool<RenderOrder, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderSystem = RENDER_SYSTEM();
 
@@ -114,8 +115,10 @@ namespace Mengine
         m_currentRenderScissor = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderOrder );
 
         m_factoryRenderBatch = nullptr;
+        m_factoryRenderOrder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::_stopService()
@@ -1194,6 +1197,15 @@ namespace Mengine
     bool RenderService::getVSync() const
     {
         return m_vsync;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderOrderInterfacePtr RenderService::createRenderOrder( uint32_t _order, const DocumentPtr & _doc )
+    {
+        RenderOrderPtr order = m_factoryRenderOrder->createObject( _doc );
+
+        order->setOrder( _order );
+
+        return order;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setRenderViewport( const Viewport & _renderViewport )

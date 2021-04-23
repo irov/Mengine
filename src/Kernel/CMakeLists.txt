@@ -390,7 +390,6 @@ Shape\\\\ShapeQuad
 
 ADD_FILTER(
 Contentable
-    Contentable.h
     BaseContent.cpp
     BaseContent.h
 )

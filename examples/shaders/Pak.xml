@@ -1,5 +1,6 @@
 <Pak>
  	<Materials>
+        <Material Path = "Materials/Shader_DX11.bin"/>
         <Material Path = "Materials/Shader_DX9.bin"/>
         <Material Path = "Materials/Shader_OpenGL.bin"/>
         <Material Path = "Materials/Shader_OpenGLES.bin"/>

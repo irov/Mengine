@@ -15,10 +15,6 @@ src
     MovieSceneEffect.cpp
     MovieNodeExtra.h
     MovieNodeExtra.cpp
-    MovieInternalObject.h
-    MovieInternalObject.cpp
-    MovieEvent.h
-    MovieEvent.cpp
     MovieMesh2D.h
     MovieMesh2D.cpp
     ResourceMovie.cpp
@@ -42,9 +38,13 @@ src
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
+        MovieEvent.h
+        MovieEvent.cpp
+        MovieInternalObject.h
+        MovieInternalObject.cpp
         MovieScriptEmbedding.cpp
         MovieScriptEmbedding.h
-        )    
+        )
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()

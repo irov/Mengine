@@ -32,7 +32,7 @@ namespace Mengine
         void release();
 
     public:
-        void enable(ID3D11DeviceContext * _pD3DDeviceContext );
+        void enable( ID3D11DeviceContext * _pD3DDeviceContext );
 
     protected:
         ID3D11PixelShader * m_pD3DPixelShader;

@@ -10,7 +10,9 @@ namespace Mengine
     enum NodeAreaOfInterestTriggerEventFlag
     {
         EVENT_AREAOFINTEREST_TRIGGER_ENTER = 0,
-        EVENT_AREAOFINTEREST_TRIGGER_LEAVE
+        EVENT_AREAOFINTEREST_TRIGGER_LEAVE,
+        
+        __EVENT_AREAOFINTEREST_TRIGGER_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
     class NodeAreaOfInterestTriggerEventReceiverInterface

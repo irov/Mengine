@@ -15,17 +15,17 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
 
-		static constexpr DXGI_FORMAT D64SFormats[] = { DXGI_FORMAT_D32_FLOAT_S8X24_UINT, DXGI_FORMAT_UNKNOWN };
-		static constexpr DXGI_FORMAT D32SFormats[] = { DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN };
-		static constexpr DXGI_FORMAT D32Formats[] = { DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN };
-		static constexpr DXGI_FORMAT D16Formats[] = { DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN };
+        static constexpr DXGI_FORMAT D64SFormats[] = {DXGI_FORMAT_D32_FLOAT_S8X24_UINT, DXGI_FORMAT_UNKNOWN};
+        static constexpr DXGI_FORMAT D32SFormats[] = {DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN};
+        static constexpr DXGI_FORMAT D32Formats[] = {DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN};
+        static constexpr DXGI_FORMAT D16Formats[] = {DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN};
 
-/*        static constexpr DXGI_FORMAT D32SFormats[] = {DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, (DXGI_FORMAT)0};
-        static constexpr DXGI_FORMAT D32Formats[] = { DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN, (DXGI_FORMAT)0};
-        static constexpr DXGI_FORMAT D16SFormats[] = {D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (DXGI_FORMAT)0};
-        static constexpr DXGI_FORMAT D16Formats[] = {D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (DXGI_FORMAT)0};
-		*/
-        //////////////////////////////////////////////////////////////////////////
+        /*        static constexpr DXGI_FORMAT D32SFormats[] = {DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, (DXGI_FORMAT)0};
+                static constexpr DXGI_FORMAT D32Formats[] = { DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN, (DXGI_FORMAT)0};
+                static constexpr DXGI_FORMAT D16SFormats[] = {D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (DXGI_FORMAT)0};
+                static constexpr DXGI_FORMAT D16Formats[] = {D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (DXGI_FORMAT)0};
+                */
+                //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE uint32_t getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
         {
             switch( _pType )
@@ -59,8 +59,8 @@ namespace Mengine
                 return (D3D11_MAP)0;
             case BLF_LOCK_READONLY:
                 return D3D11_MAP_READ;
-			case BLF_LOCK_WRITE:
-				return D3D11_MAP_WRITE;
+            case BLF_LOCK_WRITE:
+                return D3D11_MAP_WRITE;
             case BLF_LOCK_DISCARD:
                 return D3D11_MAP_WRITE_DISCARD;
             case BLF_LOCK_NOOVERWRITE:
@@ -217,8 +217,8 @@ namespace Mengine
                 return D3D11_CULL_FRONT;
             case CM_CULL_CCW:
                 return D3D11_CULL_NONE;
-			case CM_CULL_BACK:
-				return D3D11_CULL_BACK;
+            case CM_CULL_BACK:
+                return D3D11_CULL_BACK;
             }
 
             return D3D11_CULL_NONE;
@@ -264,7 +264,7 @@ namespace Mengine
             return D3D11_FILL_SOLID;
         }
 
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
     /*  MENGINE_INLINE D3DSAMPLERSTATETYPE toD3DTextureFilterType( ETextureFilterType _filterType )
         {
             switch( _filterType )
@@ -279,9 +279,9 @@ namespace Mengine
 
             return D3DSAMP_MAGFILTER;
         }
-		*/
+        */
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3D11_FILTER toD3DTextureFilter(ETextureFilter _filter )
+        MENGINE_INLINE D3D11_FILTER toD3DTextureFilter( ETextureFilter _filter )
         {
             switch( _filter )
             {
@@ -304,7 +304,7 @@ namespace Mengine
             return D3D11_FILTER_MIN_MAG_MIP_POINT;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE uint32_t getD3DFormatRange(DXGI_FORMAT _format )
+        MENGINE_INLINE uint32_t getD3DFormatRange( DXGI_FORMAT _format )
         {
             switch( _format )
             {
@@ -323,7 +323,7 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE bool lessD3DFormats(DXGI_FORMAT _format1, DXGI_FORMAT _format2 )
+        MENGINE_INLINE bool lessD3DFormats( DXGI_FORMAT _format1, DXGI_FORMAT _format2 )
         {
             uint32_t format_id1 = getD3DFormatRange( _format1 );
             uint32_t format_id2 = getD3DFormatRange( _format2 );
@@ -331,7 +331,7 @@ namespace Mengine
             return format_id1 < format_id2;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE const Char * getD3DFormatName(DXGI_FORMAT _format )
+        MENGINE_INLINE const Char * getD3DFormatName( DXGI_FORMAT _format )
         {
             switch( _format )
             {
@@ -350,7 +350,7 @@ namespace Mengine
             return "UNKNOWN";
         };
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE uint32_t getD3DFormatBits(DXGI_FORMAT _format )
+        MENGINE_INLINE uint32_t getD3DFormatBits( DXGI_FORMAT _format )
         {
             switch( _format )
             {

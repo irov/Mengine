@@ -53,6 +53,7 @@ namespace Mengine
         EVENT_GAME_CLOSE,
         EVENT_GAME_OVER_FILLRATE,
         EVENT_GAME_FRAME_END,
+
         __EVENT_GAME_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

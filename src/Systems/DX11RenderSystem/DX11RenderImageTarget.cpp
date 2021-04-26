@@ -27,32 +27,32 @@ namespace Mengine
     void DX11RenderImageTarget::bind( uint32_t _stage )
     {
         ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
-		ID3D11ShaderResourceView * pD3DShaderResource = m_target->getD3DShaderResource();
+        ID3D11ShaderResourceView * pD3DShaderResource = m_target->getD3DShaderResource();
 
-		ID3D11DeviceContext *pImmediateContext = nullptr;
-		pD3DDevice->GetImmediateContext(&pImmediateContext);
+        ID3D11DeviceContext * pImmediateContext = nullptr;
+        pD3DDevice->GetImmediateContext( &pImmediateContext );
 
 #ifdef MENGINE_DEBUG
 
-		pImmediateContext->PSSetShaderResources(_stage, 1, &pD3DShaderResource);
+        pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
 
 #else
-		pImmediateContext->PSSetShaderResources(_stage, 1, &pD3DShaderResource);
+        pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
 #endif
-		pImmediateContext->Release();
-	}
+        pImmediateContext->Release();
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::unbind( uint32_t _stage )
     {
-		ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
+        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
 
-		ID3D11DeviceContext *pImmediateContext = nullptr;
-		pD3DDevice->GetImmediateContext(&pImmediateContext);
+        ID3D11DeviceContext * pImmediateContext = nullptr;
+        pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-		pImmediateContext->PSSetShaderResources(_stage, 1, nullptr);
+        pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
 
-		pImmediateContext->Release();
-	}
+        pImmediateContext->Release();
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
@@ -89,17 +89,17 @@ namespace Mengine
         return pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-	ID3D11Texture2D * DX11RenderImageTarget::getD3DTexture() const
+    ID3D11Texture2D * DX11RenderImageTarget::getD3DTexture() const
     {
-		ID3D11Texture2D * pD3DTexture = m_target->getD3DTexture();
+        ID3D11Texture2D * pD3DTexture = m_target->getD3DTexture();
 
         return pD3DTexture;
     }
-	//////////////////////////////////////////////////////////////////////////
-	ID3D11ShaderResourceView * DX11RenderImageTarget::getD3DShaderResource() const
-	{
-		return m_target->getD3DShaderResource();
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ID3D11ShaderResourceView * DX11RenderImageTarget::getD3DShaderResource() const
+    {
+        return m_target->getD3DShaderResource();
+    }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImageTarget::getHWWidth() const
     {

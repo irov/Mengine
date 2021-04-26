@@ -51,7 +51,7 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
-        Pointer lock(size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( uint32_t _level, bool _successful ) override;
 
     protected:
@@ -63,22 +63,22 @@ namespace Mengine
 
     public:
         ID3D11Device * getD3DDevice() const override;
-		ID3D11Texture2D * getD3DTexture() const override;
-		ID3D11ShaderResourceView * getD3DShaderResource() const override;
+        ID3D11Texture2D * getD3DTexture() const override;
+        ID3D11ShaderResourceView * getD3DShaderResource() const override;
 
     protected:
-		ID3D11Texture2D * m_pD3DTexture;
-		// to bind texture to shaders
-		ID3D11ShaderResourceView* m_pD3DResourceView;
+        ID3D11Texture2D * m_pD3DTexture;
+        // to bind texture to shaders
+        ID3D11ShaderResourceView * m_pD3DResourceView;
 
         RenderImageProviderInterfacePtr m_renderImageProvider;
 
-		D3D11_TEXTURE2D_DESC m_textureDesc;
+        D3D11_TEXTURE2D_DESC m_textureDesc;
 
         EPixelFormat m_hwPixelFormat;
 
-		uint32_t m_hwChannels;
-		uint32_t m_hwDepth;
+        uint32_t m_hwChannels;
+        uint32_t m_hwDepth;
 
         float m_hwWidthInv;
         float m_hwHeightInv;

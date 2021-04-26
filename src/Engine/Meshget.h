@@ -29,6 +29,7 @@ namespace Mengine
     enum EMeshgetEventFlag
     {
         EVENT_MESHGET_UPDATE = 0,
+
         __EVENT_MESHGET_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

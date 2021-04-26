@@ -44,8 +44,8 @@ namespace Mengine
 
     public:
 
-		// D3D11 uses buffers registers (13 nums maximum)
-		// each variable representing a buffer
+        // D3D11 uses buffers registers (13 nums maximum)
+        // each variable representing a buffer
 
  /*       enum EProgramVariableType
         {
@@ -54,7 +54,7 @@ namespace Mengine
             EPVT_BOOLEAN
         };
 */
-		// we still can update whole buffer with variable index if we need not only float4 variable
+// we still can update whole buffer with variable index if we need not only float4 variable
         struct ProgramVariableDesc
         {
             //EProgramVariableType type;
@@ -73,12 +73,12 @@ namespace Mengine
         VectorVariables m_vertexVariables;
         VectorVariables m_pixelVariables;
 
-		typedef Vector<ID3D11Buffer*> VectorBuffers;
-		VectorBuffers m_vertexBuffers;
-		VectorBuffers m_pixelBuffers;
+        typedef Vector<ID3D11Buffer *> VectorBuffers;
+        VectorBuffers m_vertexBuffers;
+        VectorBuffers m_pixelBuffers;
 
-		bool m_vertexBufferUpdate;
-		bool m_pixelBufferUpdate;
+        bool m_vertexBufferUpdate;
+        bool m_pixelBufferUpdate;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderProgramVariable, RenderProgramVariableInterface> DX11RenderProgramVariablePtr;

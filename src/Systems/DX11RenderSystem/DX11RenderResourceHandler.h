@@ -19,7 +19,7 @@ namespace Mengine
     public:
         void setDirect3D11Device( ID3D11Device * _pD3DDevice );
         ID3D11Device * getDirect3D11Device() const;
-		// TODO: getContext
+        // TODO: getContext
 
     public:
         virtual void onRenderReset() = 0;
@@ -27,6 +27,6 @@ namespace Mengine
 
     protected:
         ID3D11Device * m_pD3DDevice;
-		// TODO: context
+        // TODO: context
     };
 }

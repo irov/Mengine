@@ -62,7 +62,7 @@ namespace Mengine
         }
 
         ++m_compileReferenceCount;
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -76,9 +76,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderFragmentShader::enable(ID3D11DeviceContext * _pD3DDeviceContext)
+    void DX11RenderFragmentShader::enable( ID3D11DeviceContext * _pD3DDeviceContext )
     {
-		_pD3DDeviceContext->PSSetShader(m_pD3DPixelShader, nullptr, 0);
+        _pD3DDeviceContext->PSSetShader( m_pD3DPixelShader, nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

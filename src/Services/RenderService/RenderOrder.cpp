@@ -1,5 +1,7 @@
 #include "RenderOrder.h"
 
+#include "Interface/RenderInterface.h"
+
 #include "Config/Algorithm.h"
 
 namespace Mengine

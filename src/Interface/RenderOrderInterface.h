@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
-#include "Interface/RenderInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/RenderContext.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class RenderInterface;
     //////////////////////////////////////////////////////////////////////////
     class RenderOrderInterface
         : public ServantInterface

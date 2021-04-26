@@ -12,6 +12,7 @@ namespace Mengine
     BaseRender::BaseRender()
         : m_relationRender( nullptr )
         , m_extraRelationRender( nullptr )
+        , m_renderOrderIndex( 0 )
         , m_externalRender( false )
         , m_renderEnable( false )
         , m_hide( false )
@@ -71,7 +72,7 @@ namespace Mengine
         m_relationRender->removeRelationRenderChildren_( this );
         m_relationRender = nullptr;
     }
-        //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::setExtraRelationRender( RenderInterface * _relationRender )
     {
         MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
@@ -208,7 +209,7 @@ namespace Mengine
     void BaseRender::addRelationRenderChildrenBack_( BaseRender * _childRender )
     {
         m_renderChildren.push_back( _childRender );
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRenderChildren_( BaseRender * _childRender )
     {
@@ -219,9 +220,9 @@ namespace Mengine
         m_renderChildren.erase( it_erase );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
+    void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _renderViewport )
     {
-        m_renderViewport = _viewport;
+        m_renderViewport = _renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & BaseRender::getRenderViewport() const
@@ -229,9 +230,9 @@ namespace Mengine
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderCamera( const RenderCameraInterfacePtr & _camera )
+    void BaseRender::setRenderCamera( const RenderCameraInterfacePtr & _renderCamera )
     {
-        m_renderCamera = _camera;
+        m_renderCamera = _renderCamera;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderCameraInterfacePtr & BaseRender::getRenderCamera() const
@@ -249,9 +250,9 @@ namespace Mengine
         return m_renderTransformation;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
+    void BaseRender::setRenderScissor( const RenderScissorInterfacePtr & _renderScissor )
     {
-        m_renderScissor = _scissor;
+        m_renderScissor = _renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderScissorInterfacePtr & BaseRender::getRenderScissor() const
@@ -259,9 +260,9 @@ namespace Mengine
         return m_renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderTarget( const RenderTargetInterfacePtr & _target )
+    void BaseRender::setRenderTarget( const RenderTargetInterfacePtr & _renderTarget )
     {
-        m_renderTarget = _target;
+        m_renderTarget = _renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderTargetInterfacePtr & BaseRender::getRenderTarget() const
@@ -276,6 +277,26 @@ namespace Mengine
         _context->transformation = m_renderTransformation.get();
         _context->scissor = m_renderScissor.get();
         _context->target = m_renderTarget.get();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRenderOrder( const RenderOrderInterfacePtr & _renderOrder )
+    {
+        m_renderOrder = _renderOrder;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderOrderInterfacePtr & BaseRender::getRenderOrder() const
+    {
+        return m_renderOrder;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRenderOrderIndex( int32_t _renderOrderIndex )
+    {
+        m_renderOrderIndex = _renderOrderIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t BaseRender::getRenderOrderIndex() const
+    {
+        return m_renderOrderIndex;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const

@@ -2,6 +2,7 @@
 
 #include "Interface/Interface.h"
 #include "Interface/RenderPipelineInterface.h"
+#include "Interface/RenderOrderInterface.h"
 
 #include "Kernel/Colorable.h"
 #include "Kernel/BoundingBox.h"
@@ -80,6 +81,14 @@ namespace Mengine
 
     public:
         virtual void makeRenderContext( RenderContext * const _context ) const = 0;
+
+    public:
+        virtual void setRenderOrder( const RenderOrderInterfacePtr & _renderOrder ) = 0;
+        virtual const RenderOrderInterfacePtr & getRenderOrder() const = 0;
+
+    public:
+        virtual void setRenderOrderIndex( int32_t _renderOrderIndex ) = 0;
+        virtual int32_t getRenderOrderIndex() const = 0;
 
     public:
         virtual void setExternalRender( bool _externalRender ) = 0;

@@ -26,7 +26,7 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( ID3D11Device * _pD3DDevice, const void * _pShaderBytecodeWithInputSignature, uint32_t _bytecodeLength);
+        bool compile( ID3D11Device * _pD3DDevice, const void * _pShaderBytecodeWithInputSignature, uint32_t _bytecodeLength );
         void release();
 
     public:
@@ -46,7 +46,7 @@ namespace Mengine
 
         uint32_t m_compileReferenceCount;
 
-		ID3D11InputLayout * m_pD3DVertexDeclaration;
+        ID3D11InputLayout * m_pD3DVertexDeclaration;
 
         struct AttributeDesc
         {

@@ -159,29 +159,29 @@ namespace Mengine
 
         ID3D11Device * m_pD3DDevice;
         ID3D11DeviceContext * m_pD3DDeviceContext;
-		// буфер для хранения данных изображения перед выводом
-		IDXGISwapChain* m_SwapChain;
-		DXGI_MODE_DESC m_SwapChainBufferDesc;
+        // буфер для хранения данных изображения перед выводом
+        IDXGISwapChain * m_SwapChain;
+        DXGI_MODE_DESC m_SwapChainBufferDesc;
 
-		DXGI_MODE_DESC* m_DisplayModeList;
-		UINT			m_DisplayModeListNum;
+        DXGI_MODE_DESC * m_DisplayModeList;
+        UINT			m_DisplayModeListNum;
 
-		ID3D11RenderTargetView*		m_renderTargetView;
-		ID3D11Texture2D*			m_depthStencilBuffer;
-		ID3D11DepthStencilState*	m_depthStencilState;
-		ID3D11DepthStencilView*		m_depthStencilView;
-		ID3D11RasterizerState*		m_rasterState;
-		ID3D11BlendState*			m_blendState;
+        ID3D11RenderTargetView * m_renderTargetView;
+        ID3D11Texture2D * m_depthStencilBuffer;
+        ID3D11DepthStencilState * m_depthStencilState;
+        ID3D11DepthStencilView * m_depthStencilView;
+        ID3D11RasterizerState * m_rasterState;
+        ID3D11BlendState * m_blendState;
         ID3D11SamplerState * m_samplerState[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
 
         // sync routines
         uint32_t m_frames;
 
-		// free frame
-		Vector<ID3D11SamplerState*> m_samplerFrameRelease;
-		Vector<ID3D11RasterizerState*> m_rasterizerFrameRelease;
-		Vector<ID3D11BlendState*> m_blendFrameRelease;
-		Vector<ID3D11DepthStencilState*> m_dsFrameRelease;
+        // free frame
+        Vector<ID3D11SamplerState *> m_samplerFrameRelease;
+        Vector<ID3D11RasterizerState *> m_rasterizerFrameRelease;
+        Vector<ID3D11BlendState *> m_blendFrameRelease;
+        Vector<ID3D11DepthStencilState *> m_dsFrameRelease;
 
     protected:
         bool releaseResources_();

@@ -12,14 +12,14 @@
 #include "Plugins/GraphicsPlugin/GraphicsInterface.h"
 
 #include "Engine/Engine.h"
-#include "Engine/SurfaceSolidColor.h"
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/SurfaceImage.h"
-#include "Engine/ResourceImageDefault.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Surface.h"
+#include "Kernel/SurfaceSolidColor.h"
+#include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/SurfaceImage.h"
+#include "Kernel/ResourceImageDefault.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/EntityHelper.h"
@@ -421,8 +421,39 @@ namespace Mengine
 
         resource->setName( _resourceName );
 
-        if( resource->setup( fileGroup, _filePath, ConstString::none(), _uvImage, _uvAlpha, maxSize ) == false )
+        ContentInterfacePtr content = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        content->setFileGroup( fileGroup );
+        content->setFilePath( _filePath );
+
+        const ConstString & newCodecType = CODEC_SERVICE()
+            ->findCodecType( _filePath );
+
+        if( newCodecType.empty() == true )
         {
+            return nullptr;
+        }
+
+        content->setCodecType( newCodecType );
+
+        resource->setContent( content );
+
+        resource->setMaxSize( maxSize );
+        resource->setSize( maxSize );
+        resource->setOffset( mt::vec2f( 0.f, 0.f ) );
+
+        resource->setUVImage( _uvImage );
+        resource->setUVAlpha( _uvAlpha );
+
+        resource->setAlpha( true );
+
+        if( resource->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize image '%s:%s'"
+                , fileGroup->getName().c_str()
+                , _filePath.c_str()
+            );
+
             return nullptr;
         }
 
@@ -540,7 +571,8 @@ namespace Mengine
 
                 sprite->setName( Helper::stringizeStringFormat( "Sprite_r%d_c%d", row, col ) );
 
-                sprite->setLocalPosition( position );
+                TransformationInterface * transformable = sprite->getTransformation();
+                transformable->setLocalPosition( position );
 
                 m_gameNode->addChild( sprite );
 
@@ -570,7 +602,8 @@ namespace Mengine
                         , text_args
                     );
 
-                    textUpBorder->setLocalPosition( textPosition + mt::vec3f( 0.f, -borderOffset, 0.f ) );
+                    TransformationInterface * transformationTextUpBorder = textUpBorder->getTransformation();
+                    transformationTextUpBorder->setLocalPosition( textPosition + mt::vec3f( 0.f, -borderOffset, 0.f ) );
 
                     sprite->addChild( textUpBorder );
 
@@ -583,7 +616,8 @@ namespace Mengine
                         , text_args
                     );
 
-                    textBottomBorder->setLocalPosition( textPosition + mt::vec3f( 0.f, borderOffset, 0.f ) );
+                    TransformationInterface * transformationTextBottomBorder = textBottomBorder->getTransformation();
+                    transformationTextBottomBorder->setLocalPosition( textPosition + mt::vec3f( 0.f, borderOffset, 0.f ) );
 
                     sprite->addChild( textBottomBorder );
 
@@ -596,7 +630,8 @@ namespace Mengine
                         , text_args
                     );
 
-                    textLeftBorder->setLocalPosition( textPosition + mt::vec3f( -borderOffset, 0.f, 0.f ) );
+                    TransformationInterface * transformationTextLeftBorder = textLeftBorder->getTransformation();
+                    transformationTextLeftBorder->setLocalPosition( textPosition + mt::vec3f( -borderOffset, 0.f, 0.f ) );
 
                     sprite->addChild( textLeftBorder );
 
@@ -609,7 +644,8 @@ namespace Mengine
                         , text_args
                     );
 
-                    textRightBorder->setLocalPosition( textPosition + mt::vec3f( borderOffset, 0.f, 0.f ) );
+                    TransformationInterface * transformationTextRightBorder = textRightBorder->getTransformation();
+                    transformationTextRightBorder->setLocalPosition( textPosition + mt::vec3f( borderOffset, 0.f, 0.f ) );
 
                     sprite->addChild( textRightBorder );
 
@@ -622,7 +658,8 @@ namespace Mengine
                         , text_args
                     );
 
-                    textValue->setLocalPosition( textPosition );
+                    TransformationInterface * transformationTextValue = textValue->getTransformation();
+                    transformationTextValue->setLocalPosition( textPosition );
 
                     sprite->addChild( textValue );
 
@@ -660,7 +697,8 @@ namespace Mengine
             // border
             NodePtr graphicsCell = createGraphicsRect( Helper::stringizeStringFormat( "Graphics_%d_%d_Cell", row, col ), colorLine, imagePartSize );
 
-            graphicsCell->setLocalPosition( position );
+            TransformationInterface * transformationGraphicsCell = graphicsCell->getTransformation();
+            transformationGraphicsCell->setLocalPosition( position );
 
             m_gameNode->addChild( graphicsCell );
 
@@ -673,7 +711,8 @@ namespace Mengine
 
             m_gameNode->addChild( hotspot );
 
-            hotspot->setLocalPosition( position );
+            TransformationInterface * transformationHotspot = hotspot->getTransformation();
+            transformationHotspot->setLocalPosition( position );
 
             m_hotspots.emplace_back( hotspot );
         }
@@ -685,7 +724,8 @@ namespace Mengine
         float resolutionWidth = resolution.getWidthF();
         float resolutionHeight = resolution.getHeightF();
 
-        m_gameNode->setLocalPosition( { (resolutionWidth - imageSize.x) / 2, (resolutionHeight - imageSize.y) / 2, 0.f } );
+        TransformationInterface * transformationGameNode = m_gameNode->getTransformation();
+        transformationGameNode->setLocalPosition( { (resolutionWidth - imageSize.x) / 2, (resolutionHeight - imageSize.y) / 2, 0.f } );
 
         // disable borders
         this->enableBorders( false );
@@ -762,7 +802,8 @@ namespace Mengine
                         const mt::vec3f & position = m_positions[idx];
                         const ShapeQuadFixedPtr & part = m_parts[curIdx];
 
-                        part->setLocalPosition( position );
+                        TransformationInterface * transformationPart = part->getTransformation();
+                        transformationPart->setLocalPosition( position );
                     }
                 } );
 
@@ -929,8 +970,11 @@ namespace Mengine
         mt::vec3f positionOfToIdx = m_positions[_position];
         mt::vec3f positionOfFromIdx = m_positions[emptyIdx];
 
-        nodeAtToIdx->setLocalPosition( positionOfFromIdx );
-        nodeAtFromIdx->setLocalPosition( positionOfToIdx );
+        TransformationInterface * transformationNodeAtToIdx = nodeAtToIdx->getTransformation();
+        transformationNodeAtToIdx->setLocalPosition( positionOfFromIdx );
+
+        TransformationInterface * transformationNodeAtFromIdx = nodeAtFromIdx->getTransformation();
+        transformationNodeAtFromIdx->setLocalPosition( positionOfToIdx );
 
         m_indexes[_position] = fromIdx;
         m_indexes[emptyIdx] = toIdx;

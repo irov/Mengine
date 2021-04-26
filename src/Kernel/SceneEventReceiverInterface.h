@@ -10,6 +10,7 @@ namespace Mengine
         EVENT_SCENE_APP_MOUSE_LEAVE = __EVENT_ENTITY_LAST__,
         EVENT_SCENE_APP_MOUSE_ENTER,
         EVENT_SCENE_FOCUS,
+
         __EVENT_SCENE_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

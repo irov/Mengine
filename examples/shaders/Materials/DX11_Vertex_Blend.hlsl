@@ -1,29 +1,25 @@
 cbuffer ModelConstantBuffer : register(b0)
 {
-	float4x4 ModelViewMatrix;
-};
-  
-// Per-vertex data used as input to the vertex shader.
-struct VertexShaderInput
-{
-	min16float4 pos			: POSITION;
-	min16float4 color		: COLOR0;
-	min16float2 texcoords   : TEXCOORD0;
+    float4x4 ModelViewMatrix;
 };
 
-struct VertexShaderOutput
+struct a2v
 {
-	min16float4 pos     : SV_POSITION;
-	min16float4 color   : COLOR0;
-	min16float2 uv0     : TEXCOORD0;
+    float4 pos : POSITION;
+    float4 color : COLOR0;
+    float2 tex0 : TEXCOORD0;
 };
 
-VertexShaderOutput main(VertexShaderInput IN)
+struct v2p
 {
-	VertexShaderOutput OUT;
+    float4 pos : SV_POSITION;
+    float4 color : COLOR0;
+    float2 tex0 : TEXCOORD0;
+};
 
-    OUT.pos = mul(IN.pos, ModelViewMatrix);
+void main( in v2p IN, out v2p OUT )
+{
+    OUT.pos = mul( IN.pos, ModelViewMatrix );
     OUT.color = IN.color;
     OUT.tex0 = IN.tex0;
 }
-

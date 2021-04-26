@@ -73,22 +73,22 @@ namespace Mengine
         if( m_compileReferenceCount == 0 )
         {
             DXRELEASE( m_pD3DVertexShader );
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexShader::enable(ID3D11DeviceContext * _pD3DDeviceContext)
+    void DX11RenderVertexShader::enable( ID3D11DeviceContext * _pD3DDeviceContext )
     {
-		_pD3DDeviceContext->VSSetShader(m_pD3DVertexShader, nullptr, 0);
-	}
+        _pD3DDeviceContext->VSSetShader( m_pD3DVertexShader, nullptr, 0 );
+    }
     //////////////////////////////////////////////////////////////////////////
-	void* DX11RenderVertexShader::getShaderCompileData() const
-	{
-		return m_memory->getBuffer();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t DX11RenderVertexShader::getShaderCompileDataSize() const
-	{
-		return m_memory->getSize();
-	}
+    void * DX11RenderVertexShader::getShaderCompileData() const
+    {
+        return m_memory->getBuffer();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t DX11RenderVertexShader::getShaderCompileDataSize() const
+    {
+        return m_memory->getSize();
+    }
 
 }

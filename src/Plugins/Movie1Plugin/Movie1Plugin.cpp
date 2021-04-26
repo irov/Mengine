@@ -35,9 +35,12 @@
 #include "Movie.h"
 #include "MovieSlot.h"
 #include "MovieSceneEffect.h"
-#include "MovieEvent.h"
-#include "MovieInternalObject.h"
 #include "MovieMesh2D.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "MovieInternalObject.h"
+#   include "MovieEvent.h"
+#endif
 
 #include "ResourceMovie.h"
 #include "ResourceInternalObject.h"
@@ -101,6 +104,7 @@ namespace Mengine
             return false;
         }
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), Helper::makeFactorableUnique<NodePrototypeGenerator<MovieInternalObject, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
@@ -112,6 +116,7 @@ namespace Mengine
         {
             return false;
         }
+#endif
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), Helper::makeFactorableUnique<NodePrototypeGenerator<MovieMesh2D, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -191,11 +196,13 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
+#endif
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );

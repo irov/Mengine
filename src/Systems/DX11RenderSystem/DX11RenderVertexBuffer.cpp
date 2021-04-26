@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderVertexBuffer::DX11RenderVertexBuffer()
     {
-		m_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        m_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     }
     //////////////////////////////////////////////////////////////////////////
     DX11RenderVertexBuffer::~DX11RenderVertexBuffer()
@@ -28,12 +28,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::initialize( uint32_t _vertexSize, EBufferType _bufferType )
     {
-        return initializeBuffer(_vertexSize, _bufferType);
+        return initializeBuffer( _vertexSize, _bufferType );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexBuffer::finalize()
     {
-		finalizeBuffer();
+        finalizeBuffer();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderVertexBuffer::getVertexCount() const
@@ -48,13 +48,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::resize( uint32_t _vertexCount )
     {
-		// TODO: in D3D11 we can create static bufferes without lock - if we provide data pointer on creation
-        return resizeBuffer(_vertexCount, nullptr);
+        // TODO: in D3D11 we can create static bufferes without lock - if we provide data pointer on creation
+        return resizeBuffer( _vertexCount, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DX11RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
-        return lockBuffer(_offset, _count);
+        return lockBuffer( _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::unlock()
@@ -64,30 +64,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
-        return drawBuffer(_buffer, _offset, _count);
+        return drawBuffer( _buffer, _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexBuffer::enable()
     {
-		ID3D11DeviceContext *pImmediateContext = nullptr;
-		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
+        ID3D11DeviceContext * pImmediateContext = nullptr;
+        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-		UINT sOffset = 0, sStride = m_elementSize;
-		pImmediateContext->IASetVertexBuffers(0, 1, &m_pD3DBuffer, &sStride, &sOffset);
+        UINT sOffset = 0, sStride = m_elementSize;
+        pImmediateContext->IASetVertexBuffers( 0, 1, &m_pD3DBuffer, &sStride, &sOffset );
 
-		pImmediateContext->Release();
+        pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexBuffer::disable()
     {
-		ID3D11DeviceContext *pImmediateContext = nullptr;
-		m_pD3DDevice->GetImmediateContext(&pImmediateContext);
+        ID3D11DeviceContext * pImmediateContext = nullptr;
+        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-		UINT sOffset = 0, sStride = 0;
-		pImmediateContext->IASetVertexBuffers(0, 1, nullptr, &sStride, &sOffset);
+        UINT sOffset = 0, sStride = 0;
+        pImmediateContext->IASetVertexBuffers( 0, 1, nullptr, &sStride, &sOffset );
 
-		pImmediateContext->Release();
-	}
+        pImmediateContext->Release();
+    }
 
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 }

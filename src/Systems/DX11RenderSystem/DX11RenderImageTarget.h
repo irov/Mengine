@@ -58,8 +58,8 @@ namespace Mengine
 
     public:
         ID3D11Device * getD3DDevice() const override;
-		ID3D11Texture2D * getD3DTexture() const override;
-		ID3D11ShaderResourceView * getD3DShaderResource() const override;
+        ID3D11Texture2D * getD3DTexture() const override;
+        ID3D11ShaderResourceView * getD3DShaderResource() const override;
 
     protected:
         DX11RenderTargetTexturePtr m_target;

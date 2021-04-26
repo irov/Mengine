@@ -15,6 +15,7 @@ namespace Mengine
     {
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_END = __EVENT_ANIMATION_LAST__,
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK,
+
         __EVENT_SURFACE_IMAGESEQUENCE_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

@@ -14,6 +14,7 @@ namespace Mengine
         EVENT_ANIMATION_STOP,
         EVENT_ANIMATION_END,
         EVENT_ANIMATION_INTERRUPT,
+
         __EVENT_ANIMATION_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

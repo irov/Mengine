@@ -82,15 +82,12 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
-        void makeRenderContext( RenderContext * const _constext ) const override;
+        void mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const override;
+        void makeRenderContext( RenderContext * const _renderContext ) const override;
 
     public:
         void setRenderOrder( const RenderOrderInterfacePtr & _renderOrder ) override;
         const RenderOrderInterfacePtr & getRenderOrder() const override;
-
-    public:
-        void setRenderOrderIndex( int32_t _renderOrderIndex ) override;
-        int32_t getRenderOrderIndex() const override;
 
     public:
         void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
@@ -132,15 +129,12 @@ namespace Mengine
         typedef Vector<BaseRender *> VectorBaseRender;
         VectorBaseRender m_renderChildren;
 
+        RenderOrderInterfacePtr m_renderOrder;
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;
         RenderTransformationInterfacePtr m_renderTransformation;
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
-
-        RenderOrderInterfacePtr m_renderOrder;
-
-        int32_t m_renderOrderIndex;
 
         bool m_externalRender;
         bool m_renderEnable;

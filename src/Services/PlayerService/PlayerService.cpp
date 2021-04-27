@@ -115,6 +115,7 @@ namespace Mengine
         m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
         m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
 
+        m_renderContext.order = nullptr;
         m_renderContext.viewport = nullptr;
         m_renderContext.camera = nullptr;
         m_renderContext.transformation = nullptr;
@@ -206,6 +207,7 @@ namespace Mengine
         m_renderScissor = nullptr;
         m_renderTarget = nullptr;
 
+        m_renderContext.order = nullptr;
         m_renderContext.viewport = nullptr;
         m_renderContext.camera = nullptr;
         m_renderContext.transformation = nullptr;
@@ -621,19 +623,16 @@ namespace Mengine
         return m_defaultArrowCamera2D;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::setRenderCamera( const RenderCameraInterfacePtr & _camera )
+    void PlayerService::setRenderOrder( const RenderOrderInterfacePtr & _order )
     {
-        m_renderCamera = _camera;
+        m_renderOrder = _order;
 
-        m_renderContext.camera = m_renderCamera.get();
-
-        PICKER_SERVICE()
-            ->setRenderCamera( m_renderCamera );
+        m_renderContext.order = m_renderOrder.get();
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderCameraInterfacePtr & PlayerService::getRenderCamera() const
+    const RenderOrderInterfacePtr & PlayerService::getRenderOrder() const
     {
-        return m_renderCamera;
+        return m_renderOrder;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
@@ -649,6 +648,21 @@ namespace Mengine
     const RenderViewportInterfacePtr & PlayerService::getRenderViewport() const
     {
         return m_renderViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::setRenderCamera( const RenderCameraInterfacePtr & _camera )
+    {
+        m_renderCamera = _camera;
+
+        m_renderContext.camera = m_renderCamera.get();
+
+        PICKER_SERVICE()
+            ->setRenderCamera( m_renderCamera );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderCameraInterfacePtr & PlayerService::getRenderCamera() const
+    {
+        return m_renderCamera;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setRenderTransformation( const RenderTransformationInterfacePtr & _transformation )

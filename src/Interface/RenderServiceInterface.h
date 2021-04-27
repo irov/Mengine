@@ -101,7 +101,7 @@ namespace Mengine
         virtual void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) = 0;
 
     public:
-        virtual RenderOrderInterfacePtr createRenderOrder( uint32_t _order, const DocumentPtr & _doc ) = 0;
+        virtual const RenderOrderInterfacePtr & getRenderOrder( int32_t _index, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual void swapBuffers() = 0;

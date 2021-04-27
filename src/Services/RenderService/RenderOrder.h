@@ -2,8 +2,6 @@
 
 #include "Interface/RenderOrderInterface.h"
 
-#include "Kernel/Vector.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -17,27 +15,11 @@ namespace Mengine
         ~RenderOrder() override;
 
     public:
-        void setOrder( uint32_t _order );
-        uint32_t getOrder() const;
-
-    public:
-        void beginOrder();
-        void flushOrder( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context );
-
-    public:
-        void addRender( int32_t _index, RenderInterface * _render ) override;
+        void setIndex( int32_t _index ) override;
+        int32_t getIndex() const override;
 
     protected:
-        uint32_t m_order;
-
-        struct OrderDesc
-        {
-            int32_t index;
-            RenderInterface * render;            
-        };
-
-        typedef Vector<OrderDesc> VectorRenders;
-        VectorRenders m_renders;
+        int32_t m_index;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderOrder, RenderOrderInterface> RenderOrderPtr;

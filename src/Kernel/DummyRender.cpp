@@ -34,12 +34,7 @@ namespace Mengine
         }
 
         RenderContext context;
-
-        context.viewport = m_renderViewport != nullptr ? m_renderViewport.get() : _context->viewport;
-        context.camera = m_renderCamera != nullptr ? m_renderCamera.get() : _context->camera;
-        context.transformation = m_renderTransformation != nullptr ? m_renderTransformation.get() : _context->transformation;
-        context.scissor = m_renderScissor != nullptr ? m_renderScissor.get() : _context->scissor;
-        context.target = m_renderTarget != nullptr ? m_renderTarget.get() : _context->target;
+        this->mergeRenderContext( _context, &context );
 
         for( const BaseRender * child : m_renderChildren )
         {

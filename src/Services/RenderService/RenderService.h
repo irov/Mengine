@@ -100,7 +100,7 @@ namespace Mengine
         bool getVSync() const override;
 
     public:
-        RenderOrderInterfacePtr createRenderOrder( uint32_t _order, const DocumentPtr & _doc ) override;
+        const RenderOrderInterfacePtr & getRenderOrder( int32_t _index, const DocumentPtr & _doc ) override;
 
     protected:
         void clearFrameBuffer_();

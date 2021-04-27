@@ -1199,13 +1199,27 @@ namespace Mengine
         return m_vsync;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderOrderInterfacePtr RenderService::createRenderOrder( uint32_t _order, const DocumentPtr & _doc )
+    const RenderOrderInterfacePtr & RenderService::getRenderOrder( int32_t _index, const DocumentPtr & _doc )
     {
+        for( const RenderOrderPtr & order : m_renderOrders )
+        {
+            int32_t order_index = order->getIndex();
+
+            if( order_index != _index )
+            {
+                continue;
+            }
+
+            return order;
+        }
+
         RenderOrderPtr order = m_factoryRenderOrder->createObject( _doc );
 
-        order->setOrder( _order );
+        order->setIndex( _index );
 
-        return order;
+        const RenderOrderInterfacePtr & emplace_order = m_renderOrders.emplace_back( order );
+
+        return emplace_order;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setRenderViewport( const Viewport & _renderViewport )

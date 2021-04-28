@@ -75,6 +75,8 @@ ADD_FILTER(
 Mixin\\\\Renderable
     Renderable.h
     RenderContext.h
+    RenderContextHelper.cpp
+    RenderContextHelper.h
 )
 
 ADD_FILTER(

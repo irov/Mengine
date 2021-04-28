@@ -6,6 +6,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/RenderContextHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -356,10 +357,10 @@ namespace Mengine
                 Helper::makeRenderBoundingBox( &bb, _vertices, _vertexCount );
             }
 
-            const RenderCameraInterfacePtr & camera = renderPass.camera;
+            const RenderCameraInterface * camera = renderPass.context.camera;
             const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
-            const RenderViewportInterfacePtr & viewport = renderPass.viewport;
+            const RenderViewportInterface * viewport = renderPass.context.viewport;
             const Viewport & vp = viewport->getViewport();
 
             mt::box2f bb_homogenize;
@@ -423,19 +424,18 @@ namespace Mengine
 
         RenderPass renderPass;
 
-        renderPass.batch = nullptr;
-        renderPass.vertexBuffer = nullptr;
-        renderPass.indexBuffer = nullptr;
-        renderPass.vertexAttribute = vertexAttribute;
         renderPass.beginRenderObject = 0U;
         renderPass.countRenderObject = 0U;
 
-        renderPass.viewport = _context->viewport;
-        renderPass.camera = _context->camera;
-        renderPass.transformation = _context->transformation;
-        renderPass.scissor = _context->scissor;
-        renderPass.target = _context->target;
+        renderPass.batch = nullptr;
+
+        renderPass.vertexAttribute = vertexAttribute;
+        renderPass.vertexBuffer = nullptr;
+        renderPass.indexBuffer = nullptr;
         renderPass.programVariable = _programVariable;
+
+        renderPass.context = *_context;
+
         renderPass.external = _external;
 
         renderPass.flags = RENDER_PASS_FLAG_SINGLE;
@@ -657,15 +657,13 @@ namespace Mengine
         {
             const RenderVertexBufferInterfacePtr & vertexBuffer = renderPass.vertexBuffer;
             const RenderIndexBufferInterfacePtr & indexBuffer = renderPass.indexBuffer;
-            const RenderViewportInterfacePtr & viewport = renderPass.viewport;
-            const RenderCameraInterfacePtr & camera = renderPass.camera;
-            const RenderTransformationInterfacePtr & transformation = renderPass.transformation;
-            const RenderScissorInterfacePtr & scissor = renderPass.scissor;
-            const RenderTargetInterfacePtr & target = renderPass.target;
+
+            const RenderContext * context = &renderPass.context;
+
             const RenderProgramVariableInterfacePtr & programVariable = renderPass.programVariable;
             const RenderExternalInterfacePtr & external = renderPass.external;
 
-            m_renderService->beginRenderPass( vertexBuffer, indexBuffer, viewport, camera, transformation, scissor, target, programVariable );
+            m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context );
 
             if( external == nullptr )
             {
@@ -678,7 +676,7 @@ namespace Mengine
                 external->onRenderExternal();
             }
 
-            m_renderService->endRenderPass( renderPass.target );
+            m_renderService->endRenderPass( context );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -965,12 +963,12 @@ namespace Mengine
         if( pass.vertexBuffer != _vertexBuffer ||
             pass.indexBuffer != _indexBuffer ||
             pass.vertexAttribute != _vertexAttribute ||
-            pass.programVariable != _programVariable ||
-            pass.viewport != _context->viewport ||
-            pass.camera != _context->camera ||
-            pass.transformation != _context->transformation ||
-            pass.scissor != _context->scissor ||
-            pass.target != _context->target )
+            pass.programVariable != _programVariable )
+        {
+            return true;
+        }
+
+        if( Helper::equalRenderContext( &pass.context, _context ) == false )
         {
             return true;
         }
@@ -989,28 +987,18 @@ namespace Mengine
         {
             RenderPass renderPass;
 
-            renderPass.batch = _batch;
-            renderPass.vertexBuffer = _vertexBuffer;
-            renderPass.indexBuffer = _indexBuffer;
-            renderPass.vertexAttribute = _vertexAttribute;
             renderPass.beginRenderObject = (uint32_t)m_renderObjects.size();
             renderPass.countRenderObject = 0U;
 
-            renderPass.viewport = _context->viewport;
-            renderPass.camera = _context->camera;
-            renderPass.transformation = _context->transformation;
-            renderPass.scissor = _context->scissor;
-            renderPass.target = _context->target;
+            renderPass.batch = _batch;
+
+            renderPass.vertexAttribute = _vertexAttribute;
+            renderPass.vertexBuffer = _vertexBuffer;
+            renderPass.indexBuffer = _indexBuffer;
             renderPass.programVariable = _programVariable;
-
-            if( m_batchMode == ERBM_SMART )
-            {
-                for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
-                {
-                    renderPass.materialEnd[i] = nullptr;
-                }
-            }
-
+            
+            renderPass.context = *_context;
+            
             renderPass.flags = RENDER_PASS_FLAG_NONE;
 
             m_renderPasses.emplace_back( renderPass );

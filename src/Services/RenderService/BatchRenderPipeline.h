@@ -47,15 +47,11 @@ namespace Mengine
         RenderIndexBufferInterfacePtr indexBuffer;
         RenderProgramVariableInterfacePtr programVariable;
 
-        RenderViewportInterfacePtr viewport;
-        RenderCameraInterfacePtr camera;
-        RenderTransformationInterfacePtr transformation;
-        RenderScissorInterfacePtr scissor;
-        RenderTargetInterfacePtr target;
+        RenderContext context;
 
         RenderExternalInterfacePtr external;
 
-        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
+        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX] = {nullptr};
 
         uint32_t flags;
     };

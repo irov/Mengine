@@ -137,7 +137,7 @@ namespace Mengine
         _viewport->end = mt::vec2f( uv_width, uv_height );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::begin()
+    bool DX9RenderTargetTexture::begin() const
     {
         IDirect3DSurface9 * pD3DSurface;
         DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
@@ -158,7 +158,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTargetTexture::end()
+    void DX9RenderTargetTexture::end() const
     {
         DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
 

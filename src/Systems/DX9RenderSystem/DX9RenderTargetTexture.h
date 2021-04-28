@@ -46,8 +46,8 @@ namespace Mengine
         void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
 
     public:
-        bool begin() override;
-        void end() override;
+        bool begin() const override;
+        void end() const override;
 
     public:
         bool getData( void * const _buffer, size_t _pitch ) const override;
@@ -73,8 +73,9 @@ namespace Mengine
         float m_hwHeightInv;
         
         IDirect3DTexture9 * m_pD3DTexture;
-        IDirect3DSurface9 * m_pD3DSurface;
-        IDirect3DSurface9 * m_pD3DSurfaceOld;
+        
+        mutable IDirect3DSurface9 * m_pD3DSurface;
+        mutable IDirect3DSurface9 * m_pD3DSurfaceOld;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderTargetTexture, RenderTargetInterface> DX9RenderTargetTexturePtr;

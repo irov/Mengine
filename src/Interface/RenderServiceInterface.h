@@ -89,14 +89,10 @@ namespace Mengine
 
         virtual bool beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderProgramVariableInterfacePtr & _programVariable ) = 0;
+            , const RenderProgramVariableInterfacePtr & _programVariable
+            , const RenderContext * context ) = 0;
 
-        virtual void endRenderPass( const RenderTargetInterfacePtr & _target ) = 0;
+        virtual void endRenderPass( const RenderContext * context ) = 0;
 
         virtual void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) = 0;
 

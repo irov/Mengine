@@ -49,6 +49,8 @@ namespace Mengine
 
         RenderContext context;
 
+        int32_t orderIndex;
+
         RenderExternalInterfacePtr external;
 
         const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX] = {nullptr};

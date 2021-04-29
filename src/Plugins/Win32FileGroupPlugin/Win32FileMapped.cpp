@@ -6,6 +6,7 @@
 #include "Win32FileHelper.h"
 #include "Win32FileMappedInputStream.h"
 
+#include "Kernel/Win32Helper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"

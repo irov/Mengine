@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 

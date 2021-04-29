@@ -5,6 +5,7 @@
 
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 

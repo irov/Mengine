@@ -32,6 +32,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/StringArguments.h"
+#include "Kernel/Win32Helper.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 

@@ -5,6 +5,7 @@
 
 #include "Win32FileHelper.h"
 
+#include "Kernel/Win32Helper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 

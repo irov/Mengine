@@ -8,6 +8,8 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/RenderContextHelper.h"
 
+#include "Config/Algorithm.h"
+
 #include "stdex/memorycopy.h"
 
 namespace Mengine
@@ -25,6 +27,23 @@ namespace Mengine
         RENDER_PASS_FLAG_SINGLE = 0x00000001,
         RENDER_PASS_FLAG_EXTERNAL = 0x00000002
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        int32_t getContextRenderOrderIndex( const RenderContext * _context )
+        {
+            if( _context->order == nullptr )
+            {
+                return 0;
+            }
+
+            const RenderOrderInterface * order = _context->order;
+
+            int32_t orderIndex = order->getIndex();
+
+            return orderIndex;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
         : m_renderService( nullptr )
@@ -436,6 +455,8 @@ namespace Mengine
 
         renderPass.context = *_context;
 
+        renderPass.orderIndex = Detail::getContextRenderOrderIndex( _context );
+        
         renderPass.external = _external;
 
         renderPass.flags = RENDER_PASS_FLAG_SINGLE;
@@ -648,10 +669,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::render()
     {
-        if( m_renderPasses.empty() == true )
+        std::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
         {
-            return;
-        }
+            return _l.orderIndex < _r.orderIndex;
+        } );
 
         for( const RenderPass & renderPass : m_renderPasses )
         {
@@ -998,6 +1019,8 @@ namespace Mengine
             renderPass.programVariable = _programVariable;
             
             renderPass.context = *_context;
+
+            renderPass.orderIndex = Detail::getContextRenderOrderIndex( _context );
             
             renderPass.flags = RENDER_PASS_FLAG_NONE;
 

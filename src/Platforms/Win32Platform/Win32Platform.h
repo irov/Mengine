@@ -205,9 +205,6 @@ namespace Mengine
         bool getCallstack( uint64_t _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const override;
 
     protected:
-        bool getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const;
-
-    protected:
         bool isNeedWindowRender() const;
 
     protected:

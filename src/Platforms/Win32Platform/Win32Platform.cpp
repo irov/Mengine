@@ -282,13 +282,8 @@ namespace Mengine
 
             if( ::SetDllDirectoryA( currentPath ) == FALSE )
             {
-                DWORD error;
-                Char str_error[1024] = {'\0'};
-                this->getLastErrorMessage( &error, str_error, 1023 );
-
-                LOGGER_ERROR( "SetDllDirectoryA invalid [error: %s (%lu)]"
-                    , str_error
-                    , error
+                LOGGER_ERROR( "SetDllDirectoryA invalid %s"
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return false;
@@ -539,11 +534,9 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid create file for '%ls' [error: %lu]"
+            LOGGER_ERROR( "invalid create file for '%ls' %s"
                 , unicode_processDumpPath.c_str()
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -656,10 +649,8 @@ namespace Mengine
         LARGE_INTEGER performanceCount;
         if( ::QueryPerformanceCounter( &performanceCount ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid query performance counter [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid query performance counter %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return 0ULL;
@@ -980,10 +971,8 @@ namespace Mengine
         RECT workArea;
         if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid get system parameters info [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid get system parameters info %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -995,10 +984,8 @@ namespace Mengine
         RECT clientArea = workArea;
         if( ::AdjustWindowRectEx( &clientArea, dwStyle, FALSE, dwExStyle ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid adjust window rect [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid adjust window rect %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -1654,11 +1641,9 @@ namespace Mengine
                 RECT rect;
                 if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
                 {
-                    DWORD error = ::GetLastError();
-
-                    LOGGER_ERROR( "invalid hwnd [%p] get client rect [error: %lu]"
+                    LOGGER_ERROR( "invalid hwnd [%p] get client rect %s"
                         , m_hWnd
-                        , error
+                        , Helper::Win32GetLastErrorMessage()
                     );
 
                     return false;
@@ -2105,10 +2090,8 @@ namespace Mengine
 
         if( result == 0 )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "Can't register window class [error: %lu]"
-                , error
+            LOGGER_ERROR( "Can't register window class %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -2132,10 +2115,8 @@ namespace Mengine
 
         if( hWnd == NULL )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "can't create window [error: %lu]"
-                , error
+            LOGGER_ERROR( "can't create window %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -2159,11 +2140,9 @@ namespace Mengine
 
         if( ::WTSRegisterSessionNotification( m_hWnd, NOTIFY_FOR_ALL_SESSIONS ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid hwnd [%p] register session notification [error: %lu]"
+            LOGGER_ERROR( "invalid hwnd [%p] register session notification %s"
                 , m_hWnd
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
         }
 
@@ -2358,12 +2337,12 @@ namespace Mengine
             {
                 DWORD error = ::GetLastError();
 
-                if( error != 0 )
+                if( error != ERROR_SUCCESS )
                 {
-                    LOGGER_ERROR( "icon '%s' for file '%ls' [error: %lu]"
+                    LOGGER_ERROR( "icon '%s' for file '%ls' %s"
                         , _name.c_str()
                         , unicode_icoFullFile.c_str()
-                        , error
+                        , Helper::Win32GetLastErrorMessage()
                     );
 
                     return false;
@@ -2429,10 +2408,8 @@ namespace Mengine
         RECT rc;
         if( ::SetRect( &rc, 0, 0, (int32_t)_resolution.getWidth(), (int32_t)_resolution.getHeight() ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid set rect [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid set rect %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -2445,10 +2422,8 @@ namespace Mengine
 
             if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
             {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "invalid adjust window rect [error: %lu]"
-                    , error
+                LOGGER_ERROR( "invalid adjust window rect %s"
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return false;
@@ -2457,10 +2432,8 @@ namespace Mengine
             RECT workArea;
             if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
             {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "invalid system parameters info [error: %lu]"
-                    , error
+                LOGGER_ERROR( "invalid system parameters info %s"
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return false;
@@ -2504,10 +2477,8 @@ namespace Mengine
         POINT point;
         if( ::GetCursorPos( &point ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid get cursor pos [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid get cursor pos %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -2523,13 +2494,11 @@ namespace Mengine
         POINT cPos = _point;
         if( ::ScreenToClient( m_hWnd, &cPos ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid hwnd [%p] screen [%lu %lu] to client [error: %lu]"
+            LOGGER_ERROR( "invalid hwnd [%p] screen [%lu %lu] to client %s"
                 , m_hWnd
                 , _point.x
                 , _point.y
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -2548,11 +2517,9 @@ namespace Mengine
         RECT rect;
         if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid hwnd [%p] get client rect [error: %lu]"
+            LOGGER_ERROR( "invalid hwnd [%p] get client rect %s"
                 , m_hWnd
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -2726,9 +2693,9 @@ namespace Mengine
                     }break;
                 default:
                     {
-                        LOGGER_ERROR( "directory '%ls' unknown [error: %lu]"
+                        LOGGER_ERROR( "directory '%ls' unknown %s"
                             , pathCreateDirectory
-                            , error
+                            , Helper::Win32GetLastErrorMessage()
                         );
 
                         return false;
@@ -2798,13 +2765,9 @@ namespace Mengine
 
         if( ::DeleteFile( pathCorrect ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            MENGINE_UNUSED( error );
-
-            LOGGER_ERROR( "file '%ls' [error: %lu]"
+            LOGGER_ERROR( "invalid DeleteFile '%ls' %s"
                 , pathCorrect
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -2863,29 +2826,19 @@ namespace Mengine
 
             if( ::DeleteFile( newFilePathCorrect ) == FALSE )
             {
-                DWORD error = ::GetLastError();
-
-                MENGINE_UNUSED( error );
-
-                LOGGER_ERROR( "invalid move file '%ls' [error: %lu]"
+                LOGGER_ERROR( "invalid move file '%ls' %s"
                     , newFilePathCorrect
-                    , error
+                    , Helper::Win32GetLastErrorMessage()
                 );
             }
         }
 
         if( ::MoveFile( oldFilePathCorrect, newFilePathCorrect ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            Char str_le[1024] = {'\0'};
-            this->getLastErrorMessage( &error, str_le, 1023 );
-
-            LOGGER_ERROR( "file '%ls' move to '%ls' [error: %s (%lu)]"
+            LOGGER_ERROR( "file '%ls' move to '%ls' %s"
                 , oldFilePathCorrect
                 , newFilePathCorrect
-                , str_le
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -3082,15 +3035,9 @@ namespace Mengine
 
         if( handle == INVALID_HANDLE_VALUE )
         {
-            DWORD error = ::GetLastError();
-
-            Char str_le[1024] = {'\0'};
-            this->getLastErrorMessage( &error, str_le, 1023 );
-
-            LOGGER_ERROR( "get file time '%ls' invalid CreateFile [error: %s (%lu)]"
+            LOGGER_ERROR( "get file time '%ls' invalid CreateFile %s"
                 , unicode_filePath
-                , str_le
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return 0U;
@@ -3104,15 +3051,9 @@ namespace Mengine
         {
             ::CloseHandle( handle );
 
-            DWORD error = ::GetLastError();
-
-            Char str_le[1024] = {'\0'};
-            this->getLastErrorMessage( &error, str_le, 1023 );
-
-            LOGGER_ERROR( "get file time '%ls' invalid GetFileTime [error: %s (%lu)]"
+            LOGGER_ERROR( "get file time '%ls' invalid GetFileTime %s"
                 , unicode_filePath
-                , str_le
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return 0U;
@@ -3167,13 +3108,11 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "'%ls:%ls' invalid createFile '%ls' [error: %lu]"
+            LOGGER_ERROR( "'%ls:%ls' invalid createFile '%ls' %s"
                 , pathCorrect
                 , fileCorrect
                 , szPath
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -3680,10 +3619,8 @@ namespace Mengine
 
                     if( ::GetThreadContext( hThread, &contex ) == FALSE )
                     {
-                        DWORD error = ::GetLastError();
-
-                        LOGGER_ERROR( "invalid get thread context [error: %lu]"
-                            , error
+                        LOGGER_ERROR( "invalid get thread context %s"
+                            , Helper::Win32GetLastErrorMessage()
                         );
 
                         ::ResumeThread( hThread );
@@ -3877,15 +3814,9 @@ namespace Mengine
 
         if( hThread == NULL )
         {
-            DWORD error = ::GetLastError();
-
-            Char str_le[1024] = {'\0'};
-            this->getLastErrorMessage( &error, str_le, 1023 );
-
-            LOGGER_ERROR( "invalid open thread [%llu] ShowWindow [error: %s (%lu)]"
+            LOGGER_ERROR( "invalid open thread [%llu] ShowWindow %s"
                 , _threadId
-                , str_le
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
 
@@ -3925,17 +3856,6 @@ namespace Mengine
         return true;
     }
 #endif
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getLastErrorMessage( DWORD * const _error, Char * const _out, size_t _capacity ) const
-    {
-        DWORD error = ::GetLastError();
-
-        bool result = this->getErrorMessage( error, _out, _capacity );
-
-        *_error = error;
-
-        return result;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::isNeedWindowRender() const
     {
@@ -4082,14 +4002,9 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD error;
-                Char str_error[1024] = {'\0'};
-                this->getLastErrorMessage( &error, str_error, 1023 );
-
-                LOGGER_ERROR( "CreateProcess '%s' return [error: %s (%lu)]"
+                LOGGER_ERROR( "CreateProcess '%s' return %s"
                     , _process
-                    , str_error
-                    , error
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return false;
@@ -4172,14 +4087,9 @@ namespace Mengine
                 , &startupInfo
                 , &processInfo ) == FALSE )
             {
-                DWORD error;
-                Char str_error[1024] = {'\0'};
-                this->getLastErrorMessage( &error, str_error, 1023 );
-
-                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%lu]"
+                LOGGER_ERROR( "invalid CreateProcess '%s' %s"
                     , _process
-                    , str_error
-                    , error
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return false;
@@ -4195,8 +4105,7 @@ namespace Mengine
             , _dynamicLibraryName
         );
 
-        Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries
-            ->createObject( _doc );
+        Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary );
 
@@ -4256,13 +4165,8 @@ namespace Mengine
 
         if( len == 0 )
         {
-            DWORD error;
-            Char str_error[1024] = {'\0'};
-            this->getLastErrorMessage( &error, str_error, 1023 );
-
-            LOGGER_ERROR( "GetCurrentDirectory invalid [error: %s (%lu)]"
-                , str_error
-                , error
+            LOGGER_ERROR( "GetCurrentDirectory invalid %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             _currentPath[0] = '\0';
@@ -4431,13 +4335,8 @@ namespace Mengine
         DWORD unicode_userNameLen = UNLEN + 1;
         if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
         {
-            DWORD error;
-            Char str_error[1024] = {'\0'};
-            this->getLastErrorMessage( &error, str_error, 1023 );
-
-            LOGGER_ERROR( "GetUserName invalid [error: %s (%lu)]"
-                , str_error
-                , error
+            LOGGER_ERROR( "GetUserName invalid %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return 0;
@@ -4461,15 +4360,9 @@ namespace Mengine
     {
         if( ::ShowWindow( m_hWnd, SW_MINIMIZE ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            Char str_le[1024] = {'\0'};
-            this->getLastErrorMessage( &error, str_le, 1023 );
-
-            LOGGER_ERROR( "invalid hwnd [%p] ShowWindow [error: %s (%lu)]"
+            LOGGER_ERROR( "invalid hwnd [%p] ShowWindow %s"
                 , m_hWnd
-                , str_le
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
         }
     }

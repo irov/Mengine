@@ -107,10 +107,8 @@ namespace Mengine
 
         if( thread == NULL )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid create thread [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid create thread %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;

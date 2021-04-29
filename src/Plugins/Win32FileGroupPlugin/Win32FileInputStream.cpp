@@ -56,11 +56,9 @@ namespace Mengine
         LARGE_INTEGER lpFileSize;
         if( ::GetFileSizeEx( m_hFile, &lpFileSize ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid file '%ls' size [error: %lu]"
+            LOGGER_ERROR( "invalid file '%ls' size %s"
                 , fullPath
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             this->close();
@@ -107,12 +105,10 @@ namespace Mengine
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "seek offset %zu size %zu [error: %lu]"
+                LOGGER_ERROR( "seek offset %zu size %zu %s"
                     , m_offset
                     , m_size
-                    , error
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 this->close();
@@ -143,12 +139,10 @@ namespace Mengine
 
         if( successful == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid close '%s:%s' handle [error: %lu]"
+            LOGGER_ERROR( "invalid close '%s:%s' handle %s"
                 , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
                 , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
         }
 
@@ -296,12 +290,10 @@ namespace Mengine
         DWORD bytesRead = 0;
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "read %zu:%zu [error: %lu]"
+            LOGGER_ERROR( "read %zu:%zu %s"
                 , _size
                 , m_size
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -344,12 +336,10 @@ namespace Mengine
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "seek %zu:%zu get [error: %lu]"
+                LOGGER_ERROR( "seek %zu:%zu get %s"
                     , _pos
                     , m_size
-                    , error
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return false;
@@ -410,10 +400,8 @@ namespace Mengine
 
         if( ::GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid get file time [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid get file time %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;

@@ -33,7 +33,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourcePtr & resourceTextupacker = resourceBank->getResourceReference( groupName, resourceTexturepackerName );
+        const ResourcePtr & resourceTextupacker = resourceBank->getResource( groupName, resourceTexturepackerName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceTextupacker, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()

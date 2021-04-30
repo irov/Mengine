@@ -185,7 +185,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResourceReference( const ConstString & _groupName, const ConstString & _name ) const
     {
-        const ResourcePtr & resource = m_globalBank->getResourceReference( _groupName, _name );
+        const ResourcePtr & resource = m_globalBank->getResource( _groupName, _name );
 
         return resource;
     }

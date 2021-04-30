@@ -34,6 +34,6 @@ namespace Mengine
         void * m_instance;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLDynamicLibrary> SDLDynamicLibraryPtr;
+    typedef IntrusivePtr<SDLDynamicLibrary, DynamicLibraryInterface> SDLDynamicLibraryPtr;
     //////////////////////////////////////////////////////////////////////////
 };

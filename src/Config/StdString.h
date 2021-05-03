@@ -104,6 +104,8 @@
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
 #elif defined(MENGINE_PLATFORM_OSX)
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
+#elif defined(MENGINE_PLATFORM_IOS)
+#   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
 #else
 #   define MENGINE_STRICMP(a, b) ::stricmp((a), (b))
 #endif

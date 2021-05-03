@@ -17,6 +17,7 @@ namespace Mengine
     class ResourceImage
         : public Resource
     {
+        DECLARE_FACTORABLE( ResourceImage );
         DECLARE_VISITABLE( Resource );
 
     public:

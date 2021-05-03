@@ -460,6 +460,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyEnginePrepareFinalize_()
     {
+        if( m_resourceWhitePixel != nullptr )
+        {
+            RESOURCE_SERVICE()
+                ->removeResource( m_resourceWhitePixel );
+
+            m_resourceWhitePixel = nullptr;
+        }
+
         if( m_cursorResource != nullptr )
         {
             m_cursorResource->release();
@@ -727,6 +735,7 @@ namespace Mengine
         }
 
         ADD_PROTOTYPE( ResourceMusic );
+        ADD_PROTOTYPE( ResourceImage );
         ADD_PROTOTYPE( ResourceImageSequence );
         ADD_PROTOTYPE( ResourceImageData );
         ADD_PROTOTYPE( ResourceImageDefault );
@@ -755,6 +764,7 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
 
         REMOVE_PROTOTYPE( ResourceMusic );
+        REMOVE_PROTOTYPE( ResourceImage );
         REMOVE_PROTOTYPE( ResourceImageSequence );
         REMOVE_PROTOTYPE( ResourceImageData );
         REMOVE_PROTOTYPE( ResourceImageDefault );
@@ -832,6 +842,27 @@ namespace Mengine
 
         GAME_SERVICE()
             ->setGameViewport( gameViewport, gameViewportAspect );
+
+        ResourceImagePtr resourceWhitePixel = RESOURCE_SERVICE()
+            ->createResource( ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "WhitePixel" ), STRINGIZE_STRING_LOCAL( "ResourceImage" ), false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        resourceWhitePixel->setMaxSize( mt::vec2f( 2.f, 2.f ) );
+        resourceWhitePixel->setSize( mt::vec2f( 2.f, 2.f ) );
+        resourceWhitePixel->setPow2( true );
+
+        const RenderTextureInterfacePtr & whiteTexture = RENDER_SERVICE()
+            ->getWhiteTexture();
+
+        resourceWhitePixel->setTexture( whiteTexture );
+
+        if( resourceWhitePixel->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize resource white pixel" );
+
+            return false;
+        }
+
+        m_resourceWhitePixel = resourceWhitePixel;
 
         return true;
     }
@@ -1383,8 +1414,8 @@ namespace Mengine
         if( m_debugResourceCompile == true )
         {
             NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &Application::notifyDebugResourceCompile_, MENGINE_DOCUMENT_FACTORABLE );
-            
-            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );            
+
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
@@ -1479,7 +1510,7 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-            
+
             ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;

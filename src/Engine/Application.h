@@ -7,6 +7,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Resource.h"
+#include "Kernel/ResourceImage.h"
 #include "Kernel/MapAspectRatioViewports.h"
 
 #include "math/vec4.h"
@@ -177,8 +178,9 @@ namespace Mengine
     protected:
         void notifyEnginePrepareFinalize_();
 
-    protected:        
+    protected:
         RenderPipelineInterfacePtr m_renderPipeline;
+        ResourceImagePtr m_resourceWhitePixel;
 
         Resolution m_currentResolution;
 

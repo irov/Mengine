@@ -23,8 +23,8 @@ namespace Mengine
         const Char * getName() const;
 
     public:
-        bool load() override;
-        void unload() override;
+        bool load();
+        void unload();
 
     public:
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
@@ -34,6 +34,6 @@ namespace Mengine
         void * m_instance;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SDLDynamicLibrary> SDLDynamicLibraryPtr;
+    typedef IntrusivePtr<SDLDynamicLibrary, DynamicLibraryInterface> SDLDynamicLibraryPtr;
     //////////////////////////////////////////////////////////////////////////
 };

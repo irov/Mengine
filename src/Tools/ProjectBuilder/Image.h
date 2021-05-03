@@ -17,6 +17,8 @@ namespace Mengine
     class Image
         : public Factorable
     {
+        DECLARE_FACTORABLE( Image );
+
     public:
         Image();
         ~Image();

@@ -3095,8 +3095,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_hasResource( const ConstString & _name )
             {
-                return RESOURCE_SERVICE()
+                bool result = RESOURCE_SERVICE()
                     ->hasResource( ConstString::none(), _name, false, nullptr );
+
+                return result;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )

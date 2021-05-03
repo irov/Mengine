@@ -6,6 +6,7 @@
 #include "Win32FileHelper.h"
 #include "Win32FileMappedInputStream.h"
 
+#include "Kernel/Win32Helper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
@@ -67,11 +68,9 @@ namespace Mengine
 
         if( ::GetFileSizeEx( m_hFile, &m_liSize ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid file '%ls' size [error: %lu]"
+            LOGGER_ERROR( "invalid file '%ls' size %s"
                 , fullPath
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             ::CloseHandle( m_hFile );
@@ -84,11 +83,9 @@ namespace Mengine
 
         if( hMapping == NULL )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid create file mapping '%ls' [error: %lu]"
+            LOGGER_ERROR( "invalid create file mapping '%ls' %s"
                 , fullPath
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             ::CloseHandle( m_hFile );

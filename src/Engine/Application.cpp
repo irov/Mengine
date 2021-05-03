@@ -159,6 +159,7 @@ namespace Mengine
         , m_bits( 0 )
         , m_fullscreen( false )
         , m_nofullscreen( false )
+        , m_alwaysfullscreen( false )
         , m_vsync( false )
         , m_FSAAType( 0 )
         , m_FSAAQuality( 0 )
@@ -279,6 +280,7 @@ namespace Mengine
         m_bits = CONFIG_VALUE( "Window", "Bits", 32U );
         m_fullscreen = CONFIG_VALUE( "Window", "Fullscreen", true );
         m_nofullscreen = CONFIG_VALUE( "Window", "NoFullscreen", false );
+        m_alwaysfullscreen = CONFIG_VALUE( "Window", "AlwaysFullscreen", false );
         m_FSAAType = CONFIG_VALUE( "Window", "FSAAType", 0 );
         m_FSAAQuality = CONFIG_VALUE( "Window", "FSAAQuality", 0 );
         m_vsync = CONFIG_VALUE( "Window", "VSync", true );
@@ -296,6 +298,11 @@ namespace Mengine
         if( HAS_OPTION( "nofullscreen" ) == true )
         {
             m_nofullscreen = true;
+        }
+
+        if( HAS_OPTION( "fullscreen" ) == true )
+        {
+            m_alwaysfullscreen = true;
         }
 
         if( HAS_OPTION( "author" ) == true || HAS_OPTION( "support" ) == true )
@@ -1414,7 +1421,7 @@ namespace Mengine
         if( m_debugResourceCompile == true )
         {
             NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &Application::notifyDebugResourceCompile_, MENGINE_DOCUMENT_FACTORABLE );
-
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );
             NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
@@ -2026,6 +2033,11 @@ namespace Mengine
             _fullscreen = false;
         }
 
+        if( m_alwaysfullscreen == true )
+        {
+            _fullscreen = true;
+        }
+
         if( m_fullscreen == _fullscreen )
         {
             return;
@@ -2137,6 +2149,11 @@ namespace Mengine
         if( m_nofullscreen == true )
         {
             return false;
+        }
+
+        if( m_alwaysfullscreen == true )
+        {
+            return true;
         }
 
         return m_fullscreen;

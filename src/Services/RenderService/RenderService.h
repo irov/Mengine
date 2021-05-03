@@ -51,6 +51,10 @@ namespace Mengine
         void destroyRenderWindow() override;
 
     public:
+        const RenderTextureInterfacePtr & getNullTexture() const override;
+        const RenderTextureInterfacePtr & getWhiteTexture() const override;
+
+    public:
         void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
     public:
@@ -144,7 +148,7 @@ namespace Mengine
         Resolution m_contentResolution;
 
         RenderTextureInterfacePtr m_nullTexture;
-        RenderTextureInterfacePtr m_whitePixelTexture;
+        RenderTextureInterfacePtr m_whiteTexture;
 
         FactoryPtr m_factoryRenderBatch;
         FactoryPtr m_factoryRenderOrder;

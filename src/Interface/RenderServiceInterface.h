@@ -74,6 +74,10 @@ namespace Mengine
         virtual void destroyRenderWindow() = 0;
 
     public:
+        virtual const RenderTextureInterfacePtr & getNullTexture() const = 0;
+        virtual const RenderTextureInterfacePtr & getWhiteTexture() const = 0;
+
+    public:
         virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 
     public:

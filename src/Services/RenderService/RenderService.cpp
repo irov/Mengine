@@ -102,7 +102,7 @@ namespace Mengine
         m_debugRenderIndices.clear();
 
         m_nullTexture = nullptr;
-        m_whitePixelTexture = nullptr;
+        m_whiteTexture = nullptr;
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
@@ -204,7 +204,7 @@ namespace Mengine
     void RenderService::destroyRenderWindow()
     {
         m_nullTexture = nullptr;
-        m_whitePixelTexture = nullptr;
+        m_whiteTexture = nullptr;
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
@@ -273,12 +273,6 @@ namespace Mengine
 
         image->unlock( 0, true );
 
-        const FileGroupInterfacePtr & defaulFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( defaulFileGroup, STRINGIZE_FILEPATH_LOCAL( "__null__" ), texture );
-
         m_nullTexture = texture;
 
         return true;
@@ -340,15 +334,19 @@ namespace Mengine
 
         image->unlock( 0, true );
 
-        const FileGroupInterfacePtr & defaulFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( defaulFileGroup, STRINGIZE_FILEPATH_LOCAL( "WhitePixel" ), texture );
-
-        m_whitePixelTexture = texture;
+        m_whiteTexture = texture;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTextureInterfacePtr & RenderService::getNullTexture() const
+    {
+        return m_nullTexture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTextureInterfacePtr & RenderService::getWhiteTexture() const
+    {
+        return m_whiteTexture;
     }
     ////////////////////////////////////////////////////////////////////////////
     void RenderService::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen )
@@ -408,7 +406,7 @@ namespace Mengine
         }
 
         m_nullTexture = nullptr;
-        m_whitePixelTexture = nullptr;
+        m_whiteTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onDeviceLostRestore()

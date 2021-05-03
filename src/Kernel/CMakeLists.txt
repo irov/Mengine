@@ -842,6 +842,7 @@ ADD_FILTER(
 Error
     Error.h
     Error.cpp
+    ErrorLevel.h
 )
 
 ADD_FILTER(

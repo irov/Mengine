@@ -207,6 +207,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &SentryPlugin::notifyCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &SentryPlugin::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &SentryPlugin::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_END, &SentryPlugin::notifyLoggerEnd_, MENGINE_DOCUMENT_FACTORABLE );
 
         SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -243,6 +244,7 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_END );
 
         LOGGER_SERVICE()
             ->unregisterLogger( m_loggerCapture );
@@ -272,13 +274,33 @@ namespace Mengine
         sentry_capture_event( event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::notifyError_( uint32_t _level, const Char * _file, int32_t _line, const Char * _message )
+    void SentryPlugin::notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
     {
         sentry_set_extra( "Error Level", sentry_value_new_int32( _level ) );
         sentry_set_extra( "Error Function", sentry_value_new_string( _file ) );
         sentry_set_extra( "Error Line", sentry_value_new_int32( _line ) );
 
         sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Error", _message );
+
+        sentry_capture_event( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SentryPlugin::notifyLoggerEnd_( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
+    {
+        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
+        MENGINE_UNUSED( _message );
+        MENGINE_UNUSED( _size );
+
+        if( _level > LM_CRITICAL )
+        {
+            return;
+        }
+
+        Char total_message[4096] = {'\0'};
+        MENGINE_STRNCPY( total_message, _message, _size > 4095 ? 4095 : _size );
+
+        sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_FATAL, "Fatal", total_message );
 
         sentry_capture_event( event );
     }

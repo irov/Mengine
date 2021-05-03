@@ -255,15 +255,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceBank::getResourceReference( const ConstString & _groupName, const ConstString & _name ) const
+    const ResourcePtr & ResourceBank::getResource( const ConstString & _groupName, const ConstString & _name ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
-
-        if( group_resource != nullptr )
+        if( _groupName != ConstString::none() )
         {
-            return group_resource;
+            const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
+
+            if( group_resource != nullptr )
+            {
+                return group_resource;
+            }
         }
 
         const ResourcePtr & global_resource = m_resources.find( _name );
@@ -279,16 +282,19 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
-
-        if( group_resource != nullptr )
+        if( _groupName != ConstString::none() )
         {
-            if( _resource != nullptr )
-            {
-                *_resource = group_resource;
-            }
+            const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
 
-            return true;
+            if( group_resource != nullptr )
+            {
+                if( _resource != nullptr )
+                {
+                    *_resource = group_resource;
+                }
+
+                return true;
+            }
         }
 
         if( _onlyGroup == true )

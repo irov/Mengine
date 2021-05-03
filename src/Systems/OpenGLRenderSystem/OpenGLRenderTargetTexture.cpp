@@ -226,7 +226,7 @@ namespace Mengine
         _viewport->end = mt::vec2f( uv_width, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderTargetTexture::begin()
+    bool OpenGLRenderTargetTexture::begin() const
     {
         GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
 
@@ -236,7 +236,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderTargetTexture::end()
+    void OpenGLRenderTargetTexture::end() const
     {
         GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, 0) );
     }

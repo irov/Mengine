@@ -3,21 +3,19 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
-#include "Kernel/IntrusivePtrView.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Document.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Pointer.h"
 #include "Kernel/Resource.h"
+#include "Kernel/ResourcePtrView.h"
 #include "Kernel/ResourcePointer.h"
 
 #include "Config/Lambda.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtrView<Resource> ResourcePtrView;
     //////////////////////////////////////////////////////////////////////////
     class ResourceBankInterface
         : public ServantInterface
@@ -42,7 +40,7 @@ namespace Mengine
         virtual void destroyResource( Resource * _resource ) = 0;
 
     public:
-        virtual const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const = 0;
+        virtual const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const = 0;
 
     public:
         virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const = 0;
@@ -57,13 +55,14 @@ namespace Mengine
                 return false;
             }
 
-            * _resource = Helper::staticResourceCast<T>( resource );
+            *_resource = Helper::staticResourceCast<T>( resource );
 
             return true;
         }
 
     public:
         typedef Lambda<void( const ResourcePtrView & )> LambdaResourceView;
+
         virtual void foreachResources( const LambdaResourceView & _lambda ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

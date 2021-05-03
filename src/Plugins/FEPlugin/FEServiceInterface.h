@@ -8,7 +8,8 @@
 #include "Kernel/FilePath.h"
 
 namespace Mengine
-{    
+{
+    //////////////////////////////////////////////////////////////////////////
     class FEServiceInterface
         : public ServiceInterface
     {

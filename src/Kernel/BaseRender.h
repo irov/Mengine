@@ -62,11 +62,11 @@ namespace Mengine
         void removeRelationRenderChildren_( BaseRender * _childRender );
 
     public:
-        void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
+        void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) override;
         const RenderViewportInterfacePtr & getRenderViewport() const override;
 
     public:
-        void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
+        void setRenderCamera( const RenderCameraInterfacePtr & _renderCamera ) override;
         const RenderCameraInterfacePtr & getRenderCamera() const override;
 
     public:
@@ -74,15 +74,20 @@ namespace Mengine
         const RenderTransformationInterfacePtr & getRenderTransformation() const override;
 
     public:
-        void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
+        void setRenderScissor( const RenderScissorInterfacePtr & _renderScissor ) override;
         const RenderScissorInterfacePtr & getRenderScissor() const override;
 
     public:
-        void setRenderTarget( const RenderTargetInterfacePtr & _target ) override;
+        void setRenderTarget( const RenderTargetInterfacePtr & _renderTarget ) override;
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
-        void makeRenderContext( RenderContext * const _constext ) const override;
+        void mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const override;
+        void makeRenderContext( RenderContext * const _renderContext ) const override;
+
+    public:
+        void setRenderOrder( const RenderOrderInterfacePtr & _renderOrder ) override;
+        const RenderOrderInterfacePtr & getRenderOrder() const override;
 
     public:
         void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
@@ -124,6 +129,7 @@ namespace Mengine
         typedef Vector<BaseRender *> VectorBaseRender;
         VectorBaseRender m_renderChildren;
 
+        RenderOrderInterfacePtr m_renderOrder;
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;
         RenderTransformationInterfacePtr m_renderTransformation;

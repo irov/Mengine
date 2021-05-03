@@ -7,8 +7,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Compilable.h"
 #include "Kernel/Unknowable.h"
-#include "Kernel/Contentable.h"
-#include "Kernel/CompilableReference.h"
 
 namespace Mengine
 {

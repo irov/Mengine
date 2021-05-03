@@ -62,12 +62,16 @@ namespace Mengine
         const RenderCameraOrthogonalPtr & getDefaultArrowCamera2D() const override;
 
     public:
-        void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
-        const RenderCameraInterfacePtr & getRenderCamera() const override;
+        void setRenderOrder( const RenderOrderInterfacePtr & _order ) override;
+        const RenderOrderInterfacePtr & getRenderOrder() const override;
 
     public:
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
         const RenderViewportInterfacePtr & getRenderViewport() const override;
+
+    public:
+        void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
+        const RenderCameraInterfacePtr & getRenderCamera() const override;
 
     public:
         void setRenderTransformation( const RenderTransformationInterfacePtr & _transformation ) override;
@@ -134,6 +138,7 @@ namespace Mengine
         RenderViewportPtr m_defaultViewport2D;
         RenderCameraOrthogonalPtr m_defaultArrowCamera2D;
 
+        RenderOrderInterfacePtr m_renderOrder;
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;
         RenderTransformationInterfacePtr m_renderTransformation;

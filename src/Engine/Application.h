@@ -198,6 +198,7 @@ namespace Mengine
         Resolution m_windowResolution;
         uint32_t m_bits;
         bool m_fullscreen;
+        bool m_alwaysfullscreen;
         bool m_nofullscreen;
         bool m_vsync;
 

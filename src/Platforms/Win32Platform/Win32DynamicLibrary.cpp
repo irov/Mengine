@@ -1,7 +1,11 @@
 #include "Win32DynamicLibrary.h"
 
+#include "Interface/PlatformInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
+
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 
@@ -40,11 +44,9 @@ namespace Mengine
 
         if( hInstance == NULL )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid load '%s' [error: %lu]"
+            LOGGER_ERROR( "invalid load '%s' %s"
                 , m_name
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;

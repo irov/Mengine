@@ -72,14 +72,10 @@ namespace Mengine
     public:
         bool beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderProgramVariableInterfacePtr & _programVariable ) override;
+            , const RenderProgramVariableInterfacePtr & _programVariable
+            , const RenderContext * context ) override;
 
-        void endRenderPass( const RenderTargetInterfacePtr & _target ) override;
+        void endRenderPass( const RenderContext * context ) override;
 
         void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) override;
 
@@ -104,7 +100,7 @@ namespace Mengine
         bool getVSync() const override;
 
     public:
-        RenderOrderInterfacePtr createRenderOrder( uint32_t _order, const DocumentPtr & _doc ) override;
+        const RenderOrderInterfacePtr & getRenderOrder( int32_t _index, const DocumentPtr & _doc ) override;
 
     protected:
         void clearFrameBuffer_();
@@ -166,6 +162,7 @@ namespace Mengine
         RenderVertexBufferInterfacePtr m_currentRenderVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentRenderIndexBuffer;
         RenderProgramVariableInterfacePtr m_currentRenderProgramVariable;
+        RenderProgramInterfacePtr m_currentRenderProgram;
 
         uint32_t m_currentRenderTextureStage;
         RenderTextureStage m_renderTextureStages[MENGINE_MAX_TEXTURE_STAGES];
@@ -185,12 +182,8 @@ namespace Mengine
         EBlendFactor m_currentSeparateAlphaBlendDst;
         EBlendOp m_currentSeparateAlphaBlendOp;
 
-        RenderViewportInterfacePtr m_currentRenderViewport;
-        RenderCameraInterfacePtr m_currentRenderCamera;
-        RenderTransformationInterfacePtr m_currentRenderTransformation;
-        RenderScissorInterfacePtr m_currentRenderScissor;
-        RenderProgramInterfacePtr m_currentRenderProgram;
-
+        RenderContext m_currentRenderContext;
+        
         RenderServiceDebugInfo m_debugInfo;
 
         Viewport m_renderViewport;

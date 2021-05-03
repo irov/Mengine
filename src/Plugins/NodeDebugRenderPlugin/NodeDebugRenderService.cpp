@@ -147,18 +147,7 @@ namespace Mengine
             }
 
             RenderContext self_context;
-
-            const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
-            const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
-            const RenderTransformationInterfacePtr & renderTransformation = selfRender->getRenderTransformation();
-            const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
-            const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
-
-            self_context.viewport = renderViewport != nullptr ? renderViewport.get() : _context->viewport;
-            self_context.camera = renderCamera != nullptr ? renderCamera.get() : _context->camera;
-            self_context.transformation = renderTransformation != nullptr ? renderTransformation.get() : _context->transformation;
-            self_context.scissor = renderScissor != nullptr ? self_context.scissor = renderScissor.get() : _context->scissor;
-            self_context.target = renderTarget != nullptr ? self_context.target = renderTarget.get() : _context->target;
+            selfRender->mergeRenderContext( _context, &self_context );
 
             if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
             {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/RenderOrderInterface.h"
 #include "Interface/RenderViewportInterface.h"
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderTransformationInterface.h"
@@ -10,6 +11,7 @@ namespace Mengine
 {
     struct RenderContext
     {
+        const RenderOrderInterface * order;
         const RenderViewportInterface * viewport;
         const RenderCameraInterface * camera;
         const RenderTransformationInterface * transformation;

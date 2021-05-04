@@ -17,7 +17,7 @@ struct v2p
     float2 tex0 : TEXCOORD0;
 };
 
-void main( in v2p IN, out v2p OUT )
+void main( in a2v IN, out v2p OUT )
 {
     OUT.pos = mul( IN.pos, ModelViewMatrix );
     OUT.color = IN.color;

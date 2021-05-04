@@ -77,7 +77,7 @@ namespace Mengine
         full_output += m_options.outputFilePath.c_str();
 
         Char buffer[2048] = {'\0'};
-        MENGINE_SNPRINTF( buffer, 2047, "/nologo /T ps_1_1 /O3 /Gec /Fo \"%s\" \"%s\""
+        MENGINE_SNPRINTF( buffer, 2047, "/nologo /T ps_4_0_level_9_1 /O3 /Gec /Fo \"%s\" \"%s\""
             , full_output.c_str()
             , full_input.c_str()
         );

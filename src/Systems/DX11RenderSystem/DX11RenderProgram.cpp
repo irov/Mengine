@@ -66,6 +66,7 @@ namespace Mengine
         descConstBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
         descConstBuffer.MiscFlags = 0;
         descConstBuffer.StructureByteStride = 0;
+		descConstBuffer.ByteWidth = 16 * 4;
 
         IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, nullptr, &m_bindMatrixBuffer) )
         {
@@ -150,7 +151,7 @@ namespace Mengine
             return;
         }
 
-        stdex::memorycopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), 16 );
+        stdex::memorycopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), 16 * 4 );
 
         pImmediateContext->Unmap( m_bindMatrixBuffer, 0 );
 

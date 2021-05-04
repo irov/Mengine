@@ -56,25 +56,25 @@ namespace Mengine
                     element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
                     element.InstanceDataStepRate = 0;
 
-                    element.SemanticName = "Position"; // this name must be same in shader
+                    element.SemanticName = "POSITION"; // this name must be same in shader
                     element.SemanticIndex = 0;
                     element.Format = DXGI_FORMAT_R32G32B32_FLOAT;
                 }
                 else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
                 {
                     element.InputSlot = 0;
-                    element.AlignedByteOffset = 12; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
+                    element.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
                     element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
                     element.InstanceDataStepRate = 0;
 
-                    element.SemanticName = "Color"; // this name must be same in shader
+                    element.SemanticName = "COLOR"; // this name must be same in shader
                     element.SemanticIndex = 0;
-                    element.Format = DXGI_FORMAT_R32_UINT;
+                    element.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
                 }
                 else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
                 {
                     element.InputSlot = 0;
-                    element.AlignedByteOffset = 16; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
+                    element.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
                     element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
                     element.InstanceDataStepRate = 0;
 
@@ -85,7 +85,7 @@ namespace Mengine
                 else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
                 {
                     element.InputSlot = 0;
-                    element.AlignedByteOffset = 24; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
+                    element.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
                     element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
                     element.InstanceDataStepRate = 0;
 

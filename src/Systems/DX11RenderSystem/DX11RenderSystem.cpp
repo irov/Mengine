@@ -1252,8 +1252,11 @@ namespace Mengine
             blendDesc.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp( _separateOp );
         }
 
-        m_blendFrameRelease.push_back( m_blendState );
-        m_blendState = nullptr;
+		if (m_blendState)
+		{
+			m_blendFrameRelease.push_back(m_blendState);
+			m_blendState = nullptr;
+		}
 
         IF_DXCALL( m_pD3DDevice, CreateBlendState, (&blendDesc, &m_blendState) )
         {
@@ -1298,6 +1301,8 @@ namespace Mengine
 
         samplerDesc.AddressU = Helper::toD3DTextureAddress( _modeU );
         samplerDesc.AddressV = Helper::toD3DTextureAddress( _modeV );
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.MaxLOD = FLT_MAX;
         // TODO: convert to border color
         //samplerDesc.BorderColor = _border;
 
@@ -1340,23 +1345,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_rasterState, "raster not created" );
+		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDevice, "device not created");
+		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "context not created");
+		MENGINE_ASSERTION_MEMORY_PANIC(m_depthStencilState, "depth state not created");
 
-        D3D11_RASTERIZER_DESC rasterDesc;
-        m_rasterState->GetDesc( &rasterDesc );
-        rasterDesc.DepthClipEnable = _depthTest ? 1 : 0;
+		D3D11_DEPTH_STENCIL_DESC depthDesc;
+		m_depthStencilState->GetDesc(&depthDesc);
+		depthDesc.DepthFunc = _depthTest ? D3D11_COMPARISON_LESS_EQUAL : D3D11_COMPARISON_ALWAYS;
 
-        m_rasterizerFrameRelease.push_back( m_rasterState );
-        m_rasterState = nullptr;
+		m_dsFrameRelease.push_back(m_depthStencilState);
+		m_depthStencilState = nullptr;
 
-        IF_DXCALL( m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState) )
-        {
-            return;
-        }
+		IF_DXCALL(m_pD3DDevice, CreateDepthStencilState, (&depthDesc, &m_depthStencilState))
+		{
+			return;
+		}
 
-        m_pD3DDeviceContext->RSSetState( m_rasterState );
+		m_pD3DDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )

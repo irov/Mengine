@@ -120,7 +120,13 @@ namespace Mengine
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
 
-		size_t size = Helper::getTextureMemorySize(m_textureDesc.Width, m_textureDesc.Height, m_hwChannels, 1, m_hwPixelFormat);
+        uint32_t rect_width = _rect.getWidth();
+        uint32_t rect_height = _rect.getHeight();
+
+        uint32_t miplevel_width = rect_width >> _level;
+        uint32_t miplevel_height = rect_height >> _level;
+
+        size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
 		MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
 			->createMemoryBuffer(MENGINE_DOCUMENT_FACTORABLE);
@@ -144,7 +150,9 @@ namespace Mengine
 			, m_hwPixelFormat
 		);
 
-		m_lockMemory = memory;
+        m_lockMemory = memory;
+
+        *_pitch = size / miplevel_height;
 
 		return buffer;
     }

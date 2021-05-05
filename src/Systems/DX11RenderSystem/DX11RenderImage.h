@@ -2,6 +2,8 @@
 
 #include "Interface/RenderImageInterface.h"
 #include "Interface/DX11RenderImageExtensionInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
@@ -82,6 +84,8 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
+
+		MemoryInterfacePtr m_lockMemory;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderImage, RenderImageInterface> DX11RenderImagePtr;

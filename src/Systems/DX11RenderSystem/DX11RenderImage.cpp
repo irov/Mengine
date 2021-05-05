@@ -3,8 +3,9 @@
 #include "DX11ErrorHelper.h"
 #include "DX11RenderEnum.h"
 
-#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -35,12 +36,17 @@ namespace Mengine
             return false;
         }
 
+		ZeroMemory(&m_textureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
         m_textureDesc.Format = D3DFormat;
         m_textureDesc.Width = _width;
         m_textureDesc.Height = _height;
         m_textureDesc.MipLevels = _mipmaps;
         m_textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
         m_textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		m_textureDesc.ArraySize = 1;
+		m_textureDesc.SampleDesc.Count = 1;
+		m_textureDesc.SampleDesc.Quality = 0;
 
         m_hwChannels = _channels;
         m_hwDepth = _depth;
@@ -87,12 +93,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImage::unbind( uint32_t _stage )
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
+		MENGINE_UNUSED(_stage);
+
+        /*ID3D11DeviceContext * pImmediateContext = nullptr;
         m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
         pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
 
-        pImmediateContext->Release();
+        pImmediateContext->Release();*/
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
@@ -112,29 +120,33 @@ namespace Mengine
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
 
-        // TODO: 1 mip only logic here
-        D3D11_SUBRESOURCE_DATA InitialData;
-        InitialData.pSysMem = _pitch;
-        InitialData.SysMemPitch = m_textureDesc.Width * m_textureDesc.Height * m_hwChannels * m_hwDepth;
+		size_t size = Helper::getTextureMemorySize(m_textureDesc.Width, m_textureDesc.Height, m_hwChannels, 1, m_hwPixelFormat);
 
-        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&m_textureDesc, &InitialData, &m_pD3DTexture) )
-        {
-            return nullptr;
-        }
+		MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+			->createMemoryBuffer(MENGINE_DOCUMENT_FACTORABLE);
 
-        D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+		MENGINE_ASSERTION_MEMORY_PANIC(memory, "invalid create memory (l %u w %u h %u c %u f %u)"
+			, _level
+			, m_textureDesc.Width
+			, m_textureDesc.Height
+			, m_hwChannels
+			, m_hwPixelFormat
+		);
 
-        shaderResourceViewDesc.Format = m_textureDesc.Format;
-        shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-        shaderResourceViewDesc.Texture2D.MipLevels = m_textureDesc.MipLevels;
+		void * buffer = memory->newBuffer(size);
 
-        IF_DXCALL( m_pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView) )
-        {
-            return nullptr;
-        }
+		MENGINE_ASSERTION_MEMORY_PANIC(buffer, "invalid new memory %zu (l %u w %u h %u c %u f %u)"
+			, size
+			, _level
+			, m_textureDesc.Width
+			, m_textureDesc.Height
+			, m_hwChannels
+			, m_hwPixelFormat
+		);
 
-        return m_pD3DTexture;
+		m_lockMemory = memory;
+
+		return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderImage::unlock( uint32_t _level, bool _successful )
@@ -142,7 +154,32 @@ namespace Mengine
         MENGINE_UNUSED( _successful );
         MENGINE_UNUSED( _level );
 
-        return false;
+		// TODO: 1 mip only logic here
+		D3D11_SUBRESOURCE_DATA InitialData;
+		InitialData.pSysMem = m_lockMemory->getBuffer();
+		InitialData.SysMemPitch = m_lockMemory->getSize();
+		InitialData.SysMemSlicePitch = 0;
+
+		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&m_textureDesc, &InitialData, &m_pD3DTexture))
+		{
+			return nullptr;
+		}
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+
+		shaderResourceViewDesc.Format = m_textureDesc.Format;
+		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+		shaderResourceViewDesc.Texture2D.MipLevels = m_textureDesc.MipLevels;
+
+		IF_DXCALL(m_pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView))
+		{
+			return nullptr;
+		}
+
+		m_lockMemory = nullptr;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     ID3D11Device * DX11RenderImage::getD3DDevice() const

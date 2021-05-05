@@ -501,11 +501,10 @@ namespace Mengine
         rasterDesc.SlopeScaledDepthBias = 0.0f;
 
         // Create the rasterizer state from the description we just filled out.
-        IF_DXCALL( m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState) )
-            if( FAILED( result ) )
-            {
-                return false;
-            }
+		IF_DXCALL(m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState))
+		{
+			return false;
+		}
 
         m_pD3DDeviceContext->RSSetState( m_rasterState );
 
@@ -1228,7 +1227,7 @@ namespace Mengine
         }
         else
         {
-            m_pD3DDeviceContext->PSSetShaderResources( _stage, 1, nullptr );
+            //m_pD3DDeviceContext->PSSetShaderResources( _stage, 1, nullptr );
 
             m_textureEnable[_stage] = false;
         }

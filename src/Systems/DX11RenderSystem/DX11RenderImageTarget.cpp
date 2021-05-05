@@ -44,14 +44,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::unbind( uint32_t _stage )
     {
-        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
+		MENGINE_UNUSED(_stage);
+
+        /*ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
 
         ID3D11DeviceContext * pImmediateContext = nullptr;
         pD3DDevice->GetImmediateContext( &pImmediateContext );
 
         pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
 
-        pImmediateContext->Release();
+        pImmediateContext->Release();*/
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

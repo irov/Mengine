@@ -37,9 +37,6 @@ namespace Mengine
         virtual void removeResource( const ResourcePtr & _resource ) = 0;
 
     public:
-        virtual void destroyResource( Resource * _resource ) = 0;
-
-    public:
         virtual const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const = 0;
 
     public:

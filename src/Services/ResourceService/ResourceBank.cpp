@@ -206,23 +206,23 @@ namespace Mengine
 
         if( prev_keep == true )
         {
+            if( _override != nullptr && IntrusivePtrBase::intrusive_ptr_get_ref( _resource.get() ) != 1 )
+            {
+                *_override = _resource.get();
+            }
+
             IntrusivePtrBase::intrusive_ptr_dec_ref( _resource.get() );
         }
-
-        if( _override != nullptr && IntrusivePtrBase::intrusive_ptr_get_ref( _resource.get() ) != 0 )
+        else
         {
-            *_override = _resource.get();
+            if( _override != nullptr )
+            {
+                *_override = _resource.get();
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::removeResource( const ResourcePtr & _resource )
-    {
-        Resource * resource = _resource.get();
-
-        this->destroyResource( resource );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceBank::destroyResource( Resource * _resource )
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
 
@@ -251,7 +251,7 @@ namespace Mengine
 
         if( keep == true )
         {
-            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource );
+            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource.get() );
         }
     }
     //////////////////////////////////////////////////////////////////////////

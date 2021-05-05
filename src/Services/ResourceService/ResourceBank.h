@@ -30,9 +30,6 @@ namespace Mengine
     public:
         void removeResource( const ResourcePtr & _resource ) override;
 
-    protected:
-        void destroyResource( Resource * _resource ) override;
-
     public:
         const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const override;
 

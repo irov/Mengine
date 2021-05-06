@@ -86,6 +86,8 @@ namespace Mengine
         float m_hwHeightInv;
 
 		MemoryInterfacePtr m_lockMemory;
+
+        size_t m_pitch;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderImage, RenderImageInterface> DX11RenderImagePtr;

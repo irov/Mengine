@@ -18,6 +18,7 @@ namespace Mengine
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
+        , m_pitch( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,15 +39,17 @@ namespace Mengine
 
 		ZeroMemory(&m_textureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-        m_textureDesc.Format = D3DFormat;
         m_textureDesc.Width = _width;
         m_textureDesc.Height = _height;
         m_textureDesc.MipLevels = _mipmaps;
-        m_textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        m_textureDesc.ArraySize = 1;
+        m_textureDesc.Format = D3DFormat;
+        m_textureDesc.SampleDesc.Count = 1;
+        m_textureDesc.SampleDesc.Quality = 0;
         m_textureDesc.Usage = D3D11_USAGE_DEFAULT;
-		m_textureDesc.ArraySize = 1;
-		m_textureDesc.SampleDesc.Count = 1;
-		m_textureDesc.SampleDesc.Quality = 0;
+        m_textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        m_textureDesc.CPUAccessFlags = 0;
+        m_textureDesc.MiscFlags = 0;
 
         m_hwChannels = _channels;
         m_hwDepth = _depth;
@@ -115,9 +118,6 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////
     Pointer DX11RenderImage::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
-        MENGINE_UNUSED( _pitch );
-        MENGINE_UNUSED( _level );
-        MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
 
         uint32_t rect_width = _rect.getWidth();
@@ -152,7 +152,9 @@ namespace Mengine
 
         m_lockMemory = memory;
 
-        *_pitch = size / miplevel_height;
+        m_pitch = size / miplevel_height;
+
+        *_pitch = m_pitch;
 
 		return buffer;
     }
@@ -165,8 +167,8 @@ namespace Mengine
 		// TODO: 1 mip only logic here
 		D3D11_SUBRESOURCE_DATA InitialData;
 		InitialData.pSysMem = m_lockMemory->getBuffer();
-		InitialData.SysMemPitch = m_lockMemory->getSize();
-		InitialData.SysMemSlicePitch = 0;
+		InitialData.SysMemPitch = m_pitch;
+		InitialData.SysMemSlicePitch = m_lockMemory->getSize();
 
 		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&m_textureDesc, &InitialData, &m_pD3DTexture))
 		{
@@ -206,7 +208,6 @@ namespace Mengine
     {
         return m_pD3DResourceView;
     }
-
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImage::getHWWidth() const
     {

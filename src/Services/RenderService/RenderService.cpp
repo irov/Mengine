@@ -221,7 +221,7 @@ namespace Mengine
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
         uint32_t null_height = 2;
-        uint32_t null_channels = 3;
+        uint32_t null_channels = 4;
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
@@ -253,20 +253,24 @@ namespace Mengine
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0x00;
         buffer_textureData[2] = 0x00;
+        buffer_textureData[3] = 0xFF;
 
-        buffer_textureData[3] = 0x00;
-        buffer_textureData[4] = 0xFF;
-        buffer_textureData[5] = 0x00;
+        buffer_textureData[4] = 0x00;
+        buffer_textureData[5] = 0xFF;
+        buffer_textureData[6] = 0x00;
+        buffer_textureData[7] = 0xFF;
 
         buffer_textureData += pitch;
 
         buffer_textureData[0] = 0x00;
         buffer_textureData[1] = 0x00;
         buffer_textureData[2] = 0xFF;
+        buffer_textureData[3] = 0xFF;
 
-        buffer_textureData[3] = 0x00;
         buffer_textureData[4] = 0x00;
         buffer_textureData[5] = 0x00;
+        buffer_textureData[6] = 0x00;
+        buffer_textureData[7] = 0xFF;
 
         image->unlock( 0, true );
 
@@ -288,7 +292,7 @@ namespace Mengine
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
         uint32_t null_height = 2;
-        uint32_t null_channels = 3;
+        uint32_t null_channels = 4;
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
@@ -320,20 +324,24 @@ namespace Mengine
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0xFF;
         buffer_textureData[2] = 0xFF;
-
         buffer_textureData[3] = 0xFF;
+
         buffer_textureData[4] = 0xFF;
         buffer_textureData[5] = 0xFF;
+        buffer_textureData[6] = 0xFF;
+        buffer_textureData[7] = 0xFF;
 
         buffer_textureData += pitch;
 
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0xFF;
         buffer_textureData[2] = 0xFF;
-
         buffer_textureData[3] = 0xFF;
+
         buffer_textureData[4] = 0xFF;
         buffer_textureData[5] = 0xFF;
+        buffer_textureData[6] = 0xFF;
+        buffer_textureData[7] = 0xFF;
 
         image->unlock( 0, true );
 

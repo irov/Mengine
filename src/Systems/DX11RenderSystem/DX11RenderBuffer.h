@@ -30,6 +30,7 @@ namespace Mengine
         bool resizeBuffer( uint32_t _elementsCount, void * _initData );
 
     protected:
+		// only for write
         MemoryInterfacePtr lockBuffer( uint32_t _offset, uint32_t _size );
         bool unlockBuffer();
 

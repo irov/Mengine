@@ -144,7 +144,7 @@ namespace Mengine
         ID3D11DeviceContext * pImmediateContext = nullptr;
         _pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-        auto hResult = pImmediateContext->Map( m_bindMatrixBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource );
+        auto hResult = pImmediateContext->Map( m_bindMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
         if( FAILED( hResult ) )
         {
             // TODO: add error log

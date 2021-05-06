@@ -1129,8 +1129,6 @@ namespace Mengine
 
             m_vertexBufferEnable = false;
 
-            m_pD3DDeviceContext->IASetVertexBuffers( 0, 1, nullptr, 0, 0 );
-
             return true;
         }
 
@@ -1197,8 +1195,11 @@ namespace Mengine
 
         UINT primCount = Helper::getPrimitiveCount( _type, _indexCount );
 
-        if( primitiveType == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST )
-            m_pD3DDeviceContext->DrawIndexed( primCount * 3, _indexStart, _vertexBase );
+		if (primitiveType == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+		{
+			m_pD3DDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			m_pD3DDeviceContext->DrawIndexed(primCount * 3, _indexStart, _vertexBase);
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )

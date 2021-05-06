@@ -168,7 +168,7 @@ namespace Mengine
 		D3D11_SUBRESOURCE_DATA InitialData;
 		InitialData.pSysMem = m_lockMemory->getBuffer();
 		InitialData.SysMemPitch = m_pitch;
-		InitialData.SysMemSlicePitch = m_lockMemory->getSize();
+		InitialData.SysMemSlicePitch = 0;
 
 		IF_DXCALL(m_pD3DDevice, CreateTexture2D, (&m_textureDesc, &InitialData, &m_pD3DTexture))
 		{

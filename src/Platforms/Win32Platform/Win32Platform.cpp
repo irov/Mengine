@@ -983,6 +983,7 @@ namespace Mengine
         DWORD dwExStyle = this->getWindowExStyle_( false );
 
         RECT clientArea = workArea;
+
         if( ::AdjustWindowRectEx( &clientArea, dwStyle, FALSE, dwExStyle ) == FALSE )
         {
             LOGGER_ERROR( "invalid adjust window rect %s"
@@ -2385,7 +2386,6 @@ namespace Mengine
         }
         else
         {
-            dwStyle |= WS_POPUP;
             dwStyle |= WS_VISIBLE;
         }
 
@@ -4127,7 +4127,26 @@ namespace Mengine
     bool Win32Platform::getDesktopResolution( Resolution * const _resolution ) const
     {
         int32_t cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
+        
+        if( cxscreen == 0 )
+        {
+            LOGGER_ERROR( "GetSystemMetrics SM_CXSCREEN invalid %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return false;
+        }
+
         int32_t cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
+
+        if( cyscreen == 0 )
+        {
+            LOGGER_ERROR( "GetSystemMetrics SM_CYSCREEN invalid %s"
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return false;
+        }
 
         _resolution->setWidth( cxscreen );
         _resolution->setHeight( cyscreen );

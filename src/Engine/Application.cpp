@@ -1891,6 +1891,8 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->getMaxClientResolution( &dres ) == false )
         {
+            LOGGER_MESSAGE( "Invalid get max client resolution" );
+
             return false;
         }
 
@@ -2077,8 +2079,8 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "%d Current Resolution [%u %u]"
-            , fullscreen
+        LOGGER_MESSAGE( "Current Resolution [%s] [%u %u]"
+            , fullscreen == true ? "Fullscreen" : "Window"
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
         );

@@ -50,6 +50,7 @@ namespace Mengine
         case BT_DYNAMIC:
             {
                 m_desc.Usage = D3D11_USAGE_DYNAMIC;
+				m_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             }break;
         };
 
@@ -102,7 +103,7 @@ namespace Mengine
         InitData.SysMemPitch = 0;
         InitData.SysMemSlicePitch = 0;
 
-        IF_DXCALL( m_pD3DDevice, CreateBuffer, (&m_desc, &InitData, &m_pD3DBuffer) )
+        IF_DXCALL( m_pD3DDevice, CreateBuffer, (&m_desc, _initData == nullptr ? nullptr : &InitData, &m_pD3DBuffer) )
         {
             return false;
         }
@@ -124,6 +125,13 @@ namespace Mengine
             return nullptr;
         }
 
+		if (m_bufferType != BT_DYNAMIC)
+		{
+			LOGGER_ERROR("lock for read for Dynamic buffer is not supported");
+
+			return nullptr;
+		}
+
         MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
 
         //uint32_t offsetSize = _offset * m_elementSize;
@@ -135,7 +143,7 @@ namespace Mengine
         ID3D11DeviceContext * pImmediateContext = nullptr;
         m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-        HRESULT hResult = pImmediateContext->Map( m_pD3DBuffer, 0, D3D11_MAP_READ, 0, &mappedResource );
+        HRESULT hResult = pImmediateContext->Map( m_pD3DBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
 
         if( FAILED( hResult ) )
         {
@@ -181,7 +189,7 @@ namespace Mengine
         // TODO: somehow needs to reinterpret offset to subresource
         // UINT offsetToLock = (UINT)(_offset * m_elementSize);
 
-        D3D11_MAP mapFlags;
+        D3D11_MAP mapFlags = D3D11_MAP_WRITE_DISCARD;
         switch( m_bufferType )
         {
         case BT_STATIC:
@@ -200,7 +208,7 @@ namespace Mengine
         ID3D11DeviceContext * pImmediateContext = nullptr;
         m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-        auto hResult = pImmediateContext->Map( m_pD3DBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource );
+        auto hResult = pImmediateContext->Map( m_pD3DBuffer, 0, mapFlags, 0, &mappedResource );
         if( FAILED( hResult ) )
         {
             // TODO: add error log

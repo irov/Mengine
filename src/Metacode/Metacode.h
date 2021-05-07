@@ -1032,6 +1032,17 @@ namespace Metacode
                 
                 public:
                     template<class C, class M>
+                    void getm_Index( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_Index );
+                    }
+                    
+                    uint32_t get_Index() const
+                    {
+                        return this->m_Index;
+                    }
+                    
+                    template<class C, class M>
                     void getm_Normalized( C _self, M _method ) const
                     {
                         (_self->*_method)( this->m_Normalized );
@@ -1107,6 +1118,7 @@ namespace Metacode
                 
                 public:
                 protected:
+                    uint32_t m_Index;
                     bool m_Normalized;
                     uint32_t m_Offset;
                     uint32_t m_Size;

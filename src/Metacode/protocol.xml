@@ -1,4 +1,4 @@
-<Protocol Version = "146">
+<Protocol Version = "147">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -94,6 +94,7 @@
           
           <Node Name="Attribute">
             <Attribute Name="Uniform" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Index" Type="uint32_t" Required="1"/>
             <Attribute Name="Size" Type="uint32_t" Required="1"/>
             <Attribute Name="Type" Type="Mengine::EVertexAttributeType" Required="1"/>
             <Attribute Name="Normalized" Type="bool" Required="1"/>

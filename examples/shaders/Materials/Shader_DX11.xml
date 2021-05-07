@@ -1,23 +1,23 @@
 <DataBlock Name="Shaders_Standart">
     <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "DX11">
         <Element Size = "32"/>
-        <Attribute Uniform = "inVert" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
-        <Attribute Uniform = "inCol" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+        <Attribute Uniform = "POSITION" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "COLOR" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
     </VertexAttribute>
     
     <VertexAttribute Name = "Vertex2D_UV1" RenderPlatform = "DX11">
         <Element Size = "32"/>
-        <Attribute Uniform = "inVert" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
-        <Attribute Uniform = "inCol" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
-        <Attribute Uniform = "inUV0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
+        <Attribute Uniform = "POSITION" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "COLOR" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+        <Attribute Uniform = "TEXCOORD" Index = "0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
     </VertexAttribute>
 
     <VertexAttribute Name = "Vertex2D_UV2" RenderPlatform = "DX11">
         <Element Size = "32"/>
-        <Attribute Uniform = "inVert" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
-        <Attribute Uniform = "inCol" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
-        <Attribute Uniform = "inUV0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
-        <Attribute Uniform = "inUV1" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "24"/>
+        <Attribute Uniform = "POSITION" Index = "0" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "COLOR" Index = "0" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+        <Attribute Uniform = "TEXCOORD" Index = "0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
+        <Attribute Uniform = "TEXCOORD" Index = "1" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "24"/>
     </VertexAttribute>  
     
     <VertexShader Name = "Vertex_Blend" RenderPlatform = "DX11">

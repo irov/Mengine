@@ -49,51 +49,35 @@ namespace Mengine
             {
                 D3D11_INPUT_ELEMENT_DESC & element = declaration[declaration_iterator++];
 
-                if( desc.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
+                element.SemanticName = desc.uniform.c_str();
+                element.SemanticIndex = desc.index;
+
+                switch( desc.type )
                 {
-                    element.InputSlot = 0;
-                    element.AlignedByteOffset = 0;
-                    element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-                    element.InstanceDataStepRate = 0;
-
-                    element.SemanticName = "POSITION"; // this name must be same in shader
-                    element.SemanticIndex = 0;
-                    element.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+                case VAT_FLOAT:
+                    {
+                        if( desc.size == 2)
+                        {
+                            element.Format = DXGI_FORMAT_R32G32_FLOAT;
+                        }
+                        else if( desc.size == 3 )
+                        {
+                            element.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+                        }
+                    }break;
+                case VAT_UNSIGNED_BYTE:
+                    {
+                        if( desc.size == 4 && desc.normalized == true )
+                        {
+                            element.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                        }
+                    }break;
                 }
-                else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
-                {
-                    element.InputSlot = 0;
-                    element.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
-                    element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-                    element.InstanceDataStepRate = 0;
-
-                    element.SemanticName = "COLOR"; // this name must be same in shader
-                    element.SemanticIndex = 0;
-                    element.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-                }
-                else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
-                {
-                    element.InputSlot = 0;
-                    element.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
-                    element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-                    element.InstanceDataStepRate = 0;
-
-                    element.SemanticName = "TEXCOORD"; // this name must be same in shader
-                    element.SemanticIndex = 0;
-                    element.Format = DXGI_FORMAT_R32G32_FLOAT;
-                }
-                else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
-                {
-                    element.InputSlot = 0;
-                    element.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; // we could use D3D11_APPEND_ALIGNED_ELEMENT;
-                    element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-                    element.InstanceDataStepRate = 0;
-
-                    element.SemanticName = "TEXCOORD"; // this name must be same in shader
-                    element.SemanticIndex = 1;
-                    element.Format = DXGI_FORMAT_R32G32_FLOAT;
-
-                }
+                
+                element.InputSlot = 0;
+                element.AlignedByteOffset = desc.offset;
+                element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+                element.InstanceDataStepRate = 0;
             }
 
             LOGGER_INFO( "render", "create vertex declaration '%s'"
@@ -141,10 +125,11 @@ namespace Mengine
         _pD3DDeviceContext->IASetInputLayout( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
+    void DX11RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
         AttributeDesc desc;
         desc.uniform = _uniform;
+        desc.index = _index;
         desc.size = _size;
         desc.type = _type;
         desc.normalized = _normalized;

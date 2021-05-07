@@ -54,6 +54,8 @@ namespace Mengine
             }break;
         };
 
+        m_desc.StructureByteStride = _elementSize;
+
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );
 

@@ -72,7 +72,8 @@ namespace Mengine
         ID3D11DeviceContext * pImmediateContext = nullptr;
         m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-        UINT sOffset = 0, sStride = m_elementSize;
+        UINT sStride = m_elementSize;
+        UINT sOffset = 0;
         pImmediateContext->IASetVertexBuffers( 0, 1, &m_pD3DBuffer, &sStride, &sOffset );
 
         pImmediateContext->Release();
@@ -83,7 +84,8 @@ namespace Mengine
         ID3D11DeviceContext * pImmediateContext = nullptr;
         m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-        UINT sOffset = 0, sStride = 0;
+        UINT sStride = 0;
+        UINT sOffset = 0;        
         pImmediateContext->IASetVertexBuffers( 0, 1, nullptr, &sStride, &sOffset );
 
         pImmediateContext->Release();

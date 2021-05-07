@@ -1037,6 +1037,7 @@ namespace Mengine
             const RenderViewportInterfacePtr & shape1_viewport = Helper::getNodeRenderViewportInheritance( shape1.get() );
 
             RenderContext shape1_context;
+            shape1_context.order = nullptr;
             shape1_context.camera = shape1_camera.get();
             shape1_context.viewport = shape1_viewport.get();
             shape1_context.transformation = nullptr;
@@ -1051,6 +1052,7 @@ namespace Mengine
             const RenderViewportInterfacePtr & shape2_viewport = Helper::getNodeRenderViewportInheritance( shape2.get() );
 
             RenderContext shape2_context;
+            shape2_context.order = nullptr;
             shape2_context.camera = shape2_camera.get();
             shape2_context.viewport = shape2_viewport.get();
             shape2_context.transformation = nullptr;
@@ -1115,6 +1117,7 @@ namespace Mengine
             const RenderViewportInterfacePtr & shape_viewport = Helper::getNodeRenderViewportInheritance( shape.get() );
 
             RenderContext shape_context;
+            shape_context.order = nullptr;
             shape_context.camera = shape_camera.get();
             shape_context.viewport = shape_viewport.get();
             shape_context.transformation = nullptr;

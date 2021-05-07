@@ -892,6 +892,8 @@ namespace Mengine
 
             if( mesh.camera_userdata != nullptr )
             {
+                context.order = _context->order;
+
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection.get();
@@ -2612,6 +2614,8 @@ namespace Mengine
 
             if( mesh.camera_userdata != nullptr )
             {
+                context.order = _context->order;
+
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection.get();

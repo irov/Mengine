@@ -741,6 +741,7 @@ namespace Mengine
 
         RenderContext context;
 
+        context.order = nullptr;
         context.viewport = m_viewport.get();
         context.camera = m_camera.get();
         context.transformation = nullptr;

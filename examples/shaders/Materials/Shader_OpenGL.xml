@@ -1,0 +1,98 @@
+<DataBlock Name="Shaders_Standart">
+    <VertexAttribute Name = "Vertex2D_UV0" RenderPlatform = "OpenGL">        
+        <Element Size = "32"/>
+        <Attribute Uniform = "inVert" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "inCol" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+    </VertexAttribute>
+    
+    <VertexAttribute Name = "Vertex2D_UV1" RenderPlatform = "OpenGL">
+        <Element Size = "32"/>
+        <Attribute Uniform = "inVert" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "inCol" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+        <Attribute Uniform = "inUV0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
+    </VertexAttribute>
+
+    <VertexAttribute Name = "Vertex2D_UV2" RenderPlatform = "OpenGL">
+        <Element Size = "32"/>
+        <Attribute Uniform = "inVert" Size = "3" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "0"/>
+        <Attribute Uniform = "inCol" Size = "4" Type = "UNSIGNED_BYTE" Normalized = "1" Stride = "32" Offset = "12"/>
+        <Attribute Uniform = "inUV0" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "16"/>
+        <Attribute Uniform = "inUV1" Size = "2" Type = "FLOAT" Normalized = "0" Stride = "32" Offset = "24"/>
+    </VertexAttribute>    
+    
+    <VertexShader Name = "Vertex_Blend" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Vertex_Blend.txt" Convert = "vsc"/>
+    </VertexShader>
+    
+    <VertexShader Name = "Vertex_Blend_ExternalAlpha" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Vertex_Blend_ExternalAlpha.txt" Convert = "vsc"/>
+    </VertexShader>    
+    
+    <VertexShader Name = "Vertex_Color" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Vertex_Color.txt" Convert = "vsc"/>
+    </VertexShader>
+    
+    <FragmentShader Name = "Fragment_Blend" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Blend.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Blend_Premultiply" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Blend_Premultiply.txt" Compile="1"/>
+    </FragmentShader>    
+    
+    <FragmentShader Name = "Fragment_Blend_ExternalAlpha" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Blend_ExternalAlpha.txt"/>
+    </FragmentShader>     
+    
+    <FragmentShader Name = "Fragment_Blend_ExternalAlpha_OnlyColor" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Blend_ExternalAlpha_OnlyColor.txt"/>
+    </FragmentShader>    
+    
+    <FragmentShader Name = "Fragment_Blend_OnlyColor" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Blend_OnlyColor.txt"/>
+    </FragmentShader>          
+    
+    <FragmentShader Name = "Fragment_Accumulator" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Accumulator.txt"/>
+    </FragmentShader>          
+    
+    <FragmentShader Name = "Fragment_TrackMatte" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_TrackMatte.txt"/>
+    </FragmentShader>    
+       
+    <FragmentShader Name = "Fragment_TrackMatteInverted" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_TrackMatteInverted.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_TrackMatte_ExternalAlpha" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_TrackMatte_ExternalAlpha.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_TrackMatteInverted_ExternalAlpha" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_TrackMatteInverted_ExternalAlpha.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_AlphaMask" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_AlphaMask.txt"/>
+    </FragmentShader>        
+    
+    <FragmentShader Name = "Fragment_Color" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Color.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Color_Premultiply" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Color_Premultiply.txt"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Desaturate" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Desaturate.txt" Compile="1"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Legendary" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Legendary.txt" Compile="1"/>
+    </FragmentShader>
+    
+    <FragmentShader Name = "Fragment_Legendary_ExternalAlpha" RenderPlatform = "OpenGL">
+        <File Path = "Materials/GL_Fragment_Legendary_ExternalAlpha.txt" Compile="1"/>
+    </FragmentShader>     
+</DataBlock>

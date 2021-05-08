@@ -33,7 +33,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourcePtr & resourceJSON = resourceBank->getResourceReference( groupName, resourceJSONName );
+        const ResourcePtr & resourceJSON = resourceBank->getResource( groupName, resourceJSONName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()
@@ -43,7 +43,7 @@ namespace Mengine
 
         resource->setResourceJSON( resourceJSON );
 
-        const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( groupName, resourceImageName );
+        const ResourceImagePtr & resourceImage = resourceBank->getResource( groupName, resourceImageName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()

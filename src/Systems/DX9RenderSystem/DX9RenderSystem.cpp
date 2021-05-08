@@ -41,6 +41,10 @@
 
 #include "Config/Algorithm.h"
 
+#ifndef MENGINE_D3D9_DLL_NAME
+#define MENGINE_D3D9_DLL_NAME "d3d9.dll"
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::DX9RenderSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -53,7 +57,6 @@ namespace Mengine
         : m_pD3D( nullptr )
         , m_pD3DDevice( nullptr )
         , m_d3dpp( nullptr )
-        , m_hd3d9( nullptr )
         , m_fullscreen( true )
         , m_depth( false )
         , m_adapterToUse( D3DADAPTER_DEFAULT )
@@ -95,36 +98,27 @@ namespace Mengine
     {
         m_frames = 0;
 
-        const Char * utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", "d3d9.dll" );
+        const Char * d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", MENGINE_D3D9_DLL_NAME );
 
-        WString unicode_d3d9DLL;
-        Helper::utf8ToUnicode( utf8_d3d9DLL, &unicode_d3d9DLL );
+        DynamicLibraryInterfacePtr d3d9Library = PLATFORM_SERVICE()
+            ->loadDynamicLibrary( d3d9DLL, MENGINE_DOCUMENT_FACTORABLE );
 
-        HMODULE hd3d9 = ::LoadLibrary( unicode_d3d9DLL.c_str() );
-
-        if( hd3d9 == nullptr )
+        if( d3d9Library == nullptr )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "Failed to load d3d9 dll '%s' [error: %lu]"
-                , utf8_d3d9DLL
-                , error
+            LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
+                , d3d9DLL
             );
 
             return false;
         }
 
-        m_hd3d9 = hd3d9;
+        m_d3d9Library = d3d9Library;
 
-        PDIRECT3DCREATE9 pDirect3DCreate9 = (PDIRECT3DCREATE9)::GetProcAddress( m_hd3d9, "Direct3DCreate9" );
+        PDIRECT3DCREATE9 pDirect3DCreate9 = (PDIRECT3DCREATE9)d3d9Library->getSymbol( "Direct3DCreate9" );
 
         if( pDirect3DCreate9 == nullptr )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address [error: %lu]"
-                , error
-            );
+            LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address" );
 
             return false;
         }
@@ -224,9 +218,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::_finalizeService()
     {
-        m_deferredCompileVertexShaders.clear();
-        m_deferredCompileFragmentShaders.clear();
-        m_deferredCompileVertexAttributes.clear();
         m_deferredCompilePrograms.clear();
 
         this->release_();
@@ -239,12 +230,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_vertexBufferCount == 0 );
         MENGINE_ASSERTION_FATAL( m_indexBufferCount == 0 );
 
-        if( m_hd3d9 != nullptr )
-        {
-            ::FreeLibrary( m_hd3d9 );
-            m_hd3d9 = nullptr;
-        }
-
+        m_d3d9Library = nullptr;
+        
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
@@ -589,36 +576,6 @@ namespace Mengine
             , m_windowResolution.getHeight()
             , Helper::getD3DFormatName( m_displayMode.Format )
         );
-
-        for( const DX9RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileVertexShaders.clear();
-
-        for( const DX9RenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileFragmentShaders.clear();
-
-        for( const DX9RenderVertexAttributePtr & attribute : m_deferredCompileVertexAttributes )
-        {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
-        }
-
-        m_deferredCompileVertexAttributes.clear();
 
         for( const DX9RenderProgramPtr & program : m_deferredCompilePrograms )
         {
@@ -1736,22 +1693,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile attribute '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexAttributes.emplace_back( attribute );
-        }
-
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1772,22 +1713,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileFragmentShaders.emplace_back( shader );
-        }
-
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1806,22 +1731,6 @@ namespace Mengine
             );
 
             return nullptr;
-        }
-
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexShaders.emplace_back( shader );
         }
 
         return shader;
@@ -2016,6 +1925,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9Program_( DX9RenderProgram * _program )
     {
+        _program->release();
         _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////

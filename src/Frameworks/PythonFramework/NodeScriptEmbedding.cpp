@@ -365,6 +365,7 @@ namespace Mengine
 
                 RenderContext context;
 
+                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -496,59 +497,6 @@ namespace Mengine
 
                 affectorHub->stopAffectors( ETA_VISIBILITY );
             }
-            //////////////////////////////////////////////////////////////////////////
-            class PythonSceneChangeCallback
-                : public SceneChangeCallbackInterface
-            {
-            public:
-                PythonSceneChangeCallback()
-                {
-                }
-
-                ~PythonSceneChangeCallback() override
-                {
-                }
-
-            public:
-                void initialize( const pybind::object & _cb, const pybind::args & _args )
-                {
-                    m_cb = _cb;
-                    m_args = _args;
-                }
-
-            public:
-                void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
-                {
-                    MENGINE_UNUSED( _error );
-
-                    if( _remove == false )
-                    {
-                        if( _scene == nullptr )
-                        {
-                            m_cb.call_args( nullptr, _enable, m_args );
-                        }
-                        else
-                        {
-                            const PythonEntityBehaviorPtr & behavior = _scene->getBehavior();
-                            const pybind::object & py_scene = behavior->getScriptObject();
-
-                            m_cb.call_args( py_scene, _enable, m_args );
-                        }
-                    }
-                    else
-                    {
-                        m_cb.call_args( m_args );
-                    }
-                }
-
-            public:
-                pybind::object m_cb;
-                pybind::args m_args;
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
-            //////////////////////////////////////////////////////////////////////////
-            FactoryPtr m_factoryPythonSceneChangeCallback;
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_Animation_play( AnimationInterface * _animation )
             {

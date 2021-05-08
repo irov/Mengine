@@ -21,7 +21,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ErrorOperator::ErrorOperator( uint32_t _level, const Char * _file, uint32_t _line )
+    ErrorOperator::ErrorOperator( EErrorLevel _level, const Char * _file, uint32_t _line )
         : m_level( _level )
         , m_file( _file )
         , m_line( _line )

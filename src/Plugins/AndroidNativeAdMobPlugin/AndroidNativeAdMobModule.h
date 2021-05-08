@@ -14,6 +14,8 @@ namespace Mengine
     class AndroidNativeAdMobModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AndroidNativeAdMobModule );
+
     public:
         typedef AndroidEventation<AdMobEventHandler> AdMobEventation;
         typedef typename AdMobEventation::LambdaEventHandler LambdaAdMobEventHandler;

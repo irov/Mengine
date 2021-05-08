@@ -30,16 +30,16 @@ namespace Mengine
     public:
         void removeResource( const ResourcePtr & _resource ) override;
 
-    protected:
-        void destroyResource( Resource * _resource ) override;
-
     public:
-        const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const override;
+        const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const override;
 
         bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const override;
 
     protected:
         void foreachResources( const LambdaResourceView & _lambda ) const override;
+
+    protected:
+        void overrideResource( const ResourcePtrView & _resource, Resource ** const _override );
 
     protected:
         ThreadMutexInterfacePtr m_mutex;

@@ -7,6 +7,8 @@ namespace Mengine
     class ImageDecoderETC1
         : public ImageDecoder
     {
+        DECLARE_FACTORABLE( ImageDecoderETC1 );
+
     public:
         ImageDecoderETC1();
         ~ImageDecoderETC1() override;

@@ -70,7 +70,7 @@ src
     PrototypeGeneratorInterface.h
     PrototypeServiceInterface.h
     VocabularyServiceInterface.h
-    WatchdogInterface.h
+    WatchdogServiceInterface.h
     ArchivatorInterface.h
     ArchiveServiceInterface.h
     PrefetcherObserverInterface.h
@@ -192,6 +192,7 @@ Render
     RenderVertexAttributeInterface.h
     RenderMaterialInterface.h
     RenderBatchInterface.h
+    RenderOrderInterface.h
     RenderPipelineInterface.h
 )
 

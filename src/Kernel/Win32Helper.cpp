@@ -1,9 +1,11 @@
 #include "Win32Helper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-#   include "Environment/Windows/WindowsIncluder.h"
+#   include "Interface/PlatformInterface.h"
+#   include "Interface/Win32PlatformExtensionInterface.h"
 #endif
 
 namespace Mengine
@@ -86,6 +88,29 @@ namespace Mengine
 #endif
 
             return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * Win32GetLastErrorMessage()
+        {
+#if defined(MENGINE_PLATFORM_WINDOWS)
+            DWORD error = ::GetLastError();
+
+            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+                ->getPlatformExtention();
+
+            Char str_le[1024] = {'\0'};
+            win32Platform->getErrorMessage( error, str_le, 1024 );
+
+            static Char message[2048] = {'\0'};
+
+            MENGINE_SPRINTF( message, "[error: %s (%lu)]"
+                , str_le
+                , error );
+
+            return message;
+#else
+            return "";
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
     }

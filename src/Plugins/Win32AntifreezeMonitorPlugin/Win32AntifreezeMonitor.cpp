@@ -262,16 +262,24 @@ namespace Mengine
         m_refalive++;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level )
+    void Win32AntifreezeMonitor::notifyLoggerBegin( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
     {
         MENGINE_UNUSED( _level );
+        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
+        MENGINE_UNUSED( _message );
+        MENGINE_UNUSED( _size );
 
         ++m_reflogger;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::notifyLoggerEnd( ELoggerLevel _level )
+    void Win32AntifreezeMonitor::notifyLoggerEnd( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
     {
         MENGINE_UNUSED( _level );
+        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
+        MENGINE_UNUSED( _message );
+        MENGINE_UNUSED( _size );
 
         MENGINE_ASSERTION_FATAL( m_reflogger != 0 );
 

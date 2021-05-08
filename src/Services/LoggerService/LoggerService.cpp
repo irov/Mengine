@@ -345,7 +345,7 @@ namespace Mengine
     {
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _level, _flag, _color, _message, _size );
         }
 
         {
@@ -368,7 +368,7 @@ namespace Mengine
 
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _level, _flag, _color, _message, _size );
         }
     }
     //////////////////////////////////////////////////////////////////////////

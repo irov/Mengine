@@ -29,6 +29,7 @@ namespace Mengine
 
     public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );
+        void release();
 
     public:
         void enable( IDirect3DDevice9 * _pD3DDevice );
@@ -36,11 +37,11 @@ namespace Mengine
     protected:
         IDirect3DPixelShader9 * m_pD3DPixelShader;
 
+        uint32_t m_compileReferenceCount;
+
         ConstString m_name;
 
         MemoryInterfacePtr m_memory;
-
-        bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderFragmentShader, RenderFragmentShaderInterface> DX9RenderFragmentShaderPtr;

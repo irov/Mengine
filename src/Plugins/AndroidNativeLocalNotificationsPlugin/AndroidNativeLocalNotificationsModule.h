@@ -14,6 +14,8 @@ namespace Mengine
     class AndroidNativeLocalNotificationsModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AndroidNativeLocalNotificationsModule );
+
     public:
         typedef AndroidEventation<LocalNotificationsEventHandler> LocalNotificationsEventation;
         typedef typename LocalNotificationsEventation::LambdaEventHandler LambdaLocalNotificationsEventHandler;

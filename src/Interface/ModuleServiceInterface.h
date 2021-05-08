@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ModuleServiceInterface
         : public ServiceInterface
     {

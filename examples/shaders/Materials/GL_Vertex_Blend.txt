@@ -1,0 +1,18 @@
+#version 330 core
+
+uniform mat4 wvpMatrix;
+
+in vec4 inVert;
+in vec4 inCol;
+in vec2 inUV0;
+
+out vec4 v_Col;
+out vec2 v_UV0;
+
+void main(void)
+{
+	gl_Position = wvpMatrix * inVert;
+    v_Col = inCol;
+    v_UV0 = inUV0;
+}
+

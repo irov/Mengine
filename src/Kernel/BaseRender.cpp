@@ -71,7 +71,7 @@ namespace Mengine
         m_relationRender->removeRelationRenderChildren_( this );
         m_relationRender = nullptr;
     }
-        //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::setExtraRelationRender( RenderInterface * _relationRender )
     {
         MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
@@ -208,7 +208,7 @@ namespace Mengine
     void BaseRender::addRelationRenderChildrenBack_( BaseRender * _childRender )
     {
         m_renderChildren.push_back( _childRender );
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRenderChildren_( BaseRender * _childRender )
     {
@@ -219,9 +219,9 @@ namespace Mengine
         m_renderChildren.erase( it_erase );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
+    void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _renderViewport )
     {
-        m_renderViewport = _viewport;
+        m_renderViewport = _renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & BaseRender::getRenderViewport() const
@@ -229,9 +229,9 @@ namespace Mengine
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderCamera( const RenderCameraInterfacePtr & _camera )
+    void BaseRender::setRenderCamera( const RenderCameraInterfacePtr & _renderCamera )
     {
-        m_renderCamera = _camera;
+        m_renderCamera = _renderCamera;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderCameraInterfacePtr & BaseRender::getRenderCamera() const
@@ -249,9 +249,9 @@ namespace Mengine
         return m_renderTransformation;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
+    void BaseRender::setRenderScissor( const RenderScissorInterfacePtr & _renderScissor )
     {
-        m_renderScissor = _scissor;
+        m_renderScissor = _renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderScissorInterfacePtr & BaseRender::getRenderScissor() const
@@ -259,9 +259,9 @@ namespace Mengine
         return m_renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRenderTarget( const RenderTargetInterfacePtr & _target )
+    void BaseRender::setRenderTarget( const RenderTargetInterfacePtr & _renderTarget )
     {
-        m_renderTarget = _target;
+        m_renderTarget = _renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderTargetInterfacePtr & BaseRender::getRenderTarget() const
@@ -269,13 +269,34 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::makeRenderContext( RenderContext * const _context ) const
+    void BaseRender::mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const
     {
-        _context->viewport = m_renderViewport.get();
-        _context->camera = m_renderCamera.get();
-        _context->transformation = m_renderTransformation.get();
-        _context->scissor = m_renderScissor.get();
-        _context->target = m_renderTarget.get();
+        _out->order = m_renderOrder != nullptr ? m_renderOrder.get() : _in->order;
+        _out->viewport = m_renderViewport != nullptr ? m_renderViewport.get() : _in->viewport;
+        _out->camera = m_renderCamera != nullptr ? m_renderCamera.get() : _in->camera;
+        _out->transformation = m_renderTransformation != nullptr ? m_renderTransformation.get() : _in->transformation;
+        _out->scissor = m_renderScissor != nullptr ? m_renderScissor.get() : _in->scissor;
+        _out->target = m_renderTarget != nullptr ? m_renderTarget.get() : _in->target;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::makeRenderContext( RenderContext * const _renderContext ) const
+    {
+        _renderContext->order = m_renderOrder.get();
+        _renderContext->viewport = m_renderViewport.get();
+        _renderContext->camera = m_renderCamera.get();
+        _renderContext->transformation = m_renderTransformation.get();
+        _renderContext->scissor = m_renderScissor.get();
+        _renderContext->target = m_renderTarget.get();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRenderOrder( const RenderOrderInterfacePtr & _renderOrder )
+    {
+        m_renderOrder = _renderOrder;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderOrderInterfacePtr & BaseRender::getRenderOrder() const
+    {
+        return m_renderOrder;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const
@@ -291,12 +312,7 @@ namespace Mengine
         }
 
         RenderContext context;
-
-        context.viewport = m_renderViewport != nullptr ? m_renderViewport.get() : _context->viewport;
-        context.camera = m_renderCamera != nullptr ? m_renderCamera.get() : _context->camera;
-        context.transformation = m_renderTransformation != nullptr ? m_renderTransformation.get() : _context->transformation;
-        context.scissor = m_renderScissor != nullptr ? m_renderScissor.get() : _context->scissor;
-        context.target = m_renderTarget != nullptr ? m_renderTarget.get() : _context->target;
+        this->mergeRenderContext( _context, &context );
 
         if( m_localHide == false && this->isPersonalTransparent() == false )
         {

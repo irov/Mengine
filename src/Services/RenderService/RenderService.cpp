@@ -2,7 +2,7 @@
 
 #include "Interface/CodecInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
@@ -21,6 +21,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/RenderContextHelper.h"
 
 #include "math/convex8.h"
 
@@ -77,6 +78,7 @@ namespace Mengine
         }
 
         m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderOrder = Helper::makeFactoryPool<RenderOrder, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderSystem = RENDER_SYSTEM();
 
@@ -101,21 +103,18 @@ namespace Mengine
         m_debugRenderIndices.clear();
 
         m_nullTexture = nullptr;
-        m_whitePixelTexture = nullptr;
+        m_whiteTexture = nullptr;
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
         m_currentRenderProgramVariable = nullptr;
         m_currentRenderProgram = nullptr;
 
-        m_currentRenderViewport = nullptr;
-        m_currentRenderCamera = nullptr;
-        m_currentRenderTransformation = nullptr;
-        m_currentRenderScissor = nullptr;
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderOrder );
 
         m_factoryRenderBatch = nullptr;
+        m_factoryRenderOrder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::_stopService()
@@ -201,16 +200,11 @@ namespace Mengine
     void RenderService::destroyRenderWindow()
     {
         m_nullTexture = nullptr;
-        m_whitePixelTexture = nullptr;
+        m_whiteTexture = nullptr;
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
         m_currentRenderProgramVariable = nullptr;
-
-        m_currentRenderViewport = nullptr;
-        m_currentRenderCamera = nullptr;
-        m_currentRenderTransformation = nullptr;
-        m_currentRenderScissor = nullptr;
         m_currentRenderProgram = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -269,12 +263,6 @@ namespace Mengine
         buffer_textureData[5] = 0x00;
 
         image->unlock( 0, true );
-
-        const FileGroupInterfacePtr & defaulFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( defaulFileGroup, STRINGIZE_FILEPATH_LOCAL( "__null__" ), texture );
 
         m_nullTexture = texture;
 
@@ -337,15 +325,19 @@ namespace Mengine
 
         image->unlock( 0, true );
 
-        const FileGroupInterfacePtr & defaulFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( defaulFileGroup, STRINGIZE_FILEPATH_LOCAL( "WhitePixel" ), texture );
-
-        m_whitePixelTexture = texture;
+        m_whiteTexture = texture;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTextureInterfacePtr & RenderService::getNullTexture() const
+    {
+        return m_nullTexture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTextureInterfacePtr & RenderService::getWhiteTexture() const
+    {
+        return m_whiteTexture;
     }
     ////////////////////////////////////////////////////////////////////////////
     void RenderService::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen )
@@ -405,7 +397,7 @@ namespace Mengine
         }
 
         m_nullTexture = nullptr;
-        m_whitePixelTexture = nullptr;
+        m_whiteTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onDeviceLostRestore()
@@ -734,14 +726,10 @@ namespace Mengine
 
         m_renderSystem->setViewMatrix( viewMatrix );
 
-        m_currentRenderCamera = nullptr;
-
         mt::mat4f projectionMatrix;
         mt::ident_m4( projectionMatrix );
 
         m_renderSystem->setProjectionMatrix( projectionMatrix );
-
-        m_currentRenderViewport = nullptr;
 
         uint32_t width = m_windowResolution.getWidth();
         uint32_t height = m_windowResolution.getHeight();
@@ -754,13 +742,11 @@ namespace Mengine
 
         m_renderSystem->setViewport( renderViewport );
 
-        m_currentRenderTransformation = nullptr;
+        Helper::clearRenderContext( &m_currentRenderContext );
 
         const mt::mat4f & worldMatrix = mt::mat4f::identity();
 
         m_renderSystem->setWorldMatrix( worldMatrix );
-
-        m_currentRenderScissor = nullptr;
 
         m_renderSystem->removeScissor();
 
@@ -890,12 +876,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , const RenderViewportInterfacePtr & _viewport
-        , const RenderCameraInterfacePtr & _camera
-        , const RenderTransformationInterfacePtr & _transformation
-        , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
-        , const RenderProgramVariableInterfacePtr & _programVariable )
+        , const RenderProgramVariableInterfacePtr & _programVariable
+        , const RenderContext * _context )
     {
         if( m_currentRenderVertexBuffer != _vertexBuffer )
         {
@@ -911,23 +893,25 @@ namespace Mengine
             m_renderSystem->setIndexBuffer( m_currentRenderIndexBuffer );
         }
 
-        if( _viewport != nullptr )
+        const RenderViewportInterface * viewport = _context->viewport;
+
+        if( viewport != nullptr )
         {
-            if( m_currentRenderViewport != _viewport )
+            if( m_currentRenderContext.viewport != viewport )
             {
-                const Viewport & viewport = _viewport->getViewport();
+                const Viewport & v = viewport->getViewport();
 
-                Viewport renderViewport;
-                this->calcRenderViewport_( viewport, &renderViewport );
+                Viewport rv;
+                this->calcRenderViewport_( v, &rv );
 
-                m_renderSystem->setViewport( renderViewport );
+                m_renderSystem->setViewport( rv );
 
-                m_currentRenderViewport = _viewport;
+                m_currentRenderContext.viewport = viewport;
             }
         }
         else
         {
-            if( m_currentRenderViewport != nullptr )
+            if( m_currentRenderContext.viewport != nullptr )
             {
                 uint32_t width = m_contentResolution.getWidth();
                 uint32_t height = m_contentResolution.getHeight();
@@ -940,28 +924,30 @@ namespace Mengine
 
                 m_renderSystem->setViewport( renderViewport );
 
-                m_currentRenderViewport = nullptr;
+                m_currentRenderContext.viewport = nullptr;
             }
         }
 
-        if( _camera != nullptr )
+        const RenderCameraInterface * camera = _context->camera;
+
+        if( camera != nullptr )
         {
-            if( m_currentRenderCamera != _camera )
+            if( m_currentRenderContext.camera != camera )
             {
-                const mt::mat4f & viewMatrix = _camera->getCameraViewMatrix();
+                const mt::mat4f & viewMatrix = camera->getCameraViewMatrix();
 
                 m_renderSystem->setViewMatrix( viewMatrix );
 
-                const mt::mat4f & projectionMatrix = _camera->getCameraProjectionMatrix();
+                const mt::mat4f & projectionMatrix = camera->getCameraProjectionMatrix();
 
                 m_renderSystem->setProjectionMatrix( projectionMatrix );
 
-                m_currentRenderCamera = _camera;
+                m_currentRenderContext.camera = camera;
             }
         }
         else
         {
-            if( m_currentRenderCamera != nullptr )
+            if( m_currentRenderContext.camera != nullptr )
             {
                 mt::mat4f viewMatrix;
                 mt::ident_m4( viewMatrix );
@@ -973,62 +959,70 @@ namespace Mengine
 
                 m_renderSystem->setProjectionMatrix( projectionMatrix );
 
-                m_currentRenderCamera = nullptr;
+                m_currentRenderContext.camera = nullptr;
             }
         }
 
-        if( _transformation != nullptr )
+        const RenderTransformationInterface * transformation = _context->transformation;
+
+        if( transformation != nullptr )
         {
-            if( m_currentRenderTransformation != _transformation )
+            if( m_currentRenderContext.transformation != transformation )
             {
-                const mt::mat4f & worldMatrix = _transformation->getTransformationWorldMatrix();
+                const mt::mat4f & worldMatrix = transformation->getTransformationWorldMatrix();
 
                 m_renderSystem->setWorldMatrix( worldMatrix );
 
-                m_currentRenderTransformation = _transformation;
+                m_currentRenderContext.transformation = transformation;
             }
         }
         else
         {
-            if( m_currentRenderTransformation != nullptr )
+            if( m_currentRenderContext.transformation != nullptr )
             {
                 const mt::mat4f & worldMatrix = mt::mat4f::identity();
 
                 m_renderSystem->setWorldMatrix( worldMatrix );
 
-                m_currentRenderTransformation = nullptr;
+                m_currentRenderContext.transformation = nullptr;
             }
         }
 
-        if( _scissor != nullptr )
+        const RenderScissorInterface * scissor = _context->scissor;
+
+        if( scissor != nullptr )
         {
-            if( m_currentRenderScissor != _scissor )
+            if( m_currentRenderContext.scissor != scissor )
             {
-                const Viewport & viewport = _scissor->getScissorViewport();
+                const Viewport & v = scissor->getScissorViewport();
 
-                m_renderSystem->setScissor( viewport );
+                m_renderSystem->setScissor( v );
 
-                m_currentRenderScissor = _scissor;
+                m_currentRenderContext.scissor = scissor;
             }
         }
         else
         {
-            if( m_currentRenderScissor != nullptr )
+            if( m_currentRenderContext.scissor != nullptr )
             {
                 m_renderSystem->removeScissor();
 
-                m_currentRenderScissor = nullptr;
+                m_currentRenderContext.scissor = nullptr;
             }
         }
 
         if( m_currentRenderProgramVariable != _programVariable )
         {
             m_currentRenderProgramVariable = _programVariable;
+
+            //ToDo
         }
 
-        if( _target != nullptr )
+        const RenderTargetInterface * target = _context->target;
+
+        if( target != nullptr )
         {
-            if( _target->begin() == false )
+            if( target->begin() == false )
             {
                 return false;
             }
@@ -1037,11 +1031,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::endRenderPass( const RenderTargetInterfacePtr & _target )
+    void RenderService::endRenderPass( const RenderContext * _context )
     {
-        if( _target != nullptr )
+        const RenderTargetInterface * target = _context->target;
+
+        if( target != nullptr )
         {
-            _target->end();
+            target->end();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1194,6 +1190,29 @@ namespace Mengine
     bool RenderService::getVSync() const
     {
         return m_vsync;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderOrderInterfacePtr & RenderService::getRenderOrder( int32_t _index, const DocumentPtr & _doc )
+    {
+        for( const RenderOrderPtr & order : m_renderOrders )
+        {
+            int32_t order_index = order->getIndex();
+
+            if( order_index != _index )
+            {
+                continue;
+            }
+
+            return order;
+        }
+
+        RenderOrderPtr order = m_factoryRenderOrder->createObject( _doc );
+
+        order->setIndex( _index );
+
+        const RenderOrderInterfacePtr & emplace_order = m_renderOrders.emplace_back( order );
+
+        return emplace_order;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setRenderViewport( const Viewport & _renderViewport )

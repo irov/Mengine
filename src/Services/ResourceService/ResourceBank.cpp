@@ -182,42 +182,47 @@ namespace Mengine
 
         resource->setMapping( true );
 
-        m_resources.change( _name, resource );
+        ResourcePtrView prev_resource = m_resources.change( _name, resource );
 
         if( _groupName != ConstString::none() )
         {
-            ResourcePtrView prev_resource = m_resourcesGroup.change( _groupName, _name, resource );
+            prev_resource = m_resourcesGroup.change( _groupName, _name, resource );
+        }
 
-            if( prev_resource != nullptr )
-            {
-                prev_resource->finalize();
-                prev_resource->setMapping( false );
-
-                bool prev_keep = prev_resource->isKeep();
-
-                if( prev_keep == true )
-                {
-                    IntrusivePtrBase::intrusive_ptr_dec_ref( prev_resource.get() );
-                }
-            }
-
-            if( _override != nullptr )
-            {
-                *_override = prev_resource.get();
-            }
+        if( prev_resource != nullptr )
+        {
+            this->overrideResource( prev_resource, _override );
         }
 
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceBank::removeResource( const ResourcePtr & _resource )
+    void ResourceBank::overrideResource( const ResourcePtrView & _resource, Resource ** const _override )
     {
-        Resource * resource = _resource.get();
+        _resource->finalize();
+        _resource->setMapping( false );
 
-        this->destroyResource( resource );
+        bool prev_keep = _resource->isKeep();
+
+        if( prev_keep == true )
+        {
+            if( _override != nullptr && IntrusivePtrBase::intrusive_ptr_get_ref( _resource.get() ) != 1 )
+            {
+                *_override = _resource.get();
+            }
+
+            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource.get() );
+        }
+        else
+        {
+            if( _override != nullptr )
+            {
+                *_override = _resource.get();
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceBank::destroyResource( Resource * _resource )
+    void ResourceBank::removeResource( const ResourcePtr & _resource )
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
 
@@ -246,19 +251,22 @@ namespace Mengine
 
         if( keep == true )
         {
-            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource );
+            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource.get() );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceBank::getResourceReference( const ConstString & _groupName, const ConstString & _name ) const
+    const ResourcePtr & ResourceBank::getResource( const ConstString & _groupName, const ConstString & _name ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
-
-        if( group_resource != nullptr )
+        if( _groupName != ConstString::none() )
         {
-            return group_resource;
+            const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
+
+            if( group_resource != nullptr )
+            {
+                return group_resource;
+            }
         }
 
         const ResourcePtr & global_resource = m_resources.find( _name );
@@ -274,16 +282,19 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
-
-        if( group_resource != nullptr )
+        if( _groupName != ConstString::none() )
         {
-            if( _resource != nullptr )
-            {
-                *_resource = group_resource;
-            }
+            const ResourcePtr & group_resource = m_resourcesGroup.find( _groupName, _name );
 
-            return true;
+            if( group_resource != nullptr )
+            {
+                if( _resource != nullptr )
+                {
+                    *_resource = group_resource;
+                }
+
+                return true;
+            }
         }
 
         if( _onlyGroup == true )

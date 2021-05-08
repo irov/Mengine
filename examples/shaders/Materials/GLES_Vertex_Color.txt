@@ -1,0 +1,14 @@
+uniform highp mat4 wvpMatrix;
+
+attribute highp vec4 inVert;
+attribute mediump vec4 inCol;
+
+varying mediump vec4 v_Col;
+
+void main(void)
+{
+    gl_Position = wvpMatrix * inVert;
+
+    v_Col = inCol;
+}
+

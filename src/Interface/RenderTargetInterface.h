@@ -30,8 +30,8 @@ namespace Mengine
         virtual void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const = 0;
 
     public:
-        virtual bool begin() = 0;
-        virtual void end() = 0;
+        virtual bool begin() const = 0;
+        virtual void end() const = 0;
 
     public:
         virtual bool getData( void * const _buffer, size_t _pitch ) const = 0;

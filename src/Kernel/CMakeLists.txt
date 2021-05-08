@@ -75,6 +75,8 @@ ADD_FILTER(
 Mixin\\\\Renderable
     Renderable.h
     RenderContext.h
+    RenderContextHelper.cpp
+    RenderContextHelper.h
 )
 
 ADD_FILTER(
@@ -306,6 +308,7 @@ Resource
     ResourceCacher.h
     Resource.cpp
     Resource.h
+    ResourcePtrView.h
     ResourceHelper.cpp
     ResourceHelper.h
 )
@@ -390,7 +393,6 @@ Shape\\\\ShapeQuad
 
 ADD_FILTER(
 Contentable
-    Contentable.h
     BaseContent.cpp
     BaseContent.h
 )
@@ -843,6 +845,7 @@ ADD_FILTER(
 Error
     Error.h
     Error.cpp
+    ErrorLevel.h
 )
 
 ADD_FILTER(

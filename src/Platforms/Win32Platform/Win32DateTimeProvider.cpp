@@ -3,6 +3,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Win32Helper.h"
 
 namespace Mengine
 {
@@ -75,10 +76,8 @@ namespace Mengine
             }break;
         case TIME_ZONE_ID_INVALID:
             {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "GetTimeZoneInformation get error [error: %lu]"
-                    , error
+                LOGGER_ERROR( "GetTimeZoneInformation get error %s"
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return 0;

@@ -21,7 +21,7 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/GameServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -159,6 +159,7 @@ namespace Mengine
         , m_bits( 0 )
         , m_fullscreen( false )
         , m_nofullscreen( false )
+        , m_alwaysfullscreen( false )
         , m_vsync( false )
         , m_FSAAType( 0 )
         , m_FSAAQuality( 0 )
@@ -279,6 +280,7 @@ namespace Mengine
         m_bits = CONFIG_VALUE( "Window", "Bits", 32U );
         m_fullscreen = CONFIG_VALUE( "Window", "Fullscreen", true );
         m_nofullscreen = CONFIG_VALUE( "Window", "NoFullscreen", false );
+        m_alwaysfullscreen = CONFIG_VALUE( "Window", "AlwaysFullscreen", false );
         m_FSAAType = CONFIG_VALUE( "Window", "FSAAType", 0 );
         m_FSAAQuality = CONFIG_VALUE( "Window", "FSAAQuality", 0 );
         m_vsync = CONFIG_VALUE( "Window", "VSync", true );
@@ -296,6 +298,11 @@ namespace Mengine
         if( HAS_OPTION( "nofullscreen" ) == true )
         {
             m_nofullscreen = true;
+        }
+
+        if( HAS_OPTION( "fullscreen" ) == true )
+        {
+            m_alwaysfullscreen = true;
         }
 
         if( HAS_OPTION( "author" ) == true || HAS_OPTION( "support" ) == true )
@@ -460,6 +467,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyEnginePrepareFinalize_()
     {
+        if( m_resourceWhitePixel != nullptr )
+        {
+            RESOURCE_SERVICE()
+                ->removeResource( m_resourceWhitePixel );
+
+            m_resourceWhitePixel = nullptr;
+        }
+
         if( m_cursorResource != nullptr )
         {
             m_cursorResource->release();
@@ -727,6 +742,7 @@ namespace Mengine
         }
 
         ADD_PROTOTYPE( ResourceMusic );
+        ADD_PROTOTYPE( ResourceImage );
         ADD_PROTOTYPE( ResourceImageSequence );
         ADD_PROTOTYPE( ResourceImageData );
         ADD_PROTOTYPE( ResourceImageDefault );
@@ -755,6 +771,7 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
 
         REMOVE_PROTOTYPE( ResourceMusic );
+        REMOVE_PROTOTYPE( ResourceImage );
         REMOVE_PROTOTYPE( ResourceImageSequence );
         REMOVE_PROTOTYPE( ResourceImageData );
         REMOVE_PROTOTYPE( ResourceImageDefault );
@@ -832,6 +849,27 @@ namespace Mengine
 
         GAME_SERVICE()
             ->setGameViewport( gameViewport, gameViewportAspect );
+
+        ResourceImagePtr resourceWhitePixel = RESOURCE_SERVICE()
+            ->createResource( ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "WhitePixel" ), STRINGIZE_STRING_LOCAL( "ResourceImage" ), false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        resourceWhitePixel->setMaxSize( mt::vec2f( 2.f, 2.f ) );
+        resourceWhitePixel->setSize( mt::vec2f( 2.f, 2.f ) );
+        resourceWhitePixel->setPow2( true );
+
+        const RenderTextureInterfacePtr & whiteTexture = RENDER_SERVICE()
+            ->getWhiteTexture();
+
+        resourceWhitePixel->setTexture( whiteTexture );
+
+        if( resourceWhitePixel->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize resource white pixel" );
+
+            return false;
+        }
+
+        m_resourceWhitePixel = resourceWhitePixel;
 
         return true;
     }
@@ -1383,8 +1421,8 @@ namespace Mengine
         if( m_debugResourceCompile == true )
         {
             NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &Application::notifyDebugResourceCompile_, MENGINE_DOCUMENT_FACTORABLE );
-            
-            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );            
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );
+            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
@@ -1479,7 +1517,7 @@ namespace Mengine
         if( m_mouseEnter == false )
         {
             InputMouseEnterEvent ne;
-            
+
             ne.special = _event.special;
             ne.touchId = _event.touchId;
             ne.x = vx;
@@ -1853,6 +1891,8 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->getMaxClientResolution( &dres ) == false )
         {
+            LOGGER_MESSAGE( "Invalid get max client resolution" );
+
             return false;
         }
 
@@ -1995,6 +2035,11 @@ namespace Mengine
             _fullscreen = false;
         }
 
+        if( m_alwaysfullscreen == true )
+        {
+            _fullscreen = true;
+        }
+
         if( m_fullscreen == _fullscreen )
         {
             return;
@@ -2034,8 +2079,8 @@ namespace Mengine
             return;
         }
 
-        LOGGER_MESSAGE( "%d Current Resolution [%u %u]"
-            , fullscreen
+        LOGGER_MESSAGE( "Current Resolution [%s] [%u %u]"
+            , fullscreen == true ? "Fullscreen" : "Window"
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
         );
@@ -2106,6 +2151,11 @@ namespace Mengine
         if( m_nofullscreen == true )
         {
             return false;
+        }
+
+        if( m_alwaysfullscreen == true )
+        {
+            return true;
         }
 
         return m_fullscreen;

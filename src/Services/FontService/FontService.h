@@ -21,6 +21,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         TextFontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc ) override;

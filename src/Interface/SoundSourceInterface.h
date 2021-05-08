@@ -16,6 +16,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SoundSourceInterface
         : public Mixin
     {

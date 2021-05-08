@@ -42,7 +42,7 @@ namespace Mengine
     {
         namespace Detail
         {
-        //////////////////////////////////////////////////////////////////////////        
+            //////////////////////////////////////////////////////////////////////////        
             template<class T>
             T * getService2( const Char * _file, uint32_t _line )
             {
@@ -111,7 +111,7 @@ namespace Mengine
         {
             static const bool * s_exist = SERVICE_PROVIDER_GET()
                 ->isExistServiceProvider( T::getStaticServiceID() );
-            
+
             return *s_exist;
         }
         //////////////////////////////////////////////////////////////////////////

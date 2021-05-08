@@ -4,6 +4,7 @@
 
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 
@@ -31,11 +32,9 @@ namespace Mengine
 
             if( handle == INVALID_HANDLE_VALUE )
             {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "invalid create file '%ls' [error: %lu]"
+                LOGGER_ERROR( "invalid create file '%ls' %s"
                     , pathCorrect
-                    , error
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return INVALID_HANDLE_VALUE;
@@ -60,11 +59,9 @@ namespace Mengine
 
             if( hFind == INVALID_HANDLE_VALUE )
             {
-                DWORD error = ::GetLastError();
-
-                LOGGER_ERROR( "file invalid find ??? (%ls) [error: %lu]"
+                LOGGER_ERROR( "file invalid find ??? (%ls) %s"
                     , _path
-                    , error
+                    , Helper::Win32GetLastErrorMessage()
                 );
 
                 return false;

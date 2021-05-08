@@ -10,6 +10,8 @@ namespace Mengine
     class AndroidNativeKernelModule
         : public ModuleBase
     {
+        DECLARE_FACTORABLE( AndroidNativeKernelModule );
+
     public:
         AndroidNativeKernelModule();
         ~AndroidNativeKernelModule() override;

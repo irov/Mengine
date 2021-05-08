@@ -36,7 +36,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourcePtr & resourceSpineAtlas = resourceBank->getResourceReference( groupName, resourceSpineAtlasName );
+        const ResourcePtr & resourceSpineAtlas = resourceBank->getResource( groupName, resourceSpineAtlasName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas, "'%s' group '%s' invalid get resource '%s'"
             , resource->getName().c_str()

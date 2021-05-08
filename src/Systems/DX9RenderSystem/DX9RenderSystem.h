@@ -2,10 +2,21 @@
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/DX9RenderSystemExtensionInterface.h"
+#include "Interface/DynamicLibraryInterface.h"
 
 #include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
 #include "DX9RenderResourceHandler.h"
+#include "DX9RenderVertexBuffer.h"
+#include "DX9RenderIndexBuffer.h"
+#include "DX9RenderImageTarget.h"
+#include "DX9RenderTargetTexture.h"
+#include "DX9RenderTargetOffscreen.h"
+#include "DX9RenderImage.h"
+#include "DX9RenderVertexShader.h"
+#include "DX9RenderFragmentShader.h"
+#include "DX9RenderVertexAttribute.h"
+#include "DX9RenderProgram.h"
 
 #include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
@@ -14,19 +25,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class DX9RenderImage, class RenderImageInterface> DX9RenderImagePtr;
-    typedef IntrusivePtr<class DX9RenderVertexShader, class RenderVertexShaderInterface> DX9RenderVertexShaderPtr;
-    typedef IntrusivePtr<class DX9RenderFragmentShader, class RenderFragmentShaderInterface> DX9RenderFragmentShaderPtr;
-    typedef IntrusivePtr<class DX9RenderVertexAttribute, class RenderVertexAttributeInterface> DX9RenderVertexAttributePtr;
-    typedef IntrusivePtr<class DX9RenderProgram, class RenderProgramInterface> DX9RenderProgramPtr;
-    //////////////////////////////////////////////////////////////////////////
-    class DX9RenderVertexBuffer;
-    class DX9RenderIndexBuffer;
-    class DX9RenderImageTarget;
-    class DX9RenderTargetTexture;
-    class DX9RenderTargetOffscreen;
-    //////////////////////////////////////////////////////////////////////////
     class DX9RenderSystem
         : public ServiceBase<RenderSystemInterface>
         , public DX9RenderSystemExtensionInterface
@@ -149,7 +147,7 @@ namespace Mengine
     private:
         ConstString m_renderSystemName;
 
-        HMODULE m_hd3d9;
+        DynamicLibraryInterfacePtr m_d3d9Library;
 
         Resolution m_windowResolution;
         Viewport m_windowViewport;
@@ -212,15 +210,6 @@ namespace Mengine
         FactoryPtr m_factoryRenderImageTarget;
         FactoryPtr m_factoryRenderTargetTexture;
         FactoryPtr m_factoryRenderTargetOffscreen;
-
-        typedef Vector<DX9RenderVertexShaderPtr> VectorRenderVertexShaders;
-        VectorRenderVertexShaders m_deferredCompileVertexShaders;
-
-        typedef Vector<DX9RenderFragmentShaderPtr> VectorRenderFragmentShaders;
-        VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
-
-        typedef Vector<DX9RenderVertexAttributePtr> VectorRenderVertexAttributes;
-        VectorRenderVertexAttributes m_deferredCompileVertexAttributes;
 
         typedef Vector<DX9RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;

@@ -9,6 +9,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ThreadSystemInterface
         : public ServiceInterface
     {

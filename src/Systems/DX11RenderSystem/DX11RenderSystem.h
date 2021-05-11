@@ -150,8 +150,6 @@ namespace Mengine
     private:
         ConstString m_renderSystemName;
 
-        HMODULE m_hd3d9;
-
         Resolution m_windowResolution;
         Viewport m_windowViewport;
         bool m_fullscreen;
@@ -185,7 +183,6 @@ namespace Mengine
 
     protected:
         bool releaseResources_();
-        void release_();
         bool restore_();
 
     protected:

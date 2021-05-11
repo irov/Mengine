@@ -235,7 +235,7 @@ namespace Mengine
         LOGGER_MESSAGE( "Scene onEntityDeactivate [%s]"
             , m_scene->getName().c_str()
         );
-        
+
         this->clearSprites();
         this->clearHotspots();
         this->clearTexts();
@@ -243,6 +243,13 @@ namespace Mengine
 
         this->clearGameNode();
         this->clearGame();
+
+        for( const ResourcePtr & resource : m_resources )
+        {
+            resource->finalize();
+        }
+
+        m_resources.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void PuzzleSceneEventReceiver::onEntityCompile( const EntityBehaviorInterfacePtr & _behavior )
@@ -456,6 +463,8 @@ namespace Mengine
 
             return nullptr;
         }
+
+        m_resources.push_back( resource );
 
         return resource;
     }
@@ -1088,7 +1097,7 @@ namespace Mengine
     {
         if( m_gameNode != nullptr )
         {
-            m_gameNode->removeFromParent();
+            m_gameNode->dispose();
             m_gameNode = nullptr;
         }
     }
@@ -1097,7 +1106,7 @@ namespace Mengine
     {
         for( const ShapeQuadFixedPtr & sprite : m_sprites )
         {
-            sprite->removeFromParent();
+            sprite->dispose();
         }
 
         m_sprites.clear();
@@ -1107,7 +1116,7 @@ namespace Mengine
     {
         for( const HotSpotPolygonPtr & hotspot : m_hotspots )
         {
-            hotspot->removeFromParent();
+            hotspot->dispose();
         }
 
         m_hotspots.clear();
@@ -1117,7 +1126,7 @@ namespace Mengine
     {
         for( const TextFieldPtr & text: m_texts )
         {
-            text->removeFromParent();
+            text->dispose();
         }
 
         m_hotspots.clear();
@@ -1127,7 +1136,7 @@ namespace Mengine
     {
         for( const NodePtr & node: m_nodes)
         {
-            node->removeFromParent();
+            node->dispose();
         }
 
         m_nodes.clear();

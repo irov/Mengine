@@ -38,7 +38,7 @@ namespace Mengine
         uint32_t getElementSize() const override;
 
     public:
-        void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
+        void addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
 
     protected:
         ConstString m_name;

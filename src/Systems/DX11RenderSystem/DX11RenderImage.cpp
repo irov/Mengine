@@ -66,6 +66,7 @@ namespace Mengine
         m_renderImageProvider = nullptr;
 
         DXRELEASE( m_pD3DTexture );
+        DXRELEASE( m_pD3DResourceView );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImage::bind( uint32_t _stage )

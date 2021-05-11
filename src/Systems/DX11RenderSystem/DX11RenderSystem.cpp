@@ -55,7 +55,6 @@ namespace Mengine
         , m_SwapChain( nullptr )
         , m_DisplayModeList( nullptr )
         , m_DisplayModeListNum( 0 )
-        , m_hd3d9( nullptr )
         , m_fullscreen( true )
         , m_depth( false )
         , m_adapterToUse( 0 )
@@ -105,6 +104,8 @@ namespace Mengine
     {
         m_frames = 0;
 
+        HRESULT result;
+
         UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef MENGINE_DEBUG
@@ -119,7 +120,7 @@ namespace Mengine
         // Create the Direct3D 11 API device object and a corresponding context.
         ID3D11Device * device;
         ID3D11DeviceContext * context;
-        D3D11CreateDevice(
+        result = D3D11CreateDevice(
             nullptr, // Specify nullptr to use the default adapter.
             D3D_DRIVER_TYPE_HARDWARE,
             nullptr,
@@ -132,10 +133,14 @@ namespace Mengine
             &context // Returns the device immediate context.
         );
 
+        if( FAILED( result ) )
+        {
+            return false;
+        }
+
         m_pD3DDevice = device;
         m_pD3DDeviceContext = context;
-
-        HRESULT result;
+        
         IDXGIFactory * factory = nullptr;
         IDXGIAdapter * adapter = nullptr;
 
@@ -229,7 +234,11 @@ namespace Mengine
     {
         m_deferredCompilePrograms.clear();
 
-        this->release_();
+        if( this->releaseResources_() == false )
+        {
+            LOGGER_ERROR( "invalid release resource" );
+            return;
+        }
 
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
 
@@ -238,12 +247,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_textureCount == 0 );
         MENGINE_ASSERTION_FATAL( m_vertexBufferCount == 0 );
         MENGINE_ASSERTION_FATAL( m_indexBufferCount == 0 );
-
-        if( m_hd3d9 != nullptr )
-        {
-            ::FreeLibrary( m_hd3d9 );
-            m_hd3d9 = nullptr;
-        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
@@ -260,6 +263,37 @@ namespace Mengine
         delete[] m_DisplayModeList;
         m_DisplayModeList = nullptr;
 
+        ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
+        m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
+
+        for( auto state : m_samplerFrameRelease )
+        {
+            state->Release();
+        }
+
+        m_samplerFrameRelease.clear();
+
+        for( auto state : m_rasterizerFrameRelease )
+        {
+            state->Release();
+        }
+
+        m_rasterizerFrameRelease.clear();
+
+        for( auto state : m_blendFrameRelease )
+        {
+            state->Release();
+        }
+
+        m_blendFrameRelease.clear();
+
+        for( auto state : m_dsFrameRelease )
+        {
+            state->Release();
+        }
+
+        m_dsFrameRelease.clear();
+
         DXRELEASE( m_renderTargetView );
         DXRELEASE( m_depthStencilBuffer );
         DXRELEASE( m_depthStencilState );
@@ -267,8 +301,30 @@ namespace Mengine
         DXRELEASE( m_blendState );
         DXRELEASE( m_rasterState );
 
-        for( int i = 0; i < MENGINE_MAX_TEXTURE_STAGES; ++i )
-            DXRELEASE( m_samplerState[i] );
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
+        {
+            if( m_samplerState[i] == nullptr )
+            {
+                continue;
+            }
+
+            m_samplerState[i]->Release();
+        }
+
+        ID3D11Debug * D3DDevice;
+        m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
+        D3DDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+        D3DDevice->Release();
+
+        ULONG ref;
+
+        ref = m_pD3DDeviceContext->Release();
+        MENGINE_UNUSED( ref );
+        m_pD3DDeviceContext = nullptr;
+
+        ref = m_pD3DDevice->Release();
+        MENGINE_UNUSED( ref );
+        m_pD3DDevice = nullptr;
 
         m_factoryRenderVertexAttribute = nullptr;
         m_factoryRenderVertexShader = nullptr;
@@ -1035,7 +1091,9 @@ namespace Mengine
 
             m_textureEnable[i] = false;
         }
-        m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, nullptr );
+
+        ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
+        m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
 
         if( m_vertexShaderEnable == true )
         {
@@ -1064,31 +1122,6 @@ namespace Mengine
     bool DX11RenderSystem::restore_()
     {
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::release_()
-    {
-        if( m_pD3DDevice == nullptr )
-        {
-            return;
-        }
-
-        if( this->releaseResources_() == false )
-        {
-            LOGGER_ERROR( "invalid release resource" );
-            return;
-        }
-
-        ULONG ref;
-
-        ref = m_pD3DDeviceContext->Release();
-        MENGINE_UNUSED( ref );
-        m_pD3DDeviceContext = nullptr;
-
-        ref = m_pD3DDevice->Release();
-        MENGINE_UNUSED( ref );
-        m_pD3DDevice = nullptr;
-
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr DX11RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentPtr & _doc )
@@ -1264,7 +1297,7 @@ namespace Mengine
             return;
         }
 
-        float BlendFactors[4] = {1, 1, 1, 1};
+        FLOAT BlendFactors[4] = {1.f, 1.f, 1.f, 1.f};
         m_pD3DDeviceContext->OMSetBlendState( m_blendState, BlendFactors, 0xffffffff );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1289,12 +1322,13 @@ namespace Mengine
 
         D3D11_SAMPLER_DESC samplerDesc;
 
-        auto samplerState = m_samplerState[_stage];
+        ID3D11SamplerState * samplerState = m_samplerState[_stage];
+
         if( samplerState != nullptr )
         {
             samplerState->GetDesc( &samplerDesc );
 
-            m_samplerFrameRelease.push_back( m_samplerState[_stage] );
+            m_samplerFrameRelease.push_back( samplerState );
             m_samplerState[_stage] = nullptr;
         }
         else
@@ -1313,9 +1347,12 @@ namespace Mengine
             return;
         }
 
+        ULONG ref = DXGETREF( samplerState );
+        (void)ref;
+
         m_samplerState[_stage] = samplerState;
 
-        m_pD3DDeviceContext->PSSetSamplers( _stage, 1, &m_samplerState[_stage] );
+        m_pD3DDeviceContext->PSSetSamplers( _stage, 1, &samplerState );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureFactor( uint32_t _color )

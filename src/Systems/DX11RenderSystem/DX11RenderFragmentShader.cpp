@@ -81,4 +81,9 @@ namespace Mengine
         _pD3DDeviceContext->PSSetShader( m_pD3DPixelShader, nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX11RenderFragmentShader::disable( ID3D11DeviceContext * _pD3DDeviceContext )
+    {
+        _pD3DDeviceContext->PSSetShader( nullptr, nullptr, 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

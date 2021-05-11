@@ -22,10 +22,6 @@ namespace Mengine
         void initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat );
         void finalize();
 
-    public:
-        void bind( uint32_t _stage ) override;
-        void unbind( uint32_t _stage ) override;
-
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;

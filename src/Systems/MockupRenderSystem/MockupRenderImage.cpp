@@ -41,16 +41,6 @@ namespace Mengine
         m_renderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImage::bind( uint32_t _stage )
-    {
-        MENGINE_UNUSED( _stage );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImage::unbind( uint32_t _stage )
-    {
-        MENGINE_UNUSED( _stage );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MockupRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         m_renderImageProvider = _renderImageProvider;

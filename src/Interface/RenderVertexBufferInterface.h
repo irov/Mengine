@@ -20,10 +20,6 @@ namespace Mengine
         virtual uint32_t getVertexSize() const = 0;
 
     public:
-        virtual void enable() = 0;
-        virtual void disable() = 0;
-
-    public:
         virtual bool resize( uint32_t _vertexCount ) = 0;
 
     public:

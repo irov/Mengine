@@ -139,12 +139,9 @@ namespace Mengine
         MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderProgramVariable::apply( ID3D11Device * _pD3DDevice, const RenderProgramInterfacePtr & _program )
+    bool DX11RenderProgramVariable::apply( ID3D11Device * _pD3DDevice, ID3D11DeviceContext * _pImmediateContext, const RenderProgramInterfacePtr & _program )
     {
         MENGINE_UNUSED( _program );
-
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        _pD3DDevice->GetImmediateContext( &pImmediateContext );
 
         // create vertex shader buffers
         if( m_vertexVariables.size() != m_vertexBuffers.size() )
@@ -189,7 +186,7 @@ namespace Mengine
         }
 
         // set all vertex buffers
-        pImmediateContext->VSSetConstantBuffers( 0, m_vertexBuffers.size(), &m_vertexBuffers[0] );
+        _pImmediateContext->VSSetConstantBuffers( 0, m_vertexBuffers.size(), &m_vertexBuffers[0] );
 
         // create pixel shader buffers
         if( m_pixelVariables.size() != m_pixelBuffers.size() )
@@ -238,8 +235,7 @@ namespace Mengine
                 auto Buffer11 = m_pixelBuffers[vertexEnumerator];
                 float * values = &m_pixelFloats[v.offset];
 
-                auto hResult = pImmediateContext->Map( Buffer11, 0, D3D11_MAP_WRITE, 0, &mappedResource );
-                if( FAILED( hResult ) )
+                IF_DXCALL( _pImmediateContext, Map, (Buffer11, 0, D3D11_MAP_WRITE, 0, &mappedResource) )
                 {
                     // TODO: add error log
                     return nullptr;
@@ -247,15 +243,13 @@ namespace Mengine
 
                 stdex::memorycopy( mappedResource.pData, 0, values, v.count * v.size );
 
-                pImmediateContext->Unmap( Buffer11, 0 );
+                _pImmediateContext->Unmap( Buffer11, 0 );
                 ++vertexEnumerator;
             }
         }
 
         // set all pixel buffers
-        pImmediateContext->PSSetConstantBuffers( 0, m_pixelBuffers.size(), &m_pixelBuffers[0] );
-
-        pImmediateContext->Release();
+        _pImmediateContext->PSSetConstantBuffers( 0, m_pixelBuffers.size(), &m_pixelBuffers[0] );
 
         return true;
     }

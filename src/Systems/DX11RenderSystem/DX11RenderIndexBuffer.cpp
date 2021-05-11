@@ -69,25 +69,15 @@ namespace Mengine
         return drawBuffer( _buffer, _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderIndexBuffer::enable()
+    void DX11RenderIndexBuffer::enable( ID3D11DeviceContext * _pD3DImmediateContext )
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
-
         UINT sOffset = 0;
-        pImmediateContext->IASetIndexBuffer( m_pD3DBuffer, m_format, sOffset );
-
-        pImmediateContext->Release();
+        _pD3DImmediateContext->IASetIndexBuffer( m_pD3DBuffer, m_format, sOffset );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderIndexBuffer::disable()
+    void DX11RenderIndexBuffer::disable( ID3D11DeviceContext * _pD3DImmediateContext )
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
-
-        pImmediateContext->IASetIndexBuffer( nullptr, m_format, 0 );
-
-        pImmediateContext->Release();
+        _pD3DImmediateContext->IASetIndexBuffer( nullptr, m_format, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

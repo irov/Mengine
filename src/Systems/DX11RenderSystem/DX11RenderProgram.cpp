@@ -87,50 +87,40 @@ namespace Mengine
         m_vertexAttribute->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::enable( ID3D11Device * _pD3DDevice )
+    void DX11RenderProgram::enable( ID3D11DeviceContext * _pImmediateContext )
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        _pD3DDevice->GetImmediateContext( &pImmediateContext );
-
         if( m_vertexShader != nullptr )
         {
-            m_vertexShader->enable( pImmediateContext );
+            m_vertexShader->enable( _pImmediateContext );
         }
 
         if( m_fragmentShader != nullptr )
         {
-            m_fragmentShader->enable( pImmediateContext );
+            m_fragmentShader->enable( _pImmediateContext );
         }
 
         if( m_vertexAttribute != nullptr )
         {
-            m_vertexAttribute->enable( pImmediateContext );
+            m_vertexAttribute->enable( _pImmediateContext );
         }
-
-        pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::disable( ID3D11Device * _pD3DDevice )
+    void DX11RenderProgram::disable( ID3D11DeviceContext * _pImmediateContext )
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        _pD3DDevice->GetImmediateContext( &pImmediateContext );
-
         if( m_vertexShader != nullptr )
         {
-            pImmediateContext->VSSetShader( nullptr, nullptr, 0 );
+            m_vertexShader->disable( _pImmediateContext );
         }
 
         if( m_fragmentShader != nullptr )
         {
-            pImmediateContext->PSSetShader( nullptr, nullptr, 0 );
+            m_fragmentShader->disable( _pImmediateContext );            
         }
 
         if( m_vertexAttribute != nullptr )
         {
-            m_vertexAttribute->disable( pImmediateContext );
+            m_vertexAttribute->disable( _pImmediateContext );
         }
-
-        pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgram::bindMatrix( ID3D11Device * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
@@ -144,17 +134,18 @@ namespace Mengine
         ID3D11DeviceContext * pImmediateContext = nullptr;
         _pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-        auto hResult = pImmediateContext->Map( m_bindMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
-        if( FAILED( hResult ) )
+        IF_DXCALL( pImmediateContext, Map, (m_bindMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
-            // TODO: add error log
+            pImmediateContext->Release();
+
             return;
         }
 
-        stdex::memorycopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), 16 * 4 );
+        stdex::memorycopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), sizeof( mt::mat4f ) );
 
         pImmediateContext->Unmap( m_bindMatrixBuffer, 0 );
 
+        pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
 }

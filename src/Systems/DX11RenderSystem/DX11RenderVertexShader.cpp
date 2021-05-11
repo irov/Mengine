@@ -76,9 +76,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexShader::enable( ID3D11DeviceContext * _pD3DDeviceContext )
+    void DX11RenderVertexShader::enable( ID3D11DeviceContext * _pImmediateContext )
     {
-        _pD3DDeviceContext->VSSetShader( m_pD3DVertexShader, nullptr, 0 );
+        _pImmediateContext->VSSetShader( m_pD3DVertexShader, nullptr, 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderVertexShader::disable( ID3D11DeviceContext * _pImmediateContext )
+    {
+        _pImmediateContext->VSSetShader( nullptr, nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void * DX11RenderVertexShader::getShaderCompileData() const

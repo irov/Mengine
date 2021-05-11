@@ -41,8 +41,8 @@ namespace Mengine
         void release();
 
     public:
-        void enable( ID3D11Device * _pD3DDevice );
-        void disable( ID3D11Device * _pD3DDevice );
+        void enable( ID3D11DeviceContext * _pImmediateContext );
+        void disable( ID3D11DeviceContext * _pImmediateContext );
 
     public:
         // b0 - first buffer must be float4x4 

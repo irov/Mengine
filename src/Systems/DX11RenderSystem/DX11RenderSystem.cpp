@@ -52,6 +52,7 @@ namespace Mengine
     DX11RenderSystem::DX11RenderSystem()
         : m_pD3DDevice( nullptr )
         , m_pD3DDeviceContext( nullptr )
+        , m_pD3DImmediateContext( nullptr )
         , m_SwapChain( nullptr )
         , m_DisplayModeList( nullptr )
         , m_DisplayModeListNum( 0 )
@@ -527,10 +528,16 @@ namespace Mengine
 
         // Set up the depth stencil view description.
         depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
         if( _MultiSampleCount <= 1 )
+        {
             depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+        }
         else
+        {
             depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+        }
+
         depthStencilViewDesc.Texture2D.MipSlice = 0;
 
         // Create the depth stencil view.
@@ -762,8 +769,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen );
 
         ID3D11Texture2D * backBufferPtr;
-        auto result = m_SwapChain->GetBuffer( 0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr );
-        if( FAILED( result ) )
+        IF_DXCALL( m_SwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
         {
             return nullptr;
         }
@@ -828,12 +834,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::beginScene()
     {
+        m_pD3DDevice->GetImmediateContext( &m_pD3DImmediateContext );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::endScene()
     {
+        m_pD3DImmediateContext->Release();
+        m_pD3DImmediateContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::swapBuffers()
@@ -947,12 +956,11 @@ namespace Mengine
             {
                 return;
             }
-
         }
 
         m_fullscreen = _fullscreen;
 
-        if( !(m_windowResolution == _resolution) )
+        if( m_windowResolution != _resolution )
         {
             m_SwapChainBufferDesc.Width = _resolution.getWidth();
             m_SwapChainBufferDesc.Height = _resolution.getHeight();
@@ -974,7 +982,7 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        updateViewport_( m_windowViewport );
+        this->updateViewport_( m_windowViewport );
 
         if( this->restore_() == false )
         {
@@ -1165,7 +1173,8 @@ namespace Mengine
             return true;
         }
 
-        _vertexBuffer->enable();
+        DX11RenderVertexBuffer * dx11VertexBuffer = _vertexBuffer.getT<DX11RenderVertexBuffer *>();
+        dx11VertexBuffer->enable( m_pD3DImmediateContext );
 
         m_vertexBufferEnable = true;
 
@@ -1209,15 +1218,15 @@ namespace Mengine
             return true;
         }
 
-        _indexBuffer->enable();
+        DX11RenderIndexBuffer * dx11IndexBuffer = _indexBuffer.getT<DX11RenderIndexBuffer *>();
+        dx11IndexBuffer->enable( m_pD3DImmediateContext );
 
         m_indexBufferEnable = true;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
-        uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
+    void DX11RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
     {
         MENGINE_UNUSED( _vertexCount );
         MENGINE_UNUSED( _minIndex );
@@ -1255,7 +1264,8 @@ namespace Mengine
 
         if( _texture != nullptr )
         {
-            _texture->bind( _stage );
+            DX11RenderImage * dx11Image = _texture.getT<DX11RenderImage *>();
+            dx11Image->bind( m_pD3DImmediateContext, _stage );
 
             m_textureEnable[_stage] = true;
         }
@@ -1274,6 +1284,7 @@ namespace Mengine
         // blend state
         D3D11_BLEND_DESC blendDesc;
         ZeroMemory( &blendDesc, sizeof( D3D11_BLEND_DESC ) );
+
         blendDesc.IndependentBlendEnable = _separate;
         blendDesc.RenderTarget[0].SrcBlend = Helper::toD3DBlendFactor( _src );
         blendDesc.RenderTarget[0].DestBlend = Helper::toD3DBlendFactor( _dst );
@@ -1346,9 +1357,6 @@ namespace Mengine
         {
             return;
         }
-
-        ULONG ref = DXGETREF( samplerState );
-        (void)ref;
 
         m_samplerState[_stage] = samplerState;
 
@@ -1480,13 +1488,15 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
 
-        if( _alphaBlend )
+        if( _alphaBlend == true )
         {
-            float BlendFactors[4] = {1, 1, 1, 1};
+            FLOAT BlendFactors[4] = {1.f, 1.f, 1.f, 1.f};
             m_pD3DDeviceContext->OMSetBlendState( m_blendState, BlendFactors, 0xffffffff );
         }
         else
+        {
             m_pD3DDeviceContext->OMSetBlendState( nullptr, nullptr, 0xffffffff );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
@@ -1623,9 +1633,9 @@ namespace Mengine
     {
         if( _program != nullptr )
         {
-            DX11RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
+            DX11RenderProgram * dx9_program = _program.getT<DX11RenderProgram *>();
 
-            dx9_program->enable( m_pD3DDevice );
+            dx9_program->enable( m_pD3DImmediateContext );
 
             const RenderVertexAttributeInterfacePtr & vertexAttribute = dx9_program->getVertexAttribute();
             const RenderVertexShaderInterfacePtr & vertexShader = dx9_program->getVertexShader();
@@ -1692,8 +1702,7 @@ namespace Mengine
     {
         DX11RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable"
-        );
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable" );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
@@ -1712,9 +1721,9 @@ namespace Mengine
             return true;
         }
 
-        DX11RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX11RenderProgramVariablePtr>(_variable);
+        DX11RenderProgramVariable * dx9_variable = _variable.getT<DX11RenderProgramVariable *>();
 
-        bool successful = dx9_variable->apply( m_pD3DDevice, _program );
+        bool successful = dx9_variable->apply( m_pD3DDevice, m_pD3DImmediateContext, _program );
 
         return successful;
     }
@@ -1734,8 +1743,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed"
-            );
+            LOGGER_ERROR( "Graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1748,8 +1756,8 @@ namespace Mengine
         {
             for( UINT i = 0; i < m_DisplayModeListNum; i++ )
             {
-                if( m_DisplayModeList[i].Width == (unsigned int)m_SwapChainBufferDesc.Width &&
-                    m_DisplayModeList[i].Height == (unsigned int)m_SwapChainBufferDesc.Height )
+                if( m_DisplayModeList[i].Width == m_SwapChainBufferDesc.Width &&
+                    m_DisplayModeList[i].Height == m_SwapChainBufferDesc.Height )
                 {
                     m_SwapChainBufferDesc.RefreshRate.Numerator = m_DisplayModeList[i].RefreshRate.Numerator;
                     m_SwapChainBufferDesc.RefreshRate.Denominator = m_DisplayModeList[i].RefreshRate.Denominator;

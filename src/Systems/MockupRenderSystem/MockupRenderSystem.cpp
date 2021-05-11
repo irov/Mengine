@@ -471,8 +471,6 @@ namespace Mengine
             return true;
         }
 
-        _vertexBuffer->enable();
-
         m_vertexBufferEnable = true;
 
         return true;
@@ -505,8 +503,6 @@ namespace Mengine
 
             return true;
         }
-
-        _indexBuffer->enable();
 
         m_indexBufferEnable = true;
 
@@ -542,8 +538,6 @@ namespace Mengine
 
         if( _texture != nullptr )
         {
-            _texture->bind( _stage );
-
             m_textureEnable[_stage] = true;
         }
         else

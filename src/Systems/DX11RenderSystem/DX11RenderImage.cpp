@@ -69,11 +69,8 @@ namespace Mengine
         DXRELEASE( m_pD3DResourceView );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImage::bind( uint32_t _stage )
+    void DX11RenderImage::bind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
-
 #ifdef MENGINE_DEBUG
 
         /*
@@ -87,24 +84,16 @@ namespace Mengine
             DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
         }*/
 
-        pImmediateContext->PSSetShaderResources( _stage, 1, &m_pD3DResourceView );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &m_pD3DResourceView );
 
 #else
-        pImmediateContext->PSSetShaderResources( _stage, 1, &m_pD3DResourceView );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &m_pD3DResourceView );
 #endif
-        pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImage::unbind( uint32_t _stage )
+    void DX11RenderImage::unbind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
     {
-		MENGINE_UNUSED(_stage);
-
-        /*ID3D11DeviceContext * pImmediateContext = nullptr;
-        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
-
-        pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
-
-        pImmediateContext->Release();*/
+        _pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

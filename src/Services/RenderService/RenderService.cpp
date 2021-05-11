@@ -90,6 +90,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ) );
 
+        m_renderOrders.clear();
         m_renderBatches.clear();
 
         for( const RenderBatchPtr & renderBatch : m_cacheRenderBatches )

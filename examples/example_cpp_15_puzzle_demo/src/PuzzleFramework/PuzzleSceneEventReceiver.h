@@ -11,6 +11,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Vector.h"
+#include "Kernel/VectorResources.h"
 #include "Kernel/Node.h"
 
 namespace Mengine
@@ -97,6 +98,8 @@ namespace Mengine
         VectorIndexes m_indexes;
         VectorShapeQuadFixedPtr m_parts;
         VectorTextFieldPtr m_texts;
+
+        VectorResources m_resources;
 
         GOAP::SemaphoreInterfacePtr m_semaphoreRandomOver;
         GOAP::SemaphoreInterfacePtr m_semaphoreGameOver;

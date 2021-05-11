@@ -658,9 +658,7 @@ namespace Mengine
     {
         for( const MatrixProxyPtr & proxy : m_matrixProxies )
         {
-            proxy->removeFromParent();
-            proxy->removeChildren( []( const NodePtr & )
-            {} );
+            proxy->dispose();
         }
 
         m_matrixProxies.clear();
@@ -670,8 +668,6 @@ namespace Mengine
             const Movie2SlotPtr & slot = value.element;
 
             slot->dispose();
-            slot->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_slots.clear();
@@ -679,10 +675,8 @@ namespace Mengine
         for( const HashtableSockets::value_type & value : m_sockets )
         {
             const HotSpotPolygonPtr & hotspot = value.element;
-            hotspot->dispose();
-            hotspot->removeChildren( []( const NodePtr & )
-            {} );
 
+            hotspot->dispose();
         }
 
         m_sockets.clear();
@@ -690,9 +684,8 @@ namespace Mengine
         for( const HashtableTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.element;
+
             text->dispose();
-            text->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_texts.clear();
@@ -700,9 +693,8 @@ namespace Mengine
         for( const HashtableSprites::value_type & value : m_sprites )
         {
             const ShapeQuadFixedPtr & sprite = value.element;
+            
             sprite->dispose();
-            sprite->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_sprites.clear();
@@ -712,8 +704,6 @@ namespace Mengine
             const NodePtr & astralaxEmitter = value.element;
 
             astralaxEmitter->dispose();
-            astralaxEmitter->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_astralaxEmitters.clear();

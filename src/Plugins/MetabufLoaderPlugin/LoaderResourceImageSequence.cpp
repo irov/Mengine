@@ -44,7 +44,7 @@ namespace Mengine
                 , resourceName.c_str() 
             );
 
-            const ResourceImagePtr & resourceImage = resourceBank->getResourceReference( groupName, resourceName );
+            const ResourceImagePtr & resourceImage = resourceBank->getResource( groupName, resourceName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "'%s' group '%s' invalid get sequence image resource '%s'"
                 , resource->getName().c_str()

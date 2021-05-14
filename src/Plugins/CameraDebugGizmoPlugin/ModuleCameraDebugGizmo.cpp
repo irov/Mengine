@@ -32,8 +32,7 @@ namespace Mengine
 
         m_mouseWheelEventHandle = Helper::addGlobalMouseWheelEvent( [this]( const InputMouseWheelEvent & _event )
         {
-            bool controlDown = INPUT_SERVICE()
-                ->isControlDown();
+            bool controlDown = _event.special.isControl;
 
             if( controlDown == false )
             {
@@ -82,8 +81,7 @@ namespace Mengine
 
         m_mouseMoveEventHandle = Helper::addGlobalMouseMoveEvent( []( const InputMouseMoveEvent & _event )
         {
-            bool controlDown = INPUT_SERVICE()
-                ->isControlDown();
+            bool controlDown = _event.special.isControl;
 
             bool mouseRButtonDown = INPUT_SERVICE()
                 ->isMouseButtonDown( MC_RBUTTON );

@@ -4,11 +4,16 @@
 
 namespace Mengine
 {
-    template<ConstStringHolder::hash_type Hash>
+    template<ConstString::hash_type Hash>
     class ConstStringProxy
     {
     public:
-        ConstStringProxy( const Char * _string, ConstStringHolder::size_type _size )
+        typedef ConstString::size_type size_type;
+        typedef ConstString::hash_type hash_type;
+        typedef ConstString::value_type value_type;
+
+    public:
+        ConstStringProxy( const ConstString::value_type * _string, ConstString::size_type _size )
             : m_string( _string )
             , m_size( _size )
         {
@@ -26,7 +31,7 @@ namespace Mengine
             return cstr;
         }
 
-        const Char * c_str() const
+        const ConstString::value_type * c_str() const
         {
             const ConstString & cstr = this->c_cstr();
 
@@ -54,7 +59,7 @@ namespace Mengine
         }
 
     protected:
-        const Char * m_string;
-        ConstStringHolder::size_type m_size;
+        const ConstString::value_type * m_string;
+        ConstString::size_type m_size;
     };
 }

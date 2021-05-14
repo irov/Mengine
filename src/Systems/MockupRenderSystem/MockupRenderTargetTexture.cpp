@@ -104,14 +104,14 @@ namespace Mengine
         _viewport->end = mt::vec2f( uv_width, uv_height );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderTargetTexture::begin()
+    bool MockupRenderTargetTexture::begin() const
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderTargetTexture::end()
+    void MockupRenderTargetTexture::end() const
     {
         //Empty
     }

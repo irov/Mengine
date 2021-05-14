@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
+#include "Kernel/Win32Helper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -35,10 +36,8 @@ namespace Mengine
 
         if( memory == NULL )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid map view of file [error: %lu]"
-                , error
+            LOGGER_ERROR( "invalid map view of file %s"
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -59,11 +58,9 @@ namespace Mengine
     {
         if( ::UnmapViewOfFile( m_memoryGranularity ) == FALSE )
         {
-            DWORD error = ::GetLastError();
-
-            LOGGER_ERROR( "invalid UnmapViewOfFile %p [error: %lu]"
+            LOGGER_ERROR( "invalid UnmapViewOfFile %p %s"
                 , m_base
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
         }
 

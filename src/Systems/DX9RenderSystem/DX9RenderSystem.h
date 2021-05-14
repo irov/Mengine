@@ -2,6 +2,7 @@
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/DX9RenderSystemExtensionInterface.h"
+#include "Interface/DynamicLibraryInterface.h"
 
 #include "Environment/DirectX9/DirectX9RenderIncluder.h"
 
@@ -146,7 +147,7 @@ namespace Mengine
     private:
         ConstString m_renderSystemName;
 
-        HMODULE m_hd3d9;
+        DynamicLibraryInterfacePtr m_d3d9Library;
 
         Resolution m_windowResolution;
         Viewport m_windowViewport;

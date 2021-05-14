@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Win32Helper.h"
 
 #include "Config/StdString.h"
 
@@ -63,18 +64,9 @@ namespace Mengine
 
         if( utf8_size == 0 && _unicodeSize != 0 )
         {
-            DWORD error = ::GetLastError();
-
-            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-                ->getPlatformExtention();
-
-            Char str_le[1024] = {'\0'};
-            win32Platform->getErrorMessage( error, str_le, 1024 );
-
-            LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte 0 [error: %s (%lu)]"
+            LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte 0 %s"
                 , _unicode
-                , str_le
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;
@@ -133,18 +125,9 @@ namespace Mengine
 
         if( (wc_size == 0 || wc_size == 0xFFFD) && _utf8Size != 0 )
         {
-            DWORD error = ::GetLastError();
-
-            Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-                ->getPlatformExtention();
-
-            Char str_le[1024] = {'\0'};
-            win32Platform->getErrorMessage( error, str_le, 1024 );
-
-            LOGGER_ERROR( "invalid convert utf8 '%s' to unicode [error: %s (%lu)]"
+            LOGGER_ERROR( "invalid convert utf8 '%s' to unicode %s"
                 , _utf8
-                , str_le
-                , error
+                , Helper::Win32GetLastErrorMessage()
             );
 
             return false;

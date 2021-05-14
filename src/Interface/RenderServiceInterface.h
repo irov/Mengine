@@ -20,6 +20,7 @@
 #include "Interface/RenderVertexAttributeInterface.h"
 #include "Interface/RenderProgramVariableInterface.h"
 #include "Interface/RenderBatchInterface.h"
+#include "Interface/RenderOrderInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/Factorable.h"
@@ -73,6 +74,10 @@ namespace Mengine
         virtual void destroyRenderWindow() = 0;
 
     public:
+        virtual const RenderTextureInterfacePtr & getNullTexture() const = 0;
+        virtual const RenderTextureInterfacePtr & getWhiteTexture() const = 0;
+
+    public:
         virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 
     public:
@@ -88,16 +93,15 @@ namespace Mengine
 
         virtual bool beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderProgramVariableInterfacePtr & _programVariable ) = 0;
+            , const RenderProgramVariableInterfacePtr & _programVariable
+            , const RenderContext * context ) = 0;
 
-        virtual void endRenderPass( const RenderTargetInterfacePtr & _target ) = 0;
+        virtual void endRenderPass( const RenderContext * context ) = 0;
 
         virtual void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) = 0;
+
+    public:
+        virtual const RenderOrderInterfacePtr & getRenderOrder( int32_t _index, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual void swapBuffers() = 0;

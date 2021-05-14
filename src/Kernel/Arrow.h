@@ -20,6 +20,7 @@ namespace Mengine
         : public Entity
     {
         DECLARE_FACTORABLE( Arrow );
+        DECLARE_VISITABLE( Entity );
 
     public:
         Arrow();

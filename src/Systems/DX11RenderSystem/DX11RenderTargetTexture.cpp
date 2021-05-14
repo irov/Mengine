@@ -14,6 +14,7 @@ namespace Mengine
         , m_pRenderTargetView( nullptr )
         , m_pRenderTargetViewOld( nullptr )
         , m_pDepthStencilMain( nullptr )
+        , m_pDepthStencilMainOld( nullptr )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwChannels( 0 )
         , m_hwWidthInv( 0.f )
@@ -139,21 +140,21 @@ namespace Mengine
         _viewport->end = mt::vec2f( uv_width, uv_height );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderTargetTexture::begin()
+    bool DX11RenderTargetTexture::begin() const
     {
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        pImmediateContext->OMGetRenderTargets( 1, &m_pRenderTargetViewOld, &m_pDepthStencilMain );
+        pImmediateContext->OMGetRenderTargets( 1, &m_pRenderTargetViewOld, &m_pDepthStencilMainOld );
         pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetView, m_pDepthStencilMain );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderTargetTexture::end()
+    void DX11RenderTargetTexture::end() const
     {
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetViewOld, m_pDepthStencilMain );
+        pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetViewOld, m_pDepthStencilMainOld );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const

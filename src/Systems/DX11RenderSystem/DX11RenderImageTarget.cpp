@@ -24,20 +24,20 @@ namespace Mengine
         m_target = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImageTarget::bind( ID3D11DeviceContext * _pD3DImmediateContext, uint32_t _stage )
+    void DX11RenderImageTarget::bind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
     {
         ID3D11ShaderResourceView * pD3DShaderResource = m_target->getD3DShaderResource();
 
 #ifdef MENGINE_DEBUG
-        _pD3DImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
 #else
-        _pD3DImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImageTarget::unbind( ID3D11DeviceContext * _pD3DImmediateContext, uint32_t _stage )
+    void DX11RenderImageTarget::unbind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
     {
-        _pD3DImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
 
         /*ID3D11DeviceContext * pImmediateContext = this->getDirect3D11ImmediateContext();
 

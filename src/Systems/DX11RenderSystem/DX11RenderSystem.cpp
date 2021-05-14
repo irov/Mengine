@@ -571,31 +571,6 @@ namespace Mengine
 
         m_pD3DDeviceContext->RSSetState( m_rasterState );
 
-        D3D11_VIEWPORT viewport;
-        // Setup the viewport for rendering.
-        viewport.Width = m_windowViewport.getWidth();
-        viewport.Height = m_windowViewport.getHeight();
-        viewport.TopLeftX = MT_floorf( m_windowViewport.begin.x + 0.5f );
-        viewport.TopLeftY = MT_floorf( m_windowViewport.begin.y + 0.5f );
-        viewport.MinDepth = 0.0f;
-        viewport.MaxDepth = 1.0f;
-
-        // Create the viewport.
-        m_pD3DDeviceContext->RSSetViewports( 1, &viewport );
-
-
-        /*        LOGGER_MESSAGE_RELEASE( "Vertex Shader Version [%lu] [%s]"
-                    , m_d3dCaps.VertexShaderVersion
-                    , m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
-                );
-
-                LOGGER_MESSAGE_RELEASE( "Pixel Shader Version [%lu] [%s] [%s]"
-                    , m_d3dCaps.PixelShaderVersion
-                    , m_d3dCaps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
-                    , m_d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
-                );
-        */
-
         for( const DX11RenderProgramPtr & program : m_deferredCompilePrograms )
         {
             if( program->compile( m_pD3DDevice ) == false )

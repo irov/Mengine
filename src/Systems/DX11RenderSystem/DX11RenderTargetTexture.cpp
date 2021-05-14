@@ -50,7 +50,9 @@ namespace Mengine
         m_hwWidthInv = 1.f / (float)m_textureDesc.Width;
         m_hwHeightInv = 1.f / (float)m_textureDesc.Height;
 
-        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &m_pD3DTexture) )
+        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &m_pD3DTexture) )
         {
             return nullptr;
         }
@@ -62,7 +64,7 @@ namespace Mengine
         shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
         shaderResourceViewDesc.Texture2D.MipLevels = m_textureDesc.MipLevels;
 
-        IF_DXCALL( m_pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView) )
+        IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView) )
         {
             return nullptr;
         }
@@ -73,7 +75,7 @@ namespace Mengine
         renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
         renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-        IF_DXCALL( m_pD3DDevice, CreateRenderTargetView, (m_pD3DTexture, &renderTargetViewDesc, &m_pRenderTargetView) )
+        IF_DXCALL( pD3DDevice, CreateRenderTargetView, (m_pD3DTexture, &renderTargetViewDesc, &m_pRenderTargetView) )
         {
             return nullptr;
         }
@@ -139,25 +141,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::begin()
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
+        ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         pImmediateContext->OMGetRenderTargets( 1, &m_pRenderTargetViewOld, &m_pDepthStencilMain );
         pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetView, m_pDepthStencilMain );
-
-        pImmediateContext->Release();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::end()
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
+        ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetViewOld, m_pDepthStencilMain );
-
-        pImmediateContext->Release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
@@ -170,7 +166,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ID3D11Device * DX11RenderTargetTexture::getDirect3dDevice11() const
     {
-        return m_pD3DDevice;
+        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+
+        return pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
     ID3D11Texture2D * DX11RenderTargetTexture::getD3DTexture() const

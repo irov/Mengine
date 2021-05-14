@@ -39,10 +39,7 @@ namespace Mengine
     {
         _pD3DImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
 
-        /*ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
-
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        pD3DDevice->GetImmediateContext( &pImmediateContext );
+        /*ID3D11DeviceContext * pImmediateContext = this->getDirect3D11ImmediateContext();
 
         pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
 

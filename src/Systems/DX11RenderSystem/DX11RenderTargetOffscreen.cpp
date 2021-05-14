@@ -27,7 +27,9 @@ namespace Mengine
         textureDesc.Usage = D3D11_USAGE_STAGING;
         textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
+        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
         {
             return false;
         }
@@ -45,7 +47,9 @@ namespace Mengine
         textureDesc.Usage = D3D11_USAGE_STAGING;
         textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
+        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
         {
             return false;
         }
@@ -121,8 +125,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        m_pD3DDevice->GetImmediateContext( &pImmediateContext );
+        ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         ID3D11Texture2D * _textureSource = m_pD3DTextureSource;
         if( _textureSource == nullptr )
@@ -139,7 +142,6 @@ namespace Mengine
         stdex::memorycopy( _buffer, 0, mappedResource.pData, _pitch );
 
         pImmediateContext->Unmap( m_pD3DTexture, 0 );
-        pImmediateContext->Release();
 
         return true;
     }

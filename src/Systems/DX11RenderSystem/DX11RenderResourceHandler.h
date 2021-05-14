@@ -8,6 +8,8 @@
 
 namespace Mengine
 {
+    typedef DX11ResourcePtr<ID3D11DeviceContext> ID3D11DeviceContextPtr;
+
     class DX11RenderResourceHandler
         : public Mixin
         , public IntrusiveLinked<DX11RenderResourceHandler>
@@ -18,15 +20,15 @@ namespace Mengine
 
     public:
         void setDirect3D11Device( ID3D11Device * _pD3DDevice );
-        ID3D11Device * getDirect3D11Device() const;
-        // TODO: getContext
+        ID3D11Device * getDirect3D11Device() const;        
+        
+        ID3D11DeviceContextPtr getDirect3D11ImmediateContext() const;
 
     public:
         virtual void onRenderReset() = 0;
         virtual bool onRenderRestore() = 0;
 
-    protected:
+    private:
         ID3D11Device * m_pD3DDevice;
-        // TODO: context
     };
 }

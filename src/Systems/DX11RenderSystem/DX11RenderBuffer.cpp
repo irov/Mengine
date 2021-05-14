@@ -105,7 +105,9 @@ namespace Mengine
         InitData.SysMemPitch = 0;
         InitData.SysMemSlicePitch = 0;
 
-        IF_DXCALL( m_pD3DDevice, CreateBuffer, (&m_desc, _initData == nullptr ? nullptr : &InitData, &m_pD3DBuffer) )
+        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+
+        IF_DXCALL( pD3DDevice, CreateBuffer, (&m_desc, _initData == nullptr ? nullptr : &InitData, &m_pD3DBuffer) )
         {
             return false;
         }
@@ -141,19 +143,13 @@ namespace Mengine
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
 
-        ID3D11DeviceContext * pImmediateContext;
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
-        pD3DDevice->GetImmediateContext( &pImmediateContext );
+        ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         IF_DXCALL( pImmediateContext, Map, (m_pD3DBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
-            pImmediateContext->Release();
-
             // TODO: add error log
             return nullptr;
         }
-
-        pImmediateContext->Release();
 
         m_memory->setBuffer( mappedResource.pData, mappedResource.RowPitch );
 
@@ -164,13 +160,9 @@ namespace Mengine
     {
         m_memory->setBuffer( nullptr, 0 );
 
-        ID3D11DeviceContext * pImmediateContext;
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
-        pD3DDevice->GetImmediateContext( &pImmediateContext );
+        ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         pImmediateContext->Unmap( m_pD3DBuffer, 0 );
-
-        pImmediateContext->Release();
 
         return true;
     }
@@ -209,14 +201,10 @@ namespace Mengine
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
 
-        ID3D11DeviceContext * pImmediateContext;
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
-        pD3DDevice->GetImmediateContext( &pImmediateContext );
+        ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         IF_DXCALL( pImmediateContext, Map, (m_pD3DBuffer, 0, mapFlags, 0, &mappedResource) )
         {
-            pImmediateContext->Release();
-
             // TODO: add error log
             return nullptr;
         }
@@ -224,8 +212,6 @@ namespace Mengine
         stdex::memorycopy( mappedResource.pData, 0, _buffer, _count * m_elementSize );
 
         pImmediateContext->Unmap( m_pD3DBuffer, 0 );
-
-        pImmediateContext->Release();
 
         m_elementsCount = _count;
 

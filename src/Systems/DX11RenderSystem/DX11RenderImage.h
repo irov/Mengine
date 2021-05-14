@@ -70,24 +70,26 @@ namespace Mengine
 
     protected:
         ID3D11Texture2D * m_pD3DTexture;
+        
         // to bind texture to shaders
         ID3D11ShaderResourceView * m_pD3DResourceView;
 
         RenderImageProviderInterfacePtr m_renderImageProvider;
 
-        D3D11_TEXTURE2D_DESC m_textureDesc;
-
         EPixelFormat m_hwPixelFormat;
 
+        uint32_t m_hwMipmaps;
+        uint32_t m_hwWidth;
+        uint32_t m_hwHeight;
         uint32_t m_hwChannels;
         uint32_t m_hwDepth;
 
         float m_hwWidthInv;
         float m_hwHeightInv;
 
-		MemoryInterfacePtr m_lockMemory;
-
-        size_t m_pitch;
+        ID3D11Texture2D * m_pD3DStagingTexture;
+        uint32_t m_stagingPosX;
+        uint32_t m_stagingPosY;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderImage, RenderImageInterface> DX11RenderImagePtr;

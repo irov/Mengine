@@ -811,7 +811,7 @@ namespace Mengine
 
         _node->hasRender = renderNode;
 
-        if( _node->hasRender )
+        if( _node->hasRender == true )
         {
             _node->render.deserialize( renderNode );
         }
@@ -820,7 +820,7 @@ namespace Mengine
 
         _node->hasAnimation = animationNode;
 
-        if( _node->hasAnimation )
+        if( _node->hasAnimation == true )
         {
             _node->animation.deserialize( animationNode );
         }
@@ -829,7 +829,7 @@ namespace Mengine
 
         _node->hasComponentSurface = componentSurface;
 
-        if( _node->hasComponentSurface )
+        if( _node->hasComponentSurface == true )
         {
             _node->componentSurface.deserialize( componentSurface );
 
@@ -837,7 +837,7 @@ namespace Mengine
 
             _node->componentSurface.hasAnimation = componentSurfaceNode;
 
-            if( _node->componentSurface.hasAnimation )
+            if( _node->componentSurface.hasAnimation == true )
             {
                 _node->componentSurface.animation.deserialize( componentSurfaceNode );
             }
@@ -846,7 +846,7 @@ namespace Mengine
 
             _node->componentSurface.isTypeSurfaceImage = typeSurfaceImageNode;
 
-            if( _node->componentSurface.isTypeSurfaceImage )
+            if( _node->componentSurface.isTypeSurfaceImage == true )
             {
                 _node->componentSurface.surfaceImage.deserialize( typeSurfaceImageNode );
 
@@ -854,7 +854,7 @@ namespace Mengine
 
                 _node->componentSurface.surfaceImage.isContent = contentNode;
 
-                if( _node->componentSurface.surfaceImage.isContent )
+                if( _node->componentSurface.surfaceImage.isContent == true )
                 {
                     _node->componentSurface.surfaceImage.content.deserialize( contentNode );
                 }
@@ -863,7 +863,7 @@ namespace Mengine
 
                 _node->componentSurface.hasAtlas = atlasNode;
 
-                if( _node->componentSurface.hasAtlas )
+                if( _node->componentSurface.hasAtlas == true )
                 {
                     _node->componentSurface.atlas.deserialize( atlasNode );
 
@@ -883,7 +883,7 @@ namespace Mengine
 
         _node->isTypeTextField = typeTextFieldNode;
 
-        if( _node->isTypeTextField )
+        if( _node->isTypeTextField == true )
         {
             _node->textField.deserialize( typeTextFieldNode );
         }
@@ -892,7 +892,7 @@ namespace Mengine
 
         _node->isTypeMovie2 = typeMovie2Node;
 
-        if( _node->isTypeMovie2 )
+        if( _node->isTypeMovie2 == true )
         {
             _node->movie2.deserialize( typeMovie2Node );
         }
@@ -901,7 +901,7 @@ namespace Mengine
 
         _node->isTypeSpine = typeSpineNode;
 
-        if( _node->isTypeSpine )
+        if( _node->isTypeSpine == true )
         {
             _node->spine.deserialize( typeSpineNode );
 
@@ -909,7 +909,7 @@ namespace Mengine
 
             _node->spine.isContent = contentNode;
 
-            if( _node->spine.isContent )
+            if( _node->spine.isContent == true )
             {
                 _node->spine.content.deserialize( contentNode );
             }

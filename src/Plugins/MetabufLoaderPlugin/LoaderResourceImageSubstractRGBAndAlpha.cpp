@@ -33,7 +33,7 @@ namespace Mengine
 
         ResourceBankInterface * resourceBank = resource->getResourceBank();
 
-        const ResourceImagePtr & resourceImageRGB = resourceBank->getResourceReference( groupName, resourceImageRGBName );
+        const ResourceImagePtr & resourceImageRGB = resourceBank->getResource( groupName, resourceImageRGBName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImageRGB, "'%s' group '%s' invalid get image RGB resource '%s'"
             , resource->getName().c_str()
@@ -41,7 +41,7 @@ namespace Mengine
             , resourceImageRGBName.c_str()
         );
 
-        const ResourceImagePtr & resourceImageAlpha = resourceBank->getResourceReference( groupName, resourceImageAlphaName );
+        const ResourceImagePtr & resourceImageAlpha = resourceBank->getResource( groupName, resourceImageAlphaName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImageAlpha, "'%s' group '%s' invalid get image Alpha resource '%s'"
             , resource->getName().c_str()

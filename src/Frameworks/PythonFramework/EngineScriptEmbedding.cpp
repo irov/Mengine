@@ -1607,6 +1607,7 @@ namespace Mengine
 
                 RenderContext context;
 
+                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -2197,6 +2198,7 @@ namespace Mengine
 
                     RenderContext context;
 
+                    context.order = nullptr;
                     context.camera = m_renderCamera.get();
                     context.viewport = m_renderViewport.get();
                     context.transformation = nullptr;
@@ -2298,6 +2300,7 @@ namespace Mengine
 
                 RenderContext context;
 
+                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -2341,6 +2344,7 @@ namespace Mengine
 
                 RenderContext context;
 
+                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
                 context.transformation = nullptr;
@@ -3095,8 +3099,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_hasResource( const ConstString & _name )
             {
-                return RESOURCE_SERVICE()
+                bool result = RESOURCE_SERVICE()
                     ->hasResource( ConstString::none(), _name, false, nullptr );
+
+                return result;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )

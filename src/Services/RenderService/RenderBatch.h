@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class RenderBatch
         : public RenderBatchInterface
     {

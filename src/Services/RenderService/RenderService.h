@@ -4,6 +4,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
+#include "RenderOrder.h"
 #include "RenderBatch.h"
 #include "RenderMaterial.h"
 
@@ -50,6 +51,10 @@ namespace Mengine
         void destroyRenderWindow() override;
 
     public:
+        const RenderTextureInterfacePtr & getNullTexture() const override;
+        const RenderTextureInterfacePtr & getWhiteTexture() const override;
+
+    public:
         void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
     public:
@@ -67,14 +72,10 @@ namespace Mengine
     public:
         bool beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderProgramVariableInterfacePtr & _programVariable ) override;
+            , const RenderProgramVariableInterfacePtr & _programVariable
+            , const RenderContext * context ) override;
 
-        void endRenderPass( const RenderTargetInterfacePtr & _target ) override;
+        void endRenderPass( const RenderContext * context ) override;
 
         void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) override;
 
@@ -97,6 +98,9 @@ namespace Mengine
     public:
         void setVSync( bool _vSync ) override;
         bool getVSync() const override;
+
+    public:
+        const RenderOrderInterfacePtr & getRenderOrder( int32_t _index, const DocumentPtr & _doc ) override;
 
     protected:
         void clearFrameBuffer_();
@@ -134,15 +138,19 @@ namespace Mengine
 
         bool m_windowCreated;
         bool m_vsync;
-        Resolution m_windowResolution;
         bool m_fullscreen;
 
+        Resolution m_windowResolution;
         Resolution m_contentResolution;
 
         RenderTextureInterfacePtr m_nullTexture;
-        RenderTextureInterfacePtr m_whitePixelTexture;
+        RenderTextureInterfacePtr m_whiteTexture;
 
         FactoryPtr m_factoryRenderBatch;
+        FactoryPtr m_factoryRenderOrder;
+
+        typedef Vector<RenderOrderPtr> VectorRenderOrder;
+        VectorRenderOrder m_renderOrders;
 
         typedef Vector<RenderBatchPtr> VectorRenderBatch;
         VectorRenderBatch m_renderBatches;
@@ -154,6 +162,7 @@ namespace Mengine
         RenderVertexBufferInterfacePtr m_currentRenderVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentRenderIndexBuffer;
         RenderProgramVariableInterfacePtr m_currentRenderProgramVariable;
+        RenderProgramInterfacePtr m_currentRenderProgram;
 
         uint32_t m_currentRenderTextureStage;
         RenderTextureStage m_renderTextureStages[MENGINE_MAX_TEXTURE_STAGES];
@@ -173,12 +182,8 @@ namespace Mengine
         EBlendFactor m_currentSeparateAlphaBlendDst;
         EBlendOp m_currentSeparateAlphaBlendOp;
 
-        RenderViewportInterfacePtr m_currentRenderViewport;
-        RenderCameraInterfacePtr m_currentRenderCamera;
-        RenderTransformationInterfacePtr m_currentRenderTransformation;
-        RenderScissorInterfacePtr m_currentRenderScissor;
-        RenderProgramInterfacePtr m_currentRenderProgram;
-
+        RenderContext m_currentRenderContext;
+        
         RenderServiceDebugInfo m_debugInfo;
 
         Viewport m_renderViewport;

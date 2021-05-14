@@ -272,7 +272,7 @@ namespace Mengine
         sentry_capture_event( event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::notifyError_( uint32_t _level, const Char * _file, int32_t _line, const Char * _message )
+    void SentryPlugin::notifyError_( EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
     {
         sentry_set_extra( "Error Level", sentry_value_new_int32( _level ) );
         sentry_set_extra( "Error Function", sentry_value_new_string( _file ) );

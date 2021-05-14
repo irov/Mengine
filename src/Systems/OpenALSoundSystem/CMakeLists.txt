@@ -38,12 +38,12 @@ IF(MENGINE_TARGET_ANDROID)
         SET(CMAKE_BUILD_TYPE_CORRECT ${CMAKE_BUILD_TYPE})
     ENDIF()
     
-    add_library( OpenAL32
-            SHARED
-            IMPORTED )
+    add_library(OpenAL32 SHARED IMPORTED)
 
-    set_target_properties( # Specifies the target library.
+    set_target_properties(
+            # Specifies the target library.
             OpenAL32
+
             # Specifies the parameter you want to define.
             PROPERTIES IMPORTED_LOCATION
 
@@ -51,5 +51,5 @@ IF(MENGINE_TARGET_ANDROID)
             ${MENGINE_REPOSITORY}/gradle/libraries/OpenAL32/build/intermediates/cmake/${CMAKE_BUILD_TYPE_CORRECT}/obj/${ANDROID_ABI}/libopenal.so
             )
 
-    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} OpenAL32)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} OpenAL32)
 ENDIF()

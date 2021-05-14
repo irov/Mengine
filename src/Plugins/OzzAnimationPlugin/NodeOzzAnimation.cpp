@@ -642,6 +642,7 @@ namespace Mengine
             }
 
             RenderContext new_context;
+            new_context.order = _context->order;
             new_context.viewport = _context->viewport;
             new_context.camera = _context->camera;
             new_context.transformation = this;

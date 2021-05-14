@@ -7,7 +7,6 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/Contentable.h"
 
 #include "math/uv4.h"
 

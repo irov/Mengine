@@ -56,6 +56,27 @@ namespace Mengine
             return render_parent;
         }
         //////////////////////////////////////////////////////////////////////////
+        const RenderOrderInterfacePtr & getRenderOrederInheritance( const RenderInterface * _render )
+        {
+            const RenderOrderInterfacePtr & order = _render->getRenderOrder();
+
+            if( order != nullptr )
+            {
+                return order;
+            }
+
+            const RenderInterface * relationRender = _render->getTotalRelationRender();
+
+            if( relationRender == nullptr )
+            {
+                return RenderOrderInterfacePtr::none();
+            }
+
+            const RenderOrderInterfacePtr & relation_order = Helper::getRenderOrederInheritance( relationRender );
+
+            return relation_order;
+        }
+        //////////////////////////////////////////////////////////////////////////
         const RenderViewportInterfacePtr & getRenderViewportInheritance( const RenderInterface * _render )
         {
             const RenderViewportInterfacePtr & viewport = _render->getRenderViewport();
@@ -165,6 +186,13 @@ namespace Mengine
         {
             const Node * node_ptr = _node.get();
 
+            const RenderOrderInterfacePtr & order = Helper::getNodeRenderOrderInheritance( node_ptr );
+
+            if( order != nullptr )
+            {
+                _context->order = order.get();
+            }
+
             const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( node_ptr );
 
             if( viewport != nullptr )
@@ -199,6 +227,29 @@ namespace Mengine
             {
                 _context->target = target.get();
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const RenderOrderInterfacePtr & getNodeRenderOrderInheritance( const Node * _node )
+        {
+            const RenderInterface * render = _node->getRender();
+
+            if( render != nullptr )
+            {
+                const RenderOrderInterfacePtr & order = Helper::getRenderOrederInheritance( render );
+
+                return order;
+            }
+
+            Node * parent = _node->getParent();
+
+            if( parent == nullptr )
+            {
+                return RenderOrderInterfacePtr::none();
+            }
+
+            const RenderOrderInterfacePtr & order_parent = Helper::getNodeRenderOrderInheritance( parent );
+
+            return order_parent;
         }
         //////////////////////////////////////////////////////////////////////////
         const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( const Node * _node )

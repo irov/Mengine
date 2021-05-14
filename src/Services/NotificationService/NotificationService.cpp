@@ -69,8 +69,11 @@ namespace Mengine
             }
 #endif
 
-            MENGINE_ASSERTION( observers.empty() == true, "finalized notification '%u' has observers"
-                , index 
+            MENGINE_ASSERTION( std::find_if( observers.begin(), observers.end(), []( const ObserverDesc & _desc )
+            {
+                return _desc.dead == false;
+            } ) == observers.end(), "finalized notification '%u' has observers"
+                , index
             );
 
             observers.clear();

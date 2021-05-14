@@ -186,7 +186,10 @@ namespace Mengine
         }
 
         // set all vertex buffers
-        _pImmediateContext->VSSetConstantBuffers( 0, m_vertexBuffers.size(), &m_vertexBuffers[0] );
+        if( m_vertexBuffers.empty() == false )
+        {
+            _pImmediateContext->VSSetConstantBuffers( 0, m_vertexBuffers.size(), &m_vertexBuffers[0] );
+        }
 
         // create pixel shader buffers
         if( m_pixelVariables.size() != m_pixelBuffers.size() )
@@ -249,7 +252,10 @@ namespace Mengine
         }
 
         // set all pixel buffers
-        _pImmediateContext->PSSetConstantBuffers( 0, m_pixelBuffers.size(), &m_pixelBuffers[0] );
+        if( m_pixelBuffers.empty() == false )
+        {
+            _pImmediateContext->PSSetConstantBuffers( 0, m_pixelBuffers.size(), &m_pixelBuffers[0] );
+        }
 
         return true;
     }

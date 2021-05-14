@@ -42,8 +42,8 @@ namespace Mengine
         void calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const override;
 
     public:
-        bool begin() override;
-        void end() override;
+        bool begin() const override;
+        void end() const override;
 
     public:
         bool getData( void * const _buffer, size_t _pitch ) const override;
@@ -64,8 +64,9 @@ namespace Mengine
         ID3D11ShaderResourceView * m_pD3DResourceView;
 
         ID3D11RenderTargetView * m_pRenderTargetView;
-        ID3D11RenderTargetView * m_pRenderTargetViewOld;
+        mutable ID3D11RenderTargetView * m_pRenderTargetViewOld;
         ID3D11DepthStencilView * m_pDepthStencilMain;
+        mutable ID3D11DepthStencilView * m_pDepthStencilMainOld;
 
         D3D11_TEXTURE2D_DESC m_textureDesc;
 

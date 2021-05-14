@@ -65,12 +65,12 @@ namespace Mengine
         DXRELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderTargetOffscreen::begin()
+    bool DX11RenderTargetOffscreen::begin() const
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderTargetOffscreen::end()
+    void DX11RenderTargetOffscreen::end() const
     {
     }
     //////////////////////////////////////////////////////////////////////////

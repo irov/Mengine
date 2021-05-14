@@ -22,4 +22,13 @@ namespace Mengine
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
+    ID3D11DeviceContextPtr DX11RenderResourceHandler::getDirect3D11ImmediateContext() const
+    {
+        ID3D11DeviceContext * pImmediateContext;
+        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        pD3DDevice->GetImmediateContext( &pImmediateContext );
+
+        return ID3D11DeviceContextPtr( pImmediateContext );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

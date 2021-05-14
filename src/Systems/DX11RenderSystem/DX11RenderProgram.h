@@ -46,7 +46,7 @@ namespace Mengine
 
     public:
         // b0 - first buffer must be float4x4 
-        void bindMatrix( ID3D11Device * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
+        void bindMatrix( ID3D11DeviceContext * _pD3DImmediateContext, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:
         ConstString m_name;

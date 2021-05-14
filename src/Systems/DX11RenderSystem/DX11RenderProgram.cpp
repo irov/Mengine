@@ -123,29 +123,21 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::bindMatrix( ID3D11Device * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
+    void DX11RenderProgram::bindMatrix( ID3D11DeviceContext * _pD3DImmediateContext, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
     {
         MENGINE_UNUSED( _worldMatrix );
         MENGINE_UNUSED( _viewMatrix );
         MENGINE_UNUSED( _projectionMatrix );
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-        ID3D11DeviceContext * pImmediateContext = nullptr;
-        _pD3DDevice->GetImmediateContext( &pImmediateContext );
-
-        IF_DXCALL( pImmediateContext, Map, (m_bindMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
+        IF_DXCALL( _pD3DImmediateContext, Map, (m_bindMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
-            pImmediateContext->Release();
-
             return;
         }
 
         stdex::memorycopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), sizeof( mt::mat4f ) );
 
-        pImmediateContext->Unmap( m_bindMatrixBuffer, 0 );
-
-        pImmediateContext->Release();
+        _pD3DImmediateContext->Unmap( m_bindMatrixBuffer, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

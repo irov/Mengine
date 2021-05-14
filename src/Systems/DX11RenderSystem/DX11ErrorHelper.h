@@ -32,7 +32,6 @@ namespace Mengine
         const Char * m_method;
     };
 }
-/////
 //////////////////////////////////////////////////////////////////////////
 #define DXERRORCHECK( MethodName, HRES )\
     (Mengine::DX11ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, MethodName ) == HRES)

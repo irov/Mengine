@@ -1695,7 +1695,7 @@ namespace Mengine
     {
         DX11RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
 
-        dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
+        dx9_program->bindMatrix( m_pD3DImmediateContext, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )

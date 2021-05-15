@@ -18,4 +18,5 @@ void main( in v2p IN, out p2f OUT )
     float4 TexColor = tex0.Sample( sampler0, IN.tex0 );
 
     OUT.color = IN.color * TexColor;
+    OUT.color.a = 1.0f;
 }

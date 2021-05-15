@@ -553,12 +553,15 @@ namespace Mengine
         D3D11_RASTERIZER_DESC rasterDesc;
         rasterDesc.AntialiasedLineEnable = false;
         rasterDesc.CullMode = D3D11_CULL_BACK;
+		rasterDesc.CullMode = D3D11_CULL_NONE;
 
         rasterDesc.DepthBias = 0;
         rasterDesc.DepthBiasClamp = 0.0f;
         rasterDesc.DepthClipEnable = true;
         rasterDesc.FillMode = D3D11_FILL_SOLID;
         rasterDesc.FrontCounterClockwise = true;
+//		rasterDesc.FrontCounterClockwise = false;
+
         rasterDesc.MultisampleEnable = false;
         rasterDesc.ScissorEnable = false;
         rasterDesc.SlopeScaledDepthBias = 0.0f;
@@ -1260,10 +1263,15 @@ namespace Mengine
         D3D11_BLEND_DESC blendDesc;
         ZeroMemory( &blendDesc, sizeof( D3D11_BLEND_DESC ) );
 
-        blendDesc.IndependentBlendEnable = _separate;
+		blendDesc.RenderTarget[0].BlendEnable = true;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
         blendDesc.RenderTarget[0].SrcBlend = Helper::toD3DBlendFactor( _src );
         blendDesc.RenderTarget[0].DestBlend = Helper::toD3DBlendFactor( _dst );
         blendDesc.RenderTarget[0].BlendOp = Helper::toD3DBlendOp( _op );
+		blendDesc.RenderTarget[0].SrcBlendAlpha = Helper::toD3DBlendFactor(_src);
+		blendDesc.RenderTarget[0].DestBlendAlpha = Helper::toD3DBlendFactor(_dst);
+		blendDesc.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp(_op);
 
         if( _separate )
         {
@@ -1283,7 +1291,7 @@ namespace Mengine
             return;
         }
 
-        FLOAT BlendFactors[4] = {1.f, 1.f, 1.f, 1.f};
+        FLOAT BlendFactors[4] = {0.f, 0.f, 0.f, 0.f};
         m_pD3DDeviceContext->OMSetBlendState( m_blendState, BlendFactors, 0xffffffff );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1383,11 +1391,12 @@ namespace Mengine
 		}
 
 		m_pD3DDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
-
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
     {
+		//MENGINE_UNUSED(_depthWrite);
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_depthStencilState, "depth state not created" );
@@ -1409,6 +1418,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
     {
+		//MENGINE_UNUSED(_depthFunction);
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_depthStencilState, "depth state not created" );
@@ -1427,7 +1438,7 @@ namespace Mengine
 
         m_pD3DDeviceContext->OMSetDepthStencilState( m_depthStencilState, 1 );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setFillMode( EFillMode _mode )
@@ -1463,15 +1474,18 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
 
+		MENGINE_UNUSED(_alphaBlend);
+
         if( _alphaBlend == true )
         {
-            FLOAT BlendFactors[4] = {1.f, 1.f, 1.f, 1.f};
-            m_pD3DDeviceContext->OMSetBlendState( m_blendState, BlendFactors, 0xffffffff );
+			FLOAT BlendFactors[4] = { 0.f, 0.f, 0.f, 0.f };
+			m_pD3DDeviceContext->OMSetBlendState( m_blendState, BlendFactors, 0xffffffff );
         }
         else
         {
             m_pD3DDeviceContext->OMSetBlendState( nullptr, nullptr, 0xffffffff );
         }
+		
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )

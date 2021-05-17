@@ -235,8 +235,10 @@ namespace Mengine
         rect.right = null_width;
         rect.bottom = null_height;
 
+        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+
         size_t pitch = 0;
-        void * textureData = image->lock( &pitch, 0, rect, false );
+        void * textureData = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
             , null_width
@@ -267,7 +269,7 @@ namespace Mengine
         buffer_textureData[6] = 0x00;
         buffer_textureData[7] = 0xFF;
 
-        image->unlock( 0, true );
+        image->unlock( locked, 0, true );
 
         m_nullTexture = texture;
 
@@ -300,8 +302,10 @@ namespace Mengine
         rect.right = null_width;
         rect.bottom = null_height;
 
+        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+
         size_t pitch = 0;
-        void * textureData = image->lock( &pitch, 0, rect, false );
+        void * textureData = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
             , null_width
@@ -332,7 +336,7 @@ namespace Mengine
         buffer_textureData[6] = 0xFF;
         buffer_textureData[7] = 0xFF;
 
-        image->unlock( 0, true );
+        image->unlock( locked, 0, true );
 
         m_whiteTexture = texture;
 

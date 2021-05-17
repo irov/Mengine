@@ -1,10 +1,12 @@
 #include "OpenGLRenderSystem.h"
-#include "OpenGLRenderEnum.h"
-#include "OpenGLRenderError.h"
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
+#include "OpenGLRenderImageLockedFactoryStorage.h"
+
+#include "OpenGLRenderEnum.h"
+#include "OpenGLRenderError.h"
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/FactoryDefault.h"
@@ -72,6 +74,8 @@ namespace Mengine
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariable = Helper::makeFactoryPool<OpenGLRenderProgramVariable, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
+        OpenGLRenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<OpenGLRenderImageLocked, 16>( MENGINE_DOCUMENT_FACTORABLE ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -133,6 +137,8 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_counterTexture == 0 );
         MENGINE_ASSERTION_FATAL( m_counterFramebuffer == 0 );
         MENGINE_ASSERTION_FATAL( m_counterBuffer == 0 );
+
+        OpenGLRenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const

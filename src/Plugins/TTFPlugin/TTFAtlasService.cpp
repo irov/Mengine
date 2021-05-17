@@ -71,8 +71,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture_image );
 
+        RenderImageLockedInterfacePtr texture_locked = texture_image->lock( 0, rect, false );
+
         size_t texture_pitch;
-        uint8_t * texture_memory = texture_image->lock( &texture_pitch, 0, rect, false );
+        uint8_t * texture_memory = texture_locked->getBuffer( &texture_pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture_memory );
 
@@ -80,7 +82,7 @@ namespace Mengine
 
         bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, texture_channel );
 
-        texture_image->unlock( 0, successful );
+        texture_image->unlock( texture_locked, 0, successful );
 
         if( successful == false )
         {
@@ -128,7 +130,7 @@ namespace Mengine
             return nullptr;
         }
 
-        const uint32_t unpow_channel_mask[] = { 0, 0, 1, 0, 2 };
+        const uint32_t unpow_channel_mask[] = {0, 0, 1, 0, 2};
 
         uint32_t unpow_channel = unpow_channel_mask[_channel];
 

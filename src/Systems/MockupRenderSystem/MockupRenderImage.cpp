@@ -1,6 +1,6 @@
 #include "MockupRenderImage.h"
 
-#include "Interface/MemoryServiceInterface.h"
+#include "MockupRenderImageLockedFactoryStorage.h"
 
 namespace Mengine
 {
@@ -35,9 +35,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderImage::finalize()
-    {
-        m_memory = nullptr;
-
+    {        
         m_renderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -51,33 +49,23 @@ namespace Mengine
         return m_renderImageProvider;
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer MockupRenderImage::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr MockupRenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _readOnly );
 
-        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+        MockupRenderImageLockedPtr locked = MockupRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        size_t size = (size_t)(_rect.right - _rect.left) * (_rect.bottom - _rect.top) * m_hwChannels * m_hwDepth;
+        locked->initialize( _rect, m_hwChannels, m_hwDepth );
 
-        memory->newBuffer( size );
-
-        m_memory = memory;
-
-        *_pitch = (size_t)(_rect.right - _rect.left) * m_hwChannels * m_hwDepth;
-
-        void * buffer = m_memory->getBuffer();
-
-        return buffer;
+        return locked;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderImage::unlock( uint32_t _level, bool _successful )
+    bool MockupRenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
     {
+        MENGINE_UNUSED( _locked );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
-
-        m_memory = nullptr;
 
         return true;
     }

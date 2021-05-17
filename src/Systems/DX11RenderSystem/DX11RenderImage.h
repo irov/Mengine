@@ -2,8 +2,6 @@
 
 #include "Interface/RenderImageInterface.h"
 #include "Interface/DX11RenderImageExtensionInterface.h"
-#include "Interface/MemoryInterface.h"
-#include "Interface/MemoryServiceInterface.h"
 
 #include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
@@ -53,8 +51,8 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
-        Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 
     protected:
         void onRenderReset() override;
@@ -86,10 +84,6 @@ namespace Mengine
 
         float m_hwWidthInv;
         float m_hwHeightInv;
-
-        ID3D11Texture2D * m_pD3DStagingTexture;
-        uint32_t m_stagingPosX;
-        uint32_t m_stagingPosY;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderImage, RenderImageInterface> DX11RenderImagePtr;

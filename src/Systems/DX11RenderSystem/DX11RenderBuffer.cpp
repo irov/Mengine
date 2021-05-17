@@ -50,7 +50,7 @@ namespace Mengine
         case BT_DYNAMIC:
             {
                 m_desc.Usage = D3D11_USAGE_DYNAMIC;
-				m_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+                m_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             }break;
         };
 
@@ -129,12 +129,12 @@ namespace Mengine
             return nullptr;
         }
 
-		if (m_bufferType != BT_DYNAMIC)
-		{
-			LOGGER_ERROR("lock for read for Dynamic buffer is not supported");
+        if (m_bufferType != BT_DYNAMIC)
+        {
+            LOGGER_ERROR("lock for read for Dynamic buffer is not supported");
 
-			return nullptr;
-		}
+            return nullptr;
+        }
 
         MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
 

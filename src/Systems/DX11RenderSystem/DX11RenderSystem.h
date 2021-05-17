@@ -166,21 +166,17 @@ namespace Mengine
         UINT			m_DisplayModeListNum;
 
         ID3D11RenderTargetView * m_renderTargetView;
+        
         ID3D11Texture2D * m_depthStencilBuffer;
-        ID3D11DepthStencilState * m_depthStencilState;
         ID3D11DepthStencilView * m_depthStencilView;
-        ID3D11RasterizerState * m_rasterState;
-        ID3D11BlendState * m_blendState;
-        ID3D11SamplerState * m_samplerState[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
 
         // sync routines
         uint32_t m_frames;
 
-        // free frame
-        Vector<ID3D11SamplerState *> m_samplerFrameRelease;
-        Vector<ID3D11RasterizerState *> m_rasterizerFrameRelease;
-        Vector<ID3D11BlendState *> m_blendFrameRelease;
-        Vector<ID3D11DepthStencilState *> m_dsFrameRelease;
+        D3D11_SAMPLER_DESC m_D3D11SamplerStates[MENGINE_MAX_TEXTURE_STAGES];
+        D3D11_RASTERIZER_DESC  m_D3D11RasterizerState;
+        D3D11_BLEND_DESC m_D3D11BlendState;
+        D3D11_DEPTH_STENCIL_DESC m_D3D11DepthStencilState;
 
     protected:
         bool releaseResources_();
@@ -244,4 +240,5 @@ namespace Mengine
 
         bool m_waitForVSync;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

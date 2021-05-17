@@ -8,6 +8,9 @@ src
     DX11RenderImage.cpp
     DX11RenderImageTarget.h
     DX11RenderImageTarget.cpp
+    DX11RenderImageLocked.h
+    DX11RenderImageLocked.cpp
+    DX11RenderImageLockedFactoryStorage.h    
     DX11RenderTargetTexture.h
     DX11RenderTargetTexture.cpp
     DX11RenderTargetOffscreen.h

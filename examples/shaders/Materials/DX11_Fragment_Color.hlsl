@@ -12,5 +12,4 @@ struct p2f
 void main( in v2p IN, out p2f OUT )
 {
     OUT.color = IN.color;
-    OUT.color.a = 1.0f;
 }

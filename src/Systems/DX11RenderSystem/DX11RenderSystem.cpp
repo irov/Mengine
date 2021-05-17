@@ -22,6 +22,8 @@
 #include "DX11RenderIndexBuffer.h"
 #include "DX11RenderProgramVariable.h"
 
+#include "DX11RenderImageLockedFactoryStorage.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
@@ -72,19 +74,12 @@ namespace Mengine
         , m_waitForVSync( false )
         , m_renderTargetView( nullptr )
         , m_depthStencilBuffer( nullptr )
-        , m_depthStencilState( nullptr )
         , m_depthStencilView( nullptr )
-        , m_rasterState( nullptr )
-        , m_blendState( nullptr )
-
     {
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
         mt::ident_m4( m_totalWVPInvMatrix );
-
-        for( int i = 0; i < MENGINE_MAX_TEXTURE_STAGES; ++i )
-            m_samplerState[i] = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     DX11RenderSystem::~DX11RenderSystem()
@@ -228,6 +223,8 @@ namespace Mengine
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX11RenderTargetTexture, 16>( this, &DX11RenderSystem::onDestroyRenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX11RenderTargetOffscreen, 16>( this, &DX11RenderSystem::onDestroyRenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
 
+        DX11RenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<DX11RenderImageLocked, 64>( MENGINE_DOCUMENT_FACTORABLE ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -249,68 +246,15 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_vertexBufferCount == 0 );
         MENGINE_ASSERTION_FATAL( m_indexBufferCount == 0 );
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImageTarget );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetTexture );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetOffscreen );
-
         delete[] m_DisplayModeList;
         m_DisplayModeList = nullptr;
 
         ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
         m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
 
-        for( auto state : m_samplerFrameRelease )
-        {
-            state->Release();
-        }
-
-        m_samplerFrameRelease.clear();
-
-        for( auto state : m_rasterizerFrameRelease )
-        {
-            state->Release();
-        }
-
-        m_rasterizerFrameRelease.clear();
-
-        for( auto state : m_blendFrameRelease )
-        {
-            state->Release();
-        }
-
-        m_blendFrameRelease.clear();
-
-        for( auto state : m_dsFrameRelease )
-        {
-            state->Release();
-        }
-
-        m_dsFrameRelease.clear();
-
         DXRELEASE( m_renderTargetView );
         DXRELEASE( m_depthStencilBuffer );
-        DXRELEASE( m_depthStencilState );
         DXRELEASE( m_depthStencilView );
-        DXRELEASE( m_blendState );
-        DXRELEASE( m_rasterState );
-
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
-        {
-            if( m_samplerState[i] == nullptr )
-            {
-                continue;
-            }
-
-            m_samplerState[i]->Release();
-        }
 
         ID3D11Debug * D3DDevice;
         m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
@@ -327,6 +271,18 @@ namespace Mengine
         MENGINE_UNUSED( ref );
         m_pD3DDevice = nullptr;
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImageTarget );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetTexture );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetOffscreen );
+
         m_factoryRenderVertexAttribute = nullptr;
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderFragmentShader = nullptr;
@@ -338,6 +294,8 @@ namespace Mengine
         m_factoryRenderImageTarget = nullptr;
         m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderTargetOffscreen = nullptr;
+
+        DX11RenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::createRenderWindow( const Resolution & _resolution
@@ -428,7 +386,7 @@ namespace Mengine
         swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
         swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-        // Discard the back buffer contents after presenting.		
+        // Discard the back buffer contents after presenting.
         if( _MultiSampleCount > 1 )
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         else
@@ -489,38 +447,28 @@ namespace Mengine
         }
 
         // Initialize the description of the stencil state.
-        D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-        ZeroMemory( &depthStencilDesc, sizeof( depthStencilDesc ) );
+        ZeroMemory( &m_D3D11DepthStencilState, sizeof( m_D3D11DepthStencilState ) );
 
         // Set up the description of the stencil state.
-        depthStencilDesc.DepthEnable = true;
-        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+        m_D3D11DepthStencilState.DepthEnable = true;
+        m_D3D11DepthStencilState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        m_D3D11DepthStencilState.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-        depthStencilDesc.StencilEnable = true;
-        depthStencilDesc.StencilReadMask = 0xFF;
-        depthStencilDesc.StencilWriteMask = 0xFF;
+        m_D3D11DepthStencilState.StencilEnable = true;
+        m_D3D11DepthStencilState.StencilReadMask = 0xFF;
+        m_D3D11DepthStencilState.StencilWriteMask = 0xFF;
 
         // Stencil operations if pixel is front-facing.
-        depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-        depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        m_D3D11DepthStencilState.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+        m_D3D11DepthStencilState.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
         // Stencil operations if pixel is back-facing.
-        depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-        depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-        // Create the depth stencil state.
-        IF_DXCALL( m_pD3DDevice, CreateDepthStencilState, (&depthStencilDesc, &m_depthStencilState) )
-        {
-            return false;
-        }
-
-        // Set the depth stencil state.
-        m_pD3DDeviceContext->OMSetDepthStencilState( m_depthStencilState, 1 );
+        m_D3D11DepthStencilState.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+        m_D3D11DepthStencilState.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
         // Initialize the depth stencil view.
         D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -549,30 +497,32 @@ namespace Mengine
         // Bind the render target view and depth stencil buffer to the output render pipeline.
         m_pD3DDeviceContext->OMSetRenderTargets( 1, &m_renderTargetView, m_depthStencilView );
 
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            D3D11_SAMPLER_DESC * D3D11SamplerState = m_D3D11SamplerStates + index;
+
+            ZeroMemory( D3D11SamplerState, sizeof( D3D11_SAMPLER_DESC ) );
+        }
+
+        ZeroMemory( &m_D3D11BlendState, sizeof( m_D3D11BlendState ) );
+
         // Setup the raster description which will determine how and what polygons will be drawn.
-        D3D11_RASTERIZER_DESC rasterDesc;
-        rasterDesc.AntialiasedLineEnable = false;
-        rasterDesc.CullMode = D3D11_CULL_BACK;
-		rasterDesc.CullMode = D3D11_CULL_NONE;
+        ZeroMemory( &m_D3D11RasterizerState, sizeof( m_D3D11RasterizerState ) );
 
-        rasterDesc.DepthBias = 0;
-        rasterDesc.DepthBiasClamp = 0.0f;
-        rasterDesc.DepthClipEnable = true;
-        rasterDesc.FillMode = D3D11_FILL_SOLID;
-        rasterDesc.FrontCounterClockwise = true;
-//		rasterDesc.FrontCounterClockwise = false;
+        m_D3D11RasterizerState.AntialiasedLineEnable = false;
+        m_D3D11RasterizerState.CullMode = D3D11_CULL_BACK;
+        m_D3D11RasterizerState.CullMode = D3D11_CULL_NONE;
 
-        rasterDesc.MultisampleEnable = false;
-        rasterDesc.ScissorEnable = false;
-        rasterDesc.SlopeScaledDepthBias = 0.0f;
+        m_D3D11RasterizerState.DepthBias = 0;
+        m_D3D11RasterizerState.DepthBiasClamp = 0.0f;
+        m_D3D11RasterizerState.DepthClipEnable = true;
+        m_D3D11RasterizerState.FillMode = D3D11_FILL_SOLID;
+        m_D3D11RasterizerState.FrontCounterClockwise = true;
+//      rasterDesc.FrontCounterClockwise = false;
 
-        // Create the rasterizer state from the description we just filled out.
-		IF_DXCALL(m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState))
-		{
-			return false;
-		}
-
-        m_pD3DDeviceContext->RSSetState( m_rasterState );
+        m_D3D11RasterizerState.MultisampleEnable = false;
+        m_D3D11RasterizerState.ScissorEnable = false;
+        m_D3D11RasterizerState.SlopeScaledDepthBias = 0.0f;
 
         for( const DX11RenderProgramPtr & program : m_deferredCompilePrograms )
         {
@@ -838,23 +788,6 @@ namespace Mengine
             // Present as fast as possible.
             m_SwapChain->Present( 0, DXGI_PRESENT_DO_NOT_WAIT );
         }
-
-        // clear all states created for frame except current one
-        for( auto state : m_samplerFrameRelease )
-            state->Release();
-        m_samplerFrameRelease.clear();
-
-        for( auto state : m_rasterizerFrameRelease )
-            state->Release();
-        m_rasterizerFrameRelease.clear();
-
-        for( auto state : m_blendFrameRelease )
-            state->Release();
-        m_blendFrameRelease.clear();
-
-        for( auto state : m_dsFrameRelease )
-            state->Release();
-        m_dsFrameRelease.clear();
 
         ++m_frames;
     }
@@ -1213,13 +1146,69 @@ namespace Mengine
 
         D3D11_PRIMITIVE_TOPOLOGY primitiveType = Helper::toD3DPrimitiveType( _type );
 
+        if( primitiveType != D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST )
+        {
+            return;
+        }
+
+        // Create the depth stencil state.
+        ID3D11DepthStencilState * depthStencilState;
+        IF_DXCALL( m_pD3DDevice, CreateDepthStencilState, (&m_D3D11DepthStencilState, &depthStencilState) )
+        {
+            return;
+        }
+
+        // Set the depth stencil state.
+        m_pD3DDeviceContext->OMSetDepthStencilState( depthStencilState, 1 );
+
+        // Create the rasterizer state from the description we just filled out.
+        ID3D11RasterizerState * rasterState;
+        IF_DXCALL( m_pD3DDevice, CreateRasterizerState, (&m_D3D11RasterizerState, &rasterState) )
+        {
+            return;
+        }
+
+        m_pD3DDeviceContext->RSSetState( rasterState );
+
+        ID3D11BlendState * blendState;
+        IF_DXCALL( m_pD3DDevice, CreateBlendState, (&m_D3D11BlendState, &blendState) )
+        {
+            return;
+        }
+
+        m_pD3DDeviceContext->OMSetBlendState( blendState, nullptr, 0xffffffff );
+
+        // create
+        ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES];
+
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            D3D11_SAMPLER_DESC * samplerStateDesk = m_D3D11SamplerStates + index;
+
+            ID3D11SamplerState ** samplerState = &samplerStates[index];
+            IF_DXCALL( m_pD3DDevice, CreateSamplerState, (samplerStateDesk, samplerState) )
+            {
+                return;
+            }
+        }
+
+        m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
+
         UINT primCount = Helper::getPrimitiveCount( _type, _indexCount );
 
-		if (primitiveType == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-		{
-			m_pD3DDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			m_pD3DDeviceContext->DrawIndexed(primCount * 3, _indexStart, _vertexBase);
-		}
+        m_pD3DDeviceContext->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+        m_pD3DDeviceContext->DrawIndexed( primCount * 3, _indexStart, _vertexBase );
+
+        depthStencilState->Release();
+        rasterState->Release();
+        blendState->Release();
+
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            ID3D11SamplerState * samplerState = samplerStates[index];
+
+            samplerState->Release();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
@@ -1260,39 +1249,24 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         // blend state
-        D3D11_BLEND_DESC blendDesc;
-        ZeroMemory( &blendDesc, sizeof( D3D11_BLEND_DESC ) );
+        m_D3D11BlendState.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		blendDesc.RenderTarget[0].BlendEnable = true;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+        m_D3D11BlendState.RenderTarget[0].SrcBlend = Helper::toD3DBlendFactor( _src );
+        m_D3D11BlendState.RenderTarget[0].DestBlend = Helper::toD3DBlendFactor( _dst );
+        m_D3D11BlendState.RenderTarget[0].BlendOp = Helper::toD3DBlendOp( _op );
 
-        blendDesc.RenderTarget[0].SrcBlend = Helper::toD3DBlendFactor( _src );
-        blendDesc.RenderTarget[0].DestBlend = Helper::toD3DBlendFactor( _dst );
-        blendDesc.RenderTarget[0].BlendOp = Helper::toD3DBlendOp( _op );
-		blendDesc.RenderTarget[0].SrcBlendAlpha = Helper::toD3DBlendFactor(_src);
-		blendDesc.RenderTarget[0].DestBlendAlpha = Helper::toD3DBlendFactor(_dst);
-		blendDesc.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp(_op);
-
-        if( _separate )
+        if( _separate == true )
         {
-            blendDesc.RenderTarget[0].SrcBlendAlpha = Helper::toD3DBlendFactor( _separateSrc );
-            blendDesc.RenderTarget[0].DestBlendAlpha = Helper::toD3DBlendFactor( _separateDst );
-            blendDesc.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp( _separateOp );
+            m_D3D11BlendState.RenderTarget[0].SrcBlendAlpha = Helper::toD3DBlendFactor( _separateSrc );
+            m_D3D11BlendState.RenderTarget[0].DestBlendAlpha = Helper::toD3DBlendFactor( _separateDst );
+            m_D3D11BlendState.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp( _separateOp );
         }
-
-		if (m_blendState)
-		{
-			m_blendFrameRelease.push_back(m_blendState);
-			m_blendState = nullptr;
-		}
-
-        IF_DXCALL( m_pD3DDevice, CreateBlendState, (&blendDesc, &m_blendState) )
+        else
         {
-            return;
+            m_D3D11BlendState.RenderTarget[0].SrcBlendAlpha = Helper::toD3DBlendFactor( _src );
+            m_D3D11BlendState.RenderTarget[0].DestBlendAlpha = Helper::toD3DBlendFactor( _dst );
+            m_D3D11BlendState.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp( _op );
         }
-
-        FLOAT BlendFactors[4] = {0.f, 0.f, 0.f, 0.f};
-        m_pD3DDeviceContext->OMSetBlendState( m_blendState, BlendFactors, 0xffffffff );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
@@ -1314,36 +1288,13 @@ namespace Mengine
             return;
         }
 
-        D3D11_SAMPLER_DESC samplerDesc;
+        m_D3D11SamplerStates[_stage].AddressU = Helper::toD3DTextureAddress( _modeU );
+        m_D3D11SamplerStates[_stage].AddressV = Helper::toD3DTextureAddress( _modeV );
+        m_D3D11SamplerStates[_stage].AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        m_D3D11SamplerStates[_stage].MaxLOD = FLT_MAX;
 
-        ID3D11SamplerState * samplerState = m_samplerState[_stage];
-
-        if( samplerState != nullptr )
-        {
-            samplerState->GetDesc( &samplerDesc );
-
-            m_samplerFrameRelease.push_back( samplerState );
-            m_samplerState[_stage] = nullptr;
-        }
-        else
-            ZeroMemory( &samplerDesc, sizeof( D3D11_SAMPLER_DESC ) );
-
-        samplerDesc.AddressU = Helper::toD3DTextureAddress( _modeU );
-        samplerDesc.AddressV = Helper::toD3DTextureAddress( _modeV );
-		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.MaxLOD = FLT_MAX;
         // TODO: convert to border color
         //samplerDesc.BorderColor = _border;
-
-        // create
-        IF_DXCALL( m_pD3DDevice, CreateSamplerState, (&samplerDesc, &samplerState) )
-        {
-            return;
-        }
-
-        m_samplerState[_stage] = samplerState;
-
-        m_pD3DDeviceContext->PSSetSamplers( _stage, 1, &samplerState );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureFactor( uint32_t _color )
@@ -1355,111 +1306,43 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_rasterState, "raster not created" );
 
-        D3D11_RASTERIZER_DESC rasterDesc;
-        m_rasterState->GetDesc( &rasterDesc );
-        rasterDesc.CullMode = Helper::toD3DCullMode( _mode );
-
-        m_rasterizerFrameRelease.push_back( m_rasterState );
-        m_rasterState = nullptr;
-
-        IF_DXCALL( m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState) )
-        {
-            return;
-        }
-
-        m_pD3DDeviceContext->RSSetState( m_rasterState );
+        m_D3D11RasterizerState.CullMode = Helper::toD3DCullMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
-		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDevice, "device not created");
-		MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "context not created");
-		MENGINE_ASSERTION_MEMORY_PANIC(m_depthStencilState, "depth state not created");
+        MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDevice, "device not created");
+        MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "context not created");
 
-		D3D11_DEPTH_STENCIL_DESC depthDesc;
-		m_depthStencilState->GetDesc(&depthDesc);
-		depthDesc.DepthFunc = _depthTest ? D3D11_COMPARISON_LESS_EQUAL : D3D11_COMPARISON_ALWAYS;
-
-		m_dsFrameRelease.push_back(m_depthStencilState);
-		m_depthStencilState = nullptr;
-
-		IF_DXCALL(m_pD3DDevice, CreateDepthStencilState, (&depthDesc, &m_depthStencilState))
-		{
-			return;
-		}
-
-		m_pD3DDeviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+        m_D3D11DepthStencilState.DepthFunc = _depthTest ? D3D11_COMPARISON_LESS_EQUAL : D3D11_COMPARISON_ALWAYS;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
     {
-		//MENGINE_UNUSED(_depthWrite);
-
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_depthStencilState, "depth state not created" );
 
-        D3D11_DEPTH_STENCIL_DESC depthDesc;
-        m_depthStencilState->GetDesc( &depthDesc );
-        depthDesc.DepthEnable = _depthWrite ? 1 : 0;
-
-        m_dsFrameRelease.push_back( m_depthStencilState );
-        m_depthStencilState = nullptr;
-
-        IF_DXCALL( m_pD3DDevice, CreateDepthStencilState, (&depthDesc, &m_depthStencilState) )
-        {
-            return;
-        }
-
-        m_pD3DDeviceContext->OMSetDepthStencilState( m_depthStencilState, 1 );
+        m_D3D11DepthStencilState.DepthEnable = _depthWrite ? 1 : 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
     {
-		//MENGINE_UNUSED(_depthFunction);
+        //MENGINE_UNUSED(_depthFunction);
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_depthStencilState, "depth state not created" );
 
-        D3D11_DEPTH_STENCIL_DESC depthDesc;
-        m_depthStencilState->GetDesc( &depthDesc );
-        depthDesc.DepthFunc = Helper::toD3DCmpFunc( _depthFunction );
+        m_D3D11DepthStencilState.DepthFunc = Helper::toD3DCmpFunc( _depthFunction );
 
-        m_dsFrameRelease.push_back( m_depthStencilState );
-        m_depthStencilState = nullptr;
-
-        IF_DXCALL( m_pD3DDevice, CreateDepthStencilState, (&depthDesc, &m_depthStencilState) )
-        {
-            return;
-        }
-
-        m_pD3DDeviceContext->OMSetDepthStencilState( m_depthStencilState, 1 );
-
-        
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setFillMode( EFillMode _mode )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_rasterState, "raster not created" );
 
-        D3D11_RASTERIZER_DESC rasterDesc;
-        m_rasterState->GetDesc( &rasterDesc );
-        rasterDesc.FillMode = Helper::toD3DFillMode( _mode );
-
-        m_rasterizerFrameRelease.push_back( m_rasterState );
-        m_rasterState = nullptr;
-
-        IF_DXCALL( m_pD3DDevice, CreateRasterizerState, (&rasterDesc, &m_rasterState) )
-        {
-            return;
-        }
-
-        m_pD3DDeviceContext->RSSetState( m_rasterState );
+        m_D3D11RasterizerState.FillMode = Helper::toD3DFillMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
@@ -1474,18 +1357,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
 
-		MENGINE_UNUSED(_alphaBlend);
+        MENGINE_UNUSED(_alphaBlend);
 
-        if( _alphaBlend == true )
-        {
-			FLOAT BlendFactors[4] = { 0.f, 0.f, 0.f, 0.f };
-			m_pD3DDeviceContext->OMSetBlendState( m_blendState, BlendFactors, 0xffffffff );
-        }
-        else
-        {
-            m_pD3DDeviceContext->OMSetBlendState( nullptr, nullptr, 0xffffffff );
-        }
-		
+        m_D3D11BlendState.RenderTarget[0].BlendEnable = _alphaBlend;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )

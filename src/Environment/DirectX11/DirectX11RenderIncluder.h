@@ -10,4 +10,6 @@ namespace Mengine
 {
     template<class T>
     using DX11ResourcePtr = Microsoft::WRL::ComPtr<T>;
+
+    typedef DX11ResourcePtr<ID3D11DeviceContext> ID3D11DeviceContextPtr;
 }

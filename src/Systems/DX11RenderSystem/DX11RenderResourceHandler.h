@@ -8,8 +8,6 @@
 
 namespace Mengine
 {
-    typedef DX11ResourcePtr<ID3D11DeviceContext> ID3D11DeviceContextPtr;
-
     class DX11RenderResourceHandler
         : public Mixin
         , public IntrusiveLinked<DX11RenderResourceHandler>

@@ -1,5 +1,7 @@
 #include "DX11RenderImage.h"
 
+#include "DX11RenderImageLockedFactoryStorage.h"
+
 #include "DX11ErrorHelper.h"
 #include "DX11RenderEnum.h"
 
@@ -12,7 +14,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderImage::DX11RenderImage()
         : m_pD3DTexture( nullptr )
-        , m_pD3DStagingTexture( nullptr )
         , m_pD3DResourceView( nullptr )
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
@@ -22,8 +23,6 @@ namespace Mengine
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
-        , m_stagingPosX( 0 )
-        , m_stagingPosY( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -36,6 +35,7 @@ namespace Mengine
     bool DX11RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat )
     {
         DXGI_FORMAT D3DFormat = Helper::toD3DFormat( _pixelFormat );
+
         if( D3DFormat == DXGI_FORMAT_UNKNOWN )
         {
             // TODO: handle log
@@ -51,12 +51,6 @@ namespace Mengine
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
-
-        // TODO: 1 mip only logic here
-        //D3D11_SUBRESOURCE_DATA SubresourceData;
-        //SubresourceData.pSysMem = m_lockMemory->getBuffer();
-        //SubresourceData.SysMemPitch = m_pitch;
-        //SubresourceData.SysMemSlicePitch = 0;
 
         D3D11_TEXTURE2D_DESC textureDesc;
         ZeroMemory( &textureDesc, sizeof( D3D11_TEXTURE2D_DESC ) );
@@ -77,7 +71,7 @@ namespace Mengine
 
         IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
         {
-            return nullptr;
+            return false;
         }
 
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
@@ -89,7 +83,7 @@ namespace Mengine
 
         IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView) )
         {
-            return nullptr;
+            return false;
         }
 
         return true;
@@ -140,74 +134,65 @@ namespace Mengine
         return m_renderImageProvider;
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer DX11RenderImage::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr DX11RenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         MENGINE_UNUSED( _readOnly );
 
+        uint32_t rect_offsetX = _rect.getOffsetX();
+        uint32_t rect_offsetY = _rect.getOffsetY();
         uint32_t rect_width = _rect.getWidth();
         uint32_t rect_height = _rect.getHeight();
 
+        uint32_t miplevel_offsetX = rect_offsetX >> _level;
+        uint32_t miplevel_offsetY = rect_offsetY >> _level;
         uint32_t miplevel_width = rect_width >> _level;
         uint32_t miplevel_height = rect_height >> _level;
 
-        D3D11_TEXTURE2D_DESC stagingTextureDesc;
-        m_pD3DTexture->GetDesc( &stagingTextureDesc );
-
-        stagingTextureDesc.Width = miplevel_width;
-        stagingTextureDesc.Height = miplevel_height;
-        stagingTextureDesc.BindFlags = 0;
-        stagingTextureDesc.MiscFlags = 0;
-        stagingTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-        stagingTextureDesc.Usage = D3D11_USAGE_STAGING;
+        DX11RenderImageLockedPtr imageLocked = DX11RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         ID3D11Device * pD3DDevice = this->getDirect3D11Device();
-
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (
-            &stagingTextureDesc,
-            NULL,
-            &m_pD3DStagingTexture) )
-        {
-            return nullptr;
-        }
-
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        D3D11_MAPPED_SUBRESOURCE textureMemory;
-        IF_DXCALL( pImmediateContext, Map, (m_pD3DStagingTexture,
-            0,
-            D3D11_MAP_WRITE,
-            0,
-            &textureMemory
-            ) )
+        if( imageLocked->initialize( pD3DDevice, pImmediateContext, m_pD3DTexture, miplevel_offsetX, miplevel_offsetY, miplevel_width, miplevel_height ) == false )
         {
             return nullptr;
         }
 
-        *_pitch = textureMemory.RowPitch;
-
-		return textureMemory.pData;
+        return imageLocked;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImage::unlock( uint32_t _level, bool _successful )
+    bool DX11RenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
     {
-        MENGINE_UNUSED( _successful );
         MENGINE_UNUSED( _level );
+
+        DX11RenderImageLocked * lockedImage = _locked.getT<DX11RenderImageLocked *>();
+
+        if( _successful == false )
+        {
+            lockedImage->finalize();
+
+            return true;
+        }
 
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        pImmediateContext->Unmap( m_pD3DStagingTexture, 0 );
+        ID3D11Texture2D * pD3DStagingTexture = lockedImage->getStagingTexture();
+        uint32_t stagingOffsetX = lockedImage->getStagingOffsetX();
+        uint32_t stagingOffsetY = lockedImage->getStagingOffsetY();
+
+        pImmediateContext->Unmap( pD3DStagingTexture, 0 );
 
         pImmediateContext->CopySubresourceRegion(
             m_pD3DTexture,
             0,
-            m_stagingPosX,
-            m_stagingPosY,
+            stagingOffsetX,
+            stagingOffsetY,
             0,
-            m_pD3DStagingTexture,
+            pD3DStagingTexture,
             0,
             NULL );
 
-        DXRELEASE( m_pD3DStagingTexture );
+        lockedImage->finalize();
 
         return true;
     }

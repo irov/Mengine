@@ -1405,7 +1405,8 @@ namespace Mengine
             return true;
         }
 
-        _vertexBuffer->enable();
+        DX9RenderVertexBuffer * dx9VertexBuffer = _vertexBuffer.getT<DX9RenderVertexBuffer *>();
+        dx9VertexBuffer->enable();
 
         m_vertexBufferEnable = true;
 
@@ -1453,7 +1454,8 @@ namespace Mengine
             return true;
         }
 
-        _indexBuffer->enable();
+        DX9RenderIndexBuffer * dx9IndexBuffer = _indexBuffer.getT<DX9RenderIndexBuffer *>();
+        dx9IndexBuffer->enable();
 
         m_indexBufferEnable = true;
 
@@ -1479,7 +1481,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
+    void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _image )
     {
         MENGINE_UNUSED( _program );
 
@@ -1497,9 +1499,10 @@ namespace Mengine
             return;
         }
 
-        if( _texture != nullptr )
+        if( _image != nullptr )
         {
-            _texture->bind( _stage );
+            DX9RenderImage * dx9RenderImage = _image.getT<DX9RenderImage *>();
+            dx9RenderImage->bind( _stage );
 
             m_textureEnable[_stage] = true;
         }

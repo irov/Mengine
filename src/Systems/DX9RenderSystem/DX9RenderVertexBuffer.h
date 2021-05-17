@@ -30,9 +30,9 @@ namespace Mengine
         uint32_t getVertexCount() const override;
         uint32_t getVertexSize() const override;
 
-    protected:
-        void enable() override;
-        void disable() override;
+    public:
+        void enable();
+        void disable();
 
     protected:
         bool resize( uint32_t _vertexCount ) override;

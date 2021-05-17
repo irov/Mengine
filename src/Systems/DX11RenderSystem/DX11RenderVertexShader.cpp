@@ -9,8 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderVertexShader::DX11RenderVertexShader()
-        : m_pD3DVertexShader( nullptr )
-        , m_compileReferenceCount( 0 )
+        : m_compileReferenceCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -40,7 +39,7 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderVertexShader::compile( ID3D11Device * _pD3DDevice )
+    bool DX11RenderVertexShader::compile( const ID3D11DevicePtr & _pD3DDevice )
     {
         if( m_compileReferenceCount == 0 )
         {
@@ -72,28 +71,23 @@ namespace Mengine
 
         if( m_compileReferenceCount == 0 )
         {
-            DXRELEASE( m_pD3DVertexShader );
+            m_pD3DVertexShader = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexShader::enable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderVertexShader::enable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
-        _pImmediateContext->VSSetShader( m_pD3DVertexShader, nullptr, 0 );
+        _pImmediateContext->VSSetShader( m_pD3DVertexShader.Get(), nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexShader::disable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderVertexShader::disable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         _pImmediateContext->VSSetShader( nullptr, nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void * DX11RenderVertexShader::getShaderCompileData() const
+    const MemoryInterfacePtr & DX11RenderVertexShader::getShaderCompileMemory() const
     {
-        return m_memory->getBuffer();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t DX11RenderVertexShader::getShaderCompileDataSize() const
-    {
-        return m_memory->getSize();
+        return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
 }

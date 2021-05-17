@@ -9,13 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetTexture::DX11RenderTargetTexture()
-        : m_pD3DTexture( nullptr )
-        , m_pD3DResourceView( nullptr )
-        , m_pRenderTargetView( nullptr )
-        , m_pRenderTargetViewOld( nullptr )
-        , m_pDepthStencilMain( nullptr )
-        , m_pDepthStencilMainOld( nullptr )
-        , m_hwPixelFormat( PF_UNKNOWN )
+        : m_hwPixelFormat( PF_UNKNOWN )
         , m_hwChannels( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
@@ -32,6 +26,7 @@ namespace Mengine
     bool DX11RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
     {
         DXGI_FORMAT D3DFormat = Helper::toD3DFormat( _format );
+
         if( D3DFormat == DXGI_FORMAT_UNKNOWN )
         {
             // TODO: handle log
@@ -51,7 +46,7 @@ namespace Mengine
         m_hwWidthInv = 1.f / (float)m_textureDesc.Width;
         m_hwHeightInv = 1.f / (float)m_textureDesc.Height;
 
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         IF_DXCALL( pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &m_pD3DTexture) )
         {
@@ -59,36 +54,44 @@ namespace Mengine
         }
 
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+        ZeroMemory( &shaderResourceViewDesc, sizeof( D3D11_SHADER_RESOURCE_VIEW_DESC ) );
 
         shaderResourceViewDesc.Format = m_textureDesc.Format;
         shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
         shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
         shaderResourceViewDesc.Texture2D.MipLevels = m_textureDesc.MipLevels;
 
-        IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView) )
+        ID3D11ShaderResourceView * pD3DResourceView;
+        IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
         {
             return nullptr;
         }
 
+        m_pD3DResourceView = pD3DResourceView;
+
         D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+        ZeroMemory( &renderTargetViewDesc, sizeof( D3D11_RENDER_TARGET_VIEW_DESC ) );
 
         renderTargetViewDesc.Format = m_textureDesc.Format;
         renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
         renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-        IF_DXCALL( pD3DDevice, CreateRenderTargetView, (m_pD3DTexture, &renderTargetViewDesc, &m_pRenderTargetView) )
+        ID3D11RenderTargetView * pRenderTargetView;
+        IF_DXCALL( pD3DDevice, CreateRenderTargetView, (m_pD3DTexture.Get(), &renderTargetViewDesc, &pRenderTargetView) )
         {
             return nullptr;
         }
+
+        m_pRenderTargetView = pRenderTargetView;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetTexture::finalize()
     {
-        DXRELEASE( m_pD3DTexture );
-        DXRELEASE( m_pD3DResourceView );
-        DXRELEASE( m_pRenderTargetView );
+        m_pD3DTexture = nullptr;
+        m_pD3DResourceView = nullptr;
+        m_pRenderTargetView = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderTargetTexture::getHWChannels() const
@@ -144,8 +147,16 @@ namespace Mengine
     {
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        pImmediateContext->OMGetRenderTargets( 1, &m_pRenderTargetViewOld, &m_pDepthStencilMainOld );
-        pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetView, m_pDepthStencilMain );
+        ID3D11RenderTargetView * pRenderTargetViewOld;
+        ID3D11DepthStencilView * pDepthStencilMainOld;
+        pImmediateContext->OMGetRenderTargets( 1, &pRenderTargetViewOld, &pDepthStencilMainOld );
+
+        m_pRenderTargetViewOld = pRenderTargetViewOld;
+        m_pDepthStencilMainOld = pDepthStencilMainOld;
+
+        ID3D11RenderTargetView * pRenderTargetView = m_pRenderTargetView.Get();
+
+        pImmediateContext->OMSetRenderTargets( 1, &pRenderTargetView, m_pDepthStencilMain.Get() );
 
         return true;
     }
@@ -154,7 +165,9 @@ namespace Mengine
     {
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetViewOld, m_pDepthStencilMainOld );
+        ID3D11RenderTargetView * pRenderTargetViewOld = m_pRenderTargetViewOld.Get();
+
+        pImmediateContext->OMSetRenderTargets( 1, &pRenderTargetViewOld, m_pDepthStencilMainOld.Get() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
@@ -165,23 +178,24 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Device * DX11RenderTargetTexture::getDirect3dDevice11() const
+    const ID3D11DevicePtr & DX11RenderTargetTexture::getDirect3dDevice11() const
     {
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         return pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Texture2D * DX11RenderTargetTexture::getD3DTexture() const
+    const ID3D11Texture2DPtr & DX11RenderTargetTexture::getD3DTexture() const
     {
         return m_pD3DTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11ShaderResourceView * DX11RenderTargetTexture::getD3DShaderResource() const
+    const ID3D11ShaderResourceViewPtr & DX11RenderTargetTexture::getD3DShaderResource() const
     {
         return m_pD3DResourceView;
     }
-    D3D11_TEXTURE2D_DESC DX11RenderTargetTexture::GetTextureDesc() const
+    //////////////////////////////////////////////////////////////////////////
+    const D3D11_TEXTURE2D_DESC & DX11RenderTargetTexture::GetTextureDesc() const
     {
         return m_textureDesc;
     }

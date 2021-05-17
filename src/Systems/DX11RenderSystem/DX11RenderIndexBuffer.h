@@ -32,8 +32,8 @@ namespace Mengine
         uint32_t getIndexSize() const override;
 
     public:
-        void enable( ID3D11DeviceContext * _pImmediateContext );
-        void disable( ID3D11DeviceContext * _pImmediateContext );
+        void enable( const ID3D11DeviceContextPtr & _pImmediateContext );
+        void disable( const ID3D11DeviceContextPtr & _pImmediateContext );
 
     protected:
         bool resize( uint32_t _indexCount ) override;

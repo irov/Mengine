@@ -9,8 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderFragmentShader::DX11RenderFragmentShader()
-        : m_pD3DPixelShader( nullptr )
-        , m_compileReferenceCount( 0 )
+        : m_compileReferenceCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -40,7 +39,7 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderFragmentShader::compile( ID3D11Device * _pD3DDevice )
+    bool DX11RenderFragmentShader::compile( const ID3D11DevicePtr & _pD3DDevice )
     {
         if( m_compileReferenceCount == 0 )
         {
@@ -72,16 +71,16 @@ namespace Mengine
 
         if( m_compileReferenceCount == 0 )
         {
-            DXRELEASE( m_pD3DPixelShader );
+            m_pD3DPixelShader = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderFragmentShader::enable( ID3D11DeviceContext * _pD3DDeviceContext )
+    void DX11RenderFragmentShader::enable( const ID3D11DeviceContextPtr & _pD3DDeviceContext )
     {
-        _pD3DDeviceContext->PSSetShader( m_pD3DPixelShader, nullptr, 0 );
+        _pD3DDeviceContext->PSSetShader( m_pD3DPixelShader.Get(), nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderFragmentShader::disable( ID3D11DeviceContext * _pD3DDeviceContext )
+    void DX11RenderFragmentShader::disable( const ID3D11DeviceContextPtr & _pD3DDeviceContext )
     {
         _pD3DDeviceContext->PSSetShader( nullptr, nullptr, 0 );
     }

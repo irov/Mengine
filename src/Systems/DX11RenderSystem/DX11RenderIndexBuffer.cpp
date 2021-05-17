@@ -30,52 +30,54 @@ namespace Mengine
     {
         m_format = Helper::getD3DIndexFormat();
 
-        return initializeBuffer( _indexSize, _bufferType );
+        return this->initializeBuffer( _indexSize, _bufferType );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderIndexBuffer::finalize()
     {
-        finalizeBuffer();
+        this->finalizeBuffer();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderIndexBuffer::getIndexCount() const
     {
-        return getElementsCount();
+        return this->getElementsCount();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderIndexBuffer::getIndexSize() const
     {
-        return getElementSize();
+        return this->getElementSize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderIndexBuffer::resize( uint32_t _indexCount )
     {
         // TODO: in D3D11 we can create static bufferes without lock - if we provide data pointer on creation
-        return resizeBuffer( _indexCount, nullptr );
+        return this->resizeBuffer( _indexCount, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DX11RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
-        return lockBuffer( _offset, _count );
+        return this->lockBuffer( _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderIndexBuffer::unlock()
     {
-        return unlockBuffer();
+        return this->unlockBuffer();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderIndexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
-        return drawBuffer( _buffer, _offset, _count );
+        return this->drawBuffer( _buffer, _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderIndexBuffer::enable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderIndexBuffer::enable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         UINT sOffset = 0;
-        _pImmediateContext->IASetIndexBuffer( m_pD3DBuffer, m_format, sOffset );
+
+        ID3D11Buffer * pD3DBuffer = m_pD3DBuffer.Get();
+        _pImmediateContext->IASetIndexBuffer( pD3DBuffer, m_format, sOffset );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderIndexBuffer::disable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderIndexBuffer::disable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         _pImmediateContext->IASetIndexBuffer( nullptr, m_format, 0 );
     }

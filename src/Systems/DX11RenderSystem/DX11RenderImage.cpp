@@ -13,9 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderImage::DX11RenderImage()
-        : m_pD3DTexture( nullptr )
-        , m_pD3DResourceView( nullptr )
-        , m_hwMipmaps( 0 )
+        : m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwChannels( 0 )
@@ -67,24 +65,31 @@ namespace Mengine
         textureDesc.CPUAccessFlags = 0;
         textureDesc.MiscFlags = 0;
 
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
+        ID3D11Texture2D * pD3DTexture;
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &pD3DTexture) )
         {
             return false;
         }
 
+        m_pD3DTexture = pD3DTexture;
+
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+        ZeroMemory( &shaderResourceViewDesc, sizeof( D3D11_SHADER_RESOURCE_VIEW_DESC ) );
 
         shaderResourceViewDesc.Format = textureDesc.Format;
         shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
         shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
         shaderResourceViewDesc.Texture2D.MipLevels = textureDesc.MipLevels;
 
-        IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture, &shaderResourceViewDesc, &m_pD3DResourceView) )
+        ID3D11ShaderResourceView * pD3DResourceView;
+        IF_DXCALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
         {
             return false;
         }
+
+        m_pD3DResourceView = pD3DResourceView;
 
         return true;
     }
@@ -93,12 +98,14 @@ namespace Mengine
     {
         m_renderImageProvider = nullptr;
 
-        DXRELEASE( m_pD3DTexture );
-        DXRELEASE( m_pD3DResourceView );
+        m_pD3DTexture = nullptr;
+        m_pD3DResourceView = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImage::bind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
+    void DX11RenderImage::bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage )
     {
+        ID3D11ShaderResourceView * pD3DResourceView = m_pD3DResourceView.Get();
+
 #ifdef MENGINE_DEBUG
 
         /*
@@ -112,14 +119,16 @@ namespace Mengine
             DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
         }*/
 
-        _pImmediateContext->PSSetShaderResources( _stage, 1, &m_pD3DResourceView );
+        
+
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DResourceView );
 
 #else
-        _pImmediateContext->PSSetShaderResources( _stage, 1, &m_pD3DResourceView );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DResourceView );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImage::unbind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
+    void DX11RenderImage::unbind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage )
     {
         _pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
     }
@@ -150,7 +159,7 @@ namespace Mengine
 
         DX11RenderImageLockedPtr imageLocked = DX11RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         if( imageLocked->initialize( pD3DDevice, pImmediateContext, m_pD3DTexture, miplevel_offsetX, miplevel_offsetY, miplevel_width, miplevel_height ) == false )
@@ -176,19 +185,19 @@ namespace Mengine
 
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        ID3D11Texture2D * pD3DStagingTexture = lockedImage->getStagingTexture();
+        const ID3D11Texture2DPtr & pD3DStagingTexture = lockedImage->getStagingTexture();
         uint32_t stagingOffsetX = lockedImage->getStagingOffsetX();
         uint32_t stagingOffsetY = lockedImage->getStagingOffsetY();
 
-        pImmediateContext->Unmap( pD3DStagingTexture, 0 );
+        pImmediateContext->Unmap( pD3DStagingTexture.Get(), 0 );
 
         pImmediateContext->CopySubresourceRegion(
-            m_pD3DTexture,
+            m_pD3DTexture.Get(),
             0,
             stagingOffsetX,
             stagingOffsetY,
             0,
-            pD3DStagingTexture,
+            pD3DStagingTexture.Get(),
             0,
             NULL );
 
@@ -197,19 +206,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Device * DX11RenderImage::getD3DDevice() const
+    const ID3D11DevicePtr & DX11RenderImage::getD3DDevice() const
     {
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         return pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Texture2D * DX11RenderImage::getD3DTexture() const
+    const ID3D11Texture2DPtr & DX11RenderImage::getD3DTexture() const
     {
         return m_pD3DTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11ShaderResourceView * DX11RenderImage::getD3DShaderResource() const
+    const ID3D11ShaderResourceViewPtr & DX11RenderImage::getD3DShaderResource() const
     {
         return m_pD3DResourceView;
     }

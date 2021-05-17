@@ -40,7 +40,7 @@ namespace Mengine
         void updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
-        bool apply( ID3D11Device * _pD3DDevice, ID3D11DeviceContext * _pImmediateContext, const RenderProgramInterfacePtr & _program );
+        bool apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const RenderProgramInterfacePtr & _program );
 
     public:
 

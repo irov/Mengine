@@ -6,8 +6,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderImageLocked::DX11RenderImageLocked()
-        : m_pD3DStagingTexture( nullptr )
-        , m_stagingOffsetX( 0 )
+        : m_stagingOffsetX( 0 )
         , m_stagingOffsetY( 0 )
     {
     }
@@ -17,7 +16,7 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImageLocked::initialize( ID3D11Device * _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, ID3D11Texture2D * _pMainTexture, uint32_t _offsetX, uint32_t _offsetY, uint32_t _width, uint32_t _height )
+    bool DX11RenderImageLocked::initialize( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const ID3D11Texture2DPtr & _pMainTexture, uint32_t _offsetX, uint32_t _offsetY, uint32_t _width, uint32_t _height )
     {
         D3D11_TEXTURE2D_DESC stagingTextureDesc;
         _pMainTexture->GetDesc( &stagingTextureDesc );
@@ -29,15 +28,18 @@ namespace Mengine
         stagingTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
         stagingTextureDesc.Usage = D3D11_USAGE_STAGING;
 
+        ID3D11Texture2D * pD3DStagingTexture;
         IF_DXCALL( _pD3DDevice, CreateTexture2D, (
             &stagingTextureDesc,
             NULL,
-            &m_pD3DStagingTexture) )
+            &pD3DStagingTexture) )
         {
             return false;
         }
 
-        IF_DXCALL( _pImmediateContext, Map, (m_pD3DStagingTexture,
+        m_pD3DStagingTexture = pD3DStagingTexture;
+
+        IF_DXCALL( _pImmediateContext, Map, (m_pD3DStagingTexture.Get(),
             0,
             D3D11_MAP_WRITE,
             0,
@@ -55,10 +57,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageLocked::finalize()
     {
-        DXRELEASE( m_pD3DStagingTexture );
+        m_pD3DStagingTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Texture2D * DX11RenderImageLocked::getStagingTexture() const
+    const ID3D11Texture2DPtr & DX11RenderImageLocked::getStagingTexture() const
     {
         return m_pD3DStagingTexture;
     }

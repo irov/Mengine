@@ -9,7 +9,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderProgram::DX11RenderProgram()
-        : m_bindMatrixBuffer( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,11 +52,10 @@ namespace Mengine
         m_vertexShader = nullptr;
         m_fragmentShader = nullptr;
         m_vertexAttribute = nullptr;
-
-        DXRELEASE( m_bindMatrixBuffer );
+        m_bindMatrixBuffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderProgram::compile( ID3D11Device * _pD3DDevice )
+    bool DX11RenderProgram::compile( const ID3D11DevicePtr & _pD3DDevice )
     {
         D3D11_BUFFER_DESC descConstBuffer;
 
@@ -68,14 +66,23 @@ namespace Mengine
         descConstBuffer.StructureByteStride = 0;
         descConstBuffer.ByteWidth = 16 * 4;
 
-        IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, nullptr, &m_bindMatrixBuffer) )
+        ID3D11Buffer * bindMatrixBuffer;
+        IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, nullptr, &bindMatrixBuffer) )
         {
             return false;
         }
 
+        m_bindMatrixBuffer = bindMatrixBuffer;
+
         m_vertexShader->compile( _pD3DDevice );
         m_fragmentShader->compile( _pD3DDevice );
-        m_vertexAttribute->compile( _pD3DDevice, m_vertexShader->getShaderCompileData(), m_vertexShader->getShaderCompileDataSize() );
+
+        const MemoryInterfacePtr & shaderCompileMemory = m_vertexShader->getShaderCompileMemory();
+
+        if( m_vertexAttribute->compile( _pD3DDevice, shaderCompileMemory ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -87,7 +94,7 @@ namespace Mengine
         m_vertexAttribute->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::enable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderProgram::enable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         if( m_vertexShader != nullptr )
         {
@@ -105,7 +112,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::disable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderProgram::disable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         if( m_vertexShader != nullptr )
         {
@@ -123,23 +130,25 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderProgram::bindMatrix( ID3D11DeviceContext * _pImmediateContext, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
+    void DX11RenderProgram::bindMatrix( const ID3D11DeviceContextPtr & _pImmediateContext, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
     {
         MENGINE_UNUSED( _worldMatrix );
         MENGINE_UNUSED( _viewMatrix );
         MENGINE_UNUSED( _projectionMatrix );
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
-        IF_DXCALL( _pImmediateContext, Map, (m_bindMatrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
+        IF_DXCALL( _pImmediateContext, Map, (m_bindMatrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource) )
         {
             return;
         }
 
         stdex::memorycopy( mappedResource.pData, 0, _totalPMWInvMatrix.buff(), sizeof( mt::mat4f ) );
 
-        _pImmediateContext->Unmap( m_bindMatrixBuffer, 0 );
+        _pImmediateContext->Unmap( m_bindMatrixBuffer.Get(), 0 );
 
-        _pImmediateContext->VSSetConstantBuffers( 0, 1, &m_bindMatrixBuffer );
+        ID3D11Buffer * d3dBindMatrixBuffer = m_bindMatrixBuffer.Get();
+
+        _pImmediateContext->VSSetConstantBuffers( 0, 1, &d3dBindMatrixBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -49,7 +49,7 @@ namespace Mengine
 
         D3D11_BUFFER_DESC m_desc;
         DXGI_FORMAT m_format;
-        ID3D11Buffer * m_pD3DBuffer;
+        ID3D11BufferPtr m_pD3DBuffer;
 
         MemoryProxyInterfacePtr m_memory;
     };

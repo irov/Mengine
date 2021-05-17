@@ -134,8 +134,8 @@ namespace Mengine
         UnknownPointer getRenderSystemExtention() override;
 
     public:
-        ID3D11Device * getDirect3D11Device() const override;
-        ID3D11DeviceContext * getDirect3D11DeviceContext() const override;
+        const ID3D11DevicePtr & getDirect3D11Device() const override;
+        const ID3D11DeviceContextPtr & getDirect3D11DeviceContext() const override;
 
     protected:
         void updateVSyncDPP_();
@@ -155,20 +155,20 @@ namespace Mengine
         bool m_fullscreen;
         bool m_depth;
 
-        ID3D11Device * m_pD3DDevice;
-        ID3D11DeviceContext * m_pD3DDeviceContext;
-        ID3D11DeviceContext * m_pD3DImmediateContext;
-        // буфер для хранения данных изображения перед выводом
-        IDXGISwapChain * m_SwapChain;
+        ID3D11DevicePtr m_pD3DDevice;
+        ID3D11DeviceContextPtr m_pD3DDeviceContext;
+        ID3D11DeviceContextPtr m_pD3DImmediateContext;
+
+        IDXGISwapChainPtr m_dxgiSwapChain;
         DXGI_MODE_DESC m_SwapChainBufferDesc;
 
         DXGI_MODE_DESC * m_DisplayModeList;
-        UINT			m_DisplayModeListNum;
+        UINT m_DisplayModeListNum;
 
-        ID3D11RenderTargetView * m_renderTargetView;
+        ID3D11RenderTargetViewPtr m_renderTargetView;
         
-        ID3D11Texture2D * m_depthStencilBuffer;
-        ID3D11DepthStencilView * m_depthStencilView;
+        ID3D11Texture2DPtr m_depthStencilBuffer;
+        ID3D11DepthStencilViewPtr m_depthStencilView;
 
         // sync routines
         uint32_t m_frames;

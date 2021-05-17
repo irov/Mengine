@@ -28,15 +28,15 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( ID3D11Device * _pD3DDevice );
+        bool compile( const ID3D11DevicePtr & _pD3DDevice );
         void release();
 
     public:
-        void enable( ID3D11DeviceContext * _pD3DDeviceContext );
-        void disable( ID3D11DeviceContext * _pD3DDeviceContext );
+        void enable( const ID3D11DeviceContextPtr & _pD3DDeviceContext );
+        void disable( const ID3D11DeviceContextPtr & _pD3DDeviceContext );
 
     protected:
-        ID3D11PixelShader * m_pD3DPixelShader;
+        ID3D11PixelShaderPtr m_pD3DPixelShader;
 
         uint32_t m_compileReferenceCount;
 

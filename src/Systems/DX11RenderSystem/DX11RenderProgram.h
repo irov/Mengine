@@ -37,16 +37,16 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( ID3D11Device * _pD3DDevice );
+        bool compile( const ID3D11DevicePtr & _pD3DDevice );
         void release();
 
     public:
-        void enable( ID3D11DeviceContext * _pImmediateContext );
-        void disable( ID3D11DeviceContext * _pImmediateContext );
+        void enable( const ID3D11DeviceContextPtr & _pImmediateContext );
+        void disable( const ID3D11DeviceContextPtr & _pImmediateContext );
 
     public:
         // b0 - first buffer must be float4x4 
-        void bindMatrix( ID3D11DeviceContext * _pImmediateContext, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
+        void bindMatrix( const ID3D11DeviceContextPtr & _pImmediateContext, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:
         ConstString m_name;
@@ -55,7 +55,7 @@ namespace Mengine
         DX11RenderFragmentShaderPtr m_fragmentShader;
         DX11RenderVertexAttributePtr m_vertexAttribute;
 
-        ID3D11Buffer * m_bindMatrixBuffer;
+        ID3D11BufferPtr m_bindMatrixBuffer;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderProgram, RenderProgramInterface> DX11RenderProgramPtr;

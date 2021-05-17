@@ -170,16 +170,14 @@ namespace Mengine
 
         if( this->createNullTexture_() == false )
         {
-            LOGGER_ERROR( "invalid create __null__ texture"
-            );
+            LOGGER_ERROR( "invalid create __null__ texture" );
 
             return false;
         }
 
         if( this->createWhitePixelTexture_() == false )
         {
-            LOGGER_ERROR( "invalid create WhitePixel texture"
-            );
+            LOGGER_ERROR( "invalid create WhitePixel texture" );
 
             return false;
         }

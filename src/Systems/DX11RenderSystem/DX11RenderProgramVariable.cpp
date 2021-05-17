@@ -35,10 +35,14 @@ namespace Mengine
             buffer->Release();
         }
 
+        m_vertexBuffers.clear();
+
         for( ID3D11Buffer * buffer : m_pixelBuffers )
         {
             buffer->Release();
         }
+
+        m_pixelBuffers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
@@ -117,7 +121,7 @@ namespace Mengine
     {
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        float * values = &m_pixelFloats[v.offset];
+        float * values = m_pixelFloats.data() + v.offset;
         std::copy( _values, _values + _size * _count, values );
 
         m_pixelBufferUpdate = true;
@@ -139,7 +143,7 @@ namespace Mengine
         MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderProgramVariable::apply( ID3D11Device * _pD3DDevice, ID3D11DeviceContext * _pImmediateContext, const RenderProgramInterfacePtr & _program )
+    bool DX11RenderProgramVariable::apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const RenderProgramInterfacePtr & _program )
     {
         MENGINE_UNUSED( _program );
 
@@ -161,26 +165,28 @@ namespace Mengine
             uint32_t vertexEnumerator = 0;
             for( const ProgramVariableDesc & v : m_vertexVariables )
             {
-                auto * Buffer11 = &m_vertexBuffers[vertexEnumerator];
                 descConstBuffer.ByteWidth = v.count * v.size;
 
-                float * values = &m_vertexFloats[v.offset];
+                const float * values = m_vertexFloats.data() + v.offset;
 
                 D3D11_SUBRESOURCE_DATA InitData;
                 InitData.pSysMem = values;
                 InitData.SysMemPitch = 0;
                 InitData.SysMemSlicePitch = 0;
 
-                IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, &InitData, Buffer11) )
+                ID3D11Buffer * d3dBuffer;
+                IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, &InitData, &d3dBuffer) )
                 {
                     return false;
                 }
+
+                m_vertexBuffers[vertexEnumerator] = d3dBuffer;
 
                 ++vertexEnumerator;
             }
         }
 
-        if( m_vertexBufferUpdate )
+        if( m_vertexBufferUpdate == true )
         {
 
         }
@@ -188,7 +194,10 @@ namespace Mengine
         // set all vertex buffers
         if( m_vertexBuffers.empty() == false )
         {
-            _pImmediateContext->VSSetConstantBuffers( 0, m_vertexBuffers.size(), &m_vertexBuffers[0] );
+            ID3D11Buffer ** buffers = m_vertexBuffers.data();
+            VectorBuffers::size_type count = m_vertexBuffers.size();
+
+            _pImmediateContext->VSSetConstantBuffers( 0, count, buffers );
         }
 
         // create pixel shader buffers
@@ -209,7 +218,6 @@ namespace Mengine
             uint32_t vertexEnumerator = 0;
             for( const ProgramVariableDesc & v : m_pixelVariables )
             {
-                auto * Buffer11 = &m_pixelBuffers[vertexEnumerator];
                 descConstBuffer.ByteWidth = v.count * v.size;
 
                 float * values = &m_pixelFloats[v.offset];
@@ -219,34 +227,39 @@ namespace Mengine
                 InitData.SysMemPitch = 0;
                 InitData.SysMemSlicePitch = 0;
 
-                IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, &InitData, Buffer11) )
+                ID3D11Buffer * d3dBuffer;
+                IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, &InitData, &d3dBuffer) )
                 {
                     return false;
                 }
+
+                m_pixelBuffers[vertexEnumerator] = d3dBuffer;
 
                 ++vertexEnumerator;
             }
         }
 
-        if( m_pixelBufferUpdate )
+        if( m_pixelBufferUpdate == true )
         {
             D3D11_MAPPED_SUBRESOURCE mappedResource;
 
             uint32_t vertexEnumerator = 0;
             for( const ProgramVariableDesc & v : m_pixelVariables )
             {
-                auto Buffer11 = m_pixelBuffers[vertexEnumerator];
-                float * values = &m_pixelFloats[v.offset];
-
-                IF_DXCALL( _pImmediateContext, Map, (Buffer11, 0, D3D11_MAP_WRITE, 0, &mappedResource) )
+                ID3D11Buffer * d3dBuffer = m_pixelBuffers[vertexEnumerator];
+                
+                IF_DXCALL( _pImmediateContext, Map, (d3dBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource) )
                 {
                     // TODO: add error log
                     return nullptr;
                 }
 
+                const float * values = m_pixelFloats.data() + v.offset;
+
                 stdex::memorycopy( mappedResource.pData, 0, values, v.count * v.size );
 
-                _pImmediateContext->Unmap( Buffer11, 0 );
+                _pImmediateContext->Unmap( d3dBuffer, 0 );
+
                 ++vertexEnumerator;
             }
         }
@@ -254,7 +267,10 @@ namespace Mengine
         // set all pixel buffers
         if( m_pixelBuffers.empty() == false )
         {
-            _pImmediateContext->PSSetConstantBuffers( 0, m_pixelBuffers.size(), &m_pixelBuffers[0] );
+            ID3D11Buffer ** buffers = m_pixelBuffers.data();
+            VectorBuffers::size_type count = m_pixelBuffers.size();
+
+            _pImmediateContext->PSSetConstantBuffers( 0, count, buffers );
         }
 
         return true;

@@ -49,10 +49,10 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
-        ID3D11Texture2D * m_pD3DTexture;
+        ID3D11Texture2DPtr m_pD3DTexture;
         D3D11_TEXTURE2D_DESC m_textureDesc;
 
-        ID3D11Texture2D * m_pD3DTextureSource;
+        ID3D11Texture2DPtr m_pD3DTextureSource;
         DX11RenderTargetTexturePtr m_renderTargetTexture;
     };
     //////////////////////////////////////////////////////////////////////////

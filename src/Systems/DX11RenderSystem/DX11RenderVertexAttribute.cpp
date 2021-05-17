@@ -13,7 +13,6 @@ namespace Mengine
     DX11RenderVertexAttribute::DX11RenderVertexAttribute()
         : m_elementSize( 0 )
         , m_compileReferenceCount( 0 )
-        , m_pD3DVertexDeclaration( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -35,7 +34,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderVertexAttribute::compile( ID3D11Device * _pD3DDevice, const void * _pShaderBytecodeWithInputSignature, uint32_t _bytecodeLength )
+    bool DX11RenderVertexAttribute::compile( const ID3D11DevicePtr & _pD3DDevice, const MemoryInterfacePtr & _shaderCompileMemory )
     {
         if( m_compileReferenceCount == 0 )
         {
@@ -84,10 +83,16 @@ namespace Mengine
                 , m_name.c_str()
             );
 
-            IF_DXCALL( _pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, _pShaderBytecodeWithInputSignature, _bytecodeLength, &m_pD3DVertexDeclaration) )
+            const void * shaderCompileMemoryBuffer = _shaderCompileMemory->getBuffer();
+            size_t shaderCompileMemorySize = _shaderCompileMemory->getSize();
+
+            ID3D11InputLayout * pD3DVertexDeclaration;
+            IF_DXCALL( _pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, shaderCompileMemoryBuffer, shaderCompileMemorySize, &pD3DVertexDeclaration) )
             {
                 return false;
             }
+
+            m_pD3DVertexDeclaration = pD3DVertexDeclaration;
         }
 
         ++m_compileReferenceCount;
@@ -101,7 +106,7 @@ namespace Mengine
 
         if( m_compileReferenceCount == 0 )
         {
-            DXRELEASE( m_pD3DVertexDeclaration );
+            m_pD3DVertexDeclaration = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -115,12 +120,12 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::enable( ID3D11DeviceContext * _pD3DDeviceContext )
+    void DX11RenderVertexAttribute::enable( const ID3D11DeviceContextPtr & _pD3DDeviceContext )
     {
-        _pD3DDeviceContext->IASetInputLayout( m_pD3DVertexDeclaration );
+        _pD3DDeviceContext->IASetInputLayout( m_pD3DVertexDeclaration.Get() );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::disable( ID3D11DeviceContext * _pD3DDeviceContext )
+    void DX11RenderVertexAttribute::disable( const ID3D11DeviceContextPtr & _pD3DDeviceContext )
     {
         _pD3DDeviceContext->IASetInputLayout( nullptr );
     }

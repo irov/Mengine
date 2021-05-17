@@ -49,24 +49,24 @@ namespace Mengine
         bool getData( void * const _buffer, size_t _pitch ) const override;
 
     public:
-        ID3D11Device * getDirect3dDevice11() const;
-        ID3D11Texture2D * getD3DTexture() const;
-        ID3D11ShaderResourceView * getD3DShaderResource() const;
+        const ID3D11DevicePtr & getDirect3dDevice11() const;
+        const ID3D11Texture2DPtr & getD3DTexture() const;
+        const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const;
 
-        D3D11_TEXTURE2D_DESC GetTextureDesc() const;
+        const D3D11_TEXTURE2D_DESC & GetTextureDesc() const;
 
     protected:
         void onRenderReset() override;
         bool onRenderRestore() override;
 
     protected:
-        ID3D11Texture2D * m_pD3DTexture;
-        ID3D11ShaderResourceView * m_pD3DResourceView;
+        ID3D11Texture2DPtr m_pD3DTexture;
+        ID3D11ShaderResourceViewPtr m_pD3DResourceView;
 
-        ID3D11RenderTargetView * m_pRenderTargetView;
-        mutable ID3D11RenderTargetView * m_pRenderTargetViewOld;
-        ID3D11DepthStencilView * m_pDepthStencilMain;
-        mutable ID3D11DepthStencilView * m_pDepthStencilMainOld;
+        ID3D11RenderTargetViewPtr m_pRenderTargetView;
+        mutable ID3D11RenderTargetViewPtr m_pRenderTargetViewOld;
+        ID3D11DepthStencilViewPtr m_pDepthStencilMain;
+        mutable ID3D11DepthStencilViewPtr m_pDepthStencilMainOld;
 
         D3D11_TEXTURE2D_DESC m_textureDesc;
 

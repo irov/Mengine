@@ -26,12 +26,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::bind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
     {
-        ID3D11ShaderResourceView * pD3DShaderResource = m_target->getD3DShaderResource();
+        const ID3D11ShaderResourceViewPtr & d3dShaderResource = m_target->getD3DShaderResource();
+
+        ID3D11ShaderResourceView * pd3dShaderResource = d3dShaderResource.Get();
 
 #ifdef MENGINE_DEBUG
-        _pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &pd3dShaderResource );
 #else
-        _pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DShaderResource );
+        _pImmediateContext->PSSetShaderResources( _stage, 1, &pd3dShaderResource );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -74,23 +76,25 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Device * DX11RenderImageTarget::getD3DDevice() const
+    const ID3D11DevicePtr & DX11RenderImageTarget::getD3DDevice() const
     {
-        ID3D11Device * pD3DDevice = m_target->getDirect3dDevice11();
+        const ID3D11DevicePtr & d3dDevice = m_target->getDirect3dDevice11();
 
-        return pD3DDevice;
+        return d3dDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Texture2D * DX11RenderImageTarget::getD3DTexture() const
+    const ID3D11Texture2DPtr & DX11RenderImageTarget::getD3DTexture() const
     {
-        ID3D11Texture2D * pD3DTexture = m_target->getD3DTexture();
+        const ID3D11Texture2DPtr & d3dTexture = m_target->getD3DTexture();
 
-        return pD3DTexture;
+        return d3dTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11ShaderResourceView * DX11RenderImageTarget::getD3DShaderResource() const
+    const ID3D11ShaderResourceViewPtr & DX11RenderImageTarget::getD3DShaderResource() const
     {
-        return m_target->getD3DShaderResource();
+        const ID3D11ShaderResourceViewPtr & d3dShaderResourceView = m_target->getD3DShaderResource();
+
+        return d3dShaderResourceView;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImageTarget::getHWWidth() const

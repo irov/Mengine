@@ -11,8 +11,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetOffscreen::DX11RenderTargetOffscreen()
-        : m_pD3DTexture( nullptr )
-        , m_pD3DTextureSource( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -27,7 +25,7 @@ namespace Mengine
         textureDesc.Usage = D3D11_USAGE_STAGING;
         textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
         {
@@ -47,7 +45,7 @@ namespace Mengine
         textureDesc.Usage = D3D11_USAGE_STAGING;
         textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
-        ID3D11Device * pD3DDevice = this->getDirect3D11Device();
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
         {
@@ -62,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderTargetOffscreen::finalize()
     {
-        DXRELEASE( m_pD3DTexture );
+        m_pD3DTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::begin() const
@@ -127,21 +125,24 @@ namespace Mengine
     {
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        ID3D11Texture2D * _textureSource = m_pD3DTextureSource;
-        if( _textureSource == nullptr )
-            _textureSource = m_renderTargetTexture->getD3DTexture();
+        ID3D11Texture2DPtr textureSource = m_pD3DTextureSource;
 
-        pImmediateContext->CopyResource( m_pD3DTexture, _textureSource );
+        if( textureSource == nullptr )
+        {
+            textureSource = m_renderTargetTexture->getD3DTexture();
+        }
+
+        pImmediateContext->CopyResource( m_pD3DTexture.Get(), textureSource.Get() );
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
-        pImmediateContext->Map( m_pD3DTexture, 0, D3D11_MAP_READ, 0, &mappedResource );
+        pImmediateContext->Map( m_pD3DTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource );
 
         if( mappedResource.RowPitch != _pitch )
             return false;
 
         stdex::memorycopy( _buffer, 0, mappedResource.pData, _pitch );
 
-        pImmediateContext->Unmap( m_pD3DTexture, 0 );
+        pImmediateContext->Unmap( m_pD3DTexture.Get(), 0 );
 
         return true;
     }

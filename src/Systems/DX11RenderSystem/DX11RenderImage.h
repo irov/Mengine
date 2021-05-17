@@ -30,8 +30,8 @@ namespace Mengine
         void finalize();
 
     public:
-        void bind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage );
-        void unbind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage );
+        void bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage );
+        void unbind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage );
 
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
@@ -62,15 +62,15 @@ namespace Mengine
         UnknownPointer getRenderImageExtention() override;
 
     public:
-        ID3D11Device * getD3DDevice() const override;
-        ID3D11Texture2D * getD3DTexture() const override;
-        ID3D11ShaderResourceView * getD3DShaderResource() const override;
+        const ID3D11DevicePtr & getD3DDevice() const override;
+        const ID3D11Texture2DPtr & getD3DTexture() const override;
+        const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const override;
 
     protected:
-        ID3D11Texture2D * m_pD3DTexture;
+        ID3D11Texture2DPtr m_pD3DTexture;
         
         // to bind texture to shaders
-        ID3D11ShaderResourceView * m_pD3DResourceView;
+        ID3D11ShaderResourceViewPtr m_pD3DResourceView;
 
         RenderImageProviderInterfacePtr m_renderImageProvider;
 

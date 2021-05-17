@@ -52,11 +52,7 @@ namespace Mengine
     //typedef IDirect3D9 * (WINAPI * PDIRECT3DCREATE9)(UINT);
     //////////////////////////////////////////////////////////////////////////
     DX11RenderSystem::DX11RenderSystem()
-        : m_pD3DDevice( nullptr )
-        , m_pD3DDeviceContext( nullptr )
-        , m_pD3DImmediateContext( nullptr )
-        , m_SwapChain( nullptr )
-        , m_DisplayModeList( nullptr )
+        : m_DisplayModeList( nullptr )
         , m_DisplayModeListNum( 0 )
         , m_fullscreen( true )
         , m_depth( false )
@@ -72,9 +68,6 @@ namespace Mengine
         , m_vertexBufferCount( 0 )
         , m_indexBufferCount( 0 )
         , m_waitForVSync( false )
-        , m_renderTargetView( nullptr )
-        , m_depthStencilBuffer( nullptr )
-        , m_depthStencilView( nullptr )
     {
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
@@ -102,6 +95,25 @@ namespace Mengine
 
         HRESULT result;
 
+        // Create a DirectX graphics interface factory.
+// DirectX 11 (for 11.1 or 11.2 need to use other factory)
+        IDXGIFactory * factory;
+        result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&factory );
+
+        if( FAILED( result ) )
+        {
+            return false;
+        }
+
+        // Use the factory to create an adapter for the primary graphics interface (video card).
+        IDXGIAdapter * adapter;
+        result = factory->EnumAdapters( m_adapterToUse, &adapter );
+
+        if( FAILED( result ) )
+        {
+            return false;
+        }
+
         UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef MENGINE_DEBUG
@@ -114,19 +126,19 @@ namespace Mengine
         };
 
         // Create the Direct3D 11 API device object and a corresponding context.
-        ID3D11Device * device;
-        ID3D11DeviceContext * context;
+        ID3D11Device * d3dDevice;
+        ID3D11DeviceContext * d3dContext;
         result = D3D11CreateDevice(
-            nullptr, // Specify nullptr to use the default adapter.
-            D3D_DRIVER_TYPE_HARDWARE,
+            adapter, // Specify nullptr to use the default adapter.
+            D3D_DRIVER_TYPE_UNKNOWN,
             nullptr,
             creationFlags,
             featureLevels,
             ARRAYSIZE( featureLevels ),
             D3D11_SDK_VERSION, // UWP apps must set this to D3D11_SDK_VERSION.
-            &device, // Returns the Direct3D device created.
+            &d3dDevice, // Returns the Direct3D device created.
             nullptr,
-            &context // Returns the device immediate context.
+            &d3dContext // Returns the device immediate context.
         );
 
         if( FAILED( result ) )
@@ -134,26 +146,8 @@ namespace Mengine
             return false;
         }
 
-        m_pD3DDevice = device;
-        m_pD3DDeviceContext = context;
-        
-        IDXGIFactory * factory = nullptr;
-        IDXGIAdapter * adapter = nullptr;
-
-        // Create a DirectX graphics interface factory.
-        // DirectX 11 (for 11.1 or 11.2 need to use other factory)
-        result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&factory );
-        if( FAILED( result ) )
-        {
-            return false;
-        }
-
-        // Use the factory to create an adapter for the primary graphics interface (video card).
-        result = factory->EnumAdapters( m_adapterToUse, &adapter );
-        if( FAILED( result ) )
-        {
-            return false;
-        }
+        m_pD3DDevice = d3dDevice;
+        m_pD3DDeviceContext = d3dContext;
 
         IDXGIOutput * adapterOutput;
         // Enumerate the primary adapter output (monitor).
@@ -163,21 +157,25 @@ namespace Mengine
             return false;
         }
 
-        // Get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output (monitor).
-        result = adapterOutput->GetDisplayModeList( DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &m_DisplayModeListNum, NULL );
+        // Get the number of modes that fit the DXGI_FORMAT_B8G8R8A8_UNORM display format for the adapter output (monitor).
+        result = adapterOutput->GetDisplayModeList( DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &m_DisplayModeListNum, NULL );
         if( FAILED( result ) )
         {
             return false;
         }
 
         // Create a list to hold all the possible display modes for this monitor/video card combination.
-        m_DisplayModeList = new DXGI_MODE_DESC[m_DisplayModeListNum];
-        if( !m_DisplayModeList )
+        DXGI_MODE_DESC * pDisplayModeList = new DXGI_MODE_DESC[m_DisplayModeListNum];
+
+        if( pDisplayModeList == nullptr )
         {
             return false;
         }
 
-        result = adapterOutput->GetDisplayModeList( DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &m_DisplayModeListNum, m_DisplayModeList );
+        m_DisplayModeList = pDisplayModeList;
+
+        result = adapterOutput->GetDisplayModeList( DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &m_DisplayModeListNum, m_DisplayModeList );
+
         if( FAILED( result ) )
         {
             return false;
@@ -203,9 +201,6 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceId: %lu", AdapterDesc.DeviceId );
         LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdapterDesc.SubSysId );
         LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdapterDesc.Revision );
-
-        DXRELEASE( adapter );
-        DXRELEASE( factory );
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX11" );
 
@@ -252,23 +247,17 @@ namespace Mengine
         ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
         m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
 
-        DXRELEASE( m_renderTargetView );
-        DXRELEASE( m_depthStencilBuffer );
-        DXRELEASE( m_depthStencilView );
+        m_renderTargetView = nullptr;
+        m_depthStencilBuffer = nullptr;
+        m_depthStencilView = nullptr;
+        m_dxgiSwapChain = nullptr;
 
         ID3D11Debug * D3DDevice;
         m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
         D3DDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
         D3DDevice->Release();
 
-        ULONG ref;
-
-        ref = m_pD3DDeviceContext->Release();
-        MENGINE_UNUSED( ref );
         m_pD3DDeviceContext = nullptr;
-
-        ref = m_pD3DDevice->Release();
-        MENGINE_UNUSED( ref );
         m_pD3DDevice = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
@@ -321,13 +310,18 @@ namespace Mengine
         m_depth = _depth;
         m_waitForVSync = _waitForVSync;
 
-        IDXGIFactory * factory = nullptr;
-
         // Create a DirectX graphics interface factory.
         // DirectX 11 (for 11.1 or 11.2 need to use other factory)
-        HRESULT result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&factory );
+        IDXGIFactory * dxgiFactory;
+        HRESULT result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&dxgiFactory );
+
         if( FAILED( result ) )
         {
+            LOGGER_ERROR( "invalid create DXGI factory: %s [%x]"
+                , Helper::getDX11ErrorMessage( result )
+                , result
+            );
+
             return false;
         }
 
@@ -337,26 +331,26 @@ namespace Mengine
         // Initialize the swap chain description.
         ZeroMemory( &swapChainDesc, sizeof( swapChainDesc ) );
 
-        // Set to a single back buffer.
-        swapChainDesc.BufferCount = 2;
-
         // Set the width and height of the back buffer.
         swapChainDesc.BufferDesc.Width = m_windowResolution.getWidth();
         swapChainDesc.BufferDesc.Height = m_windowResolution.getHeight();
 
         // Set regular 32-bit surface for the back buffer.
-        swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
         // Set the refresh rate of the back buffer.
-        if( m_waitForVSync )
+        if( m_waitForVSync == true )
         {
             for( UINT i = 0; i < m_DisplayModeListNum; i++ )
             {
-                if( m_DisplayModeList[i].Width == (unsigned int)swapChainDesc.BufferDesc.Width &&
-                    m_DisplayModeList[i].Height == (unsigned int)swapChainDesc.BufferDesc.Height )
+                const DXGI_MODE_DESC & displayModeDesc = m_DisplayModeList[i];
+
+                if( displayModeDesc.Width == swapChainDesc.BufferDesc.Width &&
+                    displayModeDesc.Height == swapChainDesc.BufferDesc.Height )
                 {
-                    swapChainDesc.BufferDesc.RefreshRate.Numerator = m_DisplayModeList[i].RefreshRate.Numerator;
-                    swapChainDesc.BufferDesc.RefreshRate.Denominator = m_DisplayModeList[i].RefreshRate.Denominator;
+                    swapChainDesc.BufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
+                    swapChainDesc.BufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
+
                     break;
                 }
             }
@@ -369,14 +363,16 @@ namespace Mengine
 
         // Set the usage of the back buffer.
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        swapChainDesc.BufferCount = 2;
 
         // Set the handle for the window to render to.
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()->getPlatformExtention();
+        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            ->getPlatformExtention();
 
         swapChainDesc.OutputWindow = win32Platform->getWindowHandle();
 
         // Turn multisampling off.
-        swapChainDesc.SampleDesc.Count = _MultiSampleCount;
+        swapChainDesc.SampleDesc.Count = 1;
         swapChainDesc.SampleDesc.Quality = 0;
 
         // Set to full screen or windowed mode.
@@ -388,27 +384,34 @@ namespace Mengine
 
         // Discard the back buffer contents after presenting.
         if( _MultiSampleCount > 1 )
+        {
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+        }
         else
+        {
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        }
+
+        //swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 
         // Don't set the advanced flags.
         swapChainDesc.Flags = 0;
 
-        result = factory->CreateSwapChain( m_pD3DDevice, &swapChainDesc, &m_SwapChain );
-        if( FAILED( result ) )
+        IDXGISwapChain * dxgiSwapChain;
+        IF_DXCALL( dxgiFactory, CreateSwapChain, (m_pD3DDevice.Get(), &swapChainDesc, &dxgiSwapChain) )
         {
             return false;
         }
 
+        m_dxgiSwapChain = dxgiSwapChain;
+
         m_SwapChainBufferDesc = swapChainDesc.BufferDesc;
 
-        DXRELEASE( factory );
+        DXRELEASE( dxgiFactory );
 
         // Get the pointer to the back buffer.
         ID3D11Texture2D * backBufferPtr;
-        result = m_SwapChain->GetBuffer( 0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr );
-        if( FAILED( result ) )
+        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
         {
             return false;
         }
@@ -433,7 +436,7 @@ namespace Mengine
         depthBufferDesc.MipLevels = 1;
         depthBufferDesc.ArraySize = 1;
         depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        depthBufferDesc.SampleDesc.Count = _MultiSampleCount;
+        depthBufferDesc.SampleDesc.Count = 1;
         depthBufferDesc.SampleDesc.Quality = 0;
         depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
         depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -489,13 +492,17 @@ namespace Mengine
         depthStencilViewDesc.Texture2D.MipSlice = 0;
 
         // Create the depth stencil view.
-        IF_DXCALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer, &depthStencilViewDesc, &m_depthStencilView) )
+        ID3D11DepthStencilView * depthStencilView;
+        IF_DXCALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
         {
             return false;
         }
 
+        m_depthStencilView = depthStencilView;
+
         // Bind the render target view and depth stencil buffer to the output render pipeline.
-        m_pD3DDeviceContext->OMSetRenderTargets( 1, &m_renderTargetView, m_depthStencilView );
+        ID3D11RenderTargetView * d3dRenderTargetView = m_renderTargetView.Get();
+        m_pD3DDeviceContext->OMSetRenderTargets( 1, &d3dRenderTargetView, m_depthStencilView.Get() );
 
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
@@ -518,7 +525,7 @@ namespace Mengine
         m_D3D11RasterizerState.DepthClipEnable = true;
         m_D3D11RasterizerState.FillMode = D3D11_FILL_SOLID;
         m_D3D11RasterizerState.FrontCounterClockwise = true;
-//      rasterDesc.FrontCounterClockwise = false;
+        //      rasterDesc.FrontCounterClockwise = false;
 
         m_D3D11RasterizerState.MultisampleEnable = false;
         m_D3D11RasterizerState.ScissorEnable = false;
@@ -528,6 +535,10 @@ namespace Mengine
         {
             if( program->compile( m_pD3DDevice ) == false )
             {
+                LOGGER_ERROR( "invalid compile program '%s'"
+                    , program->getName().c_str()
+                );
+
                 return false;
             }
         }
@@ -697,7 +708,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen );
 
         ID3D11Texture2D * backBufferPtr;
-        IF_DXCALL( m_SwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
+        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
         {
             return nullptr;
         }
@@ -769,7 +780,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::endScene()
     {
-        m_pD3DImmediateContext->Release();
         m_pD3DImmediateContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -781,12 +791,12 @@ namespace Mengine
         if( m_waitForVSync )
         {
             // Lock to screen refresh rate.
-            m_SwapChain->Present( 1, 0 );
+            m_dxgiSwapChain->Present( 1, 0 );
         }
         else
         {
             // Present as fast as possible.
-            m_SwapChain->Present( 0, DXGI_PRESENT_DO_NOT_WAIT );
+            m_dxgiSwapChain->Present( 0, DXGI_PRESENT_DO_NOT_WAIT );
         }
 
         ++m_frames;
@@ -807,10 +817,10 @@ namespace Mengine
         color[3] = _color.getA();
 
         // Clear the back buffer.
-        m_pD3DDeviceContext->ClearRenderTargetView( m_renderTargetView, color );
+        m_pD3DDeviceContext->ClearRenderTargetView( m_renderTargetView.Get(), color );
 
         // Clear the depth buffer.
-        m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView, D3D11_CLEAR_DEPTH, _depth, (UINT8)_stencil );
+        m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, _depth, (UINT8)_stencil );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
@@ -849,12 +859,11 @@ namespace Mengine
 
         // Create the viewport.
         m_pD3DDeviceContext->RSSetViewports( 1, &viewport );
-
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_SwapChain, "swap chain not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
 
         if( m_windowResolution == _resolution && m_fullscreen == _fullscreen )
         {
@@ -863,7 +872,7 @@ namespace Mengine
 
         if( m_fullscreen != _fullscreen )
         {
-            IF_DXCALL( m_SwapChain, SetFullscreenState, (_fullscreen, nullptr) )
+            IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
             {
                 return;
             }
@@ -876,12 +885,12 @@ namespace Mengine
             m_SwapChainBufferDesc.Width = _resolution.getWidth();
             m_SwapChainBufferDesc.Height = _resolution.getHeight();
 
-            IF_DXCALL( m_SwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
+            IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
             {
                 return;
             }
 
-            IF_DXCALL( m_SwapChain, ResizeBuffers, (2, _resolution.getWidth(), _resolution.getHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 0) )
+            IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, _resolution.getWidth(), _resolution.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
             {
                 return;
             }
@@ -921,12 +930,12 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Device * DX11RenderSystem::getDirect3D11Device() const
+    const ID3D11DevicePtr & DX11RenderSystem::getDirect3D11Device() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11DeviceContext * DX11RenderSystem::getDirect3D11DeviceContext() const
+    const ID3D11DeviceContextPtr & DX11RenderSystem::getDirect3D11DeviceContext() const
     {
         return m_pD3DDeviceContext;
     }
@@ -1312,8 +1321,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDevice, "device not created");
-        MENGINE_ASSERTION_MEMORY_PANIC(m_pD3DDeviceContext, "context not created");
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
 
         m_D3D11DepthStencilState.DepthFunc = _depthTest ? D3D11_COMPARISON_LESS_EQUAL : D3D11_COMPARISON_ALWAYS;
     }
@@ -1357,7 +1366,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
 
-        MENGINE_UNUSED(_alphaBlend);
+        MENGINE_UNUSED( _alphaBlend );
 
         m_D3D11BlendState.RenderTarget[0].BlendEnable = _alphaBlend;
     }
@@ -1612,10 +1621,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::updateVSyncDPP_()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_SwapChain, "swap chain not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
 
         // Set the refresh rate of the back buffer.
-        if( m_waitForVSync )
+        if( m_waitForVSync == true )
         {
             for( UINT i = 0; i < m_DisplayModeListNum; i++ )
             {
@@ -1634,7 +1643,7 @@ namespace Mengine
             m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
         }
 
-        IF_DXCALL( m_SwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
+        IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
         {
             return;
         }

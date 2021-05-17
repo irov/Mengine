@@ -67,14 +67,16 @@ namespace Mengine
         return drawBuffer( _buffer, _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexBuffer::enable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderVertexBuffer::enable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         UINT sStride = m_elementSize;
         UINT sOffset = 0;
-        _pImmediateContext->IASetVertexBuffers( 0, 1, &m_pD3DBuffer, &sStride, &sOffset );
+
+        ID3D11Buffer * d3dBuffer = m_pD3DBuffer.Get();
+        _pImmediateContext->IASetVertexBuffers( 0, 1, &d3dBuffer, &sStride, &sOffset );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexBuffer::disable( ID3D11DeviceContext * _pImmediateContext )
+    void DX11RenderVertexBuffer::disable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         UINT sStride = 0;
         UINT sOffset = 0;        

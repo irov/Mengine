@@ -28,18 +28,17 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( ID3D11Device * _pD3DDevice );
+        bool compile( const ID3D11DevicePtr & _pD3DDevice );
         void release();
 
     public:
-        void enable( ID3D11DeviceContext * _pImmediateContext );
-        void disable( ID3D11DeviceContext * _pImmediateContext );
+        void enable( const ID3D11DeviceContextPtr & _pImmediateContext );
+        void disable( const ID3D11DeviceContextPtr & _pImmediateContext );
 
-        void * getShaderCompileData() const;
-        size_t getShaderCompileDataSize() const;
+        const MemoryInterfacePtr & getShaderCompileMemory() const;
 
     protected:
-        ID3D11VertexShader * m_pD3DVertexShader;
+        ID3D11VertexShaderPtr m_pD3DVertexShader;
 
         uint32_t m_compileReferenceCount;
 

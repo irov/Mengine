@@ -57,9 +57,9 @@ namespace Mengine
         UnknownPointer getRenderImageExtention() override;
 
     public:
-        ID3D11Device * getD3DDevice() const override;
-        ID3D11Texture2D * getD3DTexture() const override;
-        ID3D11ShaderResourceView * getD3DShaderResource() const override;
+        const ID3D11DevicePtr & getD3DDevice() const override;
+        const ID3D11Texture2DPtr & getD3DTexture() const override;
+        const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const override;
 
     protected:
         DX11RenderTargetTexturePtr m_target;

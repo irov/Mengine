@@ -19,7 +19,7 @@ namespace Mengine
     public:
         void setDirect3D11Device( const ID3D11DevicePtr & _pD3DDevice );
         const ID3D11DevicePtr & getDirect3D11Device() const;
-        
+
         ID3D11DeviceContextPtr getDirect3D11ImmediateContext() const;
 
     public:

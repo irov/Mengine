@@ -166,7 +166,7 @@ namespace Mengine
         UINT m_DisplayModeListNum;
 
         ID3D11RenderTargetViewPtr m_renderTargetView;
-        
+
         ID3D11Texture2DPtr m_depthStencilBuffer;
         ID3D11DepthStencilViewPtr m_depthStencilView;
 

@@ -79,7 +79,7 @@ namespace Mengine
     void DX11RenderVertexBuffer::disable( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
         UINT sStride = 0;
-        UINT sOffset = 0;        
+        UINT sOffset = 0;
         _pImmediateContext->IASetVertexBuffers( 0, 1, nullptr, &sStride, &sOffset );
     }
     //////////////////////////////////////////////////////////////////////////

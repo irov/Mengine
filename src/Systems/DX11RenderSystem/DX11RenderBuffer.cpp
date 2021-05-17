@@ -131,9 +131,9 @@ namespace Mengine
             return nullptr;
         }
 
-        if (m_bufferType != BT_DYNAMIC)
+        if( m_bufferType != BT_DYNAMIC )
         {
-            LOGGER_ERROR("lock for read for Dynamic buffer is not supported");
+            LOGGER_ERROR( "lock for read for Dynamic buffer is not supported" );
 
             return nullptr;
         }

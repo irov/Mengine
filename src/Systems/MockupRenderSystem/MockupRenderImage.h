@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
-#include "Interface/MemoryInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -44,15 +43,13 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
-        Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 
     public:
         UnknownPointer getRenderImageExtention() override;
 
     protected:
-        MemoryInterfacePtr m_memory;
-
         RenderImageProviderInterfacePtr m_renderImageProvider;
 
         uint32_t m_hwMipmaps;

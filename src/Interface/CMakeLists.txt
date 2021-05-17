@@ -171,6 +171,7 @@ Render
     OpenGLRenderSystemExtensionInterface.h
     RenderProgramVariableInterface.h
     RenderImageInterface.h
+    RenderImageLockedInterface.h
     RenderImageLoaderInterface.h
     RenderImageProviderInterface.h
     DX9RenderImageExtensionInterface.h

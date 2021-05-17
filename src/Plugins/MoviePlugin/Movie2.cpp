@@ -237,7 +237,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::getWorldBoundingBox( mt::box2f * _bb ) const
+    bool Movie2::getWorldBoundingBox( mt::box2f * const _bb ) const
     {
         if( this->isCompile() == false )
         {
@@ -375,9 +375,10 @@ namespace Mengine
     {
         const ConstString & groupName = m_resourceMovie2->getGroupName();
 
-        const ResourceMovie2::CompositionDesc * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
+        const ResourceMovie2::CompositionDesc * compositionDesc = m_resourceMovie2->getCompositionDesc( m_compositionName );
 
-        if( composition == nullptr )
+#ifdef MENGINE_DEBUG
+        if( compositionDesc == nullptr )
         {
             Stringstream ss;
 
@@ -401,13 +402,14 @@ namespace Mengine
 
             return false;
         }
+#endif
 
-        m_duration = AE_TIME_MILLISECOND( composition->duration );
-        m_frameDuration = AE_TIME_MILLISECOND( composition->frameDuration );
-        m_hasBounds = composition->has_bounds;
-        m_bounds = composition->bounds;
+        m_duration = AE_TIME_MILLISECOND( compositionDesc->duration );
+        m_frameDuration = AE_TIME_MILLISECOND( compositionDesc->frameDuration );
+        m_hasBounds = compositionDesc->has_bounds;
+        m_bounds = compositionDesc->bounds;
 
-        for( const ResourceMovie2::CompositionLayer & layer : composition->layers )
+        for( const ResourceMovie2::CompositionLayer & layer : compositionDesc->layers )
         {
             if( layer.type == STRINGIZE_STRING_LOCAL( "TextField" ) )
             {
@@ -635,7 +637,7 @@ namespace Mengine
             }
         }
 
-        for( const ResourceMovie2::CompositionSubComposition & subcomposition : composition->subcompositions )
+        for( const ResourceMovie2::CompositionSubComposition & subcomposition : compositionDesc->subcompositions )
         {
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE );

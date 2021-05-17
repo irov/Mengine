@@ -2,6 +2,7 @@
 
 #include "Interface/RenderEnumInterface.h"
 #include "Interface/RenderImageProviderInterface.h"
+#include "Interface/RenderImageLockedInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
@@ -38,8 +39,8 @@ namespace Mengine
         virtual float getHWHeightInv() const = 0;
 
     public:
-        virtual Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
-        virtual bool unlock( uint32_t _level, bool _successful ) = 0;
+        virtual RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
+        virtual bool unlock( const RenderImageLockedInterfacePtr & _lock, uint32_t _level, bool _successful ) = 0;
 
     public:
         virtual UnknownPointer getRenderImageExtention() = 0;

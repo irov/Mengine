@@ -55,7 +55,7 @@ namespace Mengine
                 {
                 case VAT_FLOAT:
                     {
-                        if( desc.size == 2)
+                        if( desc.size == 2 )
                         {
                             element.Format = DXGI_FORMAT_R32G32_FLOAT;
                         }
@@ -72,7 +72,7 @@ namespace Mengine
                         }
                     }break;
                 }
-                
+
                 element.InputSlot = 0;
                 element.AlignedByteOffset = desc.offset;
                 element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;

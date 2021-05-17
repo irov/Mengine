@@ -68,7 +68,7 @@ namespace Mengine
 
     protected:
         ID3D11Texture2DPtr m_pD3DTexture;
-        
+
         // to bind texture to shaders
         ID3D11ShaderResourceViewPtr m_pD3DResourceView;
 

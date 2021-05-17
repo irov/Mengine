@@ -247,7 +247,7 @@ namespace Mengine
             for( const ProgramVariableDesc & v : m_pixelVariables )
             {
                 ID3D11Buffer * d3dBuffer = m_pixelBuffers[vertexEnumerator];
-                
+
                 IF_DXCALL( _pImmediateContext, Map, (d3dBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource) )
                 {
                     // TODO: add error log

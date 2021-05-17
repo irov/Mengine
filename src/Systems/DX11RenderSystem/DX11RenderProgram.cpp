@@ -121,7 +121,7 @@ namespace Mengine
 
         if( m_fragmentShader != nullptr )
         {
-            m_fragmentShader->disable( _pImmediateContext );            
+            m_fragmentShader->disable( _pImmediateContext );
         }
 
         if( m_vertexAttribute != nullptr )

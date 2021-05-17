@@ -119,7 +119,7 @@ namespace Mengine
             DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
         }*/
 
-        
+
 
         _pImmediateContext->PSSetShaderResources( _stage, 1, &pD3DResourceView );
 

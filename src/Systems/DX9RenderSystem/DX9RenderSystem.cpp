@@ -22,6 +22,8 @@
 #include "DX9RenderIndexBuffer.h"
 #include "DX9RenderProgramVariable.h"
 
+#include "DX9RenderImageLockedFactoryStorage.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
@@ -213,6 +215,8 @@ namespace Mengine
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
 
+        DX9RenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<DX9RenderImageLocked, 8>( MENGINE_DOCUMENT_FACTORABLE ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -255,6 +259,8 @@ namespace Mengine
         m_factoryRenderImageTarget = nullptr;
         m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderTargetOffscreen = nullptr;
+
+        DX9RenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     D3DMULTISAMPLE_TYPE DX9RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )

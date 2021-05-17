@@ -826,6 +826,7 @@ Factory
     FactorablePlugin.h
     Factory.h
     Factory.cpp
+    FactoryStorage.h
     FactoryWithListener.h
     FactoryWithListener.cpp
     FactoryWithMutex.h

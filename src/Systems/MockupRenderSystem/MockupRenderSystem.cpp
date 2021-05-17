@@ -18,6 +18,8 @@
 #include "MockupRenderIndexBuffer.h"
 #include "MockupRenderProgramVariable.h"
 
+#include "MockupRenderImageLockedFactoryStorage.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
@@ -93,6 +95,8 @@ namespace Mengine
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<MockupRenderTargetTexture, 16>( this, &MockupRenderSystem::onDestroyRenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<MockupRenderTargetOffscreen, 16>( this, &MockupRenderSystem::onDestroyRenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
 
+        MockupRenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<MockupRenderImageLocked, 8>( MENGINE_DOCUMENT_FACTORABLE ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -123,6 +127,8 @@ namespace Mengine
         m_factoryRenderImageTarget = nullptr;
         m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderTargetOffscreen = nullptr;
+
+        MockupRenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::createRenderWindow( const Resolution & _resolution

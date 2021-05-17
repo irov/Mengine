@@ -204,8 +204,10 @@ namespace Mengine
         rect.right = dataInfo.width;
         rect.bottom = dataInfo.height;
 
+        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, true );
+
         size_t pitch = 0;
-        void * buffer = image->lock( &pitch, 0, rect, true );
+        void * buffer = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't lock texture '%s'"
             , _filePath.c_str()
@@ -223,7 +225,7 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
-            image->unlock( 0, false );
+            image->unlock( locked, 0, false );
 
             return false;
         }
@@ -232,12 +234,11 @@ namespace Mengine
 
         size_t bytesWritten = imageEncoder->encode( buffer, bufferSize, &dataInfo );
 
-        image->unlock( 0, true );
+        image->unlock( locked, 0, true );
 
         if( bytesWritten == 0 )
         {
-            LOGGER_ERROR( "Error while encoding image data"
-            );
+            LOGGER_ERROR( "Error while encoding image data" );
 
             return false;
         }
@@ -348,8 +349,6 @@ namespace Mengine
         if( imageLoader->load( image ) == false )
         {
             LOGGER_ERROR( "invalid decode image" );
-
-            image->unlock( 0, false );
 
             return nullptr;
         }

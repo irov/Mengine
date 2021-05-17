@@ -59,9 +59,8 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer DX9RenderImageTarget::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr DX9RenderImageTarget::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
     {
-        MENGINE_UNUSED( _pitch );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
@@ -69,8 +68,9 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderImageTarget::unlock( uint32_t _level, bool _successful )
+    bool DX9RenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
     {
+        MENGINE_UNUSED( _locked );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
 

@@ -36,15 +36,6 @@ namespace Mengine
     public:
     };
     //////////////////////////////////////////////////////////////////////////
-    class VisitorMovie2LayerInterface
-        : public Mixin
-    {
-    public:
-        virtual void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<VisitorMovie2LayerInterface> VisitorMovie2LayerInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class Movie2
         : public Node
         , public UnknownMovie2Interface
@@ -98,7 +89,7 @@ namespace Mengine
         void setExtraOpacityMovieLayers( const ConstString & _name, float _opacity ) override;
 
     public:
-        bool getWorldBoundingBox( mt::box2f * _bb ) const override;
+        bool getWorldBoundingBox( mt::box2f * const _bb ) const override;
 
     public:
         void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const override;

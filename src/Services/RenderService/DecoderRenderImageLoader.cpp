@@ -95,8 +95,10 @@ namespace Mengine
         rect.right = image_width;
         rect.bottom = image_height;
 
+        RenderImageLockedInterfacePtr locked = _image->lock( 0, rect, false );
+
         size_t pitch = 0;
-        void * textureBuffer = _image->lock( &pitch, 0, rect, false );
+        void * textureBuffer = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, "invalid lock mipmap %d rect %d:%d-%d:%d"
             , 0
@@ -118,7 +120,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid decode for" );
 
-            _image->unlock( 0, false );
+            _image->unlock( locked, 0, false );
 
             return false;
         }
@@ -147,7 +149,7 @@ namespace Mengine
             stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
         }
 
-        _image->unlock( 0, true );
+        _image->unlock( locked, 0, true );
 
         return true;
     }

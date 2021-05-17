@@ -167,7 +167,34 @@ namespace Mengine
         return &composition;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::foreachCompositionDesc( const LambdaCompositionDescs & _lambda )
+    bool ResourceMovie2::foreachCompositionLayers( const ConstString & _compositionName, const LambdaCompositionLayers & _lambda ) const
+    {
+        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
+
+        if( it_found == m_compositions.end() )
+        {
+            LOGGER_ERROR( "resource '%s' path '%s' invalid get composition name '%s'"
+                , this->getName().c_str()
+                , this->getContent()->getFilePath().c_str()
+                , _compositionName.c_str()
+            );
+
+            return false;
+        }
+
+        const CompositionDesc & compositionDesc = it_found->second;
+
+        const VectorCompositionLayers & layers = compositionDesc.layers;
+
+        for( const CompositionLayer & layer : layers )
+        {
+            _lambda( layer.index, layer.name, layer.type );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::foreachCompositionDesc( const LambdaCompositionDescs & _lambda ) const
     {
         for( const MapCompositions::value_type & value : m_compositions )
         {

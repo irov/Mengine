@@ -348,7 +348,10 @@ namespace Mengine
 
         if( imageLoader->load( image ) == false )
         {
-            LOGGER_ERROR( "invalid decode image" );
+            LOGGER_ERROR( "invalid decode image '%s' codec '%s'"
+                , _filePath.c_str()
+                , _codecType.c_str()
+            );
 
             return nullptr;
         }

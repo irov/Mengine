@@ -145,6 +145,12 @@ MACRO(MENGINE_PROJECT name)
     SET(SRC_FILES)
 ENDMACRO()
 
+MACRO(ADD_FILTER group_name)
+    SOURCE_GROUP(${group_name} FILES ${ARGN})
+    
+    SET(SRC_FILES ${SRC_FILES} ${ARGN})
+ENDMACRO()
+
 MACRO(ADD_FILTER_C group_name)
     SOURCE_GROUP(${group_name} FILES ${ARGN})
     

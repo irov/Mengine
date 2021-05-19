@@ -153,8 +153,6 @@ MACRO(ADD_FILTER_C group_name)
     set_source_files_properties(${ARGN} PROPERTIES LANGUAGE C)
 ENDMACRO()
 
-OSX/OSXSetDesktopWallpaper.m
-
 # solution
 MACRO(ADD_MENGINE_FRAMEWORK)
     IF(MENGINE_EXTERNAL_SOURCE)

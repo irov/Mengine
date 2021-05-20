@@ -2126,12 +2126,12 @@ namespace Mengine
             !_node->enable
         );
 
-        if( result.second )
+        if( result.second == true )
         {
             this->OnSelectNode( _node, _selectedNode );
         }
 
-        if( result.first )
+        if( result.first == true )
         {
             for( DebuggerNode * child : _node->children )
             {
@@ -2435,6 +2435,18 @@ namespace Mengine
             uiEditorColor( "Local Color", _node->render.local_color );
             uiEditorColor( "Personal Color", _node->render.personal_color );
 
+            if( _node->render.HasExtraRelationRender == true && ImGui::CollapsingHeader( "Extra Relation Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            {
+                ImGui::Spacing();
+                ImGui::InputText( "Base Node Name:", _node->name.data(), _node->name.size(), ImGuiInputTextFlags_ReadOnly );
+                ImGui::InputText( "Base Node Type:", _node->type.data(), _node->type.size(), ImGuiInputTextFlags_ReadOnly );
+
+                Char uid_text[64] = {'\0'};
+                MENGINE_SPRINTF( uid_text, "%u", _node->uid );
+
+                ImGui::InputText( "Base Node UID:", uid_text, MENGINE_STRLEN( uid_text ), ImGuiInputTextFlags_ReadOnly );
+            }
+
             if( _node->render.camera.exist == true && ImGui::CollapsingHeader( "Render Camera:", ImGuiTreeNodeFlags_DefaultOpen ) )
             {
             }
@@ -2531,6 +2543,8 @@ namespace Mengine
             uiEditorString( "TextId", _node->textField.TextId );
             uiReadOnlyString( "AliasTextId", _node->textField.TextAliasId );
             uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
+
+            uiReadOnlyBool( "HasText", _node->textField.HasText );
 
             if( _node->textField.HasText == true )
             {

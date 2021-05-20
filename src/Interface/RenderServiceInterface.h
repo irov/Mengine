@@ -20,7 +20,6 @@
 #include "Interface/RenderVertexAttributeInterface.h"
 #include "Interface/RenderProgramVariableInterface.h"
 #include "Interface/RenderBatchInterface.h"
-#include "Interface/RenderOrderInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/Factorable.h"
@@ -99,9 +98,6 @@ namespace Mengine
         virtual void endRenderPass( const RenderContext * context ) = 0;
 
         virtual void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) = 0;
-
-    public:
-        virtual const RenderOrderInterfacePtr & getRenderOrder( int32_t _index, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual void swapBuffers() = 0;

@@ -2,8 +2,6 @@ MENGINE_PROJECT(RenderService)
 
 ADD_FILTER(
 src
-    RenderOrder.h
-    RenderOrder.cpp
     RenderBatch.h
     RenderBatch.cpp
     RenderService.h

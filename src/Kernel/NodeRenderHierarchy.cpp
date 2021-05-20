@@ -56,25 +56,46 @@ namespace Mengine
             return render_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderOrderInterfacePtr & getRenderOrederInheritance( const RenderInterface * _render )
+        uint8_t getRenderZGroupInheritance( const RenderInterface * _render )
         {
-            const RenderOrderInterfacePtr & order = _render->getRenderOrder();
+            uint8_t zOrder = _render->getZGroup();
 
-            if( order != nullptr )
+            if( zOrder != MENGINE_RENDER_ZGROUP_DEFAULT )
             {
-                return order;
+                return zOrder;
             }
 
             const RenderInterface * relationRender = _render->getTotalRelationRender();
 
             if( relationRender == nullptr )
             {
-                return RenderOrderInterfacePtr::none();
+                return MENGINE_RENDER_ZGROUP_DEFAULT;
             }
 
-            const RenderOrderInterfacePtr & relation_order = Helper::getRenderOrederInheritance( relationRender );
+            uint8_t relation_zGroup = Helper::getRenderZGroupInheritance( relationRender );
 
-            return relation_order;
+            return relation_zGroup;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        int32_t getRenderZIndexInheritance( const RenderInterface * _render )
+        {
+            int32_t zIndex = _render->getZIndex();
+
+            if( zIndex != MENGINE_RENDER_ZINDEX_DEFAULT )
+            {
+                return zIndex;
+            }
+
+            const RenderInterface * relationRender = _render->getTotalRelationRender();
+
+            if( relationRender == nullptr )
+            {
+                return MENGINE_RENDER_ZINDEX_DEFAULT;
+            }
+
+            int32_t relation_zIndex = Helper::getRenderZIndexInheritance( relationRender );
+
+            return relation_zIndex;
         }
         //////////////////////////////////////////////////////////////////////////
         const RenderViewportInterfacePtr & getRenderViewportInheritance( const RenderInterface * _render )
@@ -186,11 +207,18 @@ namespace Mengine
         {
             const Node * node_ptr = _node.get();
 
-            const RenderOrderInterfacePtr & order = Helper::getNodeRenderOrderInheritance( node_ptr );
+            uint8_t zGroup = Helper::getNodeRenderZGroupInheritance( node_ptr );
 
-            if( order != nullptr )
+            if( zGroup != MENGINE_RENDER_ZGROUP_DEFAULT )
             {
-                _context->order = order.get();
+                _context->zGroup = zGroup;
+            }
+
+            int32_t zIndex = Helper::getNodeRenderZIndexInheritance( node_ptr );
+
+            if( zIndex != MENGINE_RENDER_ZINDEX_DEFAULT )
+            {
+                _context->zIndex = zIndex;
             }
 
             const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( node_ptr );
@@ -229,27 +257,50 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderOrderInterfacePtr & getNodeRenderOrderInheritance( const Node * _node )
+        uint8_t getNodeRenderZGroupInheritance( const Node * _node )
         {
             const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
-                const RenderOrderInterfacePtr & order = Helper::getRenderOrederInheritance( render );
+                uint8_t zGroup = Helper::getRenderZGroupInheritance( render );
 
-                return order;
+                return zGroup;
             }
 
             Node * parent = _node->getParent();
 
             if( parent == nullptr )
             {
-                return RenderOrderInterfacePtr::none();
+                return MENGINE_RENDER_ZGROUP_DEFAULT;
             }
 
-            const RenderOrderInterfacePtr & order_parent = Helper::getNodeRenderOrderInheritance( parent );
+            uint8_t order_zGroup = Helper::getNodeRenderZGroupInheritance( parent );
 
-            return order_parent;
+            return order_zGroup;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        int32_t getNodeRenderZIndexInheritance( const Node * _node )
+        {
+            const RenderInterface * render = _node->getRender();
+
+            if( render != nullptr )
+            {
+                int32_t zIndex = Helper::getRenderZIndexInheritance( render );
+
+                return zIndex;
+            }
+
+            Node * parent = _node->getParent();
+
+            if( parent == nullptr )
+            {
+                return MENGINE_RENDER_ZINDEX_DEFAULT;
+            }
+
+            int32_t order_zIndex = Helper::getNodeRenderZIndexInheritance( parent );
+
+            return order_zIndex;
         }
         //////////////////////////////////////////////////////////////////////////
         const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( const Node * _node )

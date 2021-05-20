@@ -1,7 +1,6 @@
-#pragma once
+#ifndef OSXSetDesktopWallpaper_H_
+#define OSXSetDesktopWallpaper_H_
 
-#ifdef __APPLE__
-
-void OSXSetDesktopWallpaper( const char * _url );
+int OSXSetDesktopWallpaper( const char * _url );
 
 #endif

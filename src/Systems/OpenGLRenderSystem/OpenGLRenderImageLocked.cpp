@@ -21,7 +21,7 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer (%zu) rect from %f %f to %f %f"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer (%zu) rect from %u %u to %u %u"
             , _size
             , _rect.left
             , _rect.top
@@ -31,7 +31,7 @@ namespace Mengine
 
         void * buffer = memory->newBuffer( _size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid new memory (%zu) rect from %f %f to %f %f"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid new memory (%zu) rect from %u %u to %u %u"
             , _size
             , _rect.left
             , _rect.top

@@ -2090,10 +2090,6 @@ namespace Mengine
             bool s_updateUserWallpaper( const String & _filePath )
             {
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-                APPLICATION_SERVICE()
-                    ->getProjectName( projectName );
-
-                MENGINE_STRCAT( projectName, "/" );
 
                 if( PLATFORM_SERVICE()
                     ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
@@ -2117,10 +2113,6 @@ namespace Mengine
                 }
 
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-                APPLICATION_SERVICE()
-                    ->getProjectName( projectName );
-
-                MENGINE_STRCAT( projectName, "/" );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();

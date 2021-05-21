@@ -136,7 +136,7 @@
 #include "Kernel/Rect.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/ValueFollower.h"
-
+#include "Kernel/RenderContextHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
@@ -1606,13 +1606,10 @@ namespace Mengine
                 );
 
                 RenderContext context;
+                Helper::clearRenderContext( &context );
 
-                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
-                context.transformation = nullptr;
-                context.scissor = nullptr;
-                context.target = nullptr;
 
                 arrow->calcMouseScreenPosition( &context, _pos, _screen );
 
@@ -2093,10 +2090,6 @@ namespace Mengine
             bool s_updateUserWallpaper( const String & _filePath )
             {
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-                APPLICATION_SERVICE()
-                    ->getProjectName( projectName );
-
-                MENGINE_STRCAT( projectName, "/" );
 
                 if( PLATFORM_SERVICE()
                     ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
@@ -2120,10 +2113,6 @@ namespace Mengine
                 }
 
                 Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
-                APPLICATION_SERVICE()
-                    ->getProjectName( projectName );
-
-                MENGINE_STRCAT( projectName, "/" );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
@@ -2197,13 +2186,10 @@ namespace Mengine
                     MENGINE_UNUSED( _pressure );
 
                     RenderContext context;
+                    Helper::clearRenderContext( &context );
 
-                    context.order = nullptr;
                     context.camera = m_renderCamera.get();
                     context.viewport = m_renderViewport.get();
-                    context.transformation = nullptr;
-                    context.scissor = nullptr;
-                    context.target = nullptr;
 
                     mt::vec2f wp;
                     m_arrow->calcMouseWorldPosition( &context, _position, &wp );
@@ -2299,13 +2285,10 @@ namespace Mengine
                 }
 
                 RenderContext context;
+                Helper::clearRenderContext( &context );
 
-                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
-                context.transformation = nullptr;
-                context.scissor = nullptr;
-                context.target = nullptr;
 
                 mt::vec2f wp;
                 arrow->calcMouseWorldPosition( &context, _screenPoint, &wp );
@@ -2343,13 +2326,10 @@ namespace Mengine
                 }
 
                 RenderContext context;
+                Helper::clearRenderContext( &context );
 
-                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
-                context.transformation = nullptr;
-                context.scissor = nullptr;
-                context.target = nullptr;
 
                 mt::vec2f wp;
                 arrow->calcPointClick( &context, _screenPoint, &wp );

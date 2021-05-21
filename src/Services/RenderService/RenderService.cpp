@@ -78,7 +78,6 @@ namespace Mengine
         }
 
         m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderOrder = Helper::makeFactoryPool<RenderOrder, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderSystem = RENDER_SYSTEM();
 
@@ -90,7 +89,6 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ) );
 
-        m_renderOrders.clear();
         m_renderBatches.clear();
 
         for( const RenderBatchPtr & renderBatch : m_cacheRenderBatches )
@@ -112,10 +110,8 @@ namespace Mengine
         m_currentRenderProgram = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderOrder );
 
         m_factoryRenderBatch = nullptr;
-        m_factoryRenderOrder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::_stopService()
@@ -1201,29 +1197,6 @@ namespace Mengine
     bool RenderService::getVSync() const
     {
         return m_vsync;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderOrderInterfacePtr & RenderService::getRenderOrder( int32_t _index, const DocumentPtr & _doc )
-    {
-        for( const RenderOrderPtr & order : m_renderOrders )
-        {
-            int32_t order_index = order->getIndex();
-
-            if( order_index != _index )
-            {
-                continue;
-            }
-
-            return order;
-        }
-
-        RenderOrderPtr order = m_factoryRenderOrder->createObject( _doc );
-
-        order->setIndex( _index );
-
-        const RenderOrderInterfacePtr & emplace_order = m_renderOrders.emplace_back( order );
-
-        return emplace_order;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setRenderViewport( const Viewport & _renderViewport )

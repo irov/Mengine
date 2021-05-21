@@ -58,10 +58,6 @@ namespace Mengine
         virtual const RenderCameraOrthogonalPtr & getDefaultArrowCamera2D() const = 0;
 
     public:
-        virtual void setRenderOrder( const RenderOrderInterfacePtr & _order ) = 0;
-        virtual const RenderOrderInterfacePtr & getRenderOrder() const = 0;
-
-    public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) = 0;
         virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 

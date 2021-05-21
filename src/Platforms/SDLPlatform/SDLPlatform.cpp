@@ -15,6 +15,12 @@
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_OSX)
+extern "C" {
+#   include "OSX/OSXSetDesktopWallpaper.h"
+}
+#endif
+
 #include "SDLDynamicLibrary.h"
 #include "SDLDateTimeProvider.h"
 
@@ -2061,7 +2067,32 @@ namespace Mengine
         MENGINE_UNUSED( _directoryPath );
         MENGINE_UNUSED( _filePath );
 
+#if defined(MENGINE_PLATFORM_OSX)
+        char * homeBuffer = getenv( "HOME" );
+
+        if( homeBuffer == nullptr )
+        {
+            LOGGER_ERROR( "invalid get env 'HOME'" );
+
+            return false;
+        }
+        
+        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF( path_pictures, MENGINE_MAX_PATH, "%s/Pictures/", homeBuffer );
+
+        Char path_file[MENGINE_MAX_PATH] = {'\0'};
+        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
+
+        if( OSXSetDesktopWallpaper( path_file ) == -1 )
+        {
+            LOGGER_ERROR("error set desktop wallpaper '%s'"
+                        , path_file
+                         );
+        }
+#endif
+
         //MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        
 
         return false;
     }

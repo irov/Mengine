@@ -7,7 +7,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool equalRenderContext( const RenderContext * _left, const RenderContext * _right )
         {
-            if( _left->order != _right->order )
+            if( _left->zGroup != _right->zGroup )
+            {
+                return false;
+            }
+
+            if( _left->zIndex != _right->zIndex )
             {
                 return false;
             }
@@ -42,12 +47,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void clearRenderContext( RenderContext * const _renderContext )
         {
-            _renderContext->order = nullptr;
             _renderContext->viewport = nullptr;
             _renderContext->camera = nullptr;
             _renderContext->transformation = nullptr;
             _renderContext->scissor = nullptr;
             _renderContext->target = nullptr;
+            _renderContext->zGroup = MENGINE_RENDER_ZGROUP_DEFAULT;
+            _renderContext->zIndex = MENGINE_RENDER_ZINDEX_DEFAULT;
         }
         //////////////////////////////////////////////////////////////////////////
     }

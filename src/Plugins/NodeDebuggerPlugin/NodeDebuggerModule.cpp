@@ -751,6 +751,25 @@ namespace Mengine
         Detail::serializeNodeProp( _render->getLocalColor(), "local_color", xmlRender );
         Detail::serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlRender );
 
+        RenderInterface * relationRender = _render->getExtraRelationRender();
+
+        if( relationRender != nullptr )
+        {
+            Detail::serializeNodeProp( true, "HasExtraRelationRender", xmlRender );
+
+            Renderable * relationRenderable = relationRender->getRenderable();
+
+            Node * relationNode = dynamic_cast<Node *>(relationRenderable);
+
+            Detail::serializeNodeProp( relationNode->getUniqueIdentity(), "BaseRenderNodeUniqueIdentity", xmlRender );
+            Detail::serializeNodeProp( relationNode->getName(), "BaseRenderNodeName", xmlRender );
+            Detail::serializeNodeProp( relationNode->getType(), "BaseRenderNodeType", xmlRender );
+        }
+        else
+        {
+            Detail::serializeNodeProp( false, "HasRelationRender", xmlRender );
+        }
+
         const RenderViewportInterfacePtr & viewport = _render->getRenderViewport();
 
         if( viewport != nullptr )
@@ -850,7 +869,18 @@ namespace Mengine
         if( TEXT_SERVICE()
             ->hasTextEntry( textAliasId, &textEntry ) == false )
         {
-            Detail::serializeNodeProp( false, "HasText", xmlNode );
+            const String & text = _textField->getText();
+
+            if( text.empty() == true )
+            {
+                Detail::serializeNodeProp( false, "HasText", xmlNode );
+            }
+            else
+            {
+                Detail::serializeNodeProp( true, "HasText", xmlNode );
+
+                Detail::serializeNodeProp( text, "Text", xmlNode );
+            }
         }
         else
         {
@@ -870,15 +900,15 @@ namespace Mengine
             Helper::getStringFormat( &fmt, textValue, textSize, textFormatArgs );
 
             Detail::serializeNodeProp( fmt, "Text", xmlNode );
-
-            Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
-            Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
-            Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
-            Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
-            Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
-            Detail::serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
-            Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
         }
+
+        Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
+        Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
+        Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
+        Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
+        Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
+        Detail::serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
+        Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
 
         const TextFontInterfacePtr & defaultFont = FONT_SERVICE()
             ->getDefaultFont();

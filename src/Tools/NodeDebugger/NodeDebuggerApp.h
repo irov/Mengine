@@ -172,6 +172,11 @@ namespace Mengine
         Color   local_color;
         Color   personal_color;
 
+        bool HasExtraRelationRender;
+        uint32_t BaseRenderNodeUniqueIdentity;
+        String BaseRenderNodeName;
+        String BaseRenderNodeType;
+
         NodeRenderCamera camera;
         NodeRenderViewport viewport;
         NodeRenderTransformation transformation;
@@ -195,6 +200,11 @@ namespace Mengine
             DESERIALIZE_PROP( z_order );
             DESERIALIZE_PROP( local_color );
             DESERIALIZE_PROP( personal_color );
+
+            DESERIALIZE_PROP( HasExtraRelationRender );
+            DESERIALIZE_PROP( BaseRenderNodeUniqueIdentity );
+            DESERIALIZE_PROP( BaseRenderNodeName );
+            DESERIALIZE_PROP( BaseRenderNodeType );
 
             pugi::xml_node cameraNode = _xmlNode.child( "Camera" );
 

@@ -4,7 +4,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "RenderOrder.h"
 #include "RenderBatch.h"
 #include "RenderMaterial.h"
 
@@ -99,9 +98,6 @@ namespace Mengine
         void setVSync( bool _vSync ) override;
         bool getVSync() const override;
 
-    public:
-        const RenderOrderInterfacePtr & getRenderOrder( int32_t _index, const DocumentPtr & _doc ) override;
-
     protected:
         void clearFrameBuffer_();
 
@@ -147,10 +143,6 @@ namespace Mengine
         RenderTextureInterfacePtr m_whiteTexture;
 
         FactoryPtr m_factoryRenderBatch;
-        FactoryPtr m_factoryRenderOrder;
-
-        typedef Vector<RenderOrderPtr> VectorRenderOrder;
-        VectorRenderOrder m_renderOrders;
 
         typedef Vector<RenderBatchPtr> VectorRenderBatch;
         VectorRenderBatch m_renderBatches;

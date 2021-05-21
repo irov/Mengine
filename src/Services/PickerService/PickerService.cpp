@@ -11,6 +11,7 @@
 #include "Kernel/VectorAuxScope.h"
 #include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/RenderContextHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -107,6 +108,9 @@ namespace Mengine
                 {
                     desc.context.target = _context.target;
                 }
+
+                desc.context.zGroup = _context.zGroup;
+                desc.context.zIndex = _context.zIndex;
 
                 if( _picker->isPickerDummy() == false )
                 {
@@ -740,13 +744,11 @@ namespace Mengine
         Detail::PickerVisitor visitor( _states, false );
 
         RenderContext context;
+        Helper::clearRenderContext( &context );
 
-        context.order = nullptr;
         context.viewport = m_viewport.get();
         context.camera = m_camera.get();
-        context.transformation = nullptr;
         context.scissor = m_scissor.get();
-        context.target = nullptr;
 
         visitor.visit( picker, context );
     }

@@ -141,13 +141,22 @@ MACRO(SET_MENGINE_OUTPUT_DIRECTORY)
 ENDMACRO()
 
 MACRO(MENGINE_PROJECT name)
-    PROJECT(${name})
+    PROJECT(${name} C CXX)
     SET(SRC_FILES)
 ENDMACRO()
 
 MACRO(ADD_FILTER group_name)
     SOURCE_GROUP(${group_name} FILES ${ARGN})
+    
     SET(SRC_FILES ${SRC_FILES} ${ARGN})
+ENDMACRO()
+
+MACRO(ADD_FILTER_C group_name)
+    SOURCE_GROUP(${group_name} FILES ${ARGN})
+    
+    SET(SRC_FILES ${SRC_FILES} ${ARGN})
+    
+    set_source_files_properties(${ARGN} PROPERTIES LANGUAGE C)
 ENDMACRO()
 
 # solution

@@ -641,13 +641,9 @@ namespace Mengine
                 m_renderWorldMatrix = wm * transformationWorldMatrix;
             }
 
-            RenderContext new_context;
-            new_context.order = _context->order;
-            new_context.viewport = _context->viewport;
-            new_context.camera = _context->camera;
+            RenderContext new_context = *_context;
+
             new_context.transformation = this;
-            new_context.scissor = _context->scissor;
-            new_context.target = _context->target;
 
             _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, desc.vertexBuffer, desc.indexBuffer, vertex_count, (uint32_t)indices_count, 0, 0, MENGINE_DOCUMENT_FORWARD );
         }

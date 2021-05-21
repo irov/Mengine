@@ -882,22 +882,14 @@ namespace Mengine
         {
             RenderContext context;
 
+            context = *_context;
+
             if( mesh.camera_userdata != nullptr )
             {
-                context.order = _context->order;
-
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection.get();
                 context.viewport = camera->viewport.get();
-
-                context.transformation = _context->transformation;
-                context.scissor = _context->scissor;
-                context.target = _context->target;
-            }
-            else
-            {
-                context = *_context;
             }
 
             Movie2ScissorPtr scissor;
@@ -2604,22 +2596,14 @@ namespace Mengine
         {
             RenderContext context;
 
+            context = *_context;
+
             if( mesh.camera_userdata != nullptr )
             {
-                context.order = _context->order;
-
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection.get();
                 context.viewport = camera->viewport.get();
-
-                context.transformation = _context->transformation;
-                context.scissor = _context->scissor;
-                context.target = _context->target;
-            }
-            else
-            {
-                context = *_context;
             }
 
             Movie2ScissorPtr scissor;

@@ -45,6 +45,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/ResourceSound.h"
 #include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderContextHelper.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -364,13 +365,10 @@ namespace Mengine
                 );
 
                 RenderContext context;
+                Helper::clearRenderContext( &context );
 
-                context.order = nullptr;
                 context.camera = camera.get();
                 context.viewport = viewport.get();
-                context.transformation = nullptr;
-                context.scissor = nullptr;
-                context.target = nullptr;
 
                 mt::box2f b1;
                 _hs->getScreenPolygon( &context, contentResolution, &b1, nullptr );

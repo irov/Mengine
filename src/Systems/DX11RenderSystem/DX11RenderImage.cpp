@@ -174,20 +174,20 @@ namespace Mengine
     {
         MENGINE_UNUSED( _level );
 
-        DX11RenderImageLocked * lockedImage = _locked.getT<DX11RenderImageLocked *>();
+        DX11RenderImageLocked * imageLocked = _locked.getT<DX11RenderImageLocked *>();
 
         if( _successful == false )
         {
-            lockedImage->finalize();
+            imageLocked->finalize();
 
             return true;
         }
 
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        const ID3D11Texture2DPtr & pD3DStagingTexture = lockedImage->getStagingTexture();
-        uint32_t stagingOffsetX = lockedImage->getStagingOffsetX();
-        uint32_t stagingOffsetY = lockedImage->getStagingOffsetY();
+        const ID3D11Texture2DPtr & pD3DStagingTexture = imageLocked->getStagingTexture();
+        uint32_t stagingOffsetX = imageLocked->getStagingOffsetX();
+        uint32_t stagingOffsetY = imageLocked->getStagingOffsetY();
 
         pImmediateContext->Unmap( pD3DStagingTexture.Get(), 0 );
 
@@ -201,7 +201,7 @@ namespace Mengine
             0,
             NULL );
 
-        lockedImage->finalize();
+        imageLocked->finalize();
 
         return true;
     }

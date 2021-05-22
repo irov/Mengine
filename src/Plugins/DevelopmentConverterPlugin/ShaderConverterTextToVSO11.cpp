@@ -1,4 +1,4 @@
-#include "ShaderConverterTextToVSO.h"
+#include "ShaderConverterTextToVSO11.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
@@ -15,27 +15,27 @@
 namespace Mengine
 {
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    ShaderConverterTextToVSO::ShaderConverterTextToVSO()
+    ShaderConverterTextToVSO11::ShaderConverterTextToVSO11()
     {
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    ShaderConverterTextToVSO::~ShaderConverterTextToVSO()
+    ShaderConverterTextToVSO11::~ShaderConverterTextToVSO11()
     {
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    bool ShaderConverterTextToVSO::_initialize()
+    bool ShaderConverterTextToVSO11::_initialize()
     {
         m_convertExt = STRINGIZE_STRING_LOCAL( ".vso" );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShaderConverterTextToVSO::_finalize()
+    void ShaderConverterTextToVSO11::_finalize()
     {
         //Empty
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    bool ShaderConverterTextToVSO::convert()
+    bool ShaderConverterTextToVSO11::convert()
     {
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getPlatformExtention();
@@ -77,7 +77,7 @@ namespace Mengine
         full_output += m_options.outputFilePath.c_str();
 
         Char buffer[2048] = {'\0'};
-        MENGINE_SNPRINTF( buffer, 2047, "/nologo /T vs_1_1 /O3 /Fo \"%s\" \"%s\""
+        MENGINE_SNPRINTF( buffer, 2047, "/nologo /T vs_4_0_level_9_1 /O3 /Fo \"%s\" \"%s\""
             , full_output.c_str()
             , full_input.c_str()
         );

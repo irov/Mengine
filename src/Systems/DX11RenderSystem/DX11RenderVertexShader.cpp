@@ -48,13 +48,14 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
 
             const DWORD * shader_compile_data = m_memory->getBuffer();
+            size_t shader_compile_size = m_memory->getSize();
 
             LOGGER_INFO( "render", "compile vertex shader '%s'"
                 , this->getName().c_str()
             );
 
             ID3D11VertexShader * pD3DVertexShader;
-            IF_DXCALL( _pD3DDevice, CreateVertexShader, (shader_compile_data, m_memory->getSize(), NULL, &pD3DVertexShader) )
+            IF_DXCALL( _pD3DDevice, CreateVertexShader, (shader_compile_data, shader_compile_size, NULL, &pD3DVertexShader) )
             {
                 return false;
             }

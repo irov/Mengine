@@ -75,8 +75,6 @@ namespace Mengine
         uint32_t image_width = _image->getHWWidth();
         uint32_t image_height = _image->getHWHeight();
         uint32_t image_channels = _image->getHWChannels();
-        uint32_t image_depth = _image->getHWDepth();
-        EPixelFormat image_format = _image->getHWPixelFormat();
 
         uint32_t HWWidth = Helper::getTexturePOW2( image_width );
         uint32_t HWHeight = Helper::getTexturePOW2( image_height );
@@ -86,8 +84,6 @@ namespace Mengine
 
         uint32_t mipmap_width = HWWidth >> mipmap;
         uint32_t mipmap_height = HWHeight >> mipmap;
-
-        size_t mipmap_size = Helper::getTextureMemorySize( mipmap_width, mipmap_height, image_channels, image_depth, image_format );
 
         Rect rect;
         rect.left = 0;
@@ -115,6 +111,8 @@ namespace Mengine
         options.flags = m_codecFlags;
 
         m_decoder->setOptions( &options );
+
+        size_t mipmap_size = pitch * mipmap_height;
 
         if( m_decoder->decode( textureBuffer, mipmap_size ) == 0 )
         {

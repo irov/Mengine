@@ -21,95 +21,94 @@
     </VertexAttribute>  
     
     <VertexShader Name = "Vertex_Blend" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Vertex_Blend.hlsl" Converter="text2vso" Compile="1"/>
+        <File Path = "Materials/DX11_Vertex_Blend.hlsl" Converter="text2vso11" Compile="1"/>
     </VertexShader>
     
     <VertexShader Name = "Vertex_Color" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Vertex_Color.hlsl" Converter="text2vso" Compile="1"/>
+        <File Path = "Materials/DX11_Vertex_Color.hlsl" Converter="text2vso11" Compile="1"/>
     </VertexShader>
     
     <VertexShader Name = "Vertex_Blend_ExternalAlpha" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Vertex_Blend_ExternalAlpha.hlsl" Converter="text2vso" Compile="1"/>
+        <File Path = "Materials/DX11_Vertex_Blend_ExternalAlpha.hlsl" Converter="text2vso11" Compile="1"/>
     </VertexShader>
     
     <FragmentShader Name = "Ozz_Fragment_Blend" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Ozz_Fragment_Blend.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Ozz_Fragment_Blend.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Blend.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Blend.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend_Premultiply" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Blend_Premultiply.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Blend_Premultiply.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend_OnlyColor" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Blend_OnlyColor.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Blend_OnlyColor.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
            
     <FragmentShader Name = "Fragment_TrackMatte" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_TrackMatte.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_TrackMatte.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
        
     <FragmentShader Name = "Fragment_TrackMatteInverted" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_TrackMatteInverted.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_TrackMatteInverted.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_TrackMatte_ExternalAlpha" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_TrackMatte_ExternalAlpha.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_TrackMatte_ExternalAlpha.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_TrackMatteInverted_ExternalAlpha" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_TrackMatteInverted_ExternalAlpha.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_TrackMatteInverted_ExternalAlpha.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
         
     <FragmentShader Name = "Fragment_AlphaMask" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_AlphaMask.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_AlphaMask.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Accumulator" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Accumulator.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Accumulator.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
 
     <FragmentShader Name = "Fragment_Blend_ExternalAlpha" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Blend_ExternalAlpha.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Blend_ExternalAlpha.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Blend_ExternalAlpha_OnlyColor" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Blend_ExternalAlpha_OnlyColor.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Blend_ExternalAlpha_OnlyColor.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
 
     <FragmentShader Name = "Fragment_Color" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Color.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Color.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Color_Premultiply" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Color_Premultiply.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Color_Premultiply.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
 
     <FragmentShader Name = "Fragment_Desaturate" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Desaturate.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Desaturate.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Legendary" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Legendary.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Legendary.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Legendary_ExternalAlpha" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Legendary_ExternalAlpha.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Legendary_ExternalAlpha.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_Alphapow" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_Alphapow.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_Alphapow.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_HSL" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_HSL.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_HSL.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
     
     <FragmentShader Name = "Fragment_HSV" RenderPlatform = "DX11">
-        <File Path = "Materials/DX11_Fragment_HSV.hlsl" Converter="text2pso" Compile="1"/>
+        <File Path = "Materials/DX11_Fragment_HSV.hlsl" Converter="text2pso11" Compile="1"/>
     </FragmentShader>
 </DataBlock>
-

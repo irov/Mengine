@@ -74,13 +74,35 @@ namespace Mengine
 
         m_bindMatrixBuffer = bindMatrixBuffer;
 
-        m_vertexShader->compile( _pD3DDevice );
-        m_fragmentShader->compile( _pD3DDevice );
+        if( m_vertexShader->compile( _pD3DDevice ) == false )
+        {
+            LOGGER_ERROR( "program '%s' invalid compile vertex shader '%s'"
+                , this->getName().c_str()
+                , m_vertexShader->getName().c_str()
+            );
+
+            return false;
+        }
+
+        if( m_fragmentShader->compile( _pD3DDevice ) == false )
+        {
+            LOGGER_ERROR( "program '%s' invalid compile fragment shader '%s'"
+                , this->getName().c_str()
+                , m_fragmentShader->getName().c_str()
+            );
+
+            return false;
+        }
 
         const MemoryInterfacePtr & shaderCompileMemory = m_vertexShader->getShaderCompileMemory();
 
         if( m_vertexAttribute->compile( _pD3DDevice, shaderCompileMemory ) == false )
         {
+            LOGGER_ERROR( "program '%s' invalid compile vertex attribute '%s'"
+                , this->getName().c_str()
+                , m_vertexAttribute->getName().c_str()
+            );
+
             return false;
         }
 

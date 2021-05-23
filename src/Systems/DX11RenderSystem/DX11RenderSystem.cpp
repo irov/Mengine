@@ -1463,7 +1463,7 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr DX11RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
+    RenderProgramInterfacePtr DX11RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _samplerCount );
 
@@ -1473,7 +1473,7 @@ namespace Mengine
             , _name.c_str()
         );
 
-        if( program->initialize( _name, _vertex, _fragment, _vertexAttribute ) == false )
+        if( program->initialize( _name, _vertexShader, _fragmentShader, _vertexAttribute ) == false )
         {
             LOGGER_ERROR( "invalid initialize program '%s'"
                 , _name.c_str()

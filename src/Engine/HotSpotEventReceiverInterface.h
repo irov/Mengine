@@ -20,6 +20,7 @@ namespace Mengine
         EVENT_HOTSPOT_MOUSE_OVER_DESTROY,
         EVENT_HOTSPOT_ACTIVATE,
         EVENT_HOTSPOT_DEACTIVATE,
+
         __EVENT_HOTSPOT_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

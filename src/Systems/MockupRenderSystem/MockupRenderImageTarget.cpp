@@ -23,16 +23,6 @@ namespace Mengine
         m_target = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImageTarget::bind( uint32_t _stage )
-    {
-        MENGINE_UNUSED( _stage );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImageTarget::unbind( uint32_t _stage )
-    {
-        MENGINE_UNUSED( _stage );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MockupRenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         MENGINE_UNUSED( _renderImageProvider );
@@ -43,9 +33,8 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer MockupRenderImageTarget::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr MockupRenderImageTarget::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
     {
-        MENGINE_UNUSED( _pitch );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
@@ -53,8 +42,9 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderImageTarget::unlock( uint32_t _level, bool _successful )
+    bool MockupRenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
     {
+        MENGINE_UNUSED( _locked );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
 

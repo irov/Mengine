@@ -8,6 +8,9 @@ src
     MockupRenderImage.cpp
     MockupRenderImageTarget.h
     MockupRenderImageTarget.cpp
+    MockupRenderImageLocked.h
+    MockupRenderImageLocked.cpp
+    MockupRenderImageLockedFactoryStorage.h    
     MockupRenderTargetTexture.h
     MockupRenderTargetTexture.cpp
     MockupRenderTargetOffscreen.h

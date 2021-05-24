@@ -2,10 +2,14 @@
 
 #include "DX11ErrorHelper.h"
 
+#include "stdex/memorycopy.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderProgramVariable::DX11RenderProgramVariable()
+        : m_vertexBufferUpdate( false )
+        , m_pixelBufferUpdate( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,166 +29,248 @@ namespace Mengine
     {
         m_vertexVariables.clear();
         m_pixelVariables.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        template<class T>
-        static void makeVariableData( DX11RenderProgramVariable::ProgramVariableDesc & _variable, Vector<T> & _container, DX11RenderProgramVariable::EProgramVariableType _type, const T * _values, uint32_t _size, uint32_t _count )
-        {
-            _variable.type = _type;
-            _variable.offset = (uint32_t)_container.size();
-            _variable.size = _size;
-            _variable.count = _count;
 
-            _container.insert( _container.end(), _values, _values + _size * _count );
+        for( ID3D11Buffer * buffer : m_vertexBuffers )
+        {
+            buffer->Release();
         }
+
+        m_vertexBuffers.clear();
+
+        for( ID3D11Buffer * buffer : m_pixelBuffers )
+        {
+            buffer->Release();
+        }
+
+        m_pixelBuffers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataFloats, EPVT_FLOAT, _values, _size, _count );
+        // let's check first index - must be float4x4
+        if( _index == 0 && _size * _count != 16 )
+        {
+            // TODO: warning to log
+        }
 
-        m_vertexVariables[_index] = v;
+        m_vertexFloats.insert( m_vertexFloats.end(), _values, _values + _size * _count );
+
+        ProgramVariableDesc variable;
+
+        variable.offset = (uint32_t)m_vertexFloats.size();
+        variable.size = _size;
+        variable.count = _count;
+
+        m_vertexVariables[_index] = variable;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
-
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataIntegers, EPVT_INTEGER, _values, _size, _count );
-
-        m_vertexVariables[_index] = v;
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _values );
+        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
-
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataBooleans, EPVT_BOOLEAN, _values, _size, _count );
-
-        m_vertexVariables[_index] = v;
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _values );
+        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
 
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_pixelFloats, EPVT_FLOAT, _values, _size, _count );
+        m_pixelFloats.insert( m_pixelFloats.end(), _values, _values + _size * _count );
 
-        m_pixelVariables[_index] = v;
+        ProgramVariableDesc variable;
+
+        variable.offset = (uint32_t)m_pixelFloats.size();
+        variable.size = _size;
+        variable.count = _count;
+
+        m_pixelVariables[_index] = variable;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
-
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_pixelIntegers, EPVT_INTEGER, _values, _size, _count );
-
-        m_pixelVariables[_index] = v;
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _values );
+        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
         MENGINE_UNUSED( _uniform );
-
-        ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_pixelBooleans, EPVT_BOOLEAN, _values, _size, _count );
-
-        m_pixelVariables[_index] = v;
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _values );
+        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::updatePixelVariableFloats( uint32_t _index, const float * _values, uint32_t _size, uint32_t _count )
     {
         const ProgramVariableDesc & v = m_pixelVariables[_index];
 
-        float * values = &m_dataFloats[v.offset];
+        float * values = m_pixelFloats.data() + v.offset;
         std::copy( _values, _values + _size * _count, values );
+
+        m_pixelBufferUpdate = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
-        const ProgramVariableDesc & v = m_pixelVariables[_index];
-
-        int32_t * values = &m_dataIntegers[v.offset];
-        std::copy( _values, _values + _size * _count, values );
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _values );
+        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count )
     {
-        const ProgramVariableDesc & v = m_pixelVariables[_index];
-
-        int32_t * values = &m_dataBooleans[v.offset];
-        std::copy( _values, _values + _size * _count, values );
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _values );
+        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderProgramVariable::apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program )
+    bool DX11RenderProgramVariable::apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const RenderProgramInterfacePtr & _program )
     {
         MENGINE_UNUSED( _program );
 
-        uint32_t vertexEnumerator = 0;
-        for( const ProgramVariableDesc & v : m_vertexVariables )
+        // create vertex shader buffers
+        if( m_vertexVariables.size() != m_vertexBuffers.size() )
         {
-            switch( v.type )
+            m_vertexBufferUpdate = false;
+
+            D3D11_BUFFER_DESC descConstBuffer;
+
+            descConstBuffer.Usage = D3D11_USAGE_DYNAMIC;
+            descConstBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            descConstBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+            descConstBuffer.MiscFlags = 0;
+            descConstBuffer.StructureByteStride = 0;
+
+            m_vertexBuffers.resize( m_vertexVariables.size() );
+
+            uint32_t vertexEnumerator = 0;
+            for( const ProgramVariableDesc & v : m_vertexVariables )
             {
-            case EPVT_FLOAT:
-                {
-                    const float * buff = &m_dataFloats[v.offset];
-                    DXCALL( _pD3DDevice, SetVertexShaderConstantF, (vertexEnumerator, buff, v.count) );
-                }break;
-            case EPVT_INTEGER:
-                {
-                    const int32_t * buff = &m_dataIntegers[v.offset];
-                    DXCALL( _pD3DDevice, SetVertexShaderConstantI, (vertexEnumerator, buff, v.count) );
-                }break;
-            case EPVT_BOOLEAN:
-                {
-                    const int32_t * buff = &m_dataBooleans[v.offset];
-                    DXCALL( _pD3DDevice, SetVertexShaderConstantB, (vertexEnumerator, buff, v.count) );
-                }break;
-            default:
+                descConstBuffer.ByteWidth = v.count * v.size;
+
+                const float * values = m_vertexFloats.data() + v.offset;
+
+                D3D11_SUBRESOURCE_DATA InitData;
+                InitData.pSysMem = values;
+                InitData.SysMemPitch = 0;
+                InitData.SysMemSlicePitch = 0;
+
+                ID3D11Buffer * d3dBuffer;
+                IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, &InitData, &d3dBuffer) )
                 {
                     return false;
                 }
-            }
 
-            ++vertexEnumerator;
+                m_vertexBuffers[vertexEnumerator] = d3dBuffer;
+
+                ++vertexEnumerator;
+            }
         }
 
-        uint32_t pixelEnumerator = 0;
-        for( const ProgramVariableDesc & v : m_pixelVariables )
+        if( m_vertexBufferUpdate == true )
         {
-            switch( v.type )
+
+        }
+
+        // set all vertex buffers
+        if( m_vertexBuffers.empty() == false )
+        {
+            ID3D11Buffer ** buffers = m_vertexBuffers.data();
+            VectorBuffers::size_type count = m_vertexBuffers.size();
+
+            _pImmediateContext->VSSetConstantBuffers( 0, count, buffers );
+        }
+
+        // create pixel shader buffers
+        if( m_pixelVariables.size() != m_pixelBuffers.size() )
+        {
+            m_pixelBufferUpdate = false;
+
+            D3D11_BUFFER_DESC descConstBuffer;
+
+            descConstBuffer.Usage = D3D11_USAGE_DYNAMIC;
+            descConstBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            descConstBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+            descConstBuffer.MiscFlags = 0;
+            descConstBuffer.StructureByteStride = 0;
+
+            m_pixelBuffers.resize( m_pixelVariables.size() );
+
+            uint32_t vertexEnumerator = 0;
+            for( const ProgramVariableDesc & v : m_pixelVariables )
             {
-            case EPVT_FLOAT:
-                {
-                    const float * buff = &m_pixelFloats[v.offset];
-                    DXCALL( _pD3DDevice, SetPixelShaderConstantF, (pixelEnumerator, buff, v.count) );
-                }break;
-            case EPVT_INTEGER:
-                {
-                    const int32_t * buff = &m_pixelIntegers[v.offset];
-                    DXCALL( _pD3DDevice, SetPixelShaderConstantI, (pixelEnumerator, buff, v.count) );
-                }break;
-            case EPVT_BOOLEAN:
-                {
-                    const int32_t * buff = &m_pixelBooleans[v.offset];
-                    DXCALL( _pD3DDevice, SetPixelShaderConstantB, (pixelEnumerator, buff, v.count) );
-                }break;
-            default:
+                descConstBuffer.ByteWidth = v.count * v.size;
+
+                float * values = &m_pixelFloats[v.offset];
+
+                D3D11_SUBRESOURCE_DATA InitData;
+                InitData.pSysMem = values;
+                InitData.SysMemPitch = 0;
+                InitData.SysMemSlicePitch = 0;
+
+                ID3D11Buffer * d3dBuffer;
+                IF_DXCALL( _pD3DDevice, CreateBuffer, (&descConstBuffer, &InitData, &d3dBuffer) )
                 {
                     return false;
                 }
-            }
 
-            ++pixelEnumerator;
+                m_pixelBuffers[vertexEnumerator] = d3dBuffer;
+
+                ++vertexEnumerator;
+            }
+        }
+
+        if( m_pixelBufferUpdate == true )
+        {
+            D3D11_MAPPED_SUBRESOURCE mappedResource;
+
+            uint32_t vertexEnumerator = 0;
+            for( const ProgramVariableDesc & v : m_pixelVariables )
+            {
+                ID3D11Buffer * d3dBuffer = m_pixelBuffers[vertexEnumerator];
+
+                IF_DXCALL( _pImmediateContext, Map, (d3dBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource) )
+                {
+                    // TODO: add error log
+                    return nullptr;
+                }
+
+                const float * values = m_pixelFloats.data() + v.offset;
+
+                stdex::memorycopy( mappedResource.pData, 0, values, v.count * v.size );
+
+                _pImmediateContext->Unmap( d3dBuffer, 0 );
+
+                ++vertexEnumerator;
+            }
+        }
+
+        // set all pixel buffers
+        if( m_pixelBuffers.empty() == false )
+        {
+            ID3D11Buffer ** buffers = m_pixelBuffers.data();
+            VectorBuffers::size_type count = m_pixelBuffers.size();
+
+            _pImmediateContext->PSSetConstantBuffers( 0, count, buffers );
         }
 
         return true;

@@ -45,12 +45,12 @@
 #include "Kernel/DocumentableHelper.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Documentable.h"
-
+#include "Kernel/RenderContextHelper.h"
 #include "Kernel/Stringstream.h"
 
-#include "math/mat3.h"
-
 #include "Config/Algorithm.h"
+
+#include "math/mat3.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlayerService, Mengine::PlayerService );
@@ -115,12 +115,7 @@ namespace Mengine
         m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
         m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_renderContext.order = nullptr;
-        m_renderContext.viewport = nullptr;
-        m_renderContext.camera = nullptr;
-        m_renderContext.transformation = nullptr;
-        m_renderContext.scissor = nullptr;
-        m_renderContext.target = nullptr;
+        Helper::clearRenderContext( &m_renderContext );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, &PlayerService::notifyChangeScenePrepareDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &PlayerService::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
@@ -207,12 +202,7 @@ namespace Mengine
         m_renderScissor = nullptr;
         m_renderTarget = nullptr;
 
-        m_renderContext.order = nullptr;
-        m_renderContext.viewport = nullptr;
-        m_renderContext.camera = nullptr;
-        m_renderContext.transformation = nullptr;
-        m_renderContext.scissor = nullptr;
-        m_renderContext.target = nullptr;
+        Helper::clearRenderContext( &m_renderContext );
 
         if( m_globalInputHandler != nullptr )
         {
@@ -621,18 +611,6 @@ namespace Mengine
     const RenderCameraOrthogonalPtr & PlayerService::getDefaultArrowCamera2D() const
     {
         return m_defaultArrowCamera2D;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::setRenderOrder( const RenderOrderInterfacePtr & _order )
-    {
-        m_renderOrder = _order;
-
-        m_renderContext.order = m_renderOrder.get();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderOrderInterfacePtr & PlayerService::getRenderOrder() const
-    {
-        return m_renderOrder;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setRenderViewport( const RenderViewportInterfacePtr & _viewport )

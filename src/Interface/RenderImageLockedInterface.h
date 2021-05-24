@@ -1,18 +1,19 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
+#include "Interface/Interface.h"
+
+#include "Kernel/Pointer.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class RenderOrderInterface
-        : public ServantInterface
+    class RenderImageLockedInterface
+        : public Interface
     {
     public:
-        virtual void setIndex( int32_t _index ) = 0;
-        virtual int32_t getIndex() const = 0;
+        virtual Pointer getBuffer( size_t * const _pitch ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderOrderInterface> RenderOrderInterfacePtr;
+    typedef IntrusivePtr<RenderImageLockedInterface> RenderImageLockedInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

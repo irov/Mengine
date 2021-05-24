@@ -332,6 +332,7 @@ namespace Mengine
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
             }
+#ifdef MENGINE_USE_SCRIPT_SERVICE
             else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_INTERNAL;
@@ -340,6 +341,7 @@ namespace Mengine
             {
                 layer.state |= MOVIE_LAYER_EXTRA;
             }
+#endif
             else
             {
                 LOGGER_ERROR( "'%s' group '%s' can't setup layer2d '%s' type '%s'"

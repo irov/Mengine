@@ -237,7 +237,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::getWorldBoundingBox( mt::box2f * _bb ) const
+    bool Movie2::getWorldBoundingBox( mt::box2f * const _bb ) const
     {
         if( this->isCompile() == false )
         {
@@ -375,9 +375,10 @@ namespace Mengine
     {
         const ConstString & groupName = m_resourceMovie2->getGroupName();
 
-        const ResourceMovie2::CompositionDesc * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
+        const ResourceMovie2::CompositionDesc * compositionDesc = m_resourceMovie2->getCompositionDesc( m_compositionName );
 
-        if( composition == nullptr )
+#ifdef MENGINE_DEBUG
+        if( compositionDesc == nullptr )
         {
             Stringstream ss;
 
@@ -401,13 +402,14 @@ namespace Mengine
 
             return false;
         }
+#endif
 
-        m_duration = AE_TIME_MILLISECOND( composition->duration );
-        m_frameDuration = AE_TIME_MILLISECOND( composition->frameDuration );
-        m_hasBounds = composition->has_bounds;
-        m_bounds = composition->bounds;
+        m_duration = AE_TIME_MILLISECOND( compositionDesc->duration );
+        m_frameDuration = AE_TIME_MILLISECOND( compositionDesc->frameDuration );
+        m_hasBounds = compositionDesc->has_bounds;
+        m_bounds = compositionDesc->bounds;
 
-        for( const ResourceMovie2::CompositionLayer & layer : composition->layers )
+        for( const ResourceMovie2::CompositionLayer & layer : compositionDesc->layers )
         {
             if( layer.type == STRINGIZE_STRING_LOCAL( "TextField" ) )
             {
@@ -635,7 +637,7 @@ namespace Mengine
             }
         }
 
-        for( const ResourceMovie2::CompositionSubComposition & subcomposition : composition->subcompositions )
+        for( const ResourceMovie2::CompositionSubComposition & subcomposition : compositionDesc->subcompositions )
         {
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -658,9 +660,7 @@ namespace Mengine
     {
         for( const MatrixProxyPtr & proxy : m_matrixProxies )
         {
-            proxy->removeFromParent();
-            proxy->removeChildren( []( const NodePtr & )
-            {} );
+            proxy->dispose();
         }
 
         m_matrixProxies.clear();
@@ -670,8 +670,6 @@ namespace Mengine
             const Movie2SlotPtr & slot = value.element;
 
             slot->dispose();
-            slot->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_slots.clear();
@@ -679,10 +677,8 @@ namespace Mengine
         for( const HashtableSockets::value_type & value : m_sockets )
         {
             const HotSpotPolygonPtr & hotspot = value.element;
-            hotspot->dispose();
-            hotspot->removeChildren( []( const NodePtr & )
-            {} );
 
+            hotspot->dispose();
         }
 
         m_sockets.clear();
@@ -690,9 +686,8 @@ namespace Mengine
         for( const HashtableTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.element;
+
             text->dispose();
-            text->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_texts.clear();
@@ -700,9 +695,8 @@ namespace Mengine
         for( const HashtableSprites::value_type & value : m_sprites )
         {
             const ShapeQuadFixedPtr & sprite = value.element;
+            
             sprite->dispose();
-            sprite->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_sprites.clear();
@@ -712,8 +706,6 @@ namespace Mengine
             const NodePtr & astralaxEmitter = value.element;
 
             astralaxEmitter->dispose();
-            astralaxEmitter->removeChildren( []( const NodePtr & )
-            {} );
         }
 
         m_astralaxEmitters.clear();
@@ -890,22 +882,14 @@ namespace Mengine
         {
             RenderContext context;
 
+            context = *_context;
+
             if( mesh.camera_userdata != nullptr )
             {
-                context.order = _context->order;
-
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection.get();
                 context.viewport = camera->viewport.get();
-
-                context.transformation = _context->transformation;
-                context.scissor = _context->scissor;
-                context.target = _context->target;
-            }
-            else
-            {
-                context = *_context;
             }
 
             Movie2ScissorPtr scissor;
@@ -2612,22 +2596,14 @@ namespace Mengine
         {
             RenderContext context;
 
+            context = *_context;
+
             if( mesh.camera_userdata != nullptr )
             {
-                context.order = _context->order;
-
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection.get();
                 context.viewport = camera->viewport.get();
-
-                context.transformation = _context->transformation;
-                context.scissor = _context->scissor;
-                context.target = _context->target;
-            }
-            else
-            {
-                context = *_context;
             }
 
             Movie2ScissorPtr scissor;

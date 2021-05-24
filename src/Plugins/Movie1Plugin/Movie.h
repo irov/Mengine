@@ -20,12 +20,17 @@
 #include "ResourceMovie.h"
 #include "MovieNodeExtra.h"
 #include "MovieSceneEffect.h"
-#include "MovieInternalObject.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "MovieInternalObject.h"
+#endif
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Movie;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<class Movie> MoviePtr;
     //////////////////////////////////////////////////////////////////////////
     class VisitorMovieNodeInterface
         : public Mixin
@@ -38,24 +43,32 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EMovieEventFlag
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         EVENT_MOVIE_GET_INTERNAL = __EVENT_ANIMATION_LAST__,
-        EVENT_MOVIE_ACTIVATE_INTERNAL,
         EVENT_MOVIE_DEACTIVATE_INTERNAL,
+        EVENT_MOVIE_ACTIVATE_INTERNAL,
         __EVENT_MOVIE_LAST__
+#else
+        __EVENT_MOVIE_LAST__ = __EVENT_ANIMATION_LAST__
+#endif        
     };
     //////////////////////////////////////////////////////////////////////////
     class MovieEventReceiverInterface
         : public AnimationEventReceiverInterface
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
     public:
         virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) const = 0;
         virtual NodePtr onMovieActivateInternal( const pybind::object & _internal ) = 0;
         virtual void onMovieDeactivateInternal( const pybind::object & _internal ) = 0;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
-    EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_GET_INTERNAL );
+#ifdef MENGINE_USE_SCRIPT_SERVICE
     EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_ACTIVATE_INTERNAL );
     EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_DEACTIVATE_INTERNAL );
+    EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_GET_INTERNAL );
+#endif
     //////////////////////////////////////////////////////////////////////////
     class Movie
         : public Node
@@ -198,15 +211,18 @@ namespace Mengine
         bool createMovieAnimation_( const MovieLayer & _layer );
         bool createMovieMovie_( const MovieLayer & _layer );
         bool createMovieSubMovie_( const MovieLayer & _layer );
-        bool createMovieInternalObject_( const MovieLayer & _layer );
         bool createMovieVideo_( const MovieLayer & _layer );
         bool createMovieSound_( const MovieLayer & _layer );
         bool createMovieSoundId_( const MovieLayer & _layer );
         bool createMovieText_( const MovieLayer & _layer );
         bool createMovieTextCenter_( const MovieLayer & _layer );
         bool createMovieExtraSprite_( const MovieLayer & _layer );
-        bool createMovieEvent_( const MovieLayer & _layer );
         bool createMovieParticleEmitter2_( const MovieLayer & _layer );
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        bool createMovieInternalObject_( const MovieLayer & _layer );
+        bool createMovieEvent_( const MovieLayer & _layer );
+#endif
 
     protected:
         bool compileMovieText_( const MovieLayer & _layer );
@@ -332,4 +348,5 @@ namespace Mengine
 
         return nd.enable;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

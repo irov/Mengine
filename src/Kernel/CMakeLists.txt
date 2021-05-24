@@ -212,14 +212,6 @@ Interender
 )
 
 ADD_FILTER(
-ZOrder
-    ZOrder.cpp
-    ZOrder.h
-    ZOrderRender.cpp
-    ZOrderRender.h
-)
-
-ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
     BasePrototypeGenerator.h
@@ -826,6 +818,7 @@ Factory
     FactorablePlugin.h
     Factory.h
     Factory.cpp
+    FactoryStorage.h
     FactoryWithListener.h
     FactoryWithListener.cpp
     FactoryWithMutex.h

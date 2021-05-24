@@ -38,7 +38,7 @@ namespace Mengine
         uint32_t getElementSize() const override;
 
     protected:
-        void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
+        void addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
 
     protected:
         void onRenderReset() override;
@@ -51,14 +51,16 @@ namespace Mengine
         struct AttributeDesc
         {
             ConstString uniform;
-            GLint location;
-
+            uint32_t index;
+            
             uint32_t size;
             EVertexAttributeType type;
             uint32_t stride;
             uint32_t offset;
 
             GLboolean normalized;
+
+            GLint location;
         };
 
         typedef Vector<AttributeDesc> VectorAttribute;

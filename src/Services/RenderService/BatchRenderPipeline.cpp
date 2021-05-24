@@ -28,23 +28,6 @@ namespace Mengine
         RENDER_PASS_FLAG_EXTERNAL = 0x00000002
     };
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        int32_t getContextRenderOrderIndex( const RenderContext * _context )
-        {
-            if( _context->order == nullptr )
-            {
-                return 0;
-            }
-
-            const RenderOrderInterface * order = _context->order;
-
-            int32_t orderIndex = order->getIndex();
-
-            return orderIndex;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
         : m_renderService( nullptr )
         , m_batchMode( ERBM_NORMAL )
@@ -455,7 +438,8 @@ namespace Mengine
 
         renderPass.context = *_context;
 
-        renderPass.orderIndex = Detail::getContextRenderOrderIndex( _context );
+        renderPass.zGroup = _context->zGroup == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _context->zGroup;
+        renderPass.zIndex = _context->zIndex == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _context->zIndex;
         
         renderPass.external = _external;
 
@@ -671,7 +655,17 @@ namespace Mengine
     {
         std::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
         {
-            return _l.orderIndex < _r.orderIndex;
+            if( _l.zGroup < _r.zGroup )
+            {
+                return true;
+            }
+
+            if( _l.zIndex < _r.zIndex )
+            {
+                return true;
+            }
+
+            return false;
         } );
 
         for( const RenderPass & renderPass : m_renderPasses )
@@ -1020,7 +1014,8 @@ namespace Mengine
             
             renderPass.context = *_context;
 
-            renderPass.orderIndex = Detail::getContextRenderOrderIndex( _context );
+            renderPass.zGroup = _context->zGroup == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _context->zGroup;
+            renderPass.zIndex = _context->zIndex == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _context->zIndex;
             
             renderPass.flags = RENDER_PASS_FLAG_NONE;
 

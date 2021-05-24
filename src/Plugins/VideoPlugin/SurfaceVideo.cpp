@@ -544,8 +544,10 @@ namespace Mengine
             rect.bottom = image->getHWHeight();
         }
 
+        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+
         size_t pitch = 0;
-        void * lockRect = image->lock( &pitch, 0, rect, false );
+        void * lockRect = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( lockRect, "'%s:%s' invalid lock texture %d:%d"
             , this->getName().c_str()
@@ -559,7 +561,7 @@ namespace Mengine
         size_t bufferSize = Helper::getImageMemorySize( image );
         size_t bytes = m_videoDecoder->decode( lockRect, bufferSize );
 
-        image->unlock( 0, true );
+        image->unlock( locked, 0, true );
 
         return bytes != 0;
     }

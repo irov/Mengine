@@ -9,10 +9,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX11RenderFragmentShader
         : public RenderFragmentShaderInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderFragmentShader );
+
     public:
         DX11RenderFragmentShader();
         ~DX11RenderFragmentShader() override;
@@ -21,23 +24,25 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
+        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _precompile );
         void finalize();
 
     public:
-        bool compile( IDirect3DDevice9 * _pD3DDevice );
+        bool compile( const ID3D11DevicePtr & _pD3DDevice );
+        void release();
 
     public:
-        void enable( IDirect3DDevice9 * _pD3DDevice );
+        void enable( const ID3D11DeviceContextPtr & _pD3DDeviceContext );
+        void disable( const ID3D11DeviceContextPtr & _pD3DDeviceContext );
 
     protected:
-        IDirect3DPixelShader9 * m_pD3DPixelShader;
+        ID3D11PixelShaderPtr m_pD3DPixelShader;
+
+        uint32_t m_compileReferenceCount;
 
         ConstString m_name;
 
         MemoryInterfacePtr m_memory;
-
-        bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderFragmentShader, RenderFragmentShaderInterface> DX11RenderFragmentShaderPtr;

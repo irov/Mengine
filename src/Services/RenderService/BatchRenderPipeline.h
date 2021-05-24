@@ -49,7 +49,8 @@ namespace Mengine
 
         RenderContext context;
 
-        int32_t orderIndex;
+        int8_t zGroup;
+        int32_t zIndex;
 
         RenderExternalInterfacePtr external;
 

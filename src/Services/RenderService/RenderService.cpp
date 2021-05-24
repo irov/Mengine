@@ -78,7 +78,6 @@ namespace Mengine
         }
 
         m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderOrder = Helper::makeFactoryPool<RenderOrder, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderSystem = RENDER_SYSTEM();
 
@@ -111,10 +110,8 @@ namespace Mengine
         m_currentRenderProgram = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderOrder );
 
         m_factoryRenderBatch = nullptr;
-        m_factoryRenderOrder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::_stopService()
@@ -169,16 +166,14 @@ namespace Mengine
 
         if( this->createNullTexture_() == false )
         {
-            LOGGER_ERROR( "invalid create __null__ texture"
-            );
+            LOGGER_ERROR( "invalid create __null__ texture" );
 
             return false;
         }
 
         if( this->createWhitePixelTexture_() == false )
         {
-            LOGGER_ERROR( "invalid create WhitePixel texture"
-            );
+            LOGGER_ERROR( "invalid create WhitePixel texture" );
 
             return false;
         }
@@ -215,7 +210,7 @@ namespace Mengine
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
         uint32_t null_height = 2;
-        uint32_t null_channels = 3;
+        uint32_t null_channels = 4;
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
@@ -234,8 +229,10 @@ namespace Mengine
         rect.right = null_width;
         rect.bottom = null_height;
 
+        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+
         size_t pitch = 0;
-        void * textureData = image->lock( &pitch, 0, rect, false );
+        void * textureData = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
             , null_width
@@ -247,22 +244,26 @@ namespace Mengine
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0x00;
         buffer_textureData[2] = 0x00;
+        buffer_textureData[3] = 0xFF;
 
-        buffer_textureData[3] = 0x00;
-        buffer_textureData[4] = 0xFF;
-        buffer_textureData[5] = 0x00;
+        buffer_textureData[4] = 0x00;
+        buffer_textureData[5] = 0xFF;
+        buffer_textureData[6] = 0x00;
+        buffer_textureData[7] = 0xFF;
 
         buffer_textureData += pitch;
 
         buffer_textureData[0] = 0x00;
         buffer_textureData[1] = 0x00;
         buffer_textureData[2] = 0xFF;
+        buffer_textureData[3] = 0xFF;
 
-        buffer_textureData[3] = 0x00;
         buffer_textureData[4] = 0x00;
         buffer_textureData[5] = 0x00;
+        buffer_textureData[6] = 0x00;
+        buffer_textureData[7] = 0xFF;
 
-        image->unlock( 0, true );
+        image->unlock( locked, 0, true );
 
         m_nullTexture = texture;
 
@@ -276,7 +277,7 @@ namespace Mengine
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
         uint32_t null_height = 2;
-        uint32_t null_channels = 3;
+        uint32_t null_channels = 4;
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
@@ -295,8 +296,10 @@ namespace Mengine
         rect.right = null_width;
         rect.bottom = null_height;
 
+        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+
         size_t pitch = 0;
-        void * textureData = image->lock( &pitch, 0, rect, false );
+        void * textureData = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
             , null_width
@@ -308,22 +311,26 @@ namespace Mengine
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0xFF;
         buffer_textureData[2] = 0xFF;
-
         buffer_textureData[3] = 0xFF;
+
         buffer_textureData[4] = 0xFF;
         buffer_textureData[5] = 0xFF;
+        buffer_textureData[6] = 0xFF;
+        buffer_textureData[7] = 0xFF;
 
         buffer_textureData += pitch;
 
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0xFF;
         buffer_textureData[2] = 0xFF;
-
         buffer_textureData[3] = 0xFF;
+
         buffer_textureData[4] = 0xFF;
         buffer_textureData[5] = 0xFF;
+        buffer_textureData[6] = 0xFF;
+        buffer_textureData[7] = 0xFF;
 
-        image->unlock( 0, true );
+        image->unlock( locked, 0, true );
 
         m_whiteTexture = texture;
 
@@ -1190,29 +1197,6 @@ namespace Mengine
     bool RenderService::getVSync() const
     {
         return m_vsync;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderOrderInterfacePtr & RenderService::getRenderOrder( int32_t _index, const DocumentPtr & _doc )
-    {
-        for( const RenderOrderPtr & order : m_renderOrders )
-        {
-            int32_t order_index = order->getIndex();
-
-            if( order_index != _index )
-            {
-                continue;
-            }
-
-            return order;
-        }
-
-        RenderOrderPtr order = m_factoryRenderOrder->createObject( _doc );
-
-        order->setIndex( _index );
-
-        const RenderOrderInterfacePtr & emplace_order = m_renderOrders.emplace_back( order );
-
-        return emplace_order;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setRenderViewport( const Viewport & _renderViewport )

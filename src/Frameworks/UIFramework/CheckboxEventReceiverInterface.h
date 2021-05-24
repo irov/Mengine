@@ -14,6 +14,7 @@ namespace Mengine
         EVENT_CHECKBOX_MOUSE_PRESSED,
         EVENT_CHECKBOX_MOUSE_RELEASE,
         EVENT_CHECKBOX_CHANGE,
+
         __EVENT_BUTTON_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

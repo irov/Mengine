@@ -84,8 +84,12 @@ namespace Mengine
         const CompositionDesc * getCompositionDesc( const ConstString & _compositionName ) const;
 
     public:
+        typedef Lambda<void( uint32_t _index, const ConstString & _name, const ConstString & _type )> LambdaCompositionLayers;
+        bool foreachCompositionLayers( const ConstString & _compositionName, const LambdaCompositionLayers & _lambda ) const;
+
+    public:
         typedef Lambda<void( const ConstString &, const CompositionDesc & )> LambdaCompositionDescs;
-        void foreachCompositionDesc( const LambdaCompositionDescs & _lambda );
+        void foreachCompositionDesc( const LambdaCompositionDescs & _lambda ) const;
 
     protected:
         bool _compile() override;

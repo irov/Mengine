@@ -12,6 +12,8 @@ namespace Mengine
         Rect( uint32_t _left, uint32_t _top, uint32_t _right, uint32_t _bottom );
 
     public:
+        MENGINE_INLINE uint32_t getOffsetX() const;
+        MENGINE_INLINE uint32_t getOffsetY() const;
         MENGINE_INLINE uint32_t getWidth() const;
         MENGINE_INLINE uint32_t getHeight() const;
 
@@ -27,6 +29,16 @@ namespace Mengine
         uint32_t right;
         uint32_t bottom;
     };
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE uint32_t Rect::getOffsetX() const
+    {
+        return left;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE uint32_t Rect::getOffsetY() const
+    {
+        return top;
+    }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Rect::getWidth() const
     {

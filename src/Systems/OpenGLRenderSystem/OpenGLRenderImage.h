@@ -2,7 +2,6 @@
 
 #include "Interface/RenderImageInterface.h"
 #include "Interface/OpenGLRenderImageExtensionInterface.h"
-#include "Interface/MemoryInterface.h"
 
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
@@ -41,8 +40,8 @@ namespace Mengine
         void release();
 
     public:
-        Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 
     public:
         uint32_t getHWMipmaps() const override;
@@ -108,9 +107,6 @@ namespace Mengine
         GLenum m_format;
         GLenum m_type;
 
-        MemoryInterfacePtr m_lockMemory;
-        Rect m_lockRect;
-        uint32_t m_lockLevel;
         bool m_lockFirst;
 
         bool m_pow2;

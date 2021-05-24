@@ -38,17 +38,17 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
+    void MockupRenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
-        AttributeDesc desc;
-        desc.uniform = _uniform;
-        desc.size = _size;
-        desc.type = _type;
-        desc.stride = _stride;
-        desc.offset = _offset;
-        desc.normalized = _normalized;
+        MENGINE_UNUSED( _uniform );
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _type );
+        MENGINE_UNUSED( _normalized );
+        MENGINE_UNUSED( _stride );
+        MENGINE_UNUSED( _offset );
 
-        m_attributes.emplace_back( desc );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
 }

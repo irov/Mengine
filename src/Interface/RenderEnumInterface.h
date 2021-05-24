@@ -63,8 +63,9 @@ namespace Mengine
     enum ECullMode
     {
         CM_CULL_NONE = 0,
-        CM_CULL_CW,
-        CM_CULL_CCW
+        CM_CULL_CW, // D3D11 using FrontCounterClockwise for order of polygons
+        CM_CULL_CCW,
+		CM_CULL_BACK,
     };
     //////////////////////////////////////////////////////////////////////////
     enum ECompareFunction
@@ -159,7 +160,8 @@ namespace Mengine
         BLF_LOCK_READONLY,
         BLF_LOCK_DISCARD,
         BLF_LOCK_NOOVERWRITE,
-        BLF_LOCK_NOSYSLOCK
+        BLF_LOCK_NOSYSLOCK,
+		BLF_LOCK_WRITE, // D3D11_MAP_WRITE
     };
     //////////////////////////////////////////////////////////////////////////
     enum ERenderBatchMode

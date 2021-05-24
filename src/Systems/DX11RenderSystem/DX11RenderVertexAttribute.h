@@ -15,6 +15,8 @@ namespace Mengine
         : public RenderVertexAttributeInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderVertexAttribute );
+
     public:
         DX11RenderVertexAttribute();
         ~DX11RenderVertexAttribute() override;
@@ -24,30 +26,33 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( IDirect3DDevice9 * _pD3DDevice );
+        bool compile( const ID3D11DevicePtr & _pD3DDevice, const MemoryInterfacePtr & _shaderCompileMemory );
+        void release();
 
     public:
-        void enable() override;
-        void disable() override;
+        void enable( const ID3D11DeviceContextPtr & _pD3DDeviceContext );
+        void disable( const ID3D11DeviceContextPtr & _pD3DDeviceContext );
 
     public:
         const ConstString & getName() const override;
         uint32_t getElementSize() const override;
 
     public:
-        void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
+        void addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
 
     protected:
         ConstString m_name;
         uint32_t m_elementSize;
 
-        IDirect3DDevice9 * m_pD3DDevice;
-        IDirect3DVertexDeclaration9 * m_pD3DVertexDeclaration;
+        uint32_t m_compileReferenceCount;
+
+        ID3D11InputLayoutPtr m_pD3DVertexDeclaration;
 
         struct AttributeDesc
         {
             ConstString uniform;
 
+            uint32_t index;
             uint32_t size;
             EVertexAttributeType type;
             uint32_t stride;

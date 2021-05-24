@@ -8,6 +8,9 @@ src
     DX11RenderImage.cpp
     DX11RenderImageTarget.h
     DX11RenderImageTarget.cpp
+    DX11RenderImageLocked.h
+    DX11RenderImageLocked.cpp
+    DX11RenderImageLockedFactoryStorage.h    
     DX11RenderTargetTexture.h
     DX11RenderTargetTexture.cpp
     DX11RenderTargetOffscreen.h
@@ -27,6 +30,8 @@ src
     DX11RenderEnum.h
     DX11ErrorHelper.h
     DX11ErrorHelper.cpp
+    DX11RenderBuffer.h
+    DX11RenderBuffer.cpp
     DX11RenderProgramVariable.h
     DX11RenderProgramVariable.cpp
     DX11RenderResourceHandler.h
@@ -34,3 +39,5 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Systems)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} d3d11 dxgi)

@@ -1139,13 +1139,14 @@ namespace Mengine
             for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute & meta_Attribute : includes_Attributes )
             {
                 const ConstString & attribute_uniform = meta_Attribute.get_Uniform();
+                uint32_t attribute_index = meta_Attribute.get_Index();
                 uint32_t attribute_size = meta_Attribute.get_Size();
                 EVertexAttributeType attribute_type = meta_Attribute.get_Type();
                 bool attribute_normalized = meta_Attribute.get_Normalized();
                 uint32_t attribute_stride = meta_Attribute.get_Stride();
                 uint32_t attribute_offset = meta_Attribute.get_Offset();
 
-                vertexAttribute->addAttribute( attribute_uniform, attribute_size, attribute_type, attribute_normalized, attribute_stride, attribute_offset );
+                vertexAttribute->addAttribute( attribute_uniform, attribute_index, attribute_size, attribute_type, attribute_normalized, attribute_stride, attribute_offset );
             }
         }
 

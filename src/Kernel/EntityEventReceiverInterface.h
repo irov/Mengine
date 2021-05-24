@@ -18,6 +18,7 @@ namespace Mengine
         EVENT_ENTITY_DEACTIVATE,
         EVENT_ENTITY_COMPILE,
         EVENT_ENTITY_RELEASE,
+
         __EVENT_ENTITY_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

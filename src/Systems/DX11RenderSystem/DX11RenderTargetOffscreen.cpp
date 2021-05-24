@@ -11,71 +11,148 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetOffscreen::DX11RenderTargetOffscreen()
-        : m_pD3DSurfacePlain( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     DX11RenderTargetOffscreen::~DX11RenderTargetOffscreen()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DSurfacePlain == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderTargetOffscreen::_initialize()
+    bool DX11RenderTargetOffscreen::initialize( DX11RenderTargetTexturePtr _renderTargetTexture )
     {
-        IDirect3DSurface9 * pD3DSurfacePlain;
-        IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &pD3DSurfacePlain, NULL) )
+        D3D11_TEXTURE2D_DESC textureDesc = _renderTargetTexture->GetTextureDesc();
+        textureDesc.Usage = D3D11_USAGE_STAGING;
+        textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
+
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
         {
             return false;
         }
 
-        m_pD3DSurfacePlain = pD3DSurfacePlain;
+        m_renderTargetTexture = _renderTargetTexture;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderTargetOffscreen::_finalize()
+    bool DX11RenderTargetOffscreen::initialize( ID3D11Texture2D * _textureSource )
     {
-        DX11RenderTargetTexture::_finalize();
+        D3D11_TEXTURE2D_DESC textureDesc;
+        _textureSource->GetDesc( &textureDesc );
 
-        DXRELEASE( m_pD3DSurfacePlain );
+        textureDesc.Usage = D3D11_USAGE_STAGING;
+        textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+
+        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
+
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
+        {
+            return false;
+        }
+
+        m_pD3DTextureSource = _textureSource;
+        m_textureDesc = textureDesc;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderTargetOffscreen::finalize()
+    {
+        m_pD3DTexture = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderTargetOffscreen::begin() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderTargetOffscreen::end() const
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderTargetOffscreen::getHWMipmaps() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderTargetOffscreen::getHWWidth() const
+    {
+        return m_textureDesc.Width;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderTargetOffscreen::getHWHeight() const
+    {
+        return m_textureDesc.Height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderTargetOffscreen::getHWChannels() const
+    {
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderTargetOffscreen::getHWDepth() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EPixelFormat DX11RenderTargetOffscreen::getHWPixelFormat() const
+    {
+        return EPixelFormat::PF_UNKNOWN;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float DX11RenderTargetOffscreen::getHWWidthInv() const
+    {
+        return 1.0f / m_textureDesc.Width;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float DX11RenderTargetOffscreen::getHWHeightInv() const
+    {
+        return  1.0f / m_textureDesc.Height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderTargetOffscreen::calcViewport( const mt::vec2f & _size, Viewport * const _viewport ) const
+    {
+        float uv_width = _size.x * getHWWidthInv();
+        float uv_height = _size.y * getHWHeightInv();
+
+        _viewport->begin = mt::vec2f( 0.f, 0.f );
+        _viewport->end = mt::vec2f( uv_width, uv_height );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
-        if( m_pD3DSurfacePlain == nullptr )
+        ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
+
+        ID3D11Texture2DPtr textureSource = m_pD3DTextureSource;
+
+        if( textureSource == nullptr )
         {
+            textureSource = m_renderTargetTexture->getD3DTexture();
+        }
+
+        pImmediateContext->CopyResource( m_pD3DTexture.Get(), textureSource.Get() );
+
+        D3D11_MAPPED_SUBRESOURCE mappedResource;
+        pImmediateContext->Map( m_pD3DTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource );
+
+        if( mappedResource.RowPitch != _pitch )
             return false;
-        }
 
-        if( m_pD3DSurface == nullptr )
-        {
-            return false;
-        }
+        stdex::memorycopy( _buffer, 0, mappedResource.pData, _pitch );
 
-        DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurface, m_pD3DSurfacePlain) );
-
-        D3DLOCKED_RECT LockedRect;
-        DXCALL( m_pD3DSurfacePlain, LockRect, (&LockedRect, NULL, 0) );
-
-        if( LockedRect.pBits == NULL || LockedRect.Pitch == 0 )
-        {
-            return false;
-        }
-
-        uint8_t * dstData = reinterpret_cast<uint8_t *>(_buffer);
-        uint8_t * srcData = reinterpret_cast<uint8_t *>(LockedRect.pBits);
-
-        for( DWORD i = 0; i != m_height; ++i )
-        {
-            stdex::memorycopy( dstData, 0, srcData, m_width * 4 );
-
-            dstData += _pitch;
-            srcData += LockedRect.Pitch;
-        }
-
-        DXCALL( m_pD3DSurfacePlain, UnlockRect, () );
+        pImmediateContext->Unmap( m_pD3DTexture.Get(), 0 );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX11RenderTargetOffscreen::onRenderReset()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderTargetOffscreen::onRenderRestore()
+    {
+        return true;
+    }
 }

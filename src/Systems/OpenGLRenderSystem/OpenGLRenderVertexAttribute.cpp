@@ -29,16 +29,17 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
+    void OpenGLRenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
         AttributeDesc attr;
         attr.uniform = _uniform;
-        attr.location = -1;
+        attr.index = _index;
         attr.size = _size;
         attr.type = _type;
         attr.stride = _stride;
         attr.offset = _offset;
         attr.normalized = _normalized == true ? GL_TRUE : GL_FALSE;
+        attr.location = -1;
 
         m_attributes.emplace_back( attr );
     }

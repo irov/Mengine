@@ -208,17 +208,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderPNG::_decode( void * const _buffer, size_t _bufferSize )
     {
-        if( _bufferSize < m_options.pitch * m_dataInfo.height )
-        {
-            LOGGER_ERROR( "invalid bufferSize %zu != (%zu * %u)"
-                , _bufferSize
-                , m_options.pitch
-                , m_dataInfo.height
-            );
-
-            return 0;
-        }
-
         switch( m_options.flags & 0x0000ffff )
         {
         case DF_NONE:

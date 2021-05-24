@@ -8,6 +8,9 @@ src
     DX9RenderImage.cpp
     DX9RenderImageTarget.h
     DX9RenderImageTarget.cpp
+    DX9RenderImageLocked.h
+    DX9RenderImageLocked.cpp
+    DX9RenderImageLockedFactoryStorage.h
     DX9RenderTargetTexture.h
     DX9RenderTargetTexture.cpp
     DX9RenderTargetOffscreen.h

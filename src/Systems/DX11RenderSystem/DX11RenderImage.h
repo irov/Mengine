@@ -30,8 +30,8 @@ namespace Mengine
         void finalize();
 
     public:
-        void bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage );
-        void unbind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage );
+        void bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage ) override;
+        void unbind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage ) override;
 
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;

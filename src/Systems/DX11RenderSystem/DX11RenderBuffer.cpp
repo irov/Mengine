@@ -20,8 +20,8 @@ namespace Mengine
     DX11RenderBuffer::DX11RenderBuffer()
         : m_bufferType( BT_STATIC )
         , m_elementSize( 0 )
-        , m_elementsCapacity( 0 )
         , m_elementsCount( 0 )
+        , m_elementsCapacity( 0 )
         , m_format( DXGI_FORMAT_UNKNOWN )
     {
     }
@@ -35,25 +35,6 @@ namespace Mengine
     {
         m_elementSize = _elementSize;
         m_bufferType = _bufferType;
-
-        m_desc.CPUAccessFlags = 0;
-        m_desc.MiscFlags = 0;
-
-        switch( m_bufferType )
-        {
-        case BT_STATIC:
-            {
-                m_desc.Usage = D3D11_USAGE_DEFAULT;
-            }break;
-        case BT_STREAM:
-        case BT_DYNAMIC:
-            {
-                m_desc.Usage = D3D11_USAGE_DYNAMIC;
-                m_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            }break;
-        };
-
-        m_desc.StructureByteStride = _elementSize;
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );
@@ -70,6 +51,9 @@ namespace Mengine
         m_memory = nullptr;
 
         m_pD3DBuffer = nullptr;
+
+        m_elementsCount = 0;
+        m_elementsCapacity = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderBuffer::getElementsCount() const
@@ -82,7 +66,7 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderBuffer::resizeBuffer( uint32_t _elementsCount, void * _initData )
+    bool DX11RenderBuffer::resizeBuffer( D3D11_BIND_FLAG _bindFlag, uint32_t _elementsCount, void * _initData )
     {
         m_elementsCount = _elementsCount;
 
@@ -96,7 +80,28 @@ namespace Mengine
         m_elementsCapacity = m_elementsCount;
 
         uint32_t bufferSize = m_elementsCapacity * m_elementSize;
-        m_desc.ByteWidth = (UINT)(bufferSize);
+
+        D3D11_BUFFER_DESC desc;
+        desc.CPUAccessFlags = 0;
+        desc.MiscFlags = 0;
+        desc.BindFlags = _bindFlag;
+
+        switch( m_bufferType )
+        {
+        case BT_STATIC:
+            {
+                desc.Usage = D3D11_USAGE_DEFAULT;
+            }break;
+        case BT_STREAM:
+        case BT_DYNAMIC:
+            {
+                desc.Usage = D3D11_USAGE_DYNAMIC;
+                desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+            }break;
+        };
+
+        desc.StructureByteStride = (UINT)m_elementSize;
+        desc.ByteWidth = (UINT)bufferSize;
 
         // Define the resource data.
         D3D11_SUBRESOURCE_DATA InitData;
@@ -107,12 +112,12 @@ namespace Mengine
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
         ID3D11Buffer * pD3DBuffer;
-        IF_DXCALL( pD3DDevice, CreateBuffer, (&m_desc, _initData == nullptr ? nullptr : &InitData, &pD3DBuffer) )
+        IF_DXCALL( pD3DDevice, CreateBuffer, (&desc, _initData == nullptr ? nullptr : &InitData, &pD3DBuffer) )
         {
             return false;
         }
 
-        m_pD3DBuffer = pD3DBuffer;
+        m_pD3DBuffer.Attach( pD3DBuffer );
 
         return true;
     }
@@ -125,7 +130,7 @@ namespace Mengine
                 , _count
                 , _offset
                 , m_elementsCount
-                , MENGINE_DOCUMENTABLE_STR( this, "DX11RenderIndexBuffer" )
+                , MENGINE_DOCUMENTABLE_STR( this, "DX11RenderBuffer" )
             );
 
             return nullptr;
@@ -178,7 +183,7 @@ namespace Mengine
             LOGGER_ERROR( "draw count %u more capacity %u (doc: %s)"
                 , _count
                 , m_elementsCount
-                , MENGINE_DOCUMENTABLE_STR( this, "DX11RenderIndexBuffer" )
+                , MENGINE_DOCUMENTABLE_STR( this, "DX11RenderBuffer" )
             );
 
             return false;

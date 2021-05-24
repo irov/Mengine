@@ -546,6 +546,10 @@ namespace Mengine
 
         RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( locked, "video '%s' invalid lock image"
+            , this->getName().c_str()
+        );
+
         size_t pitch = 0;
         void * lockRect = locked->getBuffer( &pitch );
 

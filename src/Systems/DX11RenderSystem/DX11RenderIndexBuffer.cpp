@@ -19,7 +19,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderIndexBuffer::DX11RenderIndexBuffer()
     {
-        m_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     }
     //////////////////////////////////////////////////////////////////////////
     DX11RenderIndexBuffer::~DX11RenderIndexBuffer()
@@ -51,7 +50,7 @@ namespace Mengine
     bool DX11RenderIndexBuffer::resize( uint32_t _indexCount )
     {
         // TODO: in D3D11 we can create static bufferes without lock - if we provide data pointer on creation
-        return this->resizeBuffer( _indexCount, nullptr );
+        return this->resizeBuffer( D3D11_BIND_INDEX_BUFFER, _indexCount, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DX11RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )

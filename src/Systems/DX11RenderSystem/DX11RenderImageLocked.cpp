@@ -2,6 +2,8 @@
 
 #include "DX11ErrorHelper.h"
 
+#include "Kernel/Logger.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -16,7 +18,7 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImageLocked::initialize( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const ID3D11Texture2DPtr & _pMainTexture, uint32_t _offsetX, uint32_t _offsetY, uint32_t _width, uint32_t _height )
+    bool DX11RenderImageLocked::initialize( const ID3D11DevicePtr & _pD3DDevice, const ID3D11Texture2DPtr & _pMainTexture, uint32_t _offsetX, uint32_t _offsetY, uint32_t _width, uint32_t _height )
     {
         D3D11_TEXTURE2D_DESC stagingTextureDesc;
         _pMainTexture->GetDesc( &stagingTextureDesc );
@@ -34,20 +36,15 @@ namespace Mengine
             NULL,
             &pD3DStagingTexture) )
         {
+            LOGGER_ERROR( "invalid create texture 2d [%u:%u]"
+                , _width
+                , _height
+            );
+
             return false;
         }
 
-        m_pD3DStagingTexture = pD3DStagingTexture;
-
-        IF_DXCALL( _pImmediateContext, Map, (m_pD3DStagingTexture.Get(),
-            0,
-            D3D11_MAP_WRITE,
-            0,
-            &m_stagingTextureMemory
-            ) )
-        {
-            return false;
-        }
+        m_pD3DStagingTexture.Attach( pD3DStagingTexture );
 
         m_stagingOffsetX = _offsetX;
         m_stagingOffsetY = _offsetY;
@@ -60,19 +57,41 @@ namespace Mengine
         m_pD3DStagingTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ID3D11Texture2DPtr & DX11RenderImageLocked::getStagingTexture() const
+    bool DX11RenderImageLocked::lock( const ID3D11DeviceContextPtr & _pImmediateContext )
     {
-        return m_pD3DStagingTexture;
+        IF_DXCALL( _pImmediateContext, Map, (m_pD3DStagingTexture.Get(),
+            0,
+            D3D11_MAP_WRITE,
+            0,
+            &m_stagingTextureMemory
+            ) )
+        {
+            LOGGER_ERROR( "invalid map staging texture" );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderImageLocked::getStagingOffsetX() const
+    void DX11RenderImageLocked::unlock( const ID3D11DeviceContextPtr & _pImmediateContext, const ID3D11Texture2DPtr & _pD3DTexture )
     {
-        return m_stagingOffsetX;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderImageLocked::getStagingOffsetY() const
-    {
-        return m_stagingOffsetY;
+        _pImmediateContext->Unmap( m_pD3DStagingTexture.Get(), 0 );
+
+        if( _pD3DTexture == nullptr )
+        {
+            return;
+        }
+
+        _pImmediateContext->CopySubresourceRegion(
+            _pD3DTexture.Get(),
+            0,
+            m_stagingOffsetX,
+            m_stagingOffsetY,
+            0,
+            m_pD3DStagingTexture.Get(),
+            0,
+            NULL );
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer DX11RenderImageLocked::getBuffer( size_t * const _pitch ) const

@@ -26,7 +26,10 @@ namespace Mengine
         ID3D11DeviceContext * pImmediateContext;
         m_pD3DDevice->GetImmediateContext( &pImmediateContext );
 
-        return ID3D11DeviceContextPtr( pImmediateContext );
+        ID3D11DeviceContextPtr immediateContext;
+        immediateContext.Attach( pImmediateContext );
+
+        return immediateContext;
     }
     //////////////////////////////////////////////////////////////////////////
 }

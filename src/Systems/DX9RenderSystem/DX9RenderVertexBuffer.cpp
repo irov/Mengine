@@ -164,8 +164,7 @@ namespace Mengine
 
         IF_DXCALL( m_pD3DVertexBuffer, Unlock, () )
         {
-            LOGGER_ERROR( "invalid unlock"
-            );
+            LOGGER_ERROR( "invalid unlock" );
 
             return false;
         }

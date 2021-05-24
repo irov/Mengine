@@ -73,7 +73,7 @@ namespace Mengine
             return false;
         }
 
-        m_pD3DTexture = pD3DTexture;
+        m_pD3DTexture.Attach( pD3DTexture );
 
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
         ZeroMemory( &shaderResourceViewDesc, sizeof( D3D11_SHADER_RESOURCE_VIEW_DESC ) );
@@ -89,7 +89,7 @@ namespace Mengine
             return false;
         }
 
-        m_pD3DResourceView = pD3DResourceView;
+        m_pD3DResourceView.Attach( pD3DResourceView );
 
         return true;
     }
@@ -160,9 +160,15 @@ namespace Mengine
         DX11RenderImageLockedPtr imageLocked = DX11RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
+
+        if( imageLocked->initialize( pD3DDevice, m_pD3DTexture, miplevel_offsetX, miplevel_offsetY, miplevel_width, miplevel_height ) == false )
+        {
+            return nullptr;
+        }
+
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        if( imageLocked->initialize( pD3DDevice, pImmediateContext, m_pD3DTexture, miplevel_offsetX, miplevel_offsetY, miplevel_width, miplevel_height ) == false )
+        if( imageLocked->lock( pImmediateContext ) == false )
         {
             return nullptr;
         }
@@ -176,30 +182,16 @@ namespace Mengine
 
         DX11RenderImageLocked * imageLocked = _locked.getT<DX11RenderImageLocked *>();
 
-        if( _successful == false )
-        {
-            imageLocked->finalize();
-
-            return true;
-        }
-
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
-        const ID3D11Texture2DPtr & pD3DStagingTexture = imageLocked->getStagingTexture();
-        uint32_t stagingOffsetX = imageLocked->getStagingOffsetX();
-        uint32_t stagingOffsetY = imageLocked->getStagingOffsetY();
-
-        pImmediateContext->Unmap( pD3DStagingTexture.Get(), 0 );
-
-        pImmediateContext->CopySubresourceRegion(
-            m_pD3DTexture.Get(),
-            0,
-            stagingOffsetX,
-            stagingOffsetY,
-            0,
-            pD3DStagingTexture.Get(),
-            0,
-            NULL );
+        if( _successful == false )
+        {
+            imageLocked->unlock( pImmediateContext, nullptr );
+        }
+        else
+        {
+            imageLocked->unlock( pImmediateContext, m_pD3DTexture );
+        }
 
         imageLocked->finalize();
 

@@ -46,7 +46,7 @@ GIT_CLONE(python3 https://github.com/python/cpython.git "v3.8.8")
 GIT_CLONE(ozz https://github.com/guillaumeblanc/ozz-animation.git "0.13.0")
 GIT_CLONE(glad https://github.com/Dav1dde/glad.git "v0.1.34")
 GIT_CLONE(glfw3 https://github.com/glfw/glfw.git "3.3.4")
-GIT_CLONE(imgui https://github.com/ocornut/imgui.git "v1.82")
+GIT_CLONE(imgui https://github.com/ocornut/imgui.git "v1.83")
 GIT_CLONE(zed_net https://github.com/iOrange/zed_net.git)
 GIT_CLONE(spine https://github.com/EsotericSoftware/spine-runtimes.git "3.7.94")  #don't up
 GIT_CLONE(dazzle https://github.com/irov/dazzle.git)

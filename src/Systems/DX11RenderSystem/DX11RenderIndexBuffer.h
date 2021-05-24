@@ -5,16 +5,20 @@
 #include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
 #include "DX11RenderResourceHandler.h"
+#include "DX11RenderBuffer.h"
 
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX11RenderIndexBuffer
         : public RenderIndexBufferInterface
         , public Factorable
-        , public DX11RenderResourceHandler
+        , public DX11RenderBuffer
     {
+        DECLARE_FACTORABLE( DX11RenderIndexBuffer );
+
     public:
         DX11RenderIndexBuffer();
         ~DX11RenderIndexBuffer() override;
@@ -27,9 +31,9 @@ namespace Mengine
         uint32_t getIndexCount() const override;
         uint32_t getIndexSize() const override;
 
-    protected:
-        void enable() override;
-        void disable() override;
+    public:
+        void enable( const ID3D11DeviceContextPtr & _pImmediateContext );
+        void disable( const ID3D11DeviceContextPtr & _pImmediateContext );
 
     protected:
         bool resize( uint32_t _indexCount ) override;
@@ -40,23 +44,6 @@ namespace Mengine
 
     protected:
         bool draw( const void * _buffer, uint32_t _offset, uint32_t _count ) override;
-
-    protected:
-        void onRenderReset() override;
-        bool onRenderRestore() override;
-
-    protected:
-        EBufferType m_bufferType;
-        uint32_t m_indexSize;
-        uint32_t m_indexCapacity;
-        uint32_t m_indexCount;
-
-        DWORD m_usage;
-        D3DFORMAT m_format;
-        D3DPOOL m_pool;
-        IDirect3DIndexBuffer9 * m_pD3DIndexBuffer;
-
-        MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderIndexBuffer, RenderIndexBufferInterface> DX11RenderIndexBufferPtr;

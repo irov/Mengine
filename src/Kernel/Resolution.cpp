@@ -30,6 +30,11 @@ namespace Mengine
         return m_width == _resolution.m_width && m_height == _resolution.m_height;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Resolution::operator != ( const Resolution & _resolution ) const
+    {
+        return m_width != _resolution.m_width || m_height != _resolution.m_height;
+    }
+    //////////////////////////////////////////////////////////////////////////
     float Resolution::getAspectRatio() const
     {
         float width = this->getWidthF();

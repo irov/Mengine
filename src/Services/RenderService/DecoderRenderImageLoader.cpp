@@ -75,8 +75,6 @@ namespace Mengine
         uint32_t image_width = _image->getHWWidth();
         uint32_t image_height = _image->getHWHeight();
         uint32_t image_channels = _image->getHWChannels();
-        uint32_t image_depth = _image->getHWDepth();
-        EPixelFormat image_format = _image->getHWPixelFormat();
 
         uint32_t HWWidth = Helper::getTexturePOW2( image_width );
         uint32_t HWHeight = Helper::getTexturePOW2( image_height );
@@ -87,16 +85,16 @@ namespace Mengine
         uint32_t mipmap_width = HWWidth >> mipmap;
         uint32_t mipmap_height = HWHeight >> mipmap;
 
-        size_t mipmap_size = Helper::getTextureMemorySize( mipmap_width, mipmap_height, image_channels, image_depth, image_format );
-
         Rect rect;
         rect.left = 0;
         rect.top = 0;
         rect.right = image_width;
         rect.bottom = image_height;
 
+        RenderImageLockedInterfacePtr locked = _image->lock( 0, rect, false );
+
         size_t pitch = 0;
-        void * textureBuffer = _image->lock( &pitch, 0, rect, false );
+        void * textureBuffer = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, "invalid lock mipmap %d rect %d:%d-%d:%d"
             , 0
@@ -114,11 +112,13 @@ namespace Mengine
 
         m_decoder->setOptions( &options );
 
+        size_t mipmap_size = pitch * mipmap_height;
+
         if( m_decoder->decode( textureBuffer, mipmap_size ) == 0 )
         {
             LOGGER_ERROR( "invalid decode for" );
 
-            _image->unlock( 0, false );
+            _image->unlock( locked, 0, false );
 
             return false;
         }
@@ -147,7 +147,7 @@ namespace Mengine
             stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
         }
 
-        _image->unlock( 0, true );
+        _image->unlock( locked, 0, true );
 
         return true;
     }

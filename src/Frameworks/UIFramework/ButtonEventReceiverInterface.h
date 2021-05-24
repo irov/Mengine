@@ -16,6 +16,7 @@ namespace Mengine
         EVENT_BUTTON_MOUSE_BUTTON,
         EVENT_BUTTON_MOUSE_BUTTON_BEGIN,
         EVENT_BUTTON_MOUSE_BUTTON_END,
+
         __EVENT_BUTTON_LAST__
     };
     //////////////////////////////////////////////////////////////////////////

@@ -2,13 +2,15 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformExtensionInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -74,19 +76,23 @@ namespace Mengine
         String full_output = folderPath.c_str();
         full_output += m_options.outputFilePath.c_str();
 
-        String buffer = "/nologo /T ps_2_0 /O3 /Fo \"" + full_output + "\" \"" + full_input + "\"";
+        Char buffer[2048] = {'\0'};
+        MENGINE_SNPRINTF( buffer, 2047, "/nologo /T ps_1_1 /O3 /Gec /Fo \"%s\" \"%s\""
+            , full_output.c_str()
+            , full_input.c_str()
+        );
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
             , full_output.c_str()
-            , buffer.c_str()
+            , buffer
         );
 
         uint32_t exitCode;
-        if( win32Platform->createProcess( fxcPath.c_str(), buffer.c_str(), true, &exitCode ) == false )
+        if( win32Platform->createProcess( fxcPath.c_str(), buffer, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
-                , buffer.c_str()
+                , buffer
             );
 
             return false;

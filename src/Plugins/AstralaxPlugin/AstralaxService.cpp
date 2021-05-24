@@ -762,6 +762,245 @@ namespace Mengine
         ss << "}" << std::endl;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AstralaxService::createFragmentShaderDX11Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
+    {
+        int32_t textures = m->textures;
+
+        for( int32_t i = 0; i != textures; ++i )
+        {
+            ss << "Texture2D tex" << i << " : register(t" << i << ");" << std::endl;
+        }
+
+        for( int32_t i = 0; i != textures; ++i )
+        {
+            ss << "SamplerState sampler" << i << " : register(s" << i << ");" << std::endl;
+        }
+
+        ss << std::endl;
+
+        ss << "struct v2p {" << std::endl;
+        ss << "  float4 position : SV_POSITION;" << std::endl;
+        ss << "  float4 color : COLOR0;" << std::endl;
+        ss << "  float2 uv0 : TEXCOORD0;" << std::endl;
+        ss << "  float2 uv1 : TEXCOORD1;" << std::endl;
+        ss << "  float2 uv2 : TEXCOORD2;" << std::endl;
+        ss << "  float2 uv3 : TEXCOORD3;" << std::endl;
+        ss << "};" << std::endl;
+
+        ss << std::endl;
+
+        ss << "struct p2f {" << std::endl;
+        ss << "  float4 color : COLOR0;" << std::endl;
+        ss << "};" << std::endl;
+
+        ss << std::endl;
+
+        ss << "void main( in v2p IN, out p2f OUT )" << std::endl;
+        ss << "{" << std::endl;
+
+        if( textures != 0 )
+        {
+            ss << "  float4 color;" << std::endl;
+            ss << "  float4 arg1;" << std::endl;
+            ss << "  float4 arg2;" << std::endl;
+            ss << "  float4 colorTex;" << std::endl;
+            ss << "  float4 colorVarying=IN.color;" << std::endl;
+
+            for( int32_t i = 0; i != textures; ++i )
+            {
+                ss << std::endl;
+
+                MAGIC_TEXTURE_STATES * s = m->states + i;
+
+                if( s->argument_rgb1 == MAGIC_TEXARG_TEXTURE ||
+                    s->argument_alpha1 == MAGIC_TEXARG_TEXTURE ||
+                    (s->operation_rgb != MAGIC_TEXOP_ARGUMENT1 && s->argument_rgb2 == MAGIC_TEXARG_TEXTURE) ||
+                    (s->operation_alpha != MAGIC_TEXOP_ARGUMENT1 && s->argument_alpha2 == MAGIC_TEXARG_TEXTURE) )
+                {
+                    ss << "  colorTex = tex" << i << ".Sample( sampler" << i << ", IN.uv" << i << ");" << std::endl;
+                }
+
+                if( s->argument_rgb1 == s->argument_alpha1 )
+                {
+                    switch( s->argument_rgb1 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg1 = color;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg1 = colorVarying;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg1 = colorTex;" << std::endl;
+                        break;
+                    }
+                }
+                else
+                {
+                    switch( s->argument_rgb1 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg1.xyz = color.xyz;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg1.xyz = colorVarying.xyz;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg1.xyz = colorTex.xyz;" << std::endl;
+                        break;
+                    }
+
+                    switch( s->argument_alpha1 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg1.w = color.w;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg1.w = colorVarying.w;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg1.w = colorTex.w;" << std::endl;
+                        break;
+                    }
+                }
+
+                if( s->argument_rgb2 == s->argument_alpha2 && s->operation_rgb != MAGIC_TEXOP_ARGUMENT1 && s->operation_alpha != MAGIC_TEXOP_ARGUMENT1 )
+                {
+                    switch( s->argument_rgb2 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg2 = color;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg2 = colorVarying;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg2 = colorTex;" << std::endl;
+                        break;
+                    }
+                }
+                else
+                {
+                    if( s->operation_rgb != MAGIC_TEXOP_ARGUMENT1 )
+                    {
+                        switch( s->argument_rgb2 )
+                        {
+                        case MAGIC_TEXARG_CURRENT:
+                            ss << "  arg2.xyz = color.xyz;" << std::endl;
+                            break;
+                        case MAGIC_TEXARG_DIFFUSE:
+                            ss << "  arg2.xyz = colorVarying.xyz;" << std::endl;
+                            break;
+                        default:
+                            ss << "  arg2.xyz = colorTex.xyz;" << std::endl;
+                            break;
+                        }
+                    }
+                    if( s->operation_alpha != MAGIC_TEXOP_ARGUMENT1 )
+                    {
+                        switch( s->argument_alpha2 )
+                        {
+                        case MAGIC_TEXARG_CURRENT:
+                            ss << "  arg2.w = color.w;" << std::endl;;
+                            break;
+                        case MAGIC_TEXARG_DIFFUSE:
+                            ss << "  arg2.w = colorVarying.w;" << std::endl;;
+                            break;
+                        default:
+                            ss << "  arg2.w = colorTex.w;" << std::endl;;
+                            break;
+                        }
+                    }
+                }
+
+                if( s->operation_rgb == s->operation_alpha )
+                {
+                    switch( s->operation_rgb )
+                    {
+                    case MAGIC_TEXOP_ARGUMENT1:
+                        ss << "  color = arg1;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_ADD:
+                        ss << "  color = arg1 + arg2;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_SUBTRACT:
+                        ss << "  color = arg1 - arg2;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE:
+                        ss << "  color = arg1 * arg2;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE2X:
+                        ss << "  color = arg1 * arg2;" << std::endl;;
+                        ss << "  color = 2 * color;" << std::endl;;
+                        break;
+                    default:
+                        ss << "  color = arg1 * arg2;" << std::endl;;
+                        ss << "  color = 4 * color;" << std::endl;;
+                        break;
+                    }
+                }
+                else
+                {
+                    switch( s->operation_rgb )
+                    {
+                    case MAGIC_TEXOP_ARGUMENT1:
+                        ss << "  color.xyz = arg1.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_ADD:
+                        ss << "  color.xyz = arg1.xyz + arg2.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_SUBTRACT:
+                        ss << "  color.xyz = arg1.xyz - arg2.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE:
+                        ss << "  color.xyz = arg1.xyz * arg2.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE2X:
+                        ss << "  color.xyz = arg1.xyz * arg2.xyz;" << std::endl;;
+                        ss << "  color.xyz = 2 * color.xyz;" << std::endl;;
+                        break;
+                    default:
+                        ss << "  color.xyz = arg1.xyz * arg2.xyz;" << std::endl;;
+                        ss << "  color.xyz = 4 * color.xyz;" << std::endl;;
+                        break;
+                    }
+
+                    switch( s->operation_alpha )
+                    {
+                    case MAGIC_TEXOP_ARGUMENT1:
+                        ss << "  color.w = arg1.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_ADD:
+                        ss << "  color.w = arg1.w + arg2.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_SUBTRACT:
+                        ss << "  color.w = arg1.w - arg2.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE:
+                        ss << "  color.w = arg1.w * arg2.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE2X:
+                        ss << "  color.w = arg1.w * arg2.w;" << std::endl;;
+                        ss << "  color.w = 2 * color.w;" << std::endl;;
+                        break;
+                    default:
+                        ss << "  color.w = arg1.w * arg2.w;" << std::endl;;
+                        ss << "  color.w = 4 * color.w;" << std::endl;;
+                        break;
+                    }
+                }
+            }
+
+            ss << "  OUT.color = IN.color * color;" << std::endl;
+        }
+        else
+        {
+            ss << "  OUT.color = IN.color;" << std::endl;
+        }
+
+        ss << "}" << std::endl;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AstralaxService::createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m )
     {
         int32_t textures = m->textures;
@@ -1279,6 +1518,10 @@ namespace Mengine
         case RP_DX9:
             {
                 this->createFragmentShaderDX9Source_( ss, m );
+            }break;
+        case RP_DX11:
+            {
+                this->createFragmentShaderDX11Source_( ss, m );
             }break;
         case RP_OPENGL:
             {

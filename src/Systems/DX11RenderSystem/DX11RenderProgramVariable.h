@@ -14,6 +14,8 @@ namespace Mengine
         : public RenderProgramVariableInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderProgramVariable );
+
     public:
         DX11RenderProgramVariable();
         ~DX11RenderProgramVariable() override;
@@ -38,19 +40,24 @@ namespace Mengine
         void updatePixelVariableBooleans( uint32_t _index, const int32_t * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
-        bool apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program );
+        bool apply( const ID3D11DevicePtr & _pD3DDevice, const ID3D11DeviceContextPtr & _pImmediateContext, const RenderProgramInterfacePtr & _program );
 
     public:
-        enum EProgramVariableType
+
+        // D3D11 uses buffers registers (13 nums maximum)
+        // each variable representing a buffer
+
+ /*       enum EProgramVariableType
         {
             EPVT_FLOAT,
             EPVT_INTEGER,
             EPVT_BOOLEAN
         };
-
+*/
+// we still can update whole buffer with variable index if we need not only float4 variable
         struct ProgramVariableDesc
         {
-            EProgramVariableType type;
+            //EProgramVariableType type;
             uint32_t offset;
             uint32_t size;
             uint32_t count;
@@ -58,20 +65,20 @@ namespace Mengine
 
     protected:
         typedef Vector<float> VectorDataFloats;
-        typedef Vector<int32_t> VectorDataIntegers;
-        typedef Vector<int32_t> VectorDataBooleans;
 
-        VectorDataFloats m_dataFloats;
-        VectorDataIntegers m_dataIntegers;
-        VectorDataBooleans m_dataBooleans;
-
+        VectorDataFloats m_vertexFloats;
         VectorDataFloats m_pixelFloats;
-        VectorDataIntegers m_pixelIntegers;
-        VectorDataBooleans m_pixelBooleans;
 
         typedef Vector<ProgramVariableDesc> VectorVariables;
         VectorVariables m_vertexVariables;
         VectorVariables m_pixelVariables;
+
+        typedef Vector<ID3D11Buffer *> VectorBuffers;
+        VectorBuffers m_vertexBuffers;
+        VectorBuffers m_pixelBuffers;
+
+        bool m_vertexBufferUpdate;
+        bool m_pixelBufferUpdate;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderProgramVariable, RenderProgramVariableInterface> DX11RenderProgramVariablePtr;

@@ -1,5 +1,7 @@
 #include "DX9RenderImage.h"
 
+#include "DX9RenderImageLockedFactoryStorage.h"
+
 #include "DX9ErrorHelper.h"
 #include "DX9RenderEnum.h"
 
@@ -100,7 +102,7 @@ namespace Mengine
         return m_renderImageProvider;
     }
     ///////////////////////////////////////////////////////////////////////////
-    Pointer DX9RenderImage::lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr DX9RenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         DWORD flags;
         if( _readOnly == true )
@@ -124,15 +126,16 @@ namespace Mengine
             return nullptr;
         }
 
-        *_pitch = (size_t)TRect.Pitch;
+        DX9RenderImageLockedPtr imageLocked = DX9RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        void * bits = TRect.pBits;
+        imageLocked->initialize( TRect );
 
-        return bits;
+        return imageLocked;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderImage::unlock( uint32_t _level, bool _successful )
+    bool DX9RenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
     {
+        MENGINE_UNUSED( _locked );
         MENGINE_UNUSED( _successful );
 
         IF_DXCALL( m_pD3DTexture, UnlockRect, (_level) )

@@ -1834,6 +1834,11 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
+    const String & TextField::getText() const
+    {
+        return m_text;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::setTextFormat( const Char * _format, ... )
     {
         MENGINE_VA_LIST_TYPE args;

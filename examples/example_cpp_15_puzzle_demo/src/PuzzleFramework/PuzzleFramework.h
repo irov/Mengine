@@ -9,6 +9,8 @@ namespace Mengine
     class PuzzleFramework
         : public FrameworkBase
     {
+        DECLARE_FACTORABLE( PuzzleFramework );
+
     public:
         PuzzleFramework();
         ~PuzzleFramework() override;

@@ -22,6 +22,8 @@
 #include "DX9RenderIndexBuffer.h"
 #include "DX9RenderProgramVariable.h"
 
+#include "DX9RenderImageLockedFactoryStorage.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
@@ -213,6 +215,8 @@ namespace Mengine
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
 
+        DX9RenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<DX9RenderImageLocked, 8>( MENGINE_DOCUMENT_FACTORABLE ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -255,6 +259,8 @@ namespace Mengine
         m_factoryRenderImageTarget = nullptr;
         m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderTargetOffscreen = nullptr;
+
+        DX9RenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     D3DMULTISAMPLE_TYPE DX9RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )
@@ -1399,7 +1405,8 @@ namespace Mengine
             return true;
         }
 
-        _vertexBuffer->enable();
+        DX9RenderVertexBuffer * dx9VertexBuffer = _vertexBuffer.getT<DX9RenderVertexBuffer *>();
+        dx9VertexBuffer->enable();
 
         m_vertexBufferEnable = true;
 
@@ -1447,7 +1454,8 @@ namespace Mengine
             return true;
         }
 
-        _indexBuffer->enable();
+        DX9RenderIndexBuffer * dx9IndexBuffer = _indexBuffer.getT<DX9RenderIndexBuffer *>();
+        dx9IndexBuffer->enable();
 
         m_indexBufferEnable = true;
 
@@ -1473,7 +1481,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
+    void DX9RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _image )
     {
         MENGINE_UNUSED( _program );
 
@@ -1491,9 +1499,10 @@ namespace Mengine
             return;
         }
 
-        if( _texture != nullptr )
+        if( _image != nullptr )
         {
-            _texture->bind( _stage );
+            DX9RenderImage * dx9RenderImage = _image.getT<DX9RenderImage *>();
+            dx9RenderImage->bind( _stage );
 
             m_textureEnable[_stage] = true;
         }

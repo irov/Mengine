@@ -66,7 +66,7 @@ namespace Mengine
         RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc ) override;
         RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc ) override;
 
-        RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc ) override;
+        RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc ) override;
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
         RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc ) override;
@@ -134,8 +134,8 @@ namespace Mengine
         UnknownPointer getRenderSystemExtention() override;
 
     public:
-        ID3D11Device * getDirect3D11Device() const override;
-        ID3D11DeviceContext * getDirect3D11DeviceContext() const override;
+        const ID3D11DevicePtr & getDirect3D11Device() const override;
+        const ID3D11DeviceContextPtr & getDirect3D11DeviceContext() const override;
 
     protected:
         void updateVSyncDPP_();
@@ -150,22 +150,36 @@ namespace Mengine
     private:
         ConstString m_renderSystemName;
 
-        HMODULE m_hd3d9;
-
         Resolution m_windowResolution;
         Viewport m_windowViewport;
         bool m_fullscreen;
         bool m_depth;
 
-        ID3D11Device * m_pD3DDevice;
-        ID3D11DeviceContext * m_pD3DDeviceContext;
+        ID3D11DevicePtr m_pD3DDevice;
+        ID3D11DeviceContextPtr m_pD3DDeviceContext;
+        ID3D11DeviceContextPtr m_pD3DImmediateContext;
+
+        IDXGISwapChainPtr m_dxgiSwapChain;
+        DXGI_MODE_DESC m_SwapChainBufferDesc;
+
+        DXGI_MODE_DESC * m_DisplayModeList;
+        UINT m_DisplayModeListNum;
+
+        ID3D11RenderTargetViewPtr m_renderTargetView;
+
+        ID3D11Texture2DPtr m_depthStencilBuffer;
+        ID3D11DepthStencilViewPtr m_depthStencilView;
 
         // sync routines
         uint32_t m_frames;
 
+        D3D11_SAMPLER_DESC m_D3D11SamplerStates[MENGINE_MAX_TEXTURE_STAGES];
+        D3D11_RASTERIZER_DESC  m_D3D11RasterizerState;
+        D3D11_BLEND_DESC m_D3D11BlendState;
+        D3D11_DEPTH_STENCIL_DESC m_D3D11DepthStencilState;
+
     protected:
         bool releaseResources_();
-        void release_();
         bool restore_();
 
     protected:
@@ -200,15 +214,6 @@ namespace Mengine
         FactoryPtr m_factoryRenderTargetTexture;
         FactoryPtr m_factoryRenderTargetOffscreen;
 
-        typedef Vector<DX11RenderVertexShaderPtr> VectorRenderVertexShaders;
-        VectorRenderVertexShaders m_deferredCompileVertexShaders;
-
-        typedef Vector<DX11RenderFragmentShaderPtr> VectorRenderFragmentShaders;
-        VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
-
-        typedef Vector<DX11RenderVertexAttributePtr> VectorRenderVertexAttributes;
-        VectorRenderVertexAttributes m_deferredCompileVertexAttributes;
-
         typedef Vector<DX11RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;
 
@@ -234,6 +239,6 @@ namespace Mengine
         bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES] = {false};
 
         bool m_waitForVSync;
-        bool m_lostDevice;
     };
+    //////////////////////////////////////////////////////////////////////////
 }

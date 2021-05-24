@@ -30,6 +30,9 @@ src
     OpenGLRenderImage.h
     OpenGLRenderImageTarget.cpp
     OpenGLRenderImageTarget.h
+    OpenGLRenderImageLocked.cpp
+    OpenGLRenderImageLocked.h
+    OpenGLRenderImageLockedFactoryStorage.h
     OpenGLRenderTargetTexture.cpp
     OpenGLRenderTargetTexture.h
 )

@@ -11,12 +11,14 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX11RenderImage
         : public RenderImageInterface
         , public DX11RenderImageExtensionInterface
         , public Factorable
         , public DX11RenderResourceHandler
     {
+        DECLARE_FACTORABLE( DX11RenderImage );
         DECLARE_UNKNOWABLE();
 
     public:
@@ -28,8 +30,8 @@ namespace Mengine
         void finalize();
 
     public:
-        void bind( uint32_t _stage ) override;
-        void unbind( uint32_t _stage ) override;
+        void bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage );
+        void unbind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage );
 
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
@@ -49,8 +51,8 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
-        Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 
     protected:
         void onRenderReset() override;
@@ -60,21 +62,25 @@ namespace Mengine
         UnknownPointer getRenderImageExtention() override;
 
     public:
-        IDirect3DDevice9 * getD3DDevice() const override;
-        IDirect3DTexture9 * getD3DTexture() const override;
+        const ID3D11DevicePtr & getD3DDevice() const override;
+        const ID3D11Texture2DPtr & getD3DTexture() const override;
+        const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const override;
 
     protected:
-        IDirect3DTexture9 * m_pD3DTexture;
+        ID3D11Texture2DPtr m_pD3DTexture;
+
+        // to bind texture to shaders
+        ID3D11ShaderResourceViewPtr m_pD3DResourceView;
 
         RenderImageProviderInterfacePtr m_renderImageProvider;
+
+        EPixelFormat m_hwPixelFormat;
 
         uint32_t m_hwMipmaps;
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
         uint32_t m_hwChannels;
         uint32_t m_hwDepth;
-
-        EPixelFormat m_hwPixelFormat;
 
         float m_hwWidthInv;
         float m_hwHeightInv;

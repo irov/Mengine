@@ -109,8 +109,10 @@ namespace Mengine
         DXCALL( _pD3DDevice, SetVertexDeclaration, (NULL) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
+    void DX9RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
+        MENGINE_UNUSED( _index );
+
         AttributeDesc desc;
         desc.uniform = _uniform;
         desc.size = _size;

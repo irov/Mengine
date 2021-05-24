@@ -22,6 +22,8 @@
 #include "DX11RenderIndexBuffer.h"
 #include "DX11RenderProgramVariable.h"
 
+#include "DX11RenderImageLockedFactoryStorage.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
@@ -47,15 +49,14 @@ SERVICE_FACTORY( RenderSystem, Mengine::DX11RenderSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IDirect3D9 * (WINAPI * PDIRECT3DCREATE9)(UINT);
+    //typedef IDirect3D9 * (WINAPI * PDIRECT3DCREATE9)(UINT);
     //////////////////////////////////////////////////////////////////////////
     DX11RenderSystem::DX11RenderSystem()
-        : m_pD3DDevice( nullptr )
-        , m_pD3DDeviceContext( nullptr )
-        , m_hd3d9( nullptr )
+        : m_DisplayModeList( nullptr )
+        , m_DisplayModeListNum( 0 )
         , m_fullscreen( true )
         , m_depth( false )
-        , m_adapterToUse( D3DADAPTER_DEFAULT )
+        , m_adapterToUse( 0 )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
         , m_vertexAttributeEnable( false )
@@ -67,7 +68,6 @@ namespace Mengine
         , m_vertexBufferCount( 0 )
         , m_indexBufferCount( 0 )
         , m_waitForVSync( false )
-        , m_lostDevice( false )
     {
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
@@ -93,6 +93,27 @@ namespace Mengine
     {
         m_frames = 0;
 
+        HRESULT result;
+
+        // Create a DirectX graphics interface factory.
+// DirectX 11 (for 11.1 or 11.2 need to use other factory)
+        IDXGIFactory * factory;
+        result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&factory );
+
+        if( FAILED( result ) )
+        {
+            return false;
+        }
+
+        // Use the factory to create an adapter for the primary graphics interface (video card).
+        IDXGIAdapter * adapter;
+        result = factory->EnumAdapters( m_adapterToUse, &adapter );
+
+        if( FAILED( result ) )
+        {
+            return false;
+        }
+
         UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef MENGINE_DEBUG
@@ -105,83 +126,81 @@ namespace Mengine
         };
 
         // Create the Direct3D 11 API device object and a corresponding context.
-        ID3D11Device * device;
-        ID3D11DeviceContext * context;
-        D3D11CreateDevice(
-            nullptr, // Specify nullptr to use the default adapter.
-            D3D_DRIVER_TYPE_HARDWARE,
+        ID3D11Device * d3dDevice;
+        ID3D11DeviceContext * d3dContext;
+        result = D3D11CreateDevice(
+            adapter, // Specify nullptr to use the default adapter.
+            D3D_DRIVER_TYPE_UNKNOWN,
             nullptr,
             creationFlags,
             featureLevels,
             ARRAYSIZE( featureLevels ),
             D3D11_SDK_VERSION, // UWP apps must set this to D3D11_SDK_VERSION.
-            &device, // Returns the Direct3D device created.
+            &d3dDevice, // Returns the Direct3D device created.
             nullptr,
-            &context // Returns the device immediate context.
+            &d3dContext // Returns the device immediate context.
         );
 
-        m_pD3D = pD3D;
-
-        m_adapterToUse = D3DADAPTER_DEFAULT;
-        m_deviceType = D3DDEVTYPE_HAL;
-
-        UINT AdapterCount = m_pD3D->GetAdapterCount();
-        for( UINT Adapter = 0; Adapter != AdapterCount; ++Adapter )
+        if( FAILED( result ) )
         {
-            D3DADAPTER_IDENTIFIER9 Identifier;
-            if( m_pD3D->GetAdapterIdentifier( Adapter, 0, &Identifier ) != D3D_OK )
-            {
-                continue;
-            }
-
-            if( MENGINE_STRSTR( Identifier.Description, "PerfHUD" ) != 0 )
-            {
-                m_adapterToUse = Adapter;
-                m_deviceType = D3DDEVTYPE_REF;
-                break;
-            }
-        }
-
-        // Set up Windowed presentation parameters
-        D3DDISPLAYMODE Mode;
-        IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
-        {
-            LOGGER_ERROR( "Can't determine desktop video mode" );
-
             return false;
         }
 
-        m_displayMode = Mode;
+        m_pD3DDevice = d3dDevice;
+        m_pD3DDeviceContext = d3dContext;
 
-        // Get adapter info
-        D3DADAPTER_IDENTIFIER9 AdID;
-        IF_DXCALL( m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID) )
+        IDXGIOutput * adapterOutput;
+        // Enumerate the primary adapter output (monitor).
+        result = adapter->EnumOutputs( 0, &adapterOutput );
+        if( FAILED( result ) )
         {
-            LOGGER_ERROR( "Can't determine adapter identifier" );
-
             return false;
         }
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Driver: %s", AdID.Driver );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Description: %s", AdID.Description );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceName: %s", AdID.DeviceName );
+        // Get the number of modes that fit the DXGI_FORMAT_B8G8R8A8_UNORM display format for the adapter output (monitor).
+        result = adapterOutput->GetDisplayModeList( DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &m_DisplayModeListNum, NULL );
+        if( FAILED( result ) )
+        {
+            return false;
+        }
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
+        // Create a list to hold all the possible display modes for this monitor/video card combination.
+        DXGI_MODE_DESC * pDisplayModeList = new DXGI_MODE_DESC[m_DisplayModeListNum];
+
+        if( pDisplayModeList == nullptr )
+        {
+            return false;
+        }
+
+        m_DisplayModeList = pDisplayModeList;
+
+        result = adapterOutput->GetDisplayModeList( DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &m_DisplayModeListNum, m_DisplayModeList );
+
+        if( FAILED( result ) )
+        {
+            return false;
+        }
+
+        DXRELEASE( adapterOutput );
+
+        DXGI_ADAPTER_DESC AdapterDesc;
+        adapter->GetDesc( &AdapterDesc );
+
+        //LOGGER_MESSAGE_RELEASE( "D3D Adapter Driver: %s", AdID.Driver );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter Description: %s", AdapterDesc.Description );
+        //LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceName: %s", AdID.DeviceName );
+
+        /*LOGGER_MESSAGE_RELEASE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
             , HIWORD( AdID.DriverVersion.HighPart )
             , LOWORD( AdID.DriverVersion.HighPart )
             , HIWORD( AdID.DriverVersion.LowPart )
             , LOWORD( AdID.DriverVersion.LowPart )
-        );
+        );*/
 
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter VendorId: %lu", AdID.VendorId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceId: %lu", AdID.DeviceId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdID.SubSysId );
-        LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdID.Revision );
-
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_d3dCaps) )
-        {
-            return false;
-        }
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter VendorId: %lu", AdapterDesc.VendorId );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter DeviceId: %lu", AdapterDesc.DeviceId );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter SubSysId: %lu", AdapterDesc.SubSysId );
+        LOGGER_MESSAGE_RELEASE( "D3D Adapter Revision: %lu", AdapterDesc.Revision );
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX11" );
 
@@ -199,17 +218,20 @@ namespace Mengine
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX11RenderTargetTexture, 16>( this, &DX11RenderSystem::onDestroyRenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX11RenderTargetOffscreen, 16>( this, &DX11RenderSystem::onDestroyRenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
 
+        DX11RenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<DX11RenderImageLocked, 64>( MENGINE_DOCUMENT_FACTORABLE ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::_finalizeService()
     {
-        m_deferredCompileVertexShaders.clear();
-        m_deferredCompileFragmentShaders.clear();
-        m_deferredCompileVertexAttributes.clear();
         m_deferredCompilePrograms.clear();
 
-        this->release_();
+        if( this->releaseResources_() == false )
+        {
+            LOGGER_ERROR( "invalid release resource" );
+            return;
+        }
 
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
 
@@ -219,11 +241,24 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_vertexBufferCount == 0 );
         MENGINE_ASSERTION_FATAL( m_indexBufferCount == 0 );
 
-        if( m_hd3d9 != nullptr )
-        {
-            ::FreeLibrary( m_hd3d9 );
-            m_hd3d9 = nullptr;
-        }
+        delete[] m_DisplayModeList;
+        m_DisplayModeList = nullptr;
+
+        ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
+        m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
+
+        m_renderTargetView = nullptr;
+        m_depthStencilBuffer = nullptr;
+        m_depthStencilView = nullptr;
+        m_dxgiSwapChain = nullptr;
+
+        ID3D11Debug * D3DDevice;
+        m_pD3DDevice->QueryInterface( __uuidof(ID3D11Debug), reinterpret_cast<void **>(&D3DDevice) );
+        D3DDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+        D3DDevice->Release();
+
+        m_pD3DDeviceContext = nullptr;
+        m_pD3DDevice = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
@@ -248,64 +283,8 @@ namespace Mengine
         m_factoryRenderImageTarget = nullptr;
         m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderTargetOffscreen = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    D3DMULTISAMPLE_TYPE DX11RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )
-    {
-        D3DMULTISAMPLE_TYPE MultiSampleType = D3DMULTISAMPLE_NONE;
-        for( uint32_t MultiSampleIndex = _MultiSampleCount; MultiSampleIndex != 0; --MultiSampleIndex )
-        {
-            D3DMULTISAMPLE_TYPE testMultiSampleType = Helper::getMultiSampleType( MultiSampleIndex );
 
-            HRESULT hr_checkDeviceMultiSampleType = m_pD3D->CheckDeviceMultiSampleType(
-                m_adapterToUse, m_deviceType, m_displayMode.Format,
-                TRUE, testMultiSampleType, NULL
-            );
-
-            if( FAILED( hr_checkDeviceMultiSampleType ) )
-            {
-                LOGGER_ERROR( "Can't support multi sample count '%u' error [%ld]"
-                    , testMultiSampleType
-                    , hr_checkDeviceMultiSampleType
-                );
-
-                continue;
-            }
-
-            MultiSampleType = testMultiSampleType;
-            break;
-        }
-
-        return MultiSampleType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    D3DFORMAT DX11RenderSystem::findMatchingZFormat_( D3DFORMAT _backBufferFormat )
-    {
-        const D3DFORMAT DepthFormats[] = {D3DFMT_D32
-            , D3DFMT_D24S8
-            , D3DFMT_D24X4S4
-            , D3DFMT_D24X8
-            , D3DFMT_D16
-            , D3DFMT_D15S1
-            , (D3DFORMAT)0
-        };
-
-        const D3DFORMAT * pFormatList = DepthFormats;
-
-        while( *pFormatList )
-        {
-            if( SUCCEEDED( m_pD3D->CheckDeviceFormat( m_d3dCaps.AdapterOrdinal, m_d3dCaps.DeviceType, _backBufferFormat, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
-            {
-                if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_d3dCaps.AdapterOrdinal, m_d3dCaps.DeviceType, _backBufferFormat, _backBufferFormat, *pFormatList ) ) )
-                {
-                    break;
-                }
-            }
-
-            ++pFormatList;
-        }
-
-        return *pFormatList;
+        DX11RenderImageLockedFactoryStorage::finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::createRenderWindow( const Resolution & _resolution
@@ -331,279 +310,235 @@ namespace Mengine
         m_depth = _depth;
         m_waitForVSync = _waitForVSync;
 
-        D3DMULTISAMPLE_TYPE multiSampleType = this->findMatchingMultiSampleType_( _MultiSampleCount );
+        // Create a DirectX graphics interface factory.
+        // DirectX 11 (for 11.1 or 11.2 need to use other factory)
+        IDXGIFactory * dxgiFactory;
+        HRESULT result = CreateDXGIFactory( __uuidof(IDXGIFactory), (void **)&dxgiFactory );
 
-        ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
-
-        m_d3dppW.BackBufferWidth = m_windowResolution.getWidth();
-        m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
-        m_d3dppW.BackBufferFormat = m_displayMode.Format;
-        m_d3dppW.BackBufferCount = 1;
-
-        m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
-        m_d3dppW.MultiSampleQuality = 0;
-
-        m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
-        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getPlatformExtention();
-
-        HWND windowHandle = win32Platform->getWindowHandle();
-
-        m_d3dppW.hDeviceWindow = windowHandle;
-        m_d3dppW.Windowed = TRUE;
-
-        if( m_depth == true )
+        if( FAILED( result ) )
         {
-            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppW.BackBufferFormat );
-
-            m_d3dppW.EnableAutoDepthStencil = TRUE;
-            m_d3dppW.AutoDepthStencilFormat = AutoDepthStencilFormat;
-        }
-        else
-        {
-            m_d3dppW.EnableAutoDepthStencil = FALSE;
-            m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
-        }
-
-        m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-
-        ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
-
-        m_d3dppFS.MultiSampleType = multiSampleType;
-        m_d3dppFS.MultiSampleQuality = 0;
-        m_d3dppFS.Windowed = FALSE;
-
-        m_d3dppFS.BackBufferWidth = m_windowResolution.getWidth();
-        m_d3dppFS.BackBufferHeight = m_windowResolution.getHeight();
-        m_d3dppFS.BackBufferCount = 1;
-
-        m_d3dppFS.hDeviceWindow = windowHandle;
-        m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-        m_d3dppFS.BackBufferFormat = m_displayMode.Format;
-
-        if( m_depth == true )
-        {
-            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppFS.BackBufferFormat );
-
-            m_d3dppFS.EnableAutoDepthStencil = TRUE;
-            m_d3dppFS.AutoDepthStencilFormat = AutoDepthStencilFormat;
-        }
-        else
-        {
-            m_d3dppFS.EnableAutoDepthStencil = FALSE;
-            m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
-        }
-
-        m_d3dppFS.FullScreen_RefreshRateInHz = m_displayMode.RefreshRate;
-
-        LOGGER_MESSAGE_RELEASE( "Fullscreen RefreshRate [%u]"
-            , m_d3dppFS.FullScreen_RefreshRateInHz
-        );
-
-        this->updateVSyncDPP_();
-
-        m_d3dpp = _fullscreen == true ? &m_d3dppFS : &m_d3dppW;
-
-        // Create D3D Device
-
-        LOGGER_MESSAGE_RELEASE( "Vertex Shader Version [%lu] [%s]"
-            , m_d3dCaps.VertexShaderVersion
-            , m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) ? "true" : "false"
-        );
-
-        LOGGER_MESSAGE_RELEASE( "Pixel Shader Version [%lu] [%s] [%s]"
-            , m_d3dCaps.PixelShaderVersion
-            , m_d3dCaps.PixelShaderVersion < D3DPS_VERSION( 1, 1 ) ? "true" : "false"
-            , m_d3dCaps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 ) ? "true" : "false"
-        );
-
-        HRESULT hr;
-
-        if( (m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
-            m_d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
-        {
-            LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
-
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                , D3DCREATE_SOFTWARE_VERTEXPROCESSING
-                , m_d3dpp, &m_pD3DDevice );
-        }
-        else
-        {
-            DWORD device_flags = D3DCREATE_FPU_PRESERVE;
-
-            if( m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT )
-            {
-                device_flags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
-            }
-            else
-            {
-                LOGGER_MESSAGE_RELEASE( "force set D3DCREATE_SOFTWARE_VERTEXPROCESSING" );
-
-                device_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-            }
-
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                , device_flags
-                , m_d3dpp, &m_pD3DDevice );
-
-            if( FAILED( hr ) )
-            {
-                const Char * message = Helper::getDX11ErrorMessage( hr );
-
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
-                    , message
-                    , (uint32_t)hr
-                );
-
-                ::Sleep( 100 );
-
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                    , device_flags
-                    , m_d3dpp, &m_pD3DDevice );
-            }
-
-            if( FAILED( hr ) )
-            {
-                const Char * message = Helper::getDX11ErrorMessage( hr );
-
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
-                    , message
-                    , (uint32_t)hr
-                );
-
-                ::Sleep( 100 );
-
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                    , device_flags
-                    , m_d3dpp, &m_pD3DDevice );
-            }
-
-            if( FAILED( hr ) )
-            {
-                const Char * message = Helper::getDX11ErrorMessage( hr );
-
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
-                    , message
-                    , (uint32_t)hr
-                );
-
-                ::Sleep( 100 );
-
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                    , D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
-                    , m_d3dpp, &m_pD3DDevice );
-            }
-
-            if( FAILED( hr ) )
-            {
-                const Char * message = Helper::getDX11ErrorMessage( hr );
-
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING error: %s (hr:%x) Try another"
-                    , message
-                    , (uint32_t)hr
-                );
-
-                ::Sleep( 100 );
-
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                    , D3DCREATE_MIXED_VERTEXPROCESSING
-                    , m_d3dpp, &m_pD3DDevice );
-            }
-
-            if( FAILED( hr ) )
-            {
-                const Char * message = Helper::getDX11ErrorMessage( hr );
-
-                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
-                    , message
-                    , (uint32_t)hr
-                );
-
-                ::Sleep( 100 );
-
-                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
-                    , D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE
-                    , m_d3dpp, &m_pD3DDevice );
-            }
-
-            if( FAILED( hr ) )
-            {
-                const Char * message = Helper::getDX11ErrorMessage( hr );
-
-                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
-                    , message
-                    , (uint32_t)hr
-                );
-
-                ::Sleep( 100 );
-
-                hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, windowHandle
-                    , D3DCREATE_SOFTWARE_VERTEXPROCESSING
-                    , m_d3dpp, &m_pD3DDevice );
-            }
-        }
-
-        if( FAILED( hr ) )
-        {
-            const Char * message = Helper::getDX11ErrorMessage( hr );
-
-            LOGGER_ERROR( "Can't create D3D device error: %s (hr:%x, hwnd:%p) BackBuffer Size %u:%u Format %u"
-                , message
-                , (uint32_t)hr
-                , (void *)windowHandle
-                , m_d3dpp->BackBufferWidth
-                , m_d3dpp->BackBufferHeight
-                , m_d3dpp->BackBufferFormat
+            LOGGER_ERROR( "invalid create DXGI factory: %s [%x]"
+                , Helper::getDX11ErrorMessage( result )
+                , result
             );
 
             return false;
         }
 
-        //Get Devivce Caps after create device
-        DXCALL( m_pD3DDevice, GetDeviceCaps, (&m_d3dCaps) );
+        // Create Swap Chain
+        DXGI_SWAP_CHAIN_DESC swapChainDesc;
 
-        LOGGER_INFO( "render", "Mode: resolution %d x %d x %s\n"
-            , m_windowResolution.getWidth()
-            , m_windowResolution.getHeight()
-            , Helper::getD3DFormatName( m_displayMode.Format )
-        );
+        // Initialize the swap chain description.
+        ZeroMemory( &swapChainDesc, sizeof( swapChainDesc ) );
 
-        for( const DX11RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
+        // Set the width and height of the back buffer.
+        swapChainDesc.BufferDesc.Width = m_windowResolution.getWidth();
+        swapChainDesc.BufferDesc.Height = m_windowResolution.getHeight();
+
+        // Set regular 32-bit surface for the back buffer.
+        swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+        // Set the refresh rate of the back buffer.
+        if( m_waitForVSync == true )
         {
-            if( shader->compile( m_pD3DDevice ) == false )
+            for( UINT i = 0; i < m_DisplayModeListNum; i++ )
             {
-                return false;
+                const DXGI_MODE_DESC & displayModeDesc = m_DisplayModeList[i];
+
+                if( displayModeDesc.Width == swapChainDesc.BufferDesc.Width &&
+                    displayModeDesc.Height == swapChainDesc.BufferDesc.Height )
+                {
+                    swapChainDesc.BufferDesc.RefreshRate.Numerator = displayModeDesc.RefreshRate.Numerator;
+                    swapChainDesc.BufferDesc.RefreshRate.Denominator = displayModeDesc.RefreshRate.Denominator;
+
+                    break;
+                }
             }
         }
-
-        m_deferredCompileVertexShaders.clear();
-
-        for( const DX11RenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
+        else
         {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
+            swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+            swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
         }
 
-        m_deferredCompileFragmentShaders.clear();
+        // Set the usage of the back buffer.
+        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        swapChainDesc.BufferCount = 2;
 
-        for( const DX11RenderVertexAttributePtr & attribute : m_deferredCompileVertexAttributes )
+        // Set the handle for the window to render to.
+        Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            ->getPlatformExtention();
+
+        swapChainDesc.OutputWindow = win32Platform->getWindowHandle();
+
+        // Turn multisampling off.
+        swapChainDesc.SampleDesc.Count = 1;
+        swapChainDesc.SampleDesc.Quality = 0;
+
+        // Set to full screen or windowed mode.
+        swapChainDesc.Windowed = _fullscreen == false ? true : false;
+
+        // Set the scan line ordering and scaling to unspecified.
+        swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+        swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+        // Discard the back buffer contents after presenting.
+        if( _MultiSampleCount > 1 )
         {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                return false;
-            }
+            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+        }
+        else
+        {
+            swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
         }
 
-        m_deferredCompileVertexAttributes.clear();
+        //swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+
+        // Don't set the advanced flags.
+        swapChainDesc.Flags = 0;
+
+        IDXGISwapChain * dxgiSwapChain;
+        IF_DXCALL( dxgiFactory, CreateSwapChain, (m_pD3DDevice.Get(), &swapChainDesc, &dxgiSwapChain) )
+        {
+            return false;
+        }
+
+        m_dxgiSwapChain = dxgiSwapChain;
+
+        m_SwapChainBufferDesc = swapChainDesc.BufferDesc;
+
+        DXRELEASE( dxgiFactory );
+
+        // Get the pointer to the back buffer.
+        ID3D11Texture2D * backBufferPtr;
+        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
+        {
+            return false;
+        }
+
+        // Create the render target view with the back buffer pointer.
+        IF_DXCALL( m_pD3DDevice, CreateRenderTargetView, (backBufferPtr, NULL, &m_renderTargetView) )
+        {
+            return false;
+        }
+
+        // Release pointer to the back buffer as we no longer need it.
+        backBufferPtr->Release();
+        backBufferPtr = 0;
+
+        // Initialize the description of the depth buffer.
+        D3D11_TEXTURE2D_DESC depthBufferDesc;
+        ZeroMemory( &depthBufferDesc, sizeof( depthBufferDesc ) );
+
+        // Set up the description of the depth buffer.
+        depthBufferDesc.Width = m_windowResolution.getWidth();
+        depthBufferDesc.Height = m_windowResolution.getHeight();
+        depthBufferDesc.MipLevels = 1;
+        depthBufferDesc.ArraySize = 1;
+        depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        depthBufferDesc.SampleDesc.Count = 1;
+        depthBufferDesc.SampleDesc.Quality = 0;
+        depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        depthBufferDesc.CPUAccessFlags = 0;
+        depthBufferDesc.MiscFlags = 0;
+
+        // Create the texture for the depth buffer using the filled out description.
+        IF_DXCALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, NULL, &m_depthStencilBuffer) )
+        {
+            return false;
+        }
+
+        // Initialize the description of the stencil state.
+        ZeroMemory( &m_D3D11DepthStencilState, sizeof( m_D3D11DepthStencilState ) );
+
+        // Set up the description of the stencil state.
+        m_D3D11DepthStencilState.DepthEnable = true;
+        m_D3D11DepthStencilState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        m_D3D11DepthStencilState.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+        m_D3D11DepthStencilState.StencilEnable = true;
+        m_D3D11DepthStencilState.StencilReadMask = 0xFF;
+        m_D3D11DepthStencilState.StencilWriteMask = 0xFF;
+
+        // Stencil operations if pixel is front-facing.
+        m_D3D11DepthStencilState.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+        m_D3D11DepthStencilState.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+        // Stencil operations if pixel is back-facing.
+        m_D3D11DepthStencilState.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+        m_D3D11DepthStencilState.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        m_D3D11DepthStencilState.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+        // Initialize the depth stencil view.
+        D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+        ZeroMemory( &depthStencilViewDesc, sizeof( depthStencilViewDesc ) );
+
+        // Set up the depth stencil view description.
+        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+        if( _MultiSampleCount <= 1 )
+        {
+            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+        }
+        else
+        {
+            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+        }
+
+        depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+        // Create the depth stencil view.
+        ID3D11DepthStencilView * depthStencilView;
+        IF_DXCALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
+        {
+            return false;
+        }
+
+        m_depthStencilView = depthStencilView;
+
+        // Bind the render target view and depth stencil buffer to the output render pipeline.
+        ID3D11RenderTargetView * d3dRenderTargetView = m_renderTargetView.Get();
+        m_pD3DDeviceContext->OMSetRenderTargets( 1, &d3dRenderTargetView, m_depthStencilView.Get() );
+
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            D3D11_SAMPLER_DESC * D3D11SamplerState = m_D3D11SamplerStates + index;
+
+            ZeroMemory( D3D11SamplerState, sizeof( D3D11_SAMPLER_DESC ) );
+        }
+
+        ZeroMemory( &m_D3D11BlendState, sizeof( m_D3D11BlendState ) );
+
+        // Setup the raster description which will determine how and what polygons will be drawn.
+        ZeroMemory( &m_D3D11RasterizerState, sizeof( m_D3D11RasterizerState ) );
+
+        m_D3D11RasterizerState.AntialiasedLineEnable = false;
+        m_D3D11RasterizerState.CullMode = D3D11_CULL_BACK;
+        m_D3D11RasterizerState.CullMode = D3D11_CULL_NONE;
+
+        m_D3D11RasterizerState.DepthBias = 0;
+        m_D3D11RasterizerState.DepthBiasClamp = 0.0f;
+        m_D3D11RasterizerState.DepthClipEnable = true;
+        m_D3D11RasterizerState.FillMode = D3D11_FILL_SOLID;
+        m_D3D11RasterizerState.FrontCounterClockwise = true;
+        //      rasterDesc.FrontCounterClockwise = false;
+
+        m_D3D11RasterizerState.MultisampleEnable = false;
+        m_D3D11RasterizerState.ScissorEnable = false;
+        m_D3D11RasterizerState.SlopeScaledDepthBias = 0.0f;
 
         for( const DX11RenderProgramPtr & program : m_deferredCompilePrograms )
         {
             if( program->compile( m_pD3DDevice ) == false )
             {
+                LOGGER_ERROR( "invalid compile program '%s'"
+                    , program->getName().c_str()
+                );
+
                 return false;
             }
         }
@@ -659,7 +594,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderImage, "invalid create render texture" );
 
-        renderImage->setDirect3DDevice9( m_pD3DDevice );
+        renderImage->setDirect3D11Device( m_pD3DDevice );
 
         if( renderImage->initialize( _mipmaps, _width, _height, _channels, _depth, _format ) == false )
         {
@@ -724,7 +659,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture );
 
-        renderTargetTexture->setDirect3DDevice9( m_pD3DDevice );
+        renderTargetTexture->setDirect3D11Device( m_pD3DDevice );
 
         if( renderTargetTexture->initialize( _width, _height, _channels, _format ) == false )
         {
@@ -764,15 +699,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr DX11RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _channels );
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         DX11RenderTargetOffscreenPtr renderTargetOffscreen = m_factoryRenderTargetOffscreen->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen );
 
-        renderTargetOffscreen->setDirect3DDevice9( m_pD3DDevice );
+        ID3D11Texture2D * backBufferPtr;
+        IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
+        {
+            return nullptr;
+        }
 
-        if( renderTargetOffscreen->initialize( _width, _height, _channels, _format ) == false )
+        renderTargetOffscreen->setDirect3D11Device( m_pD3DDevice );
+        if( renderTargetOffscreen->initialize( backBufferPtr ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
                 , _width
@@ -825,132 +767,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::resetDevice_()
     {
-        if( m_fullscreen == false )
-        {
-            D3DDISPLAYMODE Mode;
-            IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
-            {
-                return false;
-            }
-
-            if( Mode.Format == D3DFMT_UNKNOWN )
-            {
-                LOGGER_ERROR( "Can't determine desktop video mode D3DFMT_UNKNOWN" );
-
-                return false;
-            }
-
-            m_d3dppW.BackBufferFormat = Mode.Format;
-        }
-
-        if( this->restore_() == false )
-        {
-            LOGGER_ERROR( "restore failed" );
-
-            return false;
-        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::beginScene()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-
-        HRESULT cooperativeLevel = m_pD3DDevice->TestCooperativeLevel();
-
-        if( cooperativeLevel == D3DERR_DEVICELOST )
-        {
-            m_lostDevice = true;
-
-            LOGGER_MESSAGE_RELEASE( "device lost [begin scene]" );
-
-            ::Sleep( 200 );
-
-            return false;
-        }
-        else if( cooperativeLevel == D3DERR_DEVICENOTRESET )
-        {
-            m_lostDevice = true;
-
-            LOGGER_MESSAGE_RELEASE( "device reset [begin scene]" );
-
-            if( this->resetDevice_() == false )
-            {
-                return false;
-            }
-        }
-        else if( FAILED( cooperativeLevel ) )
-        {
-            LOGGER_ERROR( "invalid TestCooperativeLevel [%ld]"
-                , cooperativeLevel
-            );
-
-            if( this->releaseResources_() == false )
-            {
-                LOGGER_ERROR( "release resources" );
-            }
-
-            return false;
-        }
-
-        m_lostDevice = false;
-
-        IF_DXCALL( m_pD3DDevice, BeginScene, () )
-        {
-            return false;
-        }
+        m_pD3DDevice->GetImmediateContext( &m_pD3DImmediateContext );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::endScene()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-
-        DXCALL( m_pD3DDevice, EndScene, () );
+        m_pD3DImmediateContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::swapBuffers()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
-        HRESULT cooperativeLevel = m_pD3DDevice->TestCooperativeLevel();
-
-        if( cooperativeLevel == D3DERR_DEVICELOST )
+        // Present the back buffer to the screen since rendering is complete.
+        if( m_waitForVSync )
         {
-            m_lostDevice = true;
-
-            LOGGER_MESSAGE_RELEASE( "device lost [swap buffers]" );
-
-            return;
+            // Lock to screen refresh rate.
+            m_dxgiSwapChain->Present( 1, 0 );
         }
-
-        if( cooperativeLevel == D3DERR_DEVICENOTRESET )
+        else
         {
-            m_lostDevice = true;
-
-            LOGGER_MESSAGE_RELEASE( "device reset [swap buffers]" );
-
-            if( this->resetDevice_() == false )
-            {
-                return;
-            }
-        }
-
-        HRESULT hr = m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
-
-        if( hr == D3DERR_DEVICELOST )
-        {
-            m_lostDevice = true;
-
-            LOGGER_ERROR( "device lost [present]" );
-        }
-        else if( FAILED( hr ) )
-        {
-            LOGGER_ERROR( "failed to swap buffers [%ld]"
-                , cooperativeLevel
-            );
+            // Present as fast as possible.
+            m_dxgiSwapChain->Present( 0, DXGI_PRESENT_DO_NOT_WAIT );
         }
 
         ++m_frames;
@@ -958,66 +804,32 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_UNUSED( _frameBufferTypes );
 
-        DWORD frameBufferFlags = 0;
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
-        if( (_frameBufferTypes & FBT_COLOR) != 0 )
-        {
-            frameBufferFlags |= D3DCLEAR_TARGET;
-        }
+        float color[4];
 
-        if( (_frameBufferTypes & FBT_DEPTH) != 0 )
-        {
-            frameBufferFlags |= D3DCLEAR_ZBUFFER;
-        }
+        // Setup the color to clear the buffer to.
+        color[0] = _color.getR();
+        color[1] = _color.getG();
+        color[2] = _color.getB();
+        color[3] = _color.getA();
 
-        if( (_frameBufferTypes & FBT_STENCIL) != 0 )
-        {
-            frameBufferFlags |= D3DCLEAR_STENCIL;
-        }
+        // Clear the back buffer.
+        m_pD3DDeviceContext->ClearRenderTargetView( m_renderTargetView.Get(), color );
 
-        ColorValue_ARGB argb = _color.getAsARGB();
-
-        DXCALL( m_pD3DDevice, Clear, (0, NULL, frameBufferFlags, argb, _depth, _stencil) );
+        // Clear the depth buffer.
+        m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, _depth, (UINT8)_stencil );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
     {
-        mt::mat4f pm;
-        mt::mul_m4_m4( pm, m_projectionMatrix, m_modelViewMatrix );
-
-        mt::vec2f b;
-        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
-
-        mt::vec2f e;
-        mt::mul_v2_v2_m4( e, _viewport.end, pm );
-
-        mt::vec2f vs = m_viewport.size();
-
-        float bx = (b.x + 1.f) * 0.5f * vs.x;
-        float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
-        float ex = (e.x + 1.f) * 0.5f * vs.x;
-        float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
-
-        bx = MENGINE_MAX( bx, m_viewport.begin.x );
-        by = MENGINE_MAX( by, m_viewport.begin.y );
-        ex = MENGINE_MIN( ex, m_viewport.end.x );
-        ey = MENGINE_MIN( ey, m_viewport.end.y );
-
-        RECT r;
-        r.left = (uint32_t)bx;
-        r.top = (uint32_t)by;
-        r.right = (uint32_t)ex;
-        r.bottom = (uint32_t)ey;
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE) );
-        DXCALL( m_pD3DDevice, SetScissorRect, (&r) );
+        MENGINE_UNUSED( _viewport );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::removeScissor()
     {
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, FALSE) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setViewport( const Viewport & _viewport )
@@ -1036,38 +848,53 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DVIEWPORT9 VP;
-        VP.X = (DWORD)MT_floorf( _viewport.begin.x + 0.5f );
-        VP.Y = (DWORD)MT_floorf( _viewport.begin.y + 0.5f );
+        D3D11_VIEWPORT viewport;
+        // Setup the viewport for rendering.
+        viewport.Width = _viewport.getWidth();
+        viewport.Height = _viewport.getHeight();
+        viewport.MinDepth = 0.0f;
+        viewport.MaxDepth = 1.0f;
+        viewport.TopLeftX = MT_floorf( _viewport.begin.x + 0.5f );
+        viewport.TopLeftY = MT_floorf( _viewport.begin.y + 0.5f );
 
-        float width = _viewport.getWidth();
-        float height = _viewport.getHeight();
-
-        VP.Width = (DWORD)MT_floorf( width + 0.5f );
-        VP.Height = (DWORD)MT_floorf( height + 0.5f );
-
-        VP.MinZ = 0.f;
-        VP.MaxZ = 1.f;
-
-        IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
-        {
-            LOGGER_ERROR( "failed viewport (%lu, %lu, %lu, %lu)"
-                , VP.X
-                , VP.Y
-                , VP.X + VP.Width
-                , VP.Y + VP.Height
-            );
-        }
+        // Create the viewport.
+        m_pD3DDeviceContext->RSSetViewports( 1, &viewport );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
+
         if( m_windowResolution == _resolution && m_fullscreen == _fullscreen )
         {
             return;
         }
 
+        if( m_fullscreen != _fullscreen )
+        {
+            IF_DXCALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
+            {
+                return;
+            }
+        }
+
         m_fullscreen = _fullscreen;
+
+        if( m_windowResolution != _resolution )
+        {
+            m_SwapChainBufferDesc.Width = _resolution.getWidth();
+            m_SwapChainBufferDesc.Height = _resolution.getHeight();
+
+            IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
+            {
+                return;
+            }
+
+            IF_DXCALL( m_dxgiSwapChain, ResizeBuffers, (2, _resolution.getWidth(), _resolution.getHeight(), DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
+            {
+                return;
+            }
+        }
 
         m_windowResolution = _resolution;
 
@@ -1075,11 +902,7 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
-        m_d3dpp = _fullscreen == true ? &m_d3dppFS : &m_d3dppW;
-        m_d3dpp->BackBufferWidth = m_windowResolution.getWidth();
-        m_d3dpp->BackBufferHeight = m_windowResolution.getHeight();
-
-        //nScreenBPP = _bpp;
+        this->updateViewport_( m_windowViewport );
 
         if( this->restore_() == false )
         {
@@ -1089,9 +912,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderSystem::getAvailableTextureMemory() const
     {
-        UINT availableTextureMem = m_pD3DDevice->GetAvailableTextureMem();
-
-        return (uint32_t)availableTextureMem;
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderSystem::getTextureMemoryUse() const
@@ -1109,55 +930,32 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11Device * DX11RenderSystem::getDirect3D11Device() const
+    const ID3D11DevicePtr & DX11RenderSystem::getDirect3D11Device() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    ID3D11DeviceContext * DX11RenderSystem::getDirect3D11DeviceContext() const
+    const ID3D11DeviceContextPtr & DX11RenderSystem::getDirect3D11DeviceContext() const
     {
-        return m_pD3DDevice;
+        return m_pD3DDeviceContext;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
-        D3DFORMAT dxformat = Helper::toD3DFormat( _format );
-
-        HRESULT hresult = m_pD3D->CheckDeviceFormat( m_adapterToUse, m_deviceType, m_displayMode.Format, 0, D3DRTYPE_TEXTURE, dxformat );
-
-        if( hresult == D3DERR_NOTAVAILABLE )
-        {
-            return false;
-        }
-
-        IF_DXERRORCHECK( CheckDeviceFormat, hresult )
-        {
-            return false;
-        }
+        MENGINE_UNUSED( _format );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::supportTextureNonPow2() const
     {
-        if( (m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
-        {
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderSystem::getMaxCombinedTextureImageUnits() const
     {
-        DWORD MaxSimultaneousTextures = m_d3dCaps.MaxSimultaneousTextures;
 
-        if( MaxSimultaneousTextures > MENGINE_MAX_TEXTURE_STAGES )
-        {
-            return MENGINE_MAX_TEXTURE_STAGES;
-        }
-
-        return (uint32_t)MaxSimultaneousTextures;
+        return (uint32_t)D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
@@ -1190,54 +988,26 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
-
-        if( _stage >= MaxCombinedTextureImageUnits )
-        {
-            LOGGER_ERROR( "no support stage %d (max %d)"
-                , _stage
-                , MaxCombinedTextureImageUnits
-            );
-
-            return;
-        }
-
-        DWORD state = D3DTTFF_COUNT2;
-
-        IF_DXCALL( m_pD3DDevice, SetTextureStageState, (_stage, D3DTSS_TEXTURETRANSFORMFLAGS, state) )
-        {
-            return;
-        }
-
-        D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>(static_cast<DWORD>(D3DTS_TEXTURE0) + _stage);
-        IF_DXCALL( m_pD3DDevice, SetTransform, (level, (const D3DMATRIX *)_matrix.buff()) )
-        {
-            return;
-        }
+        MENGINE_UNUSED( _stage );
+        MENGINE_UNUSED( _matrix );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::releaseResources_()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
 
         if( m_vertexBufferEnable == true )
         {
             m_vertexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
-            {
-                LOGGER_ERROR( "stream source not reset" );
-            }
+            m_pD3DDeviceContext->IASetVertexBuffers( 0, 1, nullptr, nullptr, nullptr );
         }
 
         if( m_indexBufferEnable == true )
         {
             m_indexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
-            {
-                LOGGER_ERROR( "indices not reset" );
-            }
+            m_pD3DDeviceContext->IASetIndexBuffer( NULL, DXGI_FORMAT_UNKNOWN, 0 );
         }
 
         for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
@@ -1248,34 +1018,30 @@ namespace Mengine
             }
 
             m_textureEnable[i] = false;
-
-            IF_DXCALL( m_pD3DDevice, SetTexture, (i, NULL) )
-            {
-                LOGGER_ERROR( "texture %u not reset"
-                    , i
-                );
-            }
         }
+
+        ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES] = {nullptr};
+        m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
 
         if( m_vertexShaderEnable == true )
         {
             m_vertexShaderEnable = false;
 
-            DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+            m_pD3DDeviceContext->VSSetShader( nullptr, nullptr, 0 );
         }
 
         if( m_fragmentShaderEnable == true )
         {
             m_fragmentShaderEnable = false;
 
-            DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+            m_pD3DDeviceContext->PSSetShader( nullptr, nullptr, 0 );
         }
 
         if( m_vertexAttributeEnable == true )
         {
             m_vertexAttributeEnable = false;
 
-            DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+            m_pD3DDeviceContext->IASetInputLayout( nullptr );
         }
 
         return true;
@@ -1283,102 +1049,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::restore_()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-
-        if( this->releaseResources_() == false )
-        {
-            LOGGER_ERROR( "release resources" );
-
-            return false;
-        }
-
-        RENDER_SERVICE()
-            ->onDeviceLostPrepare();
-
-        for( DX11RenderResourceHandler * handler : m_renderResourceHandlers )
-        {
-            handler->onRenderReset();
-        }
-
-        HRESULT cooperativeLevel = m_pD3DDevice->Reset( m_d3dpp );
-
-        if( cooperativeLevel == D3DERR_DEVICELOST )
-        {
-            LOGGER_MESSAGE_RELEASE( "device lost [reset]" );
-
-            ::Sleep( 200 );
-
-            m_lostDevice = true;
-
-            return true;
-        }
-        else if( cooperativeLevel == D3DERR_INVALIDCALL )
-        {
-            const Char * message = Helper::getDX11ErrorMessage( cooperativeLevel );
-
-            MENGINE_ERROR_FATAL( "failed to reset device: %s (hr:%x)"
-                , message
-                , (uint32_t)cooperativeLevel
-            );
-
-            return false;
-        }
-        else if( FAILED( cooperativeLevel ) == true )
-        {
-            const Char * message = Helper::getDX11ErrorMessage( cooperativeLevel );
-
-            LOGGER_ERROR( "failed to reset device: %s (hr:%x)"
-                , message
-                , (uint32_t)cooperativeLevel
-            );
-
-            return false;
-        }
-
-        m_lostDevice = false;
-
-        for( DX11RenderResourceHandler * handler : m_renderResourceHandlers )
-        {
-            if( handler->onRenderRestore() == false )
-            {
-                return false;
-            }
-        }
-
-        RENDER_SERVICE()
-            ->onDeviceLostRestore();
-
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::release_()
-    {
-        if( m_pD3DDevice != nullptr )
-        {
-            if( this->releaseResources_() == false )
-            {
-                LOGGER_ERROR( "invalid release resource" );
-
-                return;
-            }
-
-            ULONG ref = m_pD3DDevice->Release();
-            MENGINE_UNUSED( ref );
-
-            //MENGINE_ASSERTION_FATAL( ref == 0, "D3DDevice has refcount [%d]", ref );
-
-            m_pD3DDevice = nullptr;
-        }
-
-        if( m_pD3D != nullptr )
-        {
-            ULONG ref = m_pD3D->Release();
-            MENGINE_UNUSED( ref );
-
-            //MENGINE_ASSERTION_FATAL( ref == 0, "D3D has refcount [%d]", ref );
-
-            m_pD3D = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr DX11RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentPtr & _doc )
@@ -1387,7 +1058,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
-        buffer->setDirect3DDevice9( m_pD3DDevice );
+        buffer->setDirect3D11Device( m_pD3DDevice );
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
@@ -1419,15 +1090,11 @@ namespace Mengine
 
             m_vertexBufferEnable = false;
 
-            IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
-            {
-                return false;
-            }
-
             return true;
         }
 
-        _vertexBuffer->enable();
+        DX11RenderVertexBuffer * dx11VertexBuffer = _vertexBuffer.getT<DX11RenderVertexBuffer *>();
+        dx11VertexBuffer->enable( m_pD3DImmediateContext );
 
         m_vertexBufferEnable = true;
 
@@ -1440,7 +1107,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
-        buffer->setDirect3DDevice9( m_pD3DDevice );
+        buffer->setDirect3D11Device( m_pD3DDevice );
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -1466,39 +1133,91 @@ namespace Mengine
             }
 
             m_indexBufferEnable = false;
-
-            IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
-            {
-                return false;
-            }
+            m_pD3DDeviceContext->IASetIndexBuffer( nullptr, DXGI_FORMAT_UNKNOWN, 0 );
 
             return true;
         }
 
-        _indexBuffer->enable();
+        DX11RenderIndexBuffer * dx11IndexBuffer = _indexBuffer.getT<DX11RenderIndexBuffer *>();
+        dx11IndexBuffer->enable( m_pD3DImmediateContext );
 
         m_indexBufferEnable = true;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
-        uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
+    void DX11RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase, uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
     {
+        MENGINE_UNUSED( _vertexCount );
+        MENGINE_UNUSED( _minIndex );
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        D3DPRIMITIVETYPE primitiveType = Helper::toD3DPrimitiveType( _type );
+        D3D11_PRIMITIVE_TOPOLOGY primitiveType = Helper::toD3DPrimitiveType( _type );
+
+        if( primitiveType != D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST )
+        {
+            return;
+        }
+
+        // Create the depth stencil state.
+        ID3D11DepthStencilState * depthStencilState;
+        IF_DXCALL( m_pD3DDevice, CreateDepthStencilState, (&m_D3D11DepthStencilState, &depthStencilState) )
+        {
+            return;
+        }
+
+        // Set the depth stencil state.
+        m_pD3DDeviceContext->OMSetDepthStencilState( depthStencilState, 1 );
+
+        // Create the rasterizer state from the description we just filled out.
+        ID3D11RasterizerState * rasterState;
+        IF_DXCALL( m_pD3DDevice, CreateRasterizerState, (&m_D3D11RasterizerState, &rasterState) )
+        {
+            return;
+        }
+
+        m_pD3DDeviceContext->RSSetState( rasterState );
+
+        ID3D11BlendState * blendState;
+        IF_DXCALL( m_pD3DDevice, CreateBlendState, (&m_D3D11BlendState, &blendState) )
+        {
+            return;
+        }
+
+        m_pD3DDeviceContext->OMSetBlendState( blendState, nullptr, 0xffffffff );
+
+        // create
+        ID3D11SamplerState * samplerStates[MENGINE_MAX_TEXTURE_STAGES];
+
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            D3D11_SAMPLER_DESC * samplerStateDesk = m_D3D11SamplerStates + index;
+
+            ID3D11SamplerState ** samplerState = &samplerStates[index];
+            IF_DXCALL( m_pD3DDevice, CreateSamplerState, (samplerStateDesk, samplerState) )
+            {
+                return;
+            }
+        }
+
+        m_pD3DDeviceContext->PSSetSamplers( 0, MENGINE_MAX_TEXTURE_STAGES, samplerStates );
 
         UINT primCount = Helper::getPrimitiveCount( _type, _indexCount );
 
-        DXCALL( m_pD3DDevice, DrawIndexedPrimitive
-            , (primitiveType, _vertexBase, _minIndex, _vertexCount, _indexStart, primCount)
-        );
+        m_pD3DDeviceContext->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+        m_pD3DDeviceContext->DrawIndexed( primCount * 3, _indexStart, _vertexBase );
 
-#ifdef MENGINE_DEBUG
-        DWORD pNumPasses;
-        DXCALL( m_pD3DDevice, ValidateDevice, (&pNumPasses) );
-#endif
+        depthStencilState->Release();
+        rasterState->Release();
+        blendState->Release();
+
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            ID3D11SamplerState * samplerState = samplerStates[index];
+
+            samplerState->Release();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
@@ -1521,13 +1240,14 @@ namespace Mengine
 
         if( _texture != nullptr )
         {
-            _texture->bind( _stage );
+            DX11RenderImage * dx11Image = _texture.getT<DX11RenderImage *>();
+            dx11Image->bind( m_pD3DImmediateContext, _stage );
 
             m_textureEnable[_stage] = true;
         }
         else
         {
-            DXCALL( m_pD3DDevice, SetTexture, (_stage, NULL) );
+            //m_pD3DDeviceContext->PSSetShaderResources( _stage, 1, nullptr );
 
             m_textureEnable[_stage] = false;
         }
@@ -1537,35 +1257,33 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
-        DWORD srcBlendFactor = Helper::toD3DBlendFactor( _src );
-        DWORD dstBlendFactor = Helper::toD3DBlendFactor( _dst );
-        DWORD blendOp = Helper::toD3DBlendOp( _op );
+        // blend state
+        m_D3D11BlendState.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, srcBlendFactor) );
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dstBlendFactor) );
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blendOp) );
+        m_D3D11BlendState.RenderTarget[0].SrcBlend = Helper::toD3DBlendFactor( _src );
+        m_D3D11BlendState.RenderTarget[0].DestBlend = Helper::toD3DBlendFactor( _dst );
+        m_D3D11BlendState.RenderTarget[0].BlendOp = Helper::toD3DBlendOp( _op );
 
-        if( _separate == false )
+        if( _separate == true )
         {
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, FALSE) );
+            m_D3D11BlendState.RenderTarget[0].SrcBlendAlpha = Helper::toD3DBlendFactor( _separateSrc );
+            m_D3D11BlendState.RenderTarget[0].DestBlendAlpha = Helper::toD3DBlendFactor( _separateDst );
+            m_D3D11BlendState.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp( _separateOp );
         }
         else
         {
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SEPARATEALPHABLENDENABLE, TRUE) );
-
-            DWORD srcSeparateBlendFactor = Helper::toD3DBlendFactor( _separateSrc );
-            DWORD dstSeparateBlendFactor = Helper::toD3DBlendFactor( _separateDst );
-            DWORD blendSeparateOp = Helper::toD3DBlendOp( _separateOp );
-
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SRCBLENDALPHA, srcSeparateBlendFactor) );
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_DESTBLENDALPHA, dstSeparateBlendFactor) );
-            DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_BLENDOPALPHA, blendSeparateOp) );
+            m_D3D11BlendState.RenderTarget[0].SrcBlendAlpha = Helper::toD3DBlendFactor( _src );
+            m_D3D11BlendState.RenderTarget[0].DestBlendAlpha = Helper::toD3DBlendFactor( _dst );
+            m_D3D11BlendState.RenderTarget[0].BlendOpAlpha = Helper::toD3DBlendOp( _op );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
     {
+        MENGINE_UNUSED( _border );
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
 
         uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
 
@@ -1579,108 +1297,86 @@ namespace Mengine
             return;
         }
 
-        D3DTEXTUREADDRESS adrU = Helper::toD3DTextureAddress( _modeU );
-        D3DTEXTUREADDRESS adrV = Helper::toD3DTextureAddress( _modeV );
+        m_D3D11SamplerStates[_stage].AddressU = Helper::toD3DTextureAddress( _modeU );
+        m_D3D11SamplerStates[_stage].AddressV = Helper::toD3DTextureAddress( _modeV );
+        m_D3D11SamplerStates[_stage].AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        m_D3D11SamplerStates[_stage].MaxLOD = FLT_MAX;
 
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSU, adrU) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_ADDRESSV, adrV) );
-        DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_BORDERCOLOR, _border) );
+        // TODO: convert to border color
+        //samplerDesc.BorderColor = _border;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureFactor( uint32_t _color )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-
-        DWORD color = _color;
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_TEXTUREFACTOR, color) );
+        MENGINE_UNUSED( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setCullMode( ECullMode _mode )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
 
-        D3DCULL mode = Helper::toD3DCullMode( _mode );
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_CULLMODE, mode) );
+        m_D3D11RasterizerState.CullMode = Helper::toD3DCullMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
 
-        D3DZBUFFERTYPE test = _depthTest == true ? D3DZB_TRUE : D3DZB_FALSE;
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZENABLE, test) );
+        m_D3D11DepthStencilState.DepthFunc = _depthTest ? D3D11_COMPARISON_LESS_EQUAL : D3D11_COMPARISON_ALWAYS;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
 
-        DWORD dWrite = _depthWrite == true ? TRUE : FALSE;
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZWRITEENABLE, dWrite) );
+        m_D3D11DepthStencilState.DepthEnable = _depthWrite ? 1 : 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
     {
+        //MENGINE_UNUSED(_depthFunction);
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
 
-        D3DCMPFUNC func = Helper::toD3DCmpFunc( _depthFunction );
+        m_D3D11DepthStencilState.DepthFunc = Helper::toD3DCmpFunc( _depthFunction );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZFUNC, func) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setFillMode( EFillMode _mode )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
 
-        D3DFILLMODE mode = Helper::toD3DFillMode( _mode );
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_FILLMODE, mode) );
+        m_D3D11RasterizerState.FillMode = Helper::toD3DFillMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-
-        DWORD value = 0;
-
-        if( _r == true )
-        {
-            value |= D3DCOLORWRITEENABLE_RED;
-        }
-
-        if( _g == true )
-        {
-            value |= D3DCOLORWRITEENABLE_GREEN;
-        }
-
-        if( _b == true )
-        {
-            value |= D3DCOLORWRITEENABLE_BLUE;
-        }
-
-        if( _a == true )
-        {
-            value |= D3DCOLORWRITEENABLE_ALPHA;
-        }
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_COLORWRITEENABLE, value) );
+        MENGINE_UNUSED( _r );
+        MENGINE_UNUSED( _g );
+        MENGINE_UNUSED( _b );
+        MENGINE_UNUSED( _a );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
 
-        DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
+        MENGINE_UNUSED( _alphaBlend );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHABLENDENABLE, alphaBlend) );
+        m_D3D11BlendState.RenderTarget[0].BlendEnable = _alphaBlend;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
     {
+        MENGINE_UNUSED( _minification );
+        MENGINE_UNUSED( _mipmap );
+        MENGINE_UNUSED( _magnification );
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
@@ -1695,13 +1391,16 @@ namespace Mengine
             return;
         }
 
-        D3DTEXTUREFILTERTYPE dx_minification = Helper::toD3DTextureFilter( _minification );
+        // TODO: somehow needs to find only 1 filter
+
+     /*   D3DTEXTUREFILTERTYPE dx_minification = Helper::toD3DTextureFilter( _minification );
         D3DTEXTUREFILTERTYPE dx_mipmap = Helper::toD3DTextureFilter( _mipmap );
         D3DTEXTUREFILTERTYPE dx_magnification = Helper::toD3DTextureFilter( _magnification );
 
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
+        */
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr DX11RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
@@ -1719,22 +1418,6 @@ namespace Mengine
             );
 
             return nullptr;
-        }
-
-        if( m_pD3DDevice != nullptr )
-        {
-            if( attribute->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile attribute '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexAttributes.emplace_back( attribute );
         }
 
         return attribute;
@@ -1757,22 +1440,6 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileFragmentShaders.emplace_back( shader );
-        }
-
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1793,26 +1460,10 @@ namespace Mengine
             return nullptr;
         }
 
-        if( m_pD3DDevice != nullptr )
-        {
-            if( shader->compile( m_pD3DDevice ) == false )
-            {
-                LOGGER_ERROR( "invalid compile shader '%s'"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            m_deferredCompileVertexShaders.emplace_back( shader );
-        }
-
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr DX11RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
+    RenderProgramInterfacePtr DX11RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _samplerCount );
 
@@ -1822,7 +1473,7 @@ namespace Mengine
             , _name.c_str()
         );
 
-        if( program->initialize( _name, _vertex, _fragment, _vertexAttribute ) == false )
+        if( program->initialize( _name, _vertexShader, _fragmentShader, _vertexAttribute ) == false )
         {
             LOGGER_ERROR( "invalid initialize program '%s'"
                 , _name.c_str()
@@ -1854,9 +1505,9 @@ namespace Mengine
     {
         if( _program != nullptr )
         {
-            DX11RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
+            DX11RenderProgram * dx9_program = _program.getT<DX11RenderProgram *>();
 
-            dx9_program->enable( m_pD3DDevice );
+            dx9_program->enable( m_pD3DImmediateContext );
 
             const RenderVertexAttributeInterfacePtr & vertexAttribute = dx9_program->getVertexAttribute();
             const RenderVertexShaderInterfacePtr & vertexShader = dx9_program->getVertexShader();
@@ -1870,21 +1521,21 @@ namespace Mengine
             {
                 m_vertexAttributeEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+                m_pD3DDeviceContext->IASetInputLayout( nullptr );
             }
 
             if( m_vertexShaderEnable == true && vertexShaderEnable == false )
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+                m_pD3DDeviceContext->VSSetShader( nullptr, nullptr, 0 );
             }
 
             if( m_fragmentShaderEnable == true && fragmentShaderEnable == false )
             {
                 m_fragmentShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+                m_pD3DDeviceContext->PSSetShader( nullptr, nullptr, 0 );
             }
         }
         else
@@ -1893,21 +1544,21 @@ namespace Mengine
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexShader, (NULL) );
+                m_pD3DDeviceContext->VSSetShader( nullptr, nullptr, 0 );
             }
 
             if( m_fragmentShaderEnable == true )
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetPixelShader, (NULL) );
+                m_pD3DDeviceContext->PSSetShader( nullptr, nullptr, 0 );
             }
 
             if( m_vertexAttributeEnable == true )
             {
                 m_vertexShaderEnable = false;
 
-                DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+                m_pD3DDeviceContext->IASetInputLayout( nullptr );
             }
         }
     }
@@ -1916,15 +1567,14 @@ namespace Mengine
     {
         DX11RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
 
-        dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
+        dx9_program->bindMatrix( m_pD3DImmediateContext, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )
     {
         DX11RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable"
-        );
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, "invalid create program variable" );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
@@ -1943,9 +1593,9 @@ namespace Mengine
             return true;
         }
 
-        DX11RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX11RenderProgramVariablePtr>(_variable);
+        DX11RenderProgramVariable * dx9_variable = _variable.getT<DX11RenderProgramVariable *>();
 
-        bool successful = dx9_variable->apply( m_pD3DDevice, _program );
+        bool successful = dx9_variable->apply( m_pD3DDevice, m_pD3DImmediateContext, _program );
 
         return successful;
     }
@@ -1965,22 +1615,37 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed"
-            );
+            LOGGER_ERROR( "Graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::updateVSyncDPP_()
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
+
+        // Set the refresh rate of the back buffer.
         if( m_waitForVSync == true )
         {
-            m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-            m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+            for( UINT i = 0; i < m_DisplayModeListNum; i++ )
+            {
+                if( m_DisplayModeList[i].Width == m_SwapChainBufferDesc.Width &&
+                    m_DisplayModeList[i].Height == m_SwapChainBufferDesc.Height )
+                {
+                    m_SwapChainBufferDesc.RefreshRate.Numerator = m_DisplayModeList[i].RefreshRate.Numerator;
+                    m_SwapChainBufferDesc.RefreshRate.Denominator = m_DisplayModeList[i].RefreshRate.Denominator;
+                    break;
+                }
+            }
         }
         else
         {
-            m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-            m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+            m_SwapChainBufferDesc.RefreshRate.Numerator = 60;
+            m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
+        }
+
+        IF_DXCALL( m_dxgiSwapChain, ResizeTarget, (&m_SwapChainBufferDesc) )
+        {
+            return;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2001,6 +1666,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDestroyProgram_( DX11RenderProgram * _program )
     {
+        _program->release();
         _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////

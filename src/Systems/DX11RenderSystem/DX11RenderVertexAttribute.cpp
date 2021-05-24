@@ -12,8 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderVertexAttribute::DX11RenderVertexAttribute()
         : m_elementSize( 0 )
-        , m_pD3DDevice( nullptr )
-        , m_pD3DVertexDeclaration( nullptr )
+        , m_compileReferenceCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -32,54 +31,85 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexAttribute::finalize()
     {
-        DXRELEASE( m_pD3DVertexDeclaration );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
+    bool DX11RenderVertexAttribute::compile( const ID3D11DevicePtr & _pD3DDevice, const MemoryInterfacePtr & _shaderCompileMemory )
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
-
-        m_pD3DDevice = _pD3DDevice;
-
-        D3DVERTEXELEMENT9 declaration[64];
-
-        DWORD declaration_iterator = 0;
-
-        for( const AttributeDesc & desc : m_attributes )
+        if( m_compileReferenceCount == 0 )
         {
-            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
+            MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+
+            D3D11_INPUT_ELEMENT_DESC declaration[64];
+
+            DWORD declaration_iterator = 0;
+
+            for( const AttributeDesc & desc : m_attributes )
             {
-                declaration[declaration_iterator++] = { 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 };
+                MENGINE_ASSERTION_FATAL( declaration_iterator < 64 );
+
+                D3D11_INPUT_ELEMENT_DESC & element = declaration[declaration_iterator++];
+
+                element.SemanticName = desc.uniform.c_str();
+                element.SemanticIndex = desc.index;
+
+                switch( desc.type )
+                {
+                case VAT_FLOAT:
+                    {
+                        if( desc.size == 2 )
+                        {
+                            element.Format = DXGI_FORMAT_R32G32_FLOAT;
+                        }
+                        else if( desc.size == 3 )
+                        {
+                            element.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+                        }
+                    }break;
+                case VAT_UNSIGNED_BYTE:
+                    {
+                        if( desc.size == 4 && desc.normalized == true )
+                        {
+                            element.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                        }
+                    }break;
+                }
+
+                element.InputSlot = 0;
+                element.AlignedByteOffset = desc.offset;
+                element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+                element.InstanceDataStepRate = 0;
             }
-            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
+
+            LOGGER_INFO( "render", "create vertex declaration '%s'"
+                , m_name.c_str()
+            );
+
+            const void * shaderCompileMemoryBuffer = _shaderCompileMemory->getBuffer();
+            size_t shaderCompileMemorySize = _shaderCompileMemory->getSize();
+
+            ID3D11InputLayout * pD3DVertexDeclaration;
+            IF_DXCALL( _pD3DDevice, CreateInputLayout, (declaration, declaration_iterator, shaderCompileMemoryBuffer, shaderCompileMemorySize, &pD3DVertexDeclaration) )
             {
-                declaration[declaration_iterator++] = { 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 };
+                return false;
             }
-            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
-            {
-                declaration[declaration_iterator++] = { 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 };
-            }
-            else if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
-            {
-                declaration[declaration_iterator++] = { 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 };
-            }
+
+            m_pD3DVertexDeclaration = pD3DVertexDeclaration;
         }
 
-        declaration[declaration_iterator] = D3DDECL_END();
-
-        LOGGER_INFO( "render", "create vertex declaration '%s'"
-            , m_name.c_str()
-        );
-
-        IDirect3DVertexDeclaration9 * pD3DVertexDeclaration;
-        IF_DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &pD3DVertexDeclaration) )
-        {
-            return false;
-        }
-
-        m_pD3DVertexDeclaration = pD3DVertexDeclaration;
+        ++m_compileReferenceCount;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderVertexAttribute::release()
+    {
+        --m_compileReferenceCount;
+
+        if( m_compileReferenceCount == 0 )
+        {
+            m_pD3DVertexDeclaration = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX11RenderVertexAttribute::getName() const
@@ -92,20 +122,21 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::enable()
+    void DX11RenderVertexAttribute::enable( const ID3D11DeviceContextPtr & _pD3DDeviceContext )
     {
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_pD3DVertexDeclaration) );
+        _pD3DDeviceContext->IASetInputLayout( m_pD3DVertexDeclaration.Get() );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::disable()
+    void DX11RenderVertexAttribute::disable( const ID3D11DeviceContextPtr & _pD3DDeviceContext )
     {
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (NULL) );
+        _pD3DDeviceContext->IASetInputLayout( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
+    void DX11RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _index, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
         AttributeDesc desc;
         desc.uniform = _uniform;
+        desc.index = _index;
         desc.size = _size;
         desc.type = _type;
         desc.normalized = _normalized;

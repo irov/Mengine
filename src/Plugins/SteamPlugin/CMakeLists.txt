@@ -2,8 +2,8 @@ MENGINE_PROJECT(SteamPlugin)
 
 ADD_FILTER(
 src
-	SteamPlugin.h
-	SteamPlugin.cpp
+    SteamPlugin.h
+    SteamPlugin.cpp
     SteamPlugin.def
     
     ModuleSteam.cpp

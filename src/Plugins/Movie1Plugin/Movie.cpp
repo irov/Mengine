@@ -38,11 +38,14 @@
 #include "Kernel/EventableHelper.h"
 
 #include "MovieSceneEffect.h"
-#include "MovieInternalObject.h"
 #include "MovieSlot.h"
-#include "MovieEvent.h"
 #include "MovieNodeExtra.h"
 #include "MovieMesh2D.h"
+
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#   include "MovieInternalObject.h"
+#   include "MovieEvent.h"
+#endif
 
 #include "math/angle.h"
 
@@ -1037,6 +1040,7 @@ namespace Mengine
                     return false;
                 }
             }
+#ifdef MENGINE_USE_SCRIPT_SERVICE
             else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) )
             {
                 if( this->createMovieInternalObject_( layer ) == false )
@@ -1044,6 +1048,7 @@ namespace Mengine
                     return false;
                 }
             }
+#endif
             else if( layer.type == STRINGIZE_STRING_LOCAL( "Video" ) )
             {
                 if( this->createMovieVideo_( layer ) == false )
@@ -1076,6 +1081,7 @@ namespace Mengine
             {
                 //Empty
             }
+#ifdef MENGINE_USE_SCRIPT_SERVICE
             else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieEvent" ) )
             {
                 if( this->createMovieEvent_( layer ) == false )
@@ -1083,6 +1089,7 @@ namespace Mengine
                     return false;
                 }
             }
+#endif
             else
             {
                 LOGGER_ERROR( "'%s' resource '%s' can't create layer_node '%s' type '%s'"
@@ -1523,6 +1530,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+    //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
     {
         MovieInternalObjectPtr movie_internal = PROTOTYPE_SERVICE()
@@ -1547,6 +1556,8 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieVideo_( const MovieLayer & _layer )
     {
@@ -1824,6 +1835,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+    //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieEvent_( const MovieLayer & _layer )
     {
         MovieEventPtr layer_event = PROTOTYPE_SERVICE()
@@ -1840,6 +1853,8 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
     {

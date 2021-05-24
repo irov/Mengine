@@ -1,8 +1,9 @@
 #include "OpenGLRenderImage.h"
 
-#include "Interface/MemoryServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/OpenGLRenderSystemExtensionInterface.h"
+
+#include "OpenGLRenderImageLockedFactoryStorage.h"
 
 #include "OpenGLRenderExtension.h"
 #include "OpenGLRenderError.h"
@@ -32,7 +33,6 @@ namespace Mengine
         , m_internalFormat( GL_RGB )
         , m_format( GL_RGB )
         , m_type( GL_UNSIGNED_BYTE )
-        , m_lockLevel( 0 )
         , m_lockFirst( false )
         , m_pow2( false )
     {
@@ -104,7 +104,6 @@ namespace Mengine
         this->release();
 
         m_renderImageProvider = nullptr;
-        m_lockMemory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderImage::getHWMipmaps() const
@@ -213,14 +212,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer OpenGLRenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr OpenGLRenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         MENGINE_UNUSED( _readOnly );
-
-        if( m_lockMemory != nullptr )
-        {
-            return nullptr;
-        }
 
         uint32_t rect_width = _rect.getWidth();
         uint32_t rect_height = _rect.getHeight();
@@ -230,56 +224,37 @@ namespace Mengine
 
         size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+        OpenGLRenderImageLockedPtr imageLocked = OpenGLRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory (l %u w %u h %u c %u f %u)"
-            , _level
-            , miplevel_width
-            , miplevel_height
-            , m_hwChannels
-            , m_hwPixelFormat
-        );
+        size_t pitch = size / miplevel_height;
 
-        void * buffer = memory->newBuffer( size );
+        imageLocked->initialize( size, pitch, _rect );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid new memory %zu (l %u w %u h %u c %u f %u)"
-            , size
-            , _level
-            , miplevel_width
-            , miplevel_height
-            , m_hwChannels
-            , m_hwPixelFormat
-        );
-
-        m_lockMemory = memory;
-        m_lockRect = _rect;
-
-        *_pitch = size / miplevel_height;
-
-        m_lockLevel = _level;
-
-        return buffer;
+        return imageLocked;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::unlock( uint32_t _level, bool _successful )
+    bool OpenGLRenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
     {
         if( _successful == false )
         {
-            m_lockMemory = nullptr;
-            m_lockLevel = 0;
-
             return true;
         }
+
+        OpenGLRenderImageLocked * imageLocked = _locked.getT<OpenGLRenderImageLocked *>();
+
+        const Rect & lockedRect = imageLocked->getLockedRect();
+
+        size_t pitch;
+        void * buffer = imageLocked->getBuffer( &pitch );
 
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
         LOGGER_INFO( "render", "l %d r %d:%d-%d:%d"
             , _level
-            , m_lockRect.left
-            , m_lockRect.top
-            , m_lockRect.right
-            , m_lockRect.bottom
+            , lockedRect.left
+            , lockedRect.top
+            , lockedRect.right
+            , lockedRect.bottom
         );
 
         bool successful = true;
@@ -296,15 +271,13 @@ namespace Mengine
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 #endif
             {
-                if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
+                if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
-                    void * buffer = m_lockMemory->getBuffer();
-
                     GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
 #ifdef MENGINE_RENDER_OPENGL_ES
-                    IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+                    IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
 #else
-                    IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+                    IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
 #endif
                     {
                         LOGGER_ERROR( "glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
@@ -326,11 +299,9 @@ namespace Mengine
             }break;
         default:
             {
-                void * buffer = m_lockMemory->getBuffer();
-
-                if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
+                if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
-                    IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, buffer) )
+                    IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, buffer) )
                     {
                         LOGGER_ERROR( "glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level
@@ -347,14 +318,14 @@ namespace Mengine
                 }
                 else
                 {
-                    uint32_t miplevel_xoffset = m_lockRect.left >> _level;
-                    uint32_t miplevel_yoffset = m_lockRect.top >> _level;
-                    uint32_t miplevel_width = (m_lockRect.right - m_lockRect.left) >> _level;
-                    uint32_t miplevel_height = (m_lockRect.bottom - m_lockRect.top) >> _level;
+                    uint32_t miplevel_xoffset = lockedRect.left >> _level;
+                    uint32_t miplevel_yoffset = lockedRect.top >> _level;
+                    uint32_t miplevel_width = (lockedRect.right - lockedRect.left) >> _level;
+                    uint32_t miplevel_height = (lockedRect.bottom - lockedRect.top) >> _level;
 
                     if( m_lockFirst == true )
                     {
-                        IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, nullptr) )
+                        IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, nullptr) )
                         {
                             LOGGER_ERROR( "glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                                 , _level
@@ -370,7 +341,7 @@ namespace Mengine
                         }
                     }
 
-                    IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel, miplevel_xoffset, miplevel_yoffset, miplevel_width, miplevel_height, m_format, m_type, buffer) )
+                    IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, _level, miplevel_xoffset, miplevel_yoffset, miplevel_width, miplevel_height, m_format, m_type, buffer) )
                     {
                         LOGGER_ERROR( "glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level
@@ -389,9 +360,6 @@ namespace Mengine
         }
 
         m_lockFirst = false;
-
-        m_lockMemory = nullptr;
-        m_lockLevel = 0;
 
         return successful;
     }

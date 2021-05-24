@@ -960,8 +960,7 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            bool controlDown = INPUT_SERVICE()
-                ->isControlDown();
+            bool controlDown = _event.special.isControl;
 
             if( _event.code == KC_BACK && _event.isDown && controlDown == true )
             {

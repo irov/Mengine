@@ -17,14 +17,16 @@ namespace Mengine
         ~DX11RenderResourceHandler() override;
 
     public:
-        void setDirect3D11Device( ID3D11Device * _pD3DDevice );
-        ID3D11Device * getDirect3D11Device() const;
+        void setDirect3D11Device( const ID3D11DevicePtr & _pD3DDevice );
+        const ID3D11DevicePtr & getDirect3D11Device() const;
+
+        ID3D11DeviceContextPtr getDirect3D11ImmediateContext() const;
 
     public:
         virtual void onRenderReset() = 0;
         virtual bool onRenderRestore() = 0;
 
-    protected:
-        ID3D11Device * m_pD3DDevice;
+    private:
+        ID3D11DevicePtr m_pD3DDevice;
     };
 }

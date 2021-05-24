@@ -14,11 +14,18 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static constexpr DXGI_FORMAT D32SFormats[] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT)0};
-        static constexpr D3DFORMAT D32Formats[] = {D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT)0};
-        static constexpr D3DFORMAT D16SFormats[] = {D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT)0};
-        static constexpr D3DFORMAT D16Formats[] = {D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT)0};
-        //////////////////////////////////////////////////////////////////////////
+
+        static constexpr DXGI_FORMAT D64SFormats[] = {DXGI_FORMAT_D32_FLOAT_S8X24_UINT, DXGI_FORMAT_UNKNOWN};
+        static constexpr DXGI_FORMAT D32SFormats[] = {DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN};
+        static constexpr DXGI_FORMAT D32Formats[] = {DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN};
+        static constexpr DXGI_FORMAT D16Formats[] = {DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN};
+
+        /*        static constexpr DXGI_FORMAT D32SFormats[] = {DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, (DXGI_FORMAT)0};
+                static constexpr DXGI_FORMAT D32Formats[] = { DXGI_FORMAT_D32_FLOAT, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_UNKNOWN, DXGI_FORMAT_D16_UNORM, DXGI_FORMAT_UNKNOWN, (DXGI_FORMAT)0};
+                static constexpr DXGI_FORMAT D16SFormats[] = {D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (DXGI_FORMAT)0};
+                static constexpr DXGI_FORMAT D16Formats[] = {D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (DXGI_FORMAT)0};
+                */
+                //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE uint32_t getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
         {
             switch( _pType )
@@ -39,313 +46,226 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DMULTISAMPLE_TYPE getMultiSampleType( uint32_t _count )
+        MENGINE_INLINE uint32_t getMultiSampleType( uint32_t _count )
         {
-            switch( _count )
-            {
-            case 0:
-                return D3DMULTISAMPLE_NONE;
-                break;
-            case 1:
-                return D3DMULTISAMPLE_NONE;
-                break;
-            case 2:
-                return D3DMULTISAMPLE_2_SAMPLES;
-                break;
-            case 3:
-                return D3DMULTISAMPLE_3_SAMPLES;
-                break;
-            case 4:
-                return D3DMULTISAMPLE_4_SAMPLES;
-                break;
-            case 5:
-                return D3DMULTISAMPLE_5_SAMPLES;
-                break;
-            case 6:
-                return D3DMULTISAMPLE_6_SAMPLES;
-                break;
-            case 7:
-                return D3DMULTISAMPLE_7_SAMPLES;
-                break;
-            case 8:
-                return D3DMULTISAMPLE_8_SAMPLES;
-                break;
-            default:
-                break;
-            }
-
-            return D3DMULTISAMPLE_NONE;
+            return _count;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE DWORD toD3DBufferLock( EBufferLockFlag _flag )
+        MENGINE_INLINE D3D11_MAP toD3DBufferLock( EBufferLockFlag _flag )
         {
             switch( _flag )
             {
             case BLF_LOCK_NONE:
-                return 0;
+                return (D3D11_MAP)0;
             case BLF_LOCK_READONLY:
-                return D3DLOCK_READONLY;
+                return D3D11_MAP_READ;
+            case BLF_LOCK_WRITE:
+                return D3D11_MAP_WRITE;
             case BLF_LOCK_DISCARD:
-                return D3DLOCK_DISCARD;
+                return D3D11_MAP_WRITE_DISCARD;
             case BLF_LOCK_NOOVERWRITE:
-                return D3DLOCK_NOOVERWRITE;
+                return D3D11_MAP_WRITE_NO_OVERWRITE;
             case BLF_LOCK_NOSYSLOCK:
-                return D3DLOCK_NOSYSLOCK;
+                return (D3D11_MAP)0;
             }
 
-            return 0;
+            return (D3D11_MAP)0;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DFORMAT toD3DFormat( EPixelFormat _format )
+        MENGINE_INLINE DXGI_FORMAT toD3DFormat( EPixelFormat _format )
         {
             switch( _format )
             {
             case PF_L8:
-                return D3DFMT_L8;
+                return DXGI_FORMAT_R8_UNORM;
             case PF_A8:
-                return D3DFMT_A8;
+                return DXGI_FORMAT_A8_UNORM;
             case PF_A4L4:
-                return D3DFMT_A4L4;
+                return DXGI_FORMAT_UNKNOWN;
             case PF_BYTE_LA:
-                return D3DFMT_A8L8; // Assume little endian here
+                return DXGI_FORMAT_UNKNOWN; // Assume little endian here
             case PF_R3G3B2:
-                return D3DFMT_R3G3B2;
+                return DXGI_FORMAT_UNKNOWN;
             case PF_A1R5G5B5:
-                return D3DFMT_A1R5G5B5;
+                return DXGI_FORMAT_B5G5R5A1_UNORM;
             case PF_R5G6B5:
-                return D3DFMT_R5G6B5;
+                return DXGI_FORMAT_B5G6R5_UNORM;
             case PF_A4R4G4B4:
-                return D3DFMT_A4R4G4B4;
+                return DXGI_FORMAT_B4G4R4A4_UNORM;
             case PF_R8G8B8:
-                return D3DFMT_R8G8B8;
+                return DXGI_FORMAT_B8G8R8X8_UNORM;
             case PF_A8R8G8B8:
-                return D3DFMT_A8R8G8B8;
+                return DXGI_FORMAT_B8G8R8A8_UNORM;
             case PF_X8R8G8B8:
-                return D3DFMT_X8R8G8B8;
+                return DXGI_FORMAT_B8G8R8X8_UNORM;
             case PF_SHORT_GR:
-                return D3DFMT_G16R16;
+                return DXGI_FORMAT_R16G16_UNORM;
             case PF_DXT1:
-                return D3DFMT_DXT1;
+                return DXGI_FORMAT_BC1_UNORM; // to support SRGB needs to use DXGI_FORMAT_BC1_UNORM_SRGB instead
             case PF_DXT2:
-                return D3DFMT_DXT2;
+                return DXGI_FORMAT_BC2_UNORM;
             case PF_DXT3:
-                return D3DFMT_DXT3;
+                return DXGI_FORMAT_BC2_UNORM;
             case PF_DXT4:
-                return D3DFMT_DXT4;
+                return DXGI_FORMAT_BC3_UNORM;
             case PF_DXT5:
-                return D3DFMT_DXT5;
+                return DXGI_FORMAT_BC3_UNORM;
             case PF_UNKNOWN:
-                return D3DFMT_UNKNOWN;
+                return DXGI_FORMAT_UNKNOWN;
             default:
                 break;
             }
 
-            return D3DFMT_UNKNOWN;
+            return DXGI_FORMAT_UNKNOWN;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE DWORD toD3DBlendFactor( EBlendFactor _blend )
+        MENGINE_INLINE D3D11_BLEND toD3DBlendFactor( EBlendFactor _blend )
         {
             switch( _blend )
             {
             case BF_ONE:
-                return D3DBLEND_ONE;
+                return D3D11_BLEND_ONE;
             case BF_ZERO:
-                return D3DBLEND_ZERO;
+                return D3D11_BLEND_ZERO;
             case BF_DEST_COLOUR:
-                return D3DBLEND_DESTCOLOR;
+                return D3D11_BLEND_DEST_COLOR;
             case BF_SOURCE_COLOUR:
-                return D3DBLEND_SRCCOLOR;
+                return D3D11_BLEND_SRC_COLOR;
             case BF_ONE_MINUS_DEST_COLOUR:
-                return D3DBLEND_INVDESTCOLOR;
+                return D3D11_BLEND_INV_DEST_COLOR;
             case BF_ONE_MINUS_SOURCE_COLOUR:
-                return D3DBLEND_INVSRCCOLOR;
+                return D3D11_BLEND_INV_SRC_COLOR;
             case BF_DEST_ALPHA:
-                return D3DBLEND_DESTALPHA;
+                return D3D11_BLEND_DEST_ALPHA;
             case BF_SOURCE_ALPHA:
-                return D3DBLEND_SRCALPHA;
+                return D3D11_BLEND_SRC_ALPHA;
             case BF_ONE_MINUS_DEST_ALPHA:
-                return D3DBLEND_INVDESTALPHA;
+                return D3D11_BLEND_INV_DEST_ALPHA;
             case BF_ONE_MINUS_SOURCE_ALPHA:
-                return D3DBLEND_INVSRCALPHA;
+                return D3D11_BLEND_INV_SRC_ALPHA;
             }
 
-            return D3DBLEND_ZERO;
+            return D3D11_BLEND_ZERO;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE DWORD toD3DBlendOp( EBlendOp _blend )
+        MENGINE_INLINE D3D11_BLEND_OP toD3DBlendOp( EBlendOp _blend )
         {
             switch( _blend )
             {
             case BOP_ADD:
-                return D3DBLENDOP_ADD;
+                return D3D11_BLEND_OP_ADD;
             case BOP_SUBTRACT:
-                return D3DBLENDOP_SUBTRACT;
+                return D3D11_BLEND_OP_SUBTRACT;
             case BOP_REVSUBTRACT:
-                return D3DBLENDOP_REVSUBTRACT;
+                return D3D11_BLEND_OP_REV_SUBTRACT;
             case BOP_MIN:
-                return D3DBLENDOP_MIN;
+                return D3D11_BLEND_OP_MIN;
             case BOP_MAX:
-                return D3DBLENDOP_MAX;
+                return D3D11_BLEND_OP_MAX;
             }
 
-            return D3DBLENDOP_ADD;
+            return D3D11_BLEND_OP_ADD;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DPRIMITIVETYPE toD3DPrimitiveType( EPrimitiveType _type )
+        MENGINE_INLINE D3D11_PRIMITIVE_TOPOLOGY toD3DPrimitiveType( EPrimitiveType _type )
         {
             switch( _type )
             {
             case PT_POINTLIST:
-                return D3DPT_POINTLIST;
+                return D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
             case PT_LINELIST:
-                return D3DPT_LINELIST;
+                return D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
             case PT_LINESTRIP:
-                return D3DPT_LINESTRIP;
+                return D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
             case PT_TRIANGLELIST:
-                return D3DPT_TRIANGLELIST;
+                return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
             case PT_TRIANGLESTRIP:
-                return D3DPT_TRIANGLESTRIP;
+                return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
             case PT_TRIANGLEFAN:
-                return D3DPT_TRIANGLEFAN;
+                return D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
             }
 
-            return D3DPT_POINTLIST;
+            return D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DTEXTUREADDRESS toD3DTextureAddress( ETextureAddressMode _mode )
+        MENGINE_INLINE D3D11_TEXTURE_ADDRESS_MODE toD3DTextureAddress( ETextureAddressMode _mode )
         {
             switch( _mode )
             {
             case TAM_WRAP:
-                return D3DTADDRESS_WRAP;
+                return D3D11_TEXTURE_ADDRESS_WRAP;
             case TAM_MIRROR:
-                return D3DTADDRESS_MIRROR;
+                return D3D11_TEXTURE_ADDRESS_MIRROR;
             case TAM_CLAMP:
-                return D3DTADDRESS_CLAMP;
+                return D3D11_TEXTURE_ADDRESS_CLAMP;
             case TAM_BORDER:
-                return D3DTADDRESS_BORDER;
+                return D3D11_TEXTURE_ADDRESS_BORDER;
             case TAM_MIRRORONCE:
-                return D3DTADDRESS_MIRRORONCE;
+                return D3D11_TEXTURE_ADDRESS_MIRROR_ONCE;
             }
 
-            return D3DTADDRESS_CLAMP;
+            return D3D11_TEXTURE_ADDRESS_CLAMP;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DCULL toD3DCullMode( ECullMode _mode )
+        MENGINE_INLINE D3D11_CULL_MODE toD3DCullMode( ECullMode _mode )
         {
             switch( _mode )
             {
             case CM_CULL_NONE:
-                return D3DCULL_NONE;
+                return D3D11_CULL_NONE;
             case CM_CULL_CW:
-                return D3DCULL_CW;
+                return D3D11_CULL_FRONT;
             case CM_CULL_CCW:
-                return D3DCULL_CCW;
+                return D3D11_CULL_NONE;
+            case CM_CULL_BACK:
+                return D3D11_CULL_BACK;
             }
 
-            return D3DCULL_NONE;
+            return D3D11_CULL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DCMPFUNC toD3DCmpFunc( ECompareFunction _func )
+        MENGINE_INLINE D3D11_COMPARISON_FUNC toD3DCmpFunc( ECompareFunction _func )
         {
             switch( _func )
             {
             case CMPF_ALWAYS_FAIL:
-                return D3DCMP_NEVER;
+                return D3D11_COMPARISON_NEVER;
             case CMPF_LESS:
-                return D3DCMP_LESS;
+                return D3D11_COMPARISON_LESS;
             case CMPF_EQUAL:
-                return D3DCMP_EQUAL;
+                return D3D11_COMPARISON_EQUAL;
             case CMPF_LESS_EQUAL:
-                return D3DCMP_LESSEQUAL;
+                return D3D11_COMPARISON_LESS_EQUAL;
             case CMPF_GREATER:
-                return D3DCMP_GREATER;
+                return D3D11_COMPARISON_GREATER;
             case CMPF_NOT_EQUAL:
-                return D3DCMP_NOTEQUAL;
+                return D3D11_COMPARISON_NOT_EQUAL;
             case CMPF_GREATER_EQUAL:
-                return D3DCMP_GREATEREQUAL;
+                return D3D11_COMPARISON_GREATER_EQUAL;
             case CMPF_ALWAYS_PASS:
-                return D3DCMP_ALWAYS;
+                return D3D11_COMPARISON_ALWAYS;
             }
 
-            return D3DCMP_NEVER;
+            return D3D11_COMPARISON_NEVER;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DFILLMODE toD3DFillMode( EFillMode _mode )
+        MENGINE_INLINE D3D11_FILL_MODE toD3DFillMode( EFillMode _mode )
         {
             switch( _mode )
             {
             case FM_POINT:
-                return D3DFILL_POINT;
+                return D3D11_FILL_SOLID;
             case FM_WIREFRAME:
-                return D3DFILL_WIREFRAME;
+                return D3D11_FILL_WIREFRAME;
             case FM_SOLID:
-                return D3DFILL_SOLID;
+                return D3D11_FILL_SOLID;
             }
 
-            return D3DFILL_POINT;
+            return D3D11_FILL_SOLID;
         }
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DSHADEMODE toD3DShadeMode( EShadeType _type )
-        {
-            switch( _type )
-            {
-            case SHT_FLAT:
-                return D3DSHADE_FLAT;
-            case SHT_GOURAUD:
-                return D3DSHADE_GOURAUD;
-            case SHT_PHONG:
-                return D3DSHADE_PHONG;
-            }
 
-            return D3DSHADE_FLAT;
-        }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DTEXTUREOP toD3DTextureOp( ETextureOp _textureOp )
-        {
-            switch( _textureOp )
-            {
-            case TOP_DISABLE:
-                return D3DTOP_DISABLE;
-            case TOP_SELECTARG1:
-                return D3DTOP_SELECTARG1;
-            case TOP_SELECTARG2:
-                return D3DTOP_SELECTARG2;
-            case TOP_MODULATE:
-                return D3DTOP_MODULATE;
-            case TOP_MODULATE2X:
-                return D3DTOP_MODULATE2X;
-            case TOP_MODULATE4X:
-                return D3DTOP_MODULATE4X;
-            case TOP_ADD:
-                return D3DTOP_ADD;
-            case TOP_SUBTRACT:
-                return D3DTOP_SUBTRACT;
-            }
-
-            return D3DTOP_DISABLE;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE DWORD toD3DTextureArg( ETextureArgument _texArg )
-        {
-            switch( _texArg )
-            {
-            case TARG_CURRENT:
-                return D3DTA_CURRENT;
-            case TARG_DIFFUSE:
-                return D3DTA_DIFFUSE;
-            case TARG_SPECULAR:
-                return D3DTA_SPECULAR;
-            case TARG_TEXTURE:
-                return D3DTA_TEXTURE;
-            case TARG_TFACTOR:
-                return D3DTA_TFACTOR;
-            }
-
-            return D3DTA_DIFFUSE;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DSAMPLERSTATETYPE toD3DTextureFilterType( ETextureFilterType _filterType )
+    /*  MENGINE_INLINE D3DSAMPLERSTATETYPE toD3DTextureFilterType( ETextureFilterType _filterType )
         {
             switch( _filterType )
             {
@@ -359,44 +279,43 @@ namespace Mengine
 
             return D3DSAMP_MAGFILTER;
         }
+        */
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DTEXTUREFILTERTYPE toD3DTextureFilter( ETextureFilter _filter )
+        MENGINE_INLINE D3D11_FILTER toD3DTextureFilter( ETextureFilter _filter )
         {
             switch( _filter )
             {
             case TF_NONE:
-                return D3DTEXF_NONE;
+                return D3D11_FILTER_MIN_MAG_MIP_POINT;
             case TF_POINT:
-                return D3DTEXF_POINT;
+                return D3D11_FILTER_MIN_MAG_MIP_POINT;
             case TF_LINEAR:
-                return D3DTEXF_LINEAR;
+                return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
             case TF_ANISOTROPIC:
-                return D3DTEXF_ANISOTROPIC;
+                return D3D11_FILTER_ANISOTROPIC;
             case TF_FLATCUBIC:
-                return D3DTEXF_PYRAMIDALQUAD;
+                return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
             case TF_GAUSSIANCUBIC:
-                return D3DTEXF_GAUSSIANQUAD;
+                return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
             case __MAX_TEXTURE_FILTER__:
                 break;
             }
 
-            return D3DTEXF_NONE;
+            return D3D11_FILTER_MIN_MAG_MIP_POINT;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE uint32_t getD3DFormatRange( D3DFORMAT _format )
+        MENGINE_INLINE uint32_t getD3DFormatRange( DXGI_FORMAT _format )
         {
             switch( _format )
             {
-            case D3DFMT_R5G6B5:
+            case DXGI_FORMAT_B5G6R5_UNORM:
                 return 1;
-            case D3DFMT_X1R5G5B5:
+            case DXGI_FORMAT_B5G5R5A1_UNORM:
                 return 2;
-            case D3DFMT_A1R5G5B5:
+            case DXGI_FORMAT_B8G8R8X8_UNORM:
                 return 3;
-            case D3DFMT_X8R8G8B8:
+            case DXGI_FORMAT_B8G8R8A8_UNORM:
                 return 4;
-            case D3DFMT_A8R8G8B8:
-                return 5;
             default:
                 break;
             }
@@ -404,7 +323,7 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE bool lessD3DFormats( D3DFORMAT _format1, D3DFORMAT _format2 )
+        MENGINE_INLINE bool lessD3DFormats( DXGI_FORMAT _format1, DXGI_FORMAT _format2 )
         {
             uint32_t format_id1 = getD3DFormatRange( _format1 );
             uint32_t format_id2 = getD3DFormatRange( _format2 );
@@ -412,19 +331,17 @@ namespace Mengine
             return format_id1 < format_id2;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE const Char * getD3DFormatName( D3DFORMAT _format )
+        MENGINE_INLINE const Char * getD3DFormatName( DXGI_FORMAT _format )
         {
             switch( _format )
             {
-            case D3DFMT_R5G6B5:
+            case DXGI_FORMAT_B5G6R5_UNORM:
                 return "R5G6B5";
-            case D3DFMT_X1R5G5B5:
-                return "X1R5G5B5";
-            case D3DFMT_A1R5G5B5:
+            case DXGI_FORMAT_B5G5R5A1_UNORM:
                 return "A1R5G5B5";
-            case D3DFMT_X8R8G8B8:
+            case DXGI_FORMAT_B8G8R8X8_UNORM:
                 return "X8R8G8B8";
-            case D3DFMT_A8R8G8B8:
+            case DXGI_FORMAT_B8G8R8A8_UNORM:
                 return "A8R8G8B8";
             default:
                 break;
@@ -433,19 +350,17 @@ namespace Mengine
             return "UNKNOWN";
         };
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE uint32_t getD3DFormatBits( D3DFORMAT _format )
+        MENGINE_INLINE uint32_t getD3DFormatBits( DXGI_FORMAT _format )
         {
             switch( _format )
             {
-            case D3DFMT_R5G6B5:
+            case DXGI_FORMAT_B5G6R5_UNORM:
                 return 16;
-            case D3DFMT_X1R5G5B5:
+            case DXGI_FORMAT_B5G5R5A1_UNORM:
                 return 16;
-            case D3DFMT_A1R5G5B5:
-                return 16;
-            case D3DFMT_X8R8G8B8:
+            case DXGI_FORMAT_B8G8R8X8_UNORM:
                 return 32;
-            case D3DFMT_A8R8G8B8:
+            case DXGI_FORMAT_B8G8R8A8_UNORM:
                 return 32;
             default:
                 break;
@@ -454,19 +369,19 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3DFORMAT getD3DIndexFormat()
+        MENGINE_INLINE DXGI_FORMAT getD3DIndexFormat()
         {
             switch( sizeof( RenderIndex ) )
             {
             case 4:
-                return D3DFMT_INDEX32;
+                return DXGI_FORMAT_R32_UINT;
             case 2:
-                return D3DFMT_INDEX16;
+                return DXGI_FORMAT_R16_UINT;
             default:
                 break;
             }
 
-            return D3DFMT_UNKNOWN;
+            return  DXGI_FORMAT_UNKNOWN;
         }
         //////////////////////////////////////////////////////////////////////////
     }

@@ -13,6 +13,10 @@
 #include "MovieEvent.h"
 #include "MovieMesh2D.h"
 
+#include "Engine/HotSpot.h"
+#include "Engine/HotSpotResourceShape.h"
+#include "Engine/HotSpotSurface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/NodeRenderHierarchy.h"
@@ -20,10 +24,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ArrayString.h"
-
-#include "Engine/HotSpot.h"
-#include "Engine/HotSpotResourceShape.h"
-#include "Engine/HotSpotSurface.h"
+#include "Kernel/RenderContextHelper.h"
 
 #include "pybind/pybind.hpp"
 
@@ -1037,12 +1038,10 @@ namespace Mengine
             const RenderViewportInterfacePtr & shape1_viewport = Helper::getNodeRenderViewportInheritance( shape1.get() );
 
             RenderContext shape1_context;
-            shape1_context.order = nullptr;
+            Helper::clearRenderContext( &shape1_context );
+
             shape1_context.camera = shape1_camera.get();
             shape1_context.viewport = shape1_viewport.get();
-            shape1_context.transformation = nullptr;
-            shape1_context.scissor = nullptr;
-            shape1_context.target = nullptr;
 
             mt::box2f b1;
             Polygon p1;
@@ -1052,12 +1051,10 @@ namespace Mengine
             const RenderViewportInterfacePtr & shape2_viewport = Helper::getNodeRenderViewportInheritance( shape2.get() );
 
             RenderContext shape2_context;
-            shape2_context.order = nullptr;
+            Helper::clearRenderContext( &shape2_context );
+
             shape2_context.camera = shape2_camera.get();
             shape2_context.viewport = shape2_viewport.get();
-            shape2_context.transformation = nullptr;
-            shape2_context.scissor = nullptr;
-            shape2_context.target = nullptr;
 
             mt::box2f b2;
             Polygon p2;
@@ -1117,12 +1114,10 @@ namespace Mengine
             const RenderViewportInterfacePtr & shape_viewport = Helper::getNodeRenderViewportInheritance( shape.get() );
 
             RenderContext shape_context;
-            shape_context.order = nullptr;
+            Helper::clearRenderContext( &shape_context );
+
             shape_context.camera = shape_camera.get();
             shape_context.viewport = shape_viewport.get();
-            shape_context.transformation = nullptr;
-            shape_context.scissor = nullptr;
-            shape_context.target = nullptr;
 
             Polygon p1;
             shape->getScreenPolygon( &shape_context, contentResolution, nullptr, &p1 );

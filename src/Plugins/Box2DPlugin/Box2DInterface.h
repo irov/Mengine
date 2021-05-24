@@ -49,11 +49,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum Box2DBodyEventFlag
     {
-        EVENT_BOX2DBODY_BEGIN_CONTACT,
+        EVENT_BOX2DBODY_BEGIN_CONTACT = 0,
         EVENT_BOX2DBODY_END_CONTACT,
         EVENT_BOX2DBODY_PRE_SOLVE,
         EVENT_BOX2DBODY_POST_SOLVE,
         EVENT_BOX2DBODY_UPDATE_CONTACT,
+
+        __EVENT_BOX2DBODY_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
     class Box2DBodyEventReceiverInterface

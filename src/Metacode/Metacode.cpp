@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 146;
+        return 147;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3637228181; 
+        return 2354394808; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -1070,6 +1070,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Index );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Normalized );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Offset );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Size );

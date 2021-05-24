@@ -171,6 +171,7 @@ Render
     OpenGLRenderSystemExtensionInterface.h
     RenderProgramVariableInterface.h
     RenderImageInterface.h
+    RenderImageLockedInterface.h
     RenderImageLoaderInterface.h
     RenderImageProviderInterface.h
     DX9RenderImageExtensionInterface.h
@@ -192,7 +193,6 @@ Render
     RenderVertexAttributeInterface.h
     RenderMaterialInterface.h
     RenderBatchInterface.h
-    RenderOrderInterface.h
     RenderPipelineInterface.h
 )
 

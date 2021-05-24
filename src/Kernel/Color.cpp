@@ -35,7 +35,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
         {
-#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#ifdef MENGINE_RENDER_COLOR_RGBA
             uint8_t b8 = _r;
             uint8_t g8 = _g;
             uint8_t r8 = _b;
@@ -70,7 +70,7 @@ namespace Mengine
         {
             ColorValue_ARGB value = Helper::makeRGBA8( _r, _g, _b, _a );
 
-#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#ifdef MENGINE_RENDER_COLOR_RGBA
             uint8_t b8 = _r;
             uint8_t g8 = _g;
             uint8_t r8 = _b;
@@ -169,7 +169,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#ifdef MENGINE_RENDER_COLOR_RGBA
         uint8_t r8 = (m_argb >> 0) & 0xFF;
         uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t b8 = (m_argb >> 16) & 0xFF;

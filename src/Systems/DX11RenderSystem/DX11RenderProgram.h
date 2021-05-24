@@ -13,10 +13,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DX11RenderProgram
         : public RenderProgramInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderProgram );
+
     public:
         DX11RenderProgram();
         ~DX11RenderProgram() override;
@@ -34,15 +37,16 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile( IDirect3DDevice9 * _pD3DDevice );
+        bool compile( const ID3D11DevicePtr & _pD3DDevice );
+        void release();
 
     public:
-        void enable( IDirect3DDevice9 * _pD3DDevice );
-        void disable( IDirect3DDevice9 * _pD3DDevice );
+        void enable( const ID3D11DeviceContextPtr & _pImmediateContext );
+        void disable( const ID3D11DeviceContextPtr & _pImmediateContext );
 
     public:
-        void bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks );
-        void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
+        // b0 - first buffer must be float4x4 
+        void bindMatrix( const ID3D11DeviceContextPtr & _pImmediateContext, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:
         ConstString m_name;
@@ -50,6 +54,8 @@ namespace Mengine
         DX11RenderVertexShaderPtr m_vertexShader;
         DX11RenderFragmentShaderPtr m_fragmentShader;
         DX11RenderVertexAttributePtr m_vertexAttribute;
+
+        ID3D11BufferPtr m_bindMatrixBuffer;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderProgram, RenderProgramInterface> DX11RenderProgramPtr;

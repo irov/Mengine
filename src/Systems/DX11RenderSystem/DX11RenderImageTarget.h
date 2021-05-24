@@ -5,18 +5,19 @@
 
 #include "Environment/DirectX11/DirectX11RenderIncluder.h"
 
+#include "DX11RenderTargetTexture.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class DX11RenderTargetTexture> DX11RenderTargetTexturePtr;
     //////////////////////////////////////////////////////////////////////////
     class DX11RenderImageTarget
         : public RenderImageInterface
         , public DX11RenderImageExtensionInterface
         , public Factorable
     {
+        DECLARE_FACTORABLE( DX11RenderImageTarget );
         DECLARE_UNKNOWABLE();
 
     public:
@@ -28,8 +29,8 @@ namespace Mengine
         void finalize();
 
     public:
-        void bind( uint32_t _stage ) override;
-        void unbind( uint32_t _stage ) override;
+        void bind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage );
+        void unbind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage );
 
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
@@ -49,15 +50,16 @@ namespace Mengine
         float getHWHeightInv() const override;
 
     public:
-        Pointer lock( size_t * const _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 
     public:
         UnknownPointer getRenderImageExtention() override;
 
     public:
-        IDirect3DDevice9 * getD3DDevice() const override;
-        IDirect3DTexture9 * getD3DTexture() const override;
+        const ID3D11DevicePtr & getD3DDevice() const override;
+        const ID3D11Texture2DPtr & getD3DTexture() const override;
+        const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const override;
 
     protected:
         DX11RenderTargetTexturePtr m_target;

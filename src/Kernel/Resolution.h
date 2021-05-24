@@ -31,6 +31,7 @@ namespace Mengine
 
     public:
         bool operator == ( const Resolution & _resolution ) const;
+        bool operator != ( const Resolution & _resolution ) const;
 
     protected:
         uint32_t m_width;

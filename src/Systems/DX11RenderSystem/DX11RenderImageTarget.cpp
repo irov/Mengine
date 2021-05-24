@@ -24,7 +24,7 @@ namespace Mengine
         m_target = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImageTarget::bind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
+    void DX11RenderImageTarget::bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage )
     {
         const ID3D11ShaderResourceViewPtr & d3dShaderResource = m_target->getD3DShaderResource();
 
@@ -37,15 +37,9 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderImageTarget::unbind( ID3D11DeviceContext * _pImmediateContext, uint32_t _stage )
+    void DX11RenderImageTarget::unbind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage )
     {
         _pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
-
-        /*ID3D11DeviceContext * pImmediateContext = this->getDirect3D11ImmediateContext();
-
-        pImmediateContext->PSSetShaderResources( _stage, 1, nullptr );
-
-        pImmediateContext->Release();*/
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

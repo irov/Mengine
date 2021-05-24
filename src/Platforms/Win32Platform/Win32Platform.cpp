@@ -2406,8 +2406,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const
     {
+        uint32_t resolutionWidth = _resolution.getWidth();
+        uint32_t resolutionHeight = _resolution.getHeight();
+
         RECT rc;
-        if( ::SetRect( &rc, 0, 0, (int32_t)_resolution.getWidth(), (int32_t)_resolution.getHeight() ) == FALSE )
+        if( ::SetRect( &rc, 0, 0, (int32_t)resolutionWidth, (int32_t)resolutionHeight ) == FALSE )
         {
             LOGGER_ERROR( "invalid set rect %s"
                 , Helper::Win32GetLastErrorMessage()

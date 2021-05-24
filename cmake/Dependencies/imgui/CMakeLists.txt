@@ -11,4 +11,6 @@ set(SRC_FILES
 
 SET(LIB_TYPE STATIC)
 
+add_definitions(-DIMGUI_DISABLE_DEMO_WINDOWS)
+
 add_library(${PROJECT_NAME} ${LIB_TYPE} ${SRC_FILES})

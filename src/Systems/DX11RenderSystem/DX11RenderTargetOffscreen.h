@@ -19,7 +19,6 @@ namespace Mengine
         ~DX11RenderTargetOffscreen() override;
 
     public:
-        bool initialize( DX11RenderTargetTexturePtr _renderTargetTexture );
         bool initialize( ID3D11Texture2D * _textureSource );
         void finalize();
 

@@ -707,13 +707,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen );
 
+        renderTargetOffscreen->setDirect3D11Device( m_pD3DDevice );
+
         ID3D11Texture2D * backBufferPtr;
         IF_DXCALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), (LPVOID *)&backBufferPtr) )
         {
             return nullptr;
         }
 
-        renderTargetOffscreen->setDirect3D11Device( m_pD3DDevice );
         if( renderTargetOffscreen->initialize( backBufferPtr ) == false )
         {
             LOGGER_ERROR( "can't initialize offscreen target %ux%u format %u"
@@ -788,15 +789,43 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
         // Present the back buffer to the screen since rendering is complete.
-        if( m_waitForVSync )
+
+        UINT SyncInterval = 1;
+        UINT Flags = 0;
+
+        if( m_waitForVSync == false )
         {
-            // Lock to screen refresh rate.
-            m_dxgiSwapChain->Present( 1, 0 );
+            SyncInterval = 0;
+            Flags = DXGI_PRESENT_DO_NOT_WAIT;
         }
-        else
+
+        HRESULT hr = m_dxgiSwapChain->Present( SyncInterval, Flags );
+
+        if( FAILED( hr ) && hr != DXGI_ERROR_WAS_STILL_DRAWING )
         {
-            // Present as fast as possible.
-            m_dxgiSwapChain->Present( 0, DXGI_PRESENT_DO_NOT_WAIT );
+            switch( hr )
+            {
+            case DXGI_ERROR_DEVICE_REMOVED:
+                {
+                    HRESULT hr_reason = m_pD3DDevice->GetDeviceRemovedReason();
+
+                    LOGGER_ERROR( "device removed [%x]: %s"
+                        , (uint32_t)hr_reason
+                        , Helper::getDX11ErrorMessage( hr_reason )
+                    );
+                }break;
+            case DXGI_ERROR_DEVICE_RESET:
+                {
+                    LOGGER_ERROR( "device reset" );
+                }break;
+            default:
+                {
+                    LOGGER_ERROR( "invalid swap chain present [%x]: %s"
+                        , (uint32_t)hr
+                        , Helper::getDX11ErrorMessage( hr )
+                    );
+                }break;
+            }
         }
 
         ++m_frames;
@@ -1240,8 +1269,8 @@ namespace Mengine
 
         if( _texture != nullptr )
         {
-            DX11RenderImage * dx11Image = _texture.getT<DX11RenderImage *>();
-            dx11Image->bind( m_pD3DImmediateContext, _stage );
+            DX11RenderImageExtensionInterface * extension = _texture->getUnknown();
+            extension->bind( m_pD3DImmediateContext, _stage );
 
             m_textureEnable[_stage] = true;
         }

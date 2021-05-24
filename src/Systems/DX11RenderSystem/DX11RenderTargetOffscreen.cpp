@@ -19,24 +19,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderTargetOffscreen::initialize( DX11RenderTargetTexturePtr _renderTargetTexture )
-    {
-        D3D11_TEXTURE2D_DESC textureDesc = _renderTargetTexture->GetTextureDesc();
-        textureDesc.Usage = D3D11_USAGE_STAGING;
-        textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-
-        const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
-
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
-        {
-            return false;
-        }
-
-        m_renderTargetTexture = _renderTargetTexture;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::initialize( ID3D11Texture2D * _textureSource )
     {
         D3D11_TEXTURE2D_DESC textureDesc;
@@ -47,12 +29,16 @@ namespace Mengine
 
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &m_pD3DTexture) )
+        ID3D11Texture2D * pD3DTexture;
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&textureDesc, nullptr, &pD3DTexture) )
         {
             return false;
         }
 
-        m_pD3DTextureSource = _textureSource;
+        m_pD3DTexture.Attach( pD3DTexture );
+
+        m_pD3DTextureSource.Attach( _textureSource );
+
         m_textureDesc = textureDesc;
 
         return true;
@@ -61,6 +47,7 @@ namespace Mengine
     void DX11RenderTargetOffscreen::finalize()
     {
         m_pD3DTexture = nullptr;
+        m_pD3DTextureSource = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::begin() const

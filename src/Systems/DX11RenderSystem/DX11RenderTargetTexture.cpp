@@ -48,10 +48,13 @@ namespace Mengine
 
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
-        IF_DXCALL( pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &m_pD3DTexture) )
+        ID3D11Texture2D * pD3DTexture;
+        IF_DXCALL( pD3DDevice, CreateTexture2D, (&m_textureDesc, nullptr, &pD3DTexture) )
         {
             return nullptr;
         }
+
+        m_pD3DTexture.Attach( pD3DTexture );
 
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
         ZeroMemory( &shaderResourceViewDesc, sizeof( D3D11_SHADER_RESOURCE_VIEW_DESC ) );
@@ -67,7 +70,7 @@ namespace Mengine
             return nullptr;
         }
 
-        m_pD3DResourceView = pD3DResourceView;
+        m_pD3DResourceView.Attach( pD3DResourceView );
 
         D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
         ZeroMemory( &renderTargetViewDesc, sizeof( D3D11_RENDER_TARGET_VIEW_DESC ) );
@@ -82,7 +85,7 @@ namespace Mengine
             return nullptr;
         }
 
-        m_pRenderTargetView = pRenderTargetView;
+        m_pRenderTargetView.Attach( pRenderTargetView );
 
         return true;
     }

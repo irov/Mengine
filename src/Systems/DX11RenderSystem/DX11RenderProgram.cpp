@@ -72,7 +72,7 @@ namespace Mengine
             return false;
         }
 
-        m_bindMatrixBuffer = bindMatrixBuffer;
+        m_bindMatrixBuffer.Attach( bindMatrixBuffer );
 
         if( m_vertexShader->compile( _pD3DDevice ) == false )
         {

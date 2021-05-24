@@ -19,7 +19,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderVertexBuffer::DX11RenderVertexBuffer()
     {
-        m_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     }
     //////////////////////////////////////////////////////////////////////////
     DX11RenderVertexBuffer::~DX11RenderVertexBuffer()
@@ -28,43 +27,43 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::initialize( uint32_t _vertexSize, EBufferType _bufferType )
     {
-        return initializeBuffer( _vertexSize, _bufferType );
+        return this->initializeBuffer( _vertexSize, _bufferType );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexBuffer::finalize()
     {
-        finalizeBuffer();
+        this->finalizeBuffer();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderVertexBuffer::getVertexCount() const
     {
-        return getElementsCount();
+        return this->getElementsCount();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderVertexBuffer::getVertexSize() const
     {
-        return getElementSize();
+        return this->getElementSize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::resize( uint32_t _vertexCount )
     {
         // TODO: in D3D11 we can create static bufferes without lock - if we provide data pointer on creation
-        return resizeBuffer( _vertexCount, nullptr );
+        return this->resizeBuffer( D3D11_BIND_VERTEX_BUFFER, _vertexCount, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DX11RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
-        return lockBuffer( _offset, _count );
+        return this->lockBuffer( _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::unlock()
     {
-        return unlockBuffer();
+        return this->unlockBuffer();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderVertexBuffer::draw( const void * _buffer, uint32_t _offset, uint32_t _count )
     {
-        return drawBuffer( _buffer, _offset, _count );
+        return this->drawBuffer( _buffer, _offset, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderVertexBuffer::enable( const ID3D11DeviceContextPtr & _pImmediateContext )

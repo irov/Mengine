@@ -94,7 +94,7 @@ namespace Mengine
                 return false;
             }
 
-            m_pD3DVertexDeclaration = pD3DVertexDeclaration;
+            m_pD3DVertexDeclaration.Attach( pD3DVertexDeclaration );
         }
 
         ++m_compileReferenceCount;

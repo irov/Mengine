@@ -60,7 +60,7 @@ namespace Mengine
                 return false;
             }
 
-            m_pD3DPixelShader = pD3DPixelShader;
+            m_pD3DPixelShader.Attach( pD3DPixelShader );
         }
 
         ++m_compileReferenceCount;

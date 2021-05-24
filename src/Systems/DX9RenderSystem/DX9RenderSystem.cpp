@@ -1501,8 +1501,9 @@ namespace Mengine
 
         if( _image != nullptr )
         {
-            DX9RenderImage * dx9RenderImage = _image.getT<DX9RenderImage *>();
-            dx9RenderImage->bind( _stage );
+            DX9RenderImageExtensionInterface * extension = _image->getUnknown();
+
+            extension->bind( _stage );
 
             m_textureEnable[_stage] = true;
         }

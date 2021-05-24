@@ -1240,8 +1240,8 @@ namespace Mengine
 
         if( _texture != nullptr )
         {
-            DX11RenderImage * dx11Image = _texture.getT<DX11RenderImage *>();
-            dx11Image->bind( m_pD3DImmediateContext, _stage );
+            DX11RenderImageExtensionInterface * extension = _texture->getUnknown();
+            extension->bind( m_pD3DImmediateContext, _stage );
 
             m_textureEnable[_stage] = true;
         }

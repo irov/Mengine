@@ -659,13 +659,12 @@ namespace Mengine
             {
                 return true;
             }
-
-            if( _l.zIndex < _r.zIndex )
+            else if( _l.zGroup > _r.zGroup )
             {
-                return true;
+                return false;
             }
 
-            return false;
+            return _l.zIndex < _r.zIndex;
         } );
 
         for( const RenderPass & renderPass : m_renderPasses )

@@ -46,6 +46,8 @@ namespace Mengine
 
             for( const AttributeDesc & desc : m_attributes )
             {
+                MENGINE_ASSERTION_FATAL( declaration_iterator < 64 );
+
                 D3D11_INPUT_ELEMENT_DESC & element = declaration[declaration_iterator++];
 
                 element.SemanticName = desc.uniform.c_str();

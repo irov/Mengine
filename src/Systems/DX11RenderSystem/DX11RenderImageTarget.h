@@ -14,7 +14,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DX11RenderImageTarget
         : public RenderImageInterface
-        , public DX11RenderImageExtensionInterface
+        , public DX11RenderImageExtensionInterface        
+        , public DX11RenderResourceHandler
         , public Factorable
     {
         DECLARE_FACTORABLE( DX11RenderImageTarget );
@@ -60,6 +61,10 @@ namespace Mengine
         const ID3D11DevicePtr & getD3DDevice() const override;
         const ID3D11Texture2DPtr & getD3DTexture() const override;
         const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const override;
+
+    protected:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
     protected:
         DX11RenderTargetTexturePtr m_target;

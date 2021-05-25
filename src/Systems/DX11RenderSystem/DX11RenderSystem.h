@@ -162,8 +162,8 @@ namespace Mengine
         IDXGISwapChainPtr m_dxgiSwapChain;
         DXGI_MODE_DESC m_SwapChainBufferDesc;
 
-        DXGI_MODE_DESC * m_DisplayModeList;
-        UINT m_DisplayModeListNum;
+        typedef Vector<DXGI_MODE_DESC> VectorModeDescs;
+        VectorModeDescs m_DisplayModeList;
 
         ID3D11RenderTargetViewPtr m_renderTargetView;
 
@@ -179,6 +179,7 @@ namespace Mengine
         D3D11_DEPTH_STENCIL_DESC m_D3D11DepthStencilState;
 
     protected:
+        void restoreStates_();
         bool releaseResources_();
         bool restore_();
 

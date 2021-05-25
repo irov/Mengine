@@ -91,6 +91,18 @@ namespace Mengine
         return d3dShaderResourceView;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX11RenderImageTarget::onRenderReset()
+    {
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderImageTarget::onRenderRestore()
+    {
+        //ToDo
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImageTarget::getHWWidth() const
     {
         uint32_t HWWidth = m_target->getHWWidth();

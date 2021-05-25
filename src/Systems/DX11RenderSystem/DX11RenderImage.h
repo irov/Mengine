@@ -14,9 +14,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DX11RenderImage
         : public RenderImageInterface
-        , public DX11RenderImageExtensionInterface
-        , public Factorable
+        , public DX11RenderImageExtensionInterface        
         , public DX11RenderResourceHandler
+        , public Factorable
     {
         DECLARE_FACTORABLE( DX11RenderImage );
         DECLARE_UNKNOWABLE();

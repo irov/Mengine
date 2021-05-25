@@ -386,7 +386,7 @@ namespace Mengine
             swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
         }
 
-        //swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 
         // Don't set the advanced flags.
         swapChainDesc.Flags = 0;
@@ -475,10 +475,6 @@ namespace Mengine
         }
 
         m_depthStencilView.Attach( depthStencilView );
-
-        // Bind the render target view and depth stencil buffer to the output render pipeline.
-        ID3D11RenderTargetView * d3dRenderTargetView = m_renderTargetView.Get();
-        m_pD3DDeviceContext->OMSetRenderTargets( 1, &d3dRenderTargetView, m_depthStencilView.Get() );
 
         for( const DX11RenderProgramPtr & program : m_deferredCompilePrograms )
         {
@@ -730,6 +726,10 @@ namespace Mengine
         m_pD3DDevice->GetImmediateContext( &pD3DImmediateContext );
 
         m_pD3DImmediateContext.Attach( pD3DImmediateContext );
+
+        // Bind the render target view and depth stencil buffer to the output render pipeline.
+        ID3D11RenderTargetView * d3dRenderTargetView = m_renderTargetView.Get();
+        m_pD3DDeviceContext->OMSetRenderTargets( 1, &d3dRenderTargetView, m_depthStencilView.Get() );
 
         return true;
     }

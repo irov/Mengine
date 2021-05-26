@@ -30,8 +30,8 @@ namespace Mengine
         uint32_t getIndexSize() const override;
 
     public:
-        void enable() override;
-        void disable() override;
+        void enable();
+        void disable();
 
     protected:
         bool resize( uint32_t _indexCount ) override;

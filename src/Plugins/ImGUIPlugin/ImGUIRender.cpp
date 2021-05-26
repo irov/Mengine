@@ -125,13 +125,13 @@ namespace Mengine
         const RenderImageInterfacePtr & image = _texture->getImage();
                 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        DX9RenderImageExtensionInterface * extension = image->getRenderImageExtention();
+        DX9RenderImageExtensionInterface * extension = image->getUnknown();
 
         IDirect3DTexture9 * pD3DTexture = extension->getD3DTexture();
 
         return (ImTextureID)pD3DTexture;
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        OpenGLRenderImageExtensionInterface * extension = image->getRenderImageExtention();
+        OpenGLRenderImageExtensionInterface * extension = image->getUnknown();
 
         GLuint UID = extension->getUID();
 

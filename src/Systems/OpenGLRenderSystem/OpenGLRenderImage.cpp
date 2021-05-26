@@ -404,11 +404,6 @@ namespace Mengine
         return m_wrapT;
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer OpenGLRenderImage::getRenderImageExtention()
-    {
-        return this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderImage::getUID() const
     {
         return m_uid;

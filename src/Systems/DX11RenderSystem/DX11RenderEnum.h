@@ -216,8 +216,6 @@ namespace Mengine
             case CM_CULL_CW:
                 return D3D11_CULL_FRONT;
             case CM_CULL_CCW:
-                return D3D11_CULL_NONE;
-            case CM_CULL_BACK:
                 return D3D11_CULL_BACK;
             }
 

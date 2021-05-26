@@ -55,9 +55,6 @@ namespace Mengine
         bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
 
     public:
-        UnknownPointer getRenderImageExtention() override;
-
-    public:
         const ID3D11DevicePtr & getD3DDevice() const override;
         const ID3D11Texture2DPtr & getD3DTexture() const override;
         const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const override;

@@ -37,9 +37,6 @@ namespace Mengine
     public:
         virtual RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
         virtual bool unlock( const RenderImageLockedInterfacePtr & _lock, uint32_t _level, bool _successful ) = 0;
-
-    public:
-        virtual UnknownPointer getRenderImageExtention() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;

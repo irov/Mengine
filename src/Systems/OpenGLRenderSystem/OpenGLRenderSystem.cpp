@@ -597,7 +597,8 @@ namespace Mengine
                 continue;
             }
 
-            texture->bind( stageId );
+            OpenGLRenderImageExtensionInterface * extension = texture->getUnknown();
+            extension->bind( stageId );
 
             GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
             GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
@@ -643,7 +644,8 @@ namespace Mengine
                 break;
             }
 
-            textureStage.texture->unbind( stageId );
+            OpenGLRenderImageExtensionInterface * extension = texture->getUnknown();
+            extension->unbind( stageId );
         }
 
         m_currentProgram->disable();

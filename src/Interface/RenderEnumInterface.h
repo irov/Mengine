@@ -65,7 +65,6 @@ namespace Mengine
         CM_CULL_NONE = 0,
         CM_CULL_CW, // D3D11 using FrontCounterClockwise for order of polygons
         CM_CULL_CCW,
-		CM_CULL_BACK,
     };
     //////////////////////////////////////////////////////////////////////////
     enum ECompareFunction

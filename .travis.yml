@@ -26,12 +26,12 @@ script:
     - mkdir -p solutions/dependencies_xcode_ios_sdl/$BUILD_CONFIGURATION
     - pushd solutions/dependencies_xcode_ios_sdl/$BUILD_CONFIGURATION
     - cmake -G "Xcode" -S "$PWD/../../../cmake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DMENGINE_BUILD_ONLY_EXECUTABLE_MODULE=ON -DMENGINE_DEPENDENCE_CURL=OFF
-    - cmake --build . -j 8 --config $BUILD_CONFIGURATION
+    - cmake --build . -j 8 --config $BUILD_CONFIGURATION -- -quie 
     - popd
     
     - mkdir -p solutions/solution_xcode_ios_sdl/$BUILD_CONFIGURATION
     - pushd solutions/solution_xcode_ios_sdl/$BUILD_CONFIGURATION
     - cmake -G "Xcode" -S "$PWD/../../../cmake/Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DMENGINE_BUILD_ONLY_EXECUTABLE_MODULE=ON -DMENGINE_PLUGIN_CURL_FORCE_DISABLE=ON
-    - cmake --build . -j 8 --config $BUILD_CONFIGURATION
+    - cmake --build . -j 8 --config $BUILD_CONFIGURATION -- -quie
     - popd
   

@@ -902,13 +902,16 @@ namespace Mengine
             Detail::serializeNodeProp( fmt, "Text", xmlNode );
         }
 
-        Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
-        Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
-        Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
-        Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
-        Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
-        Detail::serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
-        Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
+        if( _textField->isCompile() == true )
+        {
+            Detail::serializeNodeProp( _textField->calcFont()->getName(), "TotalFontName", xmlNode );
+            Detail::serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
+            Detail::serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
+            Detail::serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
+            Detail::serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
+            Detail::serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
+            Detail::serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
+        }
 
         const TextFontInterfacePtr & defaultFont = FONT_SERVICE()
             ->getDefaultFont();

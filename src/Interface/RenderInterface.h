@@ -79,12 +79,12 @@ namespace Mengine
         virtual const RenderTargetInterfacePtr & getRenderTarget() const = 0;
 
     public:
-        virtual void setZGroup( int8_t _zGroup ) = 0;
-        virtual int8_t getZGroup() const = 0;
+        virtual void setZGroup( ZGroupType _zGroup ) = 0;
+        virtual ZGroupType getZGroup() const = 0;
 
     public:
-        virtual void setZIndex( int32_t _zIndex ) = 0;
-        virtual int32_t getZIndex() const = 0;
+        virtual void setZIndex( ZIndexType _zIndex ) = 0;
+        virtual ZIndexType getZIndex() const = 0;
 
     public:
         virtual void mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const = 0;

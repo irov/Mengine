@@ -7,6 +7,7 @@
 #include "Kernel/Deque.h"
 #include "Kernel/Blobject.h"
 #include "Kernel/StringHelper.h"
+#include "Kernel/RenderContext.h"
 
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
@@ -169,10 +170,11 @@ namespace Mengine
         bool    hide;
         Color   local_color;
         Color   personal_color;
-        int8_t z_group;
-        int32_t z_index;
-        int8_t total_z_group;
-        int32_t total_z_index;
+        bool z_group_enable;
+        ZGroupType z_group;
+        ZIndexType z_index;
+        ZGroupType total_z_group;
+        ZIndexType total_z_index;
 
         bool HasExtraRelationRender;
         uint32_t BaseRenderNodeUniqueIdentity;

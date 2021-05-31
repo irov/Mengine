@@ -365,9 +365,7 @@ namespace Mengine
         }
 
         template<typename T>
-        bool deserializeNodeProp( const Char * _propName,
-            const pugi::xml_node & _xmlParentNode,
-            const Lambda<void( const T & )> & _lambda )
+        bool deserializeNodeProp( const Char * _propName, const pugi::xml_node & _xmlParentNode, const Lambda<void( const T & )> & _lambda )
         {
             const Char * type_name = Detail::prop_type_name<T>::get_value();
 

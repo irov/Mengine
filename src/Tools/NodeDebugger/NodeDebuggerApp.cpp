@@ -383,7 +383,7 @@ namespace Mengine
 
             if( m_selectedTab == "scene" )
             {
-                if( m_selectedNode && m_selectedNode->dirty )
+                if( m_selectedNode != nullptr && m_selectedNode->dirty == true )
                 {
                     this->SendChangedNode( *m_selectedNode );
                     m_selectedNode->dirty = false;
@@ -2469,25 +2469,22 @@ namespace Mengine
             uiEditorBool( "Hide", _node->render.hide );
             ImGui::Spacing();
 
-            if( _node->render.z_group == MENGINE_RENDER_ZGROUP_DEFAULT )
+            if( ImGui::Button( "Z Group Reset" ) == true )
             {
-                ImGui::Text( "Z Order: Default" );
-            }
-            else
-            {
-                uiEditorVec1I8( "Z Order", _node->render.z_group );
+                _node->render.z_group = MENGINE_RENDER_ZGROUP_DEFAULT;
+                _node->dirty = true;
             }
 
-            if( _node->render.z_index == MENGINE_RENDER_ZINDEX_DEFAULT )
+            uiEditorVec1I( "Z Order", _node->render.z_group );
+
+            if( ImGui::Button( "Z Index Reset" ) == true )
             {
-                ImGui::Text( "Z Index: Default" );
-            }
-            else
-            {
-                uiEditorVec1I( "Z Index", _node->render.z_index );
+                _node->render.z_index = MENGINE_RENDER_ZINDEX_DEFAULT;
+                _node->dirty = true;
             }
 
-            uiReadOnlyVec1I8( "Total Z Order", _node->render.total_z_group == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _node->render.total_z_group );
+            uiEditorVec1I( "Z Index", _node->render.z_index );
+            uiReadOnlyVec1I( "Total Z Group", _node->render.total_z_group == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _node->render.total_z_group );
             uiReadOnlyVec1I( "Total Z Index", _node->render.total_z_index == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _node->render.total_z_index );
             ImGui::Spacing();
             uiEditorColor( "Local Color", _node->render.local_color );

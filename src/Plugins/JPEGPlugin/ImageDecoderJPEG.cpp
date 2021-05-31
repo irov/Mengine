@@ -6,6 +6,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
@@ -243,26 +244,32 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderJPEG::_decode( const DecoderData * _data )
+    size_t ImageDecoderJPEG::_decode( const DecoderData * _decoderData )
     {
-        void * buffer = _data->buffer;
-        size_t size = _data->size;
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
 
-        MENGINE_ASSERTION_FATAL( _data->size >= m_options.pitch * m_dataInfo.height, "invalid buffer relation pitch to size bufferSize %zu - pitch %zu height %u"
-            , _data->size
-            , m_options.pitch
+        const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
+
+        void * buffer = decoderData->buffer;
+        size_t size = decoderData->size;
+
+        MENGINE_ASSERTION_FATAL( decoderData->size >= decoderData->pitch * m_dataInfo.height, "invalid buffer relation pitch to size bufferSize %zu - pitch %zu height %u"
+            , decoderData->size
+            , decoderData->pitch
             , m_dataInfo.height
         );
 
         jpeg_start_decompress( &m_jpegObject );
 
-        uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
+        uint32_t optionChannels = Helper::getPixelFormatChannels( m_options.channels );
+        uint32_t dataChannels = Helper::getPixelFormatChannels( m_dataInfo.format );
 
         switch( m_options.flags & 0x0000ffff )
         {
         case DF_NONE:
             {
-                if( m_options.channels == channels )
+                if( optionChannels == dataChannels )
                 {
                     JSAMPROW rgb_buffer = (JSAMPROW)buffer;
 
@@ -271,13 +278,14 @@ namespace Mengine
                         jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
 
                         // Assume put_scanline_someplace wants a pointer and sample count.
-                        rgb_buffer += m_options.pitch;
+                        rgb_buffer += decoderData->pitch;
                     }
 
 #if RGB_PIXELSIZE == 4
                     if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0 )
                     {
                         JSAMPROW alpha_buffer = (JSAMPROW)buffer;
+
                         for( uint32_t j = 0; j != m_dataInfo.height; ++j )
                         {
                             for( uint32_t i = 0; i != m_dataInfo.width; ++i )
@@ -285,7 +293,7 @@ namespace Mengine
                                 alpha_buffer[i * 4 + 3] = 255; // alpha
                             }
 
-                            alpha_buffer += m_options.pitch;
+                            alpha_buffer += decoderData->pitch;
                         }
                     }
 #endif
@@ -294,7 +302,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "DEFAULT options channels %u != %u"
                         , m_options.channels
-                        , channels
+                        , dataChannels
                     );
 
                     return 0;
@@ -302,7 +310,7 @@ namespace Mengine
             }break;
         case DF_READ_ALPHA_ONLY:
             {
-                if( m_options.channels == 1 )
+                if( optionChannels == 1 )
                 {
                     MENGINE_MEMSET( buffer, 255, size );
 
@@ -311,7 +319,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "DF_READ_ALPHA_ONLY options channels %u != 4"
-                        , m_options.channels
+                        , optionChannels
                     );
 
                     return 0;
@@ -320,7 +328,7 @@ namespace Mengine
         default:
             {
                 LOGGER_ERROR( "unsupport options flag %u"
-                    , m_options.flags
+                    , decoderData->flags
                 );
 
                 return 0;
@@ -330,7 +338,7 @@ namespace Mengine
         m_jpegObject.output_scanline = m_jpegObject.output_height;
         jpeg_finish_decompress( &m_jpegObject );
 
-        size_t readSize = m_options.pitch * m_dataInfo.height;
+        size_t readSize = optionChannels->pitch * m_dataInfo.height;
 
         return readSize;
     }

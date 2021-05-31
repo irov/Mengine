@@ -28,7 +28,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual size_t encode( const EncoderData * _data, const CodecDataInfo * _codecData ) = 0;
+        virtual size_t encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getStream() const = 0;

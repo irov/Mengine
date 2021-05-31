@@ -20,7 +20,7 @@ namespace Mengine
         void _finalize() override;
 
     public:
-        size_t encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo ) override;
+        size_t encode( const EncoderData * _encoderData, const CodecDataInfo * _bufferDataInfo ) override;
 
     private:
         png_structp m_png_ptr;

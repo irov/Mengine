@@ -28,10 +28,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderDDS::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
+    size_t ImageEncoderDDS::encode( const EncoderData * _data, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_UNUSED( _size );
-
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
 
@@ -62,7 +60,7 @@ namespace Mengine
         header.ddspf.dwFourCC = s_convertFormatFourCC( imageInfo->format );
 
         write_size += m_stream->write( &header, sizeof( header ) );
-        write_size += m_stream->write( _buffer, ddsSize );
+        write_size += m_stream->write( _data->buffer, ddsSize );
 
         return write_size;
     }

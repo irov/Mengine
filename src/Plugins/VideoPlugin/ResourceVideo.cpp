@@ -142,9 +142,6 @@ namespace Mengine
         videoCodecOptions.alpha = m_alpha;
         videoCodecOptions.premultiply = m_premultiply;
 
-        videoCodecOptions.mock = HAS_OPTION( "novideo" );
-        videoCodecOptions.noSeek = m_noSeek;
-
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {
             LOGGER_ERROR( "group '%s' name '%s' can't setup options for file '%s'"

@@ -31,7 +31,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t PickEncoderHIT::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
+    size_t PickEncoderHIT::encode( const EncoderData * _data, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
 

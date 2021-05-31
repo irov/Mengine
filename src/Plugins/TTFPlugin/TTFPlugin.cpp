@@ -76,9 +76,22 @@ namespace Mengine
             return false;
         }
 
+        FT_Int amajor;
+        FT_Int aminor;
+        FT_Int apatch;
+        FT_Library_Version( ftlibrary, &amajor, &aminor, &apatch );
+
+        LOGGER_MESSAGE_RELEASE( "TTF Version: %d.%d.%d"
+            , amajor
+            , aminor
+            , apatch
+        );
+
+        m_ftlibrary = ftlibrary;
+
         TTFPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<TTFPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
-        generator->setFTLibrary( ftlibrary );
+        generator->setFTLibrary( m_ftlibrary );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ), generator ) == false )
@@ -89,8 +102,6 @@ namespace Mengine
         VOCABULARY_SET( TextFontConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         VOCABULARY_SET( FontValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-
-        m_ftlibrary = ftlibrary;
 
         m_ftMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );

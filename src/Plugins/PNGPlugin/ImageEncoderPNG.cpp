@@ -110,9 +110,12 @@ namespace Mengine
         png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
+    size_t ImageEncoderPNG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_UNUSED( _size );
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageEncoderData * );
+
+        const ImageEncoderData * encoderData = static_cast<const ImageEncoderData *>(_encoderData);
 
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
@@ -151,18 +154,15 @@ namespace Mengine
         png_uint_32 height = (png_uint_32)dataInfo->height;
         int32_t pixel_depth = 8;
 
-        png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE,
-            PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
-
+        png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
         png_set_bgr( m_png_ptr );
-
         png_write_info( m_png_ptr, m_info_ptr );
 
-        size_t pitch = m_options.pitch;
+        size_t pitch = encoderData->pitch;
 
-        png_bytep png_buffer = (png_bytep)_buffer;
+        png_const_bytep png_buffer = static_cast<png_const_bytep>(encoderData->buffer);
 
-        for( png_uint_32 k = 0; k < height; ++k )
+        for( png_uint_32 k = 0; k != height; ++k )
         {
             png_write_row( m_png_ptr, png_buffer );
             png_buffer += pitch;

@@ -23,7 +23,7 @@ namespace Mengine
         bool _prepareData() override;
 
     public:
-        size_t _decode( const DecoderData * _data ) override;
+        size_t _decode( const DecoderData * _decoderData ) override;
 
     public:
         bool _rewind() override;

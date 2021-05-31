@@ -24,9 +24,9 @@ namespace Mengine
         bool _prepareData() override;
 
     public:
-        size_t _decode( const DecoderData * _data ) override;
+        size_t _decode( const DecoderData * _decoderData ) override;
 
     protected:
-        bool decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * const _buffer, size_t _bufferSize );
+        bool decodeWEBP_( const uint8_t * _source, size_t _sourceSize, const ImageDecoderData * _data );
     };
 }

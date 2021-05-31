@@ -104,10 +104,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderWEBP::_decode( const DecoderData * _data )
+    size_t ImageDecoderWEBP::_decode( const DecoderData * _decoderData )
     {
-        uint8_t * const webp_buffer = static_cast<uint8_t * const>(_data->buffer);
-        size_t webp_buffer_size = _data->size;
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+
+        const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 
         void * streamMemory;
         size_t streamSize;
@@ -123,7 +125,7 @@ namespace Mengine
 
             size_t buffer_size = buffer->getSize();
 
-            if( this->decodeWEBP_( buffer_memory, buffer_size, webp_buffer, webp_buffer_size ) == false )
+            if( this->decodeWEBP_( buffer_memory, buffer_size, decoderData ) == false )
             {
                 return 0;
             }
@@ -133,45 +135,50 @@ namespace Mengine
             const uint8_t * webp_source = static_cast<const uint8_t *>(streamMemory);
             size_t webp_source_size = streamSize;
 
-            if( this->decodeWEBP_( webp_source, webp_source_size, webp_buffer, webp_buffer_size ) == false )
+            if( this->decodeWEBP_( webp_source, webp_source_size, decoderData ) == false )
             {
                 return 0;
             }
         }
 
-        return webp_buffer_size;
+        return decoderData->size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * const _buffer, size_t _bufferSize )
+    bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, const ImageDecoderData * _data )
     {
-        uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
+        uint8_t * const webp_buffer = static_cast<uint8_t * const>(_data->buffer);
+        size_t webp_buffer_size = _data->size;
+        size_t webp_buffer_pitch = _data->pitch;
 
-        if( channels == 4 && m_options.channels == 4 )
+        uint32_t optionChannels = Helper::getPixelFormatChannels( _data->format );
+        uint32_t dataChannels = Helper::getPixelFormatChannels( m_dataInfo.format );
+
+        if( dataChannels == 4 && optionChannels == 4 )
         {
-            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, (int32_t)m_options.pitch ) == nullptr )
+            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, webp_buffer, webp_buffer_size, (int32_t)webp_buffer_pitch ) == nullptr )
             {
                 return false;
             }
         }
-        else if( channels == 3 && m_options.channels == 4 )
+        else if( dataChannels == 3 && optionChannels == 4 )
         {
-            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, (int32_t)m_options.pitch ) == nullptr )
+            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, webp_buffer, webp_buffer_size, (int32_t)webp_buffer_pitch ) == nullptr )
             {
                 return false;
             }
         }
-        else if( channels == 3 && m_options.channels == 3 )
+        else if( dataChannels == 3 && optionChannels == 3 )
         {
-            if( MENGINE_WEBP_DECODE_RGB( _source, _sourceSize, _buffer, _bufferSize, (int32_t)m_options.pitch ) == nullptr )
+            if( MENGINE_WEBP_DECODE_RGB( _source, _sourceSize, webp_buffer, webp_buffer_size, (int32_t)webp_buffer_pitch ) == nullptr )
             {
                 return false;
             }
         }
         else
         {
-            LOGGER_ERROR( "not support for in %u and out %s channels"
-                , channels
-                , m_options.channels
+            LOGGER_ERROR( "not support for in %u and out %u channels"
+                , dataChannels
+                , optionChannels
             );
 
             return false;

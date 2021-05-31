@@ -238,9 +238,9 @@ namespace Mengine
 
         bool check_imageTransparency = CONFIG_VALUE( "Check", "ImageTransparency", false );
 
-        uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
+        uint32_t dataChannels = Helper::getPixelFormatChannels( dataInfo->format );
 
-        if( check_imageTransparency == true && channels == 4 )
+        if( check_imageTransparency == true && dataChannels == 4 )
         {
             uint32_t texture_size = Helper::getImageCodecDataSize( dataInfo );
 
@@ -250,26 +250,11 @@ namespace Mengine
 
             void * buffer_memory = buffer->getBuffer();
 
-            ImageCodecOptions options;
-            options.channels = 4;
-            options.pitch = dataInfo->width * options.channels;
-
-            if( imageDecoder->setOptions( &options ) == false )
-            {
-                LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' invalid optionizing"
-                    , _resource->getName().c_str()
-                    , _resource->getGroupName().c_str()
-                    , content->getFileGroup()->getName().c_str()
-                    , content->getFilePath().c_str()
-                    , content->getCodecType().c_str()
-                );
-
-                return false;
-            }
-
-            DecoderData data;
+            ImageDecoderData data;
             data.buffer = buffer_memory;
             data.size = texture_size;
+            data.pitch = dataInfo->width * 4;
+            data.format = PF_A8R8G8B8;            
 
             if( imageDecoder->decode( &data ) == 0 )
             {

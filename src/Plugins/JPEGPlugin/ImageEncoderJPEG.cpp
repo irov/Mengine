@@ -132,9 +132,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderJPEG::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
+    size_t ImageEncoderJPEG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_UNUSED( _size );
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
+        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );
+
+        const ImageEncoderData * encoderData = static_cast<const ImageEncoderData *>(_encoderData);
 
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
@@ -180,9 +183,9 @@ namespace Mengine
 
         jpeg_start_compress( &cinfo, TRUE );
 
-        JSAMPROW jpeg_buffer = (JSAMPROW)_buffer;
+        JSAMPROW jpeg_buffer = (JSAMPROW)encoderData->buffer;
 
-        size_t pitch = m_options.pitch;
+        size_t pitch = encoderData->pitch;
 
         JSAMPROW row_pointer[1];
         while( cinfo.next_scanline < cinfo.image_height )

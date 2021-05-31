@@ -51,6 +51,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OggVorbisPlugin::_initializePlugin()
     {
+        const char * vorbis_version = vorbis_version_string();
+
+        LOGGER_MESSAGE_RELEASE( "Vorbis version: %s"
+            , vorbis_version
+        );
+
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "oggSound" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "ogvSound" ), MENGINE_DOCUMENT_FACTORABLE );
 

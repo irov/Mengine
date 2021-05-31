@@ -27,29 +27,41 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static int32_t s_YTable[256];
-    static int32_t s_BUTable[256];
-    static int32_t s_GUTable[256];
-    static int32_t s_GVTable[256];
-    static int32_t s_RVTable[256];
-    //////////////////////////////////////////////////////////////////////////
-    static void s_createCoefTables()
+    namespace Detail
     {
-        int32_t scale = 1L << 13;
-
-        for( int32_t i = 0; i != 256; ++i )
+        //////////////////////////////////////////////////////////////////////////
+        static int32_t YTable[256];
+        static int32_t BUTable[256];
+        static int32_t GUTable[256];
+        static int32_t GVTable[256];
+        static int32_t RVTable[256];
+        //////////////////////////////////////////////////////////////////////////
+        static void createCoefTables()
         {
-            int32_t temp = i - 128;
+            static bool s_initializeCoefTables = false;
 
-            s_YTable[i] = (int32_t)((1.164f * scale + 0.5f) * (i - 16));
+            if( s_initializeCoefTables == true )
+            {
+                return;
+            }
 
-            s_RVTable[i] = (int32_t)((1.596f * scale + 0.5f) * temp);
+            s_initializeCoefTables = true;
 
-            s_GUTable[i] = (int32_t)((0.391f * scale + 0.5f) * temp);
-            s_GVTable[i] = (int32_t)((0.813f * scale + 0.5f) * temp);
+            int32_t scale = 1L << 13;
 
-            s_BUTable[i] = (int32_t)((2.018f * scale + 0.5f) * temp);
+            for( int32_t i = 0; i != 256; ++i )
+            {
+                int32_t temp = i - 128;
+
+                YTable[i] = (int32_t)((1.164f * scale + 0.5f) * (i - 16));
+
+                RVTable[i] = (int32_t)((1.596f * scale + 0.5f) * temp);
+
+                GUTable[i] = (int32_t)((0.391f * scale + 0.5f) * temp);
+                GVTable[i] = (int32_t)((0.813f * scale + 0.5f) * temp);
+
+                BUTable[i] = (int32_t)((2.018f * scale + 0.5f) * temp);
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -70,12 +82,7 @@ namespace Mengine
         theora_comment_init( &m_theoraComment );
         theora_info_init( &m_theoraInfo );
 
-        static bool s_initializeCoefTables = false;
-        if( s_initializeCoefTables == false )
-        {
-            s_initializeCoefTables = true;
-            s_createCoefTables();
-        }
+        Detail::createCoefTables();
 
         return true;
     }
@@ -360,11 +367,11 @@ namespace Mengine
                     int32_t u = uSrc[x];
                     int32_t v = vSrc[x];
 
-                    int32_t rV = s_RVTable[v];
-                    int32_t gUV = s_GUTable[u] + s_GVTable[v];
-                    int32_t bU = s_BUTable[u];
+                    int32_t rV = Detail::RVTable[v];
+                    int32_t gUV = Detail::GUTable[u] + Detail::GVTable[v];
+                    int32_t bU = Detail::BUTable[u];
 
-                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t rgbY = Detail::YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
                     int32_t b = (rgbY + bU) >> 13;
@@ -374,7 +381,7 @@ namespace Mengine
                     dstBitmap[THEORA_COLOR_A] = 255;
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc];
+                    rgbY = Detail::YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -384,7 +391,7 @@ namespace Mengine
                     dstBitmap[4 + THEORA_COLOR_A] = 255;
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -394,7 +401,7 @@ namespace Mengine
                     dstBitmapOffset[THEORA_COLOR_A] = 255;
                     ++ySrc2;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -436,11 +443,11 @@ namespace Mengine
                     int32_t u = uSrc[x];
                     int32_t v = vSrc[x];
 
-                    int32_t rV = s_RVTable[v];
-                    int32_t gUV = s_GUTable[u] + s_GVTable[v];
-                    int32_t bU = s_BUTable[u];
+                    int32_t rV = Detail::RVTable[v];
+                    int32_t gUV = Detail::GUTable[u] + Detail::GVTable[v];
+                    int32_t bU = Detail::BUTable[u];
 
-                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t rgbY = Detail::YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
                     int32_t b = (rgbY + bU) >> 13;
@@ -449,7 +456,7 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc];
+                    rgbY = Detail::YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -458,7 +465,7 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[3 + THEORA_COLOR_B] );
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -467,7 +474,7 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
                     ++ySrc2;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -510,11 +517,11 @@ namespace Mengine
                     int32_t u = uSrc[x];
                     int32_t v = vSrc[x];
 
-                    int32_t rV = s_RVTable[v];
-                    int32_t gUV = s_GUTable[u] + s_GVTable[v];
-                    int32_t bU = s_BUTable[u];
+                    int32_t rV = Detail::RVTable[v];
+                    int32_t gUV = Detail::GUTable[u] + Detail::GVTable[v];
+                    int32_t bU = Detail::BUTable[u];
 
-                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t rgbY = Detail::YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
                     int32_t b = (rgbY + bU) >> 13;
@@ -523,7 +530,7 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc];
+                    rgbY = Detail::YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -532,7 +539,7 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[4 + THEORA_COLOR_B] );
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -541,7 +548,7 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
                     ++ySrc2;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
@@ -571,24 +578,24 @@ namespace Mengine
                 {
                     int32_t v = vSrc[x];
 
-                    int32_t rV = s_RVTable[v];
+                    int32_t rV = Detail::RVTable[v];
 
-                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t rgbY = Detail::YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_A] );
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc];
+                    rgbY = Detail::YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[4 + THEORA_COLOR_A] );
                     ++ySrc;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_A] );
                     ++ySrc2;
 
-                    rgbY = s_YTable[*ySrc2];
+                    rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[4 + THEORA_COLOR_A] );
                     ++ySrc2;

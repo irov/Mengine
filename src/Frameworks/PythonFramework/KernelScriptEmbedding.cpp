@@ -2389,6 +2389,10 @@ namespace Mengine
             .def( "getRenderTarget", &RenderInterface::getRenderTarget )
             .def( "setExternalRender", &RenderInterface::setExternalRender )
             .def( "isExternalRender", &RenderInterface::isExternalRender )
+            .def( "setZGroup", &RenderInterface::setZGroup )
+            .def( "getZGroup", &RenderInterface::getZGroup )
+            .def( "setZIndex", &RenderInterface::setZIndex )
+            .def( "getZIndex", &RenderInterface::getZIndex )
             ;
 
         pybind::interface_<Renderable, pybind::bases<Mixin>>( _kernel, "Renderable" )

@@ -144,8 +144,22 @@ namespace Mengine
             , const RenderImageDesc & _imageDesc
             , const mt::uv4f & uv );
 
-        void getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _boundingBox ) const;
-        void getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * _bb ) const;
+        void getScreenBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const;
+        void getWorldBoundingBox( const ShapePtr & _node, const RenderImageDesc & _imageDesc, mt::box2f * const _bb ) const;
+
+    protected:
+        template<typename T>
+        bool deserializeNodeProp( const Char * _propName, const pugi::xml_node & _xmlParentNode, const Lambda<void( const T & )> & _lambda )
+        { 
+            if( Detail::deserializeNodeProp( _propName, _xmlParentNode, _lambda ) == false )
+            {
+                return false;
+            }
+
+            m_shouldUpdateScene = true;
+
+            return true;
+        }
 
     protected:
         uint32_t m_globalKeyHandlerF2;

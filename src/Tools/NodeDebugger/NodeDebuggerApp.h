@@ -167,10 +167,12 @@ namespace Mengine
     {
         bool    enable;
         bool    hide;
-        int32_t z_index;
-        int32_t z_order;
         Color   local_color;
         Color   personal_color;
+        int8_t z_group;
+        int32_t z_index;
+        int8_t total_z_group;
+        int32_t total_z_index;
 
         bool HasExtraRelationRender;
         uint32_t BaseRenderNodeUniqueIdentity;
@@ -186,20 +188,22 @@ namespace Mengine
         void serialize( pugi::xml_node & _xmlNode ) const
         {
             SERIALIZE_PROP( hide );
-            SERIALIZE_PROP( z_index );
-            SERIALIZE_PROP( z_order );
             SERIALIZE_PROP( local_color );
             SERIALIZE_PROP( personal_color );
+            SERIALIZE_PROP( z_group );
+            SERIALIZE_PROP( z_index );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
             DESERIALIZE_PROP( enable );
             DESERIALIZE_PROP( hide );
-            DESERIALIZE_PROP( z_index );
-            DESERIALIZE_PROP( z_order );
             DESERIALIZE_PROP( local_color );
             DESERIALIZE_PROP( personal_color );
+            DESERIALIZE_PROP( z_group );
+            DESERIALIZE_PROP( z_index );
+            DESERIALIZE_PROP( total_z_group );
+            DESERIALIZE_PROP( total_z_index );
 
             DESERIALIZE_PROP( HasExtraRelationRender );
             DESERIALIZE_PROP( BaseRenderNodeUniqueIdentity );

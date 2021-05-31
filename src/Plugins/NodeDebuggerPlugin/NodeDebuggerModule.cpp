@@ -750,6 +750,10 @@ namespace Mengine
         Detail::serializeNodeProp( _render->isHide(), "hide", xmlRender );
         Detail::serializeNodeProp( _render->getLocalColor(), "local_color", xmlRender );
         Detail::serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlRender );
+        Detail::serializeNodeProp( _render->getZGroup(), "z_group", xmlRender );
+        Detail::serializeNodeProp( _render->getZIndex(), "z_index", xmlRender );
+        Detail::serializeNodeProp( Helper::getRenderZGroupInheritance( _render ), "total_z_group", xmlRender );
+        Detail::serializeNodeProp( Helper::getRenderZIndexInheritance( _render ), "total_z_index", xmlRender );
 
         RenderInterface * relationRender = _render->getExtraRelationRender();
 
@@ -1786,6 +1790,16 @@ namespace Mengine
                 Detail::deserializeNodeProp<Color>( "personal_color", renderNode, [render]( const Color & _value )
                 {
                     render->setPersonalColor( _value );
+                } );
+
+                Detail::deserializeNodeProp<int8_t>( "z_group", renderNode, [render]( int8_t _value )
+                {
+                    render->setZGroup( _value );
+                } );
+
+                Detail::deserializeNodeProp<int32_t>( "z_index", renderNode, [render]( int32_t _value )
+                {
+                    render->setZIndex( _value );
                 } );
             }
 

@@ -402,23 +402,20 @@ namespace Mengine
             return false;
         }
 
-        XmlCodecOptions options;
-        options.pathProtocol = m_protocolPath;
+        XmlDecoderData data;
+        data.buffer = nullptr;
+        data.size = 0;
+        data.pathProtocol = m_protocolPath;
 
         const FilePath & folderPath = _fileGroup->getFolderPath();
 
-        options.pathXml = Helper::concatenationFilePath( folderPath, _pathXml );
-        options.pathBin = Helper::concatenationFilePath( folderPath, _pathBin );
+        data.pathXml = Helper::concatenationFilePath( folderPath, _pathXml );
+        data.pathBin = Helper::concatenationFilePath( folderPath, _pathBin );
 
-        options.useProtocolVersion = Metacode::get_metacode_protocol_version();
-        options.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
+        data.useProtocolVersion = Metacode::get_metacode_protocol_version();
+        data.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
-        if( decoder->setOptions( &options ) == false )
-        {
-            return false;
-        }
-
-        if( decoder->decode( 0, 0 ) == 0 )
+        if( decoder->decode( &data ) == 0 )
         {
             return false;
         }

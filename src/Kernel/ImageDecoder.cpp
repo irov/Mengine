@@ -14,28 +14,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::setOptions( const CodecOptions * _options )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( _options );
-        MENGINE_ASSERTION_TYPE( _options, const ImageCodecOptions * );
-
-        m_options = *static_cast<const ImageCodecOptions *>(_options);
-
-        MENGINE_ASSERTION_FATAL( m_options.pitch != 0, "pitch == 0" );
-        MENGINE_ASSERTION_FATAL( m_options.channels != 0, "pitch == 0" );
-
-        bool result = this->_invalidateOptions();
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::_invalidateOptions()
-    {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const ImageCodecDataInfo * ImageDecoder::getCodecDataInfo() const
     {
         return &m_dataInfo;

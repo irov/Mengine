@@ -9,6 +9,8 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/TextureHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -65,8 +67,6 @@ namespace Mengine
         _desc->mipmaps = dataInfo->mipmaps;
         _desc->width = dataInfo->width;
         _desc->height = dataInfo->height;
-        _desc->channels = dataInfo->channels;
-        _desc->depth = dataInfo->depth;
         _desc->format = dataInfo->format;
     }
     //////////////////////////////////////////////////////////////////////////    
@@ -74,10 +74,9 @@ namespace Mengine
     {
         uint32_t image_width = _image->getHWWidth();
         uint32_t image_height = _image->getHWHeight();
-        uint32_t image_channels = _image->getHWChannels();
 
-        uint32_t HWWidth = Helper::getTexturePOW2( image_width );
-        uint32_t HWHeight = Helper::getTexturePOW2( image_height );
+        uint32_t HWWidth = Helper::getTexturePow2( image_width );
+        uint32_t HWHeight = Helper::getTexturePow2( image_height );
 
         //ToDo
         uint32_t mipmap = 0;
@@ -104,17 +103,19 @@ namespace Mengine
             , rect.bottom
         );
 
-        ImageCodecOptions options;
-        options.pitch = pitch;
-        options.channels = image_channels;
-        options.mipmap = mipmap;
-        options.flags = m_codecFlags;
-
-        m_decoder->setOptions( &options );
-
         size_t mipmap_size = pitch * mipmap_height;
 
-        if( m_decoder->decode( textureBuffer, mipmap_size ) == 0 )
+        EPixelFormat pixelFormat = _image->getHWPixelFormat();
+
+        ImageDecoderData data;
+        data.buffer = textureBuffer;
+        data.size = mipmap_size;
+        data.pitch = pitch;
+        data.format = pixelFormat;
+        data.mipmap = mipmap;
+        data.flags = m_codecFlags;
+
+        if( m_decoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid decode for" );
 
@@ -161,20 +162,22 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
-        size_t pitch = dataInfo->width * dataInfo->channels;
+        uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
+
+        size_t pitch = dataInfo->width * channels;
         size_t dataSize = pitch * dataInfo->height;
 
         void * buffer = memory->newBuffer( dataSize );
 
-        ImageCodecOptions options;
-        options.pitch = pitch;
-        options.channels = dataInfo->channels;
-        options.mipmap = 0;
-        options.flags = _codecFlags;
+        ImageDecoderData data;
+        data.buffer = buffer;
+        data.size = dataSize;
+        data.pitch = pitch;
+        data.format = dataInfo->format;
+        data.flags = _codecFlags;
+        data.mipmap = 0;
 
-        m_decoder->setOptions( &options );
-
-        if( m_decoder->decode( buffer, dataSize ) == 0 )
+        if( m_decoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid decode for" );
 

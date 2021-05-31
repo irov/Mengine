@@ -94,19 +94,20 @@ namespace Mengine
             return false;
         }
 
-        m_dataInfo.depth = 1;
         m_dataInfo.width = header.dwWidth;
         m_dataInfo.height = header.dwHeight;
-        m_dataInfo.channels = 3;
 
         m_dataInfo.format = s_convertFourCCFormat( header.ddspf.dwFourCC );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderDDS::_decode( void * const _buffer, size_t _bufferSize )
+    size_t ImageDecoderDDS::_decode( const DecoderData * _data )
     {
-        size_t byte = m_stream->read( _buffer, _bufferSize );
+        void * buffer = _data->buffer;
+        size_t size = _data->size;
+
+        size_t byte = m_stream->read( buffer, size );
 
         return byte;
     }

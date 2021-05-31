@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -54,36 +55,38 @@ namespace Mengine
 
         m_dataInfo.width = width;
         m_dataInfo.height = height;
-        m_dataInfo.channels = 1;
         m_dataInfo.format = PF_A8;
         m_dataInfo.mipmaps = mipmaps;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderACF::_decode( void * const _buffer, size_t _bufferSize )
+    size_t ImageDecoderACF::_decode( const DecoderData * _data )
     {
-        size_t dataSize;
-        if( Helper::loadStreamArchiveBufferSize( m_stream, &dataSize ) == false )
+        void * dataBuffer = _data->buffer;
+        size_t dataSize = _data->size;
+
+        size_t streamSize;
+        if( Helper::loadStreamArchiveBufferSize( m_stream, &streamSize ) == false )
         {
             LOGGER_ERROR( "invalid load data size" );
 
             return 0;
         }
 
-        if( dataSize > _bufferSize )
+        if( streamSize > dataSize )
         {
             LOGGER_ERROR( "overrlow data size %zu need %zu"
+                , streamSize
                 , dataSize
-                , _bufferSize
             );
 
             return 0;
         }
 
-        if( m_options.pitch * m_dataInfo.height == dataSize )
+        if( m_options.pitch * m_dataInfo.height == streamSize )
         {
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, dataBuffer, dataSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load" );
 
@@ -92,13 +95,13 @@ namespace Mengine
         }
         else
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, MENGINE_DOCUMENT_FACTORABLE );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( streamSize, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
             void * memory = buffer->getBuffer();
 
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, streamSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load" );
 
@@ -106,18 +109,21 @@ namespace Mengine
             }
 
             const uint8_t * source_buffer = static_cast<const uint8_t *>(memory);
-            uint8_t * dest_buffer = static_cast<uint8_t *>(_buffer);
+            uint8_t * dest_buffer = static_cast<uint8_t *>(_data->buffer);
+
+            uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
+            uint32_t linesize = m_dataInfo.width * channels;
 
             for( uint32_t j = 0; j != m_dataInfo.height; ++j )
             {
-                stdex::memorycopy( dest_buffer, 0, source_buffer, m_dataInfo.width * m_dataInfo.channels );
+                stdex::memorycopy( dest_buffer, 0, source_buffer, linesize );
 
-                source_buffer += m_dataInfo.width * m_dataInfo.channels;
+                source_buffer += linesize;
                 dest_buffer += m_options.pitch;
             }
         }
 
-        return _bufferSize;
+        return dataSize;
     }
     //////////////////////////////////////////////////////////////////////////
 }

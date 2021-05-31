@@ -1,5 +1,7 @@
 #include "RenderUtils.h"
 
+#include "Kernel/PixelFormatHelper.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -29,11 +31,9 @@ namespace Mengine
         {
             uint32_t HWWidth = _image->getHWWidth();
             uint32_t HWHeight = _image->getHWHeight();
-            uint32_t HWChannels = _image->getHWChannels();
-            uint32_t HWDepth = _image->getHWDepth();
             EPixelFormat HWPixelFormat = _image->getHWPixelFormat();
 
-            uint32_t memorySize = Helper::getTextureMemorySize( HWWidth, HWHeight, HWChannels, HWDepth, HWPixelFormat );
+            uint32_t memorySize = Helper::getTextureMemorySize( HWWidth, HWHeight, HWPixelFormat );
 
             return memorySize;
         }

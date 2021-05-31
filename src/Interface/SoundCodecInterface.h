@@ -18,11 +18,6 @@ namespace Mengine
         float length = 0.f;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct SoundCodecOptions
-        : public CodecOptions
-    {
-    };
-    //////////////////////////////////////////////////////////////////////////
     class SoundDecoderInterface
         : public DecoderInterface
     {

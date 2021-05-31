@@ -12,8 +12,8 @@ namespace Mengine
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    struct XmlCodecOptions
-        : public CodecOptions
+    struct XmlDecoderData
+        : public DecoderData
     {
         FilePath pathProtocol;
         FilePath pathXml;

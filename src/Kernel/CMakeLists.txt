@@ -539,7 +539,14 @@ Core
     InputServiceHelper.h
     
     PixelFormat.h
-    PixelFormat.cpp
+    
+    PixelFormatHelper.h
+    PixelFormatHelper.cpp
+    
+    ImageCodecHelper.h
+    ImageCodecHelper.cpp
+    
+    TextureHelper.h
     
     AllocatorHelper.h
     AllocatorHelper.cpp

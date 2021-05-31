@@ -102,7 +102,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder( const DocumentPtr & _doc )
     {
-        const VideoDecoderInterfacePtr & cacheVideoDecoder = m_videoDecoderCacher.findCache();
+        const VideoDecoderInterfacePtr & cacheVideoDecoder = m_videoDecoderCacher.findCache( nullptr );
 
         if( cacheVideoDecoder != nullptr )
         {
@@ -136,23 +136,6 @@ namespace Mengine
         );
 
         VideoCodecOptions videoCodecOptions;
-
-        if( m_alpha == true )
-        {
-            videoCodecOptions.pixelFormat = PF_A8R8G8B8;
-        }
-        else
-        {
-            if( RENDER_SYSTEM()
-                ->supportTextureFormat( PF_R8G8B8 ) == true )
-            {
-                videoCodecOptions.pixelFormat = PF_R8G8B8;
-            }
-            else
-            {
-                videoCodecOptions.pixelFormat = PF_X8R8G8B8;
-            }
-        }
 
         videoCodecOptions.duration = m_duration;
         videoCodecOptions.fps = m_frameRate;

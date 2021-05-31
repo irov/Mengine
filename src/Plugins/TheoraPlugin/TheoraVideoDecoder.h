@@ -27,7 +27,7 @@ namespace Mengine
         bool _prepareData() override;
 
     public:
-        size_t _decode( void * const _buffer, size_t _bufferSize ) override;
+        size_t _decode( const DecoderData * _data ) override;
 
     public:
         bool _seek( float _timing ) override;
@@ -36,16 +36,12 @@ namespace Mengine
     public:
         EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) override;
 
-    public:
-        void setPitch( size_t _pitch ) override;
-        size_t getPitch() const override;
-
     protected:
         bool seekToFrame( float _timing );
 
     protected:
         size_t read_buffer_data_();
-        bool decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _pitch );
+        bool decodeBuffer_( const yuv_buffer & _yuvBuffer, const VideoDecoderData * _data );
 
     protected:
         ogg_stream_state m_oggStreamState = {0};
@@ -54,8 +50,6 @@ namespace Mengine
         theora_comment m_theoraComment = {0};
         theora_info m_theoraInfo = {0};
         mutable theora_state m_theoraState = {0};
-
-        uint32_t m_pitch;
 
         float m_time;
         bool m_readyFrame;

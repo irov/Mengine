@@ -11,6 +11,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/TextureHelper.h"
 
 namespace Mengine
 {
@@ -131,7 +132,7 @@ namespace Mengine
         const RenderImageInterfacePtr & image = texture->getImage();
 
         //ToDo: fix required setup alpha
-        uint32_t hwChannels = image->getHWChannels();
+        uint32_t hwChannels = image->getHWPixelFormat();
 
         if( hwChannels == 3 )
         {
@@ -161,9 +162,9 @@ namespace Mengine
         const mt::uv4f & uvImage = this->getUVImage();
         const mt::uv4f & uvAlpha = this->getUVAlpha();
 
-        if( Helper::isTexturePOW2( width ) == false )
+        if( Helper::isTexturePow2( width ) == false )
         {
-            uint32_t width_pow2 = Helper::getTexturePOW2( width );
+            uint32_t width_pow2 = Helper::getTexturePow2( width );
 
             float scale = size.x / float( width_pow2 );
 
@@ -182,9 +183,9 @@ namespace Mengine
             }
         }
 
-        if( Helper::isTexturePOW2( height ) == false )
+        if( Helper::isTexturePow2( height ) == false )
         {
-            uint32_t height_pow2 = Helper::getTexturePOW2( height );
+            uint32_t height_pow2 = Helper::getTexturePow2( height );
 
             float scale = size.y / float( height_pow2 );
 

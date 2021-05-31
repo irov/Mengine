@@ -9,6 +9,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -73,29 +74,21 @@ namespace Mengine
 
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
-        uint32_t channels = dataInfo->channels;
         EPixelFormat format = dataInfo->format;
 
-        uint32_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
+        uint32_t memorySize = Helper::getTextureMemorySize( width, height, format );
 
         m_buffer = Helper::allocateMemoryNT<uint8_t>( memorySize, "image_data" );
 
-        ImageCodecOptions options;
-        options.pitch = width * channels;
-        options.channels = channels;
+        uint32_t channels = Helper::getPixelFormatChannels( format );
 
-        if( imageDecoder->setOptions( &options ) == false )
-        {
-            LOGGER_ERROR( "image decoder '%s' for file '%s:%s' invalid optionize"
-                , this->getContent()->getCodecType().c_str()
-                , this->getContent()->getFileGroup()->getName().c_str()
-                , this->getContent()->getFilePath().c_str()
-            );
+        ImageDecoderData data;
+        data.buffer = m_buffer;
+        data.size = memorySize;
+        data.pitch = width * channels;
+        data.format = format;
 
-            return false;
-        }
-
-        if( imageDecoder->decode( m_buffer, memorySize ) == 0 )
+        if( imageDecoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "image decoder '%s' for file '%s:%s' invalid decode"
                 , this->getContent()->getCodecType().c_str()

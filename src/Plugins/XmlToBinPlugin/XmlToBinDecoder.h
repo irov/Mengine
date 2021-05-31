@@ -37,7 +37,7 @@ namespace Mengine
         bool prepareData( const InputStreamInterfacePtr & _stream ) override;
 
     public:
-        size_t decode( void * const _buffer, size_t _bufferSize ) override;
+        size_t decode( const DecoderData * _data ) override;
         bool rewind() override;
 
     public:

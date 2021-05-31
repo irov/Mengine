@@ -17,6 +17,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImageSubstract.h"
+#include "Kernel/TextureHelper.h"
 
 #include "Config/StdString.h"
 
@@ -312,8 +313,8 @@ namespace Mengine
         uint32_t atlas_width = (uint32_t)(resourceImageMaxsize.x + 0.5f);
         uint32_t atlas_height = (uint32_t)(resourceImageMaxsize.y + 0.5f);
 
-        uint32_t atlas_width_pow2 = Helper::getTexturePOW2( atlas_width );
-        uint32_t atlas_height_pow2 = Helper::getTexturePOW2( atlas_height );
+        uint32_t atlas_width_pow2 = Helper::getTexturePow2( atlas_width );
+        uint32_t atlas_height_pow2 = Helper::getTexturePow2( atlas_height );
 
         m_atlasWidth = atlas_width_pow2;
         m_atlasHeight = atlas_height_pow2;

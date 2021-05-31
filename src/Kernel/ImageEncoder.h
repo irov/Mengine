@@ -12,14 +12,5 @@ namespace Mengine
     public:
         ImageEncoder();
         ~ImageEncoder() override;
-
-    public:
-        bool setOptions( const CodecOptions * _options ) override;
-
-    protected:
-        virtual bool _invalidateOptions();
-
-    protected:
-        ImageCodecOptions m_options;
     };
 }

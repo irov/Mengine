@@ -138,20 +138,6 @@ namespace Mengine
         return HWHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderImageTarget::getHWChannels() const
-    {
-        uint32_t HWChannels = m_target->getHWChannels();
-
-        return HWChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderImageTarget::getHWDepth() const
-    {
-        uint32_t HWDepth = m_target->getHWDepth();
-
-        return HWDepth;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImageTarget::getHWMipmaps() const
     {
         return 1U;

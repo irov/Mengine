@@ -5,6 +5,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #ifndef MENGINE_DECODER_PNG_BYTES_TO_CHECK
 #define MENGINE_DECODER_PNG_BYTES_TO_CHECK 8
@@ -195,28 +196,52 @@ namespace Mengine
 
         m_row_bytes = png_get_rowbytes( m_png_ptr, m_info_ptr );
 
-        png_byte channels = png_get_channels( m_png_ptr, m_info_ptr );
-
         m_dataInfo.width = width;
         m_dataInfo.height = height;
-        m_dataInfo.depth = 1;
         m_dataInfo.mipmaps = 1;
-        m_dataInfo.channels = channels;
+
+        png_byte channels = png_get_channels( m_png_ptr, m_info_ptr );
+
+        switch( channels )
+        {
+        case 3:
+            {
+                m_dataInfo.format = PF_R8G8B8;
+            }break;
+        case 4:
+            {
+                m_dataInfo.format = PF_A8R8G8B8;
+            }break;
+        default:
+            {
+                LOGGER_ERROR( "unsupport channels %u"
+                    , channels
+                );
+
+                return false;
+            }break;            
+        }
+        
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderPNG::_decode( void * const _buffer, size_t _bufferSize )
+    size_t ImageDecoderPNG::_decode( const DecoderData * _data )
     {
+        void * buffer = _data->buffer;
+        size_t size = _data->size;
+
+        uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
+
         switch( m_options.flags & 0x0000ffff )
         {
         case DF_NONE:
             {
-                if( m_dataInfo.channels == m_options.channels )
+                if( channels == m_options.channels )
                 {
                     if( m_interlace_number_of_passes == 1 )
                     {
-                        png_bytep carriage = (png_bytep)_buffer;
+                        png_bytep carriage = (png_bytep)buffer;
 
                         for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                         {
@@ -229,7 +254,7 @@ namespace Mengine
                     {
                         png_bytep * image = (png_bytep *)png_malloc( m_png_ptr, m_dataInfo.height * sizeof( png_bytep * ) );
 
-                        png_bytep carriage = (png_bytep)_buffer;
+                        png_bytep carriage = (png_bytep)buffer;
 
                         for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                         {
@@ -243,9 +268,9 @@ namespace Mengine
                         png_free( m_png_ptr, image );
                     }
 
-                    if( m_options.flags & DF_PREMULTIPLY_ALPHA && m_dataInfo.channels == 4 )
+                    if( m_options.flags & DF_PREMULTIPLY_ALPHA && channels == 4 )
                     {
-                        png_bytep carriage = (png_bytep)_buffer;
+                        png_bytep carriage = (png_bytep)buffer;
 
                         for( uint32_t j = 0; j != m_dataInfo.height; ++j )
                         {
@@ -262,9 +287,9 @@ namespace Mengine
                         }
                     }
                 }
-                else if( m_dataInfo.channels == 1 && m_options.channels == 4 )
+                else if( channels == 1 && m_options.channels == 4 )
                 {
-                    png_bytep carriage = (png_bytep)_buffer;
+                    png_bytep carriage = (png_bytep)buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
@@ -273,11 +298,11 @@ namespace Mengine
                         carriage += m_options.pitch;
                     }
 
-                    this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+                    this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, buffer, m_options.pitch );
                 }
-                else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+                else if( channels == 3 && m_options.channels == 4 )
                 {
-                    png_bytep carriage = (png_bytep)_buffer;
+                    png_bytep carriage = (png_bytep)buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
@@ -286,12 +311,12 @@ namespace Mengine
                         carriage += m_options.pitch;
                     }
 
-                    this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+                    this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, buffer, m_options.pitch );
                 }
                 else
                 {
-                    LOGGER_ERROR( "DEFAULT not support chanells %d - %d"
-                        , m_dataInfo.channels
+                    LOGGER_ERROR( "DEFAULT not support chanells %u - %u"
+                        , channels
                         , m_options.channels
                     );
 
@@ -300,9 +325,9 @@ namespace Mengine
             }break;
         case DF_READ_ALPHA_ONLY:
             {
-                if( m_dataInfo.channels == 1 && m_options.channels == 1 )
+                if( channels == 1 && m_options.channels == 1 )
                 {
-                    png_bytep carriage = (png_bytep)_buffer;
+                    png_bytep carriage = (png_bytep)buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
@@ -311,7 +336,7 @@ namespace Mengine
                         carriage += m_options.pitch;
                     }
                 }
-                else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
+                else if( channels == 4 && m_options.channels == 1 )
                 {
                     MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -319,7 +344,7 @@ namespace Mengine
 
                     png_byte * row_memory = row_buffer->getBuffer();
 
-                    png_bytep carriage = (png_bytep)_buffer;
+                    png_bytep carriage = (png_bytep)_data->buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
@@ -336,8 +361,8 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "DF_READ_ALPHA_ONLY not support chanells %d - %d"
-                        , m_dataInfo.channels
+                    LOGGER_ERROR( "DF_READ_ALPHA_ONLY not support chanells %u - %u"
+                        , channels
                         , m_options.channels
                     );
 
@@ -346,7 +371,7 @@ namespace Mengine
             }break;
         case DF_WRITE_ALPHA_ONLY:
             {
-                if( m_dataInfo.channels == 1 && m_options.channels == 4 )
+                if( channels == 1 && m_options.channels == 4 )
                 {
                     MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -354,7 +379,7 @@ namespace Mengine
 
                     png_byte * row_memory = row_buffer->getBuffer();
 
-                    png_bytep carriage = (png_bytep)_buffer;
+                    png_bytep carriage = (png_bytep)buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
@@ -368,7 +393,7 @@ namespace Mengine
                         carriage += m_options.pitch;
                     }
                 }
-                else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
+                else if( channels == 4 && m_options.channels == 4 )
                 {
                     MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -376,7 +401,7 @@ namespace Mengine
 
                     png_byte * row_memory = row_buffer->getBuffer();
 
-                    png_bytep carriage = (png_bytep)_buffer;
+                    png_bytep carriage = (png_bytep)buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
@@ -392,8 +417,8 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
-                        , m_dataInfo.channels
+                    LOGGER_ERROR( "DF_WRITE_ALPHA_ONLY not support chanells %u - %u"
+                        , channels
                         , m_options.channels
                     );
 
@@ -402,7 +427,7 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_ERROR( "unsupport options flag %d"
+                LOGGER_ERROR( "unsupport options flag %u"
                     , m_options.flags
                 );
 
@@ -412,7 +437,7 @@ namespace Mengine
 
         png_read_end( m_png_ptr, m_info_ptr );
 
-        return _bufferSize;
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPNG::_rewind()

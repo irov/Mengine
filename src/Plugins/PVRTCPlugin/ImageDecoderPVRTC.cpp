@@ -71,11 +71,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderPVRTC::_decode( void * const _buffer, size_t _bufferSize )
+    size_t ImageDecoderPVRTC::_decode( const DecoderData * _data )
     {
-        size_t read = m_stream->read( _buffer, _bufferSize );
+        void * buffer = _data->buffer;
+        size_t size = _data->size;
 
-        return read == _bufferSize ? read : 0;
+        size_t read = m_stream->read( buffer, size );
+
+        return read == size ? read : 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPVRTC::_prepareData()
@@ -111,8 +114,6 @@ namespace Mengine
 
         m_dataInfo.width = m_header.width;
         m_dataInfo.height = m_header.height;
-        m_dataInfo.channels = 3;
-        m_dataInfo.depth = 1;
 
         if( (m_header.flags & PVRTEX_MIPMAP) == PVRTEX_MIPMAP )
         {

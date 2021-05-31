@@ -19,6 +19,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -133,24 +134,14 @@ namespace Mengine
         return RenderTextureInterfacePtr( texture );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
-        uint32_t HWMipmaps = _mipmaps;
-        uint32_t HWWidth = _width;
-        uint32_t HWHeight = _height;
-        uint32_t HWChannels = _channels;
-        uint32_t HWDepth = _depth;
-
-        EPixelFormat HWFormat = _format;
-
-        this->updateImageParams_( &HWWidth, &HWHeight, &HWChannels, &HWDepth, &HWFormat );
-
         RenderImageInterfacePtr image = RENDER_SYSTEM()
-            ->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
+            ->createImage( _mipmaps, _width, _height, _format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create image %ux%u"
-            , HWWidth
-            , HWHeight
+            , _width
+            , _height
         );
 
         RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
@@ -189,14 +180,12 @@ namespace Mengine
         }
 
         ImageCodecDataInfo dataInfo;
-        //dataInfo.format = _image->getHWPixelFormat();
+        dataInfo.mipmaps = 1;
         dataInfo.width = _texture->getWidth();
         dataInfo.height = _texture->getHeight();
 
         const RenderImageInterfacePtr & image = _texture->getImage();
-        dataInfo.channels = image->getHWChannels();
-        dataInfo.depth = 1;
-        dataInfo.mipmaps = 1;
+        dataInfo.format = image->getHWPixelFormat();        
 
         Rect rect;
         rect.left = 0;
@@ -213,26 +202,14 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        ImageCodecOptions options;
+        size_t bufferSize = pitch * dataInfo.height;
 
-        options.pitch = pitch;
-        options.channels = 4;
-        //options.flags |= DF_CUSTOM_PITCH;
+        ImageEncoderData data;
+        data.buffer = buffer;
+        data.size = bufferSize;
+        data.pitch = pitch;        
 
-        if( imageEncoder->setOptions( &options ) == false )
-        {
-            LOGGER_ERROR( "invalid optionize '%s'"
-                , _filePath.c_str()
-            );
-
-            image->unlock( locked, 0, false );
-
-            return false;
-        }
-
-        size_t bufferSize = options.pitch * dataInfo.height;
-
-        size_t bytesWritten = imageEncoder->encode( buffer, bufferSize, &dataInfo );
+        size_t bytesWritten = imageEncoder->encode( &data, &dataInfo );
 
         image->unlock( locked, 0, true );
 
@@ -334,7 +311,7 @@ namespace Mengine
         RenderImageDesc imageDesc;
         imageLoader->getImageDesc( &imageDesc );
 
-        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _doc );
+        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_texture, "create texture '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
@@ -361,118 +338,6 @@ namespace Mengine
         this->cacheFileTexture( _fileGroup, _filePath, new_texture );
 
         return new_texture;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t RenderTextureService::getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format ) const
-    {
-        uint32_t HWWidth = _width;
-        uint32_t HWHeight = _height;
-        uint32_t HWChannels = _channels;
-        uint32_t HWDepth = _depth;
-        EPixelFormat HWFormat = _format;
-
-        this->updateImageParams_( &HWWidth, &HWHeight, &HWChannels, &HWDepth, &HWFormat );
-
-        size_t memoryUse = Helper::getTextureMemorySize( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
-
-        return memoryUse;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::updateImageParams_( uint32_t * const _width, uint32_t * const _height, uint32_t * const _channels, uint32_t * const _depth, EPixelFormat * const _format ) const
-    {
-        if( ((*_width & (*_width - 1)) != 0 || (*_height & (*_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
-        {
-            *_width = Helper::getTexturePOW2( *_width );
-            *_height = Helper::getTexturePOW2( *_height );
-        }
-
-        switch( *_format )
-        {
-        case PF_UNKNOWN:
-            {
-                if( *_channels == 1 )
-                {
-                    if( m_supportA8 == true )
-                    {
-                        *_format = PF_A8;
-                    }
-                    else
-                    {
-                        *_format = PF_A8R8G8B8;
-
-                        *_channels = 4;
-                    }
-                }
-                else if( *_channels == 3 )
-                {
-                    if( m_supportR8G8B8 == true )
-                    {
-                        *_format = PF_R8G8B8;
-                    }
-                    else
-                    {
-                        *_format = PF_X8R8G8B8;
-                        *_channels = 4;
-                    }
-                }
-                else if( *_channels == 4 )
-                {
-                    *_format = PF_A8R8G8B8;
-                }
-            }break;
-        case PF_A8:
-            {
-                if( *_channels == 1 )
-                {
-                    if( m_supportA8 == true )
-                    {
-                        *_format = PF_A8;
-                    }
-                    else
-                    {
-                        *_format = PF_A8R8G8B8;
-
-                        *_channels = 4;
-                    }
-                }
-            }break;
-        default:
-            {
-            }break;
-        }
-
-        if( *_channels == 0 )
-        {
-            switch( *_format )
-            {
-            case PF_A8:
-                {
-                    if( m_supportA8 == true )
-                    {
-                        *_channels = 1;
-                    }
-                    else
-                    {
-                        *_format = PF_A8R8G8B8;
-
-                        *_channels = 4;
-                    }
-                }break;
-            case PF_A8B8G8R8:
-                {
-                    *_channels = 4;
-                }break;
-            case PF_A8R8G8B8:
-                {
-                    *_channels = 4;
-                }break;
-            default:
-                {
-                }break;
-            }
-        }
-
-        MENGINE_UNUSED( _depth ); //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::onRenderTextureDestroy_( RenderTextureInterface * _texture )

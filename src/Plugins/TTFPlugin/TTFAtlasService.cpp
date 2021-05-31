@@ -5,6 +5,8 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/TextureHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -78,7 +80,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture_memory );
 
-        uint32_t texture_channel = texture_image->getHWChannels();
+        EPixelFormat pixelFormat = texture_image->getHWPixelFormat();
+
+        uint32_t texture_channel = Helper::getPixelFormatChannels( pixelFormat );
 
         bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, texture_channel );
 
@@ -114,10 +118,10 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( _channel < 5 );
 
-        uint32_t hw_width = Helper::getTexturePOW2( _width );
-        uint32_t hw_height = Helper::getTexturePOW2( _height );
+        uint32_t hw_width = Helper::getTexturePow2( _width );
+        uint32_t hw_height = Helper::getTexturePow2( _height );
 
-        uint32_t dimension = Helper::Max( hw_width, hw_height );
+        uint32_t dimension = MENGINE_MAX( hw_width, hw_height );
 
         uint32_t dimension_np2 = mt::get_np2( dimension );
 
@@ -157,7 +161,7 @@ namespace Mengine
         EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( 1, m_maxAtlasWidth, newAtlas.height, 4, 1, format, _doc );
+            ->createTexture( 1, m_maxAtlasWidth, newAtlas.height, format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture );
 

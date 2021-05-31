@@ -24,11 +24,11 @@ namespace Mengine
         return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::compress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _compressSize, EArchivatorCompress _compress )
+    bool ArchivatorZip::compress( void * const _buffer, size_t _bufferCapacity, const void * _source, size_t _sourceSize, size_t * const _compressSize, EArchivatorCompress _compress )
     {
-        uLong compressSize = (uLong)_bufferSize;
+        uLong compressSize = (uLong)_bufferCapacity;
 
-        Bytef * dst_buffer = static_cast<Bytef *>(_distance);
+        Bytef * dst_buffer = static_cast<Bytef *>(_buffer);
         const Bytef * src_buffer = static_cast<const Bytef *>(_source);
 
         int32_t compress_method = 0;
@@ -118,11 +118,11 @@ namespace Mengine
         return err;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::decompress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _decompressSize )
+    bool ArchivatorZip::decompress( void * const _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _decompressSize )
     {
         uLong destLen = (uLong)_bufferSize;
 
-        Bytef * dst_buffer = (Bytef *)_distance;
+        Bytef * dst_buffer = (Bytef *)_buffer;
         const Bytef * src_buffer = (const Bytef *)_source;
 
         int32_t zerr = my_uncompress( dst_buffer, &destLen, src_buffer, (uLong)_sourceSize );

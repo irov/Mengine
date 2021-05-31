@@ -24,7 +24,6 @@ namespace Mengine
         uint32_t width = 0;
         uint32_t height = 0;
         float fps = 0.f;
-        uint32_t channel = 0;
 
         float duration = 0.f;
 
@@ -40,15 +39,18 @@ namespace Mengine
     struct VideoCodecOptions
         : public CodecOptions
     {
-        EPixelFormat pixelFormat = PF_UNKNOWN;
-
         float duration = 0.f;
         float fps = 0.f;
         bool alpha = false;
         bool premultiply = false;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct VideoDecoderData
+        : public DecoderData
+    {
+        size_t pitch;
 
-        bool mock = false;
-        bool noSeek = false;
+        EPixelFormat format;
     };
     //////////////////////////////////////////////////////////////////////////
     class VideoDecoderInterface
@@ -56,10 +58,6 @@ namespace Mengine
     {
     public:
         virtual const VideoCodecDataInfo * getCodecDataInfo() const override = 0;
-
-    public:
-        virtual void setPitch( size_t _pitch ) = 0;
-        virtual size_t getPitch() const = 0;
 
     public:
         virtual EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) = 0;

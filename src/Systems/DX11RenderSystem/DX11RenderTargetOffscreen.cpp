@@ -74,16 +74,6 @@ namespace Mengine
         return m_textureDesc.Height;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderTargetOffscreen::getHWChannels() const
-    {
-        return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderTargetOffscreen::getHWDepth() const
-    {
-        return 1U;
-    }
-    //////////////////////////////////////////////////////////////////////////
     EPixelFormat DX11RenderTargetOffscreen::getHWPixelFormat() const
     {
         return EPixelFormat::PF_UNKNOWN;

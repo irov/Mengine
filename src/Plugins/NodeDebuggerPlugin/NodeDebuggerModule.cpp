@@ -52,6 +52,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/ResourceImageSubstract.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "Config/StdString.h"
 
@@ -2220,7 +2221,11 @@ namespace Mengine
             return false;
         }
 
-        if( imageDesc.channels != 4 )
+        EPixelFormat pixelFormat = renderImage->getHWPixelFormat();
+
+        uint32_t channels = Helper::getPixelFormatChannels( pixelFormat );
+
+        if( channels != 4 )
         {
             return true;
         }

@@ -138,10 +138,9 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////////
-    size_t XmlToBinDecoder::decode( void * const _buffer, size_t _bufferSize )
+    size_t XmlToBinDecoder::decode( const DecoderData * _data )
     {
-        MENGINE_UNUSED( _buffer );
-        MENGINE_UNUSED( _bufferSize );
+        MENGINE_UNUSED( _data );
 
         LOGGER_MESSAGE( "xml to bin:\nxml - %s\nbin - %s"
             , m_options.pathXml.c_str()

@@ -14,43 +14,10 @@ namespace Mengine
         uint32_t mipmaps = 1;
         uint32_t width = 0;
         uint32_t height = 0;
-        uint32_t channels = 0;
-        uint32_t depth = 1;
 
         int32_t quality = 100;
 
         EPixelFormat format = PF_UNKNOWN;
-
-        MENGINE_INLINE uint32_t getFullSize() const
-        {
-            uint32_t full_size = 0;
-
-            for( uint32_t i = 0; i != mipmaps; ++i )
-            {
-                uint32_t s = this->getMipMapSize( i );
-
-                full_size += s;
-            }
-
-            return full_size;
-        }
-
-        MENGINE_INLINE uint32_t getMipMapSize( uint32_t _level ) const
-        {
-            uint32_t mipmap_width = (width >> _level);
-            uint32_t mipmap_height = (height >> _level);
-
-            uint32_t mipmap_size = Helper::getTextureMemorySize( mipmap_width, mipmap_height, channels, depth, format );
-
-            return mipmap_size;
-        }
-
-        MENGINE_INLINE uint32_t getSize() const
-        {
-            uint32_t size = Helper::getTextureMemorySize( width, height, channels, depth, format );
-
-            return size;
-        }
     };
     //////////////////////////////////////////////////////////////////////////
     enum EImageDecoderFlags
@@ -65,18 +32,20 @@ namespace Mengine
         DF_PREMULTIPLY_ALPHA = 0x00010000,
     };
     //////////////////////////////////////////////////////////////////////////
-    struct ImageCodecOptions
-        : public CodecOptions
+    struct ImageDecoderData
+        : public DecoderData
     {
-        uint32_t flags = DF_NONE;
-        uint32_t channels = 0;
-        uint32_t mipmap = 0;
-        size_t pitch = 0;
+        size_t pitch;
+        EPixelFormat format;
 
-        MENGINE_INLINE bool hasFlag( uint32_t _flag ) const
-        {
-            return (flags & _flag) != 0;
-        }
+        uint32_t flags = DF_NONE;
+        uint32_t mipmap = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct ImageEncoderData
+        : public EncoderData
+    {
+        size_t pitch;
     };
     //////////////////////////////////////////////////////////////////////////
     class ImageDecoderInterface

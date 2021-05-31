@@ -8,6 +8,7 @@
 #include "Kernel/AssertionType.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ImageCodecHelper.h"
 
 namespace Mengine
 {
@@ -60,7 +61,7 @@ namespace Mengine
 
         for( uint32_t i = 0; i != mipmaps; ++i )
         {
-            uint32_t mipmap_size = dataInfo->getMipMapSize( i );
+            uint32_t mipmap_size = Helper::getImageCodecDataMipMapSize( dataInfo, i );
 
             if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
             {

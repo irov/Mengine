@@ -4,6 +4,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -118,26 +119,32 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 
-        int32_t color_type;
-        if( dataInfo->channels == 1 )
-        {
-            color_type = PNG_COLOR_TYPE_GRAY;
-        }
-        else if( dataInfo->channels == 3 )
-        {
-            color_type = PNG_COLOR_TYPE_RGB;
-        }
-        else if( dataInfo->channels == 4 )
-        {
-            color_type = PNG_COLOR_TYPE_RGB_ALPHA;
-        }
-        else
-        {
-            LOGGER_ERROR( "unsupported image format channels %d"
-                , dataInfo->channels
-            );
+        uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
 
-            return 0;
+        int32_t color_type;
+        
+        switch( channels )
+        {
+        case 1:
+            {
+                color_type = PNG_COLOR_TYPE_GRAY;
+            }break;
+        case 3:
+            {
+                color_type = PNG_COLOR_TYPE_RGB;
+            }break;
+        case 4:
+            {
+                color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+            }break;
+        default:
+            {
+                LOGGER_ERROR( "unsupported image format channels %u"
+                    , channels
+                );
+
+                return 0;
+            }break;
         }
 
         png_uint_32 width = (png_uint_32)dataInfo->width;

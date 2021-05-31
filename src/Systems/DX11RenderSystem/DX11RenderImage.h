@@ -26,7 +26,7 @@ namespace Mengine
         ~DX11RenderImage() override;
 
     public:
-        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat );
+        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat );
         void finalize();
 
     public:
@@ -40,8 +40,6 @@ namespace Mengine
     public:
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
-        uint32_t getHWChannels() const override;
-        uint32_t getHWDepth() const override;
         uint32_t getHWMipmaps() const override;
 
         EPixelFormat getHWPixelFormat() const override;

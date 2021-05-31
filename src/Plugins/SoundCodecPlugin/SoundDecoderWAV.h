@@ -18,7 +18,7 @@ namespace Mengine
         bool _prepareData() override;
 
     public:
-        size_t _decode( void * _buffer, size_t _bufferSize ) override;
+        size_t _decode( const DecoderData * _data ) override;
 
         bool _seek( float _timing ) override;
         float _tell() const override;

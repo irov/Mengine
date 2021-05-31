@@ -16,8 +16,6 @@ namespace Mengine
         virtual uint32_t getHWMipmaps() const = 0;
         virtual uint32_t getHWWidth() const = 0;
         virtual uint32_t getHWHeight() const = 0;
-        virtual uint32_t getHWChannels() const = 0;
-        virtual uint32_t getHWDepth() const = 0;
 
     public:
         virtual EPixelFormat getHWPixelFormat() const = 0;

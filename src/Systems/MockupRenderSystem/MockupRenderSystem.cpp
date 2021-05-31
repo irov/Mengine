@@ -29,6 +29,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "math/uv4.h"
 
@@ -45,8 +46,6 @@ namespace Mengine
         , m_depth( false )
         , m_frames( 0 )
         , m_dxMaxCombinedTextureImageUnits( 0 )
-        , m_textureMemoryUse( 0U )
-        , m_textureCount( 0U )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
         , m_waitForVSync( false )
@@ -181,17 +180,15 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MockupRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderImageInterfacePtr MockupRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
-        LOGGER_INFO( "render", "texture normal created %dx%d %d:%d depth %d"
+        LOGGER_INFO( "render", "texture normal created %ux%u format %x"
             , _width
             , _height
             , _format
-            , _channels
-            , _depth
         );
 
-        MockupRenderImagePtr dxTexture = this->createRenderImage_( _mipmaps, _width, _height, _channels, _depth, _format, _doc );
+        MockupRenderImagePtr dxTexture = this->createRenderImage_( _mipmaps, _width, _height, _format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, "invalid create render texture" );
 
@@ -335,12 +332,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderSystem::getTextureMemoryUse() const
     {
-        return m_textureMemoryUse;
+        return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderSystem::getTextureCount() const
     {
-        return m_textureCount;
+        return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
     UnknownPointer MockupRenderSystem::getRenderSystemExtention()
@@ -778,7 +775,7 @@ namespace Mengine
     bool MockupRenderSystem::setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _variable )
     {
         MENGINE_UNUSED( _program );
-        MENGINE_UNUSED( _variable );        
+        MENGINE_UNUSED( _variable );
 
         return true;
     }
@@ -799,35 +796,26 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
+    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
     {
         MockupRenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage );
 
-        dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
+        dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
 
 #ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
 
         if( logcreateimage == true )
         {
-            LOGGER_STATISTIC( "create texture size %u:%u channels %u format %u (doc %s)"
+            LOGGER_STATISTIC( "create texture size %u:%u format %x (doc %s)"
                 , _hwWidth
                 , _hwHeight
-                , _hwChannels
                 , _hwPixelFormat
                 , MENGINE_DOCUMENT_STR( _doc )
             );
         }
-#endif
-
-#ifdef MENGINE_DEBUG
-        ++m_textureCount;
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
-
-        m_textureMemoryUse += memoryUse;
 #endif
 
         return dx9RenderImage;
@@ -838,19 +826,6 @@ namespace Mengine
         MENGINE_UNUSED( _image );
 
         _image->finalize();
-
-#ifdef MENGINE_DEBUG
-        m_textureCount--;
-
-        uint32_t hwWidth = _image->getHWWidth();
-        uint32_t hwHeight = _image->getHWHeight();
-        uint32_t hwChannels = _image->getHWChannels();
-        EPixelFormat hwPixelFormat = _image->getHWPixelFormat();
-
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
-
-        m_textureMemoryUse -= memoryUse;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::onDestroyRenderProgram_( MockupRenderProgram * _program )

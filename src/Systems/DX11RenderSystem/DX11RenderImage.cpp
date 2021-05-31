@@ -8,6 +8,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/TextureHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -30,22 +32,32 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DResourceView == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat )
+    bool DX11RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
     {
-        DXGI_FORMAT D3DFormat = Helper::toD3DFormat( _pixelFormat );
+        DXGI_FORMAT d3dFormat = Helper::toD3DFormat( _pixelFormat );
 
-        if( D3DFormat == DXGI_FORMAT_UNKNOWN )
+        if( d3dFormat == DXGI_FORMAT_UNKNOWN )
         {
             // TODO: handle log
             return false;
         }
 
+        m_hwPixelFormat = Helper::toPixelFormat( d3dFormat );
+
+        uint32_t hwChannels = Helper::getPixelFormatChannels( m_hwPixelFormat );
+        uint32_t hwDepth = Helper::getPixelFormatDepth( m_hwPixelFormat );
+
+        if( (_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0 )
+        {
+            _width = Helper::getTexturePow2( _width );
+            _height = Helper::getTexturePow2( _height );
+        }
+
         m_hwMipmaps = _mipmaps;
         m_hwWidth = _width;
         m_hwHeight = _height;
-        m_hwChannels = _channels;
-        m_hwDepth = _depth;
-        m_hwPixelFormat = _pixelFormat;
+        m_hwChannels = hwChannels;
+        m_hwDepth = hwDepth;        
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
@@ -53,11 +65,11 @@ namespace Mengine
         D3D11_TEXTURE2D_DESC textureDesc;
         ZeroMemory( &textureDesc, sizeof( D3D11_TEXTURE2D_DESC ) );
 
-        textureDesc.Width = _width;
-        textureDesc.Height = _height;
-        textureDesc.MipLevels = _mipmaps;
+        textureDesc.Width = m_hwWidth;
+        textureDesc.Height = m_hwHeight;
+        textureDesc.MipLevels = m_hwMipmaps;
         textureDesc.ArraySize = 1;
-        textureDesc.Format = D3DFormat;
+        textureDesc.Format = d3dFormat;
         textureDesc.SampleDesc.Count = 1;
         textureDesc.SampleDesc.Quality = 0;
         textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -238,16 +250,6 @@ namespace Mengine
     float DX11RenderImage::getHWHeightInv() const
     {
         return m_hwHeightInv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderImage::getHWChannels() const
-    {
-        return m_hwChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderImage::getHWDepth() const
-    {
-        return 1; //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImage::getHWMipmaps() const

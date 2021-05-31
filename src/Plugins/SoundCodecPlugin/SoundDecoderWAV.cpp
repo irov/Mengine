@@ -142,9 +142,12 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SoundDecoderWAV::_decode( void * _buffer, size_t _bufferSize )
+    size_t SoundDecoderWAV::_decode( const DecoderData * _data )
     {
-        size_t bytesDone = m_stream->read( _buffer, _bufferSize );
+        void * buffer = _data->buffer;
+        size_t size = _data->size;
+
+        size_t bytesDone = m_stream->read( buffer, size );
 
         return bytesDone;
     }

@@ -14,25 +14,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoder::setOptions( const CodecOptions * _options )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( _options );
-        MENGINE_ASSERTION_TYPE( _options, const PickCodecOptions * );
-
-        m_options = *static_cast<const PickCodecOptions *>(_options);
-        
-        bool result = this->_invalidateOptions();
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PickDecoder::_invalidateOptions()
-    {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PickDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );

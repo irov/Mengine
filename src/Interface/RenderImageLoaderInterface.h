@@ -16,8 +16,6 @@ namespace Mengine
         uint32_t mipmaps;
         uint32_t width;
         uint32_t height;
-        uint32_t channels;
-        uint32_t depth;
         EPixelFormat format;
     };
     //////////////////////////////////////////////////////////////////////////

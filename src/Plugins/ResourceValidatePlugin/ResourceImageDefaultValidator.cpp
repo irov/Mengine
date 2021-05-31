@@ -9,6 +9,8 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ImageCodecHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 
 namespace Mengine
 {
@@ -236,9 +238,11 @@ namespace Mengine
 
         bool check_imageTransparency = CONFIG_VALUE( "Check", "ImageTransparency", false );
 
-        if( check_imageTransparency == true && dataInfo->channels == 4 )
+        uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
+
+        if( check_imageTransparency == true && channels == 4 )
         {
-            uint32_t texture_size = dataInfo->getSize();
+            uint32_t texture_size = Helper::getImageCodecDataSize( dataInfo );
 
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -263,7 +267,11 @@ namespace Mengine
                 return false;
             }
 
-            if( imageDecoder->decode( buffer_memory, texture_size ) == 0 )
+            DecoderData data;
+            data.buffer = buffer_memory;
+            data.size = texture_size;
+
+            if( imageDecoder->decode( &data ) == 0 )
             {
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decode '%s'"
                     , _resource->getName().c_str()

@@ -1,5 +1,7 @@
 #include "MockupRenderTargetTexture.h"
 
+#include "Kernel/TextureHelper.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -23,8 +25,8 @@ namespace Mengine
     {
         m_width = _width;
         m_height = _height;
-        m_hwWidth = Helper::getTexturePOW2( _width );
-        m_hwHeight = Helper::getTexturePOW2( _height );
+        m_hwWidth = Helper::getTexturePow2( _width );
+        m_hwHeight = Helper::getTexturePow2( _height );
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
@@ -68,16 +70,6 @@ namespace Mengine
     uint32_t MockupRenderTargetTexture::getHWHeight() const
     {
         return m_hwHeight;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderTargetTexture::getHWChannels() const
-    {
-        return m_hwChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderTargetTexture::getHWDepth() const
-    {
-        return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
     EPixelFormat MockupRenderTargetTexture::getHWPixelFormat() const

@@ -23,7 +23,7 @@ namespace Mengine
         const RenderTransformationInterfacePtr & getRenderTransformationInheritance( const RenderInterface * _render );
         const RenderScissorInterfacePtr & getRenderScissorInheritance( const RenderInterface * _render );
         const RenderTargetInterfacePtr & getRenderTargetInheritance( const RenderInterface * _render );
-        uint8_t getRenderZGroupInheritance( const RenderInterface * _render );
+        int8_t getRenderZGroupInheritance( const RenderInterface * _render );
         int32_t getRenderZIndexInheritance( const RenderInterface * _render );
         //////////////////////////////////////////////////////////////////////////
         void fillNodeRenderContext( const NodePtr & _node, RenderContext * const _context );
@@ -33,7 +33,7 @@ namespace Mengine
         const RenderTransformationInterfacePtr & getNodeRenderTransformationInheritance( const Node * _node );
         const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( const Node * _node );
         const RenderTargetInterfacePtr & getNodeRenderTargetInheritance( const Node * _node );
-        uint8_t getNodeRenderZGroupInheritance( const Node * _node );
+        int8_t getNodeRenderZGroupInheritance( const Node * _node );
         int32_t getNodeRenderZIndexInheritance( const Node * _node );
         //////////////////////////////////////////////////////////////////////////
     }

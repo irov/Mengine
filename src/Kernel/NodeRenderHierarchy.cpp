@@ -56,9 +56,9 @@ namespace Mengine
             return render_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint8_t getRenderZGroupInheritance( const RenderInterface * _render )
+        int8_t getRenderZGroupInheritance( const RenderInterface * _render )
         {
-            uint8_t zOrder = _render->getZGroup();
+            int8_t zOrder = _render->getZGroup();
 
             if( zOrder != MENGINE_RENDER_ZGROUP_DEFAULT )
             {
@@ -72,7 +72,7 @@ namespace Mengine
                 return MENGINE_RENDER_ZGROUP_DEFAULT;
             }
 
-            uint8_t relation_zGroup = Helper::getRenderZGroupInheritance( relationRender );
+            int8_t relation_zGroup = Helper::getRenderZGroupInheritance( relationRender );
 
             return relation_zGroup;
         }
@@ -257,13 +257,13 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        uint8_t getNodeRenderZGroupInheritance( const Node * _node )
+        int8_t getNodeRenderZGroupInheritance( const Node * _node )
         {
             const RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
-                uint8_t zGroup = Helper::getRenderZGroupInheritance( render );
+                int8_t zGroup = Helper::getRenderZGroupInheritance( render );
 
                 return zGroup;
             }
@@ -275,7 +275,7 @@ namespace Mengine
                 return MENGINE_RENDER_ZGROUP_DEFAULT;
             }
 
-            uint8_t order_zGroup = Helper::getNodeRenderZGroupInheritance( parent );
+            int8_t order_zGroup = Helper::getNodeRenderZGroupInheritance( parent );
 
             return order_zGroup;
         }

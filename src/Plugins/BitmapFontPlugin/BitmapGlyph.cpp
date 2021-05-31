@@ -3,7 +3,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/PixelFormat.h"
+#include "Kernel/TextureHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -219,7 +219,7 @@ namespace Mengine
                                 );
                             }
 
-                            uint32_t width_pow2 = Helper::getTexturePOW2( width );
+                            uint32_t width_pow2 = Helper::getTexturePow2( width );
 
                             m_glyph->setTextureWidth( width_pow2 );
                         }
@@ -235,7 +235,7 @@ namespace Mengine
                                 );
                             }
 
-                            uint32_t height_pow2 = Helper::getTexturePOW2( height );
+                            uint32_t height_pow2 = Helper::getTexturePow2( height );
 
                             m_glyph->setTextureHeight( height_pow2 );
                         }

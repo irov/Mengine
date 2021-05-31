@@ -170,7 +170,7 @@ namespace Mengine
             return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * const _data, size_t _size, const DocumentPtr & _doc )
+        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * const _data, size_t _capacity, size_t * const _size, const DocumentPtr & _doc )
         {
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
@@ -199,10 +199,10 @@ namespace Mengine
             uint32_t binary_size = load_binary_size;
             uint32_t compress_size = load_compress_size;
 
-            if( binary_size != _size )
+            if( binary_size > _capacity )
             {
                 LOGGER_ERROR( "invalid buffer size '%zu' need '%u'"
-                    , _size
+                    , _capacity
                     , binary_size
                 );
 
@@ -233,21 +233,26 @@ namespace Mengine
             }
 
             size_t uncompressSize = 0;
-            if( _archivator->decompress( _data, _size, compress_memory, compress_size, &uncompressSize ) == false )
+            if( _archivator->decompress( _data, _capacity, compress_memory, compress_size, &uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress" );
 
                 return false;
             }
 
-            if( uncompressSize != _size )
+            if( uncompressSize > _capacity )
             {
                 LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
                     , uncompressSize
-                    , _size
+                    , _capacity
                 );
 
                 return false;
+            }
+
+            if( _size != nullptr )
+            {
+                *_size = uncompressSize;
             }
 
             return true;

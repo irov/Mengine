@@ -28,7 +28,8 @@ namespace Mengine
         void clear();
 
     public:
-        const T & findCache() const;
+        typedef Lambda<bool( const T & )> LambdaFilter;
+        const T & findCache( const LambdaFilter & _filter ) const;
 
     protected:
         struct ResourceCacherDesc
@@ -118,11 +119,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    const T & ResourceCacher<T>::findCache() const
+    const T & ResourceCacher<T>::findCache( const typename ResourceCacher<T>::LambdaFilter & _filter ) const
     {
         for( const ResourceCacherDesc & desc : m_cachers )
         {
             if( desc.use == true )
+            {
+                continue;
+            }
+
+            if( _filter != nullptr && _filter( desc.value ) == false )
             {
                 continue;
             }

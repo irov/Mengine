@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/TextureHelper.h"
 
 namespace Mengine
 {
@@ -49,7 +50,7 @@ namespace Mengine
 
         mt::uv4_from_mask( m_uv, mt::vec4f( 0.f, 0.f, scaleU, scaleV ) );
 
-        m_pow2 = Helper::isTexturePOW2( m_width ) == true && Helper::isTexturePOW2( m_height ) == true;
+        m_pow2 = Helper::isTexturePow2( m_width ) == true && Helper::isTexturePow2( m_height ) == true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::release()

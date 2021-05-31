@@ -183,15 +183,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SoundDecoderOGGVorbis::_decode( void * _buffer, size_t _bufferSize )
+    size_t SoundDecoderOGGVorbis::_decode( const DecoderData * _data )
     {
         long bytesDone = 0;
-        int32_t bytesReading = (int32_t)_bufferSize;
+        int32_t bytesReading = (int32_t)_data->size;
 
         for( ;;)
         {
             int32_t current_section = 0;
-            char * readBuffer = (char *)_buffer + bytesDone;
+            char * readBuffer = (char *)_data->buffer + bytesDone;
             long decodeSize = ov_read( &m_oggVorbisFile, readBuffer, bytesReading, 0, 2, 1, &current_section );
 
             if( decodeSize == OV_HOLE )

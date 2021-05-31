@@ -16,8 +16,8 @@ namespace Mengine
         uint32_t mipmapsize = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct PickCodecOptions
-        : public CodecOptions
+    struct PickDecoderData
+        : public DecoderData
     {
         size_t pitch = 0;
     };

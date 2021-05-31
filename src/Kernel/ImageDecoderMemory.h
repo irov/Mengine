@@ -15,10 +15,10 @@ namespace Mengine
         ~ImageDecoderMemory() override;
 
     protected:
-        size_t _decode( void * const _buffer, size_t _bufferSize ) override;
+        size_t _decode( const DecoderData * _data ) override;
 
     protected:
-        size_t decodeData_( void * const _buffer, size_t _bufferSize ) const;
+        size_t decodeData_( void * const _buffer, size_t _bufferSize, size_t _pitch ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ImageDecoderMemory> ImageDecoderMemoryPtr;

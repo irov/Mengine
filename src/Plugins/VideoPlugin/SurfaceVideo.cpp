@@ -141,31 +141,12 @@ namespace Mengine
             return false;
         }
 
-        if( this->createDecoder_() == false )
-        {
-            LOGGER_ERROR( "%s can`t create video decoder '%s'"
-                , this->getName().c_str()
-                , m_resourceVideo->getName().c_str()
-            );
-
-            return false;
-        }
-
-        uint32_t channels;
-
-        if( m_resourceVideo->isAlpha() == true )
-        {
-            channels = 4;
-        }
-        else
-        {
-            channels = 3;
-        }
+        this->createDecoder_();
 
         const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
         RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
-            ->createTexture( 1, dataInfo->width, dataInfo->height, channels, 1, dataInfo->format, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( 1, dataInfo->width, dataInfo->height, dataInfo->format, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicTexture, "'%s' resource '%s' can`t create dynamic texture"
             , this->getName().c_str()
@@ -185,7 +166,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::createDecoder_()
+    void SurfaceVideo::createDecoder_()
     {
         VideoDecoderInterfacePtr videoDecoder = m_resourceVideo->createVideoDecoder( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -194,8 +175,6 @@ namespace Mengine
         );
 
         m_videoDecoder = videoDecoder;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_release()
@@ -560,10 +539,17 @@ namespace Mengine
             , rect.bottom
         );
 
-        m_videoDecoder->setPitch( pitch );
+        size_t bufferSize = pitch * (rect.bottom - rect.top);
 
-        size_t bufferSize = Helper::getImageMemorySize( image );
-        size_t bytes = m_videoDecoder->decode( lockRect, bufferSize );
+        EPixelFormat pixelFormat = image->getHWPixelFormat();
+
+        VideoDecoderData data;
+        data.buffer = lockRect;
+        data.size = bufferSize;
+        data.pitch = pitch;
+        data.format = pixelFormat;
+
+        size_t bytes = m_videoDecoder->decode( &data );
 
         image->unlock( locked, 0, true );
 

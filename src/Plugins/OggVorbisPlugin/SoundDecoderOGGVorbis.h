@@ -25,7 +25,7 @@ namespace Mengine
         bool _rewind() override;
 
     public:
-        size_t _decode( void * _buffer, size_t _bufferSize ) override;
+        size_t _decode( const DecoderData * _data ) override;
 
     public:
         bool _seek( float _time ) override;

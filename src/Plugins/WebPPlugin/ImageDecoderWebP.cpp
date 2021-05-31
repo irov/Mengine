@@ -5,6 +5,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/PixelFormatHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,10 +89,8 @@ namespace Mengine
         //fill ImageCodecDataInfo strucuture
         m_dataInfo.width = features.width;
         m_dataInfo.height = features.height;
-        m_dataInfo.depth = 1;
 
         m_dataInfo.mipmaps = 1;
-        m_dataInfo.channels = channels;
 
         return true;
     }
@@ -105,10 +104,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderWEBP::_decode( void * const _buffer, size_t _bufferSize )
+    size_t ImageDecoderWEBP::_decode( const DecoderData * _data )
     {
-        uint8_t * const webp_buffer = static_cast<uint8_t * const>(_buffer);
-        size_t webp_buffer_size = _bufferSize;
+        uint8_t * const webp_buffer = static_cast<uint8_t * const>(_data->buffer);
+        size_t webp_buffer_size = _data->size;
 
         void * streamMemory;
         size_t streamSize;
@@ -140,26 +139,28 @@ namespace Mengine
             }
         }
 
-        return _bufferSize;
+        return webp_buffer_size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * const _buffer, size_t _bufferSize )
     {
-        if( m_dataInfo.channels == 4 && m_options.channels == 4 )
+        uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
+
+        if( channels == 4 && m_options.channels == 4 )
         {
             if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, (int32_t)m_options.pitch ) == nullptr )
             {
                 return false;
             }
         }
-        else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+        else if( channels == 3 && m_options.channels == 4 )
         {
             if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, (int32_t)m_options.pitch ) == nullptr )
             {
                 return false;
             }
         }
-        else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
+        else if( channels == 3 && m_options.channels == 3 )
         {
             if( MENGINE_WEBP_DECODE_RGB( _source, _sourceSize, _buffer, _bufferSize, (int32_t)m_options.pitch ) == nullptr )
             {
@@ -168,6 +169,11 @@ namespace Mengine
         }
         else
         {
+            LOGGER_ERROR( "not support for in %u and out %s channels"
+                , channels
+                , m_options.channels
+            );
+
             return false;
         }
 

@@ -1,6 +1,7 @@
 #include "TheoraVideoDecoder.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionType.h"
 
 #include "Config/StdString.h"
 
@@ -53,8 +54,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TheoraVideoDecoder::TheoraVideoDecoder()
-        : m_pitch( 0 )
-        , m_time( 0.f )
+        : m_time( 0.f )
         , m_readyFrame( false )
     {
     }
@@ -235,7 +235,7 @@ namespace Mengine
             m_dataInfo.width = m_theoraInfo.width;
             m_dataInfo.height = m_theoraInfo.height / 2;
 
-            m_dataInfo.channel = 4;
+            m_dataInfo.format = PF_A8R8G8B8;
         }
         else
         {
@@ -245,7 +245,7 @@ namespace Mengine
             m_dataInfo.width = m_theoraInfo.width;
             m_dataInfo.height = m_theoraInfo.height;
 
-            m_dataInfo.channel = 3;
+            m_dataInfo.format = PF_R8G8B8;
         }
 
         m_dataInfo.duration = m_options.duration;
@@ -300,8 +300,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t TheoraVideoDecoder::_decode( void * const _buffer, size_t _bufferSize )
+    size_t TheoraVideoDecoder::_decode( const DecoderData * _data )
     {
+        MENGINE_ASSERTION_TYPE( _data, const VideoDecoderData * );
+
         if( m_readyFrame == false )
         {
             float time;
@@ -325,9 +327,7 @@ namespace Mengine
             return 0;
         }
 
-        uint8_t * byte_buffer = static_cast<uint8_t *>(_buffer);
-
-        if( this->decodeBuffer_( yuvBuffer, byte_buffer, _bufferSize ) == false )
+        if( this->decodeBuffer_( yuvBuffer, static_cast<const VideoDecoderData *>(_data) ) == false )
         {
             return 0;
         }
@@ -335,16 +335,14 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * const _buffer, size_t _size )
+    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, const VideoDecoderData * _data )
     {
-        MENGINE_UNUSED( _size );
+        uint8_t * dstBitmap = static_cast<uint8_t *>(_data->buffer);
+        uint8_t * dstBitmapOffset = static_cast<uint8_t *>(_data->buffer) + _data->pitch;
 
-        if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
+        if( m_options.alpha == false && _data->format == PF_X8R8G8B8 )
         {
-            uint8_t * dstBitmap = _buffer;
-            uint8_t * dstBitmapOffset = _buffer + m_pitch;
-
-            uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
+            uint32_t dstOff = _data->pitch * 2 - m_theoraInfo.width * 4;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -418,12 +416,9 @@ namespace Mengine
                 vSrc += _yuvBuffer.uv_stride;
             }
         }
-        else if( m_options.alpha == false && m_options.pixelFormat == PF_R8G8B8 )
+        else if( m_options.alpha == false && _data->format == PF_R8G8B8 )
         {
-            uint8_t * dstBitmap = _buffer;
-            uint8_t * dstBitmapOffset = _buffer + m_pitch;
-
-            uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 3;
+            uint32_t dstOff = _data->pitch * 2 - m_theoraInfo.width * 3;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -493,12 +488,9 @@ namespace Mengine
                 vSrc += _yuvBuffer.uv_stride;
             }
         }
-        else if( m_options.alpha == true )
+        else if( m_options.alpha == true && _data->format == PF_A8R8G8B8 )
         {
-            uint8_t * dstBitmap = _buffer;
-            uint8_t * dstBitmapOffset = _buffer + m_pitch;
-
-            uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
+            uint32_t dstOff = _data->pitch * 2 - m_theoraInfo.width * 4;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -570,8 +562,8 @@ namespace Mengine
                 vSrc += _yuvBuffer.uv_stride;
             }
 
-            dstBitmap = _buffer;
-            dstBitmapOffset = _buffer + m_pitch;
+            dstBitmap = static_cast<uint8_t *>(_data->buffer);
+            dstBitmapOffset = static_cast<uint8_t *>(_data->buffer) + _data->pitch;
 
             for( int32_t y = 0; y != y_rgb_count; ++y )
             {
@@ -614,8 +606,8 @@ namespace Mengine
 
             if( m_options.premultiply == true )
             {
-                dstBitmap = _buffer;
-                dstBitmapOffset = _buffer + m_pitch;
+                dstBitmap = static_cast<uint8_t *>(_data->buffer);
+                dstBitmapOffset = static_cast<uint8_t *>(_data->buffer) + _data->pitch;
 
                 for( int32_t y = 0; y != y_rgb_count; ++y )
                 {
@@ -817,16 +809,6 @@ namespace Mengine
         float timing = (float)(granule_time * 1000.0);
 
         return timing;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void TheoraVideoDecoder::setPitch( size_t _pitch )
-    {
-        m_pitch = (uint32_t)_pitch;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t TheoraVideoDecoder::getPitch() const
-    {
-        return (size_t)m_pitch;
     }
     //////////////////////////////////////////////////////////////////////////
 }

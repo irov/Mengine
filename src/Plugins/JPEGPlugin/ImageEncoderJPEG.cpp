@@ -4,6 +4,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #ifndef MENGINE_JPEG_OUTPUT_BUF_SIZE
 #define MENGINE_JPEG_OUTPUT_BUF_SIZE 4096
@@ -170,7 +171,7 @@ namespace Mengine
 
         cinfo.image_width = (JDIMENSION)dataInfo->width;
         cinfo.image_height = (JDIMENSION)dataInfo->height;
-        cinfo.input_components = dataInfo->channels;
+        cinfo.input_components = Helper::getPixelFormatChannels( dataInfo->format );
 
         cinfo.in_color_space = JCS_RGB;
 
@@ -193,6 +194,8 @@ namespace Mengine
         jpeg_finish_compress( &cinfo );
         jpeg_destroy_compress( &cinfo );
 
-        return pitch * dataInfo->height;
+        size_t size = pitch * dataInfo->height;
+
+        return size;
     }
 }

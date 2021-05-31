@@ -14,13 +14,5 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    struct CodecOptions
-    {
-#if MENGINE_ASSERTION_DEBUG
-        CodecOptions() = default;
-        virtual ~CodecOptions() = default;
-#endif
-    };
-    //////////////////////////////////////////////////////////////////////////
 }
 

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Config/Typedef.h"
+#include "Config/Config.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     enum EPixelFormat
     {
         PF_UNKNOWN = 0,
@@ -59,50 +58,5 @@ namespace Mengine
         PF_PVRTC4_RGBA = 40,
 
         PF_COUNT = 41
-    };
-    //////////////////////////////////////////////////////////////////////////
-    namespace Helper
-    {
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_CONSTEXPR bool isTexturePOW2( uint32_t n )
-        {
-            return !(n & (n - 1));
-        }
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_CONSTEXPR uint32_t getPower2( uint32_t _n )
-        {
-            uint32_t np = 1 << _n;
-
-            return np;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_CONSTEXPR uint32_t getTexturePOW2( uint32_t n )
-        {
-            --n;
-            n |= n >> 16;
-            n |= n >> 8;
-            n |= n >> 4;
-            n |= n >> 2;
-            n |= n >> 1;
-            ++n;
-
-            return n;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        template<class T>
-        const T & Max( const T & _left, const T & _right )
-        {
-            return _left < _right ? _right : _left;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        template<class T>
-        const T & Min( const T & _left, const T & _right )
-        {
-            return _right < _left ? _right : _left;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format );
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
+    };    
 }

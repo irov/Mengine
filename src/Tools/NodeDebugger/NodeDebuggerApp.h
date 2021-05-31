@@ -668,7 +668,7 @@ namespace Mengine
         void DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
         Vector<uint32_t> CollectNodePath( const DebuggerNode * _node );
         String PathToString( const Vector<uint32_t> & _path );
-        Vector<uint32_t> StringToPath( String & _pathStr );
+        Vector<uint32_t> StringToPath( const String & _pathStr );
         DebuggerNode * PathToNode( DebuggerNode * _base, const Vector<uint32_t> & _path );
         void DestroyNode( DebuggerNode * _node );
 

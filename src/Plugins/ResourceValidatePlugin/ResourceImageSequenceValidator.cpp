@@ -10,7 +10,9 @@
 
 #include "ResourceValidateServiceInterface.h"
 
+#include "Kernel/TextureHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
+#include "Kernel/PixelFormatHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -50,8 +52,8 @@ namespace Mengine
 
             const mt::vec2f & size = resourceImage->getSize();
 
-            uint32_t width = Helper::getTexturePOW2( (uint32_t)size.x );
-            uint32_t height = Helper::getTexturePOW2( (uint32_t)size.y );
+            uint32_t width = Helper::getTexturePow2( (uint32_t)size.x );
+            uint32_t height = Helper::getTexturePow2( (uint32_t)size.y );
 
             uint32_t channels = 3;
 
@@ -60,7 +62,9 @@ namespace Mengine
                 channels = 4;
             }
 
-            size_t textureSize = Helper::getTextureMemorySize( width, height, channels, 1, PF_UNKNOWN );
+            EPixelFormat pixelFormat = Helper::findBestPixelFormat( channels, 1 );
+
+            size_t textureSize = Helper::getTextureMemorySize( width, height, pixelFormat );
 
             total_memory += textureSize;
         }

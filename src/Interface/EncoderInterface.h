@@ -9,6 +9,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    struct EncoderData
+    {
+#if MENGINE_ASSERTION_DEBUG
+        EncoderData() = default;
+        virtual ~EncoderData() = default;
+#endif
+
+        const void * buffer;
+        size_t size;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class EncoderInterface
         : public Interface
     {
@@ -17,10 +28,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual bool setOptions( const CodecOptions * _options ) = 0;
-
-    public:
-        virtual size_t encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo ) = 0;
+        virtual size_t encode( const EncoderData * _data, const CodecDataInfo * _codecData ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getStream() const = 0;

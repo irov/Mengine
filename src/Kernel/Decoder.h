@@ -43,6 +43,8 @@ namespace Mengine
     protected:
         virtual bool _initialize()
         {
+            //Empty
+
             return true;
         }
 
@@ -99,21 +101,23 @@ namespace Mengine
     protected:
         virtual bool _prepareData()
         {
+            //Empty
+
             return true;
         }
 
     private:
-        size_t decode( void * const _buffer, size_t _bufferSize ) override
+        size_t decode( const DecoderData * _data ) override
         {
             MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::decode" );
 
-            size_t byte = this->_decode( _buffer, _bufferSize );
+            size_t byte = this->_decode( _data );
 
             return byte;
         }
 
     protected:
-        virtual size_t _decode( void * const _buffer, size_t _bufferSize ) = 0;
+        virtual size_t _decode( const DecoderData * _data ) = 0;
 
     private:
         bool seek( float _time ) override
@@ -146,6 +150,8 @@ namespace Mengine
     protected:
         virtual float _tell() const
         {
+            //Empty
+
             return 0.0;
         }
 

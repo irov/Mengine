@@ -21,13 +21,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImage::initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
+    void MockupRenderImage::initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat )
     {
         m_hwMipmaps = _mipmaps;
         m_hwWidth = _hwWidth;
         m_hwHeight = _hwHeight;
-        m_hwChannels = _hwChannels;
-        m_hwDepth = _hwDepth;
+        m_hwChannels = 4;
+        m_hwDepth = 1;
         m_hwPixelFormat = _hwPixelFormat;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
@@ -93,16 +93,6 @@ namespace Mengine
     float MockupRenderImage::getHWHeightInv() const
     {
         return m_hwHeightInv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderImage::getHWChannels() const
-    {
-        return m_hwChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderImage::getHWDepth() const
-    {
-        return 1; //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderImage::getHWMipmaps() const

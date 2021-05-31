@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/PixelFormatHelper.h"
 #include "Kernel/AssertionType.h"
 
 #include "Config/StdString.h"
@@ -41,7 +42,7 @@ namespace Mengine
         uint32_t magic = MENGINE_FOURCC( 'D', 'D', 'S', ' ' );
         write_size += m_stream->write( &magic, sizeof( magic ) );
 
-        uint32_t ddsSize = Helper::getTextureMemorySize( imageInfo->width, imageInfo->height, imageInfo->channels, imageInfo->depth, imageInfo->format );
+        uint32_t ddsSize = Helper::getTextureMemorySize( imageInfo->width, imageInfo->height, imageInfo->format );
 
         DDS_HEADER header;
         MENGINE_MEMSET( &header, 0, sizeof( header ) );

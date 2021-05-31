@@ -105,11 +105,11 @@ namespace Mengine
             case PF_DXT2:
                 return DXGI_FORMAT_BC2_UNORM;
             case PF_DXT3:
-                return DXGI_FORMAT_BC2_UNORM;
+                return DXGI_FORMAT_BC3_UNORM;
             case PF_DXT4:
-                return DXGI_FORMAT_BC3_UNORM;
+                return DXGI_FORMAT_BC4_UNORM;
             case PF_DXT5:
-                return DXGI_FORMAT_BC3_UNORM;
+                return DXGI_FORMAT_BC5_UNORM;
             case PF_UNKNOWN:
                 return DXGI_FORMAT_UNKNOWN;
             default:
@@ -117,6 +117,43 @@ namespace Mengine
             }
 
             return DXGI_FORMAT_UNKNOWN;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE EPixelFormat toPixelFormat( DXGI_FORMAT _dxgiFormat )
+        {
+            switch( _dxgiFormat )
+            {
+            case DXGI_FORMAT_R8_UNORM:
+                return PF_L8;
+            case DXGI_FORMAT_A8_UNORM:
+                return PF_A8;
+            case DXGI_FORMAT_B5G5R5A1_UNORM:
+                return PF_A1R5G5B5;
+            case DXGI_FORMAT_B5G6R5_UNORM:
+                return PF_R5G6B5;
+            case DXGI_FORMAT_B4G4R4A4_UNORM:
+                return PF_A4R4G4B4;
+            case DXGI_FORMAT_B8G8R8A8_UNORM:
+                return PF_A8R8G8B8;
+            case DXGI_FORMAT_B8G8R8X8_UNORM:
+                return PF_X8R8G8B8;
+            case DXGI_FORMAT_R16G16_UNORM:
+                return PF_SHORT_GR;
+            case DXGI_FORMAT_BC1_UNORM:
+                return PF_DXT1; // to support SRGB needs to use DXGI_FORMAT_BC1_UNORM_SRGB instead
+            case DXGI_FORMAT_BC2_UNORM:
+                return PF_DXT2;
+            case DXGI_FORMAT_BC3_UNORM:
+                return PF_DXT3;
+            case DXGI_FORMAT_BC4_UNORM:
+                return PF_DXT4;
+            case DXGI_FORMAT_BC5_UNORM:
+                return PF_DXT5;
+            default:
+                break;
+            }
+
+            return PF_UNKNOWN;
         }
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE D3D11_BLEND toD3DBlendFactor( EBlendFactor _blend )

@@ -2,6 +2,9 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
+#include "Kernel/PixelFormatHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 
 namespace Mengine
 {
@@ -14,11 +17,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderMemory::_decode( void * const _buffer, size_t _bufferSize )
+    size_t ImageDecoderMemory::_decode( const DecoderData * _data )
     {
-        MENGINE_ASSERTION_FATAL( _bufferSize >= m_options.pitch * m_dataInfo.height, "invalid bufferSize %zu != (%zu * %u)"
-            , _bufferSize
-            , m_options.pitch
+        MENGINE_ASSERTION_MEMORY_PANIC( _data );
+        MENGINE_ASSERTION_TYPE( _data, const ImageDecoderData * );
+
+        const ImageDecoderData * imageData = static_cast<const ImageDecoderData *>(_data);
+
+        void * buffer = imageData->buffer;
+        size_t size = imageData->size;
+
+        MENGINE_ASSERTION_FATAL( imageData->size >= imageData->pitch * m_dataInfo.height, "invalid bufferSize %zu != (%zu * %u)"
+            , imageData->size
+            , imageData->pitch
             , m_dataInfo.height
         );
 
@@ -26,32 +37,39 @@ namespace Mengine
 
         size_t read_byte = 0;
 
-        if( m_dataInfo.channels == 3 && m_options.channels == 4 )
-        {
-            read_byte = this->decodeData_( _buffer, _bufferSize );
+        uint32_t imageChannels = Helper::getPixelFormatChannels( m_dataInfo.format );
+        uint32_t optionChannels = Helper::getPixelFormatChannels( imageData->format );
 
-            this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
-        }
-        else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
+        if( imageChannels == 3 && optionChannels == 4 )
         {
-            read_byte = this->decodeData_( _buffer, _bufferSize );
+            read_byte = this->decodeData_( buffer, size, imageData->pitch );
+
+            this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, buffer, imageData->pitch );
+        }
+        else if( imageChannels == 4 && optionChannels == 4 )
+        {
+            read_byte = this->decodeData_( buffer, size, imageData->pitch );
         }
         else
         {
-            MENGINE_ERROR_FATAL( "invalid channels data %u options %u"
-                , m_dataInfo.channels 
-                , m_options.channels
+            LOGGER_ERROR( "invalid channels data %u options %u"
+                , imageChannels 
+                , optionChannels
             );
+
+            return 0;
         }
 
         return read_byte;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderMemory::decodeData_( void * const _buffer, size_t _bufferSize ) const
+    size_t ImageDecoderMemory::decodeData_( void * const _buffer, size_t _bufferSize, size_t _pitch ) const
     {
         size_t read_byte = 0;
 
-        if( m_options.pitch == m_dataInfo.width * m_dataInfo.channels )
+        uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
+
+        if( _pitch == m_dataInfo.width * channels )
         {
             uint8_t * buffer_ptr = static_cast<uint8_t *>(_buffer);
 
@@ -63,9 +81,9 @@ namespace Mengine
 
             for( uint32_t j = 0; j != m_dataInfo.height; ++j )
             {
-                read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * m_dataInfo.channels );
+                read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * channels );
 
-                buffer_ptr += m_options.pitch;
+                buffer_ptr += _pitch;
             }
         }
 

@@ -97,16 +97,6 @@ namespace Mengine
         m_pRenderTargetView = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderTargetTexture::getHWChannels() const
-    {
-        return m_hwChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderTargetTexture::getHWDepth() const
-    {
-        return 1U;
-    }
-    //////////////////////////////////////////////////////////////////////////
     EPixelFormat DX11RenderTargetTexture::getHWPixelFormat() const
     {
         return m_hwPixelFormat;

@@ -18,7 +18,7 @@ namespace Mengine
         ~MockupRenderImage() override;
 
     public:
-        void initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat );
+        void initialize( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat );
         void finalize();
 
     protected:
@@ -28,8 +28,6 @@ namespace Mengine
     public:
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
-        uint32_t getHWChannels() const override;
-        uint32_t getHWDepth() const override;
         uint32_t getHWMipmaps() const override;
 
         EPixelFormat getHWPixelFormat() const override;

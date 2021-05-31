@@ -207,18 +207,17 @@ namespace Mengine
     {
         LOGGER_INFO( "render", "create null texture" );
 
-        uint32_t null_mipmaps = 1;
-        uint32_t null_width = 2;
-        uint32_t null_height = 2;
-        uint32_t null_channels = 4;
-        uint32_t null_depth = 1;
+        uint32_t mipmaps = 1;
+        uint32_t width = 2;
+        uint32_t height = 2;
+        EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( mipmaps, width, height, format, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture %d:%d"
-            , null_width
-            , null_height
+            , width
+            , height
         );
 
         const RenderImageInterfacePtr & image = texture->getImage();
@@ -226,8 +225,8 @@ namespace Mengine
         Rect rect;
         rect.left = 0;
         rect.top = 0;
-        rect.right = null_width;
-        rect.bottom = null_height;
+        rect.right = width;
+        rect.bottom = height;
 
         RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
 
@@ -235,8 +234,8 @@ namespace Mengine
         void * textureData = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
-            , null_width
-            , null_height
+            , width
+            , height
         );
 
         uint8_t * buffer_textureData = static_cast<uint8_t *>(textureData);
@@ -274,18 +273,17 @@ namespace Mengine
     {
         LOGGER_INFO( "render", "create white pixel texture" );
 
-        uint32_t null_mipmaps = 1;
-        uint32_t null_width = 2;
-        uint32_t null_height = 2;
-        uint32_t null_channels = 4;
-        uint32_t null_depth = 1;
+        uint32_t mipmaps = 1;
+        uint32_t width = 2;
+        uint32_t height = 2;
+        EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( mipmaps, width, height, format, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture %d:%d"
-            , null_width
-            , null_height
+            , width
+            , height
         );
 
         const RenderImageInterfacePtr & image = texture->getImage();
@@ -293,8 +291,8 @@ namespace Mengine
         Rect rect;
         rect.left = 0;
         rect.top = 0;
-        rect.right = null_width;
-        rect.bottom = null_height;
+        rect.right = width;
+        rect.bottom = height;
 
         RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
 
@@ -302,8 +300,8 @@ namespace Mengine
         void * textureData = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
-            , null_width
-            , null_height
+            , width
+            , height
         );
 
         uint8_t * buffer_textureData = static_cast<uint8_t *>(textureData);

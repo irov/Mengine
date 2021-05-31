@@ -955,7 +955,7 @@ namespace Mengine
         return stream.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    Vector<uint32_t> NodeDebuggerApp::StringToPath( String & _pathStr )
+    Vector<uint32_t> NodeDebuggerApp::StringToPath( const String & _pathStr )
     {
         Vector<uint32_t> path;
 

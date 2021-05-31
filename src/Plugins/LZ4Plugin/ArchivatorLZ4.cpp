@@ -27,7 +27,7 @@ namespace Mengine
         return total_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorLZ4::compress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _compressSize, EArchivatorCompress _compress )
+    bool ArchivatorLZ4::compress( void * const _distance, size_t _bufferCapacity, const void * _source, size_t _sourceSize, size_t * const _compressSize, EArchivatorCompress _compress )
     {
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
@@ -50,7 +50,7 @@ namespace Mengine
             }break;
         };
 
-        int32_t compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferSize, compress_method );
+        int32_t compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferCapacity, compress_method );
 
         if( compressSize < 0 )
         {

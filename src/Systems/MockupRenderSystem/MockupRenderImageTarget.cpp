@@ -86,20 +86,6 @@ namespace Mengine
         return HWHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderImageTarget::getHWChannels() const
-    {
-        uint32_t HWChannels = m_target->getHWChannels();
-
-        return HWChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderImageTarget::getHWDepth() const
-    {
-        uint32_t HWDepth = m_target->getHWDepth();
-
-        return HWDepth;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderImageTarget::getHWMipmaps() const
     {
         return 1U;

@@ -90,7 +90,11 @@ namespace Mengine
             , mipmapsize
         );
 
-        size_t test_mipmapsize = decoder->decode( buffer, mipmapsize );
+        DecoderData data;
+        data.buffer = buffer;
+        data.size = mipmapsize;
+
+        size_t test_mipmapsize = decoder->decode( &data );
 
         if( test_mipmapsize != mipmapsize )
         {

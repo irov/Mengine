@@ -89,7 +89,7 @@ namespace Mengine
         void updateVideoBuffer_() const;
 
         bool sync_( float _time );
-        bool createDecoder_();
+        void createDecoder_();
         bool fillVideoBuffer_() const;
         void updateUV_();
         void updateSize_();

@@ -62,7 +62,11 @@ namespace Mengine
 
         uint8_t * buffer = memory->getBuffer();
 
-        size_t decode_mipmapsize = decoder->decode( buffer, bufferSize );
+        DecoderData data;
+        data.buffer = buffer;
+        data.size = bufferSize;
+
+        size_t decode_mipmapsize = decoder->decode( &data );
 
         if( decode_mipmapsize != bufferSize )
         {
@@ -123,7 +127,11 @@ namespace Mengine
 
         uint8_t * buffer = memory->getBuffer();
 
-        if( imageDecoder->decode( buffer, bufferSize ) == 0 )
+        DecoderData data;
+        data.buffer = buffer;
+        data.size = bufferSize;
+
+        if( imageDecoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
                 , m_options.inputFilePath.c_str()

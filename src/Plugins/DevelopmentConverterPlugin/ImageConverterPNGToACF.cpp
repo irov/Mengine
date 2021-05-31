@@ -14,6 +14,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/ImageCodecHelper.h"
 
 namespace Mengine
 {
@@ -82,7 +83,7 @@ namespace Mengine
             return false;
         }
 
-        size_t data_size = dataInfo->getSize();
+        size_t data_size = Helper::getImageCodecDataSize( dataInfo );
 
         MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -90,7 +91,11 @@ namespace Mengine
 
         void * data_memory = data_buffer->getBuffer();
 
-        if( decoder->decode( data_memory, data_size ) == 0 )
+        DecoderData data;
+        data.buffer = data_memory;
+        data.size = data_size;
+
+        if( decoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
                 , m_options.inputFilePath.c_str()
@@ -138,9 +143,7 @@ namespace Mengine
         ImageCodecDataInfo htfDataInfo;
         htfDataInfo.width = dataInfo->width;
         htfDataInfo.height = dataInfo->height;
-        htfDataInfo.depth = 1;
         htfDataInfo.mipmaps = 1;
-        htfDataInfo.channels = 1;
         htfDataInfo.format = PF_UNKNOWN;
 
         size_t encode_byte = encoder->encode( data_memory, data_size, &htfDataInfo );

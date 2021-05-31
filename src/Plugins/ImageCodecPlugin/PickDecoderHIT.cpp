@@ -49,16 +49,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t PickDecoderHIT::_decode( void * const _buffer, size_t _bufferSize )
+    size_t PickDecoderHIT::_decode( const DecoderData * _data )
     {
-        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        void * buffer = _data->buffer;
+        size_t capacity = _data->size;
+
+        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, buffer, capacity, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "invalid load magic header" );
 
             return 0;
         }
 
-        return _bufferSize;
+        return capacity;
     }
     //////////////////////////////////////////////////////////////////////////
 }

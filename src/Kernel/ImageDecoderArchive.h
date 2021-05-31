@@ -24,11 +24,11 @@ namespace Mengine
         size_t getUncompressSize() const;
 
     protected:
-        size_t _decode( void * const _buffer, size_t _bufferSize ) override;
+        size_t _decode( const DecoderData * _data ) override;
 
     protected:
-        size_t decodeData_( void * const _buffer, size_t _bufferSize ) const;
-        size_t decompressData_( const void * _source, size_t _sourceSize, void * const _dest, size_t _capacityDest ) const;
+        size_t decodeData_( void * const _buffer, size_t _bufferSize, size_t _pitch ) const;
+        size_t decompressData_( const void * _source, size_t _sourceSize, void * const _dest, size_t _capacityDest, size_t _pitch ) const;
 
     protected:
         ArchivatorInterfacePtr m_archivator;

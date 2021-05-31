@@ -20,6 +20,10 @@
 #define MENGINE_MIN(A, B) ((A) < (B) ? (A) : (B))
 #endif
 
+#ifndef MENGINE_POWER2
+#define MENGINE_POWER2(N) (1 << N)
+#endif
+
 #ifndef MENGINE_STATIC_STRING_LENGTH
 #define MENGINE_STATIC_STRING_LENGTH(S) (sizeof( (S) ) - 1)
 #endif

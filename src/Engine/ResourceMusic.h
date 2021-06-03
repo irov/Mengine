@@ -23,7 +23,7 @@ namespace Mengine
         void setExternal( bool _external );
         bool isExternal() const;
 
-    private:
+    protected:
         float m_volume;
         bool m_external;
     };

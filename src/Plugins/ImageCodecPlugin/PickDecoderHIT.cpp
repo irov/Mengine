@@ -34,17 +34,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickDecoderHIT::_prepareData()
     {
-        if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HIT ), GET_MAGIC_VERSION( MAGIC_HIT ) ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( Helper::loadStreamMagicHeader( stream, GET_MAGIC_NUMBER( MAGIC_HIT ), GET_MAGIC_VERSION( MAGIC_HIT ) ) == false )
         {
             LOGGER_ERROR( "invalid load magic header" );
 
             return 0;
         }
 
-        m_stream->read( &m_dataInfo.width, sizeof( m_dataInfo.width ) );
-        m_stream->read( &m_dataInfo.height, sizeof( m_dataInfo.height ) );
-        m_stream->read( &m_dataInfo.mipmaplevel, sizeof( m_dataInfo.mipmaplevel ) );
-        m_stream->read( &m_dataInfo.mipmapsize, sizeof( m_dataInfo.mipmapsize ) );
+        stream->read( &m_dataInfo.width, sizeof( m_dataInfo.width ) );
+        stream->read( &m_dataInfo.height, sizeof( m_dataInfo.height ) );
+        stream->read( &m_dataInfo.mipmaplevel, sizeof( m_dataInfo.mipmaplevel ) );
+        stream->read( &m_dataInfo.mipmapsize, sizeof( m_dataInfo.mipmapsize ) );
 
         return true;
     }
@@ -54,7 +56,9 @@ namespace Mengine
         void * buffer = _data->buffer;
         size_t capacity = _data->size;
 
-        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, buffer, capacity, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( Helper::loadStreamArchiveInplace( stream, m_archivator, buffer, capacity, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "invalid load magic header" );
 

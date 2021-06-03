@@ -33,7 +33,7 @@ namespace Mengine
     public:
         bool flush() override;
 
-    private:
+    protected:
         HANDLE m_hFile;
 
         size_t m_size;

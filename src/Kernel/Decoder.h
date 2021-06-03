@@ -173,7 +173,7 @@ namespace Mengine
             return successful;
         }
 
-    protected:
+    private:
         InputStreamInterfacePtr m_stream;
 
         size_t m_rewindPos;

@@ -17,7 +17,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void PNGAPI handler_error_ptr( png_structp png_ptr, const char * _error )
+        static void PNGAPI png_handler_error_ptr( png_structp png_ptr, const char * _error )
         {
             MENGINE_UNUSED( png_ptr );
             MENGINE_UNUSED( _error );
@@ -27,7 +27,7 @@ namespace Mengine
             );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void PNGAPI handler_warning_ptr( png_structp png_ptr, const char * _error )
+        static void PNGAPI png_handler_warning_ptr( png_structp png_ptr, const char * _error )
         {
             MENGINE_UNUSED( png_ptr );
             MENGINE_UNUSED( _error );
@@ -37,7 +37,7 @@ namespace Mengine
             );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void PNGAPI read_proc_ptr( png_structp _png_ptr, uint8_t * _data, png_size_t _size )
+        static void PNGAPI png_read_proc_ptr( png_structp _png_ptr, uint8_t * _data, png_size_t _size )
         {
             png_voidp io_ptr = png_get_io_ptr( _png_ptr );
             InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>(io_ptr);
@@ -78,8 +78,7 @@ namespace Mengine
     bool ImageDecoderPNG::_initialize()
     {
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
-
-        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::handler_error_ptr, &Detail::handler_warning_ptr, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
+        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::png_handler_error_ptr, &Detail::png_handler_warning_ptr, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr );
 
@@ -108,19 +107,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPNG::_prepareData()
     {
+        const InputStreamInterfacePtr & stream = this->getStream();
+
         uint8_t png_check[MENGINE_DECODER_PNG_BYTES_TO_CHECK];
-        m_stream->read( &png_check, MENGINE_DECODER_PNG_BYTES_TO_CHECK );
+        if( stream->read( &png_check, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != MENGINE_DECODER_PNG_BYTES_TO_CHECK )
+        {
+            LOGGER_ERROR( "Bad or not PNG file (size)" );
+
+            return false;
+        }
 
         if( png_sig_cmp( png_check, (png_size_t)0, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != 0 )
         {
-            LOGGER_ERROR( "Bad or not PNG file" );
+            LOGGER_ERROR( "Bad or not PNG file (sig)" );
 
             return false;
         }
 
         //png_set_crc_action( m_png_ptr, PNG_CRC_WARN_USE, PNG_CRC_WARN_USE );
 
-        png_set_read_fn( m_png_ptr, m_stream.get(), &Detail::read_proc_ptr );
+        png_set_read_fn( m_png_ptr, stream.get(), &Detail::png_read_proc_ptr );
 
         png_set_sig_bytes( m_png_ptr, MENGINE_DECODER_PNG_BYTES_TO_CHECK );
 
@@ -459,7 +465,7 @@ namespace Mengine
 
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::handler_error_ptr, &Detail::handler_warning_ptr, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
+        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::png_handler_error_ptr, &Detail::png_handler_warning_ptr, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "Can't create read structure" );
 
@@ -478,7 +484,9 @@ namespace Mengine
 
         m_info_ptr = info_ptr;
 
-        if( m_stream->seek( 0 ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( stream->seek( 0 ) == false )
         {
             return false;
         }

@@ -36,7 +36,7 @@ namespace Mengine
         bool load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const override;
         bool validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, uint32_t _metaVersion ) const override;
 
-    private:
+    protected:
         bool importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport ) const;
         bool openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * _stream, bool * const _exist ) const;
 

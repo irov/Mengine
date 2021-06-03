@@ -56,7 +56,8 @@ namespace Mengine
             , m_dataInfo.height
         );
 
-        m_stream->seek( 0 );
+        const InputStreamInterfacePtr & stream = this->getStream();
+        stream->seek( 0 );
 
         size_t read_byte = 0;
 
@@ -92,11 +93,13 @@ namespace Mengine
 
         size_t decodyByte = 0;
 
+        const InputStreamInterfacePtr & stream = this->getStream();
+
         size_t stream_size;
         void * stream_memory;
-        if( m_stream->memory( &stream_memory, &stream_size ) == false )
+        if( stream->memory( &stream_memory, &stream_size ) == false )
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FACTORABLE );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( stream, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
@@ -145,9 +148,11 @@ namespace Mengine
 
             uint8_t * buffer_ptr = static_cast<uint8_t *>(_dest);
 
+            const InputStreamInterfacePtr & stream = this->getStream();
+
             for( uint32_t j = 0; j != m_dataInfo.height; ++j )
             {
-                read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * channels );
+                read_byte += stream->read( buffer_ptr, m_dataInfo.width * channels );
 
                 buffer_ptr += _pitch;
             }

@@ -88,16 +88,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHWChannels() const
-    {
-        return m_channels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTargetTexture::getHWDepth() const
-    {
-        return 1U;
-    }
-    //////////////////////////////////////////////////////////////////////////
     EPixelFormat DX9RenderTargetTexture::getHWPixelFormat() const
     {
         return m_format;

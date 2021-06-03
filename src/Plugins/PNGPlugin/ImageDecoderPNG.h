@@ -28,7 +28,7 @@ namespace Mengine
     public:
         bool _rewind() override;
 
-    private:
+    protected:
         png_structp m_png_ptr;
         png_infop m_info_ptr;
         png_size_t m_row_bytes;

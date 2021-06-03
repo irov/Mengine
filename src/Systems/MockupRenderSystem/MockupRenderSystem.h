@@ -126,7 +126,7 @@ namespace Mengine
     public:
         UnknownPointer getRenderSystemExtention() override;
 
-    private:
+    protected:
         ConstString m_renderSystemName;
 
         Resolution m_windowResolution;

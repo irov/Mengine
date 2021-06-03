@@ -28,7 +28,7 @@ namespace Mengine
         InputStreamInterfacePtr createInputStream( const DocumentPtr & _doc ) override;
         bool openInputStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) override;
 
-    private:
+    protected:
         HANDLE m_hFile;
         HANDLE m_hMapping;
 

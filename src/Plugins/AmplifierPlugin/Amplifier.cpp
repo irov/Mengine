@@ -180,7 +180,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setLoop( soundIdentity, _looped ) == false )
         {
-            LOGGER_ERROR( "can't set sound '%s' loop '%d'"
+            LOGGER_ERROR( "can't set sound '%s' loop [%u]"
                 , filePath.c_str()
                 , _looped
             );
@@ -191,7 +191,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( soundIdentity ) == false )
         {
-            LOGGER_ERROR( "sound emitter '%s' invalid play %d"
+            LOGGER_ERROR( "sound emitter '%s' invalid play [%u]"
                 , filePath.c_str()
                 , soundIdentity->getId()
             );

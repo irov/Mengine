@@ -27,11 +27,14 @@ namespace Mengine
         bool _prepareData() override;
 
     public:
-        size_t _decode( const DecoderData * _data ) override;
+        size_t _decode( const DecoderData * _decoderData ) override;
 
     public:
         bool _seek( float _timing ) override;
         float _tell() const override;
+
+    public:
+        void getSurfaceDimension( uint32_t _flags, VideoSurfaceDimension * const _surfaceDimension ) const override;
 
     public:
         EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) override;

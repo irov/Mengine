@@ -19,7 +19,11 @@ namespace Mengine
     struct PickDecoderData
         : public DecoderData
     {
-        size_t pitch = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct PickEncoderData
+        : public EncoderData
+    {
     };
     //////////////////////////////////////////////////////////////////////////
     class PickDecoderInterface

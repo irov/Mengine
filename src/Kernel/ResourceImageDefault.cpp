@@ -55,7 +55,7 @@ namespace Mengine
             , this->getContent()->getFilePath().c_str()
         );
 
-        uint32_t decoder_options = DF_NONE;
+        uint32_t decoder_options = DF_IMAGE_NONE;
 
 #ifndef MENGINE_MASTER_RELEASE
         bool Engine_ForcePremultiplyAlpha = CONFIG_VALUE( "Engine", "ForcePremultiplyAlpha", false );
@@ -68,7 +68,7 @@ namespace Mengine
 
             if( premultiply == false /*&& alpha == true*/ )
             {
-                decoder_options |= DF_PREMULTIPLY_ALPHA;
+                decoder_options |= DF_IMAGE_PREMULTIPLY_ALPHA;
 
                 this->setPremultiply( true );
 

@@ -248,7 +248,7 @@ namespace Mengine
 
         switch( flags & 0x0000ffff )
         {
-        case DF_NONE:
+        case DF_IMAGE_NONE:
             {
                 if( dataChannels == optionChannels )
                 {
@@ -281,7 +281,7 @@ namespace Mengine
                         png_free( m_png_ptr, image );
                     }
 
-                    if( flags & DF_PREMULTIPLY_ALPHA && dataChannels == 4 )
+                    if( flags & DF_IMAGE_PREMULTIPLY_ALPHA && dataChannels == 4 )
                     {
                         png_bytep carriage = (png_bytep)buffer;
 
@@ -336,7 +336,7 @@ namespace Mengine
                     return 0;
                 }
             }break;
-        case DF_READ_ALPHA_ONLY:
+        case DF_IMAGE_READ_ALPHA_ONLY:
             {
                 if( dataChannels == 1 && optionChannels == 1 )
                 {
@@ -382,7 +382,7 @@ namespace Mengine
                     return 0;
                 }
             }break;
-        case DF_WRITE_ALPHA_ONLY:
+        case DF_IMAGE_WRITE_ALPHA_ONLY:
             {
                 if( dataChannels == 1 && optionChannels == 4 )
                 {

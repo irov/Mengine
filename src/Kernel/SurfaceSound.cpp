@@ -55,7 +55,7 @@ namespace Mengine
             ->createSoundIdentity( m_isHeadMode, soundBuffer, m_sourceCategory, streamable
                 , MENGINE_DOCUMENT_MESSAGE( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, "sound '%s' resource '%s' not compiled category [%u] streamable [%u]"
             , this->getName().c_str()
             , m_resourceSound->getName().c_str()
             , m_sourceCategory
@@ -83,7 +83,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->releaseSoundSource( m_soundIdentity ) == false )
         {
-            LOGGER_ERROR( "'%s' emitter invalid release sound %d"
+            LOGGER_ERROR( "'%s' emitter invalid release sound %u"
                 , this->getName().c_str()
                 , m_soundIdentity->getId()
             );
@@ -203,7 +203,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( m_soundIdentity ) == false )
         {
-            LOGGER_ERROR( "'%s' invalid play [%d] resource '%s'"
+            LOGGER_ERROR( "'%s' invalid play [%u] resource '%s'"
                 , this->getName().c_str()
                 , m_soundIdentity->getId()
                 , m_resourceSound->getName().c_str()
@@ -319,7 +319,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setSourceVolume( m_soundIdentity, m_volume, m_volume, forceVolume ) == false )
         {
-            LOGGER_ERROR( "invalid %s:%d %f"
+            LOGGER_ERROR( "invalid %s:%u %f"
                 , m_resourceSound->getName().c_str()
                 , m_soundIdentity->getId()
                 , m_volume

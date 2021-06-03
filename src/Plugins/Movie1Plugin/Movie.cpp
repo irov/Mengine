@@ -2080,7 +2080,7 @@ namespace Mengine
             {
                 const NodePtr & node_parent = this->getLayerParent_( layer );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node_parent, "movie '%s' resource '%s' invalid parent node %d"
+                MENGINE_ASSERTION_MEMORY_PANIC( node_parent, "movie '%s' resource '%s' invalid parent node [%u]"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , layer.parent

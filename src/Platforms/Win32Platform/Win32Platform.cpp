@@ -2176,7 +2176,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        LOGGER_MESSAGE( "resolution %d:%d fullscreen %d"
+        LOGGER_MESSAGE( "resolution %u:%u fullscreen [%u]"
             , _resolution.getWidth()
             , _resolution.getHeight()
             , _fullscreen

@@ -31,12 +31,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t PickEncoderHIT::encode( const EncoderData * _data, const CodecDataInfo * _dataInfo )
+    size_t PickEncoderHIT::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_UNUSED( _size );
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
+        MENGINE_ASSERTION_TYPE( _encoderData, const PickEncoderData * );
+
+        const PickEncoderData * encoderData = static_cast<const PickEncoderData *>(_encoderData);
 
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const PickCodecDataInfo * );
+
+        const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo *>(_dataInfo);
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HIT ), GET_MAGIC_VERSION( MAGIC_HIT ) ) == false )
         {
@@ -45,14 +50,12 @@ namespace Mengine
             return 0;
         }
 
-        const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo *>(_dataInfo);
-
         m_stream->write( &dataInfo->width, sizeof( dataInfo->width ) );
         m_stream->write( &dataInfo->height, sizeof( dataInfo->height ) );
         m_stream->write( &dataInfo->mipmaplevel, sizeof( dataInfo->mipmaplevel ) );
         m_stream->write( &dataInfo->mipmapsize, sizeof( dataInfo->mipmapsize ) );
 
-        const void * write_buffer = _buffer;
+        const void * write_buffer = encoderData->buffer;
         size_t write_size = (size_t)dataInfo->mipmapsize;
 
         if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, write_buffer, write_size, EAC_BEST ) == false )

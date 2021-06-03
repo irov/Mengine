@@ -114,7 +114,7 @@ namespace Mengine
             {
                 m_soundSystem->releaseBufferId( alBufferId );
 
-                LOGGER_ERROR( "invliad format channels '%d'"
+                LOGGER_ERROR( "invliad format channels [%u]"
                     , m_channels
                 );
 

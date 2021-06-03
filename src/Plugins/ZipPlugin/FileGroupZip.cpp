@@ -300,7 +300,7 @@ namespace Mengine
 
             FilePath filePath = Helper::stringizeFilePathSize( fileNameBuffer, header.fileNameLen );
 
-            MENGINE_ASSERTION_FATAL( header.compressionMethod == Z_NO_COMPRESSION || header.compressionMethod == Z_DEFLATED, "zip '%s' file '%s' invalid compress method %d"
+            MENGINE_ASSERTION_FATAL( header.compressionMethod == Z_NO_COMPRESSION || header.compressionMethod == Z_DEFLATED, "zip '%s' file '%s' invalid compress method [%u]"
                 , m_folderPath.c_str()
                 , filePath.c_str()
                 , header.compressionMethod

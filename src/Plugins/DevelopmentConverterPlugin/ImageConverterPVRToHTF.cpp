@@ -74,7 +74,7 @@ namespace Mengine
 
         MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, "invalid cache memory %d for '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, "invalid cache memory [%u] for '%s'"
             , data_full_size
             , m_options.inputFilePath.c_str()
         );
@@ -85,22 +85,6 @@ namespace Mengine
 
         for( uint32_t i = 0; i != dataInfo->mipmaps; ++i )
         {
-            ImageCodecOptions decoder_options;
-
-            uint32_t miplevel_data_size = Helper::getImageCodecDataMipMapSize( dataInfo, i );
-
-            decoder_options.pitch = miplevel_data_size / (dataInfo->height >> i);
-            decoder_options.channels = 3;
-
-            if( decoder->setOptions( &decoder_options ) == false )
-            {
-                LOGGER_ERROR( "invalid optionize decoder for '%s'"
-                    , m_options.inputFilePath.c_str()
-                );
-
-                return false;
-            }
-
             if( decoder->rewind() == false )
             {
                 LOGGER_ERROR( "invalid rewind '%s'"
@@ -110,9 +94,13 @@ namespace Mengine
                 return false;
             }
 
-            DecoderData data;
+            uint32_t miplevel_data_size = Helper::getImageCodecDataMipMapSize( dataInfo, i );
+
+            ImageDecoderData data;
             data.buffer = miplevel_data_memory;
             data.size = miplevel_data_size;
+            data.pitch = miplevel_data_size / (dataInfo->height >> i);
+            data.format = PF_R8G8B8;
 
             if( decoder->decode( &data ) == 0 )
             {
@@ -147,18 +135,10 @@ namespace Mengine
             return false;
         }
 
-        ImageCodecOptions encoder_options;
-        encoder_options.channels = 3;
-        encoder_options.pitch = dataInfo->width;
-
-        if( encoder->setOptions( &encoder_options ) == false )
-        {
-            LOGGER_ERROR( "invalid optionize encoder '%s'"
-                , m_options.inputFilePath.c_str()
-            );
-
-            return false;
-        }
+        ImageEncoderData htfEncoderData;
+        htfEncoderData.buffer = data_memory;
+        htfEncoderData.size = data_full_size;
+        htfEncoderData.pitch = dataInfo->width * 1;
 
         ImageCodecDataInfo htfDataInfo;
         htfDataInfo.width = dataInfo->width;
@@ -166,7 +146,7 @@ namespace Mengine
         htfDataInfo.mipmaps = dataInfo->mipmaps;
         htfDataInfo.format = dataInfo->format;
 
-        size_t encode_byte = encoder->encode( data_memory, data_full_size, &htfDataInfo );
+        size_t encode_byte = encoder->encode( &htfEncoderData, &htfDataInfo );
 
         if( encode_byte == 0 )
         {

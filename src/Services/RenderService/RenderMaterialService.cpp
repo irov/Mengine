@@ -464,7 +464,7 @@ namespace Mengine
         {
             if( _textures[i] == nullptr )
             {
-                LOGGER_ERROR( "stage '%s' invalid setup texture %d"
+                LOGGER_ERROR( "stage '%s' invalid setup texture %u"
                     , _materialName.c_str()
                     , i
                 );

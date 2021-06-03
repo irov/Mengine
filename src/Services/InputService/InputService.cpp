@@ -356,7 +356,7 @@ namespace Mengine
 
         if( it_found == m_mousePositionProviders.end() )
         {
-            LOGGER_ERROR( "not found provider '%d'"
+            LOGGER_ERROR( "not found provider '%u'"
                 , _id
             );
 

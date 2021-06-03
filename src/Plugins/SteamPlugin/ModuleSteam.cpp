@@ -67,13 +67,13 @@ namespace Mengine
             return false;
         }
 
-        int32_t appId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
+        uint32_t appId = CONFIG_VALUE( "Steam", "AppId", k_uAppIdInvalid );
 
         if( HAS_OPTION( "steamappid" ) == true )
         {
             const Char * str_steamappid = GET_OPTION_VALUE( "steamappid", "" );
 
-            if( MENGINE_SSCANF( str_steamappid, "%d", &appId ) != 0 )
+            if( MENGINE_SSCANF( str_steamappid, "%u", &appId ) != 0 )
             {
                 LOGGER_ERROR( "invalid option steamappid '%s'"
                     , str_steamappid
@@ -87,7 +87,7 @@ namespace Mengine
         {
             if( SteamAPI_RestartAppIfNecessary( appId ) == true )
             {
-                LOGGER_ERROR( "invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
+                LOGGER_ERROR( "invalid SteamAPI_RestartAppIfNecessary [Id = %u]"
                     , appId
                 );
 
@@ -142,7 +142,16 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &ModuleSteam::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_client = SteamClient();
+        ISteamClient * client = SteamClient();
+
+        if( client == nullptr )
+        {
+            LOGGER_ERROR( "invalid SteamClient" );
+
+            return false;
+        }
+
+        m_client = client;
 
         m_client->SetWarningMessageHook( &Detail::SteamAPIWarningMessageHook );
 
@@ -150,8 +159,9 @@ namespace Mengine
 
         HSteamUser hSteamUser = m_client->ConnectToGlobalUser( hSteamPipe );
 
-        if( SteamUser()
-            ->BLoggedOn() == false )
+        ISteamUser * user = SteamUser();
+
+        if( user->BLoggedOn() == false )
         {
             LOGGER_ERROR( "Steam user is not logged in" );
 

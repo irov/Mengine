@@ -30,7 +30,7 @@ namespace Mengine
             boolean start_of_file;
         };
         //////////////////////////////////////////////////////////////////////////
-        static const FilePath & getJPEGDebugFilePath( j_common_ptr _cinfo )
+        METHODDEF( const FilePath & ) jpeg_get_debug_filepath( j_common_ptr _cinfo )
         {
             ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
@@ -41,14 +41,14 @@ namespace Mengine
             return filePath;
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( noreturn_t ) s_jpegErrorExit( j_common_ptr _cinfo )
+        METHODDEF( noreturn_t ) jpeg_error_exit( j_common_ptr _cinfo )
         {
             Char buffer[JMSG_LENGTH_MAX] = {'\0'};
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
             LOGGER_ERROR( "jpeg '%s' error: %s"
-                , Detail::getJPEGDebugFilePath( _cinfo ).c_str()
+                , Detail::jpeg_get_debug_filepath( _cinfo ).c_str()
                 , buffer
             );
         
@@ -58,26 +58,26 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( noreturn_t ) s_jpegOutputMessage( j_common_ptr _cinfo )
+        METHODDEF( noreturn_t ) jpeg_output_message( j_common_ptr _cinfo )
         {
             Char buffer[JMSG_LENGTH_MAX] = {'\0'};
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
             LOGGER_ERROR( "jpeg '%s' message: %s"
-                , Detail::getJPEGDebugFilePath( _cinfo ).c_str()
+                , Detail::jpeg_get_debug_filepath( _cinfo ).c_str()
                 , buffer
             );
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( void ) s_init_source( j_decompress_ptr cinfo )
+        METHODDEF( void ) jpeg_init_source( j_decompress_ptr cinfo )
         {
             DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
             src->start_of_file = TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( boolean ) s_fill_input_buffer( j_decompress_ptr cinfo )
+        METHODDEF( boolean ) jpeg_fill_input_buffer( j_decompress_ptr cinfo )
         {
             DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
@@ -100,7 +100,7 @@ namespace Mengine
             return TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( void ) s_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
+        METHODDEF( void ) jpeg_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
         {
             DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
@@ -110,7 +110,7 @@ namespace Mengine
                 {
                     num_bytes -= (long)src->base.bytes_in_buffer;
 
-                    boolean result = s_fill_input_buffer( cinfo );
+                    boolean result = jpeg_fill_input_buffer( cinfo );
                     MENGINE_UNUSED( result );
                 }
 
@@ -119,14 +119,14 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( void ) s_term_source( j_decompress_ptr cinfo )
+        METHODDEF( void ) jpeg_term_source( j_decompress_ptr cinfo )
         {
             MENGINE_UNUSED( cinfo );
 
             //Empty
         }
         //////////////////////////////////////////////////////////////////////////
-        GLOBAL( void ) s_jpeg_mengine_src( j_decompress_ptr cinfo, InputStreamInterface * _stream )
+        METHODDEF( void ) jpeg_mengine_src( j_decompress_ptr cinfo, InputStreamInterface * _stream )
         {
             if( cinfo->src == nullptr )
             {
@@ -141,17 +141,17 @@ namespace Mengine
 
             DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
-            src->base.init_source = &s_init_source;
-            src->base.fill_input_buffer = &s_fill_input_buffer;
-            src->base.skip_input_data = &s_skip_input_data;
+            src->base.init_source = &jpeg_init_source;
+            src->base.fill_input_buffer = &jpeg_fill_input_buffer;
+            src->base.skip_input_data = &jpeg_skip_input_data;
             src->base.resync_to_restart = jpeg_resync_to_restart; // use default method 
-            src->base.term_source = s_term_source;
+            src->base.term_source = jpeg_term_source;
             src->base.bytes_in_buffer = 0;
             src->base.next_input_byte = nullptr;
             src->stream = _stream;
         }
         //////////////////////////////////////////////////////////////////////////
-        static int32_t s_getQuality( const jpeg_decompress_struct * _jpegObject )
+        METHODDEF( int32_t ) jpeg_get_quality( const jpeg_decompress_struct * _jpegObject )
         {
             const JQUANT_TBL * tbl_ptrs = _jpegObject->quant_tbl_ptrs[0];
 
@@ -186,6 +186,7 @@ namespace Mengine
 
             return (val1 + val2) / 2;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderJPEG::ImageDecoderJPEG()
@@ -202,8 +203,8 @@ namespace Mengine
         m_jpegObject.err = jpeg_std_error( &m_errorMgr );
         m_jpegObject.client_data = this;
 
-        m_errorMgr.error_exit = &Detail::s_jpegErrorExit;
-        m_errorMgr.output_message = &Detail::s_jpegOutputMessage;
+        m_errorMgr.error_exit = &Detail::jpeg_error_exit;
+        m_errorMgr.output_message = &Detail::jpeg_output_message;
 
         jpeg_create_decompress( &m_jpegObject );
 
@@ -219,7 +220,7 @@ namespace Mengine
     {
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        Detail::s_jpeg_mengine_src( &m_jpegObject, stream.get() );
+        Detail::jpeg_mengine_src( &m_jpegObject, stream.get() );
 
         jpeg_read_header( &m_jpegObject, TRUE );
         jpeg_calc_output_dimensions( &m_jpegObject );
@@ -227,7 +228,7 @@ namespace Mengine
         m_dataInfo.mipmaps = 1;
         m_dataInfo.width = m_jpegObject.image_width;
         m_dataInfo.height = m_jpegObject.image_height;
-        m_dataInfo.quality = Detail::s_getQuality( &m_jpegObject );
+        m_dataInfo.quality = Detail::jpeg_get_quality( &m_jpegObject );
 
         switch( RGB_PIXELSIZE )
         {
@@ -253,6 +254,7 @@ namespace Mengine
 
         void * buffer = decoderData->buffer;
         size_t size = decoderData->size;
+        uint32_t flags = decoderData->flags;
 
         MENGINE_ASSERTION_FATAL( decoderData->size >= decoderData->pitch * m_dataInfo.height, "invalid buffer relation pitch to size bufferSize %zu - pitch %zu height %u"
             , decoderData->size
@@ -262,12 +264,12 @@ namespace Mengine
 
         jpeg_start_decompress( &m_jpegObject );
 
-        uint32_t optionChannels = Helper::getPixelFormatChannels( m_options.channels );
+        uint32_t optionChannels = Helper::getPixelFormatChannels( decoderData->format );
         uint32_t dataChannels = Helper::getPixelFormatChannels( m_dataInfo.format );
 
-        switch( m_options.flags & 0x0000ffff )
+        switch( flags & 0x0000ffff )
         {
-        case DF_NONE:
+        case DF_IMAGE_NONE:
             {
                 if( optionChannels == dataChannels )
                 {
@@ -282,7 +284,7 @@ namespace Mengine
                     }
 
 #if RGB_PIXELSIZE == 4
-                    if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0 )
+                    if( (flags & DF_IMAGE_NOT_ADD_ALPHA) == 0 )
                     {
                         JSAMPROW alpha_buffer = (JSAMPROW)buffer;
 
@@ -301,14 +303,14 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "DEFAULT options channels %u != %u"
-                        , m_options.channels
+                        , optionChannels
                         , dataChannels
                     );
 
                     return 0;
                 }
             }break;
-        case DF_READ_ALPHA_ONLY:
+        case DF_IMAGE_READ_ALPHA_ONLY:
             {
                 if( optionChannels == 1 )
                 {
@@ -338,7 +340,7 @@ namespace Mengine
         m_jpegObject.output_scanline = m_jpegObject.output_height;
         jpeg_finish_decompress( &m_jpegObject );
 
-        size_t readSize = optionChannels->pitch * m_dataInfo.height;
+        size_t readSize = decoderData->pitch * m_dataInfo.height;
 
         return readSize;
     }
@@ -350,8 +352,8 @@ namespace Mengine
         m_jpegObject.err = jpeg_std_error( &m_errorMgr );
         m_jpegObject.client_data = this;
 
-        m_errorMgr.error_exit = &Detail::s_jpegErrorExit;
-        m_errorMgr.output_message = &Detail::s_jpegOutputMessage;
+        m_errorMgr.error_exit = &Detail::jpeg_error_exit;
+        m_errorMgr.output_message = &Detail::jpeg_output_message;
 
         jpeg_create_decompress( &m_jpegObject );
 

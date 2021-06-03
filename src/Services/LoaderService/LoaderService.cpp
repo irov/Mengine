@@ -205,7 +205,7 @@ namespace Mengine
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR( "error '%s' invalid version read %d need %d or protocol %d need %d (Update you protocol file)"
+                LOGGER_ERROR( "error '%s' invalid version read [%u] need [%u] or protocol [%u] need [%u] (Update you protocol file)"
                     , Metacode::getHeaderErrorMessage( result )
                     , readVersion
                     , needVersion

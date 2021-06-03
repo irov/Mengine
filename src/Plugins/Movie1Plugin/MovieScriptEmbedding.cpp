@@ -509,7 +509,7 @@ namespace Mengine
             MovieFrameSource start_frame;
             if( framePack->getLayerFrame( layer->index, 0, &start_frame ) == false )
             {
-                LOGGER_ERROR( "'%s' invalid get layer '%s' frame %d"
+                LOGGER_ERROR( "movie '%s' invalid get layer '%s' frame [%u]"
                     , _movie->getName().c_str()
                     , _name.c_str()
                     , layer->index

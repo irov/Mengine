@@ -1070,7 +1070,7 @@ namespace Mengine
             RenderFragmentShaderInterfacePtr shader = RENDERMATERIAL_SERVICE()
                 ->createFragmentShader( name, _fileGroup, filePath, fileConverterType, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s:%s' invalid load '%s' fragment shader '%s' compile %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s:%s' invalid load '%s' fragment shader '%s' compile [%u]"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , filePath.c_str()
@@ -1105,7 +1105,7 @@ namespace Mengine
             RenderVertexShaderInterfacePtr shader = RENDERMATERIAL_SERVICE()
                 ->createVertexShader( name, _fileGroup, filePath, fileConverter, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s:%s' invalid load '%s' vertex shader '%s' compile %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s:%s' invalid load '%s' vertex shader '%s' compile [%u]"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , filePath.c_str()

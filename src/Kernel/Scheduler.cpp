@@ -194,7 +194,7 @@ namespace Mengine
 
         if( this->findSchedulerEvent_( _id, &desc ) == false )
         {
-            LOGGER_ERROR( "not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule [%u]"
                 , _id
             );
 
@@ -214,7 +214,7 @@ namespace Mengine
 
         if( this->findSchedulerEvent_( _id, &desc ) == false )
         {
-            LOGGER_ERROR( "not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule [%u]"
                 , _id
             );
 
@@ -223,7 +223,7 @@ namespace Mengine
 
         if( this->removeScheduler_( desc, true ) == false )
         {
-            LOGGER_ERROR( "not alredy remove or complete '%d'"
+            LOGGER_ERROR( "not alredy remove or complete [%u]"
                 , _id
             );
 
@@ -262,7 +262,7 @@ namespace Mengine
 
         if( this->findSchedulerEvent_( _id, &desc ) == false )
         {
-            LOGGER_ERROR( "not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule [%u]"
                 , _id
             );
 
@@ -271,7 +271,7 @@ namespace Mengine
 
         if( this->removeScheduler_( desc, false ) == false )
         {
-            LOGGER_ERROR( "not alredy remove or complete '%d'"
+            LOGGER_ERROR( "not alredy remove or complete [%u]"
                 , _id
             );
 
@@ -482,7 +482,7 @@ namespace Mengine
 
         if( this->findSchedulerEvent_( _id, &event ) == false )
         {
-            LOGGER_ERROR( "not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule [%u]"
                 , _id
             );
 
@@ -500,7 +500,7 @@ namespace Mengine
 
         if( this->findSchedulerEvent_( _id, &event ) == false )
         {
-            LOGGER_ERROR( "not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule [%u]"
                 , _id
             );
 
@@ -526,7 +526,7 @@ namespace Mengine
 
         if( this->findSchedulerEvent_( _id, &event ) == false )
         {
-            LOGGER_ERROR( "not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule [%u]"
                 , _id
             );
 
@@ -544,7 +544,7 @@ namespace Mengine
 
         if( this->findSchedulerEvent_( _id, &event ) == false )
         {
-            LOGGER_ERROR( "not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule [%u]"
                 , _id
             );
 

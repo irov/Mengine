@@ -563,7 +563,7 @@ namespace Mengine
                 {
                     if( Helper::intersection( polygon, imagePolygon, &output ) == false )
                     {
-                        LOGGER_ERROR( "layer %d shapes invalid"
+                        LOGGER_ERROR( "layer [%u] shapes invalid"
                             , layerIndex
                         );
 
@@ -574,7 +574,7 @@ namespace Mengine
                 {
                     if( Helper::difference( imagePolygon, polygon, &output ) == false )
                     {
-                        LOGGER_ERROR( "layer %d shapes invalid"
+                        LOGGER_ERROR( "layer [%u] shapes invalid"
                             , layerIndex
                         );
 
@@ -620,7 +620,7 @@ namespace Mengine
 
                     if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
                     {
-                        LOGGER_ERROR( "layer %d vertex overflow %d (max %d)"
+                        LOGGER_ERROR( "layer [%u] vertex overflow [%u] (max %u)"
                             , layerIndex
                             , max_points
                             , MENGINE_MOVIE_SHAPE_MAX_VERTEX

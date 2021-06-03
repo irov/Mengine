@@ -539,7 +539,7 @@ namespace Mengine
 
         if( renderImage->initialize( _mipmaps, _width, _height, _format ) == false )
         {
-            LOGGER_ERROR( "can't initialize image %ux%u channels %u depth %u format %d"
+            LOGGER_ERROR( "can't initialize image %ux%u channels %u depth %u format %u"
                 , _width
                 , _height
                 , _format
@@ -1275,7 +1275,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage [%u] (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1334,7 +1334,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage [%u] (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1428,7 +1428,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage [%u] (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );

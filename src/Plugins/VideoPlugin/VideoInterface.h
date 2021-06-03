@@ -23,32 +23,36 @@ namespace Mengine
         uint32_t frameHeight = 0;
         uint32_t width = 0;
         uint32_t height = 0;
-        float fps = 0.f;
 
-        float duration = 0.f;
+        float fps;
 
         EPixelFormat format = PF_UNKNOWN;
         bool clamp = true;
-
-        float getFrameTime() const
-        {
-            return 1000.f / fps;
-        }
     };
     //////////////////////////////////////////////////////////////////////////
-    struct VideoCodecOptions
-        : public CodecOptions
+    enum EVideoDecoderFlags
     {
-        float duration = 0.f;
-        float fps = 0.f;
-        bool alpha = false;
-        bool premultiply = false;
+        DF_VIDEO_NONE = 0x00000000,
+        DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA = 0x00000001,
+        DF_VIDEO_PREMULTIPLY_ALPHA = 0x00000002,
     };
     //////////////////////////////////////////////////////////////////////////
     struct VideoDecoderData
         : public DecoderData
     {
         size_t pitch;
+        EPixelFormat format;
+
+        uint32_t flags = DF_VIDEO_NONE;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct VideoSurfaceDimension
+    {
+        uint32_t frameWidth;
+        uint32_t frameHeight;
+
+        uint32_t width;
+        uint32_t height;
 
         EPixelFormat format;
     };
@@ -58,6 +62,9 @@ namespace Mengine
     {
     public:
         virtual const VideoCodecDataInfo * getCodecDataInfo() const override = 0;
+
+    public:
+        virtual void getSurfaceDimension( uint32_t _flags, VideoSurfaceDimension * const _surfaceDimension ) const = 0;
 
     public:
         virtual EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) = 0;

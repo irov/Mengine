@@ -102,15 +102,6 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-        ImageCodecOptions optionsAlpha;
-
-        optionsAlpha.flags |= DF_READ_ALPHA_ONLY;
-        //optionsAlpha.flags |= DF_CUSTOM_PITCH;
-        optionsAlpha.pitch = dataInfo->width * 1;
-        optionsAlpha.channels = 1;
-
-        imageDecoder->setOptions( &optionsAlpha );
-
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
 
@@ -121,15 +112,18 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, "create memory cache buffer '%d'"
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "create memory cache buffer [%u]"
             , bufferSize
         );
 
         uint8_t * buffer = memory->getBuffer();
 
-        DecoderData data;
+        ImageDecoderData data;
         data.buffer = buffer;
         data.size = bufferSize;
+        data.pitch = dataInfo->width * 1;
+        data.format = PF_L8;
+        data.flags |= DF_IMAGE_READ_ALPHA_ONLY;
 
         if( imageDecoder->decode( &data ) == 0 )
         {
@@ -167,16 +161,24 @@ namespace Mengine
             return false;
         }
 
-        PickCodecDataInfo di;
+        PickEncoderData pickDecoderData;
+        pickDecoderData.buffer = buffer;
+        pickDecoderData.size = bufferSize;
 
-        di.width = width;
-        di.height = height;
-        di.mipmaplevel = mimmap_level;
-        di.mipmapsize = bufferSize;
+        PickCodecDataInfo pickDataInfo;
+        pickDataInfo.width = width;
+        pickDataInfo.height = height;
+        pickDataInfo.mipmaplevel = mimmap_level;
+        pickDataInfo.mipmapsize = bufferSize;
 
-        encoder->encode( buffer, bufferSize, &di );
+        size_t encodeSize = encoder->encode( &pickDecoderData, &pickDataInfo );
 
         encoder->finalize();
+
+        if( encodeSize == 0 )
+        {
+            return false;
+        }
 
         return true;
     }

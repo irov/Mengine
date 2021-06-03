@@ -107,7 +107,7 @@ namespace Mengine
                     {
                         uint32_t id = _emitter->getId();
 
-                        LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
+                        LOGGER_ERROR( "'%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
                             , id
                             );
@@ -129,7 +129,7 @@ namespace Mengine
                     {
                         uint32_t id = _emitter->getId();
 
-                        LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
+                        LOGGER_ERROR( "'%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
                             , id
                             );
@@ -643,8 +643,9 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->setSourceVolume( _emitter, _volume, _volume, true ) == false )
                 {
-                    LOGGER_ERROR( "invalid source volume %d"
+                    LOGGER_ERROR( "invalid source [%u] volume [%f]"
                         , _emitter->getId()
+                        , _volume
                         );
                 }
             }

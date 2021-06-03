@@ -871,7 +871,7 @@ namespace Mengine
         default:
             {
 #ifdef MENGINE_DEBUG
-                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
                 );
@@ -928,7 +928,7 @@ namespace Mengine
         default:
             {
 #ifdef MENGINE_DEBUG
-                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
                 );
@@ -999,7 +999,7 @@ namespace Mengine
         default:
             {
 #ifdef MENGINE_DEBUG
-                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
                 );
@@ -1058,7 +1058,7 @@ namespace Mengine
         default:
             {
 #ifdef MENGINE_DEBUG
-                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
                     , MENGINE_DOCUMENT_STR( identity->doc )
                 );
@@ -1190,7 +1190,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "identity is nullptr (volume '%f' default '%f' force '%d')"
+            LOGGER_ERROR( "identity is nullptr (volume '%f' default '%f' force [%u])"
                 , _volume
                 , _default
                 , _force

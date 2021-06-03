@@ -104,7 +104,7 @@ namespace Mengine
 
         if( size_vsnprintf < 0 )
         {
-            LOGGER_ERROR( "invalid format error '%s' code '%d'"
+            LOGGER_ERROR( "invalid format error '%s' code [%u]"
                 , _format
                 , _code
             );
@@ -112,7 +112,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_ERROR( "error '%s' code '%d'"
+        LOGGER_ERROR( "error '%s' code [%u]"
             , msg
             , _code
         );

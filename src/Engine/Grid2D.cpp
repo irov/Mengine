@@ -148,7 +148,7 @@ namespace Mengine
 
         if( m_countX < 2 || m_countY < 2 )
         {
-            LOGGER_ERROR( "'%s' count X|Y not setup %d:%d"
+            LOGGER_ERROR( "'%s' count X|Y not setup %u:%u"
                 , this->getName().c_str()
                 , m_countX
                 , m_countY

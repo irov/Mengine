@@ -5,6 +5,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/Logger.h"
 
@@ -69,7 +70,7 @@ namespace Mengine
 
         if( status != VP8_STATUS_OK )
         {
-            LOGGER_ERROR( "invalid WebPGetFeatures %d"
+            LOGGER_ERROR( "invalid WebPGetFeatures [%u]"
                 , status
             );
 

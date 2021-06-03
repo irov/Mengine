@@ -79,7 +79,7 @@ namespace Mengine
         uint32_t mipmaps = dataInfo->mipmaps;
         m_stream->write( &mipmaps, sizeof( mipmaps ) );
 
-        const uint8_t * mipmap_buffer = reinterpret_cast<const uint8_t *>(_buffer);
+        const uint8_t * mipmap_buffer = reinterpret_cast<const uint8_t *>(_encoderData->buffer);
 
         for( uint32_t i = 0; i != mipmaps; ++i )
         {

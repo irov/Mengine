@@ -132,7 +132,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "render", "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -215,7 +215,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( mipmaps, width, height, format, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture [%u:%u]"
             , width
             , height
         );
@@ -233,7 +233,7 @@ namespace Mengine
         size_t pitch = 0;
         void * textureData = locked->getBuffer( &pitch );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture [%u:%u]"
             , width
             , height
         );
@@ -281,7 +281,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( mipmaps, width, height, format, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture [%u:%u]"
             , width
             , height
         );
@@ -299,7 +299,7 @@ namespace Mengine
         size_t pitch = 0;
         void * textureData = locked->getBuffer( &pitch );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( textureData, "invalid lock null texture [%u:%u]"
             , width
             , height
         );
@@ -353,7 +353,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "render", "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "render", "window resolution [%u, %u]\ncontent resolution [%u, %u]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()

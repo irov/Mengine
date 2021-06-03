@@ -353,7 +353,7 @@ namespace Mengine
 
         bool debugMode = MENGINE_DEBUG_VALUE( true, false );
 
-        LOGGER_MESSAGE( "Sentry set extra [Debug: %d]"
+        LOGGER_MESSAGE( "Sentry set extra [Debug: %u]"
             , debugMode
         );
 
@@ -361,7 +361,7 @@ namespace Mengine
 
         bool developmentMode = Helper::isDevelopmentMode();
 
-        LOGGER_MESSAGE( "Sentry set extra [Development: %d]"
+        LOGGER_MESSAGE( "Sentry set extra [Development: %u]"
             , developmentMode
         );
 
@@ -369,7 +369,7 @@ namespace Mengine
 
         bool masterMode = MENGINE_MASTER_VALUE( true, false );
 
-        LOGGER_MESSAGE( "Sentry set extra [Master: %d]"
+        LOGGER_MESSAGE( "Sentry set extra [Master: %u]"
             , masterMode
         );
 
@@ -377,7 +377,7 @@ namespace Mengine
 
         bool publishMode = MENGINE_PUBLISH_VALUE( true, false );
 
-        LOGGER_MESSAGE( "Sentry set extra [Publish: %d]"
+        LOGGER_MESSAGE( "Sentry set extra [Publish: %u]"
             , publishMode
         );
 

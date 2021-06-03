@@ -69,7 +69,7 @@ namespace Mengine
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file stream '%s:%s' stream [%d] (doc: %s)"
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file stream '%s:%s' stream [%u] (doc: %s)"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _stream

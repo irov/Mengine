@@ -203,7 +203,7 @@ namespace Mengine
 
         if( target->initialize( _width, _height, _channels, _format ) == false )
         {
-            LOGGER_ERROR( "can't initialize offscreen target %dx%d format %d"
+            LOGGER_ERROR( "can't initialize offscreen target [%ux%u] format [%u]"
                 , _width
                 , _height
                 , _format
@@ -212,7 +212,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "render", "offscreen target created %dx%d %d"
+        LOGGER_INFO( "render", "offscreen target created [%ux%u] format [%u]"
             , _width
             , _height
             , _format
@@ -229,7 +229,7 @@ namespace Mengine
 
         if( target->initialize( _width, _height, _channels, _format ) == false )
         {
-            LOGGER_ERROR( "can't initialize offscreen target %dx%d format %d"
+            LOGGER_ERROR( "can't initialize offscreen target [%ux%u] format [%u]"
                 , _width
                 , _height
                 , _format
@@ -238,7 +238,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "render", "offscreen target created %dx%d %d"
+        LOGGER_INFO( "render", "offscreen target created [%ux%u] format [%u]"
             , _width
             , _height
             , _format
@@ -394,7 +394,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -531,7 +531,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -570,7 +570,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -648,7 +648,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );

@@ -41,7 +41,7 @@ namespace Mengine
 
         if( m_elementCountX == 0 || m_elementCountY == 0 )
         {
-            LOGGER_ERROR( "landscape '%s' count X|Y not setup %d:%d"
+            LOGGER_ERROR( "landscape '%s' count X|Y not setup [%u:%u]"
                 , this->getName().c_str()
                 , m_elementCountX
                 , m_elementCountY
@@ -177,7 +177,7 @@ namespace Mengine
 
         for( const ResourceImagePtr & image : m_images )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( image, "'%s' invalid setup image for %d:%d"
+            MENGINE_ASSERTION_MEMORY_PANIC( image, "'%s' invalid setup image for [%u:%u]"
                 , this->getName().c_str()
                 , i
                 , j

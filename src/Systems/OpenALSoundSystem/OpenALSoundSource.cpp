@@ -78,7 +78,7 @@ namespace Mengine
 
             if( m_soundBuffer->playSource( m_sourceId, m_loop, m_time ) == false )
             {
-                LOGGER_ERROR( "invalid buffer play %d loop %d time %f"
+                LOGGER_ERROR( "invalid buffer play [%u] loop [%u] time [%f]"
                     , m_sourceId
                     , m_loop
                     , m_time
@@ -259,7 +259,7 @@ namespace Mengine
 
         if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
         {
-            LOGGER_ERROR( "invalid set time pos %d time %f (play %d)"
+            LOGGER_ERROR( "invalid set time pos [%u] time [%f] (play %u)"
                 , m_sourceId
                 , posmc
                 , m_playing
@@ -293,7 +293,7 @@ namespace Mengine
         float posms = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, &posms ) == false )
         {
-            LOGGER_ERROR( "invalid get time pos %d (play %d)"
+            LOGGER_ERROR( "invalid get time pos [%u] (play %u)"
                 , m_sourceId
                 , m_playing
             );

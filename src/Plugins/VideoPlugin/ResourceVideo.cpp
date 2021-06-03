@@ -135,24 +135,6 @@ namespace Mengine
             , this->getContent()->getFilePath().c_str()
         );
 
-        VideoCodecOptions videoCodecOptions;
-
-        videoCodecOptions.duration = m_duration;
-        videoCodecOptions.fps = m_frameRate;
-        videoCodecOptions.alpha = m_alpha;
-        videoCodecOptions.premultiply = m_premultiply;
-
-        if( videoDecoder->setOptions( &videoCodecOptions ) == false )
-        {
-            LOGGER_ERROR( "group '%s' name '%s' can't setup options for file '%s'"
-                , this->getGroupName().c_str()
-                , this->getName().c_str()
-                , this->getContent()->getFilePath().c_str()
-            );
-
-            return nullptr;
-        }
-
         if( videoDecoder->prepareData( videoStream ) == false )
         {
             LOGGER_ERROR( "group '%s' name '%s' can't initialize video decoder for file '%s'"

@@ -92,22 +92,24 @@ namespace Mengine
         void createDecoder_();
         bool fillVideoBuffer_() const;
         void updateUV_();
-        void updateSize_();
+
+    protected:
+        uint32_t getDecodeFlags_() const;
 
     protected:
         ResourceVideoPtr m_resourceVideo;
 
         RenderTextureInterfacePtr m_textures[1];
 
-        VideoDecoderInterfacePtr m_videoDecoder;
+        VideoDecoderInterfacePtr m_decoderVideo;
 
         float m_time;
 
-        mutable bool m_needUpdateVideoBuffer;
-        bool m_updateFirstFrame;
-
         mt::vec2f m_size;
         mt::uv4f m_uv;
+
+        mutable bool m_needUpdateVideoBuffer;
+        bool m_updateFirstFrame;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveSurfacePtr<SurfaceVideo> SurfaceVideoPtr;

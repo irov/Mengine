@@ -191,7 +191,7 @@ namespace Mengine
 
         if( (width > limitTextureWidth && limitTextureWidth != 0U) || (height > limitTextureHeight && limitTextureHeight != 0U) )
         {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' invalid limit '%d:%d' texture size '%d:%d'"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' invalid limit [%u:%u] texture size [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()
@@ -222,7 +222,7 @@ namespace Mengine
 
         if( (test_size.x != width || test_size.y != height) && (test_size.x > 4.f && test_size.y > 4.f) )
         {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %d:%d"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size [%f:%f] texture [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFileGroup()->getName().c_str()

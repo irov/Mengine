@@ -63,7 +63,7 @@ namespace Mengine
             ->findCodecType( filePath );
 
         m_textureFont = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, fontImageCodec, DF_NONE, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( fileGroup, filePath, fontImageCodec, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s:%s'"
             , m_name.c_str()
@@ -164,7 +164,7 @@ namespace Mengine
         {
             if( this->hasGlyph( bitmap_code ) == false )
             {
-                LOGGER_ERROR( "bitmap font '%s' not found glyph code '%d'"
+                LOGGER_ERROR( "bitmap font '%s' not found glyph code [%u]"
                     , this->getName().c_str()
                     , bitmap_code
                 );

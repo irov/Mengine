@@ -2872,7 +2872,7 @@ namespace Mengine
                                     }break;
                                 default:
                                     {
-                                        LOGGER_ERROR( "invalid support shader material blend mode '%d' (Normal)"
+                                        LOGGER_ERROR( "invalid support shader material blend mode [%u] (Normal)"
                                             , blend_mode
                                         );
 
@@ -2890,7 +2890,7 @@ namespace Mengine
                                     }break;
                                 default:
                                     {
-                                        LOGGER_ERROR( "invalid support shader material blend mode '%d' (ExternalAlpha)"
+                                        LOGGER_ERROR( "invalid support shader material blend mode [%u] (ExternalAlpha)"
                                             , blend_mode
                                         );
 

@@ -95,7 +95,7 @@ namespace Mengine
         size_t pitch = 0;
         void * textureBuffer = locked->getBuffer( &pitch );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, "invalid lock mipmap %d rect %d:%d-%d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, "invalid lock mipmap %u rect %u:%u-%u:%u"
             , 0
             , rect.left
             , rect.top

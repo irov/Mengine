@@ -221,7 +221,7 @@ namespace Mengine
             }break;
         default:
             {
-                MENGINE_ASSERTION_FATAL( false, "arrow type '%d'"
+                MENGINE_ASSERTION_FATAL( false, "arrow type '%u'"
                     , arrowType
                 );
             }break;

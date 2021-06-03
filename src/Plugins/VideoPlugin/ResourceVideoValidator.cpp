@@ -24,20 +24,20 @@ namespace Mengine
 
         bool successful = true;
 
-        const uint32_t MENGINE_VIDEO_SIZE_DIV = 8;
+        uint32_t Limit_VideoSizeDiv = CONFIG_VALUE( "Limit", "VideoSizeDiv", 8U );
 
-        if( dataInfo->frameWidth % MENGINE_VIDEO_SIZE_DIV != 0 ||
-            dataInfo->frameHeight % MENGINE_VIDEO_SIZE_DIV != 0 )
+        if( dataInfo->frameWidth % Limit_VideoSizeDiv != 0 ||
+            dataInfo->frameHeight % Limit_VideoSizeDiv != 0 )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
+            LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid width or heigth [%u:%u] need [%u:%u] maybe div [%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
                 , dataInfo->frameWidth
                 , dataInfo->frameHeight
-                , (dataInfo->frameWidth / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
-                , (dataInfo->frameHeight / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
-                , MENGINE_VIDEO_SIZE_DIV
+                , (dataInfo->frameWidth / Limit_VideoSizeDiv + 1) * Limit_VideoSizeDiv
+                , (dataInfo->frameHeight / Limit_VideoSizeDiv + 1) * Limit_VideoSizeDiv
+                , Limit_VideoSizeDiv
             );
 
             successful = false;
@@ -48,7 +48,7 @@ namespace Mengine
 
         if( dataInfo->width > Limit_VideoWidth || dataInfo->height > Limit_VideoHeight )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' path '%s' override size %d:%d limit %d:%d"
+            LOGGER_ERROR( "resource '%s' group '%s' path '%s' override size [%u:%u] limit [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
@@ -63,13 +63,15 @@ namespace Mengine
 
         float Limit_VideoFrameRate = CONFIG_VALUE( "Limit", "VideoFrameRate", 30.f );
 
-        if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.f )
+        float frameRate = _resource->getFrameRate();
+
+        if( frameRate > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.f )
         {
             LOGGER_ERROR( "resource '%s' group '%s' path '%s' override frame rate %f more that %f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
-                , dataInfo->fps
+                , frameRate
                 , Limit_VideoFrameRate
             );
 

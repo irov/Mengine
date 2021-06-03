@@ -165,7 +165,7 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_THROW_EXCEPTION("invalid allocate service name '%s' max count '%d' (doc: %s)"
+        MENGINE_THROW_EXCEPTION("invalid allocate service name '%s' max count [%u] (doc: %s)"
             , service->getServiceID()
             , MENGINE_SERVICE_PROVIDER_COUNT
             , MENGINE_DOCUMENT_STR( _doc )

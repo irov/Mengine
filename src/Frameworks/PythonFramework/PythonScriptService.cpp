@@ -74,7 +74,7 @@ namespace Mengine
             Char traceback[4096] = {'\0'};
             kernel->get_traceback( traceback, 4095 );
 
-            MENGINE_ERROR_FATAL( "\nInvalid parameter detected in function %ls.\nFile: %ls Line: %d\nExpression: %ls\nTrackeback:\n%s"
+            MENGINE_ERROR_FATAL( "\nInvalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
                 , _function
                 , _file
                 , _line

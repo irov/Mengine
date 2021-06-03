@@ -504,7 +504,7 @@ namespace Mengine
 
         if( indicesCount >= m_indicesQuad.size() )
         {
-            LOGGER_ERROR( "count %d > max count %d"
+            LOGGER_ERROR( "count [%u] > max count [%u]"
                 , indicesCount
                 , m_indicesQuad.size()
             );
@@ -526,7 +526,7 @@ namespace Mengine
 
         if( indicesCount >= m_indicesQuad.size() )
         {
-            LOGGER_ERROR( "count %d > max count %d"
+            LOGGER_ERROR( "count [%u] > max count [%u]"
                 , indicesCount
                 , m_indicesQuad.size()
             );
@@ -548,7 +548,7 @@ namespace Mengine
 
         if( indicesCount >= m_indicesLine.size() )
         {
-            LOGGER_ERROR( "count %d > max count %d"
+            LOGGER_ERROR( "count [%u] > max count [%u]"
                 , indicesCount
                 , m_indicesLine.size()
             );

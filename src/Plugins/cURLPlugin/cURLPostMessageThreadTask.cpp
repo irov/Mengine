@@ -44,7 +44,7 @@ namespace Mengine
 
             if( code_formadd != CURL_FORMADD_OK )
             {
-                LOGGER_ERROR( "url '%s' param '%s' value '%s' get formadd error [%d]"
+                LOGGER_ERROR( "url '%s' param '%s' value '%s' get formadd error [%u]"
                     , m_url.c_str()
                     , key.c_str()
                     , value.c_str()

@@ -372,7 +372,7 @@ namespace Mengine
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
         }
 
-        LOGGER_MESSAGE( "Application company '%s' project '%s' version '%d' locale '%s'"
+        LOGGER_MESSAGE( "Application company '%s' project '%s' version [%u] locale '%s'"
             , m_companyName
             , m_projectName
             , m_projectVersion
@@ -798,7 +798,7 @@ namespace Mengine
         RENDER_SERVICE()
             ->setVSync( vsync );
 
-        LOGGER_MESSAGE( "current resolution %d %d %s"
+        LOGGER_MESSAGE( "current resolution [%u:%u] %s"
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
@@ -1623,7 +1623,7 @@ namespace Mengine
 
         m_focus = _focus;
 
-        LOGGER_INFO( "system", "focus %d (freeze %d)"
+        LOGGER_INFO( "system", "focus [%u] (freeze %u)"
             , m_focus
             , m_freeze
         );
@@ -1649,7 +1649,7 @@ namespace Mengine
 
         m_freeze = _freeze;
 
-        LOGGER_INFO( "system", "freeze %d (focus %d)"
+        LOGGER_INFO( "system", "freeze [%u] (focus %u)"
             , m_freeze
             , m_focus
         );

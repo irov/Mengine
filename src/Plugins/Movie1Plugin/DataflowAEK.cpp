@@ -104,7 +104,7 @@ namespace Mengine
 
             if( true_metacode_version != metacode_version )
             {
-                LOGGER_ERROR( "invalid metacode version %d (need %d)"
+                LOGGER_ERROR( "invalid metacode version [%u] (need %u)"
                     , metacode_version
                     , true_metacode_version
                 );
@@ -117,7 +117,7 @@ namespace Mengine
 
             if( format_version != MOVIE_KEY_FRAME_FORMAT_VERSION )
             {
-                LOGGER_ERROR( "invalid format version %d (need %d)"
+                LOGGER_ERROR( "invalid format version [%u] (need %u)"
                     , format_version
                     , MOVIE_KEY_FRAME_FORMAT_VERSION
                 );

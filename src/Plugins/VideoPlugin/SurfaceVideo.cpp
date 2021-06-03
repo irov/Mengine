@@ -14,9 +14,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SurfaceVideo::SurfaceVideo()
         : m_time( 0.f )
+        , m_size( 0.f, 0.f )
         , m_needUpdateVideoBuffer( false )
         , m_updateFirstFrame( false )
-        , m_size( 0.f, 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -51,46 +51,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SurfaceVideo::getWidth() const
     {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
-        float width = (float)dataInfo->frameWidth;
-
-        return width;
+        return m_size.x;
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceVideo::getHeight() const
     {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
-        float height = (float)dataInfo->frameHeight;
-
-        return height;
-    }
-    ////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::updateSize_()
-    {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
-        float width = (float)dataInfo->frameWidth;
-        float height = (float)dataInfo->frameHeight;
-
-        m_size.x = width;
-        m_size.y = height;
+        return m_size.y;
     }
     ////////////////////////////////////////////////////////////////////
     void SurfaceVideo::updateUV_()
     {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
         const RenderTextureInterfacePtr & texture = m_textures[0];
 
         const RenderImageInterfacePtr & image = texture->getImage();
 
-        uint32_t hwWidth = image->getHWWidth();
-        uint32_t hwHeight = image->getHWHeight();
+        float hwWidthInv = image->getHWWidthInv();
+        float hwHeightInv = image->getHWHeightInv();
 
-        float u = float( dataInfo->frameWidth ) / float( hwWidth );
-        float v = float( dataInfo->frameHeight ) / float( hwHeight );
+        float u = m_size.x * hwWidthInv;
+        float v = m_size.y * hwHeightInv;
 
         m_uv.p0 = mt::vec2f( 0.f, 0.f );
         m_uv.p1 = mt::vec2f( u, 0.f );
@@ -143,20 +122,25 @@ namespace Mengine
 
         this->createDecoder_();
 
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+        uint32_t flags = this->getDecodeFlags_();
+
+        VideoSurfaceDimension surfaceDimension;
+        m_decoderVideo->getSurfaceDimension( flags, &surfaceDimension );
 
         RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
-            ->createTexture( 1, dataInfo->width, dataInfo->height, dataInfo->format, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( 1, surfaceDimension.width, surfaceDimension.height, surfaceDimension.format, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicTexture, "'%s' resource '%s' can`t create dynamic texture"
             , this->getName().c_str()
             , m_resourceVideo->getName().c_str()
         );
 
+        m_size.x = (float)surfaceDimension.frameWidth;
+        m_size.y = (float)surfaceDimension.frameHeight;
+
         m_textures[0] = dynamicTexture;
 
         this->invalidateMaterial();
-        this->updateSize_();
         this->updateUV_();
 
         m_time = 0.f;
@@ -174,15 +158,15 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        m_videoDecoder = videoDecoder;
+        m_decoderVideo = videoDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_release()
     {
-        if( m_videoDecoder != nullptr )
+        if( m_decoderVideo != nullptr )
         {
-            m_resourceVideo->destroyVideoDecoder( m_videoDecoder );
-            m_videoDecoder = nullptr;
+            m_resourceVideo->destroyVideoDecoder( m_decoderVideo );
+            m_decoderVideo = nullptr;
         }
 
         m_resourceVideo->release();
@@ -258,7 +242,7 @@ namespace Mengine
         m_needUpdateVideoBuffer = true;
         m_updateFirstFrame = true;
 
-        if( m_videoDecoder->rewind() == false )
+        if( m_decoderVideo->rewind() == false )
         {
             LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
                 , this->getName().c_str()
@@ -280,7 +264,7 @@ namespace Mengine
         m_needUpdateVideoBuffer = true;
         m_updateFirstFrame = true;
 
-        if( m_videoDecoder->rewind() == false )
+        if( m_decoderVideo->rewind() == false )
         {
             LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
                 , this->getName().c_str()
@@ -327,17 +311,16 @@ namespace Mengine
     {
         m_time += _time;
 
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
         bool needUpdate = false;
 
-        float frameTime = dataInfo->getFrameTime();
-        float duration = dataInfo->duration;
+        float frameRate = m_resourceVideo->getFrameRate();
+        float frameTime = 1000.f / frameRate;
+        float duration = m_resourceVideo->getDuration();
 
         while( m_time >= frameTime || m_updateFirstFrame == true )
         {
             float pts;
-            EVideoDecoderReadState state = m_videoDecoder->readNextFrame( m_time, &pts );
+            EVideoDecoderReadState state = m_decoderVideo->readNextFrame( m_time, &pts );
 
             needUpdate = true;
 
@@ -352,7 +335,7 @@ namespace Mengine
 
                 if( (loop == false && --m_playIterator == 0) || interrupt == true )
                 {
-                    m_videoDecoder->rewind();
+                    m_decoderVideo->rewind();
 
                     this->end();
 
@@ -374,7 +357,7 @@ namespace Mengine
                         time -= frameTime;
                     }
 
-                    if( m_videoDecoder->seek( time ) == false )
+                    if( m_decoderVideo->seek( time ) == false )
                     {
                         LOGGER_ERROR( "video '%s' resource '%s' invalid seek to '%f'"
                             , this->getName().c_str()
@@ -420,16 +403,8 @@ namespace Mengine
             return;
         }
 
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
-        float frameTime = dataInfo->getFrameTime();
-
         float frameRate = m_resourceVideo->getFrameRate();
-
-        if( frameRate > 0.f )
-        {
-            frameTime = 1000.f / frameRate;
-        }
+        float frameTime = 1000.f / frameRate;
 
         if( MT_fabsf( m_time - _time ) < frameTime )
         {
@@ -438,7 +413,7 @@ namespace Mengine
 
         float seek_time = _time;
 
-        float duration = dataInfo->duration;
+        float duration = m_resourceVideo->getDuration();
 
         m_playIterator = this->getPlayCount();
 
@@ -456,7 +431,7 @@ namespace Mengine
             m_time -= duration;
         }
 
-        if( m_videoDecoder->seek( seek_time ) == false )
+        if( m_decoderVideo->seek( seek_time ) == false )
         {
             LOGGER_ERROR( "video '%s' resource '%s' invalid seek to '%f'"
                 , this->getName().c_str()
@@ -472,20 +447,17 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////
     float SurfaceVideo::_getTime() const
     {
-        float timing = m_videoDecoder->tell();
+        float timing = m_decoderVideo->tell();
 
         return timing;
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceVideo::_getDuration() const
     {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
-        float duration = (float)dataInfo->duration;
+        float duration = m_resourceVideo->getDuration();
 
         return duration;
     }
-
     ////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_setFirstFrame()
     {
@@ -494,16 +466,16 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_setLastFrame()
     {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+        float duration = m_resourceVideo->getDuration();
 
-        this->_setTime( dataInfo->duration );
+        this->_setTime( duration );
     }
     ////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::fillVideoBuffer_() const
     {
         const RenderTextureInterfacePtr & texture = m_textures[0];
 
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+        const VideoCodecDataInfo * dataInfo = m_decoderVideo->getCodecDataInfo();
 
         const RenderImageInterfacePtr & image = texture->getImage();
 
@@ -532,7 +504,7 @@ namespace Mengine
         size_t pitch = 0;
         void * lockRect = locked->getBuffer( &pitch );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( lockRect, "'%s:%s' invalid lock texture %d:%d"
+        MENGINE_ASSERTION_MEMORY_PANIC( lockRect, "'%s:%s' invalid lock texture [%u:%u]"
             , this->getName().c_str()
             , m_resourceVideo->getName().c_str()
             , rect.right
@@ -548,12 +520,30 @@ namespace Mengine
         data.size = bufferSize;
         data.pitch = pitch;
         data.format = pixelFormat;
+        data.flags = this->getDecodeFlags_();
 
-        size_t bytes = m_videoDecoder->decode( &data );
+        size_t bytes = m_decoderVideo->decode( &data );
 
         image->unlock( locked, 0, true );
 
         return bytes != 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SurfaceVideo::getDecodeFlags_() const
+    {
+        uint32_t flags = DF_VIDEO_NONE;
+
+        if( m_resourceVideo->isAlpha() == true )
+        {
+            flags |= DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA;
+        }
+
+        if( m_resourceVideo->isPremultiply() == true )
+        {
+            flags |= DF_VIDEO_PREMULTIPLY_ALPHA;
+        }
+
+        return flags;
     }
     ////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_interrupt( uint32_t _playId )

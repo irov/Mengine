@@ -70,9 +70,9 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCount )
         {
-            LOGGER_ERROR( "lock count %d offset %d more max size %d (doc '%s')"
-                , _count
+            LOGGER_ERROR( "lock offset %u count %u more max size %u (doc: %s)"
                 , _offset
+                , _count
                 , m_indexCount
                 , MENGINE_DOCUMENTABLE_STR( this, "DX11RenderIndexBuffer" )
             );

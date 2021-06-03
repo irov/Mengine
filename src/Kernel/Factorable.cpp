@@ -27,7 +27,7 @@ namespace Mengine
 
         if( m_reference != 0 )
         {
-            MENGINE_THROW_EXCEPTION( "m_reference %d != 0"
+            MENGINE_THROW_EXCEPTION( "m_reference %u != 0"
                 , m_reference
             );
         }

@@ -54,7 +54,7 @@ namespace Mengine
 
         if( (width > limitMovieWidth && limitMovieWidth != 0U) || (height > limitMovieHeight && limitMovieHeight != 0U) )
         {
-            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid limit %d:%d size %d:%d"
+            LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid limit %u:%u size %u:%u"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , limitMovieWidth
@@ -86,7 +86,7 @@ namespace Mengine
                 return _layer.index == layer_parent;
             } ) == layers.end() )
             {
-                LOGGER_MESSAGE_RELEASE_ERROR( "release '%s' group '%s' layer '%s' index [%d] invalid parent [%d]"
+                LOGGER_MESSAGE_RELEASE_ERROR( "release '%s' group '%s' layer '%s' index [%u] invalid parent [%u]"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , layer.name.c_str()
@@ -173,7 +173,7 @@ namespace Mengine
         {
             if( framePack->hasLayer( layer.index ) == false )
             {
-                LOGGER_MESSAGE_RELEASE_ERROR( "'%s' group '%s' invalid layer %d '%s' type '%s'"
+                LOGGER_MESSAGE_RELEASE_ERROR( "'%s' group '%s' invalid layer [%u] name '%s' type '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , layer.index
@@ -190,7 +190,7 @@ namespace Mengine
             {
                 if( layer.isThreeD() == true )
                 {
-                    LOGGER_MESSAGE_RELEASE_ERROR( "'%s' group '%s' invalid layer '%d' SceneEffect should not be threeD"
+                    LOGGER_MESSAGE_RELEASE_ERROR( "'%s' group '%s' invalid layer [%u] SceneEffect should not be threeD"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , layer.index
@@ -216,7 +216,7 @@ namespace Mengine
                     if( MT_fabsf( layerFrame.source.scale.x ) < MovieImageScale ||
                         MT_fabsf( layerFrame.source.scale.y ) < MovieImageScale )
                     {
-                        LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+                        LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer [%u] name '%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()
                             , _resource->getGroupName().c_str()
                             , layer.index
@@ -251,7 +251,7 @@ namespace Mengine
 
                     if( scale_max_x < MovieImageScale || scale_max_y < MovieImageScale )
                     {
-                        LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer '%d':'%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
+                        LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer [%u] name '%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()
                             , _resource->getGroupName().c_str()
                             , layer.index
@@ -281,7 +281,7 @@ namespace Mengine
 
                 if( hide == true )
                 {
-                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer '%d':'%s' type '%s' permanently hide"
+                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer [%u] name '%s' type '%s' permanently hide"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , layer.index
@@ -303,7 +303,7 @@ namespace Mengine
                 if( TEXT_SERVICE()
                     ->hasTextEntry( layer.name, &entry ) == false )
                 {
-                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer '%d':'%s' type '%s' text '%s' not found"
+                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid layer [%u] name '%s' type '%s' text '%s' not found"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , layer.index

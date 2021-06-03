@@ -70,19 +70,6 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-        ImageCodecOptions decoder_options;
-        decoder_options.channels = 1;
-        decoder_options.pitch = dataInfo->width;
-
-        if( decoder->setOptions( &decoder_options ) == false )
-        {
-            LOGGER_ERROR( "invalid optionize decoder '%s'"
-                , m_options.inputFilePath.c_str()
-            );
-
-            return false;
-        }
-
         size_t data_size = Helper::getImageCodecDataSize( dataInfo );
 
         MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, MENGINE_DOCUMENT_FACTORABLE );
@@ -91,11 +78,13 @@ namespace Mengine
 
         void * data_memory = data_buffer->getBuffer();
 
-        DecoderData data;
-        data.buffer = data_memory;
-        data.size = data_size;
+        ImageDecoderData htfDecoderData;
+        htfDecoderData.buffer = data_memory;
+        htfDecoderData.size = data_size;
+        htfDecoderData.pitch = dataInfo->width;
+        htfDecoderData.format = PF_L8;
 
-        if( decoder->decode( &data ) == 0 )
+        if( decoder->decode( &htfDecoderData ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
                 , m_options.inputFilePath.c_str()
@@ -127,18 +116,10 @@ namespace Mengine
             return false;
         }
 
-        ImageCodecOptions encoder_options;
-        encoder_options.channels = 1;
-        encoder_options.pitch = dataInfo->width;
-
-        if( encoder->setOptions( &encoder_options ) == false )
-        {
-            LOGGER_ERROR( "%s invalid optionize encoder"
-                , m_options.inputFilePath.c_str()
-            );
-
-            return false;
-        }
+        ImageEncoderData htfEncoderData;
+        htfEncoderData.buffer = data_memory;
+        htfEncoderData.size = data_size;
+        htfEncoderData.pitch = dataInfo->width;
 
         ImageCodecDataInfo htfDataInfo;
         htfDataInfo.width = dataInfo->width;
@@ -146,7 +127,7 @@ namespace Mengine
         htfDataInfo.mipmaps = 1;
         htfDataInfo.format = PF_UNKNOWN;
 
-        size_t encode_byte = encoder->encode( data_memory, data_size, &htfDataInfo );
+        size_t encode_byte = encoder->encode( &htfEncoderData, &htfDataInfo );
 
         if( encode_byte == 0 )
         {

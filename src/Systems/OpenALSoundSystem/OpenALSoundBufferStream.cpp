@@ -155,7 +155,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "invalid channels %d"
+            LOGGER_ERROR( "invalid channels %u"
                 , m_channels
             );
 
@@ -185,7 +185,7 @@ namespace Mengine
 
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
-            LOGGER_ERROR( "source %d invalid state %d"
+            LOGGER_ERROR( "source [%u] invalid state [%u]"
                 , m_sourceId
                 , state
             );
@@ -395,7 +395,7 @@ namespace Mengine
         ALsizei al_bytesWritten = (ALsizei)bytesWritten;
         IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency) )
         {
-            LOGGER_ERROR( "buffer=%u id=%u format=%u bytes=%zu frequency=%d"
+            LOGGER_ERROR( "invalid alBufferData buffer [%u] id [%u] format [%u] bytes [%zu] frequency [%d]"
                 , _alBufferId
                 , m_sourceId
                 , m_format

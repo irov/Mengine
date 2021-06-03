@@ -98,7 +98,7 @@ namespace Mengine
 
         if( code != CURLE_OK )
         {
-            LOGGER_ERROR( "invalid initialize curl '%s' [%d]"
+            LOGGER_ERROR( "invalid initialize curl '%s' [%u]"
                 , curl_easy_strerror( code )
                 , code
             );
@@ -402,7 +402,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "request '%d' not found"
+        LOGGER_ERROR( "request [%u] not found"
             , _id
         );
 
@@ -470,7 +470,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_ERROR( "invalid request '%u' complete (status '%u' error '%.2048s' response '%.2048s' code '%u' successful '%d')"
+        LOGGER_ERROR( "invalid request '%u' complete (status [%u] error '%.2048s' response '%.2048s' code [%u] successful [%u])"
             , _id
             , _status
             , _error.c_str()

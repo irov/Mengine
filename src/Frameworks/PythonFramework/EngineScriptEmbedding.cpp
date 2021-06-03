@@ -3608,7 +3608,7 @@ namespace Mengine
 
                 PyGlobalBaseHandlerPtr py_handler = stdex::intrusive_dynamic_cast<PyGlobalBaseHandlerPtr>(handler);
 
-                MENGINE_ASSERTION_MEMORY_PANIC( py_handler, "%d handler invalid"
+                MENGINE_ASSERTION_MEMORY_PANIC( py_handler, "%u handler invalid"
                     , _id
                 );
 

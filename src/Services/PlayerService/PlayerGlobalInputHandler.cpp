@@ -42,7 +42,7 @@ namespace Mengine
 
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
-            LOGGER_ERROR( "Forgot remove player global input handler [%d] (doc: %s)"
+            LOGGER_ERROR( "Forgot remove player global input handler [%u] (doc: %s)"
                 , desc.id
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
@@ -289,7 +289,7 @@ namespace Mengine
 
         if( it_found == m_handlers.end() )
         {
-            LOGGER_ERROR( "not found %d"
+            LOGGER_ERROR( "not found [%u]"
                 , _id
             );
 
@@ -440,7 +440,7 @@ namespace Mengine
 
         if( it_found == m_handlers.end() )
         {
-            LOGGER_ERROR( "not found %d"
+            LOGGER_ERROR( "not found [%u]"
                 , _id
             );
 

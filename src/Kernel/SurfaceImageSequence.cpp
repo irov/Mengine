@@ -135,7 +135,7 @@ namespace Mengine
 
         uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();
 
-        MENGINE_ASSERTION_FATAL( m_currentFrame < sequenceCount, "'%s' current frame %d < %d"
+        MENGINE_ASSERTION_FATAL( m_currentFrame < sequenceCount, "'%s' current frame %u < %u"
             , this->getName().c_str()
             , m_currentFrame
             , sequenceCount
@@ -311,7 +311,7 @@ namespace Mengine
 
             if( _frame >= sequenceCount )
             {
-                LOGGER_ERROR( "'%s' _frame(%d) >= sequenceCount(%d)"
+                LOGGER_ERROR( "invalid '%s' set frame %u >= %u"
                     , this->getName().c_str()
                     , _frame
                     , sequenceCount

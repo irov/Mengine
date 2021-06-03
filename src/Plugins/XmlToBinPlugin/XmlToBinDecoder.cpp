@@ -29,45 +29,49 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
+    namespace Detail
     {
-        MENGINE_UNUSED( _user );
+        //////////////////////////////////////////////////////////////////////////
+        static bool xml_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
+        {
+            MENGINE_UNUSED( _user );
 
-        uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
+            uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
 
-        _metabuf->writeSize( utf8_size );
-        _metabuf->writeCount( _value, utf8_size );
+            _metabuf->writeSize( utf8_size );
+            _metabuf->writeCount( _value, utf8_size );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_write_wchar_t( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
-    {
-        MENGINE_UNUSED( _user );
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool xml_write_wchar_t( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
+        {
+            MENGINE_UNUSED( _user );
 
-        uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
+            uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
 
-        _metabuf->writeSize( utf8_size );
-        _metabuf->writeCount( _value, utf8_size );
+            _metabuf->writeSize( utf8_size );
+            _metabuf->writeCount( _value, utf8_size );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_write_utf8( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
-    {
-        MENGINE_UNUSED( _user );
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool xml_write_utf8( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
+        {
+            MENGINE_UNUSED( _user );
 
-        size_t len = MENGINE_STRLEN( _value );
-        const char * text_it = _value;
-        const char * text_end = _value + len + 1;
+            size_t len = MENGINE_STRLEN( _value );
+            const char * text_it = _value;
+            const char * text_end = _value + len + 1;
 
-        uint32_t code;
-        utf8::internal::validate_next( text_it, text_end, code );
+            uint32_t code;
+            utf8::internal::validate_next( text_it, text_end, code );
 
-        _metabuf->write( code );
+            _metabuf->write( code );
 
-        return true;
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     XmlToBinDecoder::XmlToBinDecoder()
@@ -81,16 +85,6 @@ namespace Mengine
     const InputStreamInterfacePtr & XmlToBinDecoder::getStream() const
     {
         return m_stream;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinDecoder::setOptions( const CodecOptions * _options )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( _options );
-        MENGINE_ASSERTION_TYPE( _options, const XmlCodecOptions * );
-
-        m_options = *static_cast<const XmlCodecOptions *>(_options);
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void XmlToBinDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
@@ -138,19 +132,22 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////////
-    size_t XmlToBinDecoder::decode( const DecoderData * _data )
+    size_t XmlToBinDecoder::decode( const DecoderData * _decoderData )
     {
-        MENGINE_UNUSED( _data );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const XmlDecoderData * );
+
+        const XmlDecoderData * decoderData = static_cast<const XmlDecoderData *>(_decoderData);
 
         LOGGER_MESSAGE( "xml to bin:\nxml - %s\nbin - %s"
-            , m_options.pathXml.c_str()
-            , m_options.pathBin.c_str()
+            , decoderData->pathXml.c_str()
+            , decoderData->pathBin.c_str()
         );
 
-        InputStreamInterfacePtr protocol_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathProtocol, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr protocol_stream = Helper::openInputStreamFile( m_fileGroupDev, decoderData->pathProtocol, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, "error open protocol '%s'"
-            , m_options.pathProtocol.c_str()
+            , decoderData->pathProtocol.c_str()
         );
 
         size_t protocol_size = protocol_stream->size();
@@ -169,7 +166,7 @@ namespace Mengine
         if( protocol_stream->read( memory_protocol_buffer, protocol_size ) != protocol_size )
         {
             LOGGER_ERROR( "error read protocol '%s' error invalid read size"
-                , m_options.pathProtocol.c_str()
+                , decoderData->pathProtocol.c_str()
             );
 
             return 0;
@@ -182,30 +179,30 @@ namespace Mengine
         if( xml_protocol.readProtocol( memory_protocol_buffer, protocol_size ) == false )
         {
             LOGGER_ERROR( "error read protocol '%s' error:\n%s"
-                , m_options.pathProtocol.c_str()
+                , decoderData->pathProtocol.c_str()
                 , xml_protocol.getError().c_str()
             );
 
             return 0;
         }
 
-        if( m_options.useProtocolVersion != xml_protocol.getVersion() )
+        if( decoderData->useProtocolVersion != xml_protocol.getVersion() )
         {
-            LOGGER_ERROR( "protocol '%s' invalid version '%d' use '%d'"
-                , m_options.pathProtocol.c_str()
+            LOGGER_ERROR( "protocol '%s' invalid version '%u' use '%u'"
+                , decoderData->pathProtocol.c_str()
                 , xml_protocol.getVersion()
-                , m_options.useProtocolVersion
+                , decoderData->useProtocolVersion
             );
 
             return 0;
         }
 
-        if( m_options.useProtocolCrc32 != xml_protocol.getCrc32() )
+        if( decoderData->useProtocolCrc32 != xml_protocol.getCrc32() )
         {
-            LOGGER_ERROR( "protocol '%s' invalid version '%d' use '%d'"
-                , m_options.pathProtocol.c_str()
+            LOGGER_ERROR( "protocol '%s' invalid version '%u' use '%u'"
+                , decoderData->pathProtocol.c_str()
                 , xml_protocol.getVersion()
-                , m_options.useProtocolCrc32
+                , decoderData->useProtocolCrc32
             );
 
             return 0;
@@ -213,10 +210,10 @@ namespace Mengine
 
         memory_protocol = nullptr;
 
-        InputStreamInterfacePtr xml_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathXml, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr xml_stream = Helper::openInputStreamFile( m_fileGroupDev, decoderData->pathXml, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, "error open xml '%s'"
-            , m_options.pathXml.c_str()
+            , decoderData->pathXml.c_str()
         );
 
         size_t xml_size = xml_stream->size();
@@ -224,7 +221,7 @@ namespace Mengine
         if( xml_size == 0 )
         {
             LOGGER_ERROR( "error open xml '%s' (file size == 0)"
-                , m_options.pathXml.c_str()
+                , decoderData->pathXml.c_str()
             );
 
             return 0;
@@ -255,15 +252,15 @@ namespace Mengine
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
         LOGGER_INFO( "convert", "\nxml %s\nbin %s"
-            , m_options.pathXml.c_str()
-            , m_options.pathBin.c_str()
+            , decoderData->pathXml.c_str()
+            , decoderData->pathBin.c_str()
         );
 
         xml_metabuf.initialize();
 
-        xml_metabuf.addSerializator( "wstring", &s_write_wstring, (void *)nullptr );
-        xml_metabuf.addSerializator( "wchar_t", &s_write_wchar_t, (void *)nullptr );
-        xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void *)nullptr );
+        xml_metabuf.addSerializator( "wstring", &Detail::xml_write_wstring, (void *)nullptr );
+        xml_metabuf.addSerializator( "wchar_t", &Detail::xml_write_wchar_t, (void *)nullptr );
+        xml_metabuf.addSerializator( "utf8", &Detail::xml_write_utf8, (void *)nullptr );
 
         MemoryBufferInterfacePtr memory_header = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
@@ -282,7 +279,7 @@ namespace Mengine
         if( xml_metabuf.header( memory_header_buffer, Metacode::header_size, xml_meta_version, &header_size ) == false )
         {
             LOGGER_ERROR( "error header '%s' version '%u' error:\n%s"
-                , m_options.pathXml.c_str()
+                , decoderData->pathXml.c_str()
                 , xml_meta_version
                 , xml_metabuf.getError().c_str()
             );
@@ -305,7 +302,7 @@ namespace Mengine
         if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, &bin_size ) == false )
         {
             LOGGER_ERROR( "error convert '%s' error:\n%s"
-                , m_options.pathXml.c_str()
+                , decoderData->pathXml.c_str()
                 , xml_metabuf.getError().c_str()
             );
 
@@ -316,13 +313,13 @@ namespace Mengine
             ->compressBuffer( m_archivator, memory_bin_buffer, bin_size, EAC_BEST );
 
         MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, "error convert '%s' invalid compress buffer"
-            , m_options.pathXml.c_str()
+            , decoderData->pathXml.c_str()
         );
 
-        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, decoderData->pathBin, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, "error create bin '%s'"
-            , m_options.pathBin.c_str()
+            , decoderData->pathBin.c_str()
         );
 
         bin_stream->write( memory_header_buffer, Metacode::header_size );
@@ -334,7 +331,7 @@ namespace Mengine
         size_t compress_size = compress_memory->getSize();
 
         MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "error create bin '%s' invalid get memory"
-            , m_options.pathBin.c_str()
+            , decoderData->pathBin.c_str()
         );
 
         uint32_t write_compress_size = (uint32_t)compress_size;

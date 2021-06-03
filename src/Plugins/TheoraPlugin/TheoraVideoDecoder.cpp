@@ -221,42 +221,29 @@ namespace Mengine
             }
         }
 
-        theora_decode_init( &m_theoraState, &m_theoraInfo );
-
-        if( m_theoraInfo.pixelformat != OC_PF_420 )
+        if( theora_decode_init( &m_theoraState, &m_theoraInfo ) != 0 )
         {
-            const Char * pixelformat[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
-
-            LOGGER_ERROR( "invalid support pixel format '%s' pls use OC_PF_420"
-                , pixelformat[m_theoraInfo.pixelformat]
-            );
-
             return false;
         }
 
-        if( m_options.alpha == true )
+        MENGINE_ASSERTION_FATAL( m_theoraInfo.pixelformat == OC_PF_420, "invalid support pixel format '%s' pls use OC_PF_420"
+            , []( theora_pixelformat _format )
         {
-            m_dataInfo.frameWidth = m_theoraInfo.frame_width;
-            m_dataInfo.frameHeight = m_theoraInfo.frame_height / 2;
+            const Char * pixelformat[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
+            return pixelformat[_format];
+        }(m_theoraInfo.pixelformat) );
 
-            m_dataInfo.width = m_theoraInfo.width;
-            m_dataInfo.height = m_theoraInfo.height / 2;
+        MENGINE_ASSERTION_FATAL( m_theoraInfo.fps_denominator != 0, "invalid fps denominator" );
 
-            m_dataInfo.format = PF_A8R8G8B8;
-        }
-        else
-        {
-            m_dataInfo.frameWidth = m_theoraInfo.frame_width;
-            m_dataInfo.frameHeight = m_theoraInfo.frame_height;
+        m_dataInfo.frameWidth = m_theoraInfo.frame_width;
+        m_dataInfo.frameHeight = m_theoraInfo.frame_height;
 
-            m_dataInfo.width = m_theoraInfo.width;
-            m_dataInfo.height = m_theoraInfo.height;
+        m_dataInfo.width = m_theoraInfo.width;
+        m_dataInfo.height = m_theoraInfo.height;
 
-            m_dataInfo.format = PF_R8G8B8;
-        }
+        m_dataInfo.fps = (float)m_theoraInfo.fps_numerator / (float)m_theoraInfo.fps_denominator;
 
-        m_dataInfo.duration = m_options.duration;
-        m_dataInfo.fps = m_options.fps;
+        m_dataInfo.format = PF_R8G8B8;
 
         m_time = 0.f;
         m_readyFrame = false;
@@ -307,9 +294,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t TheoraVideoDecoder::_decode( const DecoderData * _data )
+    size_t TheoraVideoDecoder::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_TYPE( _data, const VideoDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const VideoDecoderData * );
+
+        const VideoDecoderData * decoderData = static_cast<const VideoDecoderData *>(_decoderData);
 
         if( m_readyFrame == false )
         {
@@ -334,7 +324,7 @@ namespace Mengine
             return 0;
         }
 
-        if( this->decodeBuffer_( yuvBuffer, static_cast<const VideoDecoderData *>(_data) ) == false )
+        if( this->decodeBuffer_( yuvBuffer, decoderData ) == false )
         {
             return 0;
         }
@@ -342,14 +332,17 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, const VideoDecoderData * _data )
+    bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, const VideoDecoderData * _decoderData )
     {
-        uint8_t * dstBitmap = static_cast<uint8_t *>(_data->buffer);
-        uint8_t * dstBitmapOffset = static_cast<uint8_t *>(_data->buffer) + _data->pitch;
+        uint8_t * dstBitmap = static_cast<uint8_t *>(_decoderData->buffer);
+        uint8_t * dstBitmapOffset = static_cast<uint8_t *>(_decoderData->buffer) + _decoderData->pitch;
 
-        if( m_options.alpha == false && _data->format == PF_X8R8G8B8 )
+        bool separateHorizontalAlpha = (_decoderData->flags & DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA) == DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA;
+        bool premultiplyAlpha = (_decoderData->flags & DF_VIDEO_PREMULTIPLY_ALPHA) == DF_VIDEO_PREMULTIPLY_ALPHA;
+
+        if( separateHorizontalAlpha == false && _decoderData->format == PF_X8R8G8B8 )
         {
-            uint32_t dstOff = _data->pitch * 2 - m_theoraInfo.width * 4;
+            uint32_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 4;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -375,9 +368,9 @@ namespace Mengine
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
                     int32_t b = (rgbY + bU) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
-                    THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
-                    THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[0 + THEORA_COLOR_R] );
+                    THEORA_CLIP_RGB_COLOR( g, dstBitmap[0 + THEORA_COLOR_G] );
+                    THEORA_CLIP_RGB_COLOR( b, dstBitmap[0 + THEORA_COLOR_B] );
                     dstBitmap[THEORA_COLOR_A] = 255;
                     ++ySrc;
 
@@ -395,9 +388,9 @@ namespace Mengine
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_R] );
-                    THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[THEORA_COLOR_G] );
-                    THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[0 + THEORA_COLOR_R] );
+                    THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[0 + THEORA_COLOR_G] );
+                    THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[0 + THEORA_COLOR_B] );
                     dstBitmapOffset[THEORA_COLOR_A] = 255;
                     ++ySrc2;
 
@@ -423,9 +416,9 @@ namespace Mengine
                 vSrc += _yuvBuffer.uv_stride;
             }
         }
-        else if( m_options.alpha == false && _data->format == PF_R8G8B8 )
+        else if( separateHorizontalAlpha == false && _decoderData->format == PF_R8G8B8 )
         {
-            uint32_t dstOff = _data->pitch * 2 - m_theoraInfo.width * 3;
+            uint32_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 3;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -451,9 +444,9 @@ namespace Mengine
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
                     int32_t b = (rgbY + bU) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
-                    THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
-                    THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[0 + THEORA_COLOR_R] );
+                    THEORA_CLIP_RGB_COLOR( g, dstBitmap[0 + THEORA_COLOR_G] );
+                    THEORA_CLIP_RGB_COLOR( b, dstBitmap[0 + THEORA_COLOR_B] );
                     ++ySrc;
 
                     rgbY = Detail::YTable[*ySrc];
@@ -469,9 +462,9 @@ namespace Mengine
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_R] );
-                    THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[THEORA_COLOR_G] );
-                    THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[0 + THEORA_COLOR_R] );
+                    THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[0 + THEORA_COLOR_G] );
+                    THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[0 + THEORA_COLOR_B] );
                     ++ySrc2;
 
                     rgbY = Detail::YTable[*ySrc2];
@@ -495,9 +488,9 @@ namespace Mengine
                 vSrc += _yuvBuffer.uv_stride;
             }
         }
-        else if( m_options.alpha == true && _data->format == PF_A8R8G8B8 )
+        else if( separateHorizontalAlpha == true && _decoderData->format == PF_A8R8G8B8 )
         {
-            uint32_t dstOff = _data->pitch * 2 - m_theoraInfo.width * 4;
+            uint32_t dstOff = _decoderData->pitch * 2 - m_theoraInfo.width * 4;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -525,9 +518,9 @@ namespace Mengine
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
                     int32_t b = (rgbY + bU) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
-                    THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
-                    THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[0 + THEORA_COLOR_R] );
+                    THEORA_CLIP_RGB_COLOR( g, dstBitmap[0 + THEORA_COLOR_G] );
+                    THEORA_CLIP_RGB_COLOR( b, dstBitmap[0 + THEORA_COLOR_B] );
                     ++ySrc;
 
                     rgbY = Detail::YTable[*ySrc];
@@ -543,9 +536,9 @@ namespace Mengine
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
                     b = (rgbY + bU) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_R] );
-                    THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[THEORA_COLOR_G] );
-                    THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[0 + THEORA_COLOR_R] );
+                    THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[0 + THEORA_COLOR_G] );
+                    THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[0 + THEORA_COLOR_B] );
                     ++ySrc2;
 
                     rgbY = Detail::YTable[*ySrc2];
@@ -569,8 +562,8 @@ namespace Mengine
                 vSrc += _yuvBuffer.uv_stride;
             }
 
-            dstBitmap = static_cast<uint8_t *>(_data->buffer);
-            dstBitmapOffset = static_cast<uint8_t *>(_data->buffer) + _data->pitch;
+            dstBitmap = static_cast<uint8_t *>(_decoderData->buffer);
+            dstBitmapOffset = static_cast<uint8_t *>(_decoderData->buffer) + _decoderData->pitch;
 
             for( int32_t y = 0; y != y_rgb_count; ++y )
             {
@@ -582,7 +575,7 @@ namespace Mengine
 
                     int32_t rgbY = Detail::YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_A] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmap[0 + THEORA_COLOR_A] );
                     ++ySrc;
 
                     rgbY = Detail::YTable[*ySrc];
@@ -592,7 +585,7 @@ namespace Mengine
 
                     rgbY = Detail::YTable[*ySrc2];
                     r = (rgbY + rV) >> 13;
-                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_A] );
+                    THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[0 + THEORA_COLOR_A] );
                     ++ySrc2;
 
                     rgbY = Detail::YTable[*ySrc2];
@@ -611,25 +604,25 @@ namespace Mengine
                 vSrc += _yuvBuffer.uv_stride;
             }
 
-            if( m_options.premultiply == true )
+            if( premultiplyAlpha == true )
             {
-                dstBitmap = static_cast<uint8_t *>(_data->buffer);
-                dstBitmapOffset = static_cast<uint8_t *>(_data->buffer) + _data->pitch;
+                dstBitmap = static_cast<uint8_t *>(_decoderData->buffer);
+                dstBitmapOffset = static_cast<uint8_t *>(_decoderData->buffer) + _decoderData->pitch;
 
                 for( int32_t y = 0; y != y_rgb_count; ++y )
                 {
                     for( int32_t x = 0; x != y_width; ++x )
                     {
-                        dstBitmap[THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmap[THEORA_COLOR_R] * dstBitmap[THEORA_COLOR_A] / 255);
-                        dstBitmap[THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmap[THEORA_COLOR_G] * dstBitmap[THEORA_COLOR_A] / 255);
-                        dstBitmap[THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmap[THEORA_COLOR_B] * dstBitmap[THEORA_COLOR_A] / 255);
+                        dstBitmap[0 + THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmap[0 + THEORA_COLOR_R] * dstBitmap[0 + THEORA_COLOR_A] / 255);
+                        dstBitmap[0 + THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmap[0 + THEORA_COLOR_G] * dstBitmap[0 + THEORA_COLOR_A] / 255);
+                        dstBitmap[0 + THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmap[0 + THEORA_COLOR_B] * dstBitmap[0 + THEORA_COLOR_A] / 255);
                         dstBitmap[4 + THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmap[4 + THEORA_COLOR_R] * dstBitmap[4 + THEORA_COLOR_A] / 255);
                         dstBitmap[4 + THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmap[4 + THEORA_COLOR_G] * dstBitmap[4 + THEORA_COLOR_A] / 255);
                         dstBitmap[4 + THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmap[4 + THEORA_COLOR_B] * dstBitmap[4 + THEORA_COLOR_A] / 255);
 
-                        dstBitmapOffset[THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmapOffset[THEORA_COLOR_R] * dstBitmapOffset[THEORA_COLOR_A] / 255);
-                        dstBitmapOffset[THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmapOffset[THEORA_COLOR_G] * dstBitmapOffset[THEORA_COLOR_A] / 255);
-                        dstBitmapOffset[THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmapOffset[THEORA_COLOR_B] * dstBitmapOffset[THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[0 + THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmapOffset[0 + THEORA_COLOR_R] * dstBitmapOffset[0 + THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[0 + THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmapOffset[0 + THEORA_COLOR_G] * dstBitmapOffset[0 + THEORA_COLOR_A] / 255);
+                        dstBitmapOffset[0 + THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmapOffset[0 + THEORA_COLOR_B] * dstBitmapOffset[0 + THEORA_COLOR_A] / 255);
                         dstBitmapOffset[4 + THEORA_COLOR_R] = (uint8_t)((uint32_t)dstBitmapOffset[4 + THEORA_COLOR_R] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255);
                         dstBitmapOffset[4 + THEORA_COLOR_G] = (uint8_t)((uint32_t)dstBitmapOffset[4 + THEORA_COLOR_G] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255);
                         dstBitmapOffset[4 + THEORA_COLOR_B] = (uint8_t)((uint32_t)dstBitmapOffset[4 + THEORA_COLOR_B] * dstBitmapOffset[4 + THEORA_COLOR_A] / 255);
@@ -672,6 +665,32 @@ namespace Mengine
         }
 
         return bytes;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TheoraVideoDecoder::getSurfaceDimension( uint32_t _flags, VideoSurfaceDimension * const _surfaceDimension ) const
+    {
+        bool separateHorizontAlpha = (_flags & DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA) == DF_VIDEO_SEPARATE_HORIZONTAL_ALPHA;
+
+        if( separateHorizontAlpha == true )
+        {
+            _surfaceDimension->frameWidth = m_dataInfo.frameWidth;
+            _surfaceDimension->frameHeight = m_dataInfo.frameHeight / 2;
+
+            _surfaceDimension->width = m_dataInfo.width;
+            _surfaceDimension->height = m_dataInfo.height / 2;
+
+            _surfaceDimension->format = PF_A8R8G8B8;
+        }
+        else
+        {
+            _surfaceDimension->frameWidth = m_dataInfo.frameWidth;
+            _surfaceDimension->frameHeight = m_dataInfo.frameHeight;
+
+            _surfaceDimension->width = m_dataInfo.width;
+            _surfaceDimension->height = m_dataInfo.height;
+
+            _surfaceDimension->format = PF_R8G8B8;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float * const _pts )
@@ -726,7 +745,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::seekToFrame( float _time )
     {
-        float frameTiming = m_dataInfo.getFrameTime();
+        float frameTiming = 1000.f / m_dataInfo.fps;
 
         ogg_packet packet;
 
@@ -783,7 +802,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::_seek( float _time )
     {
-        float frameTime = m_dataInfo.getFrameTime();
+        float frameTime = 1000.f / m_dataInfo.fps;
 
         uint32_t frame_time = (uint32_t)(m_time / frameTime);
         uint32_t frame_seek = (uint32_t)(_time / frameTime);

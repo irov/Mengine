@@ -27,9 +27,6 @@ namespace Mengine
         const InputStreamInterfacePtr & getStream() const override;
 
     public:
-        bool setOptions( const CodecOptions * _options ) override;
-
-    public:
         void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
         const XmlCodecDataInfo * getCodecDataInfo() const override;
 
@@ -49,7 +46,5 @@ namespace Mengine
         FileGroupInterfacePtr m_fileGroupDev;
 
         InputStreamInterfacePtr m_stream;
-
-        XmlCodecOptions m_options = {};
     };
 }

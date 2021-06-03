@@ -8,6 +8,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionType.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 
@@ -55,16 +56,22 @@ namespace Mengine
 
         m_dataInfo.width = width;
         m_dataInfo.height = height;
-        m_dataInfo.format = PF_A8;
+        m_dataInfo.format = PF_L8;
         m_dataInfo.mipmaps = mipmaps;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageDecoderACF::_decode( const DecoderData * _data )
+    size_t ImageDecoderACF::_decode( const DecoderData * _decoderData )
     {
-        void * dataBuffer = _data->buffer;
-        size_t dataSize = _data->size;
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+
+        const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
+
+        void * dataBuffer = decoderData->buffer;
+        size_t dataSize = decoderData->size;
+        size_t dataPitch = decoderData->pitch;
 
         size_t streamSize;
         if( Helper::loadStreamArchiveBufferSize( m_stream, &streamSize ) == false )
@@ -84,7 +91,7 @@ namespace Mengine
             return 0;
         }
 
-        if( m_options.pitch * m_dataInfo.height == streamSize )
+        if( dataPitch * m_dataInfo.height == streamSize )
         {
             if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, dataBuffer, dataSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
@@ -109,7 +116,7 @@ namespace Mengine
             }
 
             const uint8_t * source_buffer = static_cast<const uint8_t *>(memory);
-            uint8_t * dest_buffer = static_cast<uint8_t *>(_data->buffer);
+            uint8_t * dest_buffer = static_cast<uint8_t *>(dataBuffer);
 
             uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
             uint32_t linesize = m_dataInfo.width * channels;
@@ -119,7 +126,7 @@ namespace Mengine
                 stdex::memorycopy( dest_buffer, 0, source_buffer, linesize );
 
                 source_buffer += linesize;
-                dest_buffer += m_options.pitch;
+                dest_buffer += dataPitch;
             }
         }
 

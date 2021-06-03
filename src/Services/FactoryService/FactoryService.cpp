@@ -147,7 +147,7 @@ namespace Mengine
         m_memleakLogFileName.clear();
 #endif
 
-        MENGINE_ASSERTION_FATAL( leakcount == 0, "detect factory leak [%d]"
+        MENGINE_ASSERTION_FATAL( leakcount == 0, "detect factory leak [%u]"
             , leakcount
         );
 

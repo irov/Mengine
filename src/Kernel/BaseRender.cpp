@@ -271,22 +271,22 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setZGroup( int8_t _zGroup )
+    void BaseRender::setZGroup( ZGroupType _zGroup )
     {
         m_zGroup = _zGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    int8_t BaseRender::getZGroup() const
+    ZGroupType BaseRender::getZGroup() const
     {
         return m_zGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setZIndex( int32_t _zIndex )
+    void BaseRender::setZIndex( ZIndexType _zIndex )
     {
         m_zIndex = _zIndex;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t BaseRender::getZIndex() const
+    ZIndexType BaseRender::getZIndex() const
     {
         return m_zIndex;
     }

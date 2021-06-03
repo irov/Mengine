@@ -116,6 +116,12 @@ namespace Mengine
         }
 
         template <>
+        MENGINE_INLINE int8_t getXmlValue<int8_t>( const pugi::xml_attribute & _attrib )
+        {
+            return (int8_t)_attrib.as_int();
+        }
+
+        template <>
         MENGINE_INLINE int32_t getXmlValue<int32_t>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_int();
@@ -250,6 +256,15 @@ namespace Mengine
         };
 
         template<>
+        struct prop_type_name<int8_t>
+        {
+            static const Char * get_value()
+            {
+                return "int8_t";
+            }
+        };
+
+        template<>
         struct prop_type_name<int32_t>
         {
             static const Char * get_value()
@@ -350,13 +365,13 @@ namespace Mengine
         }
 
         template<typename T>
-        bool deserializeNodeProp( const Char * _propName,
-            const pugi::xml_node & _xmlParentNode,
-            const Lambda<void( const T & )> & _lambda )
+        bool deserializeNodeProp( const Char * _propName, const pugi::xml_node & _xmlParentNode, const Lambda<void( const T & )> & _lambda )
         {
             const Char * type_name = Detail::prop_type_name<T>::get_value();
 
-            return Detail::deserializeNodePropImpl<T>( type_name, _propName, _xmlParentNode, _lambda );
+            bool result = Detail::deserializeNodePropImpl<T>( type_name, _propName, _xmlParentNode, _lambda );
+
+            return result;
         }
     }
 

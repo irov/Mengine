@@ -82,12 +82,12 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
-        void setZGroup( int8_t _zGroup ) override;
-        int8_t getZGroup() const override;
+        void setZGroup( ZGroupType _zGroup ) override;
+        ZGroupType getZGroup() const override;
 
     public:
-        void setZIndex( int32_t _zIndex ) override;
-        int32_t getZIndex() const override;
+        void setZIndex( ZIndexType _zIndex ) override;
+        ZIndexType getZIndex() const override;
 
     public:
         void mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const override;
@@ -139,8 +139,8 @@ namespace Mengine
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
 
-        int8_t m_zGroup;
-        uint32_t m_zIndex;
+        ZGroupType m_zGroup;
+        ZIndexType m_zIndex;
 
         bool m_externalRender;
         bool m_renderEnable;

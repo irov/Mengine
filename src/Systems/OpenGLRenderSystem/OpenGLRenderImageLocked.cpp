@@ -31,6 +31,8 @@ namespace Mengine
 
         void * buffer = memory->newBuffer( _size );
 
+        MENGINE_UNUSED( buffer );
+
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid new memory (%zu) rect from %u %u to %u %u"
             , _size
             , _rect.left

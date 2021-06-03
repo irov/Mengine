@@ -57,9 +57,6 @@ namespace Mengine
         bool onRenderRestore() override;
 
     public:
-        UnknownPointer getRenderImageExtention() override;
-
-    public:
         const ID3D11DevicePtr & getD3DDevice() const override;
         const ID3D11Texture2DPtr & getD3DTexture() const override;
         const ID3D11ShaderResourceViewPtr & getD3DShaderResource() const override;

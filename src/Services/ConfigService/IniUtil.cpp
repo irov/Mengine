@@ -116,7 +116,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -130,7 +130,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -163,7 +163,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -187,7 +187,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -215,7 +215,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -251,7 +251,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -271,7 +271,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int8_t * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int8_t * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -291,7 +291,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint8_t * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint8_t * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -311,7 +311,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -331,7 +331,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -351,7 +351,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -371,7 +371,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -391,7 +391,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double * _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double * const _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
 
@@ -411,7 +411,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString * _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -425,7 +425,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString * _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -441,7 +441,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath * _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -457,7 +457,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports * _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports * const _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -491,7 +491,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams * _values )
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams * const _values )
         {
             uint32_t count = tinyini_count_properties( &_ini.ini, _section );
 

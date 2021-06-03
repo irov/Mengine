@@ -76,14 +76,18 @@ namespace Mengine
         void * buffer = _data->buffer;
         size_t size = _data->size;
 
-        size_t read = m_stream->read( buffer, size );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        size_t read = stream->read( buffer, size );
 
         return read == size ? read : 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPVRTC::_prepareData()
     {
-        m_stream->read( &m_header, 52 );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        stream->read( &m_header, 52 );
 
         MENGINE_ASSERTION_FATAL( m_header.numFaces == 1 );
         MENGINE_ASSERTION_FATAL( m_header.numSurfaces == 1 );
@@ -124,7 +128,7 @@ namespace Mengine
             m_dataInfo.mipmaps = 1;
         }
 
-        m_stream->skip( m_header.metaDataSize );
+        stream->skip( m_header.metaDataSize );
 
         return true;
     }

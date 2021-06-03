@@ -98,7 +98,7 @@ namespace Mengine
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
-    private:
+    protected:
         ResourceSoundPtr m_resourceSound;
 
         SoundIdentityInterfacePtr m_soundIdentity;

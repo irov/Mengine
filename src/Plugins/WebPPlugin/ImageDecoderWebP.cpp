@@ -36,9 +36,11 @@ namespace Mengine
 
         size_t featuresBufferSize = 0;
 
+        const InputStreamInterfacePtr & stream = this->getStream();
+
         void * streamMemory;
         size_t streamSize;
-        if( m_stream->memory( &streamMemory, &streamSize ) == false )
+        if( stream->memory( &streamMemory, &streamSize ) == false )
         {
             do
             {
@@ -54,11 +56,11 @@ namespace Mengine
                     , featuresBufferSize
                 );
 
-                size_t featuresBufferSizeRead = m_stream->read( featuresMemory, featuresBufferSize );
+                size_t featuresBufferSizeRead = stream->read( featuresMemory, featuresBufferSize );
 
                 status = WebPGetFeatures( featuresMemory, featuresBufferSizeRead, &features );
 
-                m_stream->seek( 0 );
+                stream->seek( 0 );
             } while( status == VP8_STATUS_NOT_ENOUGH_DATA );
         }
         else
@@ -112,11 +114,13 @@ namespace Mengine
 
         const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 
+        const InputStreamInterfacePtr & stream = this->getStream();
+
         void * streamMemory;
         size_t streamSize;
-        if( m_stream->memory( &streamMemory, &streamSize ) == false )
+        if( stream->memory( &streamMemory, &streamSize ) == false )
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FACTORABLE );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( stream, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create memory for stream" );
 

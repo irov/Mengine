@@ -36,6 +36,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Error.h"
+#include "Kernel/PixelFormatHelper.h"
 
 #include "Config/StdString.h"
 
@@ -634,7 +635,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
@@ -644,25 +645,21 @@ namespace Mengine
 
         renderImage->setDirect3DDevice9( m_pD3DDevice );
 
-        if( renderImage->initialize( _mipmaps, _width, _height, _channels, _depth, _format ) == false )
+        if( renderImage->initialize( _mipmaps, _width, _height, _format ) == false )
         {
-            LOGGER_ERROR( "can't initialize image %ux%u channels %u depth %u format %d"
+            LOGGER_ERROR( "can't initialize image [%ux%u] format [%u]"
                 , _width
                 , _height
-                , _channels
-                , _depth
                 , _format
             );
 
             return nullptr;
         }
 
-        LOGGER_INFO( "render", "texture normal created %ux%u format %u channel %u depth %u"
+        LOGGER_INFO( "render", "texture normal created [%ux%u] format [%u]"
             , renderImage->getHWWidth()
             , renderImage->getHWHeight()
             , renderImage->getHWPixelFormat()
-            , renderImage->getHWChannels()
-            , renderImage->getHWDepth()
         );
 
         m_renderResourceHandlers.push_back( renderImage.get() );
@@ -672,10 +669,9 @@ namespace Mengine
 
         if( logcreateimage == true )
         {
-            LOGGER_STATISTIC( "create texture [%u:%u] channels %u format %u (doc %s)"
+            LOGGER_STATISTIC( "create texture [%u:%u] format %u (doc %s)"
                 , renderImage->getHWWidth()
                 , renderImage->getHWHeight()
-                , renderImage->getHWChannels()
                 , renderImage->getHWPixelFormat()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -687,11 +683,9 @@ namespace Mengine
 
         uint32_t hwWidth = renderImage->getHWHeight();
         uint32_t hwHeight = renderImage->getHWHeight();
-        uint32_t hwChannels = renderImage->getHWChannels();
-        uint32_t hwDepth = renderImage->getHWDepth();
         EPixelFormat hwPixelFormat = renderImage->getHWPixelFormat();
 
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, hwDepth, hwPixelFormat );
+        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
 
         m_textureMemoryUse += memoryUse;
 #endif
@@ -733,11 +727,9 @@ namespace Mengine
 
         uint32_t hwWidth = renderTargetTexture->getHWHeight();
         uint32_t hwHeight = renderTargetTexture->getHWHeight();
-        uint32_t hwChannels = renderTargetTexture->getHWChannels();
-        uint32_t hwDepth = renderTargetTexture->getHWDepth();
         EPixelFormat hwPixelFormat = renderTargetTexture->getHWPixelFormat();
 
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, hwDepth, hwPixelFormat );
+        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
 
         m_textureMemoryUse += memoryUse;
 #endif
@@ -777,11 +769,9 @@ namespace Mengine
 
         uint32_t hwWidth = renderTargetOffscreen->getHWHeight();
         uint32_t hwHeight = renderTargetOffscreen->getHWHeight();
-        uint32_t hwChannels = renderTargetOffscreen->getHWChannels();
-        uint32_t hwDepth = renderTargetOffscreen->getHWDepth();
         EPixelFormat hwPixelFormat = renderTargetOffscreen->getHWPixelFormat();
 
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, hwDepth, hwPixelFormat );
+        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
 
         m_textureMemoryUse += memoryUse;
 #endif
@@ -1966,10 +1956,9 @@ namespace Mengine
 
         uint32_t hwWidth = _image->getHWWidth();
         uint32_t hwHeight = _image->getHWHeight();
-        uint32_t hwChannels = _image->getHWChannels();
         EPixelFormat hwPixelFormat = _image->getHWPixelFormat();
 
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
+        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
 
         m_textureMemoryUse -= memoryUse;
 #endif
@@ -1989,10 +1978,9 @@ namespace Mengine
 
         uint32_t hwWidth = _targetTexture->getHWWidth();
         uint32_t hwHeight = _targetTexture->getHWHeight();
-        uint32_t hwChannels = _targetTexture->getHWChannels();
         EPixelFormat hwPixelFormat = _targetTexture->getHWPixelFormat();
 
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
+        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
 
         m_textureMemoryUse -= memoryUse;
 #endif
@@ -2007,10 +1995,9 @@ namespace Mengine
 
         uint32_t hwWidth = _targetOffscreen->getHWWidth();
         uint32_t hwHeight = _targetOffscreen->getHWHeight();
-        uint32_t hwChannels = _targetOffscreen->getHWChannels();
         EPixelFormat hwPixelFormat = _targetOffscreen->getHWPixelFormat();
 
-        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
+        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwPixelFormat );
 
         m_textureMemoryUse -= memoryUse;
 #endif

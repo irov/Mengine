@@ -38,7 +38,9 @@ namespace Mengine
     {
         WAVE_HEADER header;
 
-        m_stream->read( header.ChunkID, 4 );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        stream->read( header.ChunkID, 4 );
 
         if( Helper::magicTest4( header.ChunkID, "RIFF" ) == false )
         {
@@ -47,9 +49,9 @@ namespace Mengine
             return false;
         }
 
-        m_stream->read( &header.ChunkSize, sizeof( header.ChunkSize ) );
+        stream->read( &header.ChunkSize, sizeof( header.ChunkSize ) );
 
-        m_stream->read( &header.Format, 4 );
+        stream->read( &header.Format, 4 );
 
         if( Helper::magicTest4( header.Format, "WAVE" ) == false )
         {
@@ -58,7 +60,7 @@ namespace Mengine
             return false;
         }
 
-        m_stream->read( &header.Subchunk1ID, 4 );
+        stream->read( &header.Subchunk1ID, 4 );
 
         if( Helper::magicTest4( header.Subchunk1ID, "fmt " ) == false )
         {
@@ -67,9 +69,9 @@ namespace Mengine
             return false;
         }
 
-        m_stream->read( &header.Subchunk1Size, sizeof( header.Subchunk1Size ) );
+        stream->read( &header.Subchunk1Size, sizeof( header.Subchunk1Size ) );
 
-        m_stream->read( &header.AudioFormat, sizeof( header.AudioFormat ) );
+        stream->read( &header.AudioFormat, sizeof( header.AudioFormat ) );
 
         if( header.AudioFormat != 1 )
         {
@@ -80,11 +82,11 @@ namespace Mengine
             return false;
         }
 
-        m_stream->read( &header.NumChannels, sizeof( header.NumChannels ) );
-        m_stream->read( &header.SampleRate, sizeof( header.SampleRate ) );
-        m_stream->read( &header.ByteRate, sizeof( header.ByteRate ) );
-        m_stream->read( &header.BlockAlign, sizeof( header.BlockAlign ) );
-        m_stream->read( &header.BitsPerSample, sizeof( header.BitsPerSample ) );
+        stream->read( &header.NumChannels, sizeof( header.NumChannels ) );
+        stream->read( &header.SampleRate, sizeof( header.SampleRate ) );
+        stream->read( &header.ByteRate, sizeof( header.ByteRate ) );
+        stream->read( &header.BlockAlign, sizeof( header.BlockAlign ) );
+        stream->read( &header.BitsPerSample, sizeof( header.BitsPerSample ) );
 
         if( (header.BitsPerSample != 16) && (header.BitsPerSample != 8) )
         {
@@ -95,10 +97,10 @@ namespace Mengine
             return false;
         }
 
-        m_stream->skip( header.Subchunk1Size - 16 );
+        stream->skip( header.Subchunk1Size - 16 );
 
         size_t chunkDataSize;
-        if( this->findChunkData_( chunkDataSize ) == false )
+        if( this->findChunkData_( stream, &chunkDataSize ) == false )
         {
             LOGGER_ERROR( "invalid find chunk data [bps %u]"
                 , header.BitsPerSample
@@ -107,7 +109,7 @@ namespace Mengine
             return false;
         }
 
-        m_chunkDataPos = (uint32_t)m_stream->tell();
+        m_chunkDataPos = (uint32_t)stream->tell();
 
         m_dataInfo.size = chunkDataSize;
         m_dataInfo.channels = header.NumChannels;
@@ -119,24 +121,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoderWAV::findChunkData_( size_t & _size )
+    bool SoundDecoderWAV::findChunkData_( const InputStreamInterfacePtr & _stream, size_t * const _size )
     {
-        while( m_stream->eof() == false )
+        while( _stream->eof() == false )
         {
             Char Subchunk2ID[4];
-            m_stream->read( &Subchunk2ID, 4 );
+            _stream->read( &Subchunk2ID, 4 );
 
             uint32_t Subchunk2Size;
-            m_stream->read( &Subchunk2Size, sizeof( Subchunk2Size ) );
+            _stream->read( &Subchunk2Size, sizeof( Subchunk2Size ) );
 
             if( Helper::magicTest4( Subchunk2ID, "data" ) == true )
             {
-                _size = Subchunk2Size;
+                *_size = Subchunk2Size;
 
                 return true;
             }
 
-            m_stream->skip( Subchunk2Size );
+            _stream->skip( Subchunk2Size );
         }
 
         return false;
@@ -147,7 +149,9 @@ namespace Mengine
         void * buffer = _data->buffer;
         size_t size = _data->size;
 
-        size_t bytesDone = m_stream->read( buffer, size );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        size_t bytesDone = stream->read( buffer, size );
 
         return bytesDone;
     }
@@ -166,14 +170,18 @@ namespace Mengine
 
         size_t wav_pos = ((size_t)(_time) * (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits)) / 1000;
 
-        bool result = m_stream->seek( m_chunkDataPos + wav_pos );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        bool result = stream->seek( m_chunkDataPos + wav_pos );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundDecoderWAV::_tell() const
     {
-        size_t wav_pos = m_stream->tell();
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        size_t wav_pos = stream->tell();
 
         float length = (float)((wav_pos - m_chunkDataPos) * 1000.f / float( m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits ));
 

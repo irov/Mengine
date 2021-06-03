@@ -38,7 +38,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderACF::_prepareData()
     {
-        if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( Helper::loadStreamMagicHeader( stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
         {
             LOGGER_ERROR( "invalid load magic header" );
 
@@ -46,13 +48,13 @@ namespace Mengine
         }
 
         uint32_t width;
-        m_stream->read( &width, sizeof( width ) );
+        stream->read( &width, sizeof( width ) );
 
         uint32_t height;
-        m_stream->read( &height, sizeof( height ) );
+        stream->read( &height, sizeof( height ) );
 
         uint32_t mipmaps;
-        m_stream->read( &mipmaps, sizeof( mipmaps ) );
+        stream->read( &mipmaps, sizeof( mipmaps ) );
 
         m_dataInfo.width = width;
         m_dataInfo.height = height;
@@ -69,12 +71,14 @@ namespace Mengine
 
         const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 
+        const InputStreamInterfacePtr & stream = this->getStream();
+
         void * dataBuffer = decoderData->buffer;
         size_t dataSize = decoderData->size;
         size_t dataPitch = decoderData->pitch;
 
         size_t streamSize;
-        if( Helper::loadStreamArchiveBufferSize( m_stream, &streamSize ) == false )
+        if( Helper::loadStreamArchiveBufferSize( stream, &streamSize ) == false )
         {
             LOGGER_ERROR( "invalid load data size" );
 
@@ -93,7 +97,7 @@ namespace Mengine
 
         if( dataPitch * m_dataInfo.height == streamSize )
         {
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, dataBuffer, dataSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( Helper::loadStreamArchiveInplace( stream, m_archivator, dataBuffer, dataSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load" );
 
@@ -108,7 +112,7 @@ namespace Mengine
 
             void * memory = buffer->getBuffer();
 
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, streamSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( Helper::loadStreamArchiveInplace( stream, m_archivator, memory, streamSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load" );
 

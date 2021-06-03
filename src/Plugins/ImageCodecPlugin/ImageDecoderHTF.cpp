@@ -11,23 +11,26 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static EPixelFormat s_convertFormat( uint32_t _format )
+    namespace Detail
     {
-        switch( _format )
+        //////////////////////////////////////////////////////////////////////////
+        static EPixelFormat convertFormat( uint32_t _format )
         {
-        case 1:
-            return PF_DXT1;
-        case 2:
-            return PF_ETC1;
-        case 3:
-            return PF_PVRTC4_RGB;
-        default:
-            break;
-        }
+            switch( _format )
+            {
+            case 1:
+                return PF_DXT1;
+            case 2:
+                return PF_ETC1;
+            case 3:
+                return PF_PVRTC4_RGB;
+            default:
+                break;
+            }
 
-        return PF_UNKNOWN;
-    };
+            return PF_UNKNOWN;
+        };
+    }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderHTF::ImageDecoderHTF()
     {
@@ -50,7 +53,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderHTF::_prepareData()
     {
-        if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( Helper::loadStreamMagicHeader( stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
         {
             LOGGER_ERROR( "invalid load magic header" );
 
@@ -58,21 +63,21 @@ namespace Mengine
         }
 
         uint32_t width;
-        m_stream->read( &width, sizeof( width ) );
+        stream->read( &width, sizeof( width ) );
 
         uint32_t height;
-        m_stream->read( &height, sizeof( height ) );
+        stream->read( &height, sizeof( height ) );
 
         uint32_t format;
-        m_stream->read( &format, sizeof( format ) );
+        stream->read( &format, sizeof( format ) );
 
         uint32_t mipmaps;
-        m_stream->read( &mipmaps, sizeof( mipmaps ) );
+        stream->read( &mipmaps, sizeof( mipmaps ) );
 
         m_dataInfo.width = width;
         m_dataInfo.height = height;
 
-        m_dataInfo.format = s_convertFormat( format );
+        m_dataInfo.format = Detail::convertFormat( format );
         m_dataInfo.mipmaps = mipmaps;
 
         return true;
@@ -83,7 +88,9 @@ namespace Mengine
         void * buffer = _data->buffer;
         size_t capacity = _data->size;
 
-        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, buffer, capacity, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( Helper::loadStreamArchiveInplace( stream, m_archivator, buffer, capacity, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "invalid load" );
 

@@ -16,8 +16,6 @@ namespace Mengine
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
-        , m_hwChannels( 0 )
-        , m_hwDepth( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
@@ -29,7 +27,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _pixelFormat )
+    bool DX9RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
     {
         D3DFORMAT D3DFormat = Helper::toD3DFormat( _pixelFormat );
 
@@ -55,8 +53,7 @@ namespace Mengine
         m_hwMipmaps = _mipmaps;
         m_hwWidth = texDesc.Width;
         m_hwHeight = texDesc.Height;
-        m_hwChannels = _channels;
-        m_hwDepth = _depth;
+
         m_hwPixelFormat = _pixelFormat;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
@@ -181,16 +178,6 @@ namespace Mengine
     float DX9RenderImage::getHWHeightInv() const
     {
         return m_hwHeightInv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderImage::getHWChannels() const
-    {
-        return m_hwChannels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderImage::getHWDepth() const
-    {
-        return 1; //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderImage::getHWMipmaps() const

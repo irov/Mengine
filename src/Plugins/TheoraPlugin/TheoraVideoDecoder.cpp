@@ -281,7 +281,9 @@ namespace Mengine
         theora_comment_init( &m_theoraComment );
         theora_info_init( &m_theoraInfo );
 
-        if( m_stream->seek( 0 ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( stream->seek( 0 ) == false )
         {
             return false;
         }
@@ -655,7 +657,9 @@ namespace Mengine
             return 0;
         }
 
-        size_t bytes = m_stream->read( buffer, MENGINE_THEORA_OGG_BUFFER_SIZE );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        size_t bytes = stream->read( buffer, MENGINE_THEORA_OGG_BUFFER_SIZE );
 
         long ogg_bytes = (long)bytes;
 

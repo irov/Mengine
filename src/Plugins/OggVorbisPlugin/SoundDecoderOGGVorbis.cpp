@@ -119,7 +119,9 @@ namespace Mengine
         vorbisCallbacks.tell_func = &Detail::tellOgg;
         vorbisCallbacks.close_func = &Detail::closeOgg;
 
-        int32_t opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        int32_t opcall_err = ov_open_callbacks( stream.get(), &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
 
         if( opcall_err < 0 )
         {
@@ -172,7 +174,9 @@ namespace Mengine
             ov_clear( &m_oggVorbisFile );
         }
 
-        if( m_stream->seek( 0 ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( stream->seek( 0 ) == false )
         {
             return false;
         }

@@ -357,7 +357,9 @@ namespace Mengine
 
         jpeg_create_decompress( &m_jpegObject );
 
-        if( m_stream->seek( 0 ) == false )
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        if( stream->seek( 0 ) == false )
         {
             return false;
         }

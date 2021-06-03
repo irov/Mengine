@@ -25,8 +25,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderDDS::_prepareData()
     {
+        const InputStreamInterfacePtr & stream = this->getStream();
+
         uint32_t magic;
-        m_stream->read( &magic, sizeof( magic ) );
+        stream->read( &magic, sizeof( magic ) );
 
         if( magic != MENGINE_FOURCC( 'D', 'D', 'S', ' ' ) )
         {
@@ -36,7 +38,7 @@ namespace Mengine
         }
 
         DDS_HEADER header;
-        m_stream->read( &header, sizeof( header ) );
+        stream->read( &header, sizeof( header ) );
 
         //Check valid structure sizes
         if( header.dwSize != 124 && header.ddspf.dwSize != 32 )
@@ -107,7 +109,9 @@ namespace Mengine
         void * buffer = _data->buffer;
         size_t size = _data->size;
 
-        size_t byte = m_stream->read( buffer, size );
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        size_t byte = stream->read( buffer, size );
 
         return byte;
     }

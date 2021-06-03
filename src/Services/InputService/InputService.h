@@ -73,7 +73,7 @@ namespace Mengine
     protected:
         void applyCursorPosition_( ETouchCode _touchId, float _x, float _y, float _pressure );
 
-    private:
+    protected:
         mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH] = {{0.f, 0.f}};
         float m_cursorPressure[MENGINE_INPUT_MAX_TOUCH] = {0.f};
 

@@ -24,7 +24,7 @@ namespace Mengine
         float _tell() const override;
 
     protected:
-        bool findChunkData_( size_t & _size );
+        bool findChunkData_( const InputStreamInterfacePtr & _stream, size_t * const _size );
 
     protected:
         uint32_t m_chunkDataPos;

@@ -381,13 +381,18 @@ namespace Mengine
     public:
         MyXMLWriter() = delete;
         MyXMLWriter( const MyXMLWriter & ) = delete;
-        ~MyXMLWriter() = default;
 
+    public:
         MyXMLWriter( Blobject & _buffer )
             : m_buffer( _buffer )
         {
         }
 
+        ~MyXMLWriter()
+        {
+        }
+
+    public:
         void write( const void * _data, size_t _size ) override
         {
             const uint8_t * ptr = reinterpret_cast<const uint8_t *>(_data);

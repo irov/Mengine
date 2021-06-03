@@ -56,7 +56,7 @@ namespace Mengine
         void calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * const _pos ) const;
         void advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f * const _offset ) const;
 
-    private:
+    protected:
         uint32_t m_layout;
         float m_length;
 

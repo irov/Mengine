@@ -33,7 +33,8 @@ namespace Mengine
             , m_dataInfo.height
         );
 
-        m_stream->seek( 0 );
+        const InputStreamInterfacePtr & stream = this->getStream();
+        stream->seek( 0 );
 
         size_t read_byte = 0;
 
@@ -67,13 +68,15 @@ namespace Mengine
     {
         size_t read_byte = 0;
 
+        const InputStreamInterfacePtr & stream = this->getStream();
+
         uint32_t channels = Helper::getPixelFormatChannels( m_dataInfo.format );
 
         if( _pitch == m_dataInfo.width * channels )
         {
             uint8_t * buffer_ptr = static_cast<uint8_t *>(_buffer);
 
-            read_byte += m_stream->read( buffer_ptr, _bufferSize );
+            read_byte += stream->read( buffer_ptr, _bufferSize );
         }
         else
         {
@@ -81,7 +84,7 @@ namespace Mengine
 
             for( uint32_t j = 0; j != m_dataInfo.height; ++j )
             {
-                read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * channels );
+                read_byte += stream->read( buffer_ptr, m_dataInfo.width * channels );
 
                 buffer_ptr += _pitch;
             }
